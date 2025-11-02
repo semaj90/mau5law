@@ -56,27 +56,27 @@ Displays detailed integrity verification results with AI analysis
   function getStatusColor(status: string) {
     switch (status) {
       case, 'verified':
-        return, 'text-green-600 bg-green-50 border-green-200';
+        return 'text-green-600 bg-green-50 border-green-200';
       case, 'compromised':
-        return, 'text-red-600 bg-red-50 border-red-200';
+        return 'text-red-600 bg-red-50 border-red-200';
       case, 'requires-attention':
-        return, 'text-yellow-600 bg-yellow-50 border-yellow-200';
+        return 'text-yellow-600 bg-yellow-50 border-yellow-200';
       case, 'pending':
-        return, 'text-blue-600 bg-blue-50 border-blue-200';
-      default: return, 'text-gray-600 bg-gray-50 border-gray-200';
+        return 'text-blue-600 bg-blue-50 border-blue-200';
+      default: return 'text-gray-600 bg-gray-50 border-gray-200';
     }
   }
   function getRiskLevelColor(riskLevel: string) {
     switch (riskLevel) {
       case, 'low':
-        return, 'text-green-600';
+        return 'text-green-600';
       case, 'medium':
-        return, 'text-yellow-600';
+        return 'text-yellow-600';
       case, 'high':
-        return, 'text-orange-600';
+        return 'text-orange-600';
       case, 'critical':
-        return, 'text-red-600';
-      default: return, 'text-gray-600';
+        return 'text-red-600';
+      default: return 'text-gray-600';
     }
   }
   function getVerificationIcon(passed: boolean) {
@@ -86,7 +86,7 @@ Displays detailed integrity verification results with AI analysis
     return passed ? 'text-green-600' : 'text-red-600';
   }
   function formatHash(hash?: string) {
-    if (!hash) return, 'N/A';
+    if (!hash) return 'N/A';
     return `${hash.substring(0, 8)}...${hash.substring(hash.length - 8)}`;
   }
   function getOverallScore() {

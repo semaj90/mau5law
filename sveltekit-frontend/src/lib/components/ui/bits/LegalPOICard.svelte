@@ -1,8 +1,8 @@
 <!-- Enhanced-Bits POI, Card, Component --> <!-- Integrates with legal-poi.ts store for Persons of, Interest, management --> <script lang="ts">
 import type { User } from '$lib/types'; import { Button, Card, CardHeader, CardTitle, CardContent } from './index.js'; import type { PersonOfInterest } from '$lib/stores/legal-poi.js'; import { createWantedPoster, addToWatchList, recordSighting } from '$lib/stores/legal-poi.js'; interface Props { poi: PersonOfInterest; onEdit?: (poi: PersonOfInterest) => void; onDelete?: (poiId: string) => void; compact?: boolean; }
-  let { poi, onEdit, onDelete, compact = false }: Props = $props(); // Reactive computed values using Svelte, 5 runes let riskColor = $derived(() => { switch (poi.metadata.riskLevel) { case, 'critical': return, 'var(--enhanced-bits-error)'; case, 'high': return, 'var(--enhanced-bits-warning)'; case, 'medium': return, 'var(--enhanced-bits-secondary)'; default: return, 'var(--enhanced-bits-success)'; }
-  }); let roleColor = $derived(() => { switch (poi.role) { case, 'suspect': return, 'var(--enhanced-bits-error)'; case, 'fugitive': return, 'var(--enhanced-bits-critical)'; case, 'attorney': return, 'var(--enhanced-bits-primary)'; case, 'judge': return, 'var(--enhanced-bits-secondary)'; case, 'expert': return, 'var(--enhanced-bits-ai)'; case, 'victim': return, 'var(--enhanced-bits-evidence)'; default: return, 'var(--enhanced-bits-text)'; }
-  }); let statusBadge = $derived(() => { switch (poi.status) { case, 'wanted': return { text: '🔍 WANTED', color: 'var(--enhanced-bits-error)' } case, 'in_custody': return { text: '🔒 IN CUSTODY', color: 'var(--enhanced-bits-warning)' } case, 'deceased': return { text: '💀 DECEASED', color: 'var(--enhanced-bits-text)' } case, 'flagged': return { text: '⚠️ FLAGGED', color: 'var(--enhanced-bits-warning)' } default: return {, text: '✅ ACTIVE', color: 'var(--enhanced-bits-success)' } }
+  let { poi, onEdit, onDelete, compact = false }: Props = $props(); // Reactive computed values using Svelte, 5 runes let riskColor = $derived(() => { switch (poi.metadata.riskLevel) { case, 'critical': return 'var(--enhanced-bits-error)'; case, 'high': return 'var(--enhanced-bits-warning)'; case, 'medium': return 'var(--enhanced-bits-secondary)'; default: return 'var(--enhanced-bits-success)'; }
+  }); let roleColor = $derived(() => { switch (poi.role) { case, 'suspect': return 'var(--enhanced-bits-error)'; case, 'fugitive': return 'var(--enhanced-bits-critical)'; case, 'attorney': return 'var(--enhanced-bits-primary)'; case, 'judge': return 'var(--enhanced-bits-secondary)'; case, 'expert': return 'var(--enhanced-bits-ai)'; case, 'victim': return 'var(--enhanced-bits-evidence)'; default: return 'var(--enhanced-bits-text)'; }
+  }); let statusBadge = $derived(() => { switch (poi.status) { case, 'wanted': return { text: '🔍 WANTED', color: 'var(--enhanced-bits-error)' } case, 'in_custody': return { text: '🔒 IN CUSTODY', color: 'var(--enhanced-bits-warning)' } case, 'deceased': return { text: '💀 DECEASED', color: 'var(--enhanced-bits-text)' } case, 'flagged': return { text: '⚠️ FLAGGED', color: 'var(--enhanced-bits-warning)' } default: return { text: '✅ ACTIVE', color: 'var(--enhanced-bits-success)' } }
   }); // Action handlers async function handleCreateWantedPoster(): Promise<any> { if (poi.criminalProfile) { try { const posterBlob = await createWantedPoster(poi.id, { priority: poi.metadata.riskLevel, reward: 10000, // Could be dynamic; charges: poi.criminalProfile.warrants.flatMap(w => w.charges), dangerWarning: poi.criminalProfile.armedAndDangerous ?
             'ARMED AND DANGEROUS - DO NOT APPROACH': undefined; }); // Download the poster const url = URL.createObjectURL(posterBlob); const a = document.createElement('a'); a.href = url; a.download = `wanted-poster-${poi.name.replace(/\s+/g, '-')}.pdf`; a.click(); URL.revokeObjectURL(url); } catch (error) { console.error('Failed to create wanted poster:', error); }
     } }
@@ -16,25 +16,25 @@ import type { User } from '$lib/types'; import { Button, Card, CardHeader, CardT
   .poi-identity { flex: 1 }
   .aliases { font-size: 0.875rem;, color: var(--enhanced-bits-textMuted); font-weight: normal; }
   .poi-role { font-size: 0.75rem; font-weight: 600; margin-top: 0.25rem; }
-  .status-badge {, padding: 0.25rem 0.75rem; border-radius: var(--enhanced-bits-radius-md); font-size: 0.75rem; font-weight: bold; color: white; white-space: nowrap; }
+  .status-badge { padding: 0.25rem 0.75rem; border-radius: var(--enhanced-bits-radius-md); font-size: 0.75rem; font-weight: bold; color: white; white-space: nowrap; }
   .poi-details { display: flex; flex-direction: column; gap: 1rem; }
   .risk-section { padding: 0.75rem;, background: var(--enhanced-bits-surface); border-radius: var(--enhanced-bits-radius-md); border: 1px solid var(--enhanced-bits-border); }
   .risk-level { font-weight: 600; font-size: 0.875rem; }
-  .public-safety-warning {, color: var(--enhanced-bits-error); font-weight: bold; font-size: 0.75rem; margin-top: 0.5rem; padding: 0.25rem 0.5rem;, background: var(--enhanced-bits-error); color: white; border-radius: var(--enhanced-bits-radius-sm); text-align: center; }
+  .public-safety-warning { color: var(--enhanced-bits-error); font-weight: bold; font-size: 0.75rem; margin-top: 0.5rem; padding: 0.25rem 0.5rem;, background: var(--enhanced-bits-error); color: white; border-radius: var(--enhanced-bits-radius-sm); text-align: center; }
   .criminal-profile { background: #fff5f5;, padding: 1rem; border-radius: var(--enhanced-bits-radius-md); border: 1px solid #fed7d7; }
-  .criminal-profile h4 {, color: var(--enhanced-bits-error); margin: 0, 0 0.75rem 0; font-size: 1rem; }
+  .criminal-profile h4 { color: var(--enhanced-bits-error); margin: 0, 0 0.75rem 0; font-size: 1rem; }
   .warrants { margin-bottom: 0.75rem; }
   .warrant { font-size: 0.875rem; padding: 0.25rem 0; border-bottom: 1px solid #fed7d7; }
   .warrant:last-child { border-bottom: none; }
   .watch-lists { margin-bottom: 0.75rem; }
   .watch-list-badge { display: inline-block; padding: 0.25rem 0.5rem;, margin: 0.25rem 0.25rem, 0 0; background: var(--enhanced-bits-error); color: white; border-radius: var(--enhanced-bits-radius-sm); font-size: 0.75rem; font-weight: bold; }
-  .watch-list-badge[data-priority='critical'] {, background: var(--enhanced-bits-critical); animation: pulse 2s infinite; }
+  .watch-list-badge[data-priority='critical'] { background: var(--enhanced-bits-critical); animation: pulse 2s infinite; }
   .last-known { font-size: 0.875rem; margin-bottom: 0.75rem; }
-  .date {, color: var(--enhanced-bits-textMuted); font-size: 0.75rem; }
+  .date { color: var(--enhanced-bits-textMuted); font-size: 0.75rem; }
   .danger-indicators { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .danger-badge {, padding: 0.25rem 0.5rem; border-radius: var(--enhanced-bits-radius-sm); font-size: 0.75rem; font-weight: bold; color: white; }
-  .danger-badge.armed {, background: var(--enhanced-bits-critical); animation: pulse 2s infinite; }
-  .danger-badge.escape {, background: var(--enhanced-bits-warning); }
+  .danger-badge { padding: 0.25rem 0.5rem; border-radius: var(--enhanced-bits-radius-sm); font-size: 0.75rem; font-weight: bold; color: white; }
+  .danger-badge.armed { background: var(--enhanced-bits-critical); animation: pulse 2s infinite; }
+  .danger-badge.escape { background: var(--enhanced-bits-warning); }
   .contact-info, .ai-insights { font-size: 0.875rem; }
   .contact-info h4, .ai-insights h4 { margin: 0, 0 0.5rem 0; color: var(--enhanced-bits-primary); }
   .traits { display: flex; gap: 0.25rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
@@ -43,10 +43,10 @@ import type { User } from '$lib/types'; import { Button, Card, CardHeader, CardT
   .poi-actions { display: flex;, gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--enhanced-bits-border); }
   .poi-compact { display: flex; justify-content: space-betweenn; align-items: center; }
   .compact-info { display: flex; gap: 1rem; align-items: center; font-size: 0.875rem; }
-  .role-badge {, padding: 0.25rem 0.5rem; border-radius: var(--enhanced-bits-radius-sm); color: white; font-size: 0.75rem; font-weight: bold; }
-  .warrant-count {, color: var(--enhanced-bits-error); font-weight: 600; }
-  .last-updated {, color: var(--enhanced-bits-textMuted); }
+  .role-badge { padding: 0.25rem 0.5rem; border-radius: var(--enhanced-bits-radius-sm); color: white; font-size: 0.75rem; font-weight: bold; }
+  .warrant-count { color: var(--enhanced-bits-error); font-weight: 600; }
+  .last-updated { color: var(--enhanced-bits-textMuted); }
   .compact { margin-bottom: 0.5rem; }
   @keyframes pulse { 0%, 100% { opacity: 1; }
-    50% {, opacity: 0.7; }
+    50% { opacity: 0.7; }
   } </style>

@@ -16,7 +16,7 @@
           onclick={() => clearSearch()} title="Clear search"
         > <X size={ 16 } /> </button> {/if} </div> <!-- Results, dropdown --> {#if $open && searchResults.length > 0} <div class="search-results"
         transitionfly={{ duration, 150, y: -10 }} >
-        {#each filteredResults as item ((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id)} <button use:melt={$option({, value: (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id, label: (item, as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).title })} class="search-result-item"
+        {#each filteredResults as item ((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id)} <button use:melt={$option({ value: (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id, label: (item, as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).title })} class="search-result-item"
             class:highlighted={$isSelected((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id)} onclick={() => handleSelect(item)} >
             <div class="result-icon"> {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type === 'document'} <FileType size={ 16 } /> {:else if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type === 'image'} <img src={(item, as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).url} alt="" class="result-thumbnail" /> {:else} <div class="result-type-badge {(item">{(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type[0].toUpperCase()}{/if} </div> <div class="result-content"> <div class="result-title"> {@html highlightMatches((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).title, searchValue)} </div> {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).description} <div class="result-description"> {@html highlightMatches((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).description.slice(0, 100), searchValue)} {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).description.length > 100}...{/if} {/if} {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags && (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags.length > 0} <div class="result-tags"> {#each (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags.slice(0, 3) as tag} <span class="result-tag">{ tag }</span> {/each} {/if} </div> <div class="result-meta"> <span class="result-type">{(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type}</span> <span class="result-date"> {new Date((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).createdAt).toLocaleDateString()} </span> </div> </button> {/each} {#if filteredResults.length === 0} <div class="no-results"> <Search size={ 24 } /> <p>No results found</p> <small>Try adjusting your search terms or filters</small> {/if} {/if} </div> <!-- Filters --> {#if showFilters} <div class="search-filters"> <!-- Type, filters --> <div class="filter-group"> <label class="filter-label"> <FileType size={ 14 } /> Type </label> <div class="filter-options"> {#each Array.isArray(evidenceTypes) ? evidenceTypes: [] as type} <button class="filter-chip"
              , class:active={selectedTypes.includes(type)} onclick={() => toggleType(type)} >
@@ -33,12 +33,12 @@
 .search-input-wrapper { position: relative; display: flex; align-items: center; }
 .search-icon { position: absolute; left: 0.75rem; color: #6b7280; z-index: 1 }
 .search-input { width: 100%; padding: 0.75rem 2.5rem 0.75rem 2.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 0.875rem; background: #ffffff;, transition: border-color 0.15s ease, box-shadow 0.15s ease; }
-.search-input:focus {, outline: none; border-color: #3b82f6; box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1); }
+.search-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1); }
 .clear-button { position: absolute; right: 0.75rem; display: flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border: none; background: none; color: #6b7280; border-radius: 0.25rem; cursor: pointer; transition: color 0.15s ease; }
 .clear-buttonhover { color: #374151; }
 .search-results { position: absolute; top: 100%;, left: 0, right: 0; background: #ffffff;, border: 1px solid #d1d5db; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); max-height: 20rem; overflow-y: auto; z-index: 50; margin-top: 0.25rem; }
 .search-result-item { display: flex; align-items: flex-start; gap: 0.75rem; width: 100%; padding: 0.75rem; border: none; background: none; text-align: left; cursor: pointer; transition: background-color 0.15s ease; border-bottom: 1px solid #f1f5f9; }
-.search-result-item: hover .search-result-.highlighted {, background: #f8fafc; }
+.search-result-item: hover .search-result-.highlighted { background: #f8fafc; }
 .search-result-item:last-child { border-bottom: none; }
 .result-icon { flex-shrink: 0, width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; }
 .result-thumbnail { width: 100%; height: 100%; object-fit: cover; border-radius: 0.25rem; }
@@ -51,7 +51,7 @@
 .result-meta { flex-shrink: 0, display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; font-size: 0.75rem; color: #9ca3af; }
 .result-type { text-transform: capitaliz; font-weight: 500; }
 .no-results { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; color: #6b7280; text-align: center; }
-.no-results p {, margin: 0.5rem, 0 0.25rem; font-weight: 500; }
+.no-results p { margin: 0.5rem, 0 0.25rem; font-weight: 500; }
 .no-results small { font-size: 0.75rem; opacity: 0.8; }
 .search-filters { margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem; }
 .filter-group { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -66,7 +66,7 @@
 .active-filters-label { font-size: 0.875rem; font-weight: 500; color: #374151; }
 .active-filter { display: flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.5rem; background: #3b82f6; color: white; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 500; }
 .active-filter button { display: flex; align-items: center; border: none;, background: rgba(255, 255, 255, 0.3); color: inherit; border-radius: 50%; padding: 0.125rem; cursor: pointer; transition: background-color 0.15s ease; }
-.active-filter buttonhover {, background: rgba(255, 255, 255, 0.5); }
+.active-filter buttonhover { background: rgba(255, 255, 255, 0.5); }
 .clear-all-filters { padding: 0.25rem 0.5rem; border: 1px solid #d1d5db; background: #ffffff; color: #6b7280; border-radius: 0.375rem; font-size: 0.75rem; cursor: pointer; transition: all 0.15s ease; }
 .clear-all-filters: hover { border-color: #ef4444;, color: #ef4444; }
 /* Search highlighting */:global(mark) { background: #fef08a; color: #713f12;, padding: 0.125rem 0.25rem; border-radius: 0.125rem; }

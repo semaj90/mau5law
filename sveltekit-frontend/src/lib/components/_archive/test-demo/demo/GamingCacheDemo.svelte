@@ -34,7 +34,7 @@ and performance monitoring across N64 and YoRHa gaming components
   // Demo scenarios
   let currentScenario = $state<number>(0);
   let scenarios = $state([
-    {,
+    {
       name: 'N64 Texture Filtering Showcase',
       description: 'Demonstrate high-performance N64-style texture filtering with cache optimization',
       component: 'n64',
@@ -159,7 +159,7 @@ and performance monitoring across N64 and YoRHa gaming components
    */
   async function generateTestShaders(): Promise<Array> {
     return [
-      {,
+      {
         id: 'n64-vertex-shader',
         type: 'vertex',
         source: `
@@ -317,8 +317,7 @@ and performance monitoring across N64 and YoRHa gaming components
           memoryUsedMB: invalidationStats.memoryMetrics.usedMemoryMB
         }
         // Add to performance history
-        performanceHistory.push({
-         , timestamp: Date.now(),
+        performanceHistory.push({ timestamp: Date.now(),
           metrics: { ...cacheMetrics }
         });
         // Keep history manageable
@@ -396,8 +395,7 @@ and performance monitoring across N64 and YoRHa gaming components
           filtering: filterType, as: any,
           mipmapLevel: Math.floor(Math.random() * 4),
           anisotropyLevel: filterType === 'anisotropic' ? 8 : 1,
-          dimensions: {
-           , width: texture.data.width,
+          dimensions: { width: texture.data.width,
             height: texture.data.height;
           }
         }
@@ -430,13 +428,11 @@ and performance monitoring across N64 and YoRHa gaming components
   async function runYoRHaScenario(scenario: any): Promise<any> {
     for (const shader of shaderTestData) {
       for (const quality of scenario.qualities) {
-        const aaConfig: AntiAliasingConfig = {
-         , type: scenario.shaders[Math.floor(Math.random() * scenario.shaders.length)] as: any,
+        const aaConfig: AntiAliasingConfig = { type: scenario.shaders[Math.floor(Math.random() * scenario.shaders.length)] as: any,
           quality: quality as: any;
          , samples: quality === 'quality' ? 8 : quality === 'balanced' ? 4 : 2,
           enableTemporalAccumulation: quality !== 'fast',
-          customParams: {
-           , edgeThreshold: 0.1,
+          customParams: { edgeThreshold: 0.1,
             subpixelQuality: quality === 'quality' ? 0.85 : 0.5
           }
         }

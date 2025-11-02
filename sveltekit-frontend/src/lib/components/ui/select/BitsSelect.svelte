@@ -9,8 +9,7 @@
     label: string;
     disabled?: boolean;
   }
-  interface Props {
-   , options: SelectOption[];
+  interface Props { options: SelectOption[];
     value?: string;
     placeholder?: string;
     disabled?: boolean;

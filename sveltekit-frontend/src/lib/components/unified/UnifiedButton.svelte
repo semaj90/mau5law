@@ -58,8 +58,7 @@ https://svelte.dev/e/js_parse_error -->
     confidence: WebGLUniformLocation | null;
     time: WebGLUniformLocation | null;
     glow: WebGLUniformLocation | null;
-  }>({
-   , confidence: null,
+  }>({ confidence: null,
     time: null,
     glow: null
   });
@@ -307,8 +306,7 @@ https://svelte.dev/e/js_parse_error -->
     justify-content: center;
     gap: 0.5rem;
   }
-  .unified-btn.is-disabled {
-   , opacity: 0.5;
+  .unified-btn.is-disabled { opacity: 0.5;
     pointer-events: none;
   }
   .unified-btn .spinner {

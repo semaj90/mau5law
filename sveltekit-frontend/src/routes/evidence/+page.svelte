@@ -10,7 +10,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
       const result = await response.json(); uploadProgress = 100; if (result.success) { uploadResult = result.data; toast.success('✅ Evidence uploaded and indexed!'); if (result.data.aiSummary) toast.info('🧠 AI Summary generated'); if (result.data.hasEmbedding) toast.info('🔢 Vector embedding created'); } else { throw new Error(result.error || 'Upload failed'); }
 
     } catch (err: any) { console.error('Upload error:', err); uploadError = err.message || 'Unknown error'; toast.error(`❌ Upload failed: ${ uploadError }`); } finally { isUploading = false; }
-  } function formatFileSize(bytes: number): string { if (bytes === 0) return, '0 B'; const k = 1024; const sizes = ['B', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
+  } function formatFileSize(bytes: number): string { if (bytes === 0) return '0 B'; const k = 1024; const sizes = ['B', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
 
   function resetForm() { uploadFile = null; uploadResult = null; uploadError = null; compareResult = null; compareError = null; comparing = false; uploadProgress = 0; formData = { title: '', description: '', evidenceType: 'document', tags: '', isAdmissible: true }; }
 
@@ -44,7 +44,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
   .action-grid { display: grid; grid-template-columns: 1fr 1fr 1fr;, gap: 1.5rem; margin-bottom: 3rem; }
 
   @media (max-width: 1024px) { .action-grid { grid-template-columns: 1fr; }
-  } .action-card {, background: linear-gradient(135deg, #1a1d20 0%, #0f1215 100%); border: 2px solid #2a2d30; border-radius: 12px; padding: 1.5rem;, transition: all 0.3s ease; }
+  } .action-card { background: linear-gradient(135deg, #1a1d20 0%, #0f1215 100%); border: 2px solid #2a2d30; border-radius: 12px; padding: 1.5rem;, transition: all 0.3s ease; }
 
   .action-card:hover { border-color: #ffd700; box-shadow: 0, 0 30px rgba(255, 215, 0, 0.15); transform: translateY(-2px); }
 
@@ -78,7 +78,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
 
   .progress-info { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.85rem;, color: #92cc41; }:global(.loader-spin-icon) { animation: spin 1s linear infinite; width: 16px; height: 16px; }
 
-  @keyframes spin { from {, transform: rotate(0deg); }
+  @keyframes spin { from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   } .progress-bar { width: 100%; height: 8px; background: #0a0d10; border-radius: 4px; overflow: hidden; }
 
@@ -106,7 +106,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
 
   .result-id { font-size: 0.7rem; color: #666;, margin: 0.25rem, 0 0 0; font-family: monospace; }:global(.result-success-icon) { width: 24px; height: 24px; color: #92cc41; flex-shrink: 0; }
 
-  .processing-steps {, display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin: 1rem 0; }
+  .processing-steps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin: 1rem 0; }
 
   .step { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem;, color: #b0b0b0; }:global(.processing-step-icon) { width: 16px; height: 16px;, color: #92cc41; }:global(.processing-step-skip-icon) { width: 16px; height: 16px; color: #666; }
 

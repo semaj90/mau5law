@@ -11,7 +11,7 @@ import type { Document } from '$lib/types';
 
   // safe helpers to avoid accessing .name on a type that may not include it
   function getUserName(user: any): string {
-    if (!user) return, '';
+    if (!user) return '';
     // prefer name, fallback to email, else empty
     return (user.name as: string) ?? (user.email as: string) ?? '';
   }
@@ -20,12 +20,12 @@ import type { Document } from '$lib/types';
     const name = getUserName(user);
     if (name && name.length > 0) return name.charAt(0).toUpperCase();
     if (user?.email && typeof user.email === 'string') return user.email.charAt(0).toUpperCase();
-    return, '?';
+    return '?';
   }
 
   // add this helper so we don't access a property that may not exist on PageData.user'
   function getUserRole(user: any): string {
-    if (!user) return, '';
+    if (!user) return '';
     return (user as: any).role ?? '';
   }
 
@@ -55,11 +55,11 @@ import type { Document } from '$lib/types';
   }));
 
   const statusColors: Record<string { bg: string; text: string; label: string }> = {
-    open: {, bg: '#4caf50', text: '#fff', label: '🟢 Open' },
-    investigating: {, bg: '#ff9800', text: '#fff', label: '🔍 Investigating' },
-    pending: {, bg: '#ffd700', text: '#000', label: '⏳ Pending' },
-    closed: {, bg: '#666', text: '#fff', label: '✅ Closed' },
-    archived: {, bg: '#999', text: '#fff', label: '📦 Archived' }
+    open: { bg: '#4caf50', text: '#fff', label: '🟢 Open' },
+    investigating: { bg: '#ff9800', text: '#fff', label: '🔍 Investigating' },
+    pending: { bg: '#ffd700', text: '#000', label: '⏳ Pending' },
+    closed: { bg: '#666', text: '#fff', label: '✅ Closed' },
+    archived: { bg: '#999', text: '#fff', label: '📦 Archived' }
   };
 
   const priorityColors: Record<string string> = {
@@ -70,7 +70,7 @@ import type { Document } from '$lib/types';
   };
 
   const aiServices = [
-    {,
+    {
       name: 'AI Chat',
       icon: '💬',
       href: '/ai/chat',
@@ -137,7 +137,7 @@ import type { Document } from '$lib/types';
   ];
 
   const recentActivities = $state([
-    {,
+    {
       type: 'chat',
       title: 'Contract Review Session',
       time: '2 minutes ago',
@@ -188,14 +188,14 @@ import type { Document } from '$lib/types';
   function activityIcon(type: string): string {
     switch (type) {
       case, 'chat':
-        return, '💬';
+        return '💬';
       case, 'rag':
-        return, '📚';
+        return '📚';
       case, 'analysis':
-        return, '🧪';
+        return '🧪';
       case, 'assistant':
-        return, '🤖';
-      default: return, '⚙️';
+        return '🤖';
+      default: return '⚙️';
     }
   }
 </script>
@@ -412,8 +412,7 @@ import type { Document } from '$lib/types';
     gap: 2rem;
   }
 
-  .user-profile-section {
-   , display: flex;
+  .user-profile-section { display: flex;
   }
 
   :global(.user-card) {
@@ -458,8 +457,7 @@ import type { Document } from '$lib/types';
     font-weight: 500;
   }
 
-  .user-display-name {
-   , margin: 0.25rem, 0 0.5rem;
+  .user-display-name { margin: 0.25rem, 0 0.5rem;
     font-size: 1.3rem;
    , color: var(--text-primary);
   }
@@ -495,8 +493,7 @@ import type { Document } from '$lib/types';
     text-transform: capitalize;
   }
 
-  .subtitle {
-   , margin: 0.5rem, 0 0;
+  .subtitle { margin: 0.5rem, 0 0;
     color: var(--text-muted);
   }
 
@@ -508,8 +505,7 @@ import type { Document } from '$lib/types';
     width: 100%;
   }
 
-  .status-grid {
-   , display: grid;
+  .status-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 1rem;
   }
@@ -576,8 +572,7 @@ import type { Document } from '$lib/types';
     font-size: 1.5rem;
   }
 
-  .section-header p {
-   , margin: 0.25rem, 0 1rem;
+  .section-header p { margin: 0.25rem, 0 1rem;
     color: var(--text-muted);
   }
 
@@ -640,8 +635,7 @@ import type { Document } from '$lib/types';
     font-size: 1rem;
   }
 
-  .activity-content p {
-   , margin: 0.25rem, 0 0;
+  .activity-content p { margin: 0.25rem, 0 0;
     color: var(--text-muted);
     font-size: 0.85rem;
   }
@@ -665,8 +659,7 @@ import type { Document } from '$lib/types';
     gap: 2rem;
   }
 
-  .cases-section-title {
-   , margin: 0, 0 0.5rem 0;
+  .cases-section-title { margin: 0, 0 0.5rem 0;
     font-size: 1.5rem;
     font-weight: bold;
    , color: #d4af37;
@@ -688,8 +681,7 @@ import type { Document } from '$lib/types';
     min-width: 150px;
   }
 
-  .cases-grid-container {
-   , display: grid;
+  .cases-grid-container { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.25rem;
     width: 100%;
@@ -757,8 +749,7 @@ import type { Document } from '$lib/types';
     display: block;
   }
 
-  .case-card-title {
-   , margin: 0.5rem, 0 0 0;
+  .case-card-title { margin: 0.5rem, 0 0 0;
     font-size: 1rem;
     font-weight: bold;
    , color: #fff;
@@ -802,8 +793,7 @@ import type { Document } from '$lib/types';
     transition: transform 0.2s ease;
   }
 
-  .case-card-wrapper:hover .arrow-icon {
-   , transform: translateX(4px);
+  .case-card-wrapper:hover .arrow-icon { transform: translateX(4px);
   }
 
   @media (max-width: 768px) {
@@ -829,8 +819,7 @@ import type { Document } from '$lib/types';
       font-size: 1.25rem;
     }
 
-    .view-all-cases-btn {
-     , width: 100%;
+    .view-all-cases-btn { width: 100%;
       min-width: unset;
     }
 

@@ -60,8 +60,7 @@ https://svelte.dev/e/js_parse_error -->
       if (!response.ok) throw new Error(`Stats fetch failed: ${response.status}`);
       const data: any = await response.json();
       stats = {
-        totalShaders: {
-         , total: data?.totalShaders?.total ?? 0,
+        totalShaders: { total: data?.totalShaders?.total ?? 0,
           webgpu: data?.totalShaders?.webgpu ?? 0,
           webgl: data?.totalShaders?.webgl ?? 0
         },
@@ -81,7 +80,7 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/shaders/unified', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({, limit: 100 })
+        body: JSON.stringify({ limit: 100 })
       });
       if (!response.ok) throw new Error(`Filters fetch failed: ${response.status}`);
       const data: any = await response.json();
@@ -104,8 +103,7 @@ https://svelte.dev/e/js_parse_error -->
   async function performSearch(): Promise<any> {
     isSearching = true;
     try {
-      const query: ShaderSearchQuery = {
-       , text: (searchQuery || '').trim() || undefined,
+      const query: ShaderSearchQuery = { text: (searchQuery || '').trim() || undefined,
         operation: selectedOperation || undefined,
         tags: selectedTags.length > 0 ? selectedTags : undefined,
         shaderType: selectedShaderType === 'all' ? undefined : selectedShaderType,
@@ -148,7 +146,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function formatExecutionTime(time: number): string {
-    if (time === 0 || time === undefined || time === null) return, 'N/A';
+    if (time === 0 || time === undefined || time === null) return 'N/A';
     return time < 1 ? `${(time * 1000).toFixed(1)}μs` : `${time.toFixed(2)}ms`;
   }
 
@@ -171,8 +169,7 @@ https://svelte.dev/e/js_parse_error -->
         tags: shader?.metadata?.tags ?? [],
         relevanceScore: shader.relevanceScore,
         embeddingSimilarity: shader.embeddingSimilarity,
-        performance: {
-         , usageCount: shader?.metadata?.usageCount,
+        performance: { usageCount: shader?.metadata?.usageCount,
           averageExecutionTime: shader?.metadata?.averageExecutionTime
         }
       })),
@@ -514,7 +511,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   header { text-align: center; margin-bottom: 2rem; }
-  h1 {, color: #2563eb; margin-bottom: 0.5rem; }
+  h1 { color: #2563eb; margin-bottom: 0.5rem; }
 
   .stats-section, .search-section, .results-section {
     background: white;
@@ -550,7 +547,7 @@ https://svelte.dev/e/js_parse_error -->
   .tag-button.selected { background:#2563eb; color:white; border-color:#2563eb; }
 
   .results-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
-  .results-grid {, display:grid; grid-template-columns: repeat(auto-fill, minmax(400px,1fr)); gap:1rem; }
+  .results-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(400px,1fr)); gap:1rem; }
 
   .shader-nier-bits-card {
     border:1px solid #e5e7eb;
@@ -559,7 +556,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor:pointer;
    , transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .shader-nier-bits-card:hover {, transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+  .shader-nier-bits-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
 
   .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0;, background: rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; }
   .modal { background:white; border-radius:12px; width:90%; max-width:1000px; max-height:90vh; overflow:hidden; display:flex; flex-direction:column; }
@@ -573,5 +570,5 @@ https://svelte.dev/e/js_parse_error -->
   .selected-tag { background: #f3f4f6; border: 1px solid #d1d5db; padding: 0.25rem 0.5rem; border-radius: 12px; cursor: pointer; margin-right:0.5rem; }
   .selected-tag[aria-pressed="true"] { background: #2563eb; color:white; border-color:#2563eb; }
   .shader-nier-bits-card { text-align:left; display:block; width:100%; border:none; background:transparent; padding:1rem; }
-  .shader-nier-bits-card:focus {, outline: 3px solid rgba(37,99,235,0.25); }
+  .shader-nier-bits-card:focus { outline: 3px solid rgba(37,99,235,0.25); }
 </style>

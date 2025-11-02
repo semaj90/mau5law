@@ -37,7 +37,7 @@
     reduceMotion = false
   }: EnhancedAnimationLibraryProps = $props();
   // Typed dispatcher avoids deprecated createEventDispatcher signature
-  const dispatch = createEventDispatcher<{ motionPreferenceChange: {, reduced: boolean } }>();
+  const dispatch = createEventDispatcher<{ motionPreferenceChange: { reduced: boolean } }>();
   // Check for user's motion preferences'
   let prefersReducedMotion = $state<boolean>(false);
   $effect(() => {
@@ -57,16 +57,14 @@
     // Basic animations
     fadeIn: (config: Partial<AnimationConfig> = {}) => ({
       transition: fade, // Fixed semicolon to comma
-      config: {
-       , duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
+      config: { duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing, // Fixed syntax
       }
     }),
     slideUp: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
-      config: {
-       , y: config.y ?? 20,
+      config: { y: config.y ?? 20,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing, // Fixed syntax
@@ -74,8 +72,7 @@
     }),
     slideDown: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
-      config: {
-       , y: config.y ?? -20,
+      config: { y: config.y ?? -20,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing, // Fixed syntax
@@ -83,8 +80,7 @@
     }),
     slideLeft: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
-      config: {
-       , x: config.x ?? 20,
+      config: { x: config.x ?? 20,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing, // Fixed syntax
@@ -92,8 +88,7 @@
     }),
     slideRight: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
-      config: {
-       , x: config.x ?? -20,
+      config: { x: config.x ?? -20,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing, // Fixed syntax
@@ -101,8 +96,7 @@
     }),
     scaleIn: (config: Partial<AnimationConfig> = {}) => ({
       transition: scale, // Fixed semicolon to comma
-      config: {
-       , start: config.start ?? 0.8,
+      config: { start: config.start ?? 0.8,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing, // Fixed syntax
@@ -110,8 +104,7 @@
     }),
     elastic: (config: Partial<AnimationConfig> = {}) => ({
       transition: scale, // Fixed semicolon to comma
-      config: {
-       , start: config.start ?? 0.8,
+      config: { start: config.start ?? 0.8,
         duration: prefersReducedMotion ? 0 : (config.duration ?? 600), // Fixed syntax
         delay: config.delay ?? 0,
         easing: elasticOut, // Fixed semicolon to comma
@@ -119,8 +112,7 @@
     }),
     bounce: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
-      config: {
-       , y: config.y ?? -10,
+      config: { y: config.y ?? -10,
         duration: prefersReducedMotion ? 0 : (config.duration ?? 400), // Fixed syntax
         delay: config.delay ?? 0,
         easing: bounceOut, // Fixed semicolon to comma
@@ -130,8 +122,7 @@
     glitchIn: (config: Partial<AnimationConfig> = {}) => ({
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
-        return {
-         , duration: config.duration ?? 500, // Fixed syntax
+        return { duration: config.duration ?? 500, // Fixed syntax
           delay: config.delay ?? 0,
           css: (t: number) => ` // Fixed backtick placement`
             transform: translateX(${t < 0.5 ? Math.random() * 10 - 5 : 0}px) scale(${0.8 + t * 0.2});
@@ -149,8 +140,7 @@
     neonGlow: (config: Partial<AnimationConfig> = {}) => ({
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
-        return {
-         , duration: config.duration ?? 800, // Fixed syntax
+        return { duration: config.duration ?? 800, // Fixed syntax
           delay: config.delay ?? 0,
           css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
@@ -168,8 +158,7 @@
     pixelate: (config: Partial<AnimationConfig> = {}) => ({
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
-        return {
-         , duration: config.duration ?? 400, // Fixed syntax
+        return { duration: config.duration ?? 400, // Fixed syntax
           delay: config.delay ?? 0,
           css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
@@ -185,8 +174,7 @@
     professionalFade: (config: Partial<AnimationConfig> = {}) => ({
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
-        return {
-         , duration: config.duration ?? 200, // Fixed syntax
+        return { duration: config.duration ?? 200, // Fixed syntax
           delay: config.delay ?? 0,
           css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
@@ -200,8 +188,7 @@
     documentSlide: (config: Partial<AnimationConfig> = {}) => ({
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
-        return {
-         , duration: config.duration ?? 300, // Fixed syntax
+        return { duration: config.duration ?? 300, // Fixed syntax
           delay: config.delay ?? 0,
           css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
@@ -214,8 +201,7 @@
     }),
     subtleScale: (config: Partial<AnimationConfig> = {}) => ({
       transition: scale, // Fixed semicolon to comma
-      config: {
-       , start: 0.98,
+      config: { start: 0.98,
         duration: prefersReducedMotion ? 0 : (config.duration ?? 150), // Fixed syntax
         delay: config.delay ?? 0,
         easing: quintOut, // Fixed semicolon to comma

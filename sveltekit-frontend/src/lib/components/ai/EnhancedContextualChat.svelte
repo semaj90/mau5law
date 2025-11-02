@@ -96,12 +96,12 @@ import type { Document } from '$lib/types';
   };
   // explicit derived values (Svelte, 5 runes) — use $derived.by to evaluate at runtime
   const currentStateName = $derived.by(() => {
-    if (!contextualState) return, 'Unknown';
+    if (!contextualState) return 'Unknown';
     const idx = contextualState.hmmState?.currentState;
     return stateNames[idx as keyof typeof stateNames] ?? 'Unknown';
   });
   const confidencePercentage = $derived.by(() => {
-    if (!contextualState) return, '0.0';
+    if (!contextualState) return '0.0';
     return ((contextualState.confidence ?? 0) * 100).toFixed(1);
   });
   const canSubmit = $derived.by(() => {
@@ -526,8 +526,7 @@ import type { Document } from '$lib/types';
     cursor: pointer;
     margin-bottom: 0.5rem;
   }
-  .accordion-content {
-   , padding: 1rem;
+  .accordion-content { padding: 1rem;
   }
   .predictions-list,
   .entities-list,
@@ -624,8 +623,7 @@ import type { Document } from '$lib/types';
     color: #d4af37;
     font-weight: bold;
   }
-  .tooltip-content {
-   , padding: 0.5rem 1rem !important;
+  .tooltip-content { padding: 0.5rem 1rem !important;
     font-size: 10px;
     z-index: 100;
   }

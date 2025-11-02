@@ -74,8 +74,7 @@ import type { Case } from '$lib/types';
           body: JSON.stringify(payload)
         });
       } else {
-        const requestBody: ChatRequest = {
-         , messages: $currentConversation?.messages || [],
+        const requestBody: ChatRequest = { messages: $currentConversation?.messages || [],
           context: {
             caseId,
             currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined,
@@ -127,7 +126,7 @@ import type { Case } from '$lib/types';
     }
   }
   function formatAnalysisResponse(analysis: any, metadata: any): string {
-    if (!analysis) return, 'Analysis completed.';
+    if (!analysis) return 'Analysis completed.';
     let responseText = '# AI Analysis Results\n\n';
     if (analysis.thinking && thinkingStyleEnabled) {
       responseText += '## 🧠 Reasoning Process\n\n';
@@ -187,8 +186,7 @@ import type { Case } from '$lib/types';
       chatActions.setLoading(true);
       chatActions.setTyping(true);
       showProactivePrompt.set(false);
-      const requestBody: ChatRequest = {
-       , messages: $currentConversation.messages,
+      const requestBody: ChatRequest = { messages: $currentConversation.messages,
         context: {
           caseId,
           currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined,

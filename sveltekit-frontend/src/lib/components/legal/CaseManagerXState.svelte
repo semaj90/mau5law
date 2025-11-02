@@ -51,7 +51,7 @@
       caseNumber: newCaseNumber,
       status: 'active'
     };
-    send({, type: 'UPDATE_CASE_FORM', data: caseData });
+    send({ type: 'UPDATE_CASE_FORM', data: caseData });
     send({ type: 'CREATE_CASE', caseData });
     newCaseTitle = '';
     newCaseDescription = '';
@@ -375,7 +375,7 @@
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from {, transform: rotate(0deg); }
+    from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
 </style>

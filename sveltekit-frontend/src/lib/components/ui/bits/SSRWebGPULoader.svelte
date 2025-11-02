@@ -52,6 +52,6 @@
   @keyframes nes-blink { 0% { opacity: 0.6; }
     50% { opacity: 1; }
     100% { opacity: 0.6; }
-  } @keyframes nes-spin { from {, transform: rotate(0deg); }
+  } @keyframes nes-spin { from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   } </style>

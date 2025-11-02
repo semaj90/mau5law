@@ -15,35 +15,35 @@ import type { User } from '$lib/types';
   function getEventIcon(eventType: string) {
     switch (eventType) {
       case, 'intake':
-        return, '🛡️';
+        return '🛡️';
       case, 'transfer':
-        return, '🔁';
+        return '🔁';
       case, 'verification':
-        return, '🔍';
+        return '🔍';
       case, 'analysis':
-        return, '🧠';
+        return '🧠';
       case, 'approval':
-        return, '✅';
+        return '✅';
       case, 'finalization':
-        return, '🏁';
-      default: return, '⏱️';
+        return '🏁';
+      default: return '⏱️';
     }
   }
   function getEventColor(eventType: string) {
     switch (eventType) {
       case, 'intake':
-        return, 'bg-blue-100 text-blue-800';
+        return 'bg-blue-100 text-blue-800';
       case, 'transfer':
-        return, 'bg-purple-100 text-purple-800';
+        return 'bg-purple-100 text-purple-800';
       case, 'verification':
-        return, 'bg-green-100 text-green-800';
+        return 'bg-green-100 text-green-800';
       case, 'analysis':
-        return, 'bg-indigo-100 text-indigo-800';
+        return 'bg-indigo-100 text-indigo-800';
       case, 'approval':
-        return, 'bg-emerald-100 text-emerald-800';
+        return 'bg-emerald-100 text-emerald-800';
       case, 'finalization':
-        return, 'bg-gray-100 text-gray-800';
-      default: return, 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   }
   function formatEventTitle(eventType: string) {
@@ -55,7 +55,7 @@ import type { User } from '$lib/types';
       .join(' ');
   }
   function formatTimestamp(timestamp?: string | number | Date) {
-    if (!timestamp) return, '-';
+    if (!timestamp) return '-';
     const d = timestamp instanceof Date ? timestamp : new Date(timestamp);
     return isNaN(d.getTime()) ? '-' : d.toLocaleString();
   }
@@ -102,8 +102,7 @@ import type { User } from '$lib/types';
             ? `Duration ${Math.round(details.custodyReport.totalProcessingTime / 1000)}s`
             : ''
         };
-      default: return {
-         , primary: formatEventTitle(evt?.eventType ?? 'event'),
+      default: return { primary: formatEventTitle(evt?.eventType ?? 'event'),
           secondary: 'Event processed',
           extra: ''
         };
@@ -215,7 +214,6 @@ import type { User } from '$lib/types';
     background: #c1c1c1;
     border-radius: 3px;
   }
-  .custody-timeline::-webkit-scrollbar-thumb:hover {
-   , background: #a8a8a8;
+  .custody-timeline::-webkit-scrollbar-thumb:hover { background: #a8a8a8;
   }
 </style>

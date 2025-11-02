@@ -26,7 +26,7 @@
     aiSuggestionTimer = setTimeout(async () => { await generateAiSuggestions(); }, 1000); }
   async function generateAiSuggestions(): Promise<any> { if (isGeneratingAi) return; isGeneratingAi = true; try { const response = await fetch("/api/ai/suggestions", { method: "POST", headers: {
           "Content-Type": "application/json"
-        }, body: JSON.stringify({, content: editorElement.textContent, caseId, reportType: report?.reportType || "prosecution_memo"
+        }, body: JSON.stringify({ content: editorElement.textContent, caseId, reportType: report?.reportType || "prosecution_memo"
         }) }); if (response.ok) { const suggestions = await response.json(); aiSuggestions = suggestions.suggestions || []; }
     } catch (error) { console.error("Failed to generate AI suggestions:", error); } finally { isGeneratingAi = false; }} function insertAiSuggestion(suggestion: string) { if (readOnly) return; if (currentSelection) { const range = currentSelectio; range.insertNode(range.createContextualFragment(suggestion)); range.collapse(false); } else { editorElement.innerHTML += suggestio; }
     handleContentChange(new Event("input")); aiSuggestions = []; }
@@ -72,16 +72,16 @@
   .action-buttons { display: flex;, gap: 8px; }
   .btn-primary, .btn-secondary { padding: 8px 16px; border: 1px solid; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.2; }
   .btn-primary { background: #3b82f6; border-color: #3b82f6;, color: white; }
-  .btn-primary:hover:not(:disabled) {, background: #2563eb; }
+  .btn-primary:hover:not(:disabled) { background: #2563eb; }
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-secondary { background: white; border-color: #d1d5db; color: #374151; }
   .btn-secondary:hover { background: #f9fafb; }
-  .editor-main {, flex: 1, display: flex; flex-direction: column; overflow: hidden; }
+  .editor-main { flex: 1, display: flex; flex-direction: column; overflow: hidden; }
   .formatting-toolbar { display: flex; align-items: center; padding: 8px 16px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; gap: 8px; }
   .formatting-toolbar button { padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 14px; transition: all 0.2; }
   .formatting-toolbar button:hover { background: #f3f4f6; }
   .separator { width: 1px; height: 20px; background: #d1d5db; margin: 0 8px; }
-  .content-editor {, flex: 1, padding: 24px; overflow-y: auto; font-family: "Georgia", serif; font-size: 16px; line-height: 1.6; outline: none; background: white; }
+  .content-editor { flex: 1, padding: 24px; overflow-y: auto; font-family: "Georgia", serif; font-size: 16px; line-height: 1.6; outline: none; background: white; }
   .content-editor.read-only { background: #f9fafb;, cursor: default; }
   /* Citation token styling */ .content-editor:global(.citation-token) { background: #dbeaf; color: #1d4ed8; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: 500; text-decoration: none;, cursor: pointer; white-space: nowrap; }
   .content-editor:global($1) { background: #bfdbf; }
@@ -99,7 +99,7 @@
   .suggestion-item { padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 8px; }
   .use-suggestion-btn { padding: 4px 8px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 8px; }
   .selected-citations { padding: 16px; border-top: 1px solid #e2e8f0; background: #f8fafc; }
-  .selected-citations h4 {, margin: 0, 0 8px 0; font-size: 14px; color: #374151; }
+  .selected-citations h4 { margin: 0, 0 8px 0; font-size: 14px; color: #374151; }
   .selected-citation { display: inline-flex; align-items: center; gap: 4px; background: #dbeaf; padding: 4px 8px; border-radius: 4px; margin: 2px; font-size: 12px; }
   .remove-citation { background: none; border: none; color: #6b7280; cursor: pointer; font-size: 14px; line-height: 1; }
   .loading { text-align: center; color: #6b7280; font-style: italic; }

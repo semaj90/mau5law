@@ -188,8 +188,7 @@
   }
 /* Spin animation */ {}
   @keyframes spin {
-    from {
-     , transform: rotate(0deg);
+    from { transform: rotate(0deg);
     }
     to {
       transform: rotate(360deg);
@@ -209,8 +208,7 @@
     100% {
       opacity: 1;
     }
-    50% {
-     , opacity: 0.8;
+    50% { opacity: 0.8;
     }
   }
 </style>

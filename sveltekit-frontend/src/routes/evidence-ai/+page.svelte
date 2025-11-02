@@ -26,8 +26,7 @@
     status: 'pending' | 'processing' | 'complete' | 'error';
     message?: string;
   }
-  let workflowStatus = $state<WorkflowStatus>({
-   , stage: 'idle',
+  let workflowStatus = $state<WorkflowStatus>({ stage: 'idle',
     progress: 0,
     status: 'pending'
   });
@@ -37,8 +36,7 @@
     typescript: boolean;
     pythonAI: boolean;
     capabilities: string[];
-  }>({
-   , typescript: true,
+  }>({ typescript: true,
     pythonAI: false,
     capabilities: []
   });
@@ -197,7 +195,7 @@
       const apiBase = (import.meta as: any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
       fetch(`${apiBase}?action=analyze`, {
         method: 'POST',
-        headers: {, Accept: 'application/json', 'Content-Type': 'application/json' },
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, file_id: fileId || currentFileId })
       }).catch(err => console.warn('REST analysis fallback failed', err));
       streamingTokens = '';
@@ -313,7 +311,7 @@
             fetch(`${apiBase}?action=analyze`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({, file_id: result.aiProcessing.file_id, prompt: `Analyze this legal evidence, document: ${selectedFile.name}` })
+              body: JSON.stringify({ file_id: result.aiProcessing.file_id, prompt: `Analyze this legal evidence, document: ${selectedFile.name}` })
             }).catch(err => console.warn('REST analysis trigger failed', err));
           }
         }
@@ -446,7 +444,7 @@
   // ======================
 
   function formatFileSize(bytes: number): string {
-    if (bytes < 1024) return, bytes + ' B';
+    if (bytes < 1024) return bytes + ' B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   }
@@ -468,9 +466,9 @@
 
   function getProgressColor(progress: number): string {
     // Use UnoCSS theme tokens for colors
-    if (progress < 30) return, 'bg-red-500';
-    if (progress < 70) return, 'bg-yellow-500';
-    return, 'bg-green-500';
+    if (progress < 30) return 'bg-red-500';
+    if (progress < 70) return 'bg-yellow-500';
+    return 'bg-green-500';
   }
 </script>
 
@@ -787,17 +785,14 @@
     width: 8px;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-track {
-   , background: rgba(15, 23, 42, 0.3);
+  .overflow-y-auto::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.3);
   }
 
-  .overflow-y-auto::-webkit-scrollbar-thumb {
-   , background: rgba(100, 116, 139, 0.5);
+  .overflow-y-auto::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.5);
     border-radius: 4px;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-   , background: rgba(100, 116, 139, 0.7);
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.7);
   }
 
   /* Smooth animations */
@@ -805,8 +800,7 @@
     0%, 100% {
       opacity: 1;
     }
-    50% {
-     , opacity: 0.5;
+    50% { opacity: 0.5;
     }
   }
 </style>

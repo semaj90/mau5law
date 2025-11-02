@@ -20,5 +20,5 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
             class="text-nier-text-secondary hover:text-nier-accent-warm"
           > Go Home </Button> </div> <p class="text-xs"> If this error persists, please contact the YoRHa support team with error ID: <code class="text-red-400">{ errorId }</code> </p> </div> </Card> </div> {:else if fallbackSnippet} {@render fallbackSnippet?.()} {:else} {@render childrenSnippet?.()} {/if} <style> /* Ensure error boundary styles don't interfere with global styles */ details summary::-webkit-details-marker { display: none; }'
   details summary::before { content: '▶'; margin-right: 0.5rem; transition: transform 0.2s ease; }
-  details[open] summary::before {, transform: rotate(90deg); }
+  details[open] summary::before { transform: rotate(90deg); }
 </style>

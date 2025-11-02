@@ -2,9 +2,9 @@
 import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; import type { PageData } from './$types'; interface CaseSummary { id: string; title?: string | null; description?: string | null; status?: string | null; priority?: string | null; caseNumber?: string | null; updatedAt?: string | Date | null; createdAt?: string | Date | null; }
 
   // Svelte, 5 props from server load function let { data }: { data: PageData } = $props(); const initialCases = Array.isArray(data.cases) ? (data.cases as CaseSummary[]): []; // Svelte, 5 runes - initialize from server data let cases = $state<CaseSummary[]>(initialCases); let loading = $state<boolean>(false); let error = $state<string | null>(data.error || null); // Development mode indicator let devBypassActive = $state(data.devBypassActive || false); function formatLabel(value: any): string { if (typeof value !== 'string') { return value ? String(value): ''; }
-    const trimmed = value.trim(); if (!trimmed) return, ''; return trimmed .split(/[_\s]+/) .filter(Boolean) .map(segment => segment.charAt(0).toUpperCase() + segment.slice(1)) .join(' '); }
+    const trimmed = value.trim(); if (!trimmed) return ''; return trimmed .split(/[_\s]+/) .filter(Boolean) .map(segment => segment.charAt(0).toUpperCase() + segment.slice(1)) .join(' '); }
 
-  function formatDate(value: any): string { if (!value) return, ''; try { const date = value instanceof Date ? value: new Date(value, as: string); if (Number.isNaN(date.getTime())) return, ''; return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); } catch { return, ''; }
+  function formatDate(value: any): string { if (!value) return ''; try { const date = value instanceof Date ? value: new Date(value, as: string); if (Number.isNaN(date.getTime())) return ''; return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); } catch { return ''; }
   } function makeModifierClass(prefix: string, value: any): string { if (typeof value !== 'string') { return `${ prefix }-unknown`; }
     const trimmed = value.trim(); if (!trimmed) return `${ prefix }-unknown`; return `${ prefix }-${trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`; }
 
@@ -27,7 +27,7 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
 
   .cases-page > * { position: relative; z-index: 1; }
 
-  .glass-panel {, background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 20px; box-shadow: 0 20px 40px rgba(2, 6, 23, 0.55); backdrop-filter: blur(12px); }
+  .glass-panel { background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 20px; box-shadow: 0 20px 40px rgba(2, 6, 23, 0.55); backdrop-filter: blur(12px); }
 
   .dev-banner { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.5rem; font-size: 0.95rem;, color: var(--console-warning, #f59e0b); }
 
@@ -45,7 +45,7 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
 
   .btn-primary { background: var(--console-tertiary, #00ff88); color: #03160d; border-color: rgba(0, 255, 136, 0.85); box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4); }
 
-  .btn-primary:hover {, transform: translateY(-2px); box-shadow: 0 14px 28px rgba(0, 255, 136, 0.45); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(0, 255, 136, 0.45); }
 
   .btn-secondary { background: rgba(51, 65, 85, 0.65); border-color: rgba(148, 163, 184, 0.4); }
 
@@ -69,7 +69,7 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
 
   .case-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; border: 1px solid transparent;, transition: border-color 0.22s ease; }
 
-  .case-card:hover, .case-card:focus-visible {, transform: translateY(-6px); box-shadow: 0 20px 36px rgba(2, 6, 23, 0.45); }
+  .case-card:hover, .case-card:focus-visible { transform: translateY(-6px); box-shadow: 0 20px 36px rgba(2, 6, 23, 0.45); }
 
   .case-card:hover::after, .case-card:focus-visible::after { border-color: rgba(0, 255, 136, 0.55); }
 
@@ -85,19 +85,19 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
 
   .case-status { padding: 0.4rem 0.9rem; border-radius: 999px; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid transparent; }
 
-  .status-open {, background: rgba(34, 197, 94, 0.18); border-color: rgba(34, 197, 94, 0.45); color: #86efac; }
+  .status-open { background: rgba(34, 197, 94, 0.18); border-color: rgba(34, 197, 94, 0.45); color: #86efac; }
 
-  .status-investigating {, background: rgba(250, 204, 21, 0.18); border-color: rgba(250, 204, 21, 0.45); color: #facc15; }
+  .status-investigating { background: rgba(250, 204, 21, 0.18); border-color: rgba(250, 204, 21, 0.45); color: #facc15; }
 
-  .status-pending {, background: rgba(59, 130, 246, 0.18); border-color: rgba(59, 130, 246, 0.45); color: #93c5fd; }
+  .status-pending { background: rgba(59, 130, 246, 0.18); border-color: rgba(59, 130, 246, 0.45); color: #93c5fd; }
 
-  .status-closed {, background: rgba(148, 163, 184, 0.18); border-color: rgba(148, 163, 184, 0.4); color: #e2e8f0; }
+  .status-closed { background: rgba(148, 163, 184, 0.18); border-color: rgba(148, 163, 184, 0.4); color: #e2e8f0; }
 
-  .status-archived {, background: rgba(107, 114, 128, 0.18); border-color: rgba(107, 114, 128, 0.45); color: #cbd5f5; }
+  .status-archived { background: rgba(107, 114, 128, 0.18); border-color: rgba(107, 114, 128, 0.45); color: #cbd5f5; }
 
   .case-description { margin: 0;, color: rgba(226, 232, 240, 0.85); line-height: 1.6; min-height: 3.5rem; }
 
-  .case-description.placeholder {, color: rgba(148, 163, 184, 0.75); font-style: italic; }
+  .case-description.placeholder { color: rgba(148, 163, 184, 0.75); font-style: italic; }
 
   .case-meta { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 
@@ -107,20 +107,20 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
 
   .priority-pill { padding: 0.35rem 0.8rem; border-radius: 999px; border: 1px solid transparent; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.75rem; }
 
-  .priority-critical {, background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.45); color: #fecaca; }
+  .priority-critical { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.45); color: #fecaca; }
 
-  .priority-high {, background: rgba(249, 115, 22, 0.15); border-color: rgba(249, 115, 22, 0.45); color: #fdba74; }
+  .priority-high { background: rgba(249, 115, 22, 0.15); border-color: rgba(249, 115, 22, 0.45); color: #fdba74; }
 
-  .priority-medium {, background: rgba(234, 179, 8, 0.15); border-color: rgba(234, 179, 8, 0.45); color: #fcd34d; }
+  .priority-medium { background: rgba(234, 179, 8, 0.15); border-color: rgba(234, 179, 8, 0.45); color: #fcd34d; }
 
-  .priority-low {, background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #bfdbfe; }
+  .priority-low { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #bfdbfe; }
 
-  .meta-date.created {, color: rgba(148, 163, 184, 0.8); }
+  .meta-date.created { color: rgba(148, 163, 184, 0.8); }
 
   @keyframes spin { to { transform: rotate(360deg); }
   } @media (max-width: 900px) { .page-header { flex-direction: column; align-items: flex-start; }
 
-    .header-actions {, width: 100%; justify-content: flex-end; }
+    .header-actions { width: 100%; justify-content: flex-end; }
   } @media (max-width: 640px) { .cases-page { padding: 2rem 1.25rem; }
 
     .header-actions { justify-content: flex-start; }

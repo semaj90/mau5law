@@ -36,8 +36,8 @@
 	.n64-slider-thumb::before { content: ''; position: absolute; top: 50%; left: 50%; width: 8px; height: 8px;, transform: translate(-50%, -50%); background: var(--n64-yellow); border-radius: 50%; box-shadow: inset 1px 1px 2px var(--n64-shadow); }
 	.n64-slider-input { position: absolute;, top: 0, left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; margin: 0; z-index: 3 }
 	.n64-slider-input:disabled { cursor: not-allowed; }
-	.n64-slider-input:focus {, outline: none; }
-	.n64-slider-input:focus + .n64-slider-track, .n64-slider-input:focus ~ .n64-slider-track {, outline: 2px solid var(--n64-yellow); outline-offset: 2px; }
+	.n64-slider-input:focus { outline: none; }
+	.n64-slider-input:focus + .n64-slider-track, .n64-slider-input:focus ~ .n64-slider-track { outline: 2px solid var(--n64-yellow); outline-offset: 2px; }
 	.n64-slider-value { text-align: center; font-size: 14px; font-weight: bold;, color: var(--n64-primary); margin-top: 8px; text-shadow: 1px 1px 2px var(--n64-shadow); /* Retro display styling */ background: var(--n64-background); border: 1px solid var(--n64-primary); padding: 2px 8px;, display: inline-block; min-width: 40px; box-shadow: inset 1px 1px 2px var(--n64-shadow); }
 	/* Interaction states */ .n64-slider.interacting .n64-slider-thumb { transform: translate(-50%, -50%) scale(1.1); box-shadow: 3px 3px 8px var(--n64-shadow), inset 1px 1px 2px var(--n64-highlight); background: linear-gradient( 135deg, var(--n64-yellow) 0%, var(--n64-accent) 50%, var(--n64-primary) 100% ); }
 	.n64-slider.interacting .n64-slider-fill { animation-duration 0.5, filter: brightness(1.3) saturate(1.2); }
@@ -48,7 +48,7 @@
 	/* High contrast mode support */ @media (prefers-contrast: high) { .n64-slider { --n64-primary: #000; --n64-secondary: #333; --n64-accent: #666; --n64-background: #fff; }
 	} /* Reduced motion support */ @media (prefers-reduced-motion reduce) { .n64-slider { transform: none; transition: none; }
 		.n64-slider-fill { animation: none; }
-		.n64-slider-thumb {, transition: none; }
+		.n64-slider-thumb { transition: none; }
 	} /* Mobile optimizations */ @media (max-width: 768px) { .n64-slider-thumb { width: 24px; height: 24px; }
-		.n64-slider-track {, height: 10px; }
+		.n64-slider-track { height: 10px; }
 	} </style>

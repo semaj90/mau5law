@@ -390,8 +390,7 @@ import type { Document } from '$lib/types';
     background-color: #eab308;
     animation: pulse 1s infinite;
   }
-  .source-card:hover {
-   , transform: translateY(-1px);
+  .source-card:hover { transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .line-clamp-3 {
@@ -409,8 +408,7 @@ import type { Document } from '$lib/types';
       opacity: 0.5;
     }
   }
-  .processing-spinner {
-   , display: flex;
+  .processing-spinner { display: flex;
     align-items: center;
     justify-content: center;
   }

@@ -1,11 +1,11 @@
-<script lang="ts"> // Svelte, 5 runes are auto-imported import EvidenceAnalysisDashboard from '$lib/components/dashboard/EvidenceAnalysisDashboard.svelte'; // If migrating to a UI kit with named exports, use curly braces for consistency: // import  WebGPUEvidenceGraphVisualization  from "$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte"; // For now, keep default import as the module doesn't provide a named export import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte'; import  Button  from "$lib/components/ui/Button.svelte"; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; // Use Svelte, 5 reactive state API so updates trigger reactivity let showWebGPUDemo = $state<boolean>(false); let webGPUSupported = $state<boolean>(false); // Sample analysis for WebGPU demo const sampleAnalysis = { id: 'analysis-demo-001', evidenceId: 'evidence-001', timestamp: new Date(), aiModel: 'gemma3-legal:latest', // Changed from 'gemma3:legal-latest' for consistency, findings: [ {, type: 'pattern' as const description: 'Recurring pattern in email communications indicates systematic behavior', confidence: 0.85, relevance: 0.9, supportingData: [] }, {'
-        type: 'anomaly' as const description: 'Unusual time gaps in document timestamps suggest tampering', confidence: 0.73, relevance: 0.8, supportingData: [] }, ], correlations: [ {, relatedEvidenceId: 'evidence-002', correlationType: 'temporal' as const strength: 0.78, description: 'Similar timeframe and participants in both evidence items', // Fixed: added colon, sharedEntities: ['John Doe', 'Contract ABC'] }, {
+<script lang="ts"> // Svelte, 5 runes are auto-imported import EvidenceAnalysisDashboard from '$lib/components/dashboard/EvidenceAnalysisDashboard.svelte'; // If migrating to a UI kit with named exports, use curly braces for consistency: // import  WebGPUEvidenceGraphVisualization  from "$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte"; // For now, keep default import as the module doesn't provide a named export import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte'; import  Button  from "$lib/components/ui/Button.svelte"; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; // Use Svelte, 5 reactive state API so updates trigger reactivity let showWebGPUDemo = $state<boolean>(false); let webGPUSupported = $state<boolean>(false); // Sample analysis for WebGPU demo const sampleAnalysis = { id: 'analysis-demo-001', evidenceId: 'evidence-001', timestamp: new Date(), aiModel: 'gemma3-legal:latest', // Changed from 'gemma3:legal-latest' for consistency, findings: [ { type: 'pattern' as const description: 'Recurring pattern in email communications indicates systematic behavior', confidence: 0.85, relevance: 0.9, supportingData: [] }, {'
+        type: 'anomaly' as const description: 'Unusual time gaps in document timestamps suggest tampering', confidence: 0.73, relevance: 0.8, supportingData: [] }, ], correlations: [ { relatedEvidenceId: 'evidence-002', correlationType: 'temporal' as const strength: 0.78, description: 'Similar timeframe and participants in both evidence items', // Fixed: added colon, sharedEntities: ['John Doe', 'Contract ABC'] }, {
         relatedEvidenceId: 'evidence-003', correlationType: 'semantic' as const strength: 0.65, description: 'Common terminology and legal concepts', // Fixed: added colon, sharedEntities: ['Amendment', 'Termination'] }, ], riskScore: 0.72, confidence: 0.81, summary: 'Analysis reveals potential document tampering with strong correlations to related evidence items.', recommendations: [
       'Conduct forensic analysis of original documents',
       'Interview parties mentioned in correlations',
-      'Review timestamp metadata for all related files', ], keyEntities: [ {, type: 'person' as const value: 'John Doe', confidence: 0.95, mentions: 12, context: ['Contract signatory', 'Email participant'] }, {
+      'Review timestamp metadata for all related files', ], keyEntities: [ { type: 'person' as const value: 'John Doe', confidence: 0.95, mentions: 12, context: ['Contract signatory', 'Email participant'] }, {
         type: 'organization' as const value: 'ABC Corporation', confidence: 0.88, mentions: 8, context: ['Contracting party', 'Email domain'] }, {
-        type: 'date' as const value: '2024-01-15', confidence: 0.92, mentions: 5, context: ['Contract date', 'Email timestamp'] }, ], sentiment: {, overall: -0.2, emotions: {, anger: 0.1, fear: 0.15, joy: 0.05, sadness: 0.1, surprise: 0.2, trust: 0.4 }, subjectivity: 0.6, formality: 0.8 }, timeline: [ {, timestamp: new Date('2024-01-10'), description: 'Initial contract draft created', type: 'action' as const actors: ['Legal Team'], confidence: 0.9 }, {
+        type: 'date' as const value: '2024-01-15', confidence: 0.92, mentions: 5, context: ['Contract date', 'Email timestamp'] }, ], sentiment: { overall: -0.2, emotions: { anger: 0.1, fear: 0.15, joy: 0.05, sadness: 0.1, surprise: 0.2, trust: 0.4 }, subjectivity: 0.6, formality: 0.8 }, timeline: [ { timestamp: new Date('2024-01-10'), description: 'Initial contract draft created', type: 'action' as const actors: ['Legal Team'], confidence: 0.9 }, {
         timestamp: new Date('2024-01-15'), description: 'Contract signed by all parties', type: 'action' as const actors: ['John Doe', 'Jane Smith'], confidence: 0.95 }, ]
   }; $effect(() => { // Check WebGPU support webGPUSupported = !!navigator.gpu; }); function toggleWebGPUDemo() { showWebGPUDemo = !showWebGPUDemo; }
 
@@ -17,7 +17,7 @@
   .feature-cards { @apply grid grid-cols-1 md:grid-cols-3 gap-6 mb-8; }
   .feature-list { @apply space-y-2; }
   .feature-list li { @apply flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400; }
-  .feature-list li:before {, content: '✓'; @apply text-green-500 font-bold; }
+  .feature-list li:before { content: '✓'; @apply text-green-500 font-bold; }
   .dashboard-section { @apply mb-8; }
   /* these classes are applied to component instances (Card), make them global so Svelte doesn't mark them unused */:global(.webgpu-demo-section) { @apply mb-8; }'
   .demo-header { @apply flex justify-between items-center; }
@@ -33,11 +33,11 @@
   .placeholder-content h3 { @apply text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2; }
   .placeholder-content p { @apply text-gray-600 dark:text-gray-400 mb-4; }
   .demo-features { @apply space-y-1 text-sm text-gray-500 dark:text-gray-500; }
-  .demo-features li:before {, content: '⚡'; @apply mr-2; }
+  .demo-features li:before { content: '⚡'; @apply mr-2; }
   /* these classes are applied to component instances (Card), make them global so Svelte doesn't mark them unused */:global(.tech-specs) { @apply mb-8; }'
   .specs-grid { @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6; }
   .spec-item h4 { @apply font-semibold text-gray-800 dark:text-gray-200 mb-2; }
   .spec-item ul { @apply space-y-1 text-sm text-gray-600 dark:text-gray-400; }
   .spec-item li { @apply flex items-start gap-2; }
-  .spec-item li:before {, content: '•'; @apply text-indigo-500; }
+  .spec-item li:before { content: '•'; @apply text-indigo-500; }
 </style>

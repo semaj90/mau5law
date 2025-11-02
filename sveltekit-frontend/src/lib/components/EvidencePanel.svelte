@@ -9,8 +9,7 @@
     tags?: string[];
   }
   // Props definition to satisfy TypeScript
-  interface Props {
-   , caseId: string;
+  interface Props { caseId: string;
     onEvidenceDrop?: (evidence: LocalEvidence) => void;
   }
   let { caseId, onEvidenceDrop = () => {} }: Props = $props();
@@ -135,8 +134,7 @@
     transition: all 0.2s ease;
     border: none;
   }
-  .evidence-upload-btn:hover {
-   , background: #2563eb;
+  .evidence-upload-btn:hover { background: #2563eb;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   .uploading {

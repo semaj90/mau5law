@@ -267,8 +267,7 @@ import type { Document } from '$lib/types';
     font-size: 14px;
     color: #212529;
   }
-  .results-grid {
-   , display: grid;
+  .results-grid { display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 20px;
   }
@@ -276,8 +275,7 @@ import type { Document } from '$lib/types';
     background: white;
     transition: transform 0.2s ease;
   }
-  .result-card:hover {
-   , transform: translateY(-2px);
+  .result-card:hover { transform: translateY(-2px);
   }
   .result-header {
     display: flex;
@@ -442,8 +440,7 @@ import type { Document } from '$lib/types';
       flex-direction: column;
       gap: 12px;
     }
-    .document-viewer {
-     , padding: 10px;
+    .document-viewer { padding: 10px;
     }
     .document-modal {
       max-height: 90vh;

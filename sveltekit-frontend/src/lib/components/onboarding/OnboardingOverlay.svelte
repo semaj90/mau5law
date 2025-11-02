@@ -8,7 +8,7 @@
       if (autoProgressTimer) { clearTimeout(autoProgressTimer); }
     } }); function handleKeydown(_event: KeyboardEvent) { if (!open) return; switch (event.key) { case, "Escape": closeOnboarding(); break; case, "ArrowRight": case, " ": event.preventDefault(); nextStep(); break; case, "ArrowLeft": event.preventDefault(); previousStep(); break; }} function updateTargetHighlight() { if (!currentStepData?.targetSelector || !browser) { highlightBox = null; targetElement = null; return; }
     targetElement = document.querySelector(currentStepData.targetSelector); if (targetElement) { const rect = targetElement.getBoundingClientRect(); highlightBox = { top: rect.top + window.scrollY, left: rect.left + window.scrollX, width: rect.width, height: rect.height }
-      // Scroll element into view targetElement.scrollIntoView({, behavior: "smooth", block: "center", inline: "center"
+      // Scroll element into view targetElement.scrollIntoView({ behavior: "smooth", block: "center", inline: "center"
       }); } else { highlightBox = null; }} function nextStep() { if (currentStep < steps.length - 1) { // Validate current step if needed if (currentStepData?.validate && !currentStepData.validate()) { return; }
       // Execute step action if available if (currentStepData?.action) { currentStepData.action(); }
       currentStep++; resetAutoProgress(); } else { completeOnboarding(); }} function previousStep() { if (currentStep > 0) { currentStep--; resetAutoProgress(); }} function goToStep(stepIndex: number) { if (stepIndex >= 0 && stepIndex < steps.length) { currentStep = stepIndex; resetAutoProgress(); }} function toggleAutoProgress() { isPlaying = !isPlaying; if (isPlaying) { startAutoProgress(); } else { stopAutoProgress(); }} function startAutoProgress() { if (!isPlaying) return; autoProgressTimer = setTimeout(() => { if (isPlaying && currentStep < steps.length - 1) { nextStep(); }
@@ -20,7 +20,7 @@
         } case, "bottom": return { top: `${highlightBox.top + highlightBox.height + margin}px`, left: `${highlightBox.left + highlightBox.width / 2}px`, transform: "translate(-50%, 0)"
         } case, "left": return { top: `${highlightBox.top + highlightBox.height / 2}px`, left: `${highlightBox.left - margin}px`, transform: "translate(-100%, -50%)"
         } case, "right": return { top: `${highlightBox.top + highlightBox.height / 2}px`, left: `${highlightBox.left + highlightBox.width + margin}px`, transform: "translate(0, -50%)"
-        } default: return {, top: "50%", left: "50%", transform: "translate(-50%, -50%)"
+        } default: return { top: "50%", left: "50%", transform: "translate(-50%, -50%)"
         } }} </script> {#if open && currentStepData} <!-- Overlay, backdrop --> <div class="w-4 h-4"
     bind:this={ overlayEl } role="dialog"
     aria-modal="true"
@@ -69,12 +69,12 @@
   .tooltip-media { margin-bottom: 1rem; }
   .tooltip-media img, .tooltip-media video { width: 100%; border-radius: 6px; }
   .progress-container { display: flex; align-items: center; gap: 0.75rem; padding: 0 1rem; margin-bottom: 1rem; }
-  .progress-bar {, flex: 1, height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden; }
+  .progress-bar { flex: 1, height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden; }
   .progress-fill { height: 100%; background: #3b82f6; transition: width: 0.3s ease; }
   .progress-text { font-size: 0.75rem; color: #6b7280; font-weight: 500; }
   .tooltip-navigation { display: flex; justify-content: space-betweenn; align-items: center; padding: 1rem; border-top: 1px solid #e5e7eb;, gap: 1rem; }
   .nav-left, .nav-right { display: flex; gap: 0.5rem; }
-  .nav-center {, flex: 1, display: flex; justify-content: center; }
+  .nav-center { flex: 1, display: flex; justify-content: center; }
   .step-dots { display: flex; gap: 0.5rem; }
   .step-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #e5e7eb; background: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 500; color: #6b7280; cursor: pointer; transition: all 0.2; }
   .step-dot: hover { border-color: #3b82f6; background: #eff6ff; }
@@ -90,4 +90,4 @@
     .step-dot: hover { border-color: #3b82f6;, background: #1e3a8a; }} /* Responsive design */ @media (max-width: 640px) { .onboarding-tooltip { max-width: calc(100vw - 2rem); min-width: auto; margin: 1rem; }
     .tooltip-navigation { flex-direction: column;, gap: 0.75rem; }
     .nav-left, .nav-right { width: 100%; justify-content: space-betweenn; }
-    .nav-center {, order: -1; }} </style>
+    .nav-center { order: -1; }} </style>

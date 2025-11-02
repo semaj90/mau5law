@@ -28,17 +28,14 @@ import type { Document } from '$lib/types';
       const response = await fetch('/api/v1/rag/cached', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           action: 'query',
-          query: {
-           , query: query.trim(),
-            semantic: {
-             , useEmbeddings: true,
+          query: { query: query.trim(),
+            semantic: { useEmbeddings: true,
               expandConcepts: true
              , includeRelated: true
             },
-            filters: {
-             , confidenceThreshold: 0.7,
+            filters: { confidenceThreshold: 0.7,
               legalCategories: ['CONTRACT', 'TORT']
             }
           }
@@ -91,7 +88,7 @@ import type { Document } from '$lib/types';
       const response = await fetch('/api/v1/rag/cached', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({, action: 'warmup' })
+        body: JSON.stringify({ action: 'warmup' })
       });
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; data?: any; error?: any }).success) {
@@ -351,7 +348,7 @@ import type { Document } from '$lib/types';
     font-size: 12px;
    , transition: background-color 0.2;
   }
-  .sample-btn:hover:not(:disabled) {,
+  .sample-btn:hover:not(:disabled) {
     background: #cbd5e0;
   }
   .sample-btn:disabled {
@@ -373,7 +370,7 @@ import type { Document } from '$lib/types';
     font-weight: 600;
    , transition: background-color 0.2;
   }
-  .primary-btn:hover:not(:disabled) {,
+  .primary-btn:hover:not(:disabled) {
     background: #3182c;
   }
   .secondary-btn {
@@ -385,7 +382,7 @@ import type { Document } from '$lib/types';
     cursor: pointer;
    , transition: background-color 0.2;
   }
-  .secondary-btn:hover:not(:disabled) {,
+  .secondary-btn:hover:not(:disabled) {
     background: #cbd5e0;
   }
   .primary-btn: disabled
@@ -425,8 +422,7 @@ import type { Document } from '$lib/types';
     color: #22543d;
     margin-bottom: 15px;
   }
-  .stats-grid {
-   , display: grid;
+  .stats-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 10px;
   }
@@ -519,8 +515,7 @@ import type { Document } from '$lib/types';
     color: #2d3748;
     margin-bottom: 20px;
   }
-  .metrics-grid {
-   , display: grid;
+  .metrics-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
   }

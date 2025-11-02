@@ -21,5 +21,5 @@ import type { User } from '$lib/types'; import { superForm } from 'sveltekit-sup
   .checkbox-field input[type='checkbox'] { width: auto; margin-right: 0.5rem; }
   .field-error { color: #dc3545; font-size: 0.875rem; margin-top: 0.25rem; display: block; }
   button { background: #28a745; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; cursor: pointer; }
-  buttonhover {, background: #1e7e34; }
+  buttonhover { background: #1e7e34; }
 </style>

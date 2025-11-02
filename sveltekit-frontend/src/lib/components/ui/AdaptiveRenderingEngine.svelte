@@ -1,7 +1,7 @@
 <script lang="ts"> /** * Adaptive Rendering Engine with Dynamic Upscaling * Implements NES → SNES → N64 quality scaling based on system performance *
    * Features: * - Real-time FPS monitoring and quality adjustment * - Texture streaming and chunking for memory optimization * - WebGPU/WebGL compute shader integration * - CHR-ROM pattern caching with quality-based LOD * - Bitmap HMM-SOM prediction integration */ import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js'; type BitmapHMMSOMPredictorType = InstanceType<typeof BitmapHMMSOMPredictor>; // Quality tier definitions export type QualityTier = '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64'; export interface QualityConfig { tier: QualityTier; targetResolution: number; pixelScale: number; shaderComplexity: number; textureStreamingEnabled: boolean; chrRomCacheSize: number; antiAliasing: boolean; particleEffects: boolean; advancedLighting: boolean; }
   export interface SystemMetrics { fps: number; frameTime: number; memoryUsage: number; cacheHitRate: number; gpuUtilization: number; drawCalls: number; }
-  interface Props {, content: any; assetType?: string; priority?: number; predictive?: boolean; className?: string; }
+  interface Props { content: any; assetType?: string; priority?: number; predictive?: boolean; className?: string; }
   let { content, assetType = 'general', priority = 50, predictive = false, className = '' }: Props = $props(); // Reactive state using Svelte, 5 runes let currentQuality = $state<QualityConfig>({ tier: '8-BIT_NES', targetResolution, 540, pixelScale: 2.0, shaderComplexity: 1, textureStreamingEnabled: false, chrRomCacheSize: 50, antiAliasing: false, particleEffects: false, advancedLighting: false }); let systemMetrics = $state<SystemMetrics>({ fps: 60, frameTime: 16.67, memoryUsage: 50, cacheHitRate: 80, gpuUtilization, 30, drawCalls: 100 }); let isMonitoring = $state<boolean>(false); let canvasElement = $state<HTMLCanvasElement | undefined>(undefined); let renderContext = $state<CanvasRenderingContext2D | WebGLRenderingContext | null>(null); let webgpuDevice = $state<GPUDevice | null>(null); let hmmPredictor = $state<BitmapHMMSOMPredictorType | null>(null); // Performance monitoring let frameCount = 0; let lastFrameTime = 0; let fpsHistory: number[] = []; let monitoringInterval: ReturnType<typeof setInterval> | undefined; let qualityAdjustmentTimer: ReturnType<typeof setInterval> | undefined; $effect(() => { return () => { stopPerformanceMonitoring(); }; }); async function initializeRenderingEngine(): Promise<void> { console.log('🎮 Initializing Adaptive Rendering Engine...'); // Initialize HMM-SOM predictor for asset prediction hmmPredictor = new BitmapHMMSOMPredictor(); await hmmPredictor.initialize(); // Setup WebGPU if available if ('gpu' in navigator) { try { const adapter = await navigator.gpu.requestAdapter(); if (adapter) { webgpuDevice = await adapter.requestDevice(); console.log('✅ WebGPU initialized'); }
       } catch (error) { console.warn('WebGPU not available:', error); }
     } // Initialize canvas context if (canvasElement) { renderContext = canvasElement.getContext('2d'); if (renderContext) { console.log('✅ Canvas 2D context initialized'); }
@@ -60,10 +60,10 @@
   .webgpu-indicator { position: absolute; bottom: 4px; left: 4px; font-size: 8px;, color: #ffff00; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8); pointer-events: none; }
   /* Quality-specific animations */ .\38 -bit-nes { animation: pixel-flicker 0.1s infinite; }
   .\31 6-bit-snes { animation: smooth-glow 2s ease-in-out infinite alternate; }
-  .\36 4-bit-n64 {, animation: premium-shine 3s ease-in-out infinite; }
+  .\36 4-bit-n64 { animation: premium-shine 3s ease-in-out infinite; }
   @keyframes pixel-flicker { 0%, 100% { opacity: 1; }
     50% { opacity: 0.98; }
-  } @keyframes smooth-glow { 0% {, filter: brightness(1) contrast(1.05) saturate(1.1); }
+  } @keyframes smooth-glow { 0% { filter: brightness(1) contrast(1.05) saturate(1.1); }
     100% { filter: brightness(1.02) contrast(1.08) saturate(1.15); }
   } @keyframes premium-shine { 0%, 100% { filter: brightness(1) saturate(1); }
     50% { filter: brightness(1.05) saturate(1.1); }

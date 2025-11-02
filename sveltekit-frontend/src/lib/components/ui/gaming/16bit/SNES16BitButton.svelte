@@ -9,9 +9,9 @@
   }:global(.snes-16bit-button.mode7) { transform-style: preserve-3d; }:global(.snes-16bit-buttonnot(:disabled):hover) { border-color: rgba(255, 255, 255, 0.5); box-shadow: 0 3px 0px rgba(0, 0, 0, 0.3), inset, 0 1px 0px rgba(255, 255, 255, 0.6), inset, 0 -1px 0px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2); filter: brightness(1.1) saturate(1.1); }:global(.snes-16bit-buttonnot(:disabled):active) { box-shadow: 0 1px 0px rgba(0, 0, 0, 0.3), inset, 0 1px 0px rgba(255, 255, 255, 0.3), inset, 0 2px 4px rgba(0, 0, 0, 0.3); }:global(.snes-16bit-buttondisabled) { background: linear-gradient(to bottom, #7c7c7c, #5c5c5c, #3c3c3c); color: #bcbcbc; cursor: not-allowed; opacity: 0.7;, transform: none !important; box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2), inset, 0 1px 0px rgba(255, 255, 255, 0.1); }:global(.snes-16bit-buttonfocus-visible) { outline: 2px solid #ffffff; outline-offset: 2px; }
   .loading-spinner { display: inline-flex; align-items: center; justify-content: center; }
   .enhanced-spinner { width: 16px; height: 16px;, border: 2px solid transparent; border-top: 2px solid currentColor; border-right: 2px solid currentColor; border-bottom: 1px solid rgba(255, 255, 255, 0.3); border-left: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%; animation: enhancedSpin 0.8s ease-in-out infinite; }
-  @keyframes enhancedSpin { 0% {, transform: rotate(0deg); border-radius: 50%; }
-    50% {, transform: rotate(180deg); border-radius: 30%; }
-    100% {, transform: rotate(360deg); border-radius: 50%; }
+  @keyframes enhancedSpin { 0% { transform: rotate(0deg); border-radius: 50%; }
+    50% { transform: rotate(180deg); border-radius: 30%; }
+    100% { transform: rotate(360deg); border-radius: 50%; }
   } @media (max-width: 480px) {:global(.snes-16bit-button) { min-height: 44px; font-size: 11px; }:global(.snes-16bit-button.plasma) { animation: none; background-size: 100% 100%; }:global(.snes-16bit-button.mode7) { transform: none !important; }
   } @media (prefers-reduced-motion reduce) {:global(.snes-16bit-button) { animation: none;, transition: opacity 150ms ease; }:global(.snes-16bit-button.plasma) { animation: none; }
     .enhanced-spinner { animation: none;, border: 2px solid currentColor; }

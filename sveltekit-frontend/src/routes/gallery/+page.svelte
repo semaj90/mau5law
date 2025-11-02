@@ -10,8 +10,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 			const data = await response.json(); mediaItems = Array.isArray(data?.items) ? data.items: []; } catch (err) { console.error('Failed to load gallery data:', err); error = err instanceof Error ? err.message: 'Failed to load gallery'; mediaItems = []; } finally { isLoading = false; }
 	} async function loadCases(): Promise<any> { try { const response = await fetch('/api/cases'); if (response.ok) { const data = await response.json(); availableCases = Array.isArray(data?.cases) ? data.cases: []; }
 		} catch (err) { console.error('Failed to load cases:', err); }
-	} function getItemIcon(item: GalleryItem): string { const it = item as GalleryItem; if (it?.metadata?.aiGenerated) return, '🎨'; switch (it?.category) { case, 'evidence': switch (it?.type) { case, 'image': return, '🖼️'; case, 'video': return, '🎥'; case, 'audio': return, '🎵'; case, 'document': return, '📄'; default: return, '📁'; }
-			case, 'images': return, '🖼️'; case, 'documents': return, '📄'; default: return, '📎'; }
+	} function getItemIcon(item: GalleryItem): string { const it = item as GalleryItem; if (it?.metadata?.aiGenerated) return '🎨'; switch (it?.category) { case, 'evidence': switch (it?.type) { case, 'image': return '🖼️'; case, 'video': return '🎥'; case, 'audio': return '🎵'; case, 'document': return '📄'; default: return '📁'; }
+			case, 'images': return '🖼️'; case, 'documents': return '📄'; default: return '📎'; }
 	} function getItemPreview(item: GalleryItem): string { const it = item as GalleryItem; return it.fileUrl || it.imageUrl || it.thumbnailUrl || '/api/placeholder-image'; }
 
 	function openItem(item: GalleryItem) { selectedItem = item; }
@@ -91,7 +91,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 	.gallery-grid.gallery-list { grid-template-columns: 1fr; }
 	.gallery-grid.gallery-masonry { grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); }
 	.gallery-item { overflow: hidden; transition: transform 0.2s ease; }
-	.gallery-item:hover {, transform: translateY(-4px); }
+	.gallery-item:hover { transform: translateY(-4px); }
 	.item-preview { position: relative; width: 100%; height: 200px; overflow: hidden;, cursor: pointer; }
 	.preview-image, .preview-video { width: 100%; height: 100%; object-fit: cover; }
 	.preview-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f0f0f0; }

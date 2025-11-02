@@ -12,9 +12,9 @@
     className?: string; // renamed from `class`
     triggerChar?: string;
     // onCommandSelect was unused — removed
-    onInput?: (data: {, value: string;, target: HTMLTextAreaElement }) => void;
+    onInput?: (data: { value: string;, target: HTMLTextAreaElement }) => void;
     onKeydown?: (e: KeyboardEvent) => void;
-    onCommandInsert?: (data: {, text: string }) => void;
+    onCommandInsert?: (data: { text: string }) => void;
     onBlur?: (e: FocusEvent) => void;
     onFocus?: (e: FocusEvent) => void;
   }
@@ -177,8 +177,7 @@
     color: var(--pico-color, #111827);
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
-  .smart-textarea:focus {
-   , outline: none;
+  .smart-textarea:focus { outline: none;
     border-color: var(--pico-primary, #3b82f6);
     box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1);
   }
@@ -190,8 +189,7 @@
   .smart-textarea[readonly] {
     background: var(--pico-card-sectioning-background-color, #f8fafc);
   }
-  .smart-textarea::placeholder {
-   , color: var(--pico-muted-color, #6b7280);
+  .smart-textarea::placeholder { color: var(--pico-muted-color, #6b7280);
   }
   .command-menu-overlay {
     pointer-events: auto;
@@ -210,5 +208,5 @@
   .smart-textarea-container:hover::after {
     opacity: 1;
   }
-  .command-menu {, background:var(--card-bg,#fff); box-shadow:0 8px 20px rgba(0,0,0,0.12); border-radius:6px; }
+  .command-menu { background:var(--card-bg,#fff); box-shadow:0 8px 20px rgba(0,0,0,0.12); border-radius:6px; }
 </style>

@@ -194,7 +194,7 @@ https://svelte.dev/e/illegal_element_attribute -->
   cacheData={true}
   class="case-details-dialog"
 >
-  {#snippet children({, data: caseData, refresh })}
+  {#snippet children({ data: caseData, refresh })}
     {#if caseData}
       <div class="space-y-6">
         <!-- Case, Overview -->

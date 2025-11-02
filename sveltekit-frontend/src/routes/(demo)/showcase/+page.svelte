@@ -17,11 +17,10 @@ import type { Document } from '$lib/types';
   };
 
   const demoCategories: DemoCategory[] = [
-    {
-     , name: 'AI & Processing',
+    { name: 'AI & Processing',
       icon: '🤖',
       demos: [
-        {,
+        {
           slug: 'ai-assistant',
           name: 'AI Legal Assistant',
           description: 'Intelligent legal research and document analysis with Gemma embeddings.',
@@ -51,7 +50,7 @@ import type { Document } from '$lib/types';
       name: 'Legal Workflow',
       icon: '⚖️',
       demos: [
-        {,
+        {
           slug: 'evidence-canvas',
           name: 'Evidence Canvas',
           description: 'Interactive evidence organization and case visualization.',
@@ -73,7 +72,7 @@ import type { Document } from '$lib/types';
       name: 'Performance & UI',
       icon: '⚡',
       demos: [
-        {,
+        {
           slug: 'webgpu',
           name: 'WebGPU Acceleration',
           description: 'Hardware-accelerated computing for legal AI processing.',
@@ -104,24 +103,24 @@ import type { Document } from '$lib/types';
   function statusLabelClass(status: DemoFeature['status']): string {
     switch (status) {
       case, 'active':
-        return, 'status-active';
+        return 'status-active';
       case, 'beta':
-        return, 'status-beta';
+        return 'status-beta';
       case, 'coming-soon':
-        return, 'status-coming-soon';
-      default: return, '';
+        return 'status-coming-soon';
+      default: return '';
     }
   }
 
   function complexityLabelClass(complexity: DemoFeature['complexity']): string {
     switch (complexity) {
       case, 'low':
-        return, 'complexity-low';
+        return 'complexity-low';
       case, 'medium':
-        return, 'complexity-medium';
+        return 'complexity-medium';
       case, 'high':
-        return, 'complexity-high';
-      default: return, '';
+        return 'complexity-high';
+      default: return '';
     }
   }
 </script>
@@ -301,8 +300,7 @@ import type { Document } from '$lib/types';
     font-weight: 600;
   }
 
-  .status-active {
-   , background: rgba(16, 185, 129, 0.15);
+  .status-active { background: rgba(16, 185, 129, 0.15);
     color: rgb(16, 185, 129);
   }
 
@@ -338,8 +336,7 @@ import type { Document } from '$lib/types';
     transition: color 0.2s ease;
   }
 
-  .demo-launch:hover {
-   , color: var(--accent-emphasis, rgb(37, 99, 235));
+  .demo-launch:hover { color: var(--accent-emphasis, rgb(37, 99, 235));
   }
 
   @media (max-width: 768px) {

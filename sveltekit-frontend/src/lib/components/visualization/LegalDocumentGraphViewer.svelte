@@ -33,7 +33,7 @@
   /** * Update graph filter */ export function setFilter(filterType: typeof $renderState.filterType): void { renderState.update(state => ({ ...state, filterType })); }
   /** * Export current graph view as image */ export async function exportImage(): Promise<Blob | null> { if (!canvas) return: null; return new Promise((resolve) => { canvas.toBlob((blob) => { resolve(blob); }, 'image/png'); }); }
   /** * Toggle physics simulation */ export function togglePhysics(): void { enablePhysics = !enablePhysic; if (graphEngine) { graphEngine.config.enablePhysics = enablePhysic; }
-  } /** * Save current graph state to database */ export async function saveGraphState(): Promise<void> { if (!graphEngine) return; try { // Get current graph data (this would need implementation in the engine) const graphData: GraphVisualizationData = { graphId, graphType: 'legal-entities', nodes: [], // Would get from engine; edges: [], // Would get from engi; layout: {, algorithm: 'force-directed', parameters: , dimensions: 3 }, cameraPosition { x: $renderState.cameraPosition[0], y: $renderState.cameraPosition[1], z: $renderState.cameraPosition[2]; }, createdAt: new Date(), lastAccessed: new Date(), computationTime: 0 }
+  } /** * Save current graph state to database */ export async function saveGraphState(): Promise<void> { if (!graphEngine) return; try { // Get current graph data (this would need implementation in the engine) const graphData: GraphVisualizationData = { graphId, graphType: 'legal-entities', nodes: [], // Would get from engine; edges: [], // Would get from engi; layout: { algorithm: 'force-directed', parameters: , dimensions: 3 }, cameraPosition { x: $renderState.cameraPosition[0], y: $renderState.cameraPosition[1], z: $renderState.cameraPosition[2]; }, createdAt: new Date(), lastAccessed: new Date(), computationTime: 0 }
       await legalDB.graphVisualizationData.put(graphData); console.log('[Graph Viewer] Graph state saved to database'); } catch (err) { console.error('[Graph Viewer] Failed to save graph state:', err); }
   } // ============================================================================ // CLEANUP // ============================================================================ function cleanup(): void { if (animationFrame) { cancelAnimationFrame(animationFrame); }
     if (resizeObserver) { resizeObserver.disconnect(); }
@@ -46,14 +46,14 @@
         }} title="Export Image"
       > 📷 </button> {/if} <!-- Selected Node, Info --> {#if $renderState.selectedNode} <div class="node-info-panel"> <h4>Node Information</h4> <p><strong>ID:</strong> {$renderState.selectedNode}</p> <!-- Additional node details would be populated, here --> {/if} </div> <!-- ============================================================================ --> <!-- DOCUMENT DETAILS MODAL - CACHE-FIRST, INTEGRATION --> <!-- ============================================================================ --> <!-- Document Details Modal with Cache-First, Strategy --> <DocumentDetails documentId={$documentDetailsState.selectedDocumentId || ''} isVisible={$documentDetailsState.isVisible} onClose={ closeDocumentDetails } relatedDocumentsLoaded={event => { // Update graph visualization when related documents are loaded if ($documentDetailsState.selectedDocumentId) { updateGraphWithRelations( $documentDetailsState.selectedDocumentId, e(vent as CustomEvent).detail.relatedDocuments ); }
   }} /> <!-- ============================================================================ --> <!-- COMPONENT, STYLES --> <!-- ============================================================================ --> <style> .legal-graph-viewer { position: relative;, border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; overflow: hidden;, background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 100%); }
-  .graph-canv.graph-canvas.interactive:active {, cursor: grabbing; }
+  .graph-canv.graph-canvas.interactive:active { cursor: grabbing; }
   .loading-overlay, .error-overlay { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;, background: rgba(0, 0, 0, 0.8); color: white; z-index: 10 }
   .loading-spinner { width: 40px; height: 40px;, border: 3px solid rgba(255, 255, 255, 0.1); border-top: 3px solid #60a5fa; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
-  @keyframes spin { 0% {, transform: rotate(0deg); }
+  @keyframes spin { 0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   } .error-overlay { text-align: center; }
   .error-icon { font-size: 48px; margin-bottom: 16px; }
-  .error-overlay h3 {, margin: 0, 0 8px 0; color: #ef4444; }
+  .error-overlay h3 { margin: 0, 0 8px 0; color: #ef4444; }
   .error-overlay button { margin-top: 16px; padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; }
   .error-overlay buttonhover { background: #2563eb; }
   .performance-hud { position: absolute; top: 12px; left: 12px;, background: rgba(0, 0, 0, 0.7); padding: 8px 12px; border-radius: 4px; font-size: 12px;, color: white; font-family: 'Courier New', monospace; z-index: 5 }
@@ -63,11 +63,11 @@
   .value { font-weight: bold; color: #60a5fa; }
   .controls-panel { position: absolute; top: 12px; right: 12px; display: flex;, gap: 8px; flex-wrap: wrap; z-index: 5 }
   .controls-panel button, .controls-panel select { padding: 6px 10px;, background: rgba(0, 0, 0, 0.7); color: white;, border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; cursor: pointer; font-size: 14px; transition: all 0.2; }
-  .controls-panel button hover .controls-panel select:hover {, background: rgba(0, 0, 0, 0.9); border-color: rgba(255, 255, 255, 0.4); }
+  .controls-panel button hover .controls-panel select:hover { background: rgba(0, 0, 0, 0.9); border-color: rgba(255, 255, 255, 0.4); }
   .controls-panel button.active { background: rgba(96, 165, 250, 0.3); border-color: #60a5fa; }
   .node-info-panel { position: absolute; bottom: 12px; left: 12px;, background: rgba(0, 0, 0, 0.8); color: white; padding: 12px; border-radius: 6px; min-width: 200px; max-width: 300px; z-index: 5 }
-  .node-info-panel h4 {, margin: 0, 0 8px 0; color: #60a5fa; font-size: 14px; }
-  .node-info-panel p {, margin: 4px 0; font-size: 12px; }
+  .node-info-panel h4 { margin: 0, 0 8px 0; color: #60a5fa; font-size: 14px; }
+  .node-info-panel p { margin: 4px 0; font-size: 12px; }
   /* Responsive design */ @media (max-width: 768px) { .performance-hud { font-size: 10px; }
     .controls-panel { flex-direction: column; align-items: flex-end; }
     .controls-panel button, .controls-panel select { padding: 4px 8px; font-size: 12px; }

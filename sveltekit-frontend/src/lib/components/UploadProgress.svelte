@@ -22,8 +22,7 @@ import type { Document } from '$lib/types';
    , metrics: Record<string unknown>;
     error: string | null;
   };
-  const progressData: Writable<Progress> = writable({
-   , stage: 'idle',
+  const progressData: Writable<Progress> = writable({ stage: 'idle',
     progress: 0,
     status: 'pending',
     metrics: {},
@@ -35,15 +34,14 @@ import type { Document } from '$lib/types';
     interpolationResults: any[];
    , metrics: Record<string unknown>;
   };
-  const tensorResults: Writable<TensorResultsType> = writable({
-   , clusters: [],
+  const tensorResults: Writable<TensorResultsType> = writable({ clusters: [],
     embeddings: [],
     interpolationResults: [],
     metrics: {}
   });
   const aiSuggestions = writable({
     suggestions: [] as Array<{ text?: string; confidence?: number }>,
-    relevantDocuments: [] as Array<{, title: string; relevanceScore?: number }>,
+    relevantDocuments: [] as Array<{ title: string; relevanceScore?: number }>,
     confidence: 0
   });
   const realtimeMetrics = writable({
@@ -239,7 +237,7 @@ import type { Document } from '$lib/types';
   }
   // Helpers
   function formatBytes(bytes: number): string {
-    if (bytes === 0) return, '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

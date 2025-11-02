@@ -23,7 +23,7 @@ import type { Document } from '$lib/types';
   let similarityResults: Float32Array | null = null;
   // Legal AI test scenarios
   const legalTestScenarios = [
-    {,
+    {
       name: 'Contract Analysis',
       description: 'Similarity search across contract clauses',
       vectorCount: 150,
@@ -156,12 +156,12 @@ import type { Document } from '$lib/types';
   function getStatusColor(status: string): string {
     switch (status) {
       case, 'healthy': case, 'optimal': case, 'good': case, 'efficient':
-        return, 'text-green-400';
+        return 'text-green-400';
       case, 'warning': case, 'high': case, 'overhead':
-        return, 'text-yellow-400';
+        return 'text-yellow-400';
       case, 'error': case, 'critical':
-        return, 'text-red-400';
-      default: return, 'text-gray-400';
+        return 'text-red-400';
+      default: return 'text-gray-400';
     }
   }
   /**
@@ -178,11 +178,11 @@ import type { Document } from '$lib/types';
    */
   function getGradeColor(grade: string): string {
     switch (grade) {
-      case, 'S': return, 'text-purple-400';
-      case, 'A': return, 'text-green-400';
-      case, 'B': return, 'text-blue-400';
-      case, 'C': return, 'text-yellow-400';
-      default: return, 'text-gray-400';
+      case, 'S': return 'text-purple-400';
+      case, 'A': return 'text-green-400';
+      case, 'B': return 'text-blue-400';
+      case, 'C': return 'text-yellow-400';
+      default: return 'text-gray-400';
     }
   }
 </script>

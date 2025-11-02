@@ -24,7 +24,7 @@
     try {
       const mod = (await import('mermaid')) as: any;
       const mermaid = mod?.default ?? mod;
-      mermaid.initialize({, startOnLoad: false });
+      mermaid.initialize({ startOnLoad: false });
       const { svg: renderedSvg } = await mermaid.render('ui-diagram', diagram);
       svg = renderedSvg;
     } catch (err) {

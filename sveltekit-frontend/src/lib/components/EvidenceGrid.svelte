@@ -148,7 +148,7 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   }
   function formatDate(date: string | Date | undefined): string {
-    if (!date) return, 'Unknown';
+    if (!date) return 'Unknown';
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     return new Intl.DateTimeFormat().format(dateObj);
   }

@@ -37,8 +37,7 @@ import type { Document } from '$lib/types';
     bounds: { x: number; y: number; width: number; height: number };
     content: string;
   }
-  interface DocumentLODViewerProps {
-   , documentId: string;
+  interface DocumentLODViewerProps { documentId: string;
     documentUrl?: string;
     initialZoom?: number;
     enableWebGPU?: boolean;
@@ -73,10 +72,10 @@ import type { Document } from '$lib/types';
   let dragState = $state({ isDragging: false, startX: 0, startY: 0, offsetX: 0, offsetY: 0 });
   // LOD configuration based on N64 constraints
   const lodConfig = {
-    0: {, textureSize: 2048, quality: 1.0, description: 'Ultra High' },
-    1: {, textureSize: 1024, quality: 0.8, description: 'High' },
-    2: {, textureSize: 512, quality: 0.6, description: 'Medium' },
-    3: {, textureSize: 256, quality: 0.4, description: 'Low (N64 Style)' }
+    0: { textureSize: 2048, quality: 1.0, description: 'Ultra High' },
+    1: { textureSize: 1024, quality: 0.8, description: 'High' },
+    2: { textureSize: 512, quality: 0.6, description: 'Medium' },
+    3: { textureSize: 256, quality: 0.4, description: 'Low (N64 Style)' }
   }
   // Derived values for automatic LOD switching
   let recommendedLOD = $derived(() => {
@@ -121,8 +120,7 @@ if (!browser || !enableWebGPU) return;
     if (!adapter) throw new Error('WebGPU adapter not found');
     gpuDevice = await adapter.requestDevice({
       requiredFeatures: ['texture-compression-bc'],
-      requiredLimits: {
-       , maxTextureSize: 2048, // N64-style texture limit
+      requiredLimits: { maxTextureSize: 2048, // N64-style texture limit
         maxBufferSize: 64 * 1024 * 1024 // 64MB like N64 cartridge
       }
     });
@@ -211,7 +209,7 @@ if (!browser || !enableWebGPU) return;
   async function createPageTexture(imageData: ArrayBuffer, size: number): Promise<GPUTexture> {
     if (!gpuDevice) throw new Error('GPU device not available');
     const texture = gpuDevice.createTexture({
-      size: {, width: size, height: size, depthOrArrayLayers: 1 },
+      size: { width: size, height: size, depthOrArrayLayers: 1 },
       format: 'rgba8unorm',
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT;
     });
@@ -243,9 +241,9 @@ if (!browser || !enableWebGPU) return;
     const commandEncoder = gpuDevice.createCommandEncoder();
     const textureView = context.getCurrentTexture.createView();
     const renderPass = commandEncoder.beginRenderPass({
-      colorAttachments: [{,
+      colorAttachments: [{
         view: textureView,
-        clearValue: {, r: 0.1, g: 0.1, b: 0.2, a: 1.0 }, // NES-style dark blue
+        clearValue: { r: 0.1, g: 0.1, b: 0.2, a: 1.0 }, // NES-style dark blue
         loadOp: 'clear',
         storeOp: 'store'
       }]
@@ -562,8 +560,7 @@ if (!browser || !enableWebGPU) return;
     align-items: center;
     gap: 1rem;
   }
-  .lod-stats {
-   , background: rgba(0, 0, 0, 0.4);
+  .lod-stats { background: rgba(0, 0, 0, 0.4);
   }
   .stats-grid {
     display: grid;
@@ -595,8 +592,7 @@ if (!browser || !enableWebGPU) return;
   }
   /* N64-style animations */
   @keyframes indeterminate {
-    0% {
-     , transform: translateX(-100%);
+    0% { transform: translateX(-100%);
     }
     100% {
       transform: translateX(100%);

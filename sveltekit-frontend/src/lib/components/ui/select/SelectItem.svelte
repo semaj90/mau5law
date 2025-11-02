@@ -5,5 +5,5 @@
   aria-selected={isSelected ? 'true': 'false'} onclick={() => handleClick()} keydown={e => e.key === 'Enter' && handleClick()} tabindex={ 0 } >
   {#if children} {@render children()} {/if} </div> <style> /* @unocss-include */ {} .select-item { padding: 8px 12px; cursor: pointer; font-size: 14px; color: #374151; display: flex; align-items: center; }
   .select-item:hover { background-color: #f3f4f6; }
-  .select-item:focus {, outline: none; background-color: #e5e7eb; }
+  .select-item:focus { outline: none; background-color: #e5e7eb; }
 </style>

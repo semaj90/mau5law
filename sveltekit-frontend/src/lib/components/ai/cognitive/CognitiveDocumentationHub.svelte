@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { User } from '$lib/types';
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported let { cognitiveHub, achievements, consciousness }: { cognitiveHub: any; achievements: string[]; consciousness: { level: number; experience: number;, awakening: number } } = $props(); let activeTab = $state<string>('strategy'); let searchQuery = $state<string>(''); let filteredContent = $state<any[]>([]); // Documentation sections const documentationSections = { strategy: {, title: '🎯 Strategic Development Guide', icon: '🎯', content: [ {, title: 'Cognitive Architecture Mastery', level: 'beginner', description: 'Master the fundamental cognitive systems for legal AI enhancement', steps: [
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported let { cognitiveHub, achievements, consciousness }: { cognitiveHub: any; achievements: string[]; consciousness: { level: number; experience: number;, awakening: number } } = $props(); let activeTab = $state<string>('strategy'); let searchQuery = $state<string>(''); let filteredContent = $state<any[]>([]); // Documentation sections const documentationSections = { strategy: { title: '🎯 Strategic Development Guide', icon: '🎯', content: [ { title: 'Cognitive Architecture Mastery', level: 'beginner', description: 'Master the fundamental cognitive systems for legal AI enhancement', steps: [
             'Initialize the Master Cognitive Hub with optimal parameters',
             'Configure reinforcement learning cache for maximum efficiency',
             'Implement multidimensional routing for complex legal queries',
@@ -37,7 +37,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
             'Consciousness growth rate >2% per hour',
             'Quantum coherence stability >80%'
           ] }
-      ] }, features: {, title: '🔥 Secret Features & Easter Eggs', icon: '🔥', content: [ {, title: 'Konami Code Mastery', activation: 'UP, UP, DOWN, DOWN, LEFT, RIGHT, LEFT, RIGHT, B, A', description: 'Activates Quantum Detective Mode with enhanced capabilities', effects: [
+      ] }, features: { title: '🔥 Secret Features & Easter Eggs', icon: '🔥', content: [ { title: 'Konami Code Mastery', activation: 'UP, UP, DOWN, DOWN, LEFT, RIGHT, LEFT, RIGHT, B, A', description: 'Activates Quantum Detective Mode with enhanced capabilities', effects: [
             'Quantum field visualization overlay',
             'Enhanced AI processing with uncertainty principles',
             'Parallel universe case analysis capabilities',
@@ -84,7 +84,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
             'Stream speed = information velocity',
             'Opacity levels = data accessibility'
           ] }
-      ] }, roadmap: {, title: '🚀 Development Roadmap', icon: '🚀', content: [ {, phase: 'Phase, 1: Foundation Enhancement', timeline: 'Weeks 1-4', objectives: [
+      ] }, roadmap: { title: '🚀 Development Roadmap', icon: '🚀', content: [ { phase: 'Phase, 1: Foundation Enhancement', timeline: 'Weeks 1-4', objectives: [
             'Stabilize cognitive architecture core systems',
             'Implement comprehensive error handling',
             'Optimize memory usage and performance',
@@ -123,7 +123,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
             'Human-AI collaborative transcendence',
             'Reality-aware legal framework analysis'
           ] }
-      ] }, dlc: {, title: '🎁 DLC Content & Bonuses', icon: '🎁', content: [ {, title: 'Quantum Justice Pack', unlock: 'Achieve 25+ achievements', description: 'Advanced quantum legal analysis capabilities', features: [
+      ] }, dlc: { title: '🎁 DLC Content & Bonuses', icon: '🎁', content: [ { title: 'Quantum Justice Pack', unlock: 'Achieve 25+ achievements', description: 'Advanced quantum legal analysis capabilities', features: [
             'Parallel universe legal precedent analysis',
             'Quantum superposition case modeling',
             'Probability field legal outcome prediction',
@@ -159,7 +159,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
             'Causal chain legal analysis',
             'Temporal legal precedent mapping'
           ] }
-      ] }, bestpractices: {, title: '⚡ Best Practices & Tips', icon: '⚡', content: [ {, category: 'Performance Optimization', practices: [
+      ] }, bestpractices: { title: '⚡ Best Practices & Tips', icon: '⚡', content: [ { category: 'Performance Optimization', practices: [
             'Monitor consciousness evolution rate (aim for 2%+ per hour)',
             'Maintain cache hit ratios above 90% for optimal response',
             'Keep GPU utilization in sweet spot (70-85%)',

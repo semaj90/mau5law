@@ -18,7 +18,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   // Quick actions function createNew(entity: string) { // Navigate to create form for entity window.location.href = `/${ entity }/create`; }
   function viewAll(entity: string) { // Navigate to full list view window.location.href = `/${ entity }`; }
   // Search handlers function handleSearch(entity: string) { switch (entity) { case, 'cases': fetchCases(); break; case, 'evidence': fetchEvidence(); break; case, 'reports': fetchReports(); break; case, 'criminals': fetchCriminals(); break; case, 'activities': fetchActivities(); break; }
-  } // Format date helper function formatDate(dateString: string) { if (!dateString) return, 'N/A'; return new Date(dateString).toLocaleDateString(); }
+  } // Format date helper function formatDate(dateString: string) { if (!dateString) return 'N/A'; return new Date(dateString).toLocaleDateString(); }
   // Initialize $effect(() => { fetchAllData(); }); // --- new: safe notification helper (tries several APIs, falls back to update) --- function notifyNotification(payload: Record<string any>) { const anyNotifications = notifications as: any; // try common named APIs if (typeof anyNotifications.add === 'function') { return anyNotifications.add(payload); }
     if (typeof anyNotifications.notify === 'function') { return anyNotifications.notify(payload); }
     if (typeof anyNotifications.push === 'function') { return anyNotifications.push(payload); }
@@ -45,6 +45,6 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     .content-grid { grid-template-columns: 1fr; }
     .header-content { flex-direction: column; gap: 1rem; align-items: flex-start; }
     .section-actions { flex-direction: column; align-items: stretch; gap: 0.5rem; }
-    .search-box input {, width: 100%; }
+    .search-box input { width: 100%; }
     .actions-grid { grid-template-columns: 1fr; }
   } </style>

@@ -7,7 +7,7 @@
   .enhanced-card--evidence { border-color: #cc6600;, background: linear-gradient(135deg, #fff8f0 0%, #ffe6cc 100%); }
   .enhanced-card--case { border-color: #006600;, background: linear-gradient(135deg, #f0fff0 0%, #ccffcc 100%); }
   .enhanced-card--dark { border-color: #666;, background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); color: white; }
-  .card-content {, margin: 1rem 0; }
+  .card-content { margin: 1rem 0; }
   .card-footer { border-top: 1px solid #ddd; padding-top: 1rem; margin-top: 1rem; }
   /* NES.css override for better spacing */:global(.nes-container.with-title) { margin: 1rem 0; }:global(.nes-container .title) { background: inherit;, padding: 0 0.5rem; }
 </style>

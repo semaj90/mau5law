@@ -58,8 +58,7 @@
   pointer-events: none;
 }
 /* Focus management for keyboard navigation */
-.card-content-ssr:focus-within {
- , outline: 2px solid #3b82f6;
+.card-content-ssr:focus-within { outline: 2px solid #3b82f6;
   outline-offset: 2px;
   border-radius: 0.5rem;
 }

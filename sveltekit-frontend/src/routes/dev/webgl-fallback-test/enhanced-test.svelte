@@ -5,10 +5,10 @@
   // Svelte, 5 runes for reactive state
   let log = $state<string>('');
   let testResults = $state({
-    webgpu: {, supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
-    webgl2: {, supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
-    webgl1: {, supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
-    wasm: {, supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
+    webgpu: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
+    webgl2: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
+    webgl1: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
+    wasm: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
     recommendation: '';
   });
   let isTestingInProgress = $state<boolean>(false);
@@ -154,7 +154,7 @@ if (browser) {
       const computeShader = device.createShaderModule({ code: computeShaderSource });
       const computePipeline = device.createComputePipeline({
         layout: 'auto',
-        compute: {, module: computeShader, entryPoint: 'main' }
+        compute: { module: computeShader, entryPoint: 'main' }
       });
       // Performance benchmark for Gemma3 270M operations
       const startTime = performance.now();
@@ -293,9 +293,9 @@ if (browser) {
     const bindGroup = device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),
       entries: [
-        {, binding: 0, resource: {, buffer: bufferA } },
-        { binding: 1, resource: {, buffer: bufferB } },
-        { binding: 2, resource: {, buffer: resultBuffer } }
+        { binding: 0, resource: { buffer: bufferA } },
+        { binding: 1, resource: { buffer: bufferB } },
+        { binding: 2, resource: { buffer: resultBuffer } }
       ]
     });
     const commandEncoder = device.createCommandEncoder();
@@ -375,12 +375,12 @@ if (browser) {
     append('📋 Gemma3 270M deployment analysis complete');
   }
   function getPerformanceColor(ops: string | null) {
-    if (!ops) return, 'color: #666;';
+    if (!ops) return 'color: #666;';
     const opsNum = parseFloat(ops);
-    if (opsNum > 20) return, 'color: #22c55e;'; // green - excellent
-    if (opsNum > 10) return, 'color: #eab308;'; // yellow - good
-    if (opsNum > 2) return, 'color: #f97316;';  // orange - acceptable
-    return, 'color: #ef4444;'; // red - poor
+    if (opsNum > 20) return 'color: #22c55e;'; // green - excellent
+    if (opsNum > 10) return 'color: #eab308;'; // yellow - good
+    if (opsNum > 2) return 'color: #f97316;';  // orange - acceptable
+    return 'color: #ef4444;'; // red - poor
   }
   async function runBasicCompatibilityCheck(): Promise<any> {
     append('🔧 Running advanced compatibility check for Gemma3 270M...');
@@ -555,8 +555,7 @@ if (browser) {
     margin-bottom: 2rem;
     text-align: center;
   }
-  .header h1 {
-   , margin: 0, 0 1rem 0;
+  .header h1 { margin: 0, 0 1rem 0;
     font-size: 2rem;
     font-weight: 700;
   }
@@ -583,7 +582,7 @@ if (browser) {
    , transition: all 0.2;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
-  .test-buttonhover:not(:disabled) {,
+  .test-buttonhover:not(:disabled) {
     background: #1d4ed8;
    , transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
@@ -625,8 +624,7 @@ if (browser) {
     color: #6b7280;
     margin-top: 0.5rem;
   }
-  .results-grid {
-   , display: grid;
+  .results-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     margin: 2rem 0;
@@ -639,13 +637,11 @@ if (browser) {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: all 0.2;
   }
-  .result-card:hover {
-   , transform: translateY(-4px);
+  .result-card:hover { transform: translateY(-4px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     border-color: #3b82f6;
   }
-  .result-card h3 {
-   , margin: 0, 0 1rem 0;
+  .result-card h3 { margin: 0, 0 1rem 0;
     font-size: 1.25rem;
     font-weight: 700;
     color: #1f2937;
@@ -672,8 +668,7 @@ if (browser) {
     font-style: italic;
     margin-top: 0.5rem;
   }
-  .recommendation {
-   , background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%);
+  .recommendation { background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%);
     border: 2px solid #3b82f6;
     border-radius: 1rem;
     padding: 2rem;
@@ -715,8 +710,7 @@ if (browser) {
     overflow-y: auto;
     border: 1px solid #334155;
   }
-  .info-grid {
-   , display: grid;
+  .info-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin: 1rem 0;

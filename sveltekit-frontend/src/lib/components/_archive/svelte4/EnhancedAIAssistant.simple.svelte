@@ -1,6 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more, than, onc; https://svelte.dev/e/props_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Cannot use `$props()` more, than, once --> <!-- Simplified Enhanced, AI, Assistant --> <script lang="ts"> import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog'; // Svelte, 5 runes are auto-imported import { Brain, Loader2, Quote, Search, Settings, Trash2 } from 'lucide-svelte'; import * as Dialog from 'bits-ui/Dialog'; // Replace export lets with a single $props() destructuring for runes mode interface Props { caseId?: string; evidenceIds?: string[]; placeholder?: string; maxHeight?: string; showReferences?: boolean; enableVoiceInput?: boolean; ondispatch?: (citation: string) => void; }
 
-  const { caseId = undefined, evidenceIds = [], placeholder = 'Ask AI about this case...', maxHeight = '400px', showReferences = true, enableVoiceInput = false, ondispatch } = $props() as Props; // State let query = $state<string>(''); let isLoading = $state<boolean>(false); let messages = $state<any[]>([]); let showSettings = $state<boolean>(false); let showCitationDialog = $state<boolean>(false); let selectedCitation = $state<string>(''); let selectedModel = $state<string>('gpt-4'); let searchThreshold = $state(0.7); let maxResults = $state<number>(5); let temperature = $state(0.7); let enabledSources = $state(['cases', 'statutes', 'regulations', 'secondary']); // Mock AI response async function handleSubmit(event: SubmitEvent): Promise<any> { event.preventDefault(); if (!query.trim() || isLoading) return; isLoading = true; const userMessage = { role: 'user', content: query }; messages = [...messages, userMessage]; // Clear input query = ''; // Mock AI response setTimeout(() => { const aiResponse = { role: 'assistant', content: `Based on the case information provided, here are my findings regarding: "${userMessage.content}": This appears to be a question about legal precedent and case law. The relevant statutes and regulations would need to be analyzed in the context of your specific jurisdiction. Key considerations: 1. Applicable statutory framework 2. Relevant case precedents 3. Jurisdictional variations 4. Current regulatory environment Would you like me to elaborate, on: any of these aspects?`, references: [ {, title: 'Smith v. Jones', citation: '123 F.3d, 456 (2023)', relevance: 0.9 }, {
+  const { caseId = undefined, evidenceIds = [], placeholder = 'Ask AI about this case...', maxHeight = '400px', showReferences = true, enableVoiceInput = false, ondispatch } = $props() as Props; // State let query = $state<string>(''); let isLoading = $state<boolean>(false); let messages = $state<any[]>([]); let showSettings = $state<boolean>(false); let showCitationDialog = $state<boolean>(false); let selectedCitation = $state<string>(''); let selectedModel = $state<string>('gpt-4'); let searchThreshold = $state(0.7); let maxResults = $state<number>(5); let temperature = $state(0.7); let enabledSources = $state(['cases', 'statutes', 'regulations', 'secondary']); // Mock AI response async function handleSubmit(event: SubmitEvent): Promise<any> { event.preventDefault(); if (!query.trim() || isLoading) return; isLoading = true; const userMessage = { role: 'user', content: query }; messages = [...messages, userMessage]; // Clear input query = ''; // Mock AI response setTimeout(() => { const aiResponse = { role: 'assistant', content: `Based on the case information provided, here are my findings regarding: "${userMessage.content}": This appears to be a question about legal precedent and case law. The relevant statutes and regulations would need to be analyzed in the context of your specific jurisdiction. Key considerations: 1. Applicable statutory framework 2. Relevant case precedents 3. Jurisdictional variations 4. Current regulatory environment Would you like me to elaborate, on: any of these aspects?`, references: [ { title: 'Smith v. Jones', citation: '123 F.3d, 456 (2023)', relevance: 0.9 }, {
             title: '42 U.S.C. § 1983', citation: 'Federal Civil Rights Statute', relevance: 0.8 }, ]
       }; messages = [...messages, aiResponse]; isLoading = false; }, 1500); }
   function handleReferenceClick(reference: any) { selectedCitation = `${reference.title} - ${reference.citation}`; showCitationDialog = true; }
@@ -21,7 +21,7 @@
   .reference-citation { color: #6b7280; font-size: 0.875rem; }
   .chat-input { padding: 16px; border-top: 1px solid #e5e7eb; }
   .input-container { display: flex; gap: 8px; }
-  .chat-input-field {, flex: 1, padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; outline: none;, transition: border-color 0.2s; }
+  .chat-input-field { flex: 1, padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; outline: none;, transition: border-color 0.2s; }
   .chat-input-field:focus { border-color: #3b82f6; box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1); }
   .chat-submit-btn { padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;, transition: background 0.2s; }
   .chat-submit-btn:hover:not(:disabled) { background: #2563eb; }
@@ -38,7 +38,7 @@
   .setting-group select, .setting-group input[type='number'] { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; outline: none; }
   .setting-group input[type='range'] { width: 100%; }
   .dialog-overlay { position: fixed;, top: 0, left: 0; width: 100%; height: 100%;, background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 1000 }
-  .dialog-content {, background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 90%; max-width: 500px; }
+  .dialog-content { background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 90%; max-width: 500px; }
   .dialog-header { padding: 16px; border-bottom: 1px solid #e5e7eb; }
   .dialog-title { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #111827; }
   .dialog-body { padding: 16px; }
@@ -50,7 +50,7 @@
   .btn-secondary:hover { background: #4b5563; }
   .dialog-footer { padding: 16px; border-top: 1px solid #e5e7eb; text-align: right; }
   .dialog-footer .btn-close { padding: 8px 16px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; transition: background-color 0.2s; }
-  .dialog-footer .btn-close:hover {, background: #e5e7eb; }
+  .dialog-footer .btn-close:hover { background: #e5e7eb; }
 </style>
 
 

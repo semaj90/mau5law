@@ -19,10 +19,10 @@ declare module 'xstate' {
 
 // Re-export XState v5 compatible types
 export type {
-  State, ActorRef, Snapshot, EventFrom, LogicFrom, AnyMachineSnapshot, AnyActorRef, AnyEventObject, Observer, Subscription, } from 'xstate';
+  State, ActorRef, Snapshot, EventFrom, LogicFrom, AnyMachineSnapshot, AnyActorRef, AnyEventObject, Observer, Subscription} from 'xstate';
 
 export {
-  createMachine, createActor, assign, send, sendTo, raise, emit, fromPromise, fromCallback, fromObservable, fromEventObservable, } from 'xstate';
+  createMachine, createActor, assign, send, sendTo, raise, emit, fromPromise, fromCallback, fromObservable, fromEventObservable} from 'xstate';
 
 // Common state machine types
 export interface MachineContext {

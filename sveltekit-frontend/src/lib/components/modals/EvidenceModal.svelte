@@ -35,8 +35,8 @@ https://svelte.dev/e/attribute_invalid_name -->
     initial: 'view',
     context: { item },
     states: {
-      view: { on {, EDIT: 'edit' } },
-      edit: { on {, SAVE: 'view', CANCEL: 'view' } }
+      view: { on { EDIT: 'edit' } },
+      edit: { on { SAVE: 'view', CANCEL: 'view' } }
     }
   });
   // Use initialState property for xstate v5+ or .initialState for v4

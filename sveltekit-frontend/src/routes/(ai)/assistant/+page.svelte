@@ -2,9 +2,9 @@
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Consolidated AI Assistant (replaces /ai-assistant, /aiassistant, /ai-chat) import  Button  from "$lib/components/ui/core.svelte"; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; interface ChatMessage { id: string; role: 'user' | 'assistant'; content: string;, timestamp: Date; }
 
-  let messages = $state<ChatMessage[]>([]); let currentMessage = $state<string>(''); let isStreaming = $state<boolean>(false); let error = $state<string>(''); async function sendMessage(): Promise<any> { if (!currentMessage.trim() || isStreaming) return; const userMessage: ChatMessage = {, id: crypto.randomUUID(), role: 'user', content: currentMessage, timestamp: new Date() }; messages = [...messages, userMessage]; const messageToSend = currentMessage; currentMessage = ''; isStreaming = true; error = ''; try { // Use the consolidated AI chat endpoint const response = await fetch('/api/ai/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({, message: messageToSend, model: 'gemma3-legal:latest', useRAG: true }) }); if (!response.ok) { throw new Error(`HTTP ${response.status}`); }
+  let messages = $state<ChatMessage[]>([]); let currentMessage = $state<string>(''); let isStreaming = $state<boolean>(false); let error = $state<string>(''); async function sendMessage(): Promise<any> { if (!currentMessage.trim() || isStreaming) return; const userMessage: ChatMessage = { id: crypto.randomUUID(), role: 'user', content: currentMessage, timestamp: new Date() }; messages = [...messages, userMessage]; const messageToSend = currentMessage; currentMessage = ''; isStreaming = true; error = ''; try { // Use the consolidated AI chat endpoint const response = await fetch('/api/ai/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: messageToSend, model: 'gemma3-legal:latest', useRAG: true }) }); if (!response.ok) { throw new Error(`HTTP ${response.status}`); }
 
-      const aiMessage: ChatMessage = {, id: crypto.randomUUID(), role: 'assistant', content: '', timestamp: new Date() }; messages = [...messages, aiMessage]; // Handle streaming response if (response.body) { const reader = response.body.getReader(); const decoder = new TextDecoder(); try { while (true) { const { done, value } = await reader.read(); if (done) break; const chunk = decoder.decode(value); const lines = chunk.split('\n').filter(line => line.trim()); for (const line of lines) { if (line.startsWith('data: ')) { try { const data = JSON.parse(line.slice(6)); if (data.content) { messages[messages.length - 1].content += data.content; messages = [...messages]; // Trigger reactivity }
+      const aiMessage: ChatMessage = { id: crypto.randomUUID(), role: 'assistant', content: '', timestamp: new Date() }; messages = [...messages, aiMessage]; // Handle streaming response if (response.body) { const reader = response.body.getReader(); const decoder = new TextDecoder(); try { while (true) { const { done, value } = await reader.read(); if (done) break; const chunk = decoder.decode(value); const lines = chunk.split('\n').filter(line => line.trim()); for (const line of lines) { if (line.startsWith('data: ')) { try { const data = JSON.parse(line.slice(6)); if (data.content) { messages[messages.length - 1].content += data.content; messages = [...messages]; // Trigger reactivity }
                 } catch (e) { console.warn('Failed to parse SSE data:', e); }
               } }
           } } finally { reader.releaseLock(); }
@@ -27,15 +27,15 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
 
   .assistant-header p { color: var(--text-secondary, #888888); font-size: 1.1rem; margin-bottom: 1rem; }
 
-  .error-banner {, background: rgba(255, 0, 0, 0.1); color: #ff6666; padding: 0.75rem; border-radius: 4px; border: 1px solid #ff6666; margin-top: 1rem; }
+  .error-banner { background: rgba(255, 0, 0, 0.1); color: #ff6666; padding: 0.75rem; border-radius: 4px; border: 1px solid #ff6666; margin-top: 1rem; }
 
   .quick-actions { margin-bottom: 2rem; }
 
-  .quick-actions h2 {, color: var(--text-primary, #00ccff); margin-bottom: 1rem; font-size: 1.3rem; }
+  .quick-actions h2 { color: var(--text-primary, #00ccff); margin-bottom: 1rem; font-size: 1.3rem; }
 
-  .quick-buttons {, display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.75rem; }
+  .quick-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.75rem; }
 
-  .quick-button {, background: rgba(0, 204, 255, 0.1); color: var(--text-primary, #00ccff); border: 1px solid rgba(0, 204, 255, 0.3); padding: 0.75rem; border-radius: 4px; font-size: 0.9rem;, transition: all 0.2s; }
+  .quick-button { background: rgba(0, 204, 255, 0.1); color: var(--text-primary, #00ccff); border: 1px solid rgba(0, 204, 255, 0.3); padding: 0.75rem; border-radius: 4px; font-size: 0.9rem;, transition: all 0.2s; }
 
   .quick-button:hover:not(:disabled) { background: rgba(0, 204, 255, 0.2); border-color: var(--text-primary, #00ccff); transform: translateY(-1px); }
 
@@ -43,7 +43,7 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
 
   .chat-container { margin-bottom: 2rem; }
 
-  .chat-card {, background: var(--surface-secondary, #111111); border: 1px solid var(--border-primary, #00ccff); }
+  .chat-card { background: var(--surface-secondary, #111111); border: 1px solid var(--border-primary, #00ccff); }
 
   .messages-container { height: 400px; overflow-y: auto; padding: 1rem 0; display: flex; flex-direction: column; gap: 1rem; }
 
@@ -53,7 +53,7 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
 
   .message-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
 
-  .message.user .message-icon {, background: rgba(0, 204, 255, 0.2); }
+  .message.user .message-icon { background: rgba(0, 204, 255, 0.2); }
 
   .message.assistant .message-icon { background: rgba(0, 255, 0, 0.2); }
 
@@ -61,13 +61,13 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
 
   .message.user .message-content { text-align: right; }
 
-  .message-text {, background: rgba(0, 204, 255, 0.1); padding: 0.75rem; border-radius: 8px;, border: 1px solid rgba(0, 204, 255, 0.3); color: var(--text-primary, #ffffff); line-height: 1.4; white-space: pre-wrap; }
+  .message-text { background: rgba(0, 204, 255, 0.1); padding: 0.75rem; border-radius: 8px;, border: 1px solid rgba(0, 204, 255, 0.3); color: var(--text-primary, #ffffff); line-height: 1.4; white-space: pre-wrap; }
 
-  .message.assistant .message-text {, background: rgba(0, 255, 0, 0.1); border-color: rgba(0, 255, 0, 0.3); }
+  .message.assistant .message-text { background: rgba(0, 255, 0, 0.1); border-color: rgba(0, 255, 0, 0.3); }
 
   .message-time { font-size: 0.7rem;, color: var(--text-secondary, #888888); margin-top: 0.25rem; }
 
-  .typing-indicator {, color: var(--text-primary, #00ff00); animation: pulse 1.5s infinite; }
+  .typing-indicator { color: var(--text-primary, #00ff00); animation: pulse 1.5s infinite; }
 
   @keyframes pulse { 0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
@@ -75,9 +75,9 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
 
   .message-input { flex: 1;, background: var(--surface-primary, #0a0a0a); border: 1px solid rgba(0, 204, 255, 0.3); border-radius: 4px; padding: 0.75rem;, color: var(--text-primary, #ffffff); font-family: inherit; resize: vertical; min-height: 60px; }
 
-  .message-input:focus {, outline: none; border-color: var(--text-primary, #00ccff); box-shadow: 0, 0 10px rgba(0, 204, 255, 0.3); }
+  .message-input:focus { outline: none; border-color: var(--text-primary, #00ccff); box-shadow: 0, 0 10px rgba(0, 204, 255, 0.3); }
 
-  .message-input::placeholder {, color: var(--text-secondary, #888888); }
+  .message-input::placeholder { color: var(--text-secondary, #888888); }
 
   .send-button { background: var(--text-primary, #00ccff); color: var(--surface-secondary, #000000); border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: bold;, transition: all 0.2s; }
 
@@ -87,19 +87,19 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
 
   .capabilities { margin-bottom: 2rem; }
 
-  .capabilities h2 {, color: var(--text-primary, #00ccff); margin-bottom: 1rem; font-size: 1.3rem; }
+  .capabilities h2 { color: var(--text-primary, #00ccff); margin-bottom: 1rem; font-size: 1.3rem; }
 
-  .capabilities-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+  .capabilities-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
 
-  .capability-card {, background: var(--surface-secondary, #111111); border: 1px solid rgba(0, 204, 255, 0.3); text-align: center;, transition: all 0.3s ease; }
+  .capability-card { background: var(--surface-secondary, #111111); border: 1px solid rgba(0, 204, 255, 0.3); text-align: center;, transition: all 0.3s ease; }
 
   .capability-card:hover { border-color: var(--text-primary, #00ccff); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 204, 255, 0.2); }
 
   .capability-icon { font-size: 2rem; margin-bottom: 0.5rem; }
 
-  .capability-card h3 {, color: var(--text-primary, #00ccff); margin-bottom: 0.5rem; font-size: 1.1rem; }
+  .capability-card h3 { color: var(--text-primary, #00ccff); margin-bottom: 0.5rem; font-size: 1.1rem; }
 
-  .capability-card p {, color: var(--text-secondary, #888888); font-size: 0.9rem; line-height: 1.4; }
+  .capability-card p { color: var(--text-secondary, #888888); font-size: 0.9rem; line-height: 1.4; }
 
   @media (max-width: 768px) { .quick-buttons { grid-template-columns: 1fr; }
 

@@ -121,8 +121,7 @@ import type { Document } from '$lib/types';
       const response = await fetch('/api/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-         , text: reportText,
+        body: JSON.stringify({ text: reportText,
           options: {
             summaryLength,
             includeKeyTerms,
@@ -448,7 +447,7 @@ import type { Document } from '$lib/types';
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from {, transform: rotate(0deg); }
+    from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
   }
 
@@ -463,8 +462,7 @@ import type { Document } from '$lib/types';
   .input-controls {
     margin-bottom: 1rem;
   }
-  .options-grid {
-   , display: grid;
+  .options-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     margin: 1rem 0;
@@ -506,8 +504,7 @@ import type { Document } from '$lib/types';
     resize: vertical;
     transition: border-color 0.2s ease;
   }
-  #document-input:focus {
-   , outline: none;
+  #document-input:focus { outline: none;
     border-color: #3b82f6;
     box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1);
   }
@@ -568,8 +565,7 @@ import type { Document } from '$lib/types';
     border-left: 4px solid #3b82f6;
     animation: pulse 1s infinite;
   }
-  .step.completed {
-   , background: #f0fdf4;
+  .step.completed { background: #f0fdf4;
     border-left: 4px solid #10b981;
   }
   @keyframes pulse {
@@ -604,8 +600,7 @@ import type { Document } from '$lib/types';
     border-radius: 0.5rem;
     border: 1px solid #e5e7eb;
   }
-  .metadata-grid {
-   , display: grid;
+  .metadata-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin: 1rem 0;
@@ -659,8 +654,7 @@ import type { Document } from '$lib/types';
     white-space: pre-wrap;
   }
   /* File input styling */
-  #file-input {
-   , display: none;
+  #file-input { display: none;
   }
   /* Responsive design */
   @media (max-width: 768px) {

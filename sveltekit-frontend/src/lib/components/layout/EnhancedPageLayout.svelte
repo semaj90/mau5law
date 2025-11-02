@@ -22,7 +22,7 @@
   .page-content { position: relative; z-index: 1; }
   .page-content.with-overlays { padding-top: 20px; }
   /* small additions for the replaced elements */ .welcome-title { font-size: 14px; color: #00ff41; margin: 0; }
-  .card-description {, margin: 6px, 0 0; font-size: 12px;, color: #cfcfcf; }
+  .card-description { margin: 6px, 0 0; font-size: 12px;, color: #cfcfcf; }
   @media (max-width: 768px) { .gpu-status-overlay, .welcome-overlay { position: relative; top: auto; left: auto; right: auto;, margin: 10px; }
     .gpu-status-card, .welcome-card, .gpu-status-nier-bits-card, .welcome-nier-bits-card { width: 100%; max-width: none; }
   } </style>

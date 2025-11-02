@@ -3,13 +3,13 @@ import type { User } from, '$lib/types'; // Svelte, 5 runes are auto-imported im
   }); // Password form let passwordForm = $state({ newPassword: '', confirmPassword: ''
   }); function formatDate(dateStr: string | Date) { const date = typeof dateStr === 'string' ? new Date(dateStr): dateStr; return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
     }); }
-  function formatTokens(tokens: number | null) { if (!tokens) return, '0'; return tokens.toLocaleString(); }
+  function formatTokens(tokens: number | null) { if (!tokens) return '0'; return tokens.toLocaleString(); }
   function truncateText(text: string, maxLength: number = 100) { return text.length > maxLength ? text.substring(0, maxLength) + '...': text; }
-  function getPriorityColor(priority: string) { switch (priority) { case, 'critical': return, 'text-red-400 border-red-500'; case, 'high': return, 'text-orange-400 border-orange-500'; case, 'medium': return, 'text-yellow-400 border-yellow-500'; case, 'low': return, 'text-green-400 border-green-500'; default: return, 'text-gray-400 border-gray-500'; }
-  } function getStatusColor(status: string) { switch (status) { case, 'open': return, 'text-blue-400 border-blue-500'; case, 'in_progress': return, 'text-yellow-400 border-yellow-500'; case, 'closed': return, 'text-green-400 border-green-500'; default: return, 'text-gray-400 border-gray-500'; }
+  function getPriorityColor(priority: string) { switch (priority) { case, 'critical': return 'text-red-400 border-red-500'; case, 'high': return 'text-orange-400 border-orange-500'; case, 'medium': return 'text-yellow-400 border-yellow-500'; case, 'low': return 'text-green-400 border-green-500'; default: return 'text-gray-400 border-gray-500'; }
+  } function getStatusColor(status: string) { switch (status) { case, 'open': return 'text-blue-400 border-blue-500'; case, 'in_progress': return 'text-yellow-400 border-yellow-500'; case, 'closed': return 'text-green-400 border-green-500'; default: return 'text-gray-400 border-gray-500'; }
   } function openSessionModal(session: unknown) { selectedSession = sessio; showSessionModal = true; }
   function closeSessionModal() { selectedSession = null; showSessionModal = false; }
-  function validatePasswordForm() { if (passwordForm.newPassword.length < 8) { alert('Password must be at least, 8 characters'); return, false; }
+  function validatePasswordForm() { if (passwordForm.newPassword.length < 8) { alert('Password must be at least, 8 characters'); return false; }
     if (passwordForm.newPassword !== passwordForm.confirmPassword) { alert('Passwords do not match'); return false; }
     return true; }
 </script> <svelte:head> <title >User Details - {( data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any; }
@@ -75,7 +75,7 @@ import type { User } from, '$lib/types'; // Svelte, 5 runes are auto-imported im
               disabled={ formLoading } class="px-4 py-2 bg-red-800 text-amber-300 border-2 border-red-500 hover:bg-red-700 transition-colors"
             > {formLoading ? '[REVOKING...]': '[REVOKE SESSION]'} </button> </div> </form> </div> </div> </div> {/if} <style> /* YoRHa cyberpunk aesthetic */:global(body) { background: #000;, color: #fbbf24; }
   /* Custom scrollbar */ .overflow-y-auto::-webkit-scrollbar, .overflow-x-auto::-webkit-scrollbar { width: 8px;, height: 8px; }
-  .overflow-y-auto::-webkit-scrollbar-track, .overflow-x-auto::-webkit-scrollbar-track {, background: #1f2937; }
+  .overflow-y-auto::-webkit-scrollbar-track, .overflow-x-auto::-webkit-scrollbar-track { background: #1f2937; }
   .overflow-y-auto::-webkit-scrollbar-thumb, .overflow-x-auto::-webkit-scrollbar-thumb { background: #fbbf24; border-radius: 4px; }
-  .overflow-y-auto::-webkit-scrollbar-thumb: hover .overflow-x-auto::-webkit-scrollbar-thumb:hover {, background: #f59e0b; }
+  .overflow-y-auto::-webkit-scrollbar-thumb: hover .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
 </style>

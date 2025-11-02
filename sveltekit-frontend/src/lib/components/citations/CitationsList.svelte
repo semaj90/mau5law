@@ -13,7 +13,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   // Select citation function selectCitation(citation Citation) { ondispatch?.(citation); }
   // Format citation display function formatCitationDisplay(citation Citation): string { return citation.citation || `${citation.title}${citation.author ? ` by ${citation.author}`: ''}`; }
   // Get citation type label function getCitationTypeLabel(type: string): string { const found = citationTypes.find(t => t.value === type); return found?.label || typ; }
-  // Get relevance color function getRelevanceColor(score: number): string { if (score >= 8) return, 'text-green-600 bg-green-100'; if (score >= 6) return, 'text-yellow-600 bg-yellow-100'; if (score >= 4) return, 'text-orange-600 bg-orange-100'; return, 'text-red-600 bg-red-100'; }
+  // Get relevance color function getRelevanceColor(score: number): string { if (score >= 8) return 'text-green-600 bg-green-100'; if (score >= 6) return 'text-yellow-600 bg-yellow-100'; if (score >= 4) return 'text-orange-600 bg-orange-100'; return 'text-red-600 bg-red-100'; }
   // Handle search function handleSearch() { currentPage = 1; loadCitations(); }
   // Handle filter change function handleFilterChange() { currentPage = 1; loadCitations(); }
   // Handle sort change function handleSortChange() { applyClientSideSort(); }

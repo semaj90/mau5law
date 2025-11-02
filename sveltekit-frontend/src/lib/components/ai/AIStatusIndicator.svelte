@@ -127,8 +127,7 @@
     transition: all 0.16s ease;
     cursor: help;
   }
-  .ai-status-indicator:hover {
-   , background: var(--bg-hover, rgba(0, 0, 0, 0.03));
+  .ai-status-indicator:hover { background: var(--bg-hover, rgba(0, 0, 0, 0.03));
   }
   .status-icon {
     display: flex;
@@ -142,7 +141,7 @@
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    to {, transform: rotate(360deg); }
+    to { transform: rotate(360deg); }
   }
   .status-details {
     display: flex;
@@ -167,8 +166,7 @@
   .provider {
     font-weight: 500;
   }
-  .provider.local {
-   , color: var(--text-success, #059669);
+  .provider.local { color: var(--text-success, #059669);
   }
   .separator {
     color: var(--text-muted, #94a3b8);
@@ -236,8 +234,7 @@
     align-items: center;
     gap: 12px;
   }
-  .tooltip-section.error {
-   , color: var(--status-error, #fca5a5);
+  .tooltip-section.error { color: var(--status-error, #fca5a5);
   }
   .tooltip-section strong {
     color: var(--text-primary-inverse, #f8fafc);
@@ -251,8 +248,7 @@
   }
   /* Dark mode adjustments */
   @media (prefers-color-scheme: dark) {
-    .ai-status-indicator:hover {
-     , background: var(--bg-hover, rgba(255,255,255,0.02));
+    .ai-status-indicator:hover { background: var(--bg-hover, rgba(255,255,255,0.02));
     }
     .model {
       background: var(--bg-muted, #334155);
@@ -272,6 +268,6 @@
     .status-icon { width: 16px; height: 16px; }
     .status-tooltip { min-width: 180px; font-size: 0.6875rem; }
     .tooltip-section small { max-width: 160px; }
-    .provider-info {, gap: 4px; }
+    .provider-info { gap: 4px; }
   }
 </style>

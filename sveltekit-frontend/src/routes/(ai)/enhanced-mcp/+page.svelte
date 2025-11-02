@@ -19,13 +19,13 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
         } } catch (error) { // Silent monitoring, don't spam logs }'
     }, 30000); // Every, 30 seconds }
   function logMessage(level: 'info' | 'success' | 'warning' | 'error', message: string, source: string) { systemLogs.update(logs => [{ timestamp: new Date(), level, message, source }, ...logs.slice(0, 49)]); // Keep last, 50 logs }
-  async function runSystemDiagnostics(): Promise<any> { logMessage('info', 'Running comprehensive system diagnostics...', 'diagnostics'); const diagnostics = [ {, name: 'MCP Server Health', test: async () => { const response = await fetch('http://localhost:40000/health'); return response.ok; }
+  async function runSystemDiagnostics(): Promise<any> { logMessage('info', 'Running comprehensive system diagnostics...', 'diagnostics'); const diagnostics = [ { name: 'MCP Server Health', test: async () => { const response = await fetch('http://localhost:40000/health'); return response.ok; }
       }, {
-        name: 'Enhanced RAG Query', test: async () => { const response = await fetch('http://localhost:40000/mcp/enhanced-rag/query', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({, query: 'System diagnostic test query', caseId: 'diagnostic-test', maxResults: 1 }) }); return response.ok; }
+        name: 'Enhanced RAG Query', test: async () => { const response = await fetch('http://localhost:40000/mcp/enhanced-rag/query', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: 'System diagnostic test query', caseId: 'diagnostic-test', maxResults: 1 }) }); return response.ok; }
       }, {
         name: 'Memory Graph Operations', test: async () => { const response = await fetch('http://localhost:40000/mcp/memory/read-graph', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) }); return response.ok; }
       }, {
-        name: 'Context7 Documentation', test: async () => { const response = await fetch('http://localhost:40000/mcp/context7/resolve-library-id', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({, libraryName: 'sveltekit' }) }); return response.ok; }
+        name: 'Context7 Documentation', test: async () => { const response = await fetch('http://localhost:40000/mcp/context7/resolve-library-id', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ libraryName: 'sveltekit' }) }); return response.ok; }
       }, ]; let passedTests = 0; for (const diagnostic of diagnostics) { try { const result = await diagnostic.test(); if (result) { logMessage('success', `✅ ${diagnostic.name} - PASSED`, 'diagnostics'); passedTests++; } else { logMessage('error', `❌ ${diagnostic.name} - FAILED`, 'diagnostics'); }
       } catch (err) { // normalize: unknown thrown values const errMsg = err instanceof Error ? err.message: String(err); logMessage('error', `❌ ${diagnostic.name} - ERROR: ${ errMsg }`, 'diagnostics'); }
     } logMessage('info', `Diagnostics complete: ${ passedTests }/${diagnostics.length} tests passed`, 'diagnostics'); }
@@ -39,9 +39,9 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
   .demo-subtitle { font-size: 1.125rem; color: #9ca3af; max-width: 600px; margin: 0 auto; line-height: 1.6; }
   .system-status { margin-bottom: 3rem; }
   .system-status h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: #f3f4f6; }
-  .status-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
-  .status-card {, background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: all 0.3s ease;, border: 1px solid rgba(255, 255, 255, 0.1); }
-  .status-card:hover {, transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); }
+  .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+  .status-card { background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: all 0.3s ease;, border: 1px solid rgba(255, 255, 255, 0.1); }
+  .status-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); }
   .status-online { border-left: 4px solid #10b981;, background: rgba(16, 185, 129, 0.1); }
   .status-offline { border-left: 4px solid #ef4444;, background: rgba(239, 68, 68, 0.1); }
   .status-icon { font-size: 2rem; }
@@ -49,13 +49,13 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
   .status-subtitle { font-size: 0.875rem; color: #9ca3af; }
   .demo-controls { margin-bottom: 3rem;, background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 1.5rem; }
   .demo-controls h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: #f3f4f6; }
-  .controls-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+  .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
   .control-group { display: flex; flex-direction: column; gap: 0.5rem; }
   .control-group label { font-size: 0.875rem; font-weight: 500;, color: #d1d5db; }
   .control-group select, .control-group input[type='checkbox'] { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; padding: 0.5rem; color: #e5e7eb; font-size: 0.875rem; }
   .action-buttons { display: flex;, gap: 1rem; flex-wrap: wrap; }
   .diagnostic-button, .clear-logs-button { background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: none; border-radius: 8px; padding: 0.75rem 1.5rem; color: white; font-weight: 500; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; }
-  .clear-logs-button {, background: linear-gradient(135deg, #6b7280, #4b5563); }
+  .clear-logs-button { background: linear-gradient(135deg, #6b7280, #4b5563); }
   .diagnostic-buttonhover, .clear-logs-buttonhover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); }
   .main-integration { margin-bottom: 3rem; }
   .system-logs { margin-bottom: 3rem;, background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 1.5rem; }
@@ -71,11 +71,11 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
   .log-warning .log-message { color: #f59e0b; }
   .log-error .log-message { color: #ef4444; }
   .no-logs { text-align: center; color: #9ca3af; padding: 2rem; font-style: italic; }
-  .integration-features {, background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 1.5rem; }
+  .integration-features { background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 1.5rem; }
   .integration-features h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: #f3f4f6; text-align: center; }
-  .features-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
-  .feature-card {, background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 1.5rem; text-align: center; transition: all 0.3s ease;, border: 1px solid rgba(255, 255, 255, 0.1); }
-  .feature-card:hover {, transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); background: rgba(255, 255, 255, 0.1); }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+  .feature-card { background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 1.5rem; text-align: center; transition: all 0.3s ease;, border: 1px solid rgba(255, 255, 255, 0.1); }
+  .feature-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); background: rgba(255, 255, 255, 0.1); }
   .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; }
   .feature-title { font-weight: 600; margin-bottom: 0.5rem; color: #f3f4f6; }
   .feature-description { font-size: 0.875rem;, color: #9ca3af; line-height: 1.5; }

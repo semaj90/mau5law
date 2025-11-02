@@ -64,20 +64,17 @@ https://svelte.dev/e/js_parse_error -->
   let reranker: LegalAIReranker | null = null;
   // Theme configurations
   const themes = {
-    dark: {
-     , backgroundColor: '#1a1a1a',
-      nodeColors: {, document: '#4CAF50', caseItem: '#2196F3', evidence: '#FF5722', entity: '#9C27B0', concept: '#FFC107', relationship: '#607D8B' },
-      edgeColors: {, cites: '#FF9800', contains: '#8BC34A', related: '#03DAC6', similar: '#E91E63', references: '#00BCD4', contradicts: '#F44336' }
+    dark: { backgroundColor: '#1a1a1a',
+      nodeColors: { document: '#4CAF50', caseItem: '#2196F3', evidence: '#FF5722', entity: '#9C27B0', concept: '#FFC107', relationship: '#607D8B' },
+      edgeColors: { cites: '#FF9800', contains: '#8BC34A', related: '#03DAC6', similar: '#E91E63', references: '#00BCD4', contradicts: '#F44336' }
     },
-    light: {
-     , backgroundColor: '#ffffff',
-      nodeColors: {, document: '#2E7D32', caseItem: '#1565C0', evidence: '#D32F2F', entity: '#7B1FA2', concept: '#F57C00', relationship: '#455A64' },
-      edgeColors: {, cites: '#E65100', contains: '#558B2F', related: '#00695C', similar: '#AD1457', references: '#0097A7', contradicts: '#C62828' }
+    light: { backgroundColor: '#ffffff',
+      nodeColors: { document: '#2E7D32', caseItem: '#1565C0', evidence: '#D32F2F', entity: '#7B1FA2', concept: '#F57C00', relationship: '#455A64' },
+      edgeColors: { cites: '#E65100', contains: '#558B2F', related: '#00695C', similar: '#AD1457', references: '#0097A7', contradicts: '#C62828' }
     },
-    legal: {
-     , backgroundColor: '#0f1419',
-      nodeColors: {, document: '#4a9eff', caseItem: '#ff6b35', evidence: '#f7931e', entity: '#c77dff', concept: '#06ffa5', relationship: '#87ceeb' },
-      edgeColors: {, cites: '#ff9f40', contains: '#4bc0c0', related: '#ff6384', similar: '#36a2eb', references: '#9966ff', contradicts: '#ff4757' }
+    legal: { backgroundColor: '#0f1419',
+      nodeColors: { document: '#4a9eff', caseItem: '#ff6b35', evidence: '#f7931e', entity: '#c77dff', concept: '#06ffa5', relationship: '#87ceeb' },
+      edgeColors: { cites: '#ff9f40', contains: '#4bc0c0', related: '#ff6384', similar: '#36a2eb', references: '#9966ff', contradicts: '#ff4757' }
     }
   };
   const currentTheme = themes[theme] ?? themes.legal;
@@ -89,8 +86,7 @@ https://svelte.dev/e/js_parse_error -->
     traversalStrategy: 'reinforcement',
     semanticFiltering: true,
     useGPUAcceleration: enableGPUAcceleration,
-    reinforcementLearning: {
-     , enabled: enableReinforcementLearning,
+    reinforcementLearning: { enabled: enableReinforcementLearning,
       explorationRate: 0.1,
       learningRate: 0.01,
       discountFactor: 0.95
@@ -103,16 +99,15 @@ https://svelte.dev/e/js_parse_error -->
     backgroundColor: currentTheme.backgroundColor,
     nodeColors: currentTheme.nodeColors,
     edgeColors: currentTheme.edgeColors,
-    nodeSize: {, min: 8, max: 32 },
-    edgeThickness: {, min: 1, max: 6 },
-    meshDimensions: {, width: 100, height: 100, depth: 100 },
+    nodeSize: { min: 8, max: 32 },
+    edgeThickness: { min: 1, max: 6 },
+    meshDimensions: { width: 100, height: 100, depth: 100 },
     vertexCount: 10000,
     lodLevels: 4,
     colorScheme: 'semantic',
     layout: 'legal-context',
-    physics: {, gravity: 0.1, repulsion: 100, attraction: 0.05, damping: 0.9 },
-    reinforcementLearning: {
-     , enabled: enableReinforcementLearning,
+    physics: { gravity: 0.1, repulsion: 100, attraction: 0.05, damping: 0.9 },
+    reinforcementLearning: { enabled: enableReinforcementLearning,
       showTrainingProgress: true,
       highlightOptimalPaths: true,
       showRewardHeatmap: true,
@@ -202,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
       }
       const reinforcementStats = soraTraversal.getReinforcementStats?.() ?? { totalNodes: 0, avgVisitCount: 0 };
       const tensorStats = (await (soraTraversal.getTensorStats?.() ?? Promise.resolve({ totalSlices: 0 })));
-      const cacheStats = await (moogleSynthesizer.getEnhancedCacheStats?.() ?? Promise.resolve({ renderingCache: {, hitRate: 0 } }));
+      const cacheStats = await (moogleSynthesizer.getEnhancedCacheStats?.() ?? Promise.resolve({ renderingCache: { hitRate: 0 } }));
       const viz2 = get(visualization2D);
       const viz3 = get(visualization3D);
       stats.set({
@@ -450,7 +445,7 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 16px;
   }
   @keyframes spin {
-    0% {, transform: rotate(0deg); }
+    0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
   .loading-stats {
@@ -460,8 +455,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 12px;
     opacity: 0.8;
   }
-  .loading-detail {
-   , background: rgba(74, 158, 255, 0.2);
+  .loading-detail { background: rgba(74, 158, 255, 0.2);
     padding: 4px 8px;
     border-radius: 4px;
    , border: 1px solid rgba(74, 158, 255, 0.3);
@@ -490,8 +484,7 @@ https://svelte.dev/e/js_parse_error -->
     gap: 4px;
     z-index: 10;
   }
-  .control-btn {
-   , background: rgba(42, 42, 42, 0.9);
+  .control-btn { background: rgba(42, 42, 42, 0.9);
     border: 1px solid rgba(74, 158, 255, 0.3);
     color: #4a9eff;
     padding: 6px 8px;
@@ -500,8 +493,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 12px;
     transition: all 0.2s ease;
   }
-  .control-btn:hover {
-   , background: rgba(74, 158, 255, 0.2);
+  .control-btn:hover { background: rgba(74, 158, 255, 0.2);
     border-color: #4a9eff;
    , transform: translateY(-1px);
   }
@@ -542,8 +534,7 @@ https://svelte.dev/e/js_parse_error -->
     overflow-y: auto;
     z-index: 10;
   }
-  .path-explorer h4 {
-   , margin: 0, 0 8px 0;
+  .path-explorer h4 { margin: 0, 0 8px 0;
     color: #4a9eff;
     font-size: 12px;
     font-weight: 600;
@@ -553,8 +544,7 @@ https://svelte.dev/e/js_parse_error -->
     flex-direction: column;
     gap: 6px;
   }
-  .path-item {
-   , background: rgba(42, 42, 42, 0.5);
+  .path-item { background: rgba(42, 42, 42, 0.5);
     border: 1px solid transparent;
     border-radius: 4px;
     padding: 8px;
@@ -562,8 +552,7 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.2s ease;
     font-size: 11px;
   }
-  .path-item:hover {
-   , background: rgba(74, 158, 255, 0.1);
+  .path-item:hover { background: rgba(74, 158, 255, 0.1);
     border-color: rgba(74, 158, 255, 0.3);
   }
   .path-item.high-score {
@@ -599,8 +588,7 @@ https://svelte.dev/e/js_parse_error -->
     min-width: 200px;
     z-index: 10;
   }
-  .stats-panel h4 {
-   , margin: 0, 0 8px 0;
+  .stats-panel h4 { margin: 0, 0 8px 0;
     color: #4a9eff;
     font-size: 12px;
     font-weight: 600;

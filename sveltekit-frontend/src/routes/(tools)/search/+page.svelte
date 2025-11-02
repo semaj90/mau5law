@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Document } from '$lib/types'; import { superForm } from 'sveltekit-superforms'; import { zod } from 'sveltekit-superforms/adapters'; import { SearchFormSchema } from './+page.server'; import type { PageData } from './$types'; const { data } = $props<{ data: PageData }>() const { searchState } = $props<{ searchState: { results: Array<{, id: string }>() title: string; content: string; similarity: number }>; query: string; responseTime: number;, timestamp: string; } | null = null; const { form, errors, isSubmitting, constraints, enhance } = superForm( data.form, {
+import type { Document } from '$lib/types'; import { superForm } from 'sveltekit-superforms'; import { zod } from 'sveltekit-superforms/adapters'; import { SearchFormSchema } from './+page.server'; import type { PageData } from './$types'; const { data } = $props<{ data: PageData }>() const { searchState } = $props<{ searchState: { results: Array<{ id: string }>() title: string; content: string; similarity: number }>; query: string; responseTime: number;, timestamp: string; } | null = null; const { form, errors, isSubmitting, constraints, enhance } = superForm( data.form, {
       validators: zod(SearchFormSchema), taintedMessage: 'Update search to apply changes'
     } ); let showAdvanced = $state<boolean>(false); let expandedResults = $state<Set<string>>(new Set()); function toggleResult(id: string) { if (expandedResults.has(id)) { expandedResults.delete(id); } else { expandedResults.add(id); }
     expandedResults = expandedResults; }
@@ -38,7 +38,7 @@ import type { Document } from '$lib/types'; import { superForm } from 'sveltekit
 
   .form-group input[type='text'], .form-group input[type='number'] { width: 100%; padding: 0.75rem; background: #212529; color: #fff; border: 2px solid #555; font-family: monospace; font-size: 0.9rem; }
 
-  .form-group input:focus {, outline: none; border-color: #d4af37; box-shadow: 0, 0 10px rgba(212, 175, 55, 0.3); }
+  .form-group input:focus { outline: none; border-color: #d4af37; box-shadow: 0, 0 10px rgba(212, 175, 55, 0.3); }
 
   .form-group input.error { border-color: #ff4444; }
 
@@ -60,7 +60,7 @@ import type { Document } from '$lib/types'; import { superForm } from 'sveltekit
 
   .spinner { display: inline-block; width: 1rem; height: 1rem; border: 2px solid #000; border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; }
 
-  @keyframes spin { to {, transform: rotate(360deg); }
+  @keyframes spin { to { transform: rotate(360deg); }
   } .error-alert { background: #4a0000; border: 2px solid #ff4444; color: #ff8888; padding: 1rem; margin-top: 1rem; font-size: 0.8rem; }
 
   .results-section { margin-top: 2rem; }
@@ -99,5 +99,5 @@ import type { Document } from '$lib/types'; import { superForm } from 'sveltekit
 
   .no-results p { margin: 0.5rem 0; }
 
-  .no-results strong {, color: #d4af37; }
+  .no-results strong { color: #d4af37; }
 </style>

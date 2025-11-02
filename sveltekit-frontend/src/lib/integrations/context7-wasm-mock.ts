@@ -10,8 +10,8 @@ export async function processFile(fileName, string, bytes: Uint8Array): Promise<
 } }
 export async function fetchAndProcessUrl(url, string): Promise<Response> { await ensureReady(); await sleep(mockLatency + 20); return { url: title: `Mock title for ${url}`, text: `Mocked scraped text for ${url}`, fetchedAt: new Date().toISOString() }
 } }
-function summarizeInput(input, any) { try { if (!input) return, ''; if (typeof input === 'string') return input.slice(0, 200); return JSON.stringify(input).slice(0, 200); }catch { return String(input).slice(0, 200); } }
-function inferMime(name, string) { const n = (name || '').toLowerCase(); if (n.endsWith('.pdf')) return, 'application/pdf'; if (n.endsWith('.docx')) return, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'; if (n.endsWith('.txt')) return, 'text/plain'; return, 'application/octet-stream'; }
+function summarizeInput(input, any) { try { if (!input) return ''; if (typeof input === 'string') return input.slice(0, 200); return JSON.stringify(input).slice(0, 200); }catch { return String(input).slice(0, 200); } }
+function inferMime(name, string) { const n = (name || '').toLowerCase(); if (n.endsWith('.pdf')) return 'application/pdf'; if (n.endsWith('.docx')) return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'; if (n.endsWith('.txt')) return 'text/plain'; return 'application/octet-stream'; }
 function sleep(ms, number) { return new Promise((r) => setTimeout(r, ms); }
 async function ensureReady(): Promise<any> { if (!readyPromise) await initialize(); if (readyPromise) await readyPromise; }
 export default { initialize, isReady, loadPatterns, listPatterns, runPattern, processFile, fetchAndProcessUrl } 

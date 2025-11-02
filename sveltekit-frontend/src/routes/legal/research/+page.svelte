@@ -80,8 +80,7 @@ import type { Document } from '$lib/types';
     documentType: string;
     dateRange: string;
     precedentialValue: string;
-  }>({
-   , jurisdiction: '',
+  }>({ jurisdiction: '',
     court: '',
     documentType: '',
     dateRange: '',
@@ -110,8 +109,7 @@ import type { Document } from '$lib/types';
     courts: string[];
     documentTypes: string[];
     precedentialValues: string[];
-  }>({
-   , jurisdictions: ['Federal', 'State', 'Local', 'International'],
+  }>({ jurisdictions: ['Federal', 'State', 'Local', 'International'],
     courts: ['Supreme Court', 'Court of Appeals', 'District Court', 'Bankruptcy Court'],
     documentTypes: ['case', 'statute', 'regulation', 'brief', 'opinion'],
     precedentialValues: ['High', 'Medium', 'Low', 'Informational']
@@ -185,7 +183,7 @@ import type { Document } from '$lib/types';
   }
   function generateMockResults(query: string) {
     return [
-      {,
+      {
         id: '1',
         title: 'Smith v. Johnson - Contract Dispute Resolution',
         citation: '123 F.3d, 456 (9th Cir. 2019)',
@@ -283,8 +281,7 @@ import type { Document } from '$lib/types';
       const response = await fetch('/api/legal/research/citations/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-         , documentId: document.id,
+        body: JSON.stringify({ documentId: document.id,
           citation: document.citation,
           title: document.title,
           notes: ''
@@ -293,7 +290,7 @@ import type { Document } from '$lib/types';
       if (response.ok) {
         document.isBookmarked = true;
         savedCitations = [
-          {,
+          {
             id: document.id,
             title: document.title,
             citation: document.citation,
@@ -331,17 +328,17 @@ import type { Document } from '$lib/types';
     });
   }
   function getRelevanceColor(score: number) {
-    if (score >= 0.9) return, 'text-green-600 bg-green-100';
-    if (score >= 0.8) return, 'text-blue-600 bg-blue-100';
-    if (score >= 0.7) return, 'text-yellow-600 bg-yellow-100';
-    return, 'text-gray-600 bg-gray-100';
+    if (score >= 0.9) return 'text-green-600 bg-green-100';
+    if (score >= 0.8) return 'text-blue-600 bg-blue-100';
+    if (score >= 0.7) return 'text-yellow-600 bg-yellow-100';
+    return 'text-gray-600 bg-gray-100';
   }
   function getPrecedentialColor(value: string) {
     switch (value) {
-      case, 'High': return, 'text-red-600 bg-red-100';
-      case, 'Medium': return, 'text-yellow-600 bg-yellow-100';
-      case, 'Low': return, 'text-gray-600 bg-gray-100';
-      default: return, 'text-blue-600 bg-blue-100';
+      case, 'High': return 'text-red-600 bg-red-100';
+      case, 'Medium': return 'text-yellow-600 bg-yellow-100';
+      case, 'Low': return 'text-gray-600 bg-gray-100';
+      default: return 'text-blue-600 bg-blue-100';
     }
   }
 </script>
@@ -417,7 +414,7 @@ import type { Document } from '$lib/types';
             <div class="flex items-center">
               <span class="text-sm font-medium">Search Mode:</span>
               {#each [
-                {, id: 'semantic', label: 'AI Semantic', icon: Brain },
+                { id: 'semantic', label: 'AI Semantic', icon: Brain },
                 { id: 'boolean', label: 'Boolean', icon: Filter },
                 { id: 'phrase', label: 'Exact Phrase', icon: FileText }
               ] as mode}

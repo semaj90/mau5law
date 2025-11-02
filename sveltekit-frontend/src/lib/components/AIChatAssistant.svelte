@@ -3,8 +3,8 @@ import type { Message } from '$lib/types'; import { generate, getCapabilities, t
 
 	// Props let { caseId = 'demo-case-123', initialContext = '', placeholder = 'Ask me anything about your case...'
 	}: { caseId?: string; initialContext?: string; placeholder?: string; } = $props(); // State let messages = $state<Message[]>([]); let inputMessage = $state<string>(''); let isGenerating = $state<boolean>(false); let capabilities = $state<Awaited<ReturnType<typeof getCapabilities>> | null>(null); let currentTokens = $state<string>(''); let selectedMode = $state<'auto' | 'wasm' | 'native' | 'remote'>('auto'); // Load capabilities on mount $effect(() => { (async () => { capabilities = await getCapabilities(); console.log('[AI Chat] Capabilities:', capabilities); // Add system message with context if (initialContext && messages.length === 0) { messages = [{ id: crypto.randomUUID(), role: 'system', content: initialContext, timestamp: new Date() }]; }
-		})(); }); async function sendMessage(): Promise<any> { if (!inputMessage.trim() || isGenerating) return; const userMessage: Message = {, id: crypto.randomUUID(), role: 'user', content: inputMessage, timestamp: new Date() }; messages = [...messages, userMessage]; const currentInput = inputMessage; inputMessage = ''; isGenerating = true; currentTokens = ''; try { const options: GenerateOptions = {, mode: selectedMode, model: 'gemma3-legal:latest', maxTokens: 512, temperature: 0.7, stream: true, onToken: (token) => { currentTokens += token; }
-			}; const result = await generate(currentInput, options); const assistantMessage: Message = {, id: crypto.randomUUID(), role: 'assistant', content: result.text, timestamp: new Date(), metadata: result }; messages = [...messages, assistantMessage]; } catch (error) { console.error('[AI Chat] Generation failed:', error); const errorMessage: Message = {, id: crypto.randomUUID(), role: 'assistant', content: `❌ Sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`, timestamp: new Date() }; messages = [...messages, errorMessage]; } finally { isGenerating = false; currentTokens = ''; }
+		})(); }); async function sendMessage(): Promise<any> { if (!inputMessage.trim() || isGenerating) return; const userMessage: Message = { id: crypto.randomUUID(), role: 'user', content: inputMessage, timestamp: new Date() }; messages = [...messages, userMessage]; const currentInput = inputMessage; inputMessage = ''; isGenerating = true; currentTokens = ''; try { const options: GenerateOptions = { mode: selectedMode, model: 'gemma3-legal:latest', maxTokens: 512, temperature: 0.7, stream: true, onToken: (token) => { currentTokens += token; }
+			}; const result = await generate(currentInput, options); const assistantMessage: Message = { id: crypto.randomUUID(), role: 'assistant', content: result.text, timestamp: new Date(), metadata: result }; messages = [...messages, assistantMessage]; } catch (error) { console.error('[AI Chat] Generation failed:', error); const errorMessage: Message = { id: crypto.randomUUID(), role: 'assistant', content: `❌ Sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`, timestamp: new Date() }; messages = [...messages, errorMessage]; } finally { isGenerating = false; currentTokens = ''; }
 	} function handleKeydown(event: KeyboardEvent) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); }
 	} function clearChat() { messages = initialContext ? messages.slice(0, 1): []; }
 
@@ -17,7 +17,7 @@ import type { Message } from '$lib/types'; import { generate, getCapabilities, t
 
 	.header-content { flex: 1; }
 
-	.header-content h3 {, margin: 0, 0 8px 0; font-size: 18px; font-weight: 600; }
+	.header-content h3 { margin: 0, 0 8px 0; font-size: 18px; font-weight: 600; }
 
 	.capabilities { display: flex; gap: 8px; font-size: 12px; }
 
@@ -33,7 +33,7 @@ import type { Message } from '$lib/types'; import { generate, getCapabilities, t
 
 	.clear-btn { padding: 6px 12px;, background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 4px; color: white; cursor: pointer; font-size: 14px; transition: background 0.2s; }
 
-	.clear-btn:hover {, background: rgba(255, 255, 255, 0.3); }
+	.clear-btn:hover { background: rgba(255, 255, 255, 0.3); }
 
 	.messages-container { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
 
@@ -53,11 +53,11 @@ import type { Message } from '$lib/types'; import { generate, getCapabilities, t
 
 	.message-content { padding: 12px 16px; border-radius: 12px; line-height: 1.5; }
 
-	.message-user .message-content {, background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-bottom-right-radius: 4px; }
+	.message-user .message-content { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-bottom-right-radius: 4px; }
 
 	.message-assistant .message-content { background: #f3f4f6; color: #1f2937; border-bottom-left-radius: 4px; }
 
-	.generating .message-content {, background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%); background-size: 200% 100%; animation: shimmer 2s infinite; }
+	.generating .message-content { background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%); background-size: 200% 100%; animation: shimmer 2s infinite; }
 
 	@keyframes shimmer { 0% { background-position: 200% 0; }
 		100% { background-position: -200% 0; }

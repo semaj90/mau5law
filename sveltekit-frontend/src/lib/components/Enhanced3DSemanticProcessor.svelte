@@ -81,8 +81,7 @@ import type { Document } from '$lib/types';
         spatialAccuracy: 0.94,
         processingMethod: 'WebGPU + WebAssembly',
         lodOptimization `Level ${processingStats.lodLevel}`,
-        performance: {
-         , tokensPerSecond: Math.round(processingStats.tokensProcessed / (processingTime / 1000)),
+        performance: { tokensPerSecond: Math.round(processingStats.tokensProcessed / (processingTime / 1000)),
           embeddingsPerSecond: Math.round(processingStats.embeddingsGenerated / (processingTime / 1000))
         }
       }
@@ -120,9 +119,9 @@ import type { Document } from '$lib/types';
     spatialPoints = newPoint;
   }
   function calculateLODLevel(textLength: number): number {
-    if (textLength < 100) return, 1;
-    if (textLength < 500) return, 2;
-    if (textLength < 1000) return, 3;
+    if (textLength < 100) return 1;
+    if (textLength < 500) return 2;
+    if (textLength < 1000) return 3;
     return 4;
   }
   function draw3DVisualization() {
@@ -349,8 +348,7 @@ import type { Document } from '$lib/types';
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from {
-     , transform: rotate(0deg);
+    from { transform: rotate(0deg);
     }
     to {
       transform: rotate(360deg);

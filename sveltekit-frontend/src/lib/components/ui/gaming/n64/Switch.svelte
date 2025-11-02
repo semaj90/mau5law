@@ -20,7 +20,7 @@
   const { era } = $props<{ era: string }>()
   const { variant } = $props<{ variant: string }>()
   const { size } = $props<{ size: string }>() // normalized to: 'small'|'medium'|'large'|'xl'
-  const { disabled } = $props<{, disabled: boolean }>()
+  const { disabled } = $props<{ disabled: boolean }>()
   const { loading } = $props<{ loading: boolean }>()
   const { animationStyle } = $props<{ animationStyle: string }>()
   const { renderOptions } = $props<{ renderOptions: Partial<N64RenderingOptions> }>()
@@ -51,7 +51,7 @@
   const { enableSpringPhysics } = $props<{ enableSpringPhysics: boolean }>()
   const { animationDuration } = $props<{ animationDuration: number }>()
   const { springTension } = $props<{ springTension: number }>()
-  const { ondispatch } = $props<{ ondispatch: ((_event: {, checked: boolean }>() value?: string }) => void) | undefined;
+  const { ondispatch } = $props<{ ondispatch: ((_event: { checked: boolean }>() value?: string }) => void) | undefined;
   // avoid using the reserved word `class` as an exported identifier
   const { className } = $props<{ className: string }>()
 
@@ -230,28 +230,28 @@
   function getMaterialStyles(variantKey: string, material: string, isOn: boolean) {
     const baseColors = {
       primary: {
-        off: {, base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: {, base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
+        on: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' }
       },
       secondary: {
-        off: {, base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
-        on: {, base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }
+        off: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
+        on: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }
       },
       success: {
-        off: {, base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: {, base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
+        on: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' }
       },
       warning: {
-        off: {, base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: {, base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
+        on: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
       },
       error: {
-        off: {, base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: {, base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
+        on: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }
       },
       info: {
-        off: {, base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: {, base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
+        on: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
       }
     } as const;
 
@@ -259,13 +259,11 @@
     const stateColors = isOn ? colors.on : colors.off;
 
     const materialMap: Record<string any> = {
-      basic: {
-       , trackBackground: isOn ? stateColors.base : '#2d3748',
+      basic: { trackBackground: isOn ? stateColors.base : '#2d3748',
         knobBackground: stateColors.base,
         knobShadow: `0 ${depth}px, 0 ${stateColors.shadow}`
       },
-      phong: {
-       , trackBackground: `linear-gradient(145deg, ${isOn ? stateColors.highlight : '#2d3748'} 0%, ${isOn ? stateColors.base : '#1a202c'} 100%)`,
+      phong: { trackBackground: `linear-gradient(145deg, ${isOn ? stateColors.highlight : '#2d3748'} 0%, ${isOn ? stateColors.base : '#1a202c'} 100%)`,
         knobBackground: `linear-gradient(145deg, ${stateColors.highlight} 0%, ${stateColors.base} 50%, ${stateColors.shadow} 100%)`,
         knobShadow: `
           0 ${depth}px, 0 ${stateColors.shadow},
@@ -274,8 +272,7 @@
           0 4px 8px rgba(0,0,0,0.4)
         `
       },
-      pbr: {
-       , trackBackground: `
+      pbr: { trackBackground: `
           linear-gradient(145deg, ${isOn ? stateColors.highlight : '#2d3748'} 0%, ${isOn ? stateColors.base : '#1a202c'} 50%, ${isOn ? stateColors.shadow : '#0d1117'} 100%),
           radial-gradient(circle at 30% 30%, rgba(255,255,255,${isOn ? 0.2 : 0.1}) 0%, transparent 50%)
         `,`
@@ -299,10 +296,10 @@
   function getSizeStyles(sz: string) {
     const normalized = sz === 'md' ? 'medium' : sz;
     const sizeMap: Record<string any> = {
-      small: {, width: 44, height: 24, knobSize: 18, fontSize: '12px' },
-      medium: {, width: 56, height: 32, knobSize: 24, fontSize: '14px' },
-      large: {, width: 68, height: 40, knobSize: 30, fontSize: '16px' },
-      xl: {, width: 80, height: 48, knobSize: 36, fontSize: '18px' }
+      small: { width: 44, height: 24, knobSize: 18, fontSize: '12px' },
+      medium: { width: 56, height: 32, knobSize: 24, fontSize: '14px' },
+      large: { width: 68, height: 40, knobSize: 30, fontSize: '16px' },
+      xl: { width: 80, height: 48, knobSize: 36, fontSize: '18px' }
     };
     return sizeMap[normalized] || sizeMap.medium;
   }
@@ -525,8 +522,7 @@
    , transform: translate(-50%, -50%);
     z-index: 10;
   }
-  .n64-spinner {
-   , width: calc(var(--knob-size) * 0.5);
+  .n64-spinner { width: calc(var(--knob-size) * 0.5);
     height: calc(var(--knob-size) * 0.5);
     border: 2px solid transparent;
     border-top: 2px solid rgba(255, 255, 255, 0.8);
@@ -534,8 +530,7 @@
     animation: switchSpin 1s linear infinite;
   }
   @keyframes switchSpin {
-    to {
-     , transform: rotate(360deg);
+    to { transform: rotate(360deg);
     }
   }
   /* Track fog effect */
@@ -586,8 +581,7 @@
     gap: 4px;
     flex: 1;
   }
-  .switch-label {
-   , color: #ffffff;
+  .switch-label { color: #ffffff;
     font-weight: 600;
     font-size: var(--switch-font-size);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
@@ -595,14 +589,12 @@
     cursor: pointer;
     user-select: none;
   }
-  .switch-description {
-   , color: rgba(255, 255, 255, 0.7);
+  .switch-description { color: rgba(255, 255, 255, 0.7);
     font-size: calc(var(--switch-font-size) * 0.85);
     line-height: 1.4;
   }
   /* State variations */
-  .n64-switch.focused {
-   , outline: 3px solid rgba(74, 144, 226, 0.6);
+  .n64-switch.focused { outline: 3px solid rgba(74, 144, 226, 0.6);
     outline-offset: 2px;
   }
   .n64-switch.hovered:not(.disabled) .switch-track {
@@ -626,8 +618,7 @@
   .n64-switch.readonly {
     cursor: default;
   }
-  .n64-switch.readonly .switch-label {
-   , cursor: default;
+  .n64-switch.readonly .switch-label { cursor: default;
   }
   /* Material type variations */
   .n64-switch.pbr .switch-track {
@@ -704,8 +695,7 @@
     .switch-track {
       border: 2px solid currentColor;
     }
-    .switch-knob {
-     , border: 2px solid currentColor;
+    .switch-knob { border: 2px solid currentColor;
     }
     .knob-lighting,
     .knob-reflection,

@@ -26,8 +26,7 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-         , model: model,
+        body: JSON.stringify({ model: model,
           prompt: prompt,
           stream: false // For a quick action, we might not want streaming
         })

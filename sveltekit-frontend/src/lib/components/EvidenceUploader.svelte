@@ -1,4 +1,4 @@
-<script lang="ts"> // Svelte, 5 runes are auto-imported // Svelte, 5 props interface interface Props { caseId: string; maxFileSize?: number; onuploaded?: (_event: {, file: File;, evidence: any }) => void; }
+<script lang="ts"> // Svelte, 5 runes are auto-imported // Svelte, 5 props interface interface Props { caseId: string; maxFileSize?: number; onuploaded?: (_event: { file: File;, evidence: any }) => void; }
   // Svelte, 5 props with event handlers let { caseId, maxFileSize = 50 * 1024 * 1024, onuploaded }: Props = $props(); let files: FileList | null = null; let dragActive = $state<boolean>(false); let componentError = $state<Error | null>(null); let uploading = $state<boolean>(false); let uploadProgress = $state<number>(0); let uploadStatus = $state<string>(''); // File type categories for validation and UI const allowedTypes = { images: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'], videos: ['video/mp4', 'video/webm', 'video/avi', 'video/mov', 'video/wmv'], documents: ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'], audio: ['audio/mp3', 'audio/wav', 'audio/m4a', 'audio/aac'] }
   // Flatten safely for TypeScript const allAllowedTypes: string[] = Object.values(allowedTypes).reduce((acc, arr) => acc.concat(arr), [] as: string[]); function handleDragOver(e: DragEvent) { e.preventDefault(); dragActive = true; }
   function handleDragLeave(e: DragEvent) { e.preventDefault(); dragActive = false; }
@@ -9,9 +9,9 @@
         uploadStatus = `Uploading ${file.name}...`; const formData = new FormData(); formData.append('file', file); formData.append('caseId', caseId); formData.append('title', file.name); formData.append('evidenceType', getEvidenceType(file.type)); const response: Response = await fetch('/api/upload', { method: 'POST', body: formData }); if (response.ok) { const result = await response.json(); uploadProgress = ((i + 1) / files.length) * 100; // Dispatch success event if (onuploaded) { onuploaded({ file, evidence: (result as { evidence?: any }).evidence }); }
         } else { const error = await response.json(); uploadStatus = `Upload failed: ${(error, as: any)?.error ?? 'unknown'}`; }
       } uploadStatus = 'Upload complete'; setTimeout(() => { uploadStatus = ''; uploadProgress = 0; }, 2000); } catch (error) { const errorMsg = error instanceof Error ? error.message: 'Unknown error'; uploadStatus = `Upload error: ${ errorMsg }`; componentError = error instanceof Error ?, error: new Error(errorMsg); } finally { uploading = false; files = null; }
-  } function getEvidenceType(mimeType: string): string { if (allowedTypes.images.includes(mimeType)) return, 'photograph'; if (allowedTypes.videos.includes(mimeType)) return, 'video'; if (allowedTypes.documents.includes(mimeType)) return, 'document'; if (allowedTypes.audio.includes(mimeType)) return, 'audio'; return, 'physical'; }
-  function getFileIcon(mimeType: string): string { if (allowedTypes.images.includes(mimeType)) return, '🖼️'; if (allowedTypes.videos.includes(mimeType)) return, '🎥'; if (allowedTypes.documents.includes(mimeType)) return, '📄'; if (allowedTypes.audio.includes(mimeType)) return, '🎵'; return, '📁'; }
-  function formatFileSize(bytes: number): string { if (bytes === 0) return, '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
+  } function getEvidenceType(mimeType: string): string { if (allowedTypes.images.includes(mimeType)) return 'photograph'; if (allowedTypes.videos.includes(mimeType)) return 'video'; if (allowedTypes.documents.includes(mimeType)) return 'document'; if (allowedTypes.audio.includes(mimeType)) return 'audio'; return 'physical'; }
+  function getFileIcon(mimeType: string): string { if (allowedTypes.images.includes(mimeType)) return '🖼️'; if (allowedTypes.videos.includes(mimeType)) return '🎥'; if (allowedTypes.documents.includes(mimeType)) return '📄'; if (allowedTypes.audio.includes(mimeType)) return '🎵'; return '📁'; }
+  function formatFileSize(bytes: number): string { if (bytes === 0) return '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
 </script> {#if componentError} <div class="error-boundary bg-red-900 border border-red-500 rounded-lg p-6"> <h2 class="text-xl font-bold text-red-300">Upload Error</h2> <p class="text-red-200">Evidence uploader encountered an error:</p> <p class="text-red-100 font-mono text-sm">{componentError.message}</p> <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2"
       onclick={() => (componentError = null)} aria-label="Dismiss error and retry"
     > Retry </button> </div> {:else} <div class="evidence-uploader"> <div class="upload-zone"
@@ -28,14 +28,14 @@
   .upload-zone.drag-active { border-color: var(--primary, #007bff); background: var(--primary-light, #e7f3ff); transform: scale(1.02); }
   .upload-zone.uploading { border-color: var(--warning, #ffc107); cursor: not-allowed; }
   .upload-prompt .upload-icon { font-size: 3rem; margin-bottom: 1rem; }
-  .upload-prompt h3 {, margin: 0, 0 0.5rem 0; color: var(--text-primary, #333); }
+  .upload-prompt h3 { margin: 0, 0 0.5rem 0; color: var(--text-primary, #333); }
   .upload-prompt p { margin: 0, 0 1rem 0; color: var(--text-secondary, #666); }
   .file-types { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
   .file-type { padding: 0.25rem 0.5rem;, background: var(--surface, #fff); border-radius: 4px; font-size: 0.875rem;, color: var(--text-secondary, #666); }
   .size-limit { font-size: 0.875rem;, color: var(--text-muted, #999); }
   .upload-progress { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
   .upload-spinner { font-size: 2rem; animation: spin 1s linear infinite; }
-  @keyframes spin { from {, transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   .upload-message { font-weight: 500;, color: var(--text-primary, #333); }
   .progress-bar { width: 100%; max-width: 300px; height: 8px;, background: var(--surface, #e9ecef); border-radius: 4px; overflow: hidden; }
   .progress-fill { height: 100%;, background: var(--primary, #007bff); transition: width: 0.3s ease; }

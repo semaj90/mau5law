@@ -46,7 +46,6 @@ transparent 100% {}
     opacity: 0;
     transition: opacity 0.3s ease;
   }
-  .yorha-card:hover::before {
-   , opacity: 0.3;
+  .yorha-card:hover::before { opacity: 0.3;
   }
 </style>

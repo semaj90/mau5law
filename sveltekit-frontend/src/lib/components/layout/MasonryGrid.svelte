@@ -161,10 +161,10 @@ https://svelte.dev/e/js_parse_error -->
   :global(.masonry-item.drag-disabled) {
     cursor: default;
   }
-  :global(.masonry-item:not(.drag-disabled)) {,
+  :global(.masonry-item:not(.drag-disabled)) {
     cursor: grab;
 }
-  :global(.masonry-item:not(.drag-disabled):active) {,
+  :global(.masonry-item:not(.drag-disabled):active) {
     cursor: grabbing;
 }
   :global(.masonry-item.drag-shadow) {
@@ -176,8 +176,7 @@ https://svelte.dev/e/js_parse_error -->
    , transform: rotate(5deg);
   }
   /* Loading state */
-    .masonry-grid:empty::before {
-   , content: 'Loading...',
+    .masonry-grid:empty::before { content: 'Loading...',
     display: block;
     text-align: center;
    , color: var(--pico-muted-color, #6b7280);
@@ -189,12 +188,10 @@ https://svelte.dev/e/js_parse_error -->
     animation: slideInUp 0.3s ease-out;
   }
   @keyframes slideInUp {
-    from {
-     , transform: translateY(20px);
+    from { transform: translateY(20px);
       opacity: 0;
 }
-    to {
-     , transform: translateY(0);
+    to { transform: translateY(0);
       opacity: 1;
 }}
   /* Hover effects */

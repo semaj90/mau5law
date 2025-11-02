@@ -16,8 +16,7 @@ https://svelte.dev/e/js_parse_error -->
   // State
   let isInitialized = $state<boolean>(false);
   let currentTooltip: HTMLElement | null = null;
-  let interactionStats = {
-   , totalInteractions: 0,
+  let interactionStats = { totalInteractions: 0,
     cacheHits: 0,
     cacheMisses: 0,
     averageResponseTime: 0,
@@ -446,7 +445,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   :global(.chr-rom-tooltip .error-content) { display:flex; align-items:center; gap:6px; color:#ff0041; }
 
-  @keyframes spin { 0% {, transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
   /* Debug Panel */
   .zero-latency-debug-panel {
@@ -469,7 +468,7 @@ https://svelte.dev/e/js_parse_error -->
   .stat .label { color: #b0b0b0; }
   .stat .value { font-weight:600; color:#e0e0e0; }
   .stat .value.cache-hits { color:#00ff41; }
-  .stat .value.zero-latency {, color:#ffd700; font-weight:700; }
+  .stat .value.zero-latency { color:#ffd700; font-weight:700; }
 
   @media (max-width: 768px) {
     .zero-latency-debug-panel { top:10px; right:10px;, left:10px; font-size:9px; }

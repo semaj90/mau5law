@@ -62,7 +62,7 @@
   .text-yellow-400 { color: #fbbf24; }
   .text-white { color: #ffffff; }
   .text-black { color: #000000; }
-  .text-gray-300 {, color: #d1d5db; }
+  .text-gray-300 { color: #d1d5db; }
   .mb-8 { margin-bottom: 2rem; }
   .mb-2 { margin-bottom: 0.5rem; }
   .mt-4 { margin-top: 1rem; }
@@ -75,7 +75,7 @@
   .hover\:bg-green-700:hover { background-color: #15803d; }
   .hover\:bg-blue-700:hover { background-color: #1d4ed8; }
   .transition-colors { transition-property: color, background-color, border-color; transition-duration 150m; }
-  .focus\:outline-none:focus {, outline: none; }
+  .focus\:outline-none:focus { outline: none; }
   .focus\:border-yellow-400:focus { border-color: #fbbf24; }
 </style>
 

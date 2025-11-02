@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
   let { width = 800, height = 480 } = $props() as { width?: number; height?: number };
   // replace dispatcher type so `device` can be: null/undefined safely
   const dispatch = createEventDispatcher<{
-    ready: {, supported: boolean; device?: GPUDevice | null; error?: string };
+    ready: { supported: boolean; device?: GPUDevice | null; error?: string };
   }>();
   // Svelte, 5 runes state - add explicit types and typed initializers
   let demoStage: string = $state('initializing');
@@ -81,8 +81,7 @@ https://svelte.dev/e/js_parse_error -->
   let animations: AnimationItem[] = $state([] as AnimationItem[]);
   let searchResults: SearchResultItem[] = $state([] as SearchResultItem[]);
   let performanceMetrics: PerformanceMetrics = $state({} as PerformanceMetrics);
-  let neuralTopologyStatus: NeuralTopologyStatus = $state({
-   , transformer: 'idle',
+  let neuralTopologyStatus: NeuralTopologyStatus = $state({ transformer: 'idle',
     autoencoder: 'idle',
     cnn: 'idle',
     rnn: 'idle'
@@ -90,8 +89,7 @@ https://svelte.dev/e/js_parse_error -->
   let userActions: string[] = $state(['hover_contract', 'click_evidence', 'scroll_documents', 'drag_asset']);
   let currentActionIndex: number = $state(0);
   let isRunningDemo: boolean = false;
-  let asset3DMetrics: Asset3DMetrics = $state({
-   , predictedComponents: 0,
+  let asset3DMetrics: Asset3DMetrics = $state({ predictedComponents: 0,
     prerenderedAnimations: 0,
     chrRomPatterns: 0,
     cacheHitRatio: 0
@@ -521,8 +519,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 1rem;
     line-height: 1.5;
   }
-  .topology-status-grid {
-   , display: grid;
+  .topology-status-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 15px;
     margin-bottom: 30px;
@@ -570,12 +567,10 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     transition: all 0.3s ease;
   }
-  .demo-btn.primary {
-   , background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  .demo-btn.primary { background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white;
   }
-  .demo-btn.primary:hover {
-   , transform: translateY(-2px);
+  .demo-btn.primary:hover { transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
   }
   .demo-btn.secondary {
@@ -600,8 +595,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 4px;
     transition: width: 0.3s ease;
   }
-  .metrics-dashboard {
-   , display: grid;
+  .metrics-dashboard { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
     margin: 30px 0;
@@ -675,8 +669,7 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 20px;
     font-weight: 600;
   }
-  .summary-grid {
-   , display: grid;
+  .summary-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 12px;
   }
@@ -686,8 +679,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 6px;
     font-size: 0.9rem;
   }
-  .summary-item strong {
-   , color: #10b981;
+  .summary-item strong { color: #10b981;
   }
   @media (max-width: 768px) {
     .neural-topology-demo {
@@ -706,7 +698,7 @@ https://svelte.dev/e/js_parse_error -->
   .neural-canvas { border-radius: 8px; box-shadow: 0 6px 18px rgba(15,23,42,0.06); background: #0b1220; }
   .fallback { text-align: center; color: #334155; }
   .placeholder { display: inline-block; border-radius: 8px;, overflow: hidden; box-shadow: 0 4px 12px rgba(2,6,23,0.06); margin-top: 12px; }
-  .error {, color: #b91c1c; font-size: 0.9rem; margin-top: 8px; }
+  .error { color: #b91c1c; font-size: 0.9rem; margin-top: 8px; }
   }
 </style>
 <div class="neural-demo">

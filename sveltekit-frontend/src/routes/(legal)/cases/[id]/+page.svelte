@@ -12,18 +12,18 @@ import type { Case } from, '$lib/types';
 
 	// Status and priority colors
 	const statusStyles: Record<string { bg: string; text: string; label: string }> = {
-		open: {, bg: '#4caf50', text: '#fff', label: '🟢 Open' },
-		investigating: {, bg: '#ff9800', text: '#fff', label: '🔍 Investigating' },
-		pending: {, bg: '#ffd700', text: '#000', label: '⏳ Pending' },
-		closed: {, bg: '#666', text: '#fff', label: '✅ Closed' },
-		archived: {, bg: '#999', text: '#fff', label: '📦 Archived' }
+		open: { bg: '#4caf50', text: '#fff', label: '🟢 Open' },
+		investigating: { bg: '#ff9800', text: '#fff', label: '🔍 Investigating' },
+		pending: { bg: '#ffd700', text: '#000', label: '⏳ Pending' },
+		closed: { bg: '#666', text: '#fff', label: '✅ Closed' },
+		archived: { bg: '#999', text: '#fff', label: '📦 Archived' }
 	};
 
 	const priorityStyles: Record<string { bg: string; text: string; label: string }> = {
-		low: {, bg: '#4caf50', text: '#fff', label: '🟢 Low' },
-		medium: {, bg: '#ffd700', text: '#000', label: '🟡 Medium' },
-		high: {, bg: '#ff9800', text: '#fff', label: '🟠 High' },
-		critical: {, bg: '#f44336', text: '#fff', label: '🔴 Critical' }
+		low: { bg: '#4caf50', text: '#fff', label: '🟢 Low' },
+		medium: { bg: '#ffd700', text: '#000', label: '🟡 Medium' },
+		high: { bg: '#ff9800', text: '#fff', label: '🟠 High' },
+		critical: { bg: '#f44336', text: '#fff', label: '🔴 Critical' }
 	};
 
 	function getStatusStyle(status: string) {
@@ -35,7 +35,7 @@ import type { Case } from, '$lib/types';
 	}
 
 	function formatDate(dateStr: string | null | undefined): string {
-		if (!dateStr) return, '-';
+		if (!dateStr) return '-';
 		try {
 			return new Date(dateStr).toLocaleDateString('en-US', {
 				year: 'numeric',

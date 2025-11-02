@@ -13,7 +13,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       'Evidence Photo',
       'Court Filing'
     ]; return samples.map(text => { const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = 200; const ctx = canvas.getContext('2d')!; // White background ctx.fillStyle = 'white'; ctx.fillRect(0, 0, canvas.width, canvas.height); // Black text ctx.fillStyle = 'black'; ctx.font = '24px Arial'; ctx.textAlign = 'center'; ctx.fillText(text, canvas.width / 2, canvas.height / 2); return canva; }); }
-  /** * Clear all results and logs */ function clearResults() { results = []; logs = []; cacheStats = { hits: 0, misses: 0, totalProcessingTime: 0 } performanceMetrics = {, ocrTime: 0, embeddingTime: 0, tensorTime: 0, storageTime: 0 } addLog('🗑️ Cleared all results'); }
+  /** * Clear all results and logs */ function clearResults() { results = []; logs = []; cacheStats = { hits: 0, misses: 0, totalProcessingTime: 0 } performanceMetrics = { ocrTime: 0, embeddingTime: 0, tensorTime: 0, storageTime: 0 } addLog('🗑️ Cleared all results'); }
   /** * Add log entry */ function addLog(message: string) { logs = [`[${new Date().toLocaleTimeString()}] ${ message }`, ...logs.slice(0, 49)]; }
   // Computed values using Svelte, 5 $derived const averageProcessingTime = $derived( cacheStats.hits + cacheStats.misses > 0 ? cacheStats.totalProcessingTime / (cacheStats.hits + cacheStats.misses): 0 ); const cacheHitRate = $derived( cacheStats.hits + cacheStats.misses > 0 ? (cacheStats.hits / (cacheStats.hits + cacheStats.misses)) * 100: 0 ); </script> <div class="ocr-tensor-demo"> <div class="demo-header"> <h2>🔬 OCR + Tensor Processing Demo</h2> <p>Complete pipeline: Image → OCR.js → Embeddings → WebGPU Tensors → Database Storage</p> <div class="status-bar" class:initialized, class:processing> <span class="status-dot"></span> {#if processing} Processing... {:else if initialized} Ready {:else} Initializing... {/if} </div> </div> <div class="demo-content"> <!-- File, Upload, Section --> <div class="upload-section"> <h3>📁 Upload Image</h3> <input; bind:this={ fileInput } type="file"
         accept="image/*"
@@ -38,7 +38,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .action-buttons button { padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; font-weight: 500; cursor: pointer; transition: all 0.2; }
   .action-buttons buttondisabled { opacity: 0.6; cursor: not-allowed; }
   .action-buttons buttonfirst-child { background: #3b82f6;, color: white; }
-  .action-buttons buttonfirst-child:hover:not(:disabled) {, background: #2563eb; }
+  .action-buttons buttonfirst-child:hover:not(:disabled) { background: #2563eb; }
   .metrics-grid, .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
   .metric, .stat { display: flex; flex-direction: column;, gap: 0.25rem; }
   .metric label, .stat label { font-size: 0.875rem;, color: #6b7280; }
@@ -57,7 +57,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .ocr-text p { margin: 0.5rem 0; padding: 0.5rem; background: white; border-radius: 0.5rem; border: 1px solid #e5e7eb; }
   .tensor-stats { display: flex; gap: 1rem; font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; }
   .logs-container { max-height: 300px; overflow-y: auto; background: #1f2937; border-radius: 0.5rem;, padding: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; }
-  .log-entry {, color: #f3f4f6; margin-bottom: 0.25rem; }
+  .log-entry { color: #f3f4f6; margin-bottom: 0.25rem; }
   @keyframes pulse { 0%, 100% { opacity: 1; }
-    50% {, opacity: 0.5; }
+    50% { opacity: 0.5; }
   } </style>

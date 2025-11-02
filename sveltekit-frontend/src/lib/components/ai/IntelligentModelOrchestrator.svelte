@@ -110,10 +110,9 @@ import type { User } from '$lib/types';
       if (worker) {
         worker.postMessage({
           type: 'SMART_MODEL_SELECT',
-          payload: {
-           , query: queryInput,
-            userContext: {, sessionId: 'demo' },
-            intent: {, category: 'general', confidence: 0.8 }
+          payload: { query: queryInput,
+            userContext: { sessionId: 'demo' },
+            intent: { category: 'general', confidence: 0.8 }
           }
         });
       }
@@ -160,18 +159,18 @@ import type { User } from '$lib/types';
     return `${(mb / 1024).toFixed(1)}GB`;
   }
   function getConfidenceColor(confidence: number): string {
-    if (confidence > 0.8) return, 'text-green-600';
-    if (confidence > 0.6) return, 'text-yellow-600';
-    return, 'text-red-600';
+    if (confidence > 0.8) return 'text-green-600';
+    if (confidence > 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
   function getCategoryIcon(category: string): string {
     switch (category) {
-      case, 'clarification': return, '❓';
-      case, 'expansion': return, '📋';
-      case, 'alternative': return, '🔄';
-      case, 'follow-up': return, '➡️';
-      case, 'correction': return, '✏️';
-      default: return, '💡';
+      case, 'clarification': return '❓';
+      case, 'expansion': return '📋';
+      case, 'alternative': return '🔄';
+      case, 'follow-up': return '➡️';
+      case, 'correction': return '✏️';
+      default: return '💡';
     }
   }
 </script>
@@ -488,8 +487,7 @@ import type { User } from '$lib/types';
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from {
-     , transform: rotate(0deg);
+    from { transform: rotate(0deg);
     }
     to {
       transform: rotate(360deg);
@@ -507,7 +505,6 @@ import type { User } from '$lib/types';
     background: #c1c1c1;
     border-radius: 3px;
   }
-  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
-   , background: #a8a8a8;
+  .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #a8a8a8;
   }
 </style>

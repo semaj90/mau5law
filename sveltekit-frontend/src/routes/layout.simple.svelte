@@ -27,7 +27,6 @@
     color: #ffd700;
     padding: 1rem;
   }
-  main {
-   , padding: 1rem;
+  main { padding: 1rem;
   }
 </style>

@@ -2,7 +2,7 @@
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Enhanced UI Preview with Session-Aware Components import { onMount } from 'svelte'; import { page } from '$app/stores'; // NES UI Components // import MeltButton from '$lib/components/ui/MeltButton.svelte'; // REMOVED import StatsCard from '$lib/components/ui/StatsCard.svelte'; import Dialog from '$lib/components/ui/Dialog.svelte'; // Enhanced-Bits UI Components import Button from '$lib/components/ui/enhanced-bits.svelte'; // ADDED // Using built-in dialog since N64Modal might be incomplete import QuickActionButton from '$lib/components/ui/QuickActionButton.svelte'; // Global Components import KeyboardShortcutProvider from '$lib/components/KeyboardShortcutProvider.svelte'; // Stores and Utilities // Note: sessionStore may not be available, using mock data instead // import  sessionActions, user, isAuthenticated  from "$lib/stores/sessionStore.svelte"; import { formatRelativeTime, formatDetailedTimestamp, truncateFilename, truncateText, getFileIcon, getPriorityColor, getStatusColor } from '$lib/utils/formatting'; // Improved: Use QuickActionButton directly, ensure its props/events are typed correctly // Component state let showDialog = $state<boolean>(false); let selectedTab = $state<string>('buttons'); let showSidebar = $state<boolean>(true); let mockSessionActive = $state<boolean>(false); // Modal states let showModal = $state<boolean>(false); let modalVariant = $state<string>('gradient'); let modalSize = $state<string>('md'); // Mock user data for session/user demo let mockUser = $state({ id: 'demo-user-123', email: 'demo@legalai.com', role: 'prosecutor' as const }); interface TabItem { id: string; label: string; }
-  const tabs: TabItem[] = [ {, id: 'buttons', label: 'Buttons' }, { id: 'avatars', label: 'Avatars' }, { id: 'dialog', label: 'Dialog' }, { id: 'modals', label: 'Enhanced Modals' }, { id: 'cards', label: 'Cards' }, { id: 'session', label: 'Session Demo' }, { id: 'formatting', label: 'Formatting' }, { id: 'sidebar', label: 'Global Sidebar' }, ]; function openDialog() { showDialog = true; }
+  const tabs: TabItem[] = [ { id: 'buttons', label: 'Buttons' }, { id: 'avatars', label: 'Avatars' }, { id: 'dialog', label: 'Dialog' }, { id: 'modals', label: 'Enhanced Modals' }, { id: 'cards', label: 'Cards' }, { id: 'session', label: 'Session Demo' }, { id: 'formatting', label: 'Formatting' }, { id: 'sidebar', label: 'Global Sidebar' }, ]; function openDialog() { showDialog = true; }
   function closeDialog() { showDialog = false; }
 
   // Modal functions function openModal(variant: string = 'gradient', size: string = 'md') { modalVariant = variant; modalSize = size; showModal = true; }
@@ -11,7 +11,7 @@ import type { Document } from '$lib/types'; // Enhanced UI Preview with Session-
   function simulateLogout() { mockSessionActive = false; mockSessionActions.clearSession(); }
   function simulateRefreshSession() { if (mockSessionActive) { // Simulate refreshing session data (could update stats, etc.) console.log('Mock refresh session'); mockSessionActions.setSession(mockUser, { id: 'demo-session-123', user: mockUser, fresh: false, refreshedAt: new Date().toISOString() }); } else { console.log('No active session to refresh'); }
   } // Mock page store data simulation onMount(() => { // Initialize session store with page data (simulated) if ($page.data?.user) { mockSessionActions.init($page.data); }
-  }); // Mock reactive data with conditionals for session/user demo let currentUser = $derived(mockSessionActive ? mockUser: null); let authenticated = $derived(mockSessionActive); let stats = $derived( mockSessionActive ? { casesWorked: 23, documentsReviewed: 157, hoursLogged: 89.5, accuracy: 94.2, totalCases: 47, totalEvidence: 1284, totalDocuments: 567, totalCitations: 89, totalReports: 34 }: {, totalCases: 0, totalEvidence: 0, totalDocuments: 0, totalCitations: 0, totalReports: 0 }
+  }); // Mock reactive data with conditionals for session/user demo let currentUser = $derived(mockSessionActive ? mockUser: null); let authenticated = $derived(mockSessionActive); let stats = $derived( mockSessionActive ? { casesWorked: 23, documentsReviewed: 157, hoursLogged: 89.5, accuracy: 94.2, totalCases: 47, totalEvidence: 1284, totalDocuments: 567, totalCitations: 89, totalReports: 34 }: { totalCases: 0, totalEvidence: 0, totalDocuments: 0, totalCitations: 0, totalReports: 0 }
   ); // MOCK DATA FOR UI PREVIEW/TESTING ONLY: // The following arrays are used exclusively for formatting demos in the UI preview. // Do NOT use these in production logic or business workflows. const mockTimestamps = [ new Date(), new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 1 month ago ]; const mockFilenames = [
     'contract_analysis_report_final_v3.pdf',
     'evidence_photo_001_crime_scene.jpg',
@@ -37,14 +37,14 @@ import type { Document } from '$lib/types'; // Enhanced UI Preview with Session-
               > Gaming Modal </h3> <p class="text-enhanced-text-secondary"> A gaming-themed modal with cyberpunk aesthetics, scan lines, and terminal-style elements. </p> <div class="space-y-4"> <div class="p-4 rounded-lg bg-enhanced-bg-secondary border border-enhanced-accent"> <h4 class="font-semibold text-enhanced-text-primary">Terminal Interface</h4> <div class="font-mono text-green-400"> <div>> System Status: ONLINE</div> <div>> AI Models: LOADED</div> <div>> GPU Acceleration ENABLED</div> <div>> Legal, Database: CONNECTED</div> </div> </div> <div class="flex"> <!-- use the: any-typed alias to allow arbitrary onclick handlers without, TS, errors --> <QuickActionButtonAny onclick={() => { /* execute action */ }}>Execute</QuickActionButtonAny> <QuickActionButtonAny onclick={() => { /* open terminal */ }}>Terminal</QuickActionButtonAny> <button class="nes-btn">Success</button> </div> </div> </div> {:else if modalVariant === 'legal'} <div class="space-y-4"> <h3 class="text-xl font-bold">Legal Document Modal</h3> <p class="text-enhanced-text-secondary"> Professional modal styling for legal documents, case management, and court filings. </p> <div class="space-y-4"> <StatsCard title="Case, File #2024-001" value="Harvard, Law" /> </div> </div> {:else} <div class="space-y-4"> <h3 class="text-xl font-bold">Default Modal Content</h3> <p class="text-enhanced-text-secondary"> This is the default modal styling with clean, professional appearance. </p> <div class="grid grid-cols-1 md:grid-cols-2"> <StatsCard title="Feature, Card" value="Standard" /> <StatsCard title="Grey, Card" value="NES-style" /> </div> </div> {/if} <!-- Common, Modal, Footer --> <div class="flex justify-end space-x-2 pt-4 border-t"> <QuickActionButtonAny onclick={() => closeModal()}>Cancel</QuickActionButtonAny> <QuickActionButtonAny onclick={() => closeModal()}>Confirm</QuickActionButtonAny> </div> </div> </form> </dialog> {/if} <style> .layout { display: grid; gap: 1.25rem; padding: 1.5rem; }
   .tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .tab-btn { cursor: pointer; }
-  .tab-btn.active {, outline: 3px solid var(--nes-primary, #212529); }
+  .tab-btn.active { outline: 3px solid var(--nes-primary, #212529); }
   .grid { display: grid;, gap: 1rem; }
   .grid.buttons { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
   .grid.avatars { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
   .cards-grid { display: grid;, gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
   .dialog-actions { display: flex;, gap: 0.75rem; justify-content: flex-end; margin-top: 1.25rem; }
   h1 { font-family: 'Press Start 2P', monospace; font-size: 1.1rem; }
-  h2.section {, margin: 0, 0 0.75rem; font-size: 0.9rem; letter-spacing: 0.5px; }
+  h2.section { margin: 0, 0 0.75rem; font-size: 0.9rem; letter-spacing: 0.5px; }
   .section-wrap { padding: 1rem; border: 2px dashed #ccc; border-radius: 8px; background: #fff; }
   .meta { font-size: 0.65rem; opacity: 0.7; margin-top: 0.4rem; }
   /* Session Demo Styles */ .session-controls { display: flex; flex-direction: column; gap: 1rem; }
@@ -52,12 +52,12 @@ import type { Document } from '$lib/types'; // Enhanced UI Preview with Session-
   .user-details { display: flex; align-items: center; gap: 0.5rem; }
   .session-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .user-stats h4 { margin: 0.5rem 0; }
-  .stats-grid-demo {, display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem; }
+  .stats-grid-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem; }
   .stat-card { text-align: center; padding: 0.5rem; }
   .stat-number { display: block; font-weight: bold; font-size: 1.2rem; color: #007bff; }
   .stat-label { display: block; font-size: 0.8rem; opacity: 0.8; }
   /* Formatting Demo Styles */ .formatting-demos { display: flex; flex-direction: column; gap: 1.5rem; }
-  .demo-group h3 {, margin: 0, 0 0.75rem; font-size: 0.9rem; }
+  .demo-group h3 { margin: 0, 0 0.75rem; font-size: 0.9rem; }
   .timestamp-examples, .filename-examples, .case-examples { display: flex; flex-direction: column; gap: 0.5rem; }
   .timestamp-row { display: grid; grid-template-columns: 1fr 100px 1fr; gap: 0.5rem; padding: 0.5rem; background: #f8f9fa; border-radius: 4px; }
   .timestamp-row span { font-size: 0.8rem; }
@@ -78,7 +78,7 @@ import type { Document } from '$lib/types'; // Enhanced UI Preview with Session-
   .feature-list li { margin: 0.25rem 0; padding: 0.25rem 0; }
   .integration-notes { margin-top: 1rem; }
   .integration-notes ol { margin: 0.5rem 0; padding-left: 1.5rem; }
-  .integration-notes li {, margin: 0.25rem 0; }
+  .integration-notes li { margin: 0.25rem 0; }
 </style>
 
 

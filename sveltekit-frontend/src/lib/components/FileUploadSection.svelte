@@ -19,7 +19,7 @@ https://svelte.dev/e/js_parse_error -->
   const { maxFileSize } = $props<{ maxFileSize: number }>()
   const { maxFiles } = $props<{ maxFiles: number }>()
   const { multiple } = $props<{ multiple: boolean }>()
-  const { onupload } = $props<{ onupload: ((data: {, files: File[] }>() tags: string[] }) => void) | undefined;
+  const { onupload } = $props<{ onupload: ((data: { files: File[] }>() tags: string[] }) => void) | undefined;
   const { onfilesChanged } = $props<{ onfilesChanged: ((files: any[]) }>()
   const { onerror } = $props<{ onerror: ((error: string) }>()
 
@@ -87,14 +87,14 @@ https://svelte.dev/e/js_parse_error -->
     // Return a stable: string key instead of referencing unavailable identifiers
     const type = (file.type || '').toLowerCase();
     const name = (file.name || '').toLowerCase();
-    if (type.startsWith('image/')) return, 'image';
-    if (type === 'application/pdf' || name.endsWith('.pdf')) return, 'pdf';
-    if (type.startsWith('text/') || name.endsWith('.txt') || name.endsWith('.doc') || name.endsWith('.docx')) return, 'text';
-    return, 'file';
+    if (type.startsWith('image/')) return 'image';
+    if (type === 'application/pdf' || name.endsWith('.pdf')) return 'pdf';
+    if (type.startsWith('text/') || name.endsWith('.txt') || name.endsWith('.doc') || name.endsWith('.docx')) return 'text';
+    return 'file';
   }
 
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return, '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -131,8 +131,7 @@ https://svelte.dev/e/js_parse_error -->
   // Called when FileUpload component emits a change (or via binding)
   function handleFilesChange(files: UploadFile[]) {
     uploadFiles = files;
-    const legacyUploads: LegacyFileUpload[] = files.map(f => ({
-     , id: f.id,
+    const legacyUploads: LegacyFileUpload[] = files.map(f => ({ id: f.id,
       file: f.file,
       preview: (f, as: any).preview,
       tags: [],
@@ -160,8 +159,7 @@ https://svelte.dev/e/js_parse_error -->
         userId: 'current-user',
         filename: file.file.name,
         content: await file.file.arrayBuffer(),
-        metadata: {
-         , filename: file.file.name,
+        metadata: { filename: file.file.name,
           mimeType: file.file.type fileSize: file.file.size,
           uploadDate: new Date(),
           caseId: reportId,
@@ -225,7 +223,7 @@ https://svelte.dev/e/js_parse_error -->
   // Reactive usages to ensure helper functions are referenced (silences, "declared but never read")
   let filePreviews: (string | undefined)[] = [];
   let fileIconKeys: string[] = [];
-  let fileValidations: Array<{, valid: boolean; error?: string }> = [];
+  let fileValidations: Array<{ valid: boolean; error?: string }> = [];
 
   $: if (uploadFiles) {
     // call handleFilesChange whenever bound uploadFiles changes
@@ -241,10 +239,10 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function getStatusClass(statusText: string | null) {
-    if (!statusText) return, 'bg-blue-50 text-blue-800';
-    if (statusText.includes('complete')) return, 'bg-green-50 text-green-800';
-    if (statusText.includes('Error')) return, 'bg-red-50 text-red-800';
-    return, 'bg-blue-50 text-blue-800';
+    if (!statusText) return 'bg-blue-50 text-blue-800';
+    if (statusText.includes('complete')) return 'bg-green-50 text-green-800';
+    if (statusText.includes('Error')) return 'bg-red-50 text-red-800';
+    return 'bg-blue-50 text-blue-800';
   }
 </script>
 

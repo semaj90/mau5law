@@ -170,8 +170,7 @@
     width: 100%;
     box-sizing: border-box;
   }
-  .form-input:focus {
-   , outline: none;
+  .form-input:focus { outline: none;
     border-color: #3d3d3d;
     box-shadow: 0, 0 0 3px rgba(61, 61, 61, 0.2);
   }
@@ -231,8 +230,7 @@
     .form-actions {
       margin-top: 1.5rem;
     }
-    .submit-btn {
-     , width: 100%;
+    .submit-btn { width: 100%;
       justify-content: center;
     }
   }

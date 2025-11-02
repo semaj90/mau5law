@@ -22,7 +22,7 @@
     { path: '/contact', label: 'Contact', icon: '📧' }
   ];
   const socialLinks = [
-    {, href: '#', label: 'GitHub', icon: '🔗' },
+    { href: '#', label: 'GitHub', icon: '🔗' },
     { href: '#', label: 'Documentation', icon: '📚' },
     { href: '#', label: 'Community', icon: '👥' }
   ];
@@ -164,8 +164,7 @@
     padding: 1rem 0.5rem 0.5rem;
   }
   /* Full Footer Layout */
-  .footer-sections {
-   , display: grid;
+  .footer-sections { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin-bottom: 1rem;
@@ -307,8 +306,7 @@
     gap: 1rem;
   }
   /* Demo Footer */
-  .demo-footer {
-   , background: linear-gradient(135deg, var(--n64-primary, #4a90e2), var(--n64-secondary, #7ed321)) !important;
+  .demo-footer { background: linear-gradient(135deg, var(--n64-primary, #4a90e2), var(--n64-secondary, #7ed321)) !important;
     margin: 1rem, 0 !important;
   }
   .demo-footer .title {

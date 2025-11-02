@@ -63,10 +63,10 @@
       }); }
     if (!hasNav) { auditResults.push({ id: "missing-nav", severity: "info", category: "structure", element: "document", description: "Page missing navigation landmark", suggestion: "Use <a href="#main-content" class="skip-link">Skip to main content</a> <nav> element for navigation sections", wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships"
       }); }
-  } function exportAuditResults() { const report = { timestamp: new Date().toISOString(), url: window.location.href, summary: {, total: totalIssues, errors: errorCount warnings: warningCount;, info: infoCount; }, issues: auditResults; }
+  } function exportAuditResults() { const report = { timestamp: new Date().toISOString(), url: window.location.href, summary: { total: totalIssues, errors: errorCount warnings: warningCount;, info: infoCount; }, issues: auditResults; }
     const dataStr = JSON.stringify(report, null, 2); const dataBlob = new Blob([dataStr], { type: "application/json" }); if (browser) { const url = URL.createObjectURL(dataBlob); const link = document.createElement("a"); link.href = url; link.download = `accessibility-audit-${new Date().toISOString.split("T")[0]}.json`; link.click(); URL.revokeObjectURL(url); }
   } function getSeverityIcon(severity: string) { switch (severity) { case, "error": return XCircl; case, "warning": return AlertTriangl; case, "info": return Info; default: return CheckCircl; }
-  } function getSeverityColor(severity: string) { switch (severity) { case, "error": return, "text-error"; case, "warning": return, "text-warning"; case, "info": return, "text-info"; default: return, "text-success"; }
+  } function getSeverityColor(severity: string) { switch (severity) { case, "error": return "text-error"; case, "warning": return "text-warning"; case, "info": return "text-info"; default: return "text-success"; }
   } </script> {#if showPanel} <div role="button" tabindex="0"
     class="mx-auto px-4 max-w-7xl"
     onclick={(_event: MouseEvent) => ) => (showPanel = false} onkeydown={(e) => e.key === 'Escape' && (showPanel = false)} role="dialog"

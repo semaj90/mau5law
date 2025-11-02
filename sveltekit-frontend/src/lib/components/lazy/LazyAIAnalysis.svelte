@@ -6,12 +6,12 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       console.error('AI Analysis loading error:', error); } finally { isAnalyzing = false; }'
   } function updateProgress(progress: number, step: string) { analysisProgress = progres; analysisStep = step; }
   // Mock AI analysis function - replace with your actual AI integration async function performAnalysis(): Promise<any> { // Simulate different analysis types const baseResult = { analysisId: `analysis_${Date.now()}`, type: analysisType model, timestamp: new Date().toISOString(), processingTime: Math.floor(Math.random() * 5000) + 1000, // 1-6 second; }
-    switch (analysisType) { case, 'legal': return { ...baseResult, legalOpinion: 'Based on the provided information, there are several key legal considerations...', precedents: [ {, name: 'Doe v. Smith', relevance: 0.85, year: 2019 }, { name: 'Johnson v. State', relevance: 0.72, year: 2020 } ], riskAssessment: 'Medium', confidence: 0.87, keyFindings: [
+    switch (analysisType) { case, 'legal': return { ...baseResult, legalOpinion: 'Based on the provided information, there are several key legal considerations...', precedents: [ { name: 'Doe v. Smith', relevance: 0.85, year: 2019 }, { name: 'Johnson v. State', relevance: 0.72, year: 2020 } ], riskAssessment: 'Medium', confidence: 0.87, keyFindings: [
             'Contract terms appear enforceable',
             'Potential statute of limitations issue',
             'Strong evidence for damages claim'
           ]; }
-      case, 'evidence': return { ...baseResult, evidenceQuality: 'High', admissibility: 0.92, chainOfCustody: 'Intact', technicalAnalysis: {, fileIntegrity: 'Verified', metadata: 'No tampering detected', forensicHash: 'SHA256-verified'
+      case, 'evidence': return { ...baseResult, evidenceQuality: 'High', admissibility: 0.92, chainOfCustody: 'Intact', technicalAnalysis: { fileIntegrity: 'Verified', metadata: 'No tampering detected', forensicHash: 'SHA256-verified'
           }, relevanceScore: 0.89, recommendations: [
             'Evidence meets admissibility standards',
             'Consider additional forensic analysis',
@@ -20,8 +20,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       case, 'document': return { ...baseResult, documentType: 'Contract', keyTerms: ['Indemnification', 'Force Majeure', 'Termination'], sentiment: 'Neutral', complexity: 'High', redFlags: [
             'Unusual termination clause',
             'Broad indemnification language'
-          ], summary: 'This appears to be a standard commercial contract with some notable provisions...', entities: [ {, text: 'ABC Corporation', type: 'Organization', confidence: 0.95 }, { text: 'New York', type: 'Location', confidence: 0.88 } ]
-        } case, 'case': return { ...baseResult, caseStrength: 0.76, timeline: [ {, date: '2023-01-15', event: 'Initial incident', importance: 'High' }, { date: '2023-02-01', event: 'Evidence collected', importance: 'Medium' }, { date: '2023-03-10', event: 'Witness statements', importance: 'High' } ], strategicRecommendations: [
+          ], summary: 'This appears to be a standard commercial contract with some notable provisions...', entities: [ { text: 'ABC Corporation', type: 'Organization', confidence: 0.95 }, { text: 'New York', type: 'Location', confidence: 0.88 } ]
+        } case, 'case': return { ...baseResult, caseStrength: 0.76, timeline: [ { date: '2023-01-15', event: 'Initial incident', importance: 'High' }, { date: '2023-02-01', event: 'Evidence collected', importance: 'Medium' }, { date: '2023-03-10', event: 'Witness statements', importance: 'High' } ], strategicRecommendations: [
             'Focus on documentary evidence',
             'Secure expert witness testimony',
             'Consider settlement negotiations'
@@ -30,7 +30,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
             'Jurisdictional issues'
           ] }
       default: return baseResult; }
-  } // Analysis type icons and colors const analysisConfig = { legal: {, icon: '⚖️', color: '#4f46e5', bgColor: 'rgba(79, 70, 229, 0.1)' }, evidence: {, icon: '🔍', color: '#059669', bgColor: 'rgba(5, 150, 105, 0.1)' }, document: {, icon: '📄', color: '#dc2626', bgColor: 'rgba(220, 38, 38, 0.1)' }, caseItem: {, icon: '📁', color: '#7c2d12', bgColor: 'rgba(124, 45, 18, 0.1)' } }
+  } // Analysis type icons and colors const analysisConfig = { legal: { icon: '⚖️', color: '#4f46e5', bgColor: 'rgba(79, 70, 229, 0.1)' }, evidence: { icon: '🔍', color: '#059669', bgColor: 'rgba(5, 150, 105, 0.1)' }, document: { icon: '📄', color: '#dc2626', bgColor: 'rgba(220, 38, 38, 0.1)' }, caseItem: { icon: '📁', color: '#7c2d12', bgColor: 'rgba(124, 45, 18, 0.1)' } }
   const config = analysisConfig[analysisType]; </script> <LazyLoader preset="HEAVY_COMPONENT"
   placeholderHeight={ height } placeholderClass="ai-analysis-placeholder"
   { loadingText } { errorText } class="lazy-ai-analysis { className }"
@@ -42,7 +42,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   /* Error state */ .analysis-error { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 32px; text-align: center; }
   .analysis-error .error-icon { font-size: 64px; margin-bottom: 16px; }
   .retry-button { margin-top: 16px; padding: 8px 20px;, background: rgba(0, 0, 0, 0.1); border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
-  .retry-buttonhover {, background: rgba(0, 0, 0, 0.2); }
+  .retry-buttonhover { background: rgba(0, 0, 0, 0.2); }
   /* Progress state */ .analysis-progress { display: flex; flex-direction: column; justify-content: center; height: 100%; padding: 48px 32px; }
   .progress-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
   .analysis-icon { font-size: 48px; }
@@ -62,7 +62,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .confidence-badge { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; color: white; }
   .results-body { padding: 24px;, height: calc(100% - 68px); overflow-y: auto; }
   .result-summary, .result-findings, .result-recommendations { margin-bottom: 24px; }
-  .results-body h4 {, margin: 0, 0 12px 0; font-size: 16px; font-weight: 600;, color: rgba(0, 0, 0, 0.8); }
+  .results-body h4 { margin: 0, 0 12px 0; font-size: 16px; font-weight: 600;, color: rgba(0, 0, 0, 0.8); }
   .results-body p { margin: 0; line-height: 1.6;, color: rgba(0, 0, 0, 0.7); }
   .results-body ul { margin: 0; padding-left: 20px; }
   .results-body li { margin-bottom: 8px; line-height: 1.5;, color: rgba(0, 0, 0, 0.7); }
@@ -80,15 +80,15 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .wave-2 { width: 100px; height: 100px; top: 10px; left: 10px; animation-delay: 0.5 }
   .wave-3 { width: 120px; height: 120px;, top: 0, left: 0; animation-delay: 1 }
   .placeholder-text { text-align: center; }
-  .placeholder-text h3 {, margin: 0, 0 8px 0; font-size: 20px; font-weight: 600;, color: rgba(255, 255, 255, 0.9); }
+  .placeholder-text h3 { margin: 0, 0 8px 0; font-size: 20px; font-weight: 600;, color: rgba(255, 255, 255, 0.9); }
   .placeholder-text p { margin: 0;, color: rgba(255, 255, 255, 0.7); font-size: 14px; }
-  /* Animations */ @keyframes brain-wave { 0% {, transform: scale(1); opacity: 1; }
-    100% {, transform: scale(1.3); opacity: 0; }
+  /* Animations */ @keyframes brain-wave { 0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.3); opacity: 0; }
   } /* Responsive design */ @media (max-width: 768px) { .analysis-progress, .ai-placeholder-content { padding: 24px 16px; }
     .results-header { padding: 12px 16px; }
     .results-body { padding: 16px; }
     .meta-grid { grid-template-columns: 1fr; }
     .analysis-meta { flex-direction: column;, gap: 12px; }
   } /* Reduced motion */ @media (prefers-reduced-motion reduce) { .progress-fill, .wave { animation: none; }
-    .brain-waves {, display: none; }
+    .brain-waves { display: none; }
   } </style>

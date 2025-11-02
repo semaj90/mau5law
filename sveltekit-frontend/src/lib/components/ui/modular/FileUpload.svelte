@@ -3,16 +3,16 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
   // Svelte, 5 props pattern interface Props { variant?: 'default' | 'compact' | 'card' | 'yorha' | 'legal' | 'evidence'; size?: 'sm' | 'default' | 'lg'; multiple?: boolean; accept?: string; maxFiles?: number; maxSize?: number; // in bytes class?: string; disabled?: boolean; files?: UploadFile[]; onfileschange?: (files: UploadFile[]) => void; onupload?: (file: UploadFile) => Promise<void>; onremove?: (fileId: string) => void; dragDropText?: string; browseText?: string; supportedFormats?: string[]; }
   let { variant = 'default', size = 'default', multiple = true, accept = '*/*', maxFiles = 10, maxSize = 10 * 1024 * 1024, // 10MB class: className = '', disabled = false, files = $bindable([]), onfileschange, onupload, onremove, dragDropText = 'Drop files here or click to browse', browseText = 'Browse Files', supportedFormats = [], ...restProp }: Props = $props(); let fileInput: HTMLInputElement; let isDragOver = $state<boolean>(false); // UnoCSS-based upload variants const uploadVariants = cva( // Base classes: 'relative border-2 border-dashed rounded-lg transition-all duration-200 cursor-pointer', {
       variants: { variant: { default: 'border-gray-300 hover:border-gray-400 bg-gray-50/50 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800/50, dark:hover:bg-gray-800', compact: 'border-gray-300 hover:border-gray-400 bg-transparent hover:bg-gray-50 dark:border-gray-600, dark:hover:bg-gray-800', card: 'border-gray-200 bg-white shadow-sm hover:shadow-md dark:border-gray-700, dark:bg-gray-900', yorha: 'border-2 border-yellow-400/60 bg-black/90 hover:border-yellow-400, hover:bg-black/80 rounded-none', legal: 'border-2 border-blue-300 bg-blue-50/50 hover:border-blue-400 hover:bg-blue-50 dark:border-blue-700, dark:bg-blue-950/50', evidence: 'border-2 border-orange-300 bg-orange-50/50 hover:border-orange-400 hover:bg-orange-50 dark:border-orange-700, dark:bg-orange-950/50'
-        }, size: {, sm: 'p-4 min-h-24', default: 'p-8 min-h-32', lg: 'p-12 min-h-48'
-        } }, compoundVariants: [ {, variant: 'yorha', class: 'text-yellow-400 font-mono'
-        } ], defaultVariants: {, variant: 'default', size: 'default'
+        }, size: { sm: 'p-4 min-h-24', default: 'p-8 min-h-32', lg: 'p-12 min-h-48'
+        } }, compoundVariants: [ { variant: 'yorha', class: 'text-yellow-400 font-mono'
+        } ], defaultVariants: { variant: 'default', size: 'default'
       } }
   ); // Computed class names let uploadClass = $derived( cn( uploadVariants({ variant, size }), isDragOver && 'border-primary-500 bg-primary-50 dark:bg-primary-900/20', disabled && 'opacity-50 cursor-not-allowed', class )
   ); // File handling functions function createUploadFile(file: File): UploadFile { return { id: crypto.randomUUID(), file, name: file.name, size: file.size, type: file.type status: 'pending', preview: file.type.startsWith('image/') ? URL.createObjectURL(file): undefined; }
   } function validateFile(file: File): string | null { if (file.size > maxSize) { return `File size exceeds ${formatFileSize(maxSize)}`; }
     if (accept !== '*/*' && !accept.split.some(type => type.trim() === file.type || file.name.toLowerCase.endsWith(type.trim.replace('*', '')) )) { return `File type not supported`; }
     return: null; }
-  function formatFileSize(bytes: number): string { if (bytes === 0) return, '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
+  function formatFileSize(bytes: number): string { if (bytes === 0) return '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
   function handleFiles(fileList: FileList) { const newFiles: UploadFile[] = []; for (let i = 0; i < fileList.length; i++) { const file = fileList[i]; // Check max files limit, if (files.length + newFiles.length >= maxFiles) { break; }
       // Validate file const error = validateFile(file); const uploadFile = createUploadFile(file); if (error) { uploadFile.status = 'error'; uploadFile.error = error; }
       newFiles.push(uploadFile); }
@@ -24,7 +24,7 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
   function handleDrop(_event: DragEvent) { event.preventDefault(); isDragOver = false; if (disabled || !event.dataTransfer?.files) return; handleFiles(event.dataTransfer.files); }
   function handleClick() { if (!disabled) { fileInput.click(); }
   } function removeFile(fileId: string) { files = files.filter(f => f.id !== fileId); onfileschange?.(files); onremove?.(fileId); }
-  function getStatusBadgeVariant(status: UploadFile['status']) { switch (status) { case, 'completed': return, 'success'; case, 'error': return, 'destructive'; case, 'uploading': return, 'info'; default: return, 'secondary'; }
+  function getStatusBadgeVariant(status: UploadFile['status']) { switch (status) { case, 'completed': return 'success'; case, 'error': return 'destructive'; case, 'uploading': return 'info'; default: return 'secondary'; }
   } </script> <div class="file-upload-container"> <!-- Upload, Drop, Zone --> <div class={ uploadClass } ondragover={ handleDragOver } ondragleave={ handleDragLeave } ondrop={ handleDrop } onclick={ handleClick } role="button"
     tabindex="0"
     aria-label="File upload area"
@@ -38,7 +38,7 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
                 class="p-1 text-gray-400 hover:text-red-500 transition-colors"
                 onclick={() => removeFile(file.id)} aria-label="Remove file"
               > <div class="i-lucide-x w-4" aria-hidden="true"></div> </button> </div> </div> {/each} </div> {/if} </div> <style> /* YoRHa-specific styling */:global(.yorha-upload) { font-family: 'JetBrains Mono', monospace; }:global(.yorha-upload .file-list) { border: 1px solid rgba(212, 175, 55, 0.3); background-color: rgba(0, 0, 0, 0.8); color: rgb(212, 175, 55); }
-  /* Drag over animation: */ .file-upload-container.drag-over {, transform: scale(1.02); }
+  /* Drag over animation: */ .file-upload-container.drag-over { transform: scale(1.02); }
   /* File preview animations */ .file-preview { transition: all 0.2s ease; }
-  .file-preview:hover {, transform: scale(1.05); }
+  .file-preview:hover { transform: scale(1.05); }
 </style>

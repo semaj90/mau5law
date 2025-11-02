@@ -99,8 +99,7 @@ import type { Case } from '$lib/types';
     border-radius: 8px;
     background: #fafafa;
   }
-  .component-section h3 {
-   , margin: 0, 0 1rem 0;
+  .component-section h3 { margin: 0, 0 1rem 0;
     color: #333;
     border-bottom: 2px solid #007bff;
     padding-bottom: 0.5rem;
@@ -121,8 +120,7 @@ import type { Case } from '$lib/types';
     border: 2px solid #007bff;
     border-radius: 8px;
   }
-  .validation-results h3 {
-   , margin: 0, 0 1rem 0;
+  .validation-results h3 { margin: 0, 0 1rem 0;
     color: #007bff;
   }
   .result-item {

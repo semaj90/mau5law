@@ -24,8 +24,7 @@ import type { User } from '$lib/types';
   src/types/global.d.ts(5,18): error TS2717: Subsequent property declarations must have the same type.
   src/hooks.server.ts(18,25): error: Database connection timeout after 5000ms
   `;`
-  let performanceMetrics = $state({
-   , somTrainingTime: 0,
+  let performanceMetrics = $state({ somTrainingTime: 0,
     webGPUProcessingTime: 0,
     pageRankIterations: 0,
     cacheHitRatio: 0,
@@ -95,18 +94,18 @@ try {
   }
   function determineSeverity(message: string): 'low' | 'medium' | 'high' | 'critical' {
     const lowerMessage = message.toLowerCase();
-    if (lowerMessage.includes('service unavailable') || lowerMessage.includes('timeout')) return, 'critical';
-    if (lowerMessage.includes('cannot find') || lowerMessage.includes('not assignable')) return, 'high';
-    if (lowerMessage.includes('property') || lowerMessage.includes('type')) return, 'medium';
-    return, 'low';
+    if (lowerMessage.includes('service unavailable') || lowerMessage.includes('timeout')) return 'critical';
+    if (lowerMessage.includes('cannot find') || lowerMessage.includes('not assignable')) return 'high';
+    if (lowerMessage.includes('property') || lowerMessage.includes('type')) return 'medium';
+    return 'low';
   }
   function determineCategory(message: string): string {
     const lowerMessage = message.toLowerCase();
-    if (lowerMessage.includes('ts23') || lowerMessage.includes('type')) return, 'typescript';
-    if (lowerMessage.includes('module') || lowerMessage.includes('import')) return, 'import';
-    if (lowerMessage.includes('syntax') || lowerMessage.includes('token')) return, 'syntax';
-    if (lowerMessage.includes('service') || lowerMessage.includes('connection')) return, 'service';
-    return, 'general';
+    if (lowerMessage.includes('ts23') || lowerMessage.includes('type')) return 'typescript';
+    if (lowerMessage.includes('module') || lowerMessage.includes('import')) return 'import';
+    if (lowerMessage.includes('syntax') || lowerMessage.includes('token')) return 'syntax';
+    if (lowerMessage.includes('service') || lowerMessage.includes('connection')) return 'service';
+    return 'general';
   }
   function formatDuration(nanoseconds: number): string {
     const minutes = Math.floor(nanoseconds / (60 * 1000000000));
@@ -115,18 +114,18 @@ try {
   }
   function getSeverityColor(severity: string): string {
     switch (severity) {
-      case, 'critical': return, 'text-red-600 bg-red-100';
-      case, 'high': return, 'text-orange-600 bg-orange-100';
-      case, 'medium': return, 'text-yellow-600 bg-yellow-100';
-      case, 'low': return, 'text-blue-600 bg-blue-100';
-      default: return, 'text-gray-600 bg-gray-100';
+      case, 'critical': return 'text-red-600 bg-red-100';
+      case, 'high': return 'text-orange-600 bg-orange-100';
+      case, 'medium': return 'text-yellow-600 bg-yellow-100';
+      case, 'low': return 'text-blue-600 bg-blue-100';
+      default: return 'text-gray-600 bg-gray-100';
     }
   }
   function getPriorityColor(priority: number): string {
-    if (priority > 0.05) return, 'text-red-600 font-bold';
-    if (priority > 0.03) return, 'text-orange-600 font-semibold';
-    if (priority > 0.02) return, 'text-yellow-600';
-    return, 'text-green-600';
+    if (priority > 0.05) return 'text-red-600 font-bold';
+    if (priority > 0.03) return 'text-orange-600 font-semibold';
+    if (priority > 0.02) return 'text-yellow-600';
+    return 'text-green-600';
   }
   let filteredTodos = $derived(() => todos
     .filter(item => item.sort)((a, b) => {

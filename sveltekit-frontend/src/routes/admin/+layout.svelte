@@ -179,8 +179,7 @@ import type { User } from '$lib/types';
     border: 1px solid transparent;
   }
 
-  .nav-list a:hover {
-   , background: rgba(79, 70, 229, 0.15);
+  .nav-list a:hover { background: rgba(79, 70, 229, 0.15);
     border-color: rgba(79, 70, 229, 0.3);
   }
 
@@ -212,8 +211,7 @@ import type { User } from '$lib/types';
     font-weight: 600;
   }
 
-  .content-header p {
-   , margin: 0.4rem, 0 0;
+  .content-header p { margin: 0.4rem, 0 0;
     color: var(--text-muted, #94a3b8);
   }
 
@@ -255,8 +253,7 @@ import type { User } from '$lib/types';
       gap: 0.4rem;
     }
 
-    .nav-list a {
-     , padding: 0.5rem 0.75rem;
+    .nav-list a { padding: 0.5rem 0.75rem;
     }
   }
 </style>

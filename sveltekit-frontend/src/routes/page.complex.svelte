@@ -1,9 +1,9 @@
-<!-- Modern Dark YoRHa Legal, AI, Platform --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { goto } from '$app/navigation'; import { FileText, Users, Activity, AlertTriangle, CheckCircle2, Search, Plus, BarChart3, Clock, Eye, Shield, Database, Settings, ChevronRight, Folder, UserCheck, TrendingUp, Terminal, Cpu, Monitor, Zap, Brain } from 'lucide-svelte'; // Dashboard data let stats = $state({ activeCases: 3, evidenceItems: 27, personsOfInterest: 8, recentActivity: 12 }); let activeCases = $state([ {, id: 1, title: 'CORPORATE ESPIONAGE INVESTIGATION', items: 8, timeAgo: '2 hours ago', priority: 'high', status: 'active'
+<!-- Modern Dark YoRHa Legal, AI, Platform --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { goto } from '$app/navigation'; import { FileText, Users, Activity, AlertTriangle, CheckCircle2, Search, Plus, BarChart3, Clock, Eye, Shield, Database, Settings, ChevronRight, Folder, UserCheck, TrendingUp, Terminal, Cpu, Monitor, Zap, Brain } from 'lucide-svelte'; // Dashboard data let stats = $state({ activeCases: 3, evidenceItems: 27, personsOfInterest: 8, recentActivity: 12 }); let activeCases = $state([ { id: 1, title: 'CORPORATE ESPIONAGE INVESTIGATION', items: 8, timeAgo: '2 hours ago', priority: 'high', status: 'active'
     }, {
       id: 2, title: 'MISSING PERSon DR. SARAH CHEN', items: 15, timeAgo: '4 hours ago', priority: 'high', status: 'active'
     }, {
       id: 3, title: 'FINANCIAL FRAUD ANALYSIS', items: 4, timeAgo: '1 day ago', priority: 'medium', status: 'pending'
-    }, ]); let systemStatus = $state([ {, message: 'System backup completed successfully', time: '10 minutes ago', type: 'success'
+    }, ]); let systemStatus = $state([ { message: 'System backup completed successfully', time: '10 minutes ago', type: 'success'
     }, {
       message: 'Evidence analysis queue processing slowly', time: '1 hour ago', type: 'warning'
     }, {

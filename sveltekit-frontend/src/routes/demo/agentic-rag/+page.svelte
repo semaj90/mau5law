@@ -71,11 +71,9 @@ import type { Message } from '$lib/types';
       const response = await fetch('/api/agent/orchestrate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-         , query: currentQuery,
+        body: JSON.stringify({ query: currentQuery,
           documents: selectedDocument ? [selectedDocument] : [],
-          context: {
-           , conversationHistory: messages
+          context: { conversationHistory: messages
           }
         })
       });
@@ -335,8 +333,7 @@ import type { Message } from '$lib/types';
   }
 
   @keyframes spin {
-    from {
-     , transform: rotate(0deg);
+    from { transform: rotate(0deg);
     }
     to {
       transform: rotate(360deg);

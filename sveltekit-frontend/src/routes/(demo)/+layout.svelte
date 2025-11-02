@@ -115,8 +115,7 @@
     margin: 0;
   }
 
-  .demo-badge {
-   , background: var(--nier-accent-warm);
+  .demo-badge { background: var(--nier-accent-warm);
     color: var(--nier-bg-primary);
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
@@ -186,8 +185,7 @@
     border-radius: 1rem;
   }
 
-  .demo-placeholder h2 {
-   , color: var(--nier-accent-warm);
+  .demo-placeholder h2 { color: var(--nier-accent-warm);
     margin-bottom: 1rem;
   }
 
@@ -265,17 +263,14 @@
     width: 8px;
   }
 
-  .demo-content::-webkit-scrollbar-track {
-   , background: var(--nier-bg-tertiary);
+  .demo-content::-webkit-scrollbar-track { background: var(--nier-bg-tertiary);
   }
 
-  .demo-content::-webkit-scrollbar-thumb {
-   , background: var(--nier-accent-warm);
+  .demo-content::-webkit-scrollbar-thumb { background: var(--nier-accent-warm);
     border-radius: 4px;
   }
 
-  .demo-content::-webkit-scrollbar-thumb:hover {
-   , background: var(--nier-accent-cool);
+  .demo-content::-webkit-scrollbar-thumb:hover { background: var(--nier-accent-cool);
   }
 </style>
 

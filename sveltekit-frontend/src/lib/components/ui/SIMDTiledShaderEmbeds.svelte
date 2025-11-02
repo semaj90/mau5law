@@ -16,7 +16,7 @@
   return floatData; }
 /** * Generate WebGL/WebGPU shaders from tiled data */ async function generateShadersFromTiles(tiles: any[]): Promise<void> { console.log(`🎨 Generating shaders from ${tiles.length} tiles...`); for (const tile of tiles) { // Generate unique shader based on tile characteristics const shaderKey = `tile_${tile.tileX}_${tile.tileY}_${tile.metadata.evidenceType}`; // Analyze tile data to determine shader complexity const avgValue = tile.data.reduce((sum: number, val: number) => sum + val, 0) / tile.data.length; const variance = tile.data.reduce((sum: number, val: number) => sum + (val - avgValue) ** 2, 0) / tile.data.length; const shader = generateShaderCode({ tileData: tile.data, tileSize: tile.width, complexity: shaderComplexity, evidenceType: tile.metadata.evidenceType, confidence: tile.metadata.confidence, avgValue, variance, qualityTier: currentQuality; }); generatedShaders.set(shaderKey, shader); onShaderGenerated?.(shader); }
   performanceMetrics.shadersGenerated = generatedShaders.siz; console.log(`✅ Generated ${performanceMetrics.shadersGenerated} shaders`); }
-/** * Generate shader code based on tile characteristics */ function generateShaderCode(config: { tileData: Float32Array; tileSize: number; complexity: string; evidenceType: string; confidence: number; avgValue: number;, variance: number;, qualityTier: QualityTier; }): string { const isWebGPU = config.qualityTier === '64-BIT_N64'; const useHighPrecision = config.complexity === 'ultra'; const precision = useHighPrecision ? 'highp': 'mediump'; if (isWebGPU) { // WebGPU compute shader return ` @group(0) @binding(0) var<storage read> tileData: array<f32>; @group(0) @binding(1) var<storage read_write> output: array<f32>; @group(0) @binding(2) var<uniform> config: Config; struct Config {, tileSize: u32, confidence: f32 avgValue: f32, variance: f32;, time: f32; }`
+/** * Generate shader code based on tile characteristics */ function generateShaderCode(config: { tileData: Float32Array; tileSize: number; complexity: string; evidenceType: string; confidence: number; avgValue: number;, variance: number;, qualityTier: QualityTier; }): string { const isWebGPU = config.qualityTier === '64-BIT_N64'; const useHighPrecision = config.complexity === 'ultra'; const precision = useHighPrecision ? 'highp': 'mediump'; if (isWebGPU) { // WebGPU compute shader return ` @group(0) @binding(0) var<storage read> tileData: array<f32>; @group(0) @binding(1) var<storage read_write> output: array<f32>; @group(0) @binding(2) var<uniform> config: Config; struct Config { tileSize: u32, confidence: f32 avgValue: f32, variance: f32;, time: f32; }`
       @compute @workgroup_size(8, 8) fn main(@builtin(global_invocation_id) global_id: vec3<u32>) { let x = global_id.x; let y = global_id.y; if (x >= config.tileSize || y >= config.tileSize) { return; }
         let index = y * config.tileSize + x; let tileValue = tileData[index]; // Apply evidence-based processing var processedValue = tileValu; ${config.evidenceType === 'handwriting' ? ` // Handwriting enhancement processedValue = smoothstep(0.3, 0.7, processedValue) * config.confidenc; `: ''} ${config.evidenceType === 'text' ? ` // Text sharpening processedValue = pow(processedValue, 1.0 / config.confidence); `: ''} // Quality tier specific processing ${config.qualityTier === '64-BIT_N64' ? ` // Ultra quality: advanced filtering let neighbors = getNeighborValues(x, y); processedValue = applyAdvancedFilter(processedValue, neighbors); `: ''} // Apply temporal effects if high complexity ${config.complexity === 'ultra' ? ` processedValue += sin(config.time + f32(x + y) * 0.1) * 0.1; `: ''} output[index] = processedValu; }
       fn getNeighborValues(x: u32, y: u32) -> vec4<f32> { // Sample neighboring pixels return vec4<f32>(1.0); // Simplified }
@@ -32,10 +32,10 @@
 /** * Render tiled visualization */ async function renderTiledVisualization(): Promise<void> { if (!renderingContext || !tiledData.length) return; const ctx = renderingContext; ctx.clearRect(0, 0, dimensions.width, dimensions.height); // Render each tile for (const tile of tiledData) { const x = tile.tileX * tile.width; const y = tile.tileY * tile.height; // Create ImageData from tile const imageData = ctx.createImageData(tile.width, tile.height); for (let i = 0; i < tile.data.length; i++) { const pixelIndex = i * 4; const value = Math.floor(tile.data[i] * 255); imageData.data[pixelIndex] = value; // R imageData.data[pixelIndex + 1] = value; // G imageData.data[pixelIndex + 2] = value; // B imageData.data[pixelIndex + 3] = 255; // A }
     ctx.putImageData(imageData, x, y); // Draw tile borders for visualization ctx.strokeStyle = `rgba(${ tile.metadata.evidenceType === 'handwriting' ? '37, 99, 235': tile.metadata.evidenceType === 'text' ? '5, 150, 105': tile.metadata.evidenceType === 'screenshot' ? '220, 38, 38': '107, 114, 128'`
     }, 0.5)`; ctx.strokeRect(x, y, tile.width, tile.height); // Draw confidence indicator const confidenceSize = tile.metadata.confidence * 8; ctx.fillStyle = `rgba(0, 255, 0, ${tile.metadata.confidence})`; ctx.fillRect(x + 2, y + 2, confidenceSize, confidenceSize); }`
-} /** * Predictive asset caching using neural topology orchestrator */ async function predictiveAssetCaching(): Promise<void> { if (!enablePredictiveLoading) return; try { // Use neural topology orchestrator to predict and cache assets const request = { content: `UI, component: ${ componentType }`, contentType: 'text' as const requestedAccuracy: 85, maxProcessingTime: 2000, qualityPreference: 'balanced' as const userContext: {, sessionId: 'simd_tiling_session', previousActions: ['ui_tiling', 'shader_generation'], preferences: {, quality: currentQuality }, performanceProfile: {, device: 'desktop', capabilities: enableSIMDAcceleration ? ['webgpu', 'simd']: ['webgl'], averageFPS: 60 }
+} /** * Predictive asset caching using neural topology orchestrator */ async function predictiveAssetCaching(): Promise<void> { if (!enablePredictiveLoading) return; try { // Use neural topology orchestrator to predict and cache assets const request = { content: `UI, component: ${ componentType }`, contentType: 'text' as const requestedAccuracy: 85, maxProcessingTime: 2000, qualityPreference: 'balanced' as const userContext: { sessionId: 'simd_tiling_session', previousActions: ['ui_tiling', 'shader_generation'], preferences: { quality: currentQuality }, performanceProfile: { device: 'desktop', capabilities: enableSIMDAcceleration ? ['webgpu', 'simd']: ['webgl'], averageFPS: 60 }
       }, generateEmbeddings: true enablePredictions: true storeInCache: cacheResults, realtimeUpdates: false }
     const result = await ultimateNeuralTopologyOrchestrator.processWithUnifiedIntelligence(request); console.log.predictions.recommendedAssets.length, 'assets predicted'); } catch (error) { console.warn('Predictive caching failed:', error); }
-} /** * Update memory usage metrics */ function updateMemoryUsage(): void { const gpuMemory = tiledData.reduce((total, tile) => total + tile.data.byteLength, 0); const systemMemory = generatedShaders.size * 1024; // Estimate 1KB per shader const cacheMemory = compressionResults ? compressionResults.compressedSize: 0; memoryUsage = {, gpu: Math.round(gpuMemory / 1024 / 1024 * 100) / 100, // MB system: Math.round(systemMemory / 1024 * 100) / 100, // KB; cache: Math.round(cacheMemory / 1024 * 100) / 100 // KB; }
+} /** * Update memory usage metrics */ function updateMemoryUsage(): void { const gpuMemory = tiledData.reduce((total, tile) => total + tile.data.byteLength, 0); const systemMemory = generatedShaders.size * 1024; // Estimate 1KB per shader const cacheMemory = compressionResults ? compressionResults.compressedSize: 0; memoryUsage = { gpu: Math.round(gpuMemory / 1024 / 1024 * 100) / 100, // MB system: Math.round(systemMemory / 1024 * 100) / 100, // KB; cache: Math.round(cacheMemory / 1024 * 100) / 100 // KB; }
 } /** * Cleanup resources */ function cleanup(): void { generatedShaders.clear(); tiledData = []; compressionResults = null; }
 // Update memory usage when tiled data changes $effect(() => { if (tiledData.length > 0) { updateMemoryUsage(); }
 }); // Export shader for external use export function getShader(tileX: number, tileY: number): string | undefined { return generatedShaders.get(`tile_${ tileX }_${ tileY }_mixed`); }
@@ -65,19 +65,19 @@
 .tile-info-overlay { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0; pointer-events: none; }
 .tile-info { position: absolute;, transform: translate(-50%, -50%); }
 .tile-confidence { background: rgba(0, 255, 0, 0.8); padding: 0.15rem 0.3rem; border-radius: 3px; font-size: 0.7rem; font-weight: bold; color: black; }
-.adaptive-rendering-container {, background: rgba(0, 0, 0, 0.3); border-radius: 6px; padding: 1rem; }
-.metrics-dashboard {, background: rgba(0, 0, 0, 0.4); padding: 1rem; border-radius: 6px; }
-.metrics-grid {, display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1rem; }
+.adaptive-rendering-container { background: rgba(0, 0, 0, 0.3); border-radius: 6px; padding: 1rem; }
+.metrics-dashboard { background: rgba(0, 0, 0, 0.4); padding: 1rem; border-radius: 6px; }
+.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1rem; }
 .metric-card { text-align: center; padding: 0.75rem;, background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; }
 .metric-value { font-size: 1.5rem; font-weight: bold; color: #60a5fa; }
 .metric-label { font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem; }
 .memory-usage { margin-top: 1rem; }
 .memory-bar { display: flex; height: 20px;, background: rgba(0, 0, 0, 0.5); border-radius: 10px; overflow: hidden; }
-.memory-section {, display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); }
-.memory-section.gpu { background: #dc2626 } .memory-section.system { background: #059669 } .memory-section.cache {, background: #7c3aed } .shader-preview, .chr-patterns { background: rgba(0, 0, 0, 0.4); padding: 1rem; border-radius: 6px; }
+.memory-section { display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); }
+.memory-section.gpu { background: #dc2626 } .memory-section.system { background: #059669 } .memory-section.cache { background: #7c3aed } .shader-preview, .chr-patterns { background: rgba(0, 0, 0, 0.4); padding: 1rem; border-radius: 6px; }
 .shader-preview h3, .chr-patterns h3 { margin: 0, 0 1rem 0; color: #e2e8f0; }
-.shader-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
-.shader-card {, background: rgba(0, 0, 0, 0.6); padding: 0.75rem; border-radius: 4px;, border: 1px solid rgba(148, 163, 184, 0.3); }
+.shader-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+.shader-card { background: rgba(0, 0, 0, 0.6); padding: 0.75rem; border-radius: 4px;, border: 1px solid rgba(148, 163, 184, 0.3); }
 .shader-title { font-size: 0.8rem; font-weight: bold; margin-bottom: 0.5rem; color: #fbbf24; }
 .shader-code { margin-bottom: 0.5rem; }
 .shader-code pre { margin: 0; font-size: 0.7rem; line-height: 1.2; white-space: pre-wrap; color: #94a3b8; }
@@ -85,17 +85,17 @@
 .copy-shader:hover { background: #4b5563; }
 .pattern-stats { display: flex; gap: 1rem; margin-bottom: 1rem; font-size: 0.9rem; }
 .compression-ratio { color: #10b981; font-weight: bold; }
-.pattern-grid {, display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.5rem; }
+.pattern-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.5rem; }
 .pattern-preview { background: white; padding: 0.25rem; border-radius: 3px; display: flex; justify-content: center; align-items: center; }
 .control-panel { display: flex; justify-content: space-between; align-items: center; padding: 1rem;, background: rgba(0, 0, 0, 0.4); border-radius: 6px; }
-.process-button {, background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: bold; cursor: pointer;, transition: all 0.2; }
-.process-buttonhover:not(:disabled) {, background: linear-gradient(135deg, #2563eb, #1e40af); transform: translateY(-1px); }
+.process-button { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: bold; cursor: pointer;, transition: all 0.2; }
+.process-buttonhover:not(:disabled) { background: linear-gradient(135deg, #2563eb, #1e40af); transform: translateY(-1px); }
 .process-buttondisabled { opacity: 0.6; cursor: not-allowed; }
 .settings { display: flex; gap: 1rem; }
 .settings label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; }
 .settings input[type="checkbox"] { accent-color: #3b82f6; }
-@keyframes spin { to {, transform: rotate(360deg) } }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% {, opacity: 0.7; } }
+@keyframes spin { to { transform: rotate(360deg) } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 @media (max-width: 768px) { .visualization-container { grid-template-columns: 1fr; }
   .metrics-grid { grid-template-columns: repeat(2, 1fr); }
   .shader-grid { grid-template-columns: 1fr; }

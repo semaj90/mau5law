@@ -22,7 +22,7 @@
     img.src = glyphResult.glyph_url; }
   function renderLoop() { const startTime = performance.now(); // Basic render (extend this for actual shader rendering) if (renderMode === 'webgpu' && webgpuDevice) { renderWebGPUFrame(); } else if (renderMode === 'webgl' && webglContext) { renderWebGLFrame(); }
     // Update stats const endTime = performance.now(); renderStats.renderTime = endTime - startTime; renderStats.frameRate = 1000 / (endTime - renderStats.lastFrame); renderStats.lastFrame = endTim; if (isRendering) { animationFrameId = requestAnimationFrame(renderLoop); }
-  } function renderWebGPUFrame() { if (!webgpuDevice) return; const commandEncoder = webgpuDevice.createCommandEncoder(); const renderPassDescriptor: GPURenderPassDescriptor = { colorAttachments: [{, view: (canvas.getContext('webgpu') as GPUCanvasContext).getCurrentTexture.createView(), clearValue: {, r: 0.0, g: 0.0, b: 0.0, a: 1.0 }, loadOp: 'clear', storeOp: 'store'
+  } function renderWebGPUFrame() { if (!webgpuDevice) return; const commandEncoder = webgpuDevice.createCommandEncoder(); const renderPassDescriptor: GPURenderPassDescriptor = { colorAttachments: [{ view: (canvas.getContext('webgpu') as GPUCanvasContext).getCurrentTexture.createView(), clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 }, loadOp: 'clear', storeOp: 'store'
       }] }
     const renderPass = commandEncoder.beginRenderPass(renderPassDescriptor); // Add actual rendering commands here renderPass.end(); webgpuDevice.queue.submit([commandEncoder.finish()]); }
   function renderWebGLFrame() { if (!webglContext) return; const gl = webglContext; gl.viewport(0, 0, width, height); gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT); // Add actual rendering commands here }

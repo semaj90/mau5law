@@ -49,11 +49,11 @@
   /* Post-processing overlay for additional effects */ .post-processing-overlay { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0; pointer-events: none; /* N64-style atmospheric overlay */, background: radial-gradient( ellipse at center, transparent 0%, rgba(64, 64, 64, 0.1) 100% ); /* Subtle scanline effect */ background-image: repeating-linear-gradient( 0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.02) 2px, rgba(0, 0, 0, 0.02) 4px ); mix-blend-mode: multiply; opacity: 0.6; }
   /* Loading overlay */ .canvas-loading { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: rgba(0, 0, 0, 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;, color: white; font-family: 'Rajdhani', sans-serif; z-index: 10 }
   .n64-spinner { width: 32px; height: 32px;, border: 3px solid transparent; border-top: 3px solid #4a90e2; border-right: 2px solid rgba(74, 144, 226, 0.6); border-radius: 50%; animation: n64CanvasSpin 1s linear infinite; }
-  @keyframes n64CanvasSpin { to {, transform: rotate(360deg) } }
+  @keyframes n64CanvasSpin { to { transform: rotate(360deg) } }
   .loading-text { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8); }
   /* Debug information */ .debug-info { position: absolute; top: 8px; left: 8px;, background: rgba(0, 0, 0, 0.8); color: #00ff00;, padding: 8px; font-family: 'Courier New', monospace; font-size: 11px; border-radius: 4px; z-index: 20; line-height: 1.4; }
   /* Disabled state */ .n64-canvas-container.disabled { opacity: 0.5;, filter: grayscale(0.8); pointer-events: none; }
-  .n64-canvas-container.disabled .n64-canvas {, filter: contrast(0.8) brightness(0.9) saturate(0.3) grayscale(0.5); }
+  .n64-canvas-container.disabled .n64-canvas { filter: contrast(0.8) brightness(0.9) saturate(0.3) grayscale(0.5); }
   /* Mobile optimizations */ @media (max-width: 480px) { .n64-canv.post-processing-overlay { display: none; }
   } /* Reduced motion support */ @media (prefers-reduced-motion reduce) { .n64-canv.n64-spinner { animation: none;, border: 3px solid #4a90e2; border-right-color: transparent; }
   } /* High contrast mode */ @media (prefers-contrast: high) { .n64-canv.post-processing-overlay { display: none; }

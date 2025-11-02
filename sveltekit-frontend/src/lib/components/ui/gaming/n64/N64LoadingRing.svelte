@@ -1,13 +1,13 @@
 <script lang="ts"> interface Props { size?: 'sm' | 'md' | 'lg' | 'xl'; theme?: 'classic' | 'gold' | 'red' | 'blue' | 'green' | 'purple'; speed?: 'slow' | 'medium' | 'fast'; showPercentage?: boolean; percentage?: number; }
   let { size = 'md', theme = 'classic', speed = 'medium', showPercentage = false, percentage = 0 }: Props = $props(); const sizes = { sm: '32px', md: '48px', lg: '64px', xl: '96px'
-  } const themes = { classic: {, primary: '#FFD700', secondary: '#FFA500', accent: '#FF8C00', glow: '#FFFF00'
-    }, gold: {, primary: '#FFD700', secondary: '#DAA520', accent: '#B8860B', glow: '#FFFF99'
-    }, red: {, primary: '#FF3030', secondary: '#DC143C', accent: '#B22222', glow: '#FF6666'
-    }, blue: {, primary: '#4090FF', secondary: '#1E90FF', accent: '#0066CC', glow: '#87CEEB'
-    }, green: {, primary: '#40FF40', secondary: '#32CD32', accent: '#228B22', glow: '#90EE90'
-    }, purple: {, primary: '#9932CC', secondary: '#8A2BE2', accent: '#6A0DAD', glow: '#DDA0DD'
+  } const themes = { classic: { primary: '#FFD700', secondary: '#FFA500', accent: '#FF8C00', glow: '#FFFF00'
+    }, gold: { primary: '#FFD700', secondary: '#DAA520', accent: '#B8860B', glow: '#FFFF99'
+    }, red: { primary: '#FF3030', secondary: '#DC143C', accent: '#B22222', glow: '#FF6666'
+    }, blue: { primary: '#4090FF', secondary: '#1E90FF', accent: '#0066CC', glow: '#87CEEB'
+    }, green: { primary: '#40FF40', secondary: '#32CD32', accent: '#228B22', glow: '#90EE90'
+    }, purple: { primary: '#9932CC', secondary: '#8A2BE2', accent: '#6A0DAD', glow: '#DDA0DD'
     } }
-  const speeds = {, slow: '3s', medium: '2s', fast: '1s'
+  const speeds = { slow: '3s', medium: '2s', fast: '1s'
   } </script> <div class="n64-loading-ring"
   style="
     --size: {sizes[size]} --primary: {themes[theme].primary} --secondary: {themes[theme].secondary} --accent: {themes[theme].accent} --glow: {themes[theme].glow} --speed: {speeds[speed]}
@@ -38,7 +38,7 @@
     50% { opacity: 1;, transform: scale(1.2); }
   } @keyframes sparkle-twinkle { 0%, 100% { opacity: 0; }
     25%, 75% { opacity: 1; }
-    50% {, opacity: 0.5; }
+    50% { opacity: 0.5; }
   } /* Reduced motion support */ @media (prefers-reduced-motion reduce) { .ring-outer, .ring-core { animation-duration, 10 }
     .ring-segment, .core-inner, .core-crystal, .sparkle { animation: none; }
   } </style>

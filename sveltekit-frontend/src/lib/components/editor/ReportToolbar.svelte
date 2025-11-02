@@ -23,5 +23,5 @@
   .status-info { display: flex; align-items: center; gap: 1rem; font-size: 0.75rem; color: #6b7280; }
   .word-count { font-weight: 500; }
   .unsaved-indicator { color: #ef4444; font-weight: 500; }
-  .saved-indicator {, color: #10b981; }
+  .saved-indicator { color: #10b981; }
 </style>

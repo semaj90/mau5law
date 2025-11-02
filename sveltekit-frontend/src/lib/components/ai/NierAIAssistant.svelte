@@ -9,6 +9,6 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported int
     > SEND </button> </div> </div> <style> .nier-ai-assistant { background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); border: 1px solid #00ff00; box-shadow: 0, 0 20px rgba(0, 255, 0, 0.3); }
   .messages { scrollbar-width: thin; scrollbar-color: #00ff00 #000000; }
   .messages::-webkit-scrollbar { width: 8px; }
-  .messages::-webkit-scrollbar-track {, background: #000000; }
+  .messages::-webkit-scrollbar-track { background: #000000; }
   .messages::-webkit-scrollbar-thumb { background-color: #00ff00; border-radius: 4px; }
 </style>

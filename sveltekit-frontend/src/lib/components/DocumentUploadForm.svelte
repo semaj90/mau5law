@@ -28,9 +28,9 @@
   const { maxFiles } = $props<{ maxFiles: number }>()
   const { onUploadComplete } = $props<{ onUploadComplete: ((payload: { caseId?: string }>() files: File[];, ocr_results: OCRResult[] }) => void) | undefined;
   const { onUploadError } = $props<{ onUploadError: ((err: any) }>()
-  const { onNext } = $props<{ onNext: ((event: {, step: 'documents' }>() data: InternalFormData }) => void) | undefined;
-  const { onPrevious } = $props<{ onPrevious: ((event: {, step: 'documents' }) }>()
-  const { onSaveDraft } = $props<{ onSaveDraft: ((event: {, step: 'documents' }>() data: InternalFormData }) => void) | undefined;
+  const { onNext } = $props<{ onNext: ((event: { step: 'documents' }>() data: InternalFormData }) => void) | undefined;
+  const { onPrevious } = $props<{ onPrevious: ((event: { step: 'documents' }) }>()
+  const { onSaveDraft } = $props<{ onSaveDraft: ((event: { step: 'documents' }>() data: InternalFormData }) => void) | undefined;
   const { className = '' } = $props()
   const { id } = $props<{ id: string | undefined }>()
   const { testId } = $props<{ testId: string | undefined }>()
@@ -55,7 +55,7 @@
     return acceptedTypes.includes(file.type);
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return, '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -122,12 +122,10 @@
         await new Promise((r) => setTimeout(r, 150));
         uploadProgress = { ...uploadProgress, [file.name]: p };
       }
-      const ocrResult: OCRResult = {
-       , text: `Mock OCR text for ${file.name}`,
+      const ocrResult: OCRResult = { text: `Mock OCR text for ${file.name}`,
         confidence: 0.95,
         pages: [],
-        metadata: {
-         , title: file.name,
+        metadata: { title: file.name,
           creation_date: new Date(),
           page_count: 1,
           file_size: file.size,
@@ -181,13 +179,13 @@
   }
   function getFileIcon(fileType: string): string {
     if (fileType.includes('pdf')) {
-      return, 'i-lucide-file-text'; // PDF icon
+      return 'i-lucide-file-text'; // PDF icon
     } else if (fileType.startsWith('image/')) {
-      return, 'i-lucide-image'; // Image icon
+      return 'i-lucide-image'; // Image icon
     } else if (fileType.includes('word')) {
-      return, 'i-lucide-file-text'; // Word document icon
+      return 'i-lucide-file-text'; // Word document icon
     }
-    return, 'i-lucide-file'; // Generic file icon
+    return 'i-lucide-file'; // Generic file icon
   }
 </script>
 
@@ -280,8 +278,7 @@
   .file-actions {
     flex-shrink: 0;
   }
-  .remove-button {
-   , color: var(--danger-color);
+  .remove-button { color: var(--danger-color);
   }
   .error-messages {
     margin-top: 16px;

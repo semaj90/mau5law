@@ -23,7 +23,7 @@ import type { Document } from '$lib/types';
 
   // Sample documents for testing
   const sampleDocuments = $state([
-    {,
+    {
       id: 'doc1',
       title: 'Employment Contract - Software Engineer',
       content:
@@ -109,7 +109,7 @@ import type { Document } from '$lib/types';
           query,
           config: {
             ranking: {
-              weights: {, relevance: 0.5, keywords: 0.3, synthesis: 0.2 }
+              weights: { relevance: 0.5, keywords: 0.3, synthesis: 0.2 }
             }
           }
         })
@@ -181,9 +181,9 @@ import type { Document } from '$lib/types';
 
   // Get score color
   function getScoreColor(score: number): string {
-    if (score >= 0.7) return, 'text-green-400';
-    if (score >= 0.4) return, 'text-yellow-400';
-    return, 'text-red-400';
+    if (score >= 0.7) return 'text-green-400';
+    if (score >= 0.4) return 'text-yellow-400';
+    return 'text-red-400';
   }
 </script>
 
@@ -444,8 +444,7 @@ import type { Document } from '$lib/types';
   }
 
   @keyframes spin {
-    from {
-     , transform: rotate(0deg);
+    from { transform: rotate(0deg);
     }
     to {
       transform: rotate(360deg);

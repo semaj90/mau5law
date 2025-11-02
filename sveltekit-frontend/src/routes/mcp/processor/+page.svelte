@@ -6,9 +6,9 @@
 
   // Example data for dynamic components
   let cards = $state([
-    { id: 1, component: CardA, props: {, title: 'First Card', content: 'Content for Card A' } },
-    { id: 2, component: CardB, props: {, title: 'Second Card', content: 'Content for Card B' } },
-    { id: 3, component: CardA, props: {, title: 'Third Card', content: 'More content for Card A' } },
+    { id: 1, component: CardA, props: { title: 'First Card', content: 'Content for Card A' } },
+    { id: 2, component: CardB, props: { title: 'Second Card', content: 'Content for Card B' } },
+    { id: 3, component: CardA, props: { title: 'Third Card', content: 'More content for Card A' } },
   ]);
 </script>
 

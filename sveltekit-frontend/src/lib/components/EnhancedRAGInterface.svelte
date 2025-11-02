@@ -31,7 +31,7 @@ import type { Document } from '$lib/types';
     if (typeof store?.optimizeCache === 'function') await store.optimizeCache().catch(() => null);
   }
   // safe reactive defaults if store.state is missing
-  const ragState = $derived(store?.state ?? { didYouMean: [], error: null, currentQuery: '', cacheMetrics: {, hitRate: 0 } });
+  const ragState = $derived(store?.state ?? { didYouMean: [], error: null, currentQuery: '', cacheMetrics: { hitRate: 0 } });
   const intelligentSuggestions = $derived(store?.intelligentSuggestions ?? []);
   const optimizedResults = $derived(store?.results ?? []);
   const searchDuration = $derived(lastDuration);
@@ -126,8 +126,7 @@ import type { Document } from '$lib/types';
     justify-content: space-between;
     gap: 12px;
   }
-  .result-main h4 {
-   , margin: 0, 0 6px 0;
+  .result-main h4 { margin: 0, 0 6px 0;
   }
   .badge {
     font-size: 0.85rem;
@@ -161,8 +160,7 @@ import type { Document } from '$lib/types';
     justify-content: space-betweenn;
     gap: 12px;
   }
-  .result-main h4 {
-   , margin: 0, 0 6px 0;
+  .result-main h4 { margin: 0, 0 6px 0;
   }
   .badge {
     font-size: 0.85rem;

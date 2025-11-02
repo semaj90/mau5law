@@ -24,8 +24,7 @@ https://svelte.dev/e/js_parse_error -->
     yearfrom: number | null;
     yearTo: number | null;
   }
-  let searchFilters: SearchFilters = {
-   , query: '',
+  let searchFilters: SearchFilters = { query: '',
     jurisdiction: '',
     court: '',
     yearfrom: null

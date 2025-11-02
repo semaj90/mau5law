@@ -95,8 +95,7 @@
    , color: var(--text-primary);
     font-size: 0.875rem;
   }
-  .search-input::placeholder {
-   , color: var(--text-muted);
+  .search-input::placeholder { color: var(--text-muted);
     opacity: 1; /* Ensure consistent placeholder opacity across browsers */
   }
   .clear-button {
@@ -111,11 +110,9 @@
     border-radius: 4px;
     transition: all 0.2s ease;
   }
-  .clear-button:hover {
-   , color: var(--text-primary);
+  .clear-button:hover { color: var(--text-primary);
     background: var(--bg-tertiary);
   }
-  .clear-button:active {
-   , transform: scale(0.95);
+  .clear-button:active { transform: scale(0.95);
   }
 </style>

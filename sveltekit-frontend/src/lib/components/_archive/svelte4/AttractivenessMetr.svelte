@@ -22,8 +22,8 @@
         ; bind:value={ score } oninput={() => onChange?.({ score })} class="mx-auto px-4 max-w-7xl"
       /> </div> {/if} </div> <!-- TODO: migrate export lets, to $props(); CommonProps, assumed. --> <style> .star-button { color: #d1d5db; border: none; background: transparent; padding: 0 }
   .star-button.active { color: #fbbf24; }
-  .star-button.hovered {, color: #fcd34d; }
+  .star-button.hovered { color: #fcd34d; }
   .star-button:not(.active):hover { color: #fef3c7; }
-  .star-button:disabled {, opacity: 0.7; }
+  .star-button:disabled { opacity: 0.7; }
 </style>
 

@@ -109,8 +109,7 @@
     margin: 0;
   }
 
-  .tools-badge {
-   , background: var(--nier-accent-cool, #87ceeb);
+  .tools-badge { background: var(--nier-accent-cool, #87ceeb);
     color: var(--nier-bg-primary, #0a0a0a);
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
@@ -181,8 +180,7 @@
     border-radius: 1rem;
   }
 
-  .tools-placeholder h2 {
-   , color: var(--nier-accent-cool, #87ceeb);
+  .tools-placeholder h2 { color: var(--nier-accent-cool, #87ceeb);
     margin-bottom: 1rem;
   }
 
@@ -258,17 +256,14 @@
     width: 8px;
   }
 
-  .tools-content::-webkit-scrollbar-track {
-   , background: var(--nier-bg-tertiary, #2a2a2a);
+  .tools-content::-webkit-scrollbar-track { background: var(--nier-bg-tertiary, #2a2a2a);
   }
 
-  .tools-content::-webkit-scrollbar-thumb {
-   , background: var(--nier-accent-cool, #87ceeb);
+  .tools-content::-webkit-scrollbar-thumb { background: var(--nier-accent-cool, #87ceeb);
     border-radius: 4px;
   }
 
-  .tools-content::-webkit-scrollbar-thumb:hover {
-   , background: var(--nier-accent-warm, #d4af37);
+  .tools-content::-webkit-scrollbar-thumb:hover { background: var(--nier-accent-warm, #d4af37);
   }
 </style>
 

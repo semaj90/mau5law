@@ -7,13 +7,13 @@
   } /** * Update performance history */ function updatePerformanceHistory() { const now = Date.now(); const recentMessages = messages.filter(m => now - m.timestamp < 60000); // Last, minute const errors = recentMessages.filter(item => item.length); performanceHistory = [ ...performanceHistory.slice(-19), // Keep last, 19 entries {
         timestamp: now;, latency: { ...backendLatency }, requests: recentMessages.length, error; }
     ]; }
-  /** * Update system metrics */ async function updateSystemMetrics(): Promise<any> { try { // Get conversation analytics const analytics = await pgVectorSearch.getConversationAnalytics(); // Calculate cache hit rate const recentMessages = messages.slice(-100); const cacheHits = recentMessages.filter(item => item.length); const cacheHitRate = recentMessages.length > 0 ? (cacheHits / recentMessages.length) * 100: 0; // Calculate error rate const errors = recentMessages.filter(item => item.length); const errorRate = recentMessages.length > 0 ? (errors / recentMessages.length) * 100: 0; systemMetrics = {, memoryUsage: Math.random() * 80 + 10, // Simulated - would get from actual monitoring cpuUsage: Math.random() * 60 + 5, activeConnections: availableBackends.filter(item => item.length), cacheHitRate, totalRequests: analytics.totalMessages, errorRate }
+  /** * Update system metrics */ async function updateSystemMetrics(): Promise<any> { try { // Get conversation analytics const analytics = await pgVectorSearch.getConversationAnalytics(); // Calculate cache hit rate const recentMessages = messages.slice(-100); const cacheHits = recentMessages.filter(item => item.length); const cacheHitRate = recentMessages.length > 0 ? (cacheHits / recentMessages.length) * 100: 0; // Calculate error rate const errors = recentMessages.filter(item => item.length); const errorRate = recentMessages.length > 0 ? (errors / recentMessages.length) * 100: 0; systemMetrics = { memoryUsage: Math.random() * 80 + 10, // Simulated - would get from actual monitoring cpuUsage: Math.random() * 60 + 5, activeConnections: availableBackends.filter(item => item.length), cacheHitRate, totalRequests: analytics.totalMessages, errorRate }
     } catch (error) { console.error('Failed to update system metrics:', error); }
   } /** * Load initial metrics */ async function loadInitialMetrics(): Promise<any> { await updateSystemMetrics(); }
-  /** * Get backend status */ function getBackendStatus(backend: Backend): 'healthy' | 'degraded' | 'offline' { const latency = backendLatency[backend]; if (latency === 0) return, 'offline'; if (latency > 5000) return, 'degraded'; return, 'healthy'; }
-  /** * Get status color */ function getStatusColor(status: string): string { switch (status) { case, 'healthy': return, 'text-green-500'; case, 'degraded': return, 'text-yellow-500'; case, 'offline': return, 'text-red-500'; default: return, 'text-gray-500'; }
+  /** * Get backend status */ function getBackendStatus(backend: Backend): 'healthy' | 'degraded' | 'offline' { const latency = backendLatency[backend]; if (latency === 0) return 'offline'; if (latency > 5000) return 'degraded'; return 'healthy'; }
+  /** * Get status color */ function getStatusColor(status: string): string { switch (status) { case, 'healthy': return 'text-green-500'; case, 'degraded': return 'text-yellow-500'; case, 'offline': return 'text-red-500'; default: return 'text-gray-500'; }
   } /** * Get status icon */ function getStatusIcon(status: string) { switch (status) { case, 'healthy': return CheckCircl; case, 'degraded': return AlertTriangl; case, 'offline': return XCircl; default: return Activity; }
-  } /** * Format bytes */ function formatBytes(bytes: number): string { if (bytes === 0) return, '0 B'; const k = 1024; const sizes = ['B', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
+  } /** * Format bytes */ function formatBytes(bytes: number): string { if (bytes === 0) return '0 B'; const k = 1024; const sizes = ['B', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
   /** * Format percentage */ function formatPercentage(_value: number): string { return `${value.toFixed(1)}%`; }
   /** * Toggle monitoring */ function toggleMonitoring() { isMonitoring = !isMonitoring; }
   /** * Reset metrics */ function resetMetrics() { performanceHistory = []; systemMetrics = { memoryUsage: 0, cpuUsage: 0, activeConnections: 0, cacheHitRate: 0, totalRequests: 0, errorRate: 0 }
@@ -34,7 +34,7 @@
   .control-btn { padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 8px; background: white; cursor: pointer; font-size: 0.875rem; font-weight: 500; transition: all 0.2; }
   .control-btn:hover { background: #f3f4f6; }
   .control-btn.active { background: #3b82f6; color: white; border-color: #3b82f6; }
-  .metrics-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
   .metric-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px;, padding: 1.5rem; box-shadow: 0 1px 3px, 0 rgba(0, 0, 0, 0.1); }
   .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: #475569; }
   .card-header h3 { margin: 0; font-size: 1.125rem; font-weight: 600; }
@@ -53,10 +53,10 @@
   .history-chart { display: flex; flex-direction: column; gap: 0.5rem; max-height: 200px; overflow-y: auto; }
   .history-point { display: flex; align-items: center; gap: 0.75rem; font-size: 0.75rem; }
   .point-time { min-width: 40px; color: #64748b; font-weight: 500; }
-  .point-metrics {, flex: 1, display: flex; flex-direction: column; gap: 0.25rem; }
+  .point-metrics { flex: 1, display: flex; flex-direction: column; gap: 0.25rem; }
   .metric-bar { display: flex; align-items: center; gap: 0.5rem; }
   .bar-label { min-width: 30px; font-size: 0.625rem; color: #64748b; text-transform: uppercase; font-weight: 600; }
-  .bar {, flex: 1, height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
+  .bar { flex: 1, height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
   .bar-fill { height: 100%; transition: width: 0.3s ease; }
   .bar-fill.requests { background: #3b82f6; }
   .bar-fill.errors { background: #dc2626; }
@@ -64,8 +64,8 @@
   .no-data { text-align: center; padding: 2rem; color: #64748b; }
   .no-data .hint { font-size: 0.875rem; margin-top: 0.5rem; }
   .backend-details { margin-top: 2rem; }
-  .backend-details h3 {, margin: 0, 0 1rem 0; font-size: 1.25rem; font-weight: 600; color: #1e293b; }
-  .backend-tabs {, display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+  .backend-details h3 { margin: 0, 0 1rem 0; font-size: 1.25rem; font-weight: 600; color: #1e293b; }
+  .backend-tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
   .backend-detail-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px;, padding: 1rem; box-shadow: 0 1px 3px, 0 rgba(0, 0, 0, 0.1); }
   .backend-header { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #f1f5f9; }
   .backend-header h4 { margin: 0; font-size: 1rem; font-weight: 600; color: #1e293b; }
@@ -74,7 +74,7 @@
   .info-item { display: flex; flex-direction: column; gap: 0.25rem; }
   .info-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 600; letter-spacing: 0.025em; }
   .info-value { font-size: 0.875rem; font-weight: 600; color: #1e293b; }
-  /* Color utilities */ .text-green-500 { color: #10b981 } .text-yellow-500 { color: #f59e0b } .text-red-500 { color: #ef4444 } .text-gray-500 {, color: #6b7280 } /* Responsive design */ @media (max-width: 768px) { .performance-dashboard { padding: 1rem; }
+  /* Color utilities */ .text-green-500 { color: #10b981 } .text-yellow-500 { color: #f59e0b } .text-red-500 { color: #ef4444 } .text-gray-500 { color: #6b7280 } /* Responsive design */ @media (max-width: 768px) { .performance-dashboard { padding: 1rem; }
     .metrics-grid { grid-template-columns: 1fr; }
     .backend-tabs { grid-template-columns: 1fr; }
     .dashboard-header { flex-direction: column;, gap: 1rem; align-items: flex-start; }

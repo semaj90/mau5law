@@ -139,7 +139,7 @@
   }
   // Assign a cluster id based on evidence metadata or fallback
   function assignCluster(evidence: any): string {
-    if (!evidence) return, 'cluster-0';
+    if (!evidence) return 'cluster-0';
     if (evidence.clusterId) return String(evidence.clusterId);
     if (evidence.type) return `type-${evidence.type}`;
     // stable-ish fallback using id
@@ -294,7 +294,7 @@
     try {
       // websocketStore is an imported store previously in file
       const unsubscribe = websocketStore?.subscribe?.((msg: any) => {
-        // simple handler: expect messages with {, type: 'node-update' | 'link-add', payload }
+        // simple handler: expect messages with { type: 'node-update' | 'link-add', payload }
         if (!msg || !msg.type) return;
         if (msg.type === 'node-update') {
           const idx = nodes.findIndex(n => n.id === msg.payload.id);
@@ -397,8 +397,7 @@
     font-size: 12px;
     margin-bottom: 4px;
   }
-  .analysis-controls select {
-   , background: rgba(255, 255, 255, 0.1);
+  .analysis-controls select { background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
     padding: 6px 8px;
@@ -418,8 +417,7 @@
     flex-direction: row;
     gap: 5px;
   }
-  .btn-control {
-   , background: rgba(255, 255, 255, 0.1);
+  .btn-control { background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
     padding: 6px 12px;
@@ -428,8 +426,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .btn-control:hover {
-   , background: rgba(255, 255, 255, 0.2);
+  .btn-control:hover { background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
   }
   .metrics-panel {
@@ -445,8 +442,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     min-width: 200px;
   }
-  .metrics-panel h3 {
-   , margin: 0, 0 10px 0;
+  .metrics-panel h3 { margin: 0, 0 10px 0;
     color: #4a90e2;
     font-size: 14px;
   }
@@ -480,8 +476,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     max-width: 300px;
   }
-  .node-details-panel h3 {
-   , margin: 0, 0 10px 0;
+  .node-details-panel h3 { margin: 0, 0 10px 0;
     color: #4a90e2;
     font-size: 16px;
     padding-right: 20px;
@@ -494,8 +489,7 @@
   .connected-nodes {
     margin-top: 10px;
   }
-  .connected-nodes h4 {
-   , margin: 0, 0 5px 0;
+  .connected-nodes h4 { margin: 0, 0 5px 0;
     color: #4a90e2;
     font-size: 14px;
   }
@@ -552,7 +546,7 @@
     margin-bottom: 15px;
   }
   @keyframes spin {
-    0% {, transform: rotate(0deg); }
+    0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
   .d3-container {

@@ -58,8 +58,7 @@ import type { Case } from '$lib/types';
     send({
       type: 'START_PROCESSING',
       document,
-      options: {
-       , extractEntities: true,
+      options: { extractEntities: true,
         generateSummary: true
         assessRisk: true
         generateEmbedding: true
@@ -77,9 +76,9 @@ import type { Case } from '$lib/types';
   }
   // UI helper functions
   function getProgressColor(progress: number): string {
-    if (progress < 30) return, 'bg-red-500';
-    if (progress < 70) return, 'bg-yellow-500';
-    return, 'bg-green-500';
+    if (progress < 30) return 'bg-red-500';
+    if (progress < 70) return 'bg-yellow-500';
+    return 'bg-green-500';
   }
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${ms}ms`;

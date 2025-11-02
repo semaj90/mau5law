@@ -102,8 +102,7 @@
           status: 'completed',
           processingTime: Math.floor(Math.random() * 2000) + 500,
           gpuAccelerated: useGpu,
-          results: {
-           , vectorsGenerated: Math.floor(Math.random() * 500) + 100,
+          results: { vectorsGenerated: Math.floor(Math.random() * 500) + 100,
             entitiesExtracted: Math.floor(Math.random() * 20) + 5,
             confidence: 0.85 + Math.random() * 0.1;
           }
@@ -249,7 +248,7 @@
           class="flex items-center gap-2" px-4 py-2 rounded-md text-sm font-medium transition-colors
                  {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
         >
-          {@render tab.icon({, class: "w-4 h-4" })}
+          {@render tab.icon({ class: "w-4 h-4" })}
           {tab.label}
         </button>
       {/each}

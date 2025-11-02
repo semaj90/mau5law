@@ -29,12 +29,12 @@
   .canvas-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem;, background: rgba(0, 255, 136, 0.1); border-bottom: 2px solid #00ff88; }
   .canvas-title { font-size: 1.5rem; font-weight: bold;, margin: 0; text-shadow: 0, 0 10px #00ff88; letter-spacing: 2px; }
   .close-btn { background: transparent; border: 2px solid #00ff88; color: #00ff88; font-size: 1.5rem; width: 40px; height: 40px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
-  .close-btn:hover {, background: rgba(255, 0, 0, 0.2); border-color: #ff0000;, color: #ff0000; box-shadow: 0, 0 15px rgba(255, 0, 0, 0.5); transform: scale(1.1); }
+  .close-btn:hover { background: rgba(255, 0, 0, 0.2); border-color: #ff0000;, color: #ff0000; box-shadow: 0, 0 15px rgba(255, 0, 0, 0.5); transform: scale(1.1); }
   .canvas-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 1rem;, background: rgba(0, 0, 0, 0.8); border-bottom: 1px solid #00ff88;, gap: 2rem; flex-wrap: wrap; }
   .tool-section, .color-section, .size-section { display: flex; flex-direction: column;, gap: 0.5rem; align-items: center; }
   .tool-section h3, .color-section h3, .size-section h3 { font-size: 0.8rem; margin: 0;, color: #00ff88; text-shadow: 0, 0 5px #00ff88; }
   .tool-buttons { display: flex; gap: 0.5rem; }
-  .tool-btn {, background: rgba(0, 0, 0, 0.7); border: 1px solid #333; color: #00ff88; padding: 0.5rem; cursor: pointer; transition: all 0.3s ease; font-size: 1.2rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+  .tool-btn { background: rgba(0, 0, 0, 0.7); border: 1px solid #333; color: #00ff88; padding: 0.5rem; cursor: pointer; transition: all 0.3s ease; font-size: 1.2rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
   .tool-btn: hover { border-color: #00ff88;, background: rgba(0, 255, 136, 0.1); box-shadow: 0, 0 10px rgba(0, 255, 136, 0.3); }
   .tool-btn.active { border-color: #00ff88;, background: rgba(0, 255, 136, 0.2); box-shadow: 0, 0 15px rgba(0, 255, 136, 0.5); }
   .color-palette { display: flex; gap: 0.25rem; flex-wrap: wrap; }
@@ -55,5 +55,5 @@
     .tool-section, .color-section, .size-section { flex-direction row; align-items: center; }
     .color-palette { max-width: 200px; }
   } /* YoRHa-style animations */ @keyframes yorha-glow { 0% { box-shadow: 0, 0 5px rgba(0, 255, 136, 0.3) } 50% { box-shadow: 0, 0 20px rgba(0, 255, 136, 0.6) } 100% { box-shadow: 0, 0 5px rgba(0, 255, 136, 0.3) } }
-  .yorha-canvas-board:hover {, animation: yorha-glow 2s ease-in-out infinite; }
+  .yorha-canvas-board:hover { animation: yorha-glow 2s ease-in-out infinite; }
 </style>

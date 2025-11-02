@@ -32,8 +32,7 @@
 	overflow: hidden;
 	box-sizing: border-box;
   }
-  .n64-screen.success {
-, background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(255,255,255,0.02)), var(--n64-bg-success);
+  .n64-screen.success { background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(255,255,255,0.02)), var(--n64-bg-success);
   }
   .n64-screen.warning {
 	background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(255,255,255,0.02)), var(--n64-bg-warning);

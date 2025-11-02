@@ -45,8 +45,7 @@ NES-styled label with legal AI theming
   .bits-label {
     font-family: 'Courier New', monospace;
   }
-  .bits-label:hover {
-   , color: rgb(59, 130, 246);
+  .bits-label:hover { color: rgb(59, 130, 246);
   }
 /* NES-style text shadow for retro effect */ {}
   .bits-label {
@@ -66,7 +65,6 @@ NES-styled label with legal AI theming
    , background: linear-gradient(45deg, #00ff9f, #00b4ff);
     transition: width: 0.3s ease;
   }
-  .bits-label:hover::before {
-   , width: 100%;
+  .bits-label:hover::before { width: 100%;
   }
 </style>

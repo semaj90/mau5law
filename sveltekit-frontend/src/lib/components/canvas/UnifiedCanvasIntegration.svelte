@@ -1,6 +1,6 @@
 <!-- Unified Canvas Integration Combines EvidenceCanvas with YoRHa CanvasBoard for comprehensive evidence visualization --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from "svelte"; import { writable } from 'svelte/store'; import  EvidenceCanvas  from "$lib/ui/enhanced/EvidenceCanvas.svelte"; import  CanvasBoard  from "$lib/components/yorha/CanvasBoard.svelte"; import  Button  from "$lib/components/ui/enhanced-bits.svelte"; interface Props { caseId?: string; enableYoRHaBoard?: boolean; enableEvidenceCanvas?: boolean; splitView?: boolean; syncCanvases?: boolean; initialMode?: 'evidence' | 'drawing' | 'both'; }
   let { caseId = '', enableYoRHaBoard = true, enableEvidenceCanvas = true, splitView = true, syncCanvases = true, initialMode = 'both'
-  }: Props = $props(); // Component references let evidenceCanvasRef: any; let yorhaCanvasBoardRef: any; // State management const canvasState = writable({, mode: initialMode, evidenceObjects: [], drawingObjects: [], selectedObjects: [], lastSync: 0 }); let currentMode = $state(initialMode); let showYoRHaBoard = $state<boolean>(false); let canvasObjects = $state<any[]>([]); let syncInProgress = $state<boolean>(false); // Canvas synchronization async function syncCanvasBoards(): Promise<any> { if (!syncCanvases || syncInProgress) return; syncInProgress = true; try { console.log('🔄 Syncing canvas boards...'); // Get objects from evidence canvas const evidenceObjects = evidenceCanvasRef?.collectObjects() || []; // Get drawings from YoRHa board (if available) const yorhaDrawings = yorhaCanvasBoardRef?.getDrawingObjects() || []; // Update unified state canvasState.update(state => ({ ...state, evidenceObjects, drawingObjects: yorhaDrawings, lastSync: Date.now() })); canvasObjects = [...evidenceObjects, ...yorhaDrawings]; // Dispatch sync event ondispatch?.({ evidenceObjects, drawingObjects: yorhaDrawings, totalObjects: canvasObjects.length, timestamp: Date.now(); }); console.log(`✅ Canvas sync complete: ${canvasObjects.length} objects`); } catch (error) { console.error('❌ Canvas sync failed:', error); } finally { syncInProgress = false; }
+  }: Props = $props(); // Component references let evidenceCanvasRef: any; let yorhaCanvasBoardRef: any; // State management const canvasState = writable({ mode: initialMode, evidenceObjects: [], drawingObjects: [], selectedObjects: [], lastSync: 0 }); let currentMode = $state(initialMode); let showYoRHaBoard = $state<boolean>(false); let canvasObjects = $state<any[]>([]); let syncInProgress = $state<boolean>(false); // Canvas synchronization async function syncCanvasBoards(): Promise<any> { if (!syncCanvases || syncInProgress) return; syncInProgress = true; try { console.log('🔄 Syncing canvas boards...'); // Get objects from evidence canvas const evidenceObjects = evidenceCanvasRef?.collectObjects() || []; // Get drawings from YoRHa board (if available) const yorhaDrawings = yorhaCanvasBoardRef?.getDrawingObjects() || []; // Update unified state canvasState.update(state => ({ ...state, evidenceObjects, drawingObjects: yorhaDrawings, lastSync: Date.now() })); canvasObjects = [...evidenceObjects, ...yorhaDrawings]; // Dispatch sync event ondispatch?.({ evidenceObjects, drawingObjects: yorhaDrawings, totalObjects: canvasObjects.length, timestamp: Date.now(); }); console.log(`✅ Canvas sync complete: ${canvasObjects.length} objects`); } catch (error) { console.error('❌ Canvas sync failed:', error); } finally { syncInProgress = false; }
   } // Mode switching function switchMode(newMode: 'evidence' | 'drawing' | 'both') { currentMode = newMod; if (newMode === 'drawing' || newMode === 'both') { showYoRHaBoard = true; } else { showYoRHaBoard = false; }
     canvasState.update(state => ({ ...state, mode: newMod; })); ondispatch?.({ mode: newMode }); }
   // Event handlers function handleEvidenceUploaded(_event: CustomEvent) { console.log('📁 Evidence uploaded:', e(vent as CustomEvent).detail); // Sync canvases after evidence upload setTimeout(syncCanvasBoards, 500); ondispatch?.(e(vent as CustomEvent).detail); }
@@ -11,7 +11,7 @@
   // Canvas operations function clearAllCanvases() { if (evidenceCanvasRef?.clearCanvas) { evidenceCanvasRef.clearCanvas(); }
     if (yorhaCanvasBoardRef?.clearCanvas) { yorhaCanvasBoardRef.clearCanvas(); }
     canvasObjects = []; canvasState.update(state => ({ ...state, evidenceObjects: [], drawingObjects: [], selectedObjects: [] })); // ondispatch removed; }
-  function exportCanvasState() { const state = { timestamp: Date.now(), caseId, mode: currentMode, evidenceObjects: canvasObjects.filter(obj => obj.type !== 'drawing'), drawings: canvasObjects.filter(obj => obj.type === 'drawing'), canvasJson evidenceCanvasRef?.getCanvasJSON(), metadata: {, objectCount: canvasObjects.length, lastSync: Date.now(), version: '1.0'
+  function exportCanvasState() { const state = { timestamp: Date.now(), caseId, mode: currentMode, evidenceObjects: canvasObjects.filter(obj => obj.type !== 'drawing'), drawings: canvasObjects.filter(obj => obj.type === 'drawing'), canvasJson evidenceCanvasRef?.getCanvasJSON(), metadata: { objectCount: canvasObjects.length, lastSync: Date.now(), version: '1.0'
       } }
     ondispatch?.(state); return stat; }
   // Initialize $effect(() => { console.log('🎮 Unified Canvas Integration initialized'); // Set up periodic sync if enabled if (syncCanvases) { const syncInterval = setInterval(syncCanvasBoards, 5000); return () => { clearInterval(syncInterval); }
@@ -38,7 +38,7 @@
   .mode-indicator { font-size: 0.9rem; opacity: 0.7; margin-left: 1rem; }
   .mode-controls { display: flex;, gap: 0.5rem; align-items: center; }
   .mode-btn, .sync-btn, .clear-btn { background: transparent; border: 2px solid #00ff88; color: #00ff88; padding: 0.5rem 1rem; cursor: pointer;, transition: all 0.3s ease; font-family: 'Courier New', monospace; font-size: 0.8rem; font-weight: bold; }
-  .mode-btn:hover, .sync-btn:hover, .clear-btn:hover {, background: rgba(0, 255, 136, 0.1); box-shadow: 0, 0 10px rgba(0, 255, 136, 0.3); }
+  .mode-btn:hover, .sync-btn:hover, .clear-btn:hover { background: rgba(0, 255, 136, 0.1); box-shadow: 0, 0 10px rgba(0, 255, 136, 0.3); }
   .canvas-container { flex: 1, display: flex;, overflow: hidden; }
   .canvas-container.split-view { flex-direction row; }
   .evidence-canvas-section, .yorha-canvas-section { flex: 1, display: flex; flex-direction: column; min-width: 0 }
@@ -48,10 +48,10 @@
   .status-info { display: flex; gap: 2rem; }
   .sync-status.syncing { color: #ffaa00; animation: pulse 1s ease-in-out infinite; }
   .export-btn { background: transparent; border: 1px solid #00ff88; color: #00ff88; padding: 0.25rem 0.5rem;, cursor: pointer; font-family: 'Courier New', monospace; font-size: 0.7rem; transition: all 0.3s ease; }
-  .export-btn:hover {, background: rgba(0, 255, 136, 0.1); }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% {, opacity: 0.5; } }
+  .export-btn:hover { background: rgba(0, 255, 136, 0.1); }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
   /* Responsive design */ @media (max-width: 768px) { .canvas-mode-header { flex-direction: column; gap: 1rem; }
-    .mode-controls {, width: 100%; justify-content: center; flex-wrap: wrap; }
+    .mode-controls { width: 100%; justify-content: center; flex-wrap: wrap; }
     .canvas-container.split-view { flex-direction: column; }
     .canvas-container.split-view .evidence-canvas-section { border-right: none; border-bottom: 2px solid #00ff88; }
   } </style>

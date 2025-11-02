@@ -46,8 +46,7 @@
     }
   }
   // Strongly-typed menu item shapes to avoid: 'unknown' in templates
-  type MenuSubItem = {
-   , label: string;
+  type MenuSubItem = { label: string;
     value?: any;
     disabled?: boolean;
     onSelect?: (...args: any[]) => void;

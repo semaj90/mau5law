@@ -2,12 +2,12 @@
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; import { goto } from '$app/navigation'; import { Upload, FileText, Image, Video, AlertCircle, CheckCircle, X } from 'lucide-svelte'; import type { PageData } from './$types.js'; interface UploadFile { file: File; progress: number; status: 'pending' | 'uploading' | 'success' | 'error'; error?: string; }
 
-  let { data }: {, data: PageData } = $props(); // Form state let caseId = $state<string>(''); let evidenceType = $state<string>('document'); let title = $state<string>(''); let description = $state<string>(''); let isAdmissible = $state<boolean>(true); let collectedBy = $state<string>(''); let collectedAt = $state(new Date().toISOString().split('T')[0]); let tags = $state<string>(''); // Upload state let dragOver = $state<boolean>(false); let uploadQueue = $state<UploadFile[]>([]); let isUploading = $state<boolean>(false); let uploadMessage = $state<string>(''); let uploadMessageType = $state<'success' | 'error'>('success'); // Helper functions function formatFileSize(bytes: number): string { const units = ['B', 'KB', 'MB', 'GB']; let size = bytes; let unitIndex = 0; while (size >= 1024 && unitIndex < units.length - 1) { size /= 1024; unitIndex++; }
+  let { data }: { data: PageData } = $props(); // Form state let caseId = $state<string>(''); let evidenceType = $state<string>('document'); let title = $state<string>(''); let description = $state<string>(''); let isAdmissible = $state<boolean>(true); let collectedBy = $state<string>(''); let collectedAt = $state(new Date().toISOString().split('T')[0]); let tags = $state<string>(''); // Upload state let dragOver = $state<boolean>(false); let uploadQueue = $state<UploadFile[]>([]); let isUploading = $state<boolean>(false); let uploadMessage = $state<string>(''); let uploadMessageType = $state<'success' | 'error'>('success'); // Helper functions function formatFileSize(bytes: number): string { const units = ['B', 'KB', 'MB', 'GB']; let size = bytes; let unitIndex = 0; while (size >= 1024 && unitIndex < units.length - 1) { size /= 1024; unitIndex++; }
     return `${size.toFixed(1)} ${units[unitIndex]}`; }
 
   function getFileIcon(file: File) { if (file.type.startsWith('image/')) return Image; if (file.type.startsWith('video/')) return Video; return FileText; }
 
-  function validateFile(file: File): string | null { // Size validation (100MB max) if (file.size > 100 * 1024 * 1024) { return, 'File size exceeds 100MB limit'; }
+  function validateFile(file: File): string | null { // Size validation (100MB max) if (file.size > 100 * 1024 * 1024) { return 'File size exceeds 100MB limit'; }
 
     // Type validation const allowedTypes = [
       'application/pdf',

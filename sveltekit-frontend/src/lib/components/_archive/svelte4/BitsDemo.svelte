@@ -1,32 +1,32 @@
 <!-- Component exported, by, default --> <script lang="ts">
 import type { Case } from '$lib/types'; // Avoid: "Cannot use namespace: 'BitsDemoProps' as a type" by declaring a local prop type // that matches the shape used by this component. interface BitsDemoProps { caseTypes?: Array<{ value: string;, label: string }>; useLibrary?: string; class?: string; id?: string;
     'data-testid'?: string; }
-  // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { flip } from 'svelte/animate'; import { fly } from 'svelte/transition'; // Correctly define props using $props() rune with the BitsDemoProps type. // Destructure directly from $props<BitsDemoProps>() and apply defaults. // Rename: 'class' to: 'className' and: 'data-testid' to: 'testId' during destructuring. let {, caseTypes: propCaseTypes, // Renamed to avoid conflict with derived: 'caseTypes'
+  // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { flip } from 'svelte/animate'; import { fly } from 'svelte/transition'; // Correctly define props using $props() rune with the BitsDemoProps type. // Destructure directly from $props<BitsDemoProps>() and apply defaults. // Rename: 'class' to: 'className' and: 'data-testid' to: 'testId' during destructuring. let { caseTypes: propCaseTypes, // Renamed to avoid conflict with derived: 'caseTypes'
     useLibrary = 'bits-ui', // Apply default directly, remove: 'prop' prefix, class: className = '', // Rename: 'class', to: 'className' and apply default id,
     'data-testid': testId, // Directly destructure and rename: 'data-testid'
   } = $props<BitsDemoProps>(); const _defaultCaseTypes = [ { value: 'criminal', label: 'Criminal Cases' }, { value: 'civil', label: 'Civil Cases' }, { value: 'family', label: 'Family Law' }, { value: 'corporate', label: 'Corporate Law' }, ]; // Apply default for caseTypes, which might be more complex than a simple literal let caseTypes = $derived(propCaseTypes ?? _defaultCaseTypes); // bound select value for practice area let selectedPracticeArea = $state<string>(''); interface ToastData { title?: string; description?: string; color: string; }
   let dialogOpen = $state<boolean>(false); let alertOpen = $state<boolean>(false); let _hasMounted = $state<boolean>(false); onMount(() => { _hasMounted = true; }); // reactive watcher: when dialogOpen becomes true, show info notification $effect(() => { if (dialogOpen && _hasMounted) { // call async notifier when dialog opens after mount // run without awaiting so UI isn't blocked; showInfoNotification handles errors/toasts showInfoNotification(); }'
-  }); // Simple native toast system let toasts = $state<Array<{ id: string;, data: ToastData }>>([]); function addToast(toast: {, data: ToastData }) { const id = Date.now().toString(); toasts = [...toasts, { id, data: toast.data }]; // Auto-remove after, 5 seconds setTimeout(() => { toasts = toasts.filter(t => t.id !== id); }, 5000); }
+  }); // Simple native toast system let toasts = $state<Array<{ id: string;, data: ToastData }>>([]); function addToast(toast: { data: ToastData }) { const id = Date.now().toString(); toasts = [...toasts, { id, data: toast.data }]; // Auto-remove after, 5 seconds setTimeout(() => { toasts = toasts.filter(t => t.id !== id); }, 5000); }
   function removeToast(id: string) { toasts = toasts.filter(t => t.id !== id); }
-  // Notification functions with actual API calls async function showSuccessNotification(): Promise<any> { try { const response = await fetch('/api/cases', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({, title: 'Demo case, ' + Date.now(), description: 'Demonstration case created from BitsDemo component', priority: 'medium', status: 'open'
-        }) }); if ((response as { ok?: any; json?: any }).ok) { const result = await (response as { ok?: any; json?: any }).json(); addToast({ data: {, title: 'Case Created Successfully', description: `Case ${(result as { case?: any }).case?.caseNumber} created and saved to database.`, color: 'success'
+  // Notification functions with actual API calls async function showSuccessNotification(): Promise<any> { try { const response = await fetch('/api/cases', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: 'Demo case, ' + Date.now(), description: 'Demonstration case created from BitsDemo component', priority: 'medium', status: 'open'
+        }) }); if ((response as { ok?: any; json?: any }).ok) { const result = await (response as { ok?: any; json?: any }).json(); addToast({ data: { title: 'Case Created Successfully', description: `Case ${(result as { case?: any }).case?.caseNumber} created and saved to database.`, color: 'success'
           } }); } else { throw new Error('Failed to create case'); }
-    } catch (error) { addToast({ data: {, title: 'Case Creation Failed', description: 'Unable to create case via API. Check backend connection.', color: 'error'
+    } catch (error) { addToast({ data: { title: 'Case Creation Failed', description: 'Unable to create case via API. Check backend connection.', color: 'error'
         } }); }
   } async function showWarningNotification(): Promise<any> { try { const response = await fetch('/api/comprehensive-integration', { method: 'GET'
-      }); if ((response as { ok?: any; json?: any }).ok) { const result = await (response as { ok?: any; json?: any }).json(); addToast({ data: {, title: 'System Status Check', description: `Services: ${(result as { system_overview?: any }).system_overview?.healthy_services || 0}/${(result as { system_overview?: any }).system_overview?.total_services || 0} healthy`, color: 'warning'
+      }); if ((response as { ok?: any; json?: any }).ok) { const result = await (response as { ok?: any; json?: any }).json(); addToast({ data: { title: 'System Status Check', description: `Services: ${(result as { system_overview?: any }).system_overview?.healthy_services || 0}/${(result as { system_overview?: any }).system_overview?.total_services || 0} healthy`, color: 'warning'
           } }); } else { throw new Error('Health check failed'); }
-    } catch (error) { addToast({ data: {, title: 'Health Check Failed', description: 'Unable to check system health. Backend may be down.', color: 'error'
+    } catch (error) { addToast({ data: { title: 'Health Check Failed', description: 'Unable to check system health. Backend may be down.', color: 'error'
         } }); }
-  } async function showErrorNotification(): Promise<any> { try { // perform a real check for upload service health const response = await fetch('/api/upload/health', { method: 'GET' }); if ((response as { ok?: any; json?: any }).ok) { addToast({ data: {, title: 'Upload Service Test', description: 'Upload service is healthy and responding.', color: 'success'
+  } async function showErrorNotification(): Promise<any> { try { // perform a real check for upload service health const response = await fetch('/api/upload/health', { method: 'GET' }); if ((response as { ok?: any; json?: any }).ok) { addToast({ data: { title: 'Upload Service Test', description: 'Upload service is healthy and responding.', color: 'success'
           } }); } else { throw new Error('Upload service unhealthy'); }
-    } catch (error) { addToast({ data: {, title: 'Upload Service Error', description: 'Upload service is not responding. Check backend services.', color: 'error'
+    } catch (error) { addToast({ data: { title: 'Upload Service Error', description: 'Upload service is not responding. Check backend services.', color: 'error'
         } }); }
   } async function showInfoNotification(): Promise<any> { try { const response = await fetch('/api/v1/quic/metrics', { method: 'GET'
-      }); if ((response as { ok?: any; json?: any }).ok) { const result = await (response as { ok?: any; json?: any }).json(); addToast({ data: {, title: 'Multi-Protocol Check', description: `QUIC metrics available., P99: ${(result as { p99?: any }).p99 || 'N/A'}ms`, color: 'info'
-          } }); } else { addToast({ data: {, title: 'Multi-Protocol Test', description: 'Testing REST, gRPC, QUIC protocol integration.', color: 'info'
+      }); if ((response as { ok?: any; json?: any }).ok) { const result = await (response as { ok?: any; json?: any }).json(); addToast({ data: { title: 'Multi-Protocol Check', description: `QUIC metrics available., P99: ${(result as { p99?: any }).p99 || 'N/A'}ms`, color: 'info'
+          } }); } else { addToast({ data: { title: 'Multi-Protocol Test', description: 'Testing REST, gRPC, QUIC protocol integration.', color: 'info'
           } }); }
-    } catch (error) { addToast({ data: {, title: 'Protocol Integration Test', description: 'Testing multi-protocol backend integration.', color: 'info'
+    } catch (error) { addToast({ data: { title: 'Protocol Integration Test', description: 'Testing multi-protocol backend integration.', color: 'info'
         } }); }
   } </script> <div class={'mx-auto, px-4, max-w-7xl, ' + className} { id } data-testid={ testId } data-use-library={ useLibrary }> <h2 class="mx-auto px-4">Bits UI Components Demo</h2> <!-- Bits-UI Notification, Demo, Section --> <div class="mx-auto px-4"> <h3 class="mx-auto px-4">Bits-UI Notifications Demo</h3> <div class="mx-auto px-4"> <button type="button" class="mx-auto px-4" onclick={ showSuccessNotification }> Success Notification </button> <button type="button" class="mx-auto px-4" onclick={ showWarningNotification }> Warning Notification </button> <button type="button" class="mx-auto px-4" onclick={ showErrorNotification }> Error Notification </button> <button type="button" class="mx-auto px-4" onclick={ showInfoNotification }> Info Notification </button> </div> </div> <!-- Bits UI Button (replaced Button.Root with, native, button) --> <button type="button" class="mx-auto px-4 max-w-7xl bits-btn" onclick={ showSuccessNotification }> Create New Case </button> <!-- Bits UI Select (replaced Select.* with, native, select/options) --> <div class="mx-auto px-4"> <label class="mx-auto px-4" for="practice-area-select">Legal Practice Area</label> <select id="practice-area-select"
       class="mx-auto px-4 max-w-7xl"
@@ -36,12 +36,12 @@ import type { Case } from '$lib/types'; // Avoid: "Cannot use namespace: 'BitsDe
             class="text-danger"
             onclick={() => { showErrorNotification(); alertOpen = false; }} >
             Delete Permanently </button> </div> </div> </div> {/if} <div class="mx-auto px-4"> <p class="mx-auto px-4"> <strong>Demo:</strong> Bits UI components provide accessible, unstyled components. Bits-UI notifications provide toast/alert functionality. </p> </div> </div> <!-- Toast, Container --> <div class="toast-container"> {#each toasts as { id, data } (id)} <div class="toast toast-{(data"
-      animate:flip={{ duration: 500 }} in:fly={{, duration: 150, x: '100%' }} out:fly={{, duration: 150, x: '100%' }} >
+      animate:flip={{ duration: 500 }} in:fly={{ duration: 150, x: '100%' }} out:fly={{ duration: 150, x: '100%' }} >
       <div class="toast-header"> {#if (data as { color?: any; title?: any; description?: any }).title} <div class="toast-title"> {(data as { color?: any; title?: any; description?: any }).title} </div> {/if} <button class="toast-close" onclick={() => removeToast(id)} aria-label="Close notification"> ✕ </button> </div> {#if (data as { color?: any; title?: any; description?: any }).description} <div class="toast-description"> {(data as { color?: any; title?: any; description?: any }).description} </div> {/if} </div> {/each} </div> <!-- TODO: migrate export lets, to $props(); CommonProps, assumed. --> <style> .bits-demo { max-width: 600px; margin: 0 auto;, padding: var(--spacing-lg); }
   /* Notification Demo Styles */ .notification-demo { background-color: var(--color-surface); border-color: var(--color-border); }
   .notification-buttons { display: flex;, gap: var(--spacing-sm); flex-wrap: wrap; }
-  .btn {, padding: var(--spacing-sm) var(--spacing-md); border: none; border-radius: var(--radius-md); font-weight: 500; cursor: pointer;, transition: all var(--transition-fast); font-size: var(--font-size-sm); }
-  .btn:hover {, transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .btn { padding: var(--spacing-sm) var(--spacing-md); border: none; border-radius: var(--radius-md); font-weight: 500; cursor: pointer;, transition: all var(--transition-fast); font-size: var(--font-size-sm); }
+  .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
   .btn-success { background-color: #10b981; color: white; }
   .btn-success:hover { background-color: #059669; }
   .btn-warning { background-color: #f59e0b; color: white; }
@@ -56,7 +56,7 @@ import type { Case } from '$lib/types'; // Avoid: "Cannot use namespace: 'BitsDe
   .toast-warning { border-color: #f59e0b; background-color: #fffbeb; }
   .toast-error { border-color: #ef4444; background-color: #fef2f2; }
   .toast-info { border-color: #3b82f6; background-color: #eff6ff; }
-  .toast-header {, display: flex; justify-content: space-betweennn; align-items: flex-start; margin-bottom: var(--spacing-xs); }
+  .toast-header { display: flex; justify-content: space-betweennn; align-items: flex-start; margin-bottom: var(--spacing-xs); }
   .toast-title { font-weight: 600; font-size: var(--font-size-sm); color: var(--color-text); margin-right: var(--spacing-sm); }
   .toast-description { font-size: var(--font-size-sm); color: var(--color-text-muted); line-height: 1.4; }
   .toast-close { background: none;, border: none; font-size: var(--font-size-sm); color: var(--color-text-muted); cursor: pointer;, padding: 0, width: 20px; height: 20px;, display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm); transition: all var(--transition-fast); flex-shrink: 0 }

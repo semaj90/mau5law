@@ -14,7 +14,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   } function submit(e: Event) { e.preventDefault(); runSearch(); }
   function abort() { controller?.abort(); loading = false; streaming = false; }
   $effect(() => { if (autoFocus) { const el = document.getElementById('query-input'); el?.focus(); }
-  }); function scoreClass(score: number) { if (score == null) return, 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700, dark:text-neutral-200'; if (score >= 0.9) return, 'score-top'; if (score >= 0.8) return, 'score-high'; if (score >= 0.65) return, 'score-mid'; return, 'score-low'; }
+  }); function scoreClass(score: number) { if (score == null) return 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700, dark:text-neutral-200'; if (score >= 0.9) return 'score-top'; if (score >= 0.8) return 'score-high'; if (score >= 0.65) return 'score-mid'; return 'score-low'; }
 </script> <div class="mx-auto max-w-5xl p-6"> <header class="space-y-2"> <h1 class="text-2xl font-semibold">Enhanced Vector Search</h1> <p class="text-sm text-neutral-500"> Interact with the unified pgvector + (stub) enhanced RAG pipeline. Choose simple (direct similarity) or enhanced (RAG fallback) mode. </p> </header> <form class="grid gap-4 md:grid-cols-7 items-end bg-neutral-50 dark:bg-neutral-900/40 p-4 rounded-lg border border-neutral-200"
     onsubmit={e => { e.preventDefault(); submit(); }} >
     <div class="md:col-span-3 flex flex-col"> <label for="query-input" class="text-xs font-medium uppercase">Query</label> <input id="query-input"

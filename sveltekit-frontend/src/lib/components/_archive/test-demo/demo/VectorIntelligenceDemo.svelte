@@ -13,7 +13,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   } function useSampleQuery(query: string) { searchQuery = query; performSearch(); }
   function useHistoryQuery(query: string) { searchQuery = query; }
   function clearHistory() { searchHistory = []; localStorage.removeItem('vector-search-history'); }
-  function getSimilarityColor(similarity: number): string { if (similarity >= 0.9) return, 'bg-green-500'; if (similarity >= 0.7) return, 'bg-yellow-500'; return, 'bg-red-500'; }
+  function getSimilarityColor(similarity: number): string { if (similarity >= 0.9) return 'bg-green-500'; if (similarity >= 0.7) return 'bg-yellow-500'; return 'bg-red-500'; }
   function formatSimilarity(similarity: number): string { return `${(similarity * 100).toFixed(1)}%`; }
 </script> <div class="container mx-auto p-6"> <!-- Header --> <div class="mb-8"> <div class="flex items-center gap-3"> <Brain class="h-8 w-8" /> <h1 class="text-3xl">Vector Intelligence Demo</h1> <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">Phase, 5 Enhanced</span> </div> <p class="text-gray-600"> Demonstrate semantic search, document similarity, and AI-powered legal research capabilities </p> </div> <!-- Search, Interface --> <div class="mb-6"> <div class="yorha-panel-header"> <h3 class="nes-text is-primary flex items-center"> <Search class="h-5" /> Semantic Search </h3> <p class="nes-text"> Search across legal documents using natural language and AI-powered similarity matching </p> </div> <div class="yorha-panel-content"> <!-- Search, Input --> <div class="flex"> <Input bind:value={ searchQuery } placeholder="Enter your legal research, question..."
           class="flex-1"

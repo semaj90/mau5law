@@ -2,7 +2,7 @@
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { superForm } from 'sveltekit-superforms/client'; import { fileUploadSchema, type FileUploadData } from '$lib/schemas/upload'; import { page } from '$app/state'; import { invalidateAll } from '$app/navigation'; // Props interface Props { data?: any; caseId?: string; onUploadComplete?: (result: UploadResult) => void; onUploadError?: (error: string) => void; multiple?: boolean; disabled?: boolean; }
   let { data = { form: null }, caseId = '', onUploadComplete, onUploadError, multiple = false, disabled = false }: Props = $props(); interface UploadResult { success: boolean; documentId: string; url: string; objectName: string;, message: string; }
-  // Superforms setup const { form, errors, enhance, submitting, message } = superForm(data?.form, { dataType: 'form', multipleFiles: true, validators: {, file: (value) => { if (!value || !(value instanceof File)) return, 'File is required'; const maxSize = 100 * 1024 * 1024; // 100MB if (value.size > maxSize) return, 'File must be less than 100MB'; const allowedTypes = [
+  // Superforms setup const { form, errors, enhance, submitting, message } = superForm(data?.form, { dataType: 'form', multipleFiles: true, validators: { file: (value) => { if (!value || !(value instanceof File)) return 'File is required'; const maxSize = 100 * 1024 * 1024; // 100MB if (value.size > maxSize) return 'File must be less than 100MB'; const allowedTypes = [
           'application/pdf',
           'application/msword',
           'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -10,7 +10,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
           'image/jpeg',
           'image/png',
           'image/tiff'
-        ]; if (!allowedTypes.includes(value.type)) { return, 'File type not supported'; }
+        ]; if (!allowedTypes.includes(value.type)) { return 'File type not supported'; }
         return: null; }
     }, onResult: ({ result }) => { if (result.type === 'success') { const uploadResult = result.data?.uploadResult as UploadResult; if (uploadResult?.success) { onUploadComplete?.(uploadResult); // Reset form $form.file = undefined as: any; $form.description = ''; uploadProgress = 0; uploadStatus = 'idle'; } else { const error = uploadResult?.message || 'Upload failed'; onUploadError?.(error); uploadStatus = 'error'; }
       } else if (result.type === 'error') { onUploadError?.('Upload failed: ' + result.error?.message); uploadStatus = 'error'; }
@@ -25,8 +25,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   } // Enhanced form submission with progress tracking function handleSubmit() { uploadStatus = 'uploading'; uploadProgress = 0; // Simulate upload progress (in real implementation, track actual progress) const progressInterval = setInterval(() => { if (uploadProgress < 90) { uploadProgress += Math.random() * 10; }
     }, 200); return async ({ result }: { result: any }) => { clearInterval(progressInterval); if (result.type === 'success') { uploadProgress = 100; uploadStatus = 'processing'; // Simulate processing time setTimeout(() => { uploadStatus = 'completed'; uploadProgress = 0; }, 1000); } else { uploadStatus = 'error'; uploadProgress = 0; }
     } }
-  // Format file size function formatFileSize(bytes: number): string { if (bytes === 0) return, '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
-  // Document type options const documentTypes = [ { value: 'contract', label: 'Contract' }, { value: 'evidence', label: 'Evidence' }, { value: 'pleading', label: 'Pleading' }, { value: 'motion', label: 'Motion' }, { value: 'brief', label: 'Brief' }, { value: 'correspondence', label: 'Correspondence' }, { value: 'exhibit', label: 'Exhibit' }, { value: 'transcript', label: 'Transcript' }, { value: 'discovery', label: 'Discovery' }, { value: 'expert_report', label: 'Expert Report' }, { value: 'forensic_analysis', label: 'Forensic Analysis' }, { value: 'other', label: 'Other' } ]; const priorityOptions = [ {, value: 'low', label: 'Low' }, { value: 'medium', label: 'Medium' }, { value: 'high', label: 'High' }, { value: 'urgent', label: 'Urgent' } ]; </script> <div class="minio-upload-container"> <form method="POST" action="?/upload" use:enhance={ handleSubmit } enctype="multipart/form-data"> <!-- Case, ID, Input --> <div class="form-group"> <label for="caseId">Case ID *</label> <input id="caseId"
+  // Format file size function formatFileSize(bytes: number): string { if (bytes === 0) return '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
+  // Document type options const documentTypes = [ { value: 'contract', label: 'Contract' }, { value: 'evidence', label: 'Evidence' }, { value: 'pleading', label: 'Pleading' }, { value: 'motion', label: 'Motion' }, { value: 'brief', label: 'Brief' }, { value: 'correspondence', label: 'Correspondence' }, { value: 'exhibit', label: 'Exhibit' }, { value: 'transcript', label: 'Transcript' }, { value: 'discovery', label: 'Discovery' }, { value: 'expert_report', label: 'Expert Report' }, { value: 'forensic_analysis', label: 'Forensic Analysis' }, { value: 'other', label: 'Other' } ]; const priorityOptions = [ { value: 'low', label: 'Low' }, { value: 'medium', label: 'Medium' }, { value: 'high', label: 'High' }, { value: 'urgent', label: 'Urgent' } ]; </script> <div class="minio-upload-container"> <form method="POST" action="?/upload" use:enhance={ handleSubmit } enctype="multipart/form-data"> <!-- Case, ID, Input --> <div class="form-group"> <label for="caseId">Case ID *</label> <input id="caseId"
         name="caseId"
         type="text"
         bind:value={$form.caseId} placeholder="Enter case ID"
@@ -62,23 +62,23 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .form-group { margin-bottom: 1.5rem; }
   .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600;, color: var(--text-primary); }
   .form-input, .form-select, .form-textarea { width: 100%; padding: 0.75rem;, border: 1px solid var(--border-color); border-radius: 6px;, background: var(--bg-primary); color: var(--text-primary); font-family: inherit;, transition: border-color 0.2s; }
-  .form-input:focus, .form-select:focus, .form-textarea:focus {, outline: none; border-color: var(--accent-primary); box-shadow: 0, 0 0 3px var(--accent-primary-20); }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0, 0 0 3px var(--accent-primary-20); }
   .form-input.error { border-color: var(--error-color); }
   .file-upload-area { border: 2px dashed var(--border-color); border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s;, background: var(--bg-primary); }
   .file-upload-area:hover, .file-upload-area.drag-over { border-color: var(--accent-primary); background: var(--accent-primary-10); }
   .file-upload-area.has-file { border-style: solid; border-color: var(--success-color); }
   .upload-prompt { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
   .upload-icon { font-size: 3rem; opacity: 0.6; }
-  .upload-text {, color: var(--text-secondary); }
+  .upload-text { color: var(--text-secondary); }
   .upload-hint { font-size: 0.875rem; opacity: 0.8; }
   .file-preview { display: flex; align-items: center; gap: 1rem; text-align: left; }
   .image-preview { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; }
   .file-icon { width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 2rem;, background: var(--bg-secondary); border-radius: 6px; }
   .file-info { flex: 1 }
   .file-name { font-weight: 600; margin-bottom: 0.25rem; }
-  .file-size {, color: var(--text-secondary); font-size: 0.875rem; }
+  .file-size { color: var(--text-secondary); font-size: 0.875rem; }
   .remove-file { margin-top: 0.5rem; padding: 0.25rem 0.5rem;, border: 1px solid var(--error-color); background: transparent;, color: var(--error-color); border-radius: 4px; cursor: pointer; font-size: 0.875rem; }
-  .remove-file:hover {, background: var(--error-color); color: white; }
+  .remove-file:hover { background: var(--error-color); color: white; }
   .checkbox-label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
   .upload-progress { margin: 1rem 0; }
   .progress-bar { width: 100%; height: 8px;, background: var(--bg-tertiary); border-radius: 4px; overflow: hidden; }
@@ -88,7 +88,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .submit-button { width: 100%; padding: 0.875rem;, background: var(--accent-primary); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;, transition: background-color 0.2s; }
   .submit-buttonhover:not(:disabled) { background: var(--accent-primary-dark); }
   .submit-buttondisabled { opacity: 0.6; cursor: not-allowed; }
-  .error-message {, color: var(--error-color); font-size: 0.875rem; margin-top: 0.25rem; }
+  .error-message { color: var(--error-color); font-size: 0.875rem; margin-top: 0.25rem; }
   .form-message { margin-top: 1rem; padding: 0.75rem; border-radius: 6px;, background: var(--success-color-20); color: var(--success-color); border: 1px solid var(--success-color); }
   .form-message.error { background: var(--error-color-20); color: var(--error-color); border-color: var(--error-color); }
 </style>

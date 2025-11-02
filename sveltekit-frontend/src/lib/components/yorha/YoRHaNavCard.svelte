@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   // export props with safe defaults and concrete constructor typing for icon
   const { title } = $props<{ title: string }>()
   export let description: string = '';
-  const { path } = $props<{, path: string }>()
+  const { path } = $props<{ path: string }>()
   export let icon typeof SvelteComponent | null = null;
   const { ariaLabel } = $props<{ ariaLabel: string }>()
   // ensure ariaLabel defaults to title if not provided

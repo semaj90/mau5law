@@ -103,12 +103,12 @@ import type { Case } from '$lib/types';
   function getStatusBadgeClass(status: string) {
     switch (status) {
       case, 'published':
-        return, 'badge-success';
+        return 'badge-success';
       case, 'draft':
-        return, 'badge-warning';
+        return 'badge-warning';
       case, 'archived':
-        return, 'badge-neutral';
-      default: return, 'badge-info';
+        return 'badge-neutral';
+      default: return 'badge-info';
     }
   }
 </script>

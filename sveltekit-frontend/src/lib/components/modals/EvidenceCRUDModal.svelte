@@ -84,5 +84,5 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     to { opacity: 0;, transform: scale(0.95); }
   } .animate-fadeOut { animation: fadeOut 200ms ease-out forward; }
   .animate-scaleIn { animation: scaleIn 200ms ease-out forward; }
-  .animate-scaleOut {, animation: scaleOut 200ms ease-out forward; }
+  .animate-scaleOut { animation: scaleOut 200ms ease-out forward; }
 </style>

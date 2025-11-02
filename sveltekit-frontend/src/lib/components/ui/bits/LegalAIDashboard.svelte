@@ -79,14 +79,12 @@ import type { Case } from '$lib/types';
       jurisdiction: 'Federal',
       court: 'District Court',
       filingDate: new Date().toISOString(),
-      financials: {
-       , budgetAllocated: 50000,
+      financials: { budgetAllocated: 50000,
         costToDate: 0,
         billingRate: 350,
         timeSpent: 0
       },
-      aiInsights: {
-       , riskScore: 50,
+      aiInsights: { riskScore: 50,
         complexityScore: 30,
         timelineRisk: 'on_track',
         recommendedActions: [],
@@ -101,15 +99,14 @@ import type { Case } from '$lib/types';
   }
   // Sample data for demo (would normally come from stores)
   let samplePOIs = $state([
-    {,
+    {
       id: '1',
       name: 'John Doe',
       aliases: ['Johnny D', 'JD'],
       role: 'suspect',
       entityType: 'individual',
       status: 'wanted',
-      metadata: {
-       , riskLevel: 'critical',
+      metadata: { riskLevel: 'critical',
         threatLevel: 'severe',
         publicSafetyRisk: true,
         credibilityScore: 25,
@@ -118,39 +115,33 @@ import type { Case } from '$lib/types';
         strategicImportance: 85,
         lastInteraction: '2024-01-15',
         interactionCount: 12,
-        personality: {
-         , traits: ['violent', 'unpredictable', 'anti-authority'],
+        personality: { traits: ['violent', 'unpredictable', 'anti-authority'],
           communication: [],
           predictedBehavior: [],
           negotiationStyle: 'hostile',
           riskFactors: ['violence history', 'weapon access'],
-          psychologicalProfile: {
-           , stability: 0.2,
+          psychologicalProfile: { stability: 0.2,
             aggressionLevel: 0.9,
             predictability: 0.3,
             cooperationLikelihood: 0.1
           }
         },
         documentReferences: [],
-        network: {
-         , connections: [],
+        network: { connections: [],
           centralityScore: 0.8,
           clusterMembership: []
         }
       },
-      contact: {
-       , emails: [],
+      contact: { emails: [],
         phones: [],
         addresses: []
       },
-      legal: {
-       , criminalHistory: []
+      legal: { criminalHistory: []
       },
-      criminalProfile: {
-       , aliases: ['Johnny D'],
+      criminalProfile: { aliases: ['Johnny D'],
         mugshots: [],
         warrants: [
-          {,
+          {
             id: 'W001',
             type: 'arrest',
             jurisdiction: 'State of California',
@@ -160,7 +151,7 @@ import type { Case } from '$lib/types';
           }
         ],
         watchLists: [
-          {,
+          {
             list: 'fbi_most_wanted',
             addedDate: '2024-01-01',
             reason: 'Violent felony charges',
@@ -168,8 +159,7 @@ import type { Case } from '$lib/types';
           }
         ],
         knownAssociates: [],
-        criminalPattern: {
-         , preferredCrimes: ['robbery', 'assault'],
+        criminalPattern: { preferredCrimes: ['robbery', 'assault'],
           operatingAreas: ['Los Angeles'],
           methods: ['armed intimidation'],
           timingPatterns: ['nighttime'],
@@ -178,8 +168,7 @@ import type { Case } from '$lib/types';
         dangerLevel: 'extreme',
         armedAndDangerous: true,
         escapeRisk: 'high',
-        lastKnownLocation: {
-         , address: '123 Main St, Los Angeles, CA',
+        lastKnownLocation: { address: '123 Main St, Los Angeles, CA',
           date: '2024-01-10',
           source: 'witness',
           reliability: 0.8
@@ -191,8 +180,7 @@ import type { Case } from '$lib/types';
       updatedAt: '2024-01-15',
       createdBy: 'system',
       tags: ['violent', 'armed'],
-      aiProcessing: {
-       , lastAnalyzed: '2024-01-15',
+      aiProcessing: { lastAnalyzed: '2024-01-15',
         profileComplete: true,
         networkMapped: false,
         riskAssessed: true,
@@ -475,8 +463,7 @@ import type { Case } from '$lib/types';
    , color: var(--enhanced-bits-textMuted);
     margin-top: 0.25rem;
   }
-  .stat-detail.high-risk {
-   , color: var(--enhanced-bits-error);
+  .stat-detail.high-risk { color: var(--enhanced-bits-error);
     font-weight: 600;
   }
   .recent-activity {
@@ -525,19 +512,16 @@ import type { Case } from '$lib/types';
   .search-results {
     margin-top: 2rem;
   }
-  .search-results h2 {
-   , color: var(--enhanced-bits-primary);
+  .search-results h2 { color: var(--enhanced-bits-primary);
     margin-bottom: 1.5rem;
   }
-  .search-result-item {
-   , padding: 0.75rem 0;
+  .search-result-item { padding: 0.75rem 0;
     border-bottom: 1px solid var(--enhanced-bits-border);
   }
   .search-result-item:last-child {
     border-bottom: none;
   }
-  .search-result-item strong {
-   , color: var(--enhanced-bits-primary);
+  .search-result-item strong { color: var(--enhanced-bits-primary);
   }
   .search-result-item p {
     margin: 0.25rem, 0 0 0;

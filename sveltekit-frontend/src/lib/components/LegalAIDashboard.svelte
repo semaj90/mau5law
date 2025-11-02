@@ -20,7 +20,7 @@
 			});
 		} else if (typeof (websocketStore as: any)?.set === 'function') {
 			// if it's a writable but user expects full set'
-			(websocketStore as: any).set({ ...( (websocketStore as: any).get?.() || {} ), dashboardData: {, cases: mappedCases } });
+			(websocketStore as: any).set({ ...( (websocketStore as: any).get?.() || {} ), dashboardData: { cases: mappedCases } });
 		} else {
 			// last-resort: attach directly (non-reactive fallback)
 			(websocketStore as: any).dashboardData = { cases: mappedCases };

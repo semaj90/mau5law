@@ -31,19 +31,19 @@ https://svelte.dev/e/js_parse_error -->
   // Sample graph data for demonstration
   const sampleGraphData = {
     nodes: [
-      {, id: 'legal-case-1', label: 'Smith v. Jones', type: 'case', position ;
-{ x: 100, y: 100 }, metadata: {, caseType: 'contract', importance: 0.8 }, embedding: new Float32Array([0.1, 0.2, 0.3, 0.4]) },
+      { id: 'legal-case-1', label: 'Smith v. Jones', type: 'case', position ;
+{ x: 100, y: 100 }, metadata: { caseType: 'contract', importance: 0.8 }, embedding: new Float32Array([0.1, 0.2, 0.3, 0.4]) },
       { id: 'statute-1', label: '15 USC § 1', type: 'statute', position ;
-{ x: 200, y: 150 }, metadata: {, jurisdiction: 'federal', year: 1990 }, embedding: new Float32Array([0.2, 0.3, 0.4, 0.5]) },
+{ x: 200, y: 150 }, metadata: { jurisdiction: 'federal', year: 1990 }, embedding: new Float32Array([0.2, 0.3, 0.4, 0.5]) },
       { id: 'regulation-1', label: '17 CFR 240.10b-5', type: 'regulation', position ;
-{ x: 150, y: 200 }, metadata: {, agency: 'SEC', type: 'rule' }, embedding: new Float32Array([0.3, 0.4, 0.5, 0.6]) },
+{ x: 150, y: 200 }, metadata: { agency: 'SEC', type: 'rule' }, embedding: new Float32Array([0.3, 0.4, 0.5, 0.6]) },
       { id: 'precedent-1', label: 'Brown v. Board', type: 'precedent', position ;
-{ x: 250, y: 120 }, metadata: {, impact: 'landmark', year: 1954 }, embedding: new Float32Array([0.4, 0.5, 0.6, 0.7]) }
+{ x: 250, y: 120 }, metadata: { impact: 'landmark', year: 1954 }, embedding: new Float32Array([0.4, 0.5, 0.6, 0.7]) }
     ],
     edges: [
-      {, id: 'edge-1', source: 'legal-case-1', target: 'statute-1', type: 'cites', weight: 0.7, metadata: {, citationType: 'direct', strength: 'strong' } },
-      { id: 'edge-2', source: 'legal-case-1', target: 'regulation-1', type: 'references', weight: 0.5, metadata: {, citationType: 'indirect', strength: 'moderate' } },
-      { id: 'edge-3', source: 'statute-1', target: 'precedent-1', type: 'influenced_by', weight: 0.9, metadata: {, citationType: 'foundational', strength: 'very_strong' } }
+      { id: 'edge-1', source: 'legal-case-1', target: 'statute-1', type: 'cites', weight: 0.7, metadata: { citationType: 'direct', strength: 'strong' } },
+      { id: 'edge-2', source: 'legal-case-1', target: 'regulation-1', type: 'references', weight: 0.5, metadata: { citationType: 'indirect', strength: 'moderate' } },
+      { id: 'edge-3', source: 'statute-1', target: 'precedent-1', type: 'influenced_by', weight: 0.9, metadata: { citationType: 'foundational', strength: 'very_strong' } }
     ]
   }
   // Use provided graph data or sample data
@@ -61,10 +61,9 @@ https://svelte.dev/e/js_parse_error -->
         enableGPU: true
         enableSOM: true
         enableAutoEncoder: true
-        somGridSize: {, width: 10, height: 10 },
-        autoEncoderConfig: {, hiddenLayers: [128, 64, 32] },
-        renderingOptions: {
-         , nodeSize: 8,
+        somGridSize: { width: 10, height: 10 },
+        autoEncoderConfig: { hiddenLayers: [128, 64, 32] },
+        renderingOptions: { nodeSize: 8,
           edgeWidth: 2,
           colorScheme: 'legal',
           enableAnimations: true
@@ -117,9 +116,8 @@ https://svelte.dev/e/js_parse_error -->
         if (!visualization) {
           const options = {
             algorithm: algorithm, as: 'dfs' | 'bfs' | 'som' | 'autoencoder',
-            outputFormat: 'base64' as const dimensions: {, width: 800, height: 600 },
-            style: {
-             , backgroundColor: '#1a1a1a',
+            outputFormat: 'base64' as const dimensions: { width: 800, height: 600 },
+            style: { backgroundColor: '#1a1a1a',
               nodeColor: '#00ff88',
               edgeColor: '#ffffff',
               highlightColor: '#ff6b6b'
@@ -149,9 +147,8 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const options = {
         algorithm: algorithm, as: 'dfs' | 'bfs' | 'som' | 'autoencoder',
-        outputFormat: 'base64' as const dimensions: {, width: 800, height: 600 },
-        style: {
-         , backgroundColor: '#1a1a1a',
+        outputFormat: 'base64' as const dimensions: { width: 800, height: 600 },
+        style: { backgroundColor: '#1a1a1a',
           nodeColor: '#00ff88',
           edgeColor: '#ffffff',
           highlightColor: '#ff6b6b'
@@ -199,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
     if (visualization.outputFormat === 'base64' && visualization.imageData) {
       return `data:image/png;base64,${visualization.imageData}`;
     }
-    return, '/api/placeholder/400/300'; // Fallback placeholder
+    return '/api/placeholder/400/300'; // Fallback placeholder
   }
   function getAlgorithmDisplayName(algorithm: string): string {
     const names: Record<string string> = {
@@ -439,8 +436,7 @@ generateVisualizationsForAllAlgorithms()}
     overflow: hidden;
    , transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
-  .gallery-item:hover {
-   , transform: translateY(-4px);
+  .gallery-item:hover { transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
   }
   .gallery-item[data-algorithm="som"] {
@@ -466,8 +462,7 @@ generateVisualizationsForAllAlgorithms()}
     object-fit: cover;
     transition: transform 0.3s ease;
   }
-  .item-preview:hover .preview-image {
-   , transform: scale(1.05);
+  .item-preview:hover .preview-image { transform: scale(1.05);
   }
   .item-overlay {
     position: absolute;
@@ -480,8 +475,7 @@ generateVisualizationsForAllAlgorithms()}
    , transform: translateY(100%);
     transition: transform 0.3s ease;
   }
-  .item-preview:hover .item-overlay {
-   , transform: translateY(0);
+  .item-preview:hover .item-overlay { transform: translateY(0);
   }
   .item-title {
     font-size: 1.1rem;
@@ -559,8 +553,7 @@ d;
   .modal-metadata {
     padding: 1rem 2rem 2rem 2rem;
   }
-  .metadata-grid {
-   , display: grid;
+  .metadata-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
@@ -584,8 +577,7 @@ d;
     .gallery-grid.gallery-grid {
       grid-template-columns: 1fr;
     }
-    .modal-content {
-     , margin: 1rem;
+    .modal-content { margin: 1rem;
       max-width: calc(100vw - 2rem);
     }
     .metadata-grid {
@@ -595,9 +587,9 @@ d;
   /* Animation for generation */
   @keyframes pulse {
     0%, 100% { opacity: 0.8; }
-    50% {, opacity: 1; }
+    50% { opacity: 1; }
   }
-  .gallery-item:has(.generate-btn:disabled) {,
+  .gallery-item:has(.generate-btn:disabled) {
     animation: pulse 2s infinite;
   }
 </style>

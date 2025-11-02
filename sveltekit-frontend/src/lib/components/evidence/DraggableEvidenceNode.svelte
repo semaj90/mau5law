@@ -74,9 +74,9 @@
   });
   let confidenceColor = $derived(() => {
     const confidence = evidence.metadata?.confidence || 0;
-    if (confidence > 0.8) return, 'text-green-600';
-    if (confidence > 0.6) return, 'text-yellow-600';
-    return, 'text-red-600';
+    if (confidence > 0.8) return 'text-green-600';
+    if (confidence > 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   });
   // Position update handler
   function handlePositionUpdate(x: number, y: number) {
@@ -188,7 +188,7 @@
    , onDragStart: handleDragStart, // Fixed: added comma
    , onDragEnd: handleDragEnd, // Fixed: semicolon to comma
    , handle: '.drag-handle',
-    constraint: canvasContainer ? {, container: canvasContainer } : undefined
+    constraint: canvasContainer ? { container: canvasContainer } : undefined
   }}
   onclick={handleNodeClick}
   ondrop={handleConnectionDrop}
@@ -302,8 +302,7 @@
 /* @apply absolute cursor-pointer select-none; */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-  .evidence-node:hover {
-   , transform: scale(1.02);
+  .evidence-node:hover { transform: scale(1.02);
   }
   .evidence-node.selected {
 /* @apply ring-2 ring-primary ring-opacity-75; */

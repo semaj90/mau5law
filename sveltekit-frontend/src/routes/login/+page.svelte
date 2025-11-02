@@ -16,5 +16,5 @@
   button { background: #007bff; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; cursor: pointer; }
   button:hover { background: #0056b3; }
   .demo-login { background: #6c757d; margin-left: 0.5rem; }
-  .demo-login:hover {, background: #5a6268; }
+  .demo-login:hover { background: #5a6268; }
 </style>

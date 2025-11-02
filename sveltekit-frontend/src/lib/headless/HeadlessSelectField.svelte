@@ -12,8 +12,7 @@
     value: string;
     label?: string;
   }
-  interface HeadlessSelectFieldProps {
-   , name: string;
+  interface HeadlessSelectFieldProps { name: string;
     value?: string | null;
     selected?: string | null;
     options?: (string | SelectOption)[];
@@ -25,7 +24,7 @@
     required?: boolean;
     description?: string;
     class?: string;
-    onChange?: (_event: {, name: string;, value: string | null }) => void;
+    onChange?: (_event: { name: string;, value: string | null }) => void;
   }
   let {
     name,
@@ -51,7 +50,7 @@
     options.map(o =>
       typeof o === 'string'
         ? { value: o, label: o }
-        : {, value: o.value, label: o.label ?? o.value }
+        : { value: o.value, label: o.label ?? o.value }
     )
   );
   // Sync external value changes

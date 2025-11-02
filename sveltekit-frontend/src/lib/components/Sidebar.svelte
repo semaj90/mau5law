@@ -236,8 +236,7 @@
     display: flex;
     gap: 0.5rem;
   }
-  .pin-button.pinned {
-   , background: var(--bg-secondary);
+  .pin-button.pinned { background: var(--bg-secondary);
     color: var(--text-inverse);
   }
   .pin-button,
@@ -277,8 +276,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .tab-trigger:hover {
-   , background: var(--bg-tertiary);
+  .tab-trigger:hover { background: var(--bg-tertiary);
     color: var(--text-primary);
   }
   .tab-trigger.active {
@@ -298,8 +296,7 @@
     flex-direction: column;
     overflow: hidden;
   }
-  .tags-section {
-   , padding: 1rem;
+  .tags-section { padding: 1rem;
     border-top: 1px solid var(--border-light);
     background: var(--bg-primary);
   }

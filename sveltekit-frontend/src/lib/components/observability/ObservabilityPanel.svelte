@@ -82,8 +82,7 @@ https://svelte.dev/e/js_parse_error -->
           const data = JSON.parse(event.data);
           // Handle different message types
           if (data.type === 'observability.alert') {
-            const alert: Alert = {
-             , id: crypto.randomUUID(),
+            const alert: Alert = { id: crypto.randomUUID(),
               type: data.alert_type,
               message: data.message,
               timestamp: new Date().toISOString(),
@@ -131,16 +130,16 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getBadgeClass(status: string): string {
     switch (status) {
-      case, 'critical': return, 'badge-critical';
-      case, 'warning': return, 'badge-warning';
-      default: return, 'badge-normal';
+      case, 'critical': return 'badge-critical';
+      case, 'warning': return 'badge-warning';
+      default: return 'badge-normal';
     }
   }
   function getAlertClass(severity: string): string {
     switch (severity) {
-      case, 'critical': return, 'alert-critical';
-      case, 'warning': return, 'alert-warning';
-      default: return, 'alert-info';
+      case, 'critical': return 'alert-critical';
+      case, 'warning': return 'alert-warning';
+      default: return 'alert-info';
     }
   }
   $effect(() => {
@@ -265,8 +264,7 @@ await loadState();
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.875rem;
   }
-  .panel-header {
-   , display: flex;
+  .panel-header { display: flex;
     justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
@@ -308,8 +306,7 @@ await loadState();
     cursor: pointer;
     font-size: 0.75rem;
   }
-  .badges-row {
-   , display: grid;
+  .badges-row { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 1rem;
     margin-bottom: 1rem;
@@ -319,8 +316,7 @@ await loadState();
     border-radius: 6px;
     text-align: center;
   }
-  .badge-normal {
-   , background: var(--success-bg, #2ed57320);
+  .badge-normal { background: var(--success-bg, #2ed57320);
     border: 1px solid var(--success-color, #2ed573);
   }
   .badge-warning {
@@ -353,19 +349,16 @@ await loadState();
     background: currentColor;
     transition: width: 0.3s ease;
   }
-  .details-section {
-   , background: var(--bg-primary, #000);
+  .details-section { background: var(--bg-primary, #000);
     padding: 1rem;
     border-radius: 6px;
     margin-bottom: 1rem;
   }
-  .details-section h4 {
-   , margin: 0, 0 0.75rem 0;
+  .details-section h4 { margin: 0, 0 0.75rem 0;
     color: var(--text-primary, #fff);
     font-size: 0.9rem;
   }
-  .baselines-grid {
-   , display: grid;
+  .baselines-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 0.5rem;
     margin-bottom: 0.75rem;
@@ -375,8 +368,7 @@ await loadState();
     justify-content: space-betweenn;
     padding: 0.25rem 0;
   }
-  .baseline-item .label {
-   , color: var(--text-muted, #999);
+  .baseline-item .label { color: var(--text-muted, #999);
   }
   .baseline-item .value {
     color: var(--text-primary, #fff);
@@ -415,8 +407,7 @@ await loadState();
    , color: var(--text-muted, #999);
     cursor: pointer;
   }
-  .btn-clear {
-   , background: var(--error-color, #ff4757);
+  .btn-clear { background: var(--error-color, #ff4757);
     color: white;
     border: none;
     padding: 0.25rem 0.5rem;
@@ -424,8 +415,7 @@ await loadState();
     cursor: pointer;
     font-size: 0.75rem;
   }
-  .alerts-list {
-   , background: var(--bg-primary, #000);
+  .alerts-list { background: var(--bg-primary, #000);
     border-radius: 6px;
    , border: 1px solid var(--border-color, #333);
   }
@@ -435,8 +425,7 @@ await loadState();
    , color: var(--text-muted, #999);
     font-style: italic;
   }
-  .alert-item {
-   , padding: 0.75rem;
+  .alert-item { padding: 0.75rem;
     border-bottom: 1px solid var(--border-color, #333);
     border-left: 4px solid;
   }
@@ -463,8 +452,7 @@ await loadState();
    , color: var(--text-primary, #fff);
     margin-bottom: 0.25rem;
   }
-  .alert-message {
-   , color: var(--text-secondary, #ccc);
+  .alert-message { color: var(--text-secondary, #ccc);
     margin-bottom: 0.25rem;
   }
   .alert-value {

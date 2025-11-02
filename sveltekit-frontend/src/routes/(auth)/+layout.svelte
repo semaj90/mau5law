@@ -106,17 +106,14 @@
     width: 8px;
   }
 
-  .main-content::-webkit-scrollbar-track {
-   , background: var(--console-bg-light, #1a1a2e);
+  .main-content::-webkit-scrollbar-track { background: var(--console-bg-light, #1a1a2e);
   }
 
-  .main-content::-webkit-scrollbar-thumb {
-   , background: var(--console-primary, #00aa00);
+  .main-content::-webkit-scrollbar-thumb { background: var(--console-primary, #00aa00);
     border-radius: 4px;
   }
 
-  .main-content::-webkit-scrollbar-thumb:hover {
-   , background: var(--console-primary-light, #00cc00);
+  .main-content::-webkit-scrollbar-thumb:hover { background: var(--console-primary-light, #00cc00);
   }
 </style>
 

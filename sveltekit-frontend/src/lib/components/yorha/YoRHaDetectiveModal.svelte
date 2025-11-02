@@ -107,8 +107,7 @@ d;
   .modal-close:hover {
     color: #3D3D3D;
   }
-  .modal-content {
-   , padding: 1.5rem;
+  .modal-content { padding: 1.5rem;
     overflow-y: auto;
     max-height: calc(90vh - 5rem);
   }
@@ -121,12 +120,10 @@ d;
     }
   }
   @keyframes slideIn {
-    from {
-     , transform: scale(0.9);
+    from { transform: scale(0.9);
       opacity: 0;
     }
-    to {
-     , transform: scale(1);
+    to { transform: scale(1);
       opacity: 1;
     }
   }

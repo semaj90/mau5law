@@ -109,7 +109,7 @@ import type { Case } from '$lib/types';
     { id: 'alternative', label: 'Alternative Theory', icon: Lightbulb }
   ];
   const strategyTypes = [
-    {, id: 'evidence-based', label: 'Evidence-Driven', description: 'Build theory around strongest evidence' },
+    { id: 'evidence-based', label: 'Evidence-Driven', description: 'Build theory around strongest evidence' },
     { id: 'precedent-based', label: 'Precedent-Driven', description: 'Leverage existing case law' },
     { id: 'narrative-based', label: 'Narrative-Driven', description: 'Construct compelling story' },
     { id: 'technical-based', label: 'Technical-Driven', description: 'Focus on legal technicalities' }
@@ -159,8 +159,7 @@ import type { Case } from '$lib/types';
       const response = await fetch(`/api/legal/research/search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-         , query: caseTitle,
+        body: JSON.stringify({ query: caseTitle,
           mode: 'semantic',
           filters: {},
           sort: 'relevance',
@@ -188,7 +187,7 @@ import type { Case } from '$lib/types';
       console.error('Failed to load theories:', error);
       // Mock theories for demo
       theories = [
-        {,
+        {
           id: '1',
           name: 'Self-Defense Theory',
           type: 'defense',
@@ -221,8 +220,7 @@ import type { Case } from '$lib/types';
       if (response.ok) {
         const result = await response.json();
         // Update theory with AI analysis
-        const builtTheory: Theory = {
-         , id: `theory_${Date.now()}`,
+        const builtTheory: Theory = { id: `theory_${Date.now()}`,
           ...theoryData,
           legalArguments: result.legalArguments || [],
           counterarguments: result.counterarguments || [],
@@ -276,14 +274,13 @@ import type { Case } from '$lib/types';
         'Jury perception risks identified'
       ],
       logicalChain: [
-        {, step: 1, premise: 'Defendant faced immediate threat', evidence: 'Security footage timestamp, 10:23 PM' },
+        { step: 1, premise: 'Defendant faced immediate threat', evidence: 'Security footage timestamp, 10:23 PM' },
         { step: 2, premise: 'Reasonable person would fear harm', evidence: 'Expert testimony on threat assessment' },
         { step: 3, premise: 'Response was proportional', evidence: 'Medical examiner report on injuries' },
         { step: 4, conclusion: 'Self-defense claim is justified', confidence: 0.87 }
       ],
       strength: 0.75 + Math.random() * 0.2,
-      riskAssessment: {
-       , overallRisk: 'Medium',
+      riskAssessment: { overallRisk: 'Medium',
         strengths: ['Strong evidence', 'Clear precedent', 'Compelling narrative'],
         weaknesses: ['Procedural complexity', 'Jury unpredictability'],
         recommendations: ['Strengthen witness prep', 'Consider plea alternatives']
@@ -307,8 +304,7 @@ import type { Case } from '$lib/types';
     // Calculate theory strength visualization
     strengthAnalysis = {
       overall: theory.strength || 0,
-      components: {
-       , evidence: 0.8,
+      components: { evidence: 0.8,
         precedent: 0.7,
         logic: 0.9,
         presentation: 0.6
@@ -322,8 +318,7 @@ import type { Case } from '$lib/types';
       return;
     }
     newTheoryForm.errors = {};
-    await buildTheoryWithAI({
-     , name: newTheoryForm.name,
+    await buildTheoryWithAI({ name: newTheoryForm.name,
       type: newTheoryForm.type strategy: newTheoryForm.strategy,
       description: newTheoryForm.description
     });
@@ -343,24 +338,24 @@ import type { Case } from '$lib/types';
   function getTheoryTypeColor(type: Theory['type']) {
     switch (type) {
       case, 'prosecution':
-        return, 'text-red-600 bg-red-100';
+        return 'text-red-600 bg-red-100';
       case, 'defense':
-        return, 'text-blue-600 bg-blue-100';
+        return 'text-blue-600 bg-blue-100';
       case, 'civil':
-        return, 'text-green-600 bg-green-100';
+        return 'text-green-600 bg-green-100';
       case, 'alternative':
-        return, 'text-purple-600 bg-purple-100';
-      default: return, 'text-gray-600 bg-gray-100';
+        return 'text-purple-600 bg-purple-100';
+      default: return 'text-gray-600 bg-gray-100';
     }
   }
   function getStrengthColor(strength: number) {
-    if (strength >= 0.8) return, 'text-green-600';
-    if (strength >= 0.6) return, 'text-yellow-600';
-    return, 'text-red-600';
+    if (strength >= 0.8) return 'text-green-600';
+    if (strength >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
   function generateMockEvidence() {
     return [
-      {,
+      {
         id: '1',
         title: 'Security Camera Footage',
         type: 'video',
@@ -487,7 +482,7 @@ import type { Case } from '$lib/types';
     { id: 'alternative', label: 'Alternative Theory', icon: Lightbulb }
   ];
   const strategyTypes = [
-    {, id: 'evidence-based', label: 'Evidence-Driven', description: 'Build theory around strongest evidence' },
+    { id: 'evidence-based', label: 'Evidence-Driven', description: 'Build theory around strongest evidence' },
     { id: 'precedent-based', label: 'Precedent-Driven', description: 'Leverage existing case law' },
     { id: 'narrative-based', label: 'Narrative-Driven', description: 'Construct compelling story' },
     { id: 'technical-based', label: 'Technical-Driven', description: 'Focus on legal technicalities' }
@@ -537,8 +532,7 @@ import type { Case } from '$lib/types';
       const response = await fetch(`/api/legal/research/search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-         , query: caseTitle,
+        body: JSON.stringify({ query: caseTitle,
           mode: 'semantic',
           filters: {},
           sort: 'relevance',
@@ -566,7 +560,7 @@ import type { Case } from '$lib/types';
       console.error('Failed to load theories:', error);
       // Mock theories for demo
       theories = [
-        {,
+        {
           id: '1',
           name: 'Self-Defense Theory',
           type: 'defense',
@@ -599,8 +593,7 @@ import type { Case } from '$lib/types';
       if (response.ok) {
         const result = await response.json();
         // Update theory with AI analysis
-        const builtTheory: Theory = {
-         , id: `theory_${Date.now()}`,
+        const builtTheory: Theory = { id: `theory_${Date.now()}`,
           ...theoryData,
           legalArguments: result.legalArguments || [],
           counterarguments: result.counterarguments || [],
@@ -654,14 +647,13 @@ import type { Case } from '$lib/types';
         'Jury perception risks identified'
       ],
       logicalChain: [
-        {, step: 1, premise: 'Defendant faced immediate threat', evidence: 'Security footage timestamp, 10:23 PM' },
+        { step: 1, premise: 'Defendant faced immediate threat', evidence: 'Security footage timestamp, 10:23 PM' },
         { step: 2, premise: 'Reasonable person would fear harm', evidence: 'Expert testimony on threat assessment' },
         { step: 3, premise: 'Response was proportional', evidence: 'Medical examiner report on injuries' },
         { step: 4, conclusion: 'Self-defense claim is justified', confidence: 0.87 }
       ],
       strength: 0.75 + Math.random() * 0.2,
-      riskAssessment: {
-       , overallRisk: 'Medium',
+      riskAssessment: { overallRisk: 'Medium',
         strengths: ['Strong evidence', 'Clear precedent', 'Compelling narrative'],
         weaknesses: ['Procedural complexity', 'Jury unpredictability'],
         recommendations: ['Strengthen witness prep', 'Consider plea alternatives']
@@ -685,8 +677,7 @@ import type { Case } from '$lib/types';
     // Calculate theory strength visualization
     strengthAnalysis = {
       overall: theory.strength || 0,
-      components: {
-       , evidence: 0.8,
+      components: { evidence: 0.8,
         precedent: 0.7,
         logic: 0.9,
         presentation: 0.6
@@ -700,8 +691,7 @@ import type { Case } from '$lib/types';
       return;
     }
     newTheoryForm.errors = {};
-    await buildTheoryWithAI({
-     , name: newTheoryForm.name,
+    await buildTheoryWithAI({ name: newTheoryForm.name,
       type: newTheoryForm.type strategy: newTheoryForm.strategy,
       description: newTheoryForm.description
     });
@@ -721,24 +711,24 @@ import type { Case } from '$lib/types';
   function getTheoryTypeColor(type: Theory['type']) {
     switch (type) {
       case, 'prosecution':
-        return, 'text-red-600 bg-red-100';
+        return 'text-red-600 bg-red-100';
       case, 'defense':
-        return, 'text-blue-600 bg-blue-100';
+        return 'text-blue-600 bg-blue-100';
       case, 'civil':
-        return, 'text-green-600 bg-green-100';
+        return 'text-green-600 bg-green-100';
       case, 'alternative':
-        return, 'text-purple-600 bg-purple-100';
-      default: return, 'text-gray-600 bg-gray-100';
+        return 'text-purple-600 bg-purple-100';
+      default: return 'text-gray-600 bg-gray-100';
     }
   }
   function getStrengthColor(strength: number) {
-    if (strength >= 0.8) return, 'text-green-600';
-    if (strength >= 0.6) return, 'text-yellow-600';
-    return, 'text-red-600';
+    if (strength >= 0.8) return 'text-green-600';
+    if (strength >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
   function generateMockEvidence() {
     return [
-      {,
+      {
         id: '1',
         title: 'Security Camera Footage',
         type: 'video',

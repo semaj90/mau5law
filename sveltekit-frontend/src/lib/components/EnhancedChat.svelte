@@ -30,42 +30,36 @@
 
 	// Simple XState machine stub: idle -> sending -> idle/error
 	const chatMachine = createMachine(
-		{
-		, id: 'chat',
+		{ id: 'chat',
 			initial: 'idle',
-			context: {
-			, messages: [] as ChatMessage[],
+			context: { messages: [] as ChatMessage[],
 				model: 'gemma3-legal',
 				error: null, as: string | null
 			},
 			states: {
 				idle: {
-					on: {
-					, SEND: 'sending',
-						SET_MODEL: {, actions: 'setModel' }
+					on: { SEND: 'sending',
+						SET_MODEL: { actions: 'setModel' }
 					}
 				},
 				sending: {
-					invoke: {
-					, src: 'sendMessage',
-						onDone: {
-						, target: 'idle',
+					invoke: { src: 'sendMessage',
+						onDone: { target: 'idle',
 							actions: 'appendMessages'
 						},
-						onError: {
-						, target: 'error',
-							actions: assign({, error: (_, ev: any) => ev.data?.message ?? String(ev.data) })
+						onError: { target: 'error',
+							actions: assign({ error: (_, ev: any) => ev.data?.message ?? String(ev.data) })
 						}
 					}
 				},
 				error: {
-					on: {, RETRY: 'sending', CLEAR_ERROR: {, target: 'idle', actions: assign({, error: (_) => null }) } }
+					on: { RETRY: 'sending', CLEAR_ERROR: { target: 'idle', actions: assign({ error: (_) => null }) } }
 				}
 			}
 		},
 		{
 			actions: {
-				setModel: assign({, model: (_, e: any) => e.model }),
+				setModel: assign({ model: (_, e: any) => e.model }),
 				appendMessages: assign((ctx, e: any) => {
 					return {
 						messages: [...ctx.messages, e.data.userMessage, e.data.aiResponse],
@@ -76,14 +70,12 @@
 			services: {
 				// Safe, stub: replace with real API integration (Ollama / server)
 				sendMessage: async ({ context, event }: any) => {
-					const userMsg: ChatMessage = {
-					, id: crypto.randomUUID(),
+					const userMsg: ChatMessage = { id: crypto.randomUUID(),
 						role: 'user',
 						content: (event && event.message) || messageInput || '',
 						timestamp: new Date().toISOString()
 					};
-					const aiMsg: ChatMessage = {
-					, id: crypto.randomUUID(),
+					const aiMsg: ChatMessage = { id: crypto.randomUUID(),
 						role: 'assistant',
 						content: `Simulated response, for: "${userMsg.content}"`,
 						timestamp: new Date().toISOString()
@@ -248,7 +240,6 @@
 		background: #cbd5e1;
 		border-radius: 3px;
 	}
-	.messages-container::-webkit-scrollbar-thumb:hover {
-	, background: #94a3b8;
+	.messages-container::-webkit-scrollbar-thumb:hover { background: #94a3b8;
 	}
 </style>

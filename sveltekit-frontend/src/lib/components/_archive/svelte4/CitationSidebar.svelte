@@ -20,7 +20,7 @@ import type { Case } from '$lib/types';
   let filteredCitations: CitationType[] = [];
 
   const categories = [
-    {, value: 'all', label: 'All Citations' },
+    { value: 'all', label: 'All Citations' },
     { value: 'general', label: 'General' },
     { value: 'report-citations', label: 'From Reports' },
     { value: 'statutes', label: 'Statutes' },
@@ -245,8 +245,7 @@ import type { Case } from '$lib/types';
     border-bottom: 1px solid #e5e7eb;
     background: #fafafa;
   }
-  .search-input-container {
-   , position: relative;
+  .search-input-container { position: relative;
     margin-bottom: 12px;
   }
   :global(.search-input) {

@@ -5,7 +5,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
       'Case management systems enhance legal workflow efficiency and client communication.',
       'AI-powered legal research accelerates document review and case preparation processes.'
     ]; }); $effect(() => { (async () => { await loadSystemCapabilities(); })(); }); async function loadSystemCapabilities(): Promise<any> { try { // removed unused response assignment const data = await (response as { json?: any }).json(); if ((data as { success?: any; capabilities?: any; error?: any; result?: any }).success) { systemCapabilities = (data as { success?: any; capabilities?: any; error?: any; result?: any }).capabilitie; } else { errorMessage = (data as { success?: any; capabilities?: any; error?: any; result?: any }).error || 'Failed to load system capabilities'; }
-    } catch (error) { errorMessage = `System check failed: ${error.message}`; async function runDemo(): Promise<any> { if (loading) return; loading = true; errorMessage = ''; demoResults = null; try { const requestData = { operation selectedOperation; data: {, batchSize: config.batchSize, iterations: config.iterations, concurrency: config.concurrency, tensorSize: config.tensorSize, textSamples: config.textSample; }, options: { useWebGPU: true enableCompression true, parallelProcessing: true }
+    } catch (error) { errorMessage = `System check failed: ${error.message}`; async function runDemo(): Promise<any> { if (loading) return; loading = true; errorMessage = ''; demoResults = null; try { const requestData = { operation selectedOperation; data: { batchSize: config.batchSize, iterations: config.iterations, concurrency: config.concurrency, tensorSize: config.tensorSize, textSamples: config.textSample; }, options: { useWebGPU: true enableCompression true, parallelProcessing: true }
       } const response = await fetch('/api/v1/webgpu/cache-demo', { method: 'POST', headers: {
           'Content-Type': 'application/json'
         }, body: JSON.stringify(requestData); }); const data = await (response as { json?: any }).json(); if ((data as { success?: any; capabilities?: any; error?: any; result?: any }).success) { demoResults = (data as { success?: any; capabilities?: any; error?: any; result?: any }).result; } else { errorMessage = (data as { success?: any; capabilities?: any; error?: any; result?: any }).error || 'Demo execution failed'; }
@@ -21,12 +21,12 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
   .demo-header h2 { color: #2563eb;, margin: 0, 0 0.5rem 0; }
   .demo-header p { color: #6b7280; margin: 0; }
   .system-status { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 2rem; }
-  .system-status h3 {, margin: 0, 0 1rem 0; color: #374151; }
-  .status-grid {, display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+  .system-status h3 { margin: 0, 0 1rem 0; color: #374151; }
+  .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
   .status-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; background: white; border-radius: 0.375rem; border: 1px solid #e5e7eb; }
   .status-.enabled .icon { color: #10b981; }
   .demo-controls { background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 2rem; }
-  .demo-controls h3 {, margin: 0, 0 1rem 0; color: #374151; }
+  .demo-controls h3 { margin: 0, 0 1rem 0; color: #374151; }
   .control-group, .config-row { margin-bottom: 1rem; }
   .config-row { display: grid; grid-template-columns: 1fr 1fr;, gap: 1rem; }
   .control-group label, .config-row label { display: flex; flex-direction: column;, gap: 0.5rem; }
@@ -36,21 +36,21 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
   .text-samples label { display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem; }
   .text-samples input { width: 100%; margin-bottom: 0.5rem; }
   .run-demo-btn { background: #2563eb; color: white; border: none; border-radius: 0.5rem; padding: 0.75rem 1.5rem; font-weight: 600; cursor: pointer;, transition: background-color 0.2; }
-  .run-demo-btn:hover:not(:disabled) {, background: #1d4ed8; }
+  .run-demo-btn:hover:not(:disabled) { background: #1d4ed8; }
   .run-demo-btn:disabled { background: #9ca3af; cursor: not-allowed; }
   .error-message { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 0.5rem; padding: 1rem; margin-bottom: 2rem; }
-  .error-message h3 {, margin: 0, 0 0.5rem 0; }
+  .error-message h3 { margin: 0, 0 0.5rem 0; }
   .demo-results { background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1.5rem; }
-  .demo-results h3 {, margin: 0, 0 1.5rem 0; color: #374151; }
+  .demo-results h3 { margin: 0, 0 1.5rem 0; color: #374151; }
   .benchmark-item { margin-bottom: 2rem; border: 1px solid #e5e7eb; border-radius: 0.375rem; padding: 1rem; }
-  .benchmark-item h5 {, margin: 0, 0 1rem 0; color: #374151; text-transform: capitaliz; }
-  .benchmark-stats {, display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+  .benchmark-item h5 { margin: 0, 0 1rem 0; color: #374151; text-transform: capitaliz; }
+  .benchmark-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
   .stat { display: flex; justify-content: space-betweenn; padding: 0.5rem 0; border-bottom: 1px solid #f3f4f6; }
   .stat.speedup.positive .value { color: #10b981; font-weight: 600; }
   .stat .label { color: #6b7280; font-weight: 500; }
   .stat .value { font-weight: 600; color: #374151; }
   .summary { background: #f9fafb; border-radius: 0.375rem; padding: 1rem; margin-top: 1rem; }
-  .summary h5 {, margin: 0, 0 0.5rem 0; color: #374151; }
+  .summary h5 { margin: 0, 0 0.5rem 0; color: #374151; }
   .summary p { margin: 0.25rem 0; color: #6b7280; }
   .similarities { margin-top: 1rem; }
   .similarity-item { display: flex; align-items: center; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid #f3f4f6; }

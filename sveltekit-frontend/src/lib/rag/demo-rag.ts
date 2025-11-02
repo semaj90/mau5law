@@ -30,7 +30,7 @@ function generatePatternResponse(caseData, any, sources: any[]): string { return
 function generateGeneralResponse(query, string, caseData: any, sources: any[]): string { const relevantSources = sources.slice(0, 2); return `Regarding your question about: "${query}", I've analyzed ${sources.length }relevant pieces of evidence.'`
 ${relevantSources.map(source => { const evidence = caseData.evidence.find((e, any) => e.id === source.id); return `**${evidence?.filename }*: ${source.excerpt}`; }).join('\n\n') }
 ${sources.length > 0 ? `This evidence provides ${sources.length > 2 ? 'strong'  :  'moderate' }support for investigating this aspect of the case further.`'`'`: 'While I couldn\'t find direct evidence matching your query, I recommend examining related case materials.' }`;` }
-/** * Demo case analysis functions */ export async function demoGenerateCaseSummary(caseId, string): Promise<string> { const caseData = mockCaseData[caseId as keyof typeof mockCaseData]; if (!caseData) return, 'Case not found in demo data.'; await new Promise(resolve => setTimeout(resolve, 1000)); return `# Case Summary: ${caseData.title}`
+/** * Demo case analysis functions */ export async function demoGenerateCaseSummary(caseId, string): Promise<string> { const caseData = mockCaseData[caseId as keyof typeof mockCaseData]; if (!caseData) return 'Case not found in demo data.'; await new Promise(resolve => setTimeout(resolve, 1000)); return `# Case Summary: ${caseData.title}`
 ## Overview ${caseData.description }
 ## Evidence Summary - **Total Evidence Items**: ${caseData.evidence.length }
 - **Document Types**: ${Array.from(new Set(caseData.evidence.map((e, any) => e.type))).join(', ') }

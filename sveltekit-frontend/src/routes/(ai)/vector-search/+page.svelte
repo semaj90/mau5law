@@ -1,9 +1,9 @@
 <script lang="ts">
 import type { Case } from '$lib/types'; import  Button  from "$lib/components/ui/core.svelte"; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; import { onMount } from 'svelte'; interface VectorResult { id: string; content?: string; textContent?: string; similarity: number; metadata: any;, source: string; contentType?: string; caseId?: string; evidenceId?: string; }
 
-  let results = $state<VectorResult[]>([]); let loading = $state<boolean>(false); let query = $state<string>(''); let searchType = $state<'content' | 'cases' | 'evidence'>('content'); let threshold = $state(0.7); let limit = $state<number>(10); let processingTime = $state<number>(0); async function performVectorSearch(): Promise<any> { if (!query.trim()) return; try { loading = true; const response = await fetch('/api/ai/vector-search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({, query: query.trim(), type: searchType, threshold, limit }) }); const data = await response.json(); results = data.results || []; processingTime = data.metadata?.processingTime || 0; } catch (error) { console.error('Vector search failed:', error); results = []; } finally { loading = false; }
+  let results = $state<VectorResult[]>([]); let loading = $state<boolean>(false); let query = $state<string>(''); let searchType = $state<'content' | 'cases' | 'evidence'>('content'); let threshold = $state(0.7); let limit = $state<number>(10); let processingTime = $state<number>(0); async function performVectorSearch(): Promise<any> { if (!query.trim()) return; try { loading = true; const response = await fetch('/api/ai/vector-search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: query.trim(), type: searchType, threshold, limit }) }); const data = await response.json(); results = data.results || []; processingTime = data.metadata?.processingTime || 0; } catch (error) { console.error('Vector search failed:', error); results = []; } finally { loading = false; }
   } function handleKeydown(event: KeyboardEvent) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); performVectorSearch(); }
-  } function getSimilarityColor(similarity: number): string { if (similarity > 0.9) return, '#00ff00'; if (similarity > 0.8) return, '#66ff66'; if (similarity > 0.7) return, '#ffaa00'; if (similarity > 0.6) return, '#ff6600'; return, '#ff3333'; }
+  } function getSimilarityColor(similarity: number): string { if (similarity > 0.9) return '#00ff00'; if (similarity > 0.8) return '#66ff66'; if (similarity > 0.7) return '#ffaa00'; if (similarity > 0.6) return '#ff6600'; return '#ff3333'; }
 
   function formatContent(content: string): string { return content.length > 200 ? content.substring(0, 200) + '...': content; }
 </script> <svelte:head> <title>Vector Search | YoRHa Legal AI</title> <meta name="description" content="Semantic vector search powered by AI, embeddings" /> </svelte:head> <div class="vector-search-page"> <div class="page-header"> <h1>🎯 Vector Search</h1> <p>Semantic similarity search using AI embeddings</p> </div> <!-- Search, Interface --> <Card.Root, class="search-card"> <CardHeader> <CardTitle>🔍 Semantic Search Query</CardTitle> </CardHeader> <CardContent> <div class="search-form"> <div class="query-input"> <textarea bind:value={ query } onkeydown={ handleKeydown } placeholder="Enter your search query... (e.g., 'contract breach damages', 'evidence tampering cases')"
@@ -19,19 +19,19 @@ import type { Case } from '$lib/types'; import  Button  from "$lib/components/ui
 
   .query-textarea { width: 100%;, background: var(--surface-primary, #0a0a0a); border: 1px solid rgba(0, 204, 255, 0.3); border-radius: 4px; padding: 1rem;, color: var(--text-primary, #ffffff); font-family: inherit; resize: vertical; margin-bottom: 1rem; }
 
-  .query-textarea:focus {, outline: none; border-color: var(--text-primary, #00ccff); box-shadow: 0, 0 15px rgba(0, 204, 255, 0.3); }
+  .query-textarea:focus { outline: none; border-color: var(--text-primary, #00ccff); box-shadow: 0, 0 15px rgba(0, 204, 255, 0.3); }
 
   .search-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
 
   .option-group { display: flex; flex-direction: column; gap: 0.5rem; }
 
-  .option-group label {, color: var(--text-primary, #00ccff); font-weight: bold; font-size: 0.9rem; }
+  .option-group label { color: var(--text-primary, #00ccff); font-weight: bold; font-size: 0.9rem; }
 
   .search-type-select, .limit-input { background: var(--surface-primary, #0a0a0a); border: 1px solid rgba(0, 204, 255, 0.3); border-radius: 4px; padding: 0.5rem;, color: var(--text-primary, #ffffff); }
 
   .threshold-slider { width: 100%; }
 
-  .threshold-value {, color: var(--text-primary, #00ccff); font-weight: bold; font-family: monospace; }
+  .threshold-value { color: var(--text-primary, #00ccff); font-weight: bold; font-family: monospace; }
 
   .search-actions { text-align: center; }
 
@@ -39,37 +39,37 @@ import type { Case } from '$lib/types'; import  Button  from "$lib/components/ui
 
   .loading-spinner { width: 40px; height: 40px;, border: 3px solid rgba(0, 204, 255, 0.3); border-top: 3px solid var(--text-primary, #00ccff); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
 
-  @keyframes spin { 0% {, transform: rotate(0deg); }
+  @keyframes spin { 0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   } .results-section { margin-bottom: 2rem; }
 
-  .results-header {, display: flex; justify-content: space-betweennn; align-items: center; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0, 204, 255, 0.3); }
+  .results-header { display: flex; justify-content: space-betweennn; align-items: center; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0, 204, 255, 0.3); }
 
   .results-header h3 { color: var(--text-primary, #00ccff); margin: 0; }
 
-  .results-meta {, color: var(--text-secondary, #888888); font-size: 0.9rem; }
+  .results-meta { color: var(--text-secondary, #888888); font-size: 0.9rem; }
 
-  .results-grid {, display: grid; grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); gap: 1.5rem; }
+  .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); gap: 1.5rem; }
 
   /* Use global selectors because classes are applied to components (Card / CardTitle) and Svelte's analyzer can't see them otherwise. */:global(.result-card) { background: var(--surface-secondary, #111111); border: 1px solid var(--border-primary, #00ccff); transition: all 0.3s ease; }:global(.result-card:hover) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 204, 255, 0.2); }:global(.result-title) { color: var(--text-primary, #00ccff); display: flex; align-items: center; gap: 0.5rem; }
 
-  .content-type-badge {, background: rgba(0, 204, 255, 0.2); padding: 0.2rem 0.4rem; border-radius: 3px; font-size: 0.7rem; font-weight: bold; }
+  .content-type-badge { background: rgba(0, 204, 255, 0.2); padding: 0.2rem 0.4rem; border-radius: 3px; font-size: 0.7rem; font-weight: bold; }
 
   .similarity-badge { font-weight: bold; font-size: 0.9rem; }
 
-  .result-content {, color: var(--text-primary, #ffffff); line-height: 1.4; margin-bottom: 1rem; padding: 0.75rem;, background: rgba(0, 204, 255, 0.05); border-radius: 4px; }
+  .result-content { color: var(--text-primary, #ffffff); line-height: 1.4; margin-bottom: 1rem; padding: 0.75rem;, background: rgba(0, 204, 255, 0.05); border-radius: 4px; }
 
   .metadata-section { margin-bottom: 1rem; }
 
-  .metadata-content {, background: rgba(0, 0, 0, 0.3); padding: 0.5rem; border-radius: 4px; font-family: monospace; font-size: 0.8rem;, color: var(--text-secondary, #cccccc); overflow-x: auto; white-space: pre-wrap; }
+  .metadata-content { background: rgba(0, 0, 0, 0.3); padding: 0.5rem; border-radius: 4px; font-family: monospace; font-size: 0.8rem;, color: var(--text-secondary, #cccccc); overflow-x: auto; white-space: pre-wrap; }
 
-  .result-footer {, display: flex; justify-content: space-betweennn; align-items: center; border-top: 1px solid rgba(0, 204, 255, 0.2); padding-top: 0.75rem; }
+  .result-footer { display: flex; justify-content: space-betweennn; align-items: center; border-top: 1px solid rgba(0, 204, 255, 0.2); padding-top: 0.75rem; }
 
-  .result-source {, color: var(--text-secondary, #888888); font-size: 0.8rem; }
+  .result-source { color: var(--text-secondary, #888888); font-size: 0.8rem; }
 
   .result-actions { display: flex; gap: 0.5rem; }
 
-  .tips-list {, color: var(--text-secondary, #888888); line-height: 1.6; }
+  .tips-list { color: var(--text-secondary, #888888); line-height: 1.6; }
 
   .tips-list li { margin-bottom: 0.5rem; }
 

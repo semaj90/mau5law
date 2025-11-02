@@ -140,8 +140,7 @@
     margin: 0 auto 2rem;
     opacity: 0.8;
   }
-  .error-title {
-   , color: #00ff41;
+  .error-title { color: #00ff41;
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 1rem;

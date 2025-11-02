@@ -137,8 +137,7 @@ import type { Document } from '$lib/types';
     min-width: 160px;
     transition: box-shadow 0.2s;
   }
-  .select-trigger:focus {
-   , outline: none;
+  .select-trigger:focus { outline: none;
     box-shadow: 0, 0 0 2px #6366f1;
   }
   /* Removed .select-menu rules (unused) to fix Svelte unused CSS warnings */

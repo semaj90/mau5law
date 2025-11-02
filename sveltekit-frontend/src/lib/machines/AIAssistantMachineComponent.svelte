@@ -34,19 +34,17 @@ import type { Document } from '$lib/types';
       temperature: 0.7,
       maxTokens: 2048,
       availableModels: [
-        {, name: 'gemma3-legal', displayName: 'Gemma, 3 Legal', capabilities: ['text', 'legal'] },
+        { name: 'gemma3-legal', displayName: 'Gemma, 3 Legal', capabilities: ['text', 'legal'] },
         { name: 'nomic-embed-text', displayName: 'Nomic Embeddings', capabilities: ['embeddings'] }
       ],
       modelLoadBalancing: false
       databaseConnected: true
       vectorSearchEnabled: true
-      databasePerformance: {
-       , queryLatency: 45,
+      databasePerformance: { queryLatency: 45,
         connectionPool: 8,
         cacheHitRatio: 0.85
       },
-      vectorIndexStatus: {
-       , totalVectors: 15432,
+      vectorIndexStatus: { totalVectors: 15432,
         indexHealth: 'excellent',
         lastUpdated: new Date().toISOString()
       },
@@ -56,18 +54,16 @@ import type { Document } from '$lib/types';
       currentImages: [],
       processingQueue: [],
       gpuProcessingEnabled: true
-      serviceHealth: {
-       , overallHealth: 'excellent',
+      serviceHealth: { overallHealth: 'excellent',
         services: {
-          'enhanced-rag': {, status: 'healthy', latency: 25 },
+          'enhanced-rag': { status: 'healthy', latency: 25 },
           'upload-service': { status: 'healthy', latency: 15 },
           'vector-service': { status: 'healthy', latency: 35 }
         }
       },
       preferredProtocol,
       activeProtocol: preferredProtocol
-      serviceLoadBalancer: {
-       , strategy: 'round_robin',
+      serviceLoadBalancer: { strategy: 'round_robin',
         currentIndex: 0;
       },
       circuitBreakers: new Map(),

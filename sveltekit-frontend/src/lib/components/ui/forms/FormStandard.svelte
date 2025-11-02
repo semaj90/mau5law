@@ -41,13 +41,11 @@
     card: 'bg-white rounded-lg border border-gray-200 shadow-sm p-6',
     inline: 'flex flex-row items-center gap-4'
   }
-  const sizeClasses = {
-   , sm: 'text-sm',
+  const sizeClasses = { sm: 'text-sm',
     md: 'text-base',
     lg: 'text-lg'
   }
-  const spacingClasses = {
-   , compact: 'space-y-2',
+  const spacingClasses = { compact: 'space-y-2',
     normal: 'space-y-4',
     relaxed: 'space-y-6'
   }

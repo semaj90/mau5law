@@ -13,7 +13,7 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
 
   .form-field { margin-bottom: 1.5rem; }
 
-  .form-field label {, display: block; margin-bottom: 0.5rem; font-weight: 500; }
+  .form-field label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
 
   .form-field input, .form-field textarea, .form-field select { width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; }
 

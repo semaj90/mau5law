@@ -4,5 +4,5 @@
       if (res.ok) { const url = data?.url ?? 'upload succeeded'; message.set(`Upload successful: ${ url }`); } else { message.set(data?.error || `Upload failed (${res.status})`); }
     } catch (err: any) { message.set(err?.message || String(err)); } finally { uploading.set(false); }
   } </script> <div class="minio-upload"> <label for="file">Evidence file</label> <input id="file" type="file" onchange={ handleFileChange } /> <button onclick={ upload } disabled={$uploading}>Upload to MinIO</button> <p>{$message}</p> </div> <style> .minio-upload { display: flex; flex-direction: column; gap: 8px; max-width: 480px; }
-  button[disabled] {, opacity: 0.6; }
+  button[disabled] { opacity: 0.6; }
 </style>

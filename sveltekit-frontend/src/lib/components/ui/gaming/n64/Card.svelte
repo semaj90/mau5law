@@ -10,10 +10,10 @@
   const handleFocus = () => { if (disabled) return; isFocused = true; playCardSound(660, 0.2); onFocus?.(); // ondispatch removed; }
   const handleBlur = () => { isFocused = false; }
   const handleKeyDown = (_event: KeyboardEvent) => { if (clickable && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); handleClick(); }
-  } // Get material styles based on variant and material type const getMaterialStyles = (variant: string, material: string) => { const baseColors = { primary: {, base: '#2d3748', highlight: '#4a5568', shadow: '#1a202c', accent: '#4a90e2' }, secondary: {, base: '#4a5568', highlight: '#718096', shadow: '#2d3748', accent: '#6c757d' }, success: {, base: '#2d5016', highlight: '#38a169', shadow: '#1a365d', accent: '#28a745' }, warning: {, base: '#744210', highlight: '#d69e2e', shadow: '#452f06', accent: '#ffc107' }, error: {, base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', accent: '#dc3545' }, info: {, base: '#2a4365', highlight: '#3182ce', shadow: '#1a202c', accent: '#17a2b8' } }
-    const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary; const materialMap = { basic: {, background: colors.base, borderColor: colors.highlight, boxShadow: ` 0 ${ elevation }px, 0 ${colors.shadow}, 0 ${elevation * 2}px ${ elevation }px rgba(0,0,0,0.3) `
-      }, phong: {, background: `linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 50%, ${colors.shadow} 100%)`, borderColor: 'transparent', boxShadow: ` 0 ${ elevation }px, 0 ${colors.shadow}, inset, 0 2px, 0 rgba(255,255,255,0.3), inset, 0 -2px, 0 rgba(0,0,0,0.3), 0 ${elevation * 2}px ${elevation * 2}px rgba(0,0,0,0.4) `
-      }, pbr: {, background: ` linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 30%, ${colors.shadow} 70%, ${colors.base} 100%), radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 50%) `, borderColor: 'transparent', boxShadow: ` 0 ${ elevation }px, 0 ${colors.shadow}, inset, 0 3px, 0 rgba(255,255,255,0.4), inset, 0 -3px, 0 rgba(0,0,0,0.4), 0 ${elevation * 2}px ${elevation * 3}px rgba(0,0,0,0.5), 0, 0 0 1px rgba(255,255,255,0.1) `
+  } // Get material styles based on variant and material type const getMaterialStyles = (variant: string, material: string) => { const baseColors = { primary: { base: '#2d3748', highlight: '#4a5568', shadow: '#1a202c', accent: '#4a90e2' }, secondary: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748', accent: '#6c757d' }, success: { base: '#2d5016', highlight: '#38a169', shadow: '#1a365d', accent: '#28a745' }, warning: { base: '#744210', highlight: '#d69e2e', shadow: '#452f06', accent: '#ffc107' }, error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', accent: '#dc3545' }, info: { base: '#2a4365', highlight: '#3182ce', shadow: '#1a202c', accent: '#17a2b8' } }
+    const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary; const materialMap = { basic: { background: colors.base, borderColor: colors.highlight, boxShadow: ` 0 ${ elevation }px, 0 ${colors.shadow}, 0 ${elevation * 2}px ${ elevation }px rgba(0,0,0,0.3) `
+      }, phong: { background: `linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 50%, ${colors.shadow} 100%)`, borderColor: 'transparent', boxShadow: ` 0 ${ elevation }px, 0 ${colors.shadow}, inset, 0 2px, 0 rgba(255,255,255,0.3), inset, 0 -2px, 0 rgba(0,0,0,0.3), 0 ${elevation * 2}px ${elevation * 2}px rgba(0,0,0,0.4) `
+      }, pbr: { background: ` linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 30%, ${colors.shadow} 70%, ${colors.base} 100%), radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 50%) `, borderColor: 'transparent', boxShadow: ` 0 ${ elevation }px, 0 ${colors.shadow}, inset, 0 3px, 0 rgba(255,255,255,0.4), inset, 0 -3px, 0 rgba(0,0,0,0.4), 0 ${elevation * 2}px ${elevation * 3}px rgba(0,0,0,0.5), 0, 0 0 1px rgba(255,255,255,0.1) `
       } }
     return materialMap[material as keyof typeof materialMap] || materialMap.phong; }
   const getPaddingStyles = (padding: string) => { const paddingMap = { none: '0', small: '12px', medium: '20px', large: '28px', xl: '36px'
@@ -32,15 +32,15 @@
   aria-disabled={ disabled } aria-busy={ loading } >
   {#if header} <div class="nier-bits-yorha-panel-header"> {@render header()} {/if} <div class="nier-bits-yorha-panel-content"> {#if loading} <div class="loading-overlay"> <div class="n64-spinner"></div> <div class="loading-text">Loading...</div> </div> {:else} <slot /> {/if} </div> {#if footer} <div class="nier-bits-yorha-panel-content"> {@render footer()} {/if} {#if enableLighting} <div class="lighting-overlay">{/if} {#if enableReflections} <div class="reflection-overlay">{/if} {#if enableAtmosphere} <div class="atmosphere-overlay">{/if} {#if enableDepthShadows} <div class="depth-shadow">{/if} </div> <style> .n64-card { /* Base N64 card styling */ font-family: 'Rajdhani', 'Arial', sans-serif; background: var(--material-bg); color: #ffffff;, border: 1px solid var(--material-border); border-radius: 6px;, padding: var(--card-padding); position: relative; display: flex; flex-direction: column; overflow: hidden; /* 3D transformations */, transform: var(--transform-3d); transform-origin: center center; transform-style: preserve-3d; /* Enhanced rendering */ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; /* Advanced shadows and lighting */ box-shadow: var(--material-shadow); transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1); /* Remove default styles */ -webkit-appearance: none; -moz-appearance: none; appearance: none;, outline: none; /* Text styling */ text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); /* Performance optimization */ will-change: transform; }
 /* Clickable cards */ .n64-card.clickable { cursor: pointer; }
-  .n64-card.clickable:focus-visible {, outline: 3px solid rgba(74, 144, 226, 0.6); outline-offset: 2px; }
+  .n64-card.clickable:focus-visible { outline: 3px solid rgba(74, 144, 226, 0.6); outline-offset: 2px; }
 /* Card sections */ .card-header { padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; font-size: 0.9em; }
-  .card-content {, flex: 1, position: relative; z-index: 2 }
+  .card-content { flex: 1, position: relative; z-index: 2 }
   .card-footer { padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 16px; font-size: 0.9em; opacity: 0.8; }
 /* Loading overlay */ .loading-overlay { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: rgba(0, 0, 0, 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; z-index: 10 }
   .n64-spinner { width: 32px; height: 32px;, border: 4px solid transparent; border-top: 4px solid currentColor; border-right: 3px solid rgba(255, 255, 255, 0.6); border-bottom: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%;, animation: n64CardSpin 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite; transform-style: preserve-3d; }
-  @keyframes n64CardSpin { 0% {, transform: rotateY(0deg) rotateZ(0deg); border-width: 4px 3px 2px 4px; }
-    50% {, transform: rotateY(180deg) rotateZ(180deg); border-width: 2px 4px 4px 3px; }
-    100% {, transform: rotateY(360deg) rotateZ(360deg); border-width: 4px 3px 2px 4px; }
+  @keyframes n64CardSpin { 0% { transform: rotateY(0deg) rotateZ(0deg); border-width: 4px 3px 2px 4px; }
+    50% { transform: rotateY(180deg) rotateZ(180deg); border-width: 2px 4px 4px 3px; }
+    100% { transform: rotateY(360deg) rotateZ(360deg); border-width: 4px 3px 2px 4px; }
   } .loading-text { font-weight: 600; letter-spacing: 1px; text-transform: uppercase; font-size: 0.9em;, animation: pulse 2s ease-in-out infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 /* Lighting overlay */ .lighting-overlay { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: linear-gradient( 135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 30%, transparent 60%, rgba(0, 0, 0, 0.2) 100% ); pointer-events: none; z-index: 1; border-radius: 6px; }
@@ -49,9 +49,9 @@
 /* Depth shadow */ .depth-shadow { position: absolute; top: 100%; left: 5%; right: 5%;, height: var(--card-elevation); background: linear-gradient( to bottom, rgba(0, 0, 0, 0.4) 0%, transparent 100% ); transform: perspective(var(--card-elevation)) rotateX(90deg); transform-origin: top center; pointer-events: none; z-index: -1;, filter: blur(8px); opacity: 0.6; }
 /* Material type variations */ .n64-card.pbr { background-blend-mode: overlay, normal; }
 /* Mesh complexity variations */ .n64-card.mesh-ultra { border-radius: 8px; }
-  .n64-card.mesh-ultra .lighting-overlay {, background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 40%), linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.2) 0%, transparent 50%); }
+  .n64-card.mesh-ultra .lighting-overlay { background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 40%), linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.2) 0%, transparent 50%); }
   .n64-card.mesh-low { border-radius: 3px; transform-style: flat; }
-/* State variations */ .n64-card.disabled {, background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%); color: #a0aec0; cursor: not-allowed; opacity: 0.6;, transform: perspective(1000px) scale(0.95); box-shadow: 0 4px, 0 #1a202c, inset, 0 1px, 0 rgba(255,255,255,0.05), 0 6px 12px rgba(0,0,0,0.2); }
+/* State variations */ .n64-card.disabled { background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%); color: #a0aec0; cursor: not-allowed; opacity: 0.6;, transform: perspective(1000px) scale(0.95); box-shadow: 0 4px, 0 #1a202c, inset, 0 1px, 0 rgba(255,255,255,0.05), 0 6px 12px rgba(0,0,0,0.2); }
   .n64-card.hovered { box-shadow: var(--material-shadow), 0, 0 30px rgba(255, 255, 255, calc(var(--glow-intensity) * 0.3)); }
   .n64-card.focused { box-shadow: var(--material-shadow), 0, 0 0 3px rgba(74, 144, 226, 0.4); }
 /* Enhanced texture filtering */ .n64-card.texture-ultra { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;, filter: contrast(1.02) brightness(1.01) saturate(1.05); }
@@ -63,13 +63,13 @@
 /* Fog effects */ .n64-card::before { content: ''; position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040) 0%, transparent 70% ); opacity: 0.2; pointer-events: none; z-index: 0; border-radius: 6px; }
 /* Mobile optimizations */ @media (max-width: 480px) { .n64-card { transform: scale(var(--dynamic-scale, 1)); transition: transform 150ms ease; }
 .lighting-overlay, .reflection-overlay, .atmosphere-overlay, .depth-shadow { display: none; }
-    .n64-card::before {, display: none; }
+    .n64-card::before { display: none; }
   } /* Reduced motion support */ @media (prefers-reduced-motion reduce) { .n64-card { transform: none !important;, transition: box-shadow 150ms ease, opacity 150ms ease; }
     .n64-spinner { animation: none; border: 4px solid currentColor; border-right-color: transparent; }
-    .loading-text {, animation: none; }
+    .loading-text { animation: none; }
   } /* High contrast mode */ @media (prefers-contrast: high) { .n64-card { border: 3px solid currentColor; text-shadow: none; }
 .lighting-overlay, .reflection-overlay, .atmosphere-overlay { display: none; }
   } /* Performance optimization for low-end devices */ @media (max-device-memory: 2GB) { .n64-card { transform: none; box-shadow: 0 6px, 0 rgba(0, 0, 0, 0.3), 0 12px 24px rgba(0, 0, 0, 0.2); }
-.lighting-overlay, .reflection-overlay, .atmosphere-overlay, .depth-shadow, .n64-card::before {, display: none; }
+.lighting-overlay, .reflection-overlay, .atmosphere-overlay, .depth-shadow, .n64-card::before { display: none; }
   } /* Dark mode variations */ @media (prefers-color-scheme: dark) { .n64-card { --fog-color: #101010; }
   } </style>
