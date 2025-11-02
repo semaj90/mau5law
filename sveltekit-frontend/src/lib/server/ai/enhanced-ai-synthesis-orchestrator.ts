@@ -17,6 +17,7 @@ import {
   selectNearestCentroid,
   euclidean,
 } from './cluster-service';
+import { getOllamaEndpoint } from './endpoints.js'; // Import the centralized Ollama endpoint helper
 // --- TYPE DEFINITIONS ---
 type Document = { id?: string; title?: string; excerpt?: string; [key: string]: any };
 type OllamaMessage = {
@@ -139,12 +140,12 @@ class EnhancedAISynthesisOrchestrator {
   private readonly ollamaUrl: string;
   private readonly models: typeof DEFAULT_OLLAMA_MODELS;
   private readonly tritonUrl: string | null;
-  private initialized = $state(false);
+  private initialized = false; // Changed from $state(false)
   private lastMcpRecord: McpServerRecord | null = null;
   private lastFunctionResult: any = null;
   private lastError: string | null = null;
   constructor() {
-    this.ollamaUrl = process.env.OLLAMA_URL ?? process.env.VITE_OLLAMA_URL ?? FALLBACK_OLLAMA_URL;
+    this.ollamaUrl = getOllamaEndpoint(); // Use the centralized helper
     this.models = { ...DEFAULT_OLLAMA_MODELS };
     const tritonEnv = process.env.TRITON_URL ?? process.env.VITE_TRITON_URL ?? null;
     this.tritonUrl = tritonEnv ? String(tritonEnv) : null;
@@ -400,11 +401,11 @@ class EnhancedAISynthesisOrchestrator {
       }
       const { cacheKey, cacheTtlSeconds, emit = true, heatmapSampleSize, metadata, ...rest } = options;
       const visualizerOptions = rest as SOMBitmapOptions;
-      const includeSvg = visualizerOptions.includeSvg !== $state(false);
+      const includeSvg = visualizerOptions.includeSvg !== false; // Corrected: remove $state(false)
       const primaryCacheKey = this.makeSomCacheKey(userId, flattened, options);
       // try cache
       let bitmap: SOMBitmapResult | null = null;
-      let fromCache = $state(false);
+      let fromCache = false; // Changed from $state(false)
       const cached = await getFromCache(cacheKey ?? primaryCacheKey);
       if (cached) {
         try {

@@ -9,8 +9,8 @@
         "-NoProfile",
         "-ExecutionPolicy",
         "Bypass",
-        "-Command",
-        "$timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'; $logFile = \"logs/svelte-check-$timestamp.log\"; New-Item -ItemType Directory -Force -Path logs | Out-Null; Write-Host '📝 Running svelte-check with gemma3-legal summarization...' -ForegroundColor Cyan; npx svelte-check --output human 2>&1 | Tee-Object -FilePath $logFile; Write-Host \"`n🤖 Summarizing errors with gemma3-legal:latest + embeddinggemma langextract...\" -ForegroundColor Yellow; $logContent = Get-Content $logFile -Raw; $summaryFile = \"logs/svelte-check-summary-$timestamp.md\"; $body = @{ text = $logContent; model = 'gemma3-legal:latest'; maxLength = 1000; extractLanguages = $true } | ConvertTo-Json; try { $response = Invoke-RestMethod -Uri 'http://localhost:5173/api/ai/summarize' -Method Post -Body $body -ContentType 'application/json'; $response.summary | Out-File -FilePath $summaryFile; Write-Host \"`n✅ Summary saved to: $summaryFile\" -ForegroundColor Green; Write-Host \"`n📊 Detected Languages: $($response.detectedLanguages -join ', ')\" -ForegroundColor Cyan; Write-Host \"`n--- Summary ---\" -ForegroundColor Magenta; Get-Content $summaryFile; } catch { Write-Host \"`n❌ Summarization failed: $_\" -ForegroundColor Red; } Write-Host \"`n📄 Full log: $logFile\" -ForegroundColor Gray"
+        "-File",
+        "${workspaceFolder}/scripts/svelte-check-summarize.ps1"
       ],
       "group": "test",
       "presentation": {

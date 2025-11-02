@@ -1,11 +1,22 @@
-
 // Enhanced Embeddings Service with Nomic Embed + Langchain + Langextract
 // Local embeddings using Ollama nomic-embed-text model with document processing
 // Use process.env for server-side environment variables
-import { cacheEmbedding, getCachedEmbedding } from "$lib/server/cache/redis";
+import { cacheEmbedding, getCachedEmbedding } from '$lib/server/cache/redis';
+import { getOllamaEndpoint } from '$lib/server/utils/endpoints'; // Import the new utility
+
+// New interface for extracted document structure
+export interface ExtractedDocumentStructure {
+  parties: string[];
+  dates: string[];
+  amounts: string[];
+  caseNumbers: string[];
+  sections: string[];
+  documentType: string;
+  keyPhrases: string[];
 }
+
 export interface EnhancedEmbeddingOptions {
-  provider?: "auto" | "embeddinggemma" | "nomic-embed" | "tauri-legal-bert" | "tauri-bert";
+  provider?: 'auto' | 'embeddinggemma' | 'nomic-embed' | 'tauri-legal-bert' | 'tauri-bert';
   cache?: boolean;
   maxTokens?: number;
   legalDomain?: boolean;
@@ -19,14 +30,14 @@ export interface EmbeddingResult {
     model: string;
     textLength: number;
     generatedAt: string;
-    extracted?: any;
-  }
+    extracted?: ExtractedDocumentStructure; // Updated type
+  };
 }
 /**
  * Generate embeddings using Ollama Gemma embeddings model (primary) with nomic-embed-text fallback
  */
 async function generateNomicEmbedding(text: string): Promise<number[]> {
-  const ollamaEndpoint = import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434'
+  const ollamaEndpoint = getOllamaEndpoint(); // Use the centralized endpoint utility
   // Try Gemma embeddings first, fallback to nomic-embed-text
   const models = ['embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text'];
   for (const model of models) {
@@ -34,10 +45,10 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
       const response = await fetch(`${ollamaEndpoint}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          model: model;
-          prompt: text
-        })
+        body: JSON.stringify({
+          model: model,
+          prompt: text,
+        }),
       });
       if (!response.ok) {
         console.warn(`Model ${model} failed with: ${response.statusText}`);
@@ -46,40 +57,45 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
       const data = await response.json();
       console.log(`Successfully generated embedding with model: ${model}`);
       return data.embedding;
-    } catch (error: any) {
-      console.warn(`Model ${model} failed:`, error.message);
+    } catch (error: unknown) {
+      // Changed type from any to unknown
+      console.warn(`Model ${model} failed:`, error instanceof Error ? error.message : String(error));
       continue; // Try next model
     }
   }
   // All models failed
   console.error('All embedding models failed');
   throw new Error('Failed to generate embeddings with all available models');
-  }
 }
 /**
  * Extract structured data from legal documents using langextract patterns
  */
-async function extractDocumentStructure(text: string): Promise<any> {
+async function extractDocumentStructure(text: string): Promise<ExtractedDocumentStructure> {
+  // Updated return type
   // Simple extraction patterns for legal documents
   const patterns = {
     parties: /(?:party|plaintiff|defendant|client):\s*([^.\n]+)/gi,
-    dates: /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/g,
+    dates: /\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b/g, // Fixed unnecessary escape characters
     amounts: /\$[\d]+(?:\.\d{2})?/g,
-    caseNumbers: /(?:case|docket)\s*(?:no\.?|#)?\s*([a-z0-9\-]+)/gi,
-    sections: /(?:section|§)\s*(\d+(?:\.\d+)*)/gi
-  }
-  const extracted = {
+    caseNumbers: /(?:case|docket)\s*(?:no.?|#)?\s*([a-z0-9-]+)/gi, // Fixed unnecessary escape character
+    sections: /(?:section|§)\s*(\d+(?:\.\d+)*)/gi,
+  };
+  const extracted: ExtractedDocumentStructure = {
+    // Explicitly type extracted
     parties: [],
     dates: [],
     amounts: [],
     caseNumbers: [],
     sections: [],
     documentType: detectDocumentType(text),
-    keyPhrases: extractKeyPhrases(text)
-  }
+    keyPhrases: extractKeyPhrases(text),
+  };
   for (const [key, pattern] of Object.entries(patterns)) {
-    const matches = Array.from(text.matchAll(pattern as RegExp);
-    (extracted as any)[key] = matches.map(match => match[1] || match[0]).slice(0, 10);
+    const matches = Array.from(text.matchAll(pattern as RegExp));
+    // Cast to ExtractedDocumentStructure to ensure type safety
+    (extracted as ExtractedDocumentStructure)[key as keyof ExtractedDocumentStructure] = matches
+      .map(match => match[1] || match[0])
+      .slice(0, 10);
   }
   return extracted;
 }
@@ -105,44 +121,49 @@ function detectDocumentType(text: string): string {
 function extractKeyPhrases(text: string): string[] {
   // Simple key phrase extraction
   const legalTerms = [
-    'breach of contract', 'negligence', 'damages', 'liability', 'indemnification',
-    'force majeure', 'intellectual property', 'confidentiality', 'termination',
-    'arbitration', 'jurisdiction', 'governing law', 'attorney fees'
+    'breach of contract',
+    'negligence',
+    'damages',
+    'liability',
+    'indemnification',
+    'force majeure',
+    'intellectual property',
+    'confidentiality',
+    'termination',
+    'arbitration',
+    'jurisdiction',
+    'governing law',
+    'attorney fees',
   ];
-  const foundTerms = legalTerms.filter(item => item.includes)(term.toLowerCase()
-  );
+  const lowerText = text.toLowerCase();
+  const foundTerms = legalTerms.filter(term => lowerText.includes(term));
   return foundTerms.slice(0, 5);
 }
 /**
  * Main embedding generation function with langchain-style processing
  */
 export async function generateEnhancedEmbedding(
-  text: string | string[];
-  options: EnhancedEmbeddingOptions = {},
+  text: string | string[],
+  options: EnhancedEmbeddingOptions = {}
 ): Promise<number[] | number[][]> {
   const {
-    provider = "nomic-embed",
+    provider = 'nomic-embed',
     cache = true,
     maxTokens = 8000,
     legalDomain = true,
     batchSize = 10,
-    useExtraction = false
+    useExtraction = false,
   } = options;
   if (!text) {
-    throw new Error("Text is required for embedding generation");
+    throw new Error('Text is required for embedding generation');
   }
   const isArray = Array.isArray(text);
   const inputs = isArray ? text : [text];
-  const truncatedInputs = inputs.map((t: string) =>
-    t.length > maxTokens ? t.substring(0, maxTokens) : t
-  );
+  const truncatedInputs = inputs.map((t: string) => (t.length > maxTokens ? t.substring(0, maxTokens) : t));
   // Check cache for single inputs
   if (cache && !isArray) {
     const cacheKey = `nomic-${legalDomain}-${useExtraction}`;
-    const cachedEmbedding = await getCachedEmbedding(
-      truncatedInputs[0],
-      cacheKey,
-    );
+    const cachedEmbedding = await getCachedEmbedding(truncatedInputs[0], cacheKey);
     if (cachedEmbedding) {
       return cachedEmbedding;
     }
@@ -167,8 +188,9 @@ export async function generateEnhancedEmbedding(
       }
     }
     return isArray ? results : results[0];
-  } catch (error: any) {
-    console.error("Enhanced embedding generation failed:", error);
+  } catch (error: unknown) {
+    // Changed type from any to unknown
+    console.error('Enhanced embedding generation failed:', error);
     throw error;
   }
 }
@@ -176,80 +198,94 @@ export async function generateEnhancedEmbedding(
  * Batch embedding generation with progress tracking
  */
 export async function generateBatchEmbeddingsEnhanced(
-  texts: string[];
+  texts: string[],
   options: EnhancedEmbeddingOptions = {},
-  onProgress?: (completed: number, total: number) => void,
+  onProgress?: (completed: number, total: number) => void
 ): Promise<number[][]> {
   const { batchSize = 10 } = options;
   const results: number[][] = [];
   for (let i = 0; i < texts.length; i += batchSize) {
     const batch = texts.slice(i, i + batchSize);
     try {
-      const batchResult = (await generateEnhancedEmbedding(
-        batch,
-        options,
-      )) as number[][];
+      const batchResult = (await generateEnhancedEmbedding(batch, options)) as number[][];
       results.push(...batchResult);
       if (onProgress) {
         onProgress(Math.min(i + batchSize, texts.length), texts.length);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed type from any to unknown
       console.error(`Batch ${i}-${i + batchSize} failed:`, error);
       // Add empty embeddings for failed items
       for (let j = 0; j < batch.length; j++) {
-        results.push(new Array(384).fill(0); // nomic-embed-text uses 384 dimensions
+        results.push(new Array(384).fill(0)); // nomic-embed-text uses 384 dimensions
       }
     }
     // Small delay between batches to avoid rate limits
     if (i + batchSize < texts.length) {
-      await new Promise((resolve) => setTimeout(resolve, 100);
+      await new Promise(resolve => setTimeout(resolve, 100));
     }
   }
   return results;
 }
+
+// New interface for LegalEmbeddingResult
+export interface LegalEmbeddingResult {
+  embedding: number[];
+  metadata: {
+    generatedAt: string;
+    provider: string;
+    model: string;
+    documentLength: number;
+    dimensions: number;
+    documentType?: 'contract' | 'case_law' | 'statute' | 'brief' | 'other';
+    jurisdiction?: string;
+    subject?: string[];
+  };
+  confidence: number;
+  extracted: ExtractedDocumentStructure;
+}
+
 /**
  * Legal document-specific embedding with metadata and extraction
  */
 export async function generateLegalEmbedding(
   documentText: string,
   metadata: {
-    documentType?: "contract" | "case_law" | "statute" | "brief" | "other";
+    documentType?: 'contract' | 'case_law' | 'statute' | 'brief' | 'other';
     jurisdiction?: string;
     subject?: string[];
-  } = {},
-): Promise<any> {
+  } = {}
+): Promise<LegalEmbeddingResult> {
+  // Updated return type
   // Extract document structure
   const extracted = await extractDocumentStructure(documentText);
   // Generate embedding with extracted context
   const embedding = (await generateEnhancedEmbedding(documentText, {
-    provider: "nomic-embed",
+    provider: 'nomic-embed',
     legalDomain: true,
     maxTokens: 2000,
-    useExtraction: true
+    useExtraction: true,
   })) as number[];
   return {
     embedding,
     metadata: {
       ...metadata,
       generatedAt: new Date().toISOString(),
-      provider: "nomic-embed",
-      model: "nomic-embed-text",
+      provider: 'nomic-embed',
+      model: 'nomic-embed-text',
       documentLength: documentText.length,
-      dimensions: 384
+      dimensions: 384,
     },
     confidence: 0.85, // Default confidence for nomic-embed
-    extracted
-  }
+    extracted,
+  };
 }
 /**
  * Similarity calculation between legal documents
  */
-export async function calculateLegalSimilarity(
-  doc1: string,
-  doc2: string,
-): Promise<number> {
+export async function calculateLegalSimilarity(doc1: string, doc2: string): Promise<number> {
   const embeddings = (await generateEnhancedEmbedding([doc1, doc2], {
-    provider: "nomic-embed",
+    provider: 'nomic-embed',
     legalDomain: true,
     useExtraction: true,
   })) as number[][];
@@ -260,7 +296,7 @@ export async function calculateLegalSimilarity(
  */
 function cosineSimilarity(vecA: number[], vecB: number[]): number {
   if (vecA.length !== vecB.length) {
-    throw new Error("Vectors must have same length for similarity calculation");
+    throw new Error('Vectors must have same length for similarity calculation');
   }
   let dotProduct = 0;
   let normA = 0;
@@ -270,41 +306,61 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
     normA += vecA[i] * vecA[i];
     normB += vecB[i] * vecB[i];
   }
-  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 /**
  * Backward compatibility exports
  */
-export async function generateEmbedding(
-  text: string,
-  model?: string
-): Promise<number[]> {
+export async function generateEmbedding(text: string, model?: string): Promise<number[]> {
   const result = await generateEnhancedEmbedding(text, {
-    provider: "nomic-embed",
-    legalDomain: true
+    provider: 'nomic-embed',
+    legalDomain: true,
   });
-  return Array.isArray(result) && Array.isArray(result[0])
-    ? (result[0] as number[])
-    : (result as number[]);
+  return Array.isArray(result) && Array.isArray(result[0]) ? (result[0] as number[]) : (result as number[]);
 }
 export async function generateBatchEmbeddings(
   texts: string[],
-  model?: string
-  batchSize: number = 10,
+  model?: string,
+  batchSize: number = 10
 ): Promise<number[][]> {
   return generateBatchEmbeddingsEnhanced(texts, {
-    provider: "nomic-embed",
+    provider: 'nomic-embed',
     legalDomain: true,
-    batchSize
+    batchSize,
   });
 }
+
+// New interfaces for document chunking
+export interface DocumentChunk {
+  text: string;
+  embedding: number[];
+  metadata: {
+    chunkIndex: number;
+    startIndex: number;
+    endIndex: number;
+    length: number;
+  };
+}
+
+export interface DocumentProcessingResult {
+  chunks: DocumentChunk[];
+  documentMetadata: {
+    totalLength: number;
+    totalChunks: number;
+    extracted: ExtractedDocumentStructure;
+    processedAt: string;
+  };
+}
+
 /**
  * Langchain-style document processing with chunking
  */
-export async function processDocumentWithChunking(_document: string
+export async function processDocumentWithChunking(
+  document: string,
   chunkSize: number = 1000,
-  chunkOverlap: number = 200,
-): Promise<any> {
+  chunkOverlap: number = 200
+): Promise<DocumentProcessingResult> {
+  // Updated return type
   const extracted = await extractDocumentStructure(document);
   const chunks: { text: string; embedding: number[]; metadata: any }[] = [];
   // Split document into overlapping chunks
@@ -319,8 +375,8 @@ export async function processDocumentWithChunking(_document: string
         chunkIndex: Math.floor(i / (chunkSize - chunkOverlap)),
         startIndex: i,
         endIndex: Math.min(i + chunkSize, document.length),
-        length: chunk.length
-      }
+        length: chunk.length,
+      },
     });
   }
   return {
@@ -329,7 +385,7 @@ export async function processDocumentWithChunking(_document: string
       totalLength: document.length,
       totalChunks: chunks.length,
       extracted,
-      processedAt: new Date().toISOString()
-    }
-  }
+      processedAt: new Date().toISOString(),
+    },
+  };
 }

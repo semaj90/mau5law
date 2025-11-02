@@ -1,10 +1,11 @@
 import { caseScoringService } from '../services/CaseScoringService';
 import { cognitiveCache } from './cache'; // Keep this import
 import { embeddingGemma } from './embeddinggemma-service'; // Direct embeddingGemma import
-import { enhancedVectorSearchService } from '$lib/server/db/drizzle-vector-config'; // Import the unified vector search service
+import { VectorSearchService } from '$lib/server/db/drizzle-vector-config'; // Import the unified vector search service
+import { getOllamaEndpoint } from '$lib/server/ai/gemma-embedding-service'; // Import getOllamaEndpoint
 
 // Helper for structured logging
-function logError(context: string, error: any, details?: Record<string, unknown>) {
+function logError(context: string, error: unknown, details?: Record<string, unknown>) {
   console.error(
     `[ERROR] ${new Date().toISOString()} - ${context}:`,
     error instanceof Error ? error.message : String(error),
@@ -65,7 +66,7 @@ type LLMRequest = {
   maxTokens?: number;
 };
 
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
+const OLLAMA_URL = getOllamaEndpoint(); // Use getOllamaEndpoint() instead of hardcoded Ollama URLs.
 const WHISPER_URL = process.env.WHISPER_URL || 'http://localhost:8090'; // Assuming Whisper service runs on 8090
 const PIPER_URL = process.env.PIPER_URL || 'http://localhost:8091'; // Assuming Piper TTS service runs on 8091
 const SUMMARIZATION_MODEL = 'gemma3:legal-latest';
@@ -191,6 +192,27 @@ export interface AgentTaskResult {
     duration: number;
     cached: boolean;
   }>;
+}
+
+/**
+ * Define a union type for all possible function handler return types
+ */
+type AgenticFunctionResult =
+  | ContextualState
+  | NextStepPrediction[]
+  | LegalEntity[]
+  | string
+  | DocumentRecord[]
+  | AgenticScoringResult
+  | unknown; // For get_session_stats and any future functions with unknown return types
+
+/**
+ * Define the structure for a parsed function call
+ */
+interface ParsedFunctionCall {
+  name: string;
+  parameters: Record<string, unknown>;
+  result: AgenticFunctionResult;
 }
 
 /**
@@ -411,8 +433,8 @@ export const agenticFunctions = {
           useCache: true,
         });
 
-        // Use the unified enhancedVectorSearchService for hybrid search
-        const results: VectorSearchResultItem[] = await enhancedVectorSearchService.hybridSearch(
+        // Use the unified VectorSearchService for hybrid search
+        const results: VectorSearchResultItem[] = await VectorSearchService.hybridSearch(
           embeddingResult.embedding,
           params.query, // Pass the original query for keyword search if supported
           topK,
@@ -680,11 +702,7 @@ export class AgenticGemma3Client {
     }
   ): Promise<
     LLMOutput & {
-      functionCalls?: Array<{
-        name: string;
-        parameters: any;
-        result: any;
-      }>;
+      functionCalls?: ParsedFunctionCall[]; // Use ParsedFunctionCall[]
       duration?: number;
     }
   > {
@@ -830,15 +848,12 @@ export class AgenticGemma3Client {
    * Parse function calls from LLM response
    * Looks for pattern: FUNCTION_CALL: function_name(param1=value1, param2=value2)
    */
-  private async parseFunctionCalls(
-    text: string,
-    sessionId: string,
-    userId: string
-  ): Promise<Array<{ name: string; parameters: any; result: any }>> {
+  private async parseFunctionCalls(text: string, sessionId: string, userId: string): Promise<ParsedFunctionCall[]> {
+    // Use ParsedFunctionCall[]
     const functionCallRegex = /FUNCTION_CALL:\s*(\w+)\((.*?)\)/g;
-    const calls: Array<{ name: string; parameters: any; result: any }> = [];
+    const calls: ParsedFunctionCall[] = []; // Use ParsedFunctionCall[]
 
-    let match;
+    let match: RegExpExecArray | null; // Explicitly type match
     while ((match = functionCallRegex.exec(text)) !== null) {
       const functionName = match[1];
       const paramsStr = match[2];
@@ -849,7 +864,7 @@ export class AgenticGemma3Client {
       if (paramsStr.trim()) {
         const paramPairs = paramsStr.split(',');
         for (const pair of paramPairs) {
-          const [key, value] = pair.split('=').map(s => s.trim());
+          const [key, value] = pair.split('=').map((s: string) => s.trim()); // Explicitly type s
           if (key && value) {
             // Remove quotes and parse value
             params[key] = value.replace(/['"]/g, '');
@@ -867,7 +882,8 @@ export class AgenticGemma3Client {
             parameters: params,
             result,
           });
-        } catch (error) {
+        } catch (error: unknown) {
+          // Explicitly type error
           logError(`Agentic function ${functionName} failed`, error, { params });
           // Continue processing other function calls even if one fails
         }

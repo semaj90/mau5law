@@ -137,6 +137,11 @@ interface QdrantSearchResultItem {
   };
 }
 
+// Define a type for Qdrant filter conditions
+type QdrantFilterCondition =
+  | { key: string; match: { value: string } }
+  | { key: string; match: { any: string[] } };
+
 // ============================================================================
 // Function Definitions for gemma3-legal:latest
 // ============================================================================
@@ -438,7 +443,7 @@ async function searchSimilarCases(
     const qdrantUrl = process.env.QDRANT_URL || 'http://localhost:6333';
 
     // Build Qdrant filter with tags
-    const mustFilters = [];
+    const mustFilters: QdrantFilterCondition[] = []; // Explicitly type mustFilters
 
     if (filters.documentType) {
       mustFilters.push({
@@ -528,7 +533,7 @@ function extractPersonsOfInterest(text: string, aiResponse: string): PersonOfInt
   return Array.from(personMatches).map(match => ({
     name: match[1],
     role: parseRole(match[2]),
-    mentions: (text.match(new RegExp(match[1], 'gi')) || []).length,
+    mentions: (text.match(new RegExp(match[1], 'gi')) || []).length, // 'text' is used here
     relevance: 0.8,
     relationships: [],
   }));
@@ -547,8 +552,7 @@ function parseRole(roleStr: string): PersonOfInterest['role'] {
 }
 
 function extractParties(
-  text: string,
-  aiResponse: string
+  aiResponse: string // Removed unused 'text' parameter
 ): Array<{ name: string; type: 'individual' | 'corporate' | 'government'; role: string }> {
   const partiesSection = aiResponse.match(/(?:PARTIES)[:\s]+([\s\S]*?)(?:\n\n|WHAT)/i);
   if (!partiesSection) return [];

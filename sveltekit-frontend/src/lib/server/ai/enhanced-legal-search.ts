@@ -1,14 +1,10 @@
-
 // Enhanced Legal AI Search Service with LangChain.js, Nomic Embed, and pgvector
 // Implements RAG pattern with vector similarity search and semantic enhancement
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { MemoryVectorStore } from "@langchain/community/vectorstores/memory";
 import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
-import type { DistanceStrategy } from "@langchain/community/vectorstores/pgvector";
-import type { Document as LangChainDocumentType } from "@langchain/core/documents";
 import { Embeddings } from "@langchain/core/embeddings";
 import { OllamaEmbeddings } from "@langchain/ollama";
-import { db } from '../db/index.js';
-import { sql, eq, and, or, desc, asc } from 'drizzle-orm';
+
 // Define legal document type
 type LegalDocumentType = {
   id: string;
@@ -36,7 +32,7 @@ const initializeLegalDocuments = loadLegalDocuments();
 // Embedding generation helper
 async function generateEmbedding(text: string, options?: { model?: string }): Promise<number[]> {
   const embeddings = new OllamaEmbeddings({
-    model: 'nomic-embed-text',
+    model: 'embeddinggemma:latest', // Changed from 'nomic-embed-text'
     baseUrl: 'http://localhost:11434'
   });
   try {
@@ -47,13 +43,13 @@ async function generateEmbedding(text: string, options?: { model?: string }): Pr
     return new Array(768).fill(0); // Return zero vector as fallback
   }
 }
-// Custom embeddings class for Nomic Embed integration
-export class NomicEmbeddings extends Embeddings {
+// Custom embeddings class for Gemma Embed integration
+export class GemmaEmbeddings extends Embeddings { // Renamed from NomicEmbeddings
   constructor() {
     super({});
   }
   async embedDocuments(texts: string[]): Promise<number[][]> {
-    const embeddings = [];
+    const embeddings: number[][] = [];
     for (const text of texts) {
       const embedding = await generateEmbedding(text, { model: 'local' });
       embeddings.push(embedding || []);
@@ -113,15 +109,16 @@ export interface LegalSearchResult {
     category_match: number;
   }
   metadata?: { [key: string]: any }
+  relevance?: string; // Added relevance property
 }
 // Main Enhanced Legal Search Service
 export class EnhancedLegalSearchService {
-  private embeddings: NomicEmbeddings;
+  private embeddings: GemmaEmbeddings; // Changed from NomicEmbeddings
   private memoryVectorStore?: MemoryVectorStore;
   private pgVectorStore?: PGVectorStore;
   private config: LegalSearchConfig;
   constructor(config: Partial<LegalSearchConfig> = {}) {
-    this.embeddings = new NomicEmbeddings();
+    this.embeddings = new GemmaEmbeddings(); // Changed from NomicEmbeddings
     this.config = { ...defaultConfig, ...config }
     this.initializeVectorStores();
   }
@@ -159,10 +156,10 @@ export class EnhancedLegalSearchService {
   private async initializePgVectorStore() {
     try {
       // Only attempt if database is available
-      if (import.meta.env.DATABASE_URL) {
+      if (process.env.DATABASE_URL) { // Changed from import.meta.env.DATABASE_URL
         const pgConfig = {
           postgresConnectionOptions: {
-            connectionString: import.meta.env.DATABASE_URL
+            connectionString: process.env.DATABASE_URL // Changed from import.meta.env.DATABASE_URL
           },
           tableName: 'search_index',
           columns: {
@@ -183,7 +180,7 @@ export class EnhancedLegalSearchService {
   }
   // Main search method with multiple strategies
   async search(
-    query: string;
+    query: string,
     options: {
       jurisdiction?: string;
       category?: string;
@@ -216,30 +213,30 @@ export class EnhancedLegalSearchService {
             const semanticData = await semanticResponse.json();
             if (semanticData.success && semanticData.results?.length > 0) {
               // Convert semantic search results to our LegalSearchResult format
-              const enhancedResults: LegalSearchResult[] = semanticData.results.map((result: any) => ({,
-                  id: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).id,
-                  title: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).title,
-                  content: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).content || `Document: ${(result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).title}`,
-                  description: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.description || (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.summary,
-                  jurisdiction: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.jurisdiction || options.jurisdiction || 'unknown',
+              const enhancedResults: LegalSearchResult[] = semanticData.results.map((result: any) => ({
+                  id: result.id,
+                  title: result.title,
+                  content: result.content || `Document: ${result.title}`,
+                  description: result.metadata?.description || result.metadata?.summary,
+                  jurisdiction: result.metadata?.jurisdiction || options.jurisdiction || 'unknown',
                   category:
-                    (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).document_type ||
-                    (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.category ||
+                    result.document_type ||
+                    result.metadata?.category ||
                     options.category ||
                     'general',
-                  url: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.url,
-                  code: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.code,
-                  sections: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.sections
-                    ? [(result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata.sections].flat()
-                    : undefined
-                  score: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).semantic_score || 1 - (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).distance,
-                  confidence: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).semantic_score || 1 - (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).distance,
-                  relevance: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).relevance_level || 'medium',
+                  url: result.metadata?.url,
+                  code: result.metadata?.code,
+                  sections: result.metadata?.sections
+                    ? [result.metadata.sections].flat()
+                    : undefined,
+                  score: result.semantic_score || 1 - result.distance,
+                  confidence: result.semantic_score || 1 - result.distance,
+                  relevance: result.relevance_level || 'medium',
                   searchType: 'vector' as const,
                   metadata: {
                     ...result.metadata,
-                    semantic_score: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).semantic_score,
-                    distance: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).distance,
+                    semantic_score: result.semantic_score,
+                    distance: result.distance,
                     source: 'enhanced_semantic_search'
                   }
                 })
@@ -343,8 +340,8 @@ export class EnhancedLegalSearchService {
   }
   // Database text search (disabled - no db connection)
   private async performDatabaseTextSearch(
-    query: string;
-    options: any;
+    _query: string,
+    _options: any
   ): Promise<LegalSearchResult[]> {
     // Database search disabled for now - returning empty results
     console.log('Database search disabled - using static data only');
@@ -433,7 +430,7 @@ export class EnhancedLegalSearchService {
     return results.sort((a, b) => b.score - a.score);
   }
   // Utility methods
-  private buildMetadataFilter(_options: any): { [key: string]: any } | undefined {
+  private buildMetadataFilter(options: any): { [key: string]: any } | undefined {
     const filter: { [key: string]: any } = {}
     if (options.jurisdiction && options.jurisdiction !== 'all') {
       filter.jurisdiction = options.jurisdiction;
@@ -481,12 +478,12 @@ export class EnhancedLegalSearchService {
   }
   private normalizeScore(score: number): number {
     // Normalize different scoring systems to 0-1 range
-    return Math.max(0, Math.min(1, 1 - score); // For similarity distance scores
+    return Math.max(0, Math.min(1, score)); // Changed from 1 - score, as similaritySearch returns similarity
   }
   private deduplicateAndRankResults(
     results: LegalSearchResult[],
-    query: string;
-    options: any;
+    query: string,
+    options: any
   ): LegalSearchResult[] {
     // Remove duplicates by ID
     const uniqueResults = new Map<string, LegalSearchResult>();
@@ -498,18 +495,18 @@ export class EnhancedLegalSearchService {
     }
     // Apply boosting factors and re-rank
     const boostedResults = Array.from(uniqueResults.values()).map((result) => {
-      let boostedScore = (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).score;
+      let boostedScore = result.score;
       // Apply boosts
-      if ((result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).relevanceFactors.exact_match > 0.8) {
+      if (result.relevanceFactors.exact_match > 0.8) {
         boostedScore *= this.config.boostFactors.exact_match;
       }
-      if ((result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).title.toLowerCase().includes(query.toLowerCase())) {
+      if (result.title.toLowerCase().includes(query.toLowerCase())) {
         boostedScore *= this.config.boostFactors.title;
       }
-      if (options.jurisdiction === (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).jurisdiction) {
+      if (options.jurisdiction === result.jurisdiction) {
         boostedScore *= this.config.boostFactors.jurisdiction;
       }
-      if (options.category === (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).category) {
+      if (options.category === result.category) {
         boostedScore *= this.config.boostFactors.category;
       }
       return {

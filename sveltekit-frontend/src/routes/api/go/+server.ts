@@ -298,7 +298,7 @@ export interface GoServiceRequest {
   service: keyof typeof GO_SERVICES;
   endpoint: string;
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  data?: any; // Changed from any
+  data?: unknown; // Changed from any
   headers?: Record<string, string>;
   protocol?: Protocol; // Used Protocol type
   timeout?: number;
@@ -308,7 +308,7 @@ export interface GoServiceRequest {
 interface ServiceResponse {
   success: boolean;
   status: number;
-  data: any; // Can be JSON object, string, etc.
+  data: unknown; // Changed from any
   headers: Record<string, string>;
 }
 
@@ -317,7 +317,7 @@ async function makeServiceRequest(
   serviceConfig: (typeof GO_SERVICES)[keyof typeof GO_SERVICES],
   endpoint: string,
   method: string = 'GET',
-  data?: any, // Changed from any
+  data?: unknown, // Changed from any
   headers: Record<string, string> = {},
   timeout: number = 30000
 ): Promise<ServiceResponse> {
@@ -347,8 +347,7 @@ async function makeServiceRequest(
       data: responseData,
       headers: Object.fromEntries(response.headers.entries()), // Removed redundant cast
     };
-  } catch (err: any) {
-    // Changed from any
+  } catch (err: unknown) { // Changed from any
     console.error(`Go service request failed for ${url}:`, err);
     const e = ensureError(err);
     throw new Error(`Service request failed: ${e.message}`);
@@ -442,7 +441,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         },
       }
     ); // Fixed: Added closing parenthesis for json()
-  } catch (err: any) {
+  } catch (err: unknown) { // Changed from any
     // Changed from any
     console.error('Go services proxy error:', err);
     const e = ensureError(err); // e is guaranteed to be an Error object
@@ -501,7 +500,7 @@ export const GET: RequestHandler = async () => {
             },
             response: healthCheck.data,
           }; // Fixed: Added semicolon
-        } catch (err: any) {
+        } catch (err: unknown) {
           // Changed from any
           const e = ensureError(err);
           return {
@@ -551,8 +550,7 @@ export const GET: RequestHandler = async () => {
         },
       }
     ); // Fixed: Added closing parenthesis for json()
-  } catch (err: any) {
-    // Changed from any
+  } catch (err: unknown) { // Changed from any
     console.error('Go services status check failed:', err);
     const e = ensureError(err);
     return json(
@@ -597,7 +595,7 @@ interface SvelteKitHttpError extends Error {
 }
 
 // Type guard to check if an error is a SvelteKit HttpError
-function isSvelteKitHttpError(err: any): err is SvelteKitHttpError {
+function isSvelteKitHttpError(err: unknown): err is SvelteKitHttpError { // Changed from any
   return (
     typeof err === 'object' &&
     err !== null &&
@@ -608,5 +606,7 @@ function isSvelteKitHttpError(err: any): err is SvelteKitHttpError {
     (err as SvelteKitHttpError).body !== null &&
     'message' in (err as SvelteKitHttpError).body &&
     typeof ((err as SvelteKitHttpError).body as SvelteKitErrorBody).message === 'string'
+  );
+}
   );
 }

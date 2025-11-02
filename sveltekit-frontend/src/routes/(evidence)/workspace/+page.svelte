@@ -270,7 +270,7 @@ Features:
             <Button onclick={exportResults} variant="outline">
               <Download class="w-4 h-4 mr-2" />
               Export Results
-            </Button>
+            </Button.Root>
           {/if}
         </div>
       </div>
@@ -467,7 +467,7 @@ Features:
                 </div>
               {/if}
 
-              <Button onclick={startBatchAnalysis} disabled={isAnalyzing || uploadedFiles.length === 0} class="w-full">
+              <Button.Root onclick={startBatchAnalysis} disabled={isAnalyzing || uploadedFiles.length === 0} class="w-full">
                 {#if isAnalyzing}
                   <div class="flex items-center">
                     <div
