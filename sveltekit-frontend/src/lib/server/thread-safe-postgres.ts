@@ -91,7 +91,7 @@ export class ThreadSafePostgres {
           clearTimeout(timeout);
 
           const release = () => {
-            lock.acquired = $state(false);
+            lock.acquired = false;
             const next = lock.waitingQueries.shift();
             if (next) {
               next();

@@ -52,3 +52,11 @@ agentic-error-resolution/errors/*.txt
 agentic-error-resolution/errors/*.log
 *.txt.large
 *-full.txt
+
+# Large error dumps and analysis files
+svelte-check-*.txt
+tsc_*.txt
+*-errors-*.txt
+*-analysis-*.txt
+normalized-errors.jsonl
+template-ast-violations.jsonl

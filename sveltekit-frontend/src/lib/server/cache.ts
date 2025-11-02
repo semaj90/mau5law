@@ -12,7 +12,7 @@ export const memoryCache = new Map<string, { value: any; expires: number }>();
 const REDIS_URL = process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? 'redis://localhost:6379';
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD ?? '';
 let redisClient: RedisClientType | null = null;
-let redisConnected = $state(false);
+let redisConnected = false;
 
 // Simple configuration for retries and timeouts
 const REDIS_OP_MAX_RETRIES = Number(process.env.REDIS_OP_MAX_RETRIES ?? 3);
@@ -99,7 +99,7 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
   } catch (err) {
     console.error('Failed to connect to Redis, falling back to memory cache:', err);
     redisClient = null;
-    redisConnected = $state(false);
+    redisConnected = false;
     return null;
   }
 }
