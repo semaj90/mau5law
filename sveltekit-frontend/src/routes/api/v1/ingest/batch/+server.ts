@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       const response = await fetch(`${SERVICE_URL}/api/ingest/batch`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },
+          'Content-Type': `application/json` },
         body: JSON.stringify(batchRequest),
         signal: controller.signal
       });
@@ -149,12 +149,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       return json({
         ...result,
         performance: {
-          total_processing_time_ms: processingTime,
+         , total_processing_time_ms: processingTime,
           average_document_time_ms: averageDocumentTimeMs,
           documents_per_second: documentsPerSecond
         },
         service_info: {
-          go_service: 'ingest-service',
+         , go_service: 'ingest-service',
           port: '8227',
           proxy: 'sveltekit-batch-api',
           architecture: 'multi-protocol',
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           success_rate:
             result.processed && requestData.documents.length > 0
               ? `${((result.processed / requestData.documents.length) * 100).toFixed(1)}%`
-              : '0%` }
+              : `0%` }
       });
     } catch (fetchError: any) {
       clearTimeout(timeoutId);
@@ -199,7 +199,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
   } catch (error: any) {
     const processingTime = Date.now() - startTime;
     // Log a safe, readable message
-    console.error('Batch ingest API error:', error instanceof Error ? error.message : String(error));
+    console.error('Batch ingest API error:', error instanceof Error ? error.message : String(error));'
     return json(
       {
         error: 'Internal server error during batch processing',
@@ -219,11 +219,11 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       service: 'batch-ingest',
       capabilities: {
-        max_batch_size: BATCH_SIZE_LIMIT,
+       , max_batch_size: BATCH_SIZE_LIMIT,
         timeout_ms: TIMEOUT,
         supported_formats: ['json'],
         endpoints: {
-          batch_ingest: '/api/v1/ingest/batch',
+         , batch_ingest: '/api/v1/ingest/batch',
           single_ingest: '/api/v1/ingest',
           health: '/api/v1/ingest'
         }
@@ -232,8 +232,7 @@ export const GET: RequestHandler = async ({ url }) => {
        , frontend: 'sveltekit-2',
         backend: 'go-gin-microservice',
         database: 'postgresql-pgvector',
-        embeddings: 'ollama-nomic-embed-text'
-      }
+        embeddings: `ollama-nomic-embed-text` }
     });
   }
 
@@ -241,5 +240,5 @@ export const GET: RequestHandler = async ({ url }) => {
   return json({
     batch_id: batchId,
     status: 'not_implemented',
-    message: 'Batch status tracking will be implemented with Redis/PostgreSQL integration` });
+    message: `Batch status tracking will be implemented with Redis/PostgreSQL integration` });
 };

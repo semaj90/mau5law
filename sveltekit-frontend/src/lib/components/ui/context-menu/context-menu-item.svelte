@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { getContext } from 'svelte';
   // Expose props correctly for Svelte
   const { disabled } = $props<{ disabled: boolean }>()

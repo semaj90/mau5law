@@ -36,7 +36,7 @@ async function ensureDbIndexes(): Promise<any> {
     console.warn('⚠️ Failed to ensure unique index for jobId (non-fatal):', e?.message || e);
   }
 }
-async function processJob(job: {, id: string; text: string; model?: string }): Promise<any> {
+async function processJob(job: {, id: string;, text: string; model?: string }): Promise<any> {
   console.log('📥 Processing job:', job.id);
   // Dedupe: skip if already processed
   try {
@@ -84,10 +84,10 @@ async function processJob(job: {, id: string; text: string; model?: string }): P
     console.warn('⚠️ Concurrency cap reached, deferring job start:', job.id);
   }
   try {
-    const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job?.model || 'unknown` }); // @ts-ignore - Model property access
+    const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job?.model || 'unknown` }); // @ts-ignore - Model property access'`
     const emb = (result as { embedding?: any; backend?: any }).embedding;
     console.log(
-      `📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || 'unknown` }`
+      `📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || 'unknown` }`'`
     );
     // Prefer DB-level idempotency via unique index on (metadata->>'jobId').
     // Use onConflictDoNothing to treat duplicates as success.
@@ -106,7 +106,7 @@ async function processJob(job: {, id: string; text: string; model?: string }): P
         } as any
       } as any)
       .onConflictDoNothing({ target: sql`(metadata->>'jobId')` as any });
-    // We can't directly know if inserted; do a cheap existence check
+    // We can't directly know if inserted; do a cheap existence check'
     const already = await db
       .select({ count: sql<number>`count(*)` })
       .from(document_chunks as any)
@@ -178,7 +178,7 @@ async function runRedisLoop(): Promise<any> {
       const popped = await cache.blpop('embedding:jobs', 0);
       if (!popped) continue;
       const [, raw] = popped;
-      const job = JSON.parse(raw) as { id: string;, text: string; model?: string };
+      const job = JSON.parse(raw) as { id: string; text: string; model?: string };
       try {
         await processJob(job);
       } catch (err: any) {
@@ -229,7 +229,7 @@ process.on('SIGTERM', async () => {
 void runWorker();
 
 // --- Changed: add safe shim for jobMachine to avoid runtime errors if the export shape differs ---
-// moved above processJob so it's available when used
+// moved above processJob so it's available when used'
 const safeJobMachine = (() => {
   // Basic heuristic: must be an object and expose methods used below
   if (jobMachine && typeof jobMachine === 'object') {

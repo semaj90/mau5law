@@ -193,7 +193,7 @@ interface Trends { documentProcessing: MetricTrend;, vectorSearch: MetricTrend;
 export class ProductionMonitoringDashboard {
   private config: DashboardConfig;
   private metrics: SystemHealth;
-  private metricsHistory: Array<{ timestamp: Date;, metrics: SystemHealth }> = []; private alerts: Map<string, Alert> = new Map();
+  private metricsHistory: Array<{ timestamp: Date; metrics: SystemHealth }> = []; private alerts: Map<string, Alert> = new Map();
   private alertHandlers: Map<string, (alert: Alert) => void> = new Map();
   private monitorTimer?: ReturnType<typeof setInterval> | null;
 
@@ -262,7 +262,7 @@ export class ProductionMonitoringDashboard {
    */
   async getPerformanceAnalytics(timeRange: {, start: Date;, end: Date;
    , granularity: 'minute' | 'hour' | 'day';
-  }): Promise<{ timeSeries: Array<{ timestamp: Date;, metrics: PerformanceMetrics }>;
+  }): Promise<{ timeSeries: Array<{ timestamp: Date; metrics: PerformanceMetrics }>;
     trends: Trends;
     recommendations: string[]; }> {
     console.log(`📈 Generating performance analytics for ${timeRange.granularity} granularity`);
@@ -359,7 +359,7 @@ export class ProductionMonitoringDashboard {
     const exportData: ExportPayload = {
       exportTimestamp: new Date().toISOString(),
       timeRange,
-      generatedBy: 'Production Monitoring Dashboard v1.0' };
+      generatedBy: `Production Monitoring Dashboard v1.0` };
     if (includeMetrics) {
       exportData.systemHealth = this.metrics;
     }
@@ -379,7 +379,7 @@ export class ProductionMonitoringDashboard {
     if (includePerformance) {
       const analytics = await this.getPerformanceAnalytics({
         ...timeRange,
-        granularity: `hour` });
+        granularity: `hour' });'`
       exportData.performanceAnalytics = analytics;
     }
     switch (format) {
@@ -595,7 +595,7 @@ export class ProductionMonitoringDashboard {
          }
        });
      } catch (err) {
-       console.warn('Vector search health check failed:', err);
+       console.warn('Vector search health check failed: `, err);'`
      }
 
     return services;
@@ -622,7 +622,7 @@ export class ProductionMonitoringDashboard {
           },
           replication: {
             lag: Math.random() * 100 + 10,
-            status: `active` }
+            status: `active' }'`
         }
       },
       vectorIndex: {
@@ -777,7 +777,7 @@ export class ProductionMonitoringDashboard {
     }
 
     // Guarded orchestrator metrics (provide safe default)
-    const orchestratorMetrics: { totalOperations: number; averageLatency: number;, binaryProtocolSavings: number } = {
+    const orchestratorMetrics: { totalOperations: number; averageLatency: number; binaryProtocolSavings: number } = {
       totalOperations: 0,
       averageLatency: 0,
       binaryProtocolSavings: 0
@@ -1087,7 +1087,7 @@ export class ProductionMonitoringDashboard {
       const sh = maybe.systemHealth;
       rows.push(`${ts},system_overall,${sh.overall}`);
       // example metric
-      rows.push(`${ts},vector_avg_query_time,${sh.performance?.vectorSearch?.avgQueryTime ?? '` }`);
+      rows.push(`${ts},vector_avg_query_time,${sh.performance?.vectorSearch?.avgQueryTime ?? '' }`);
     } else {
       rows.push(`${ts},export,empty`);
     }
@@ -1123,7 +1123,7 @@ export class ProductionMonitoringDashboard {
       infrastructure: { database: {, postgresql: {, connectionPool: { active: 0, idle: 0, waiting: 0, maxConnections: 0 },
           queryPerformance: { avgQueryTime: 0, slowQueries: 0, deadlocks: 0, lockWaitTime: 0 },
           storage: { totalSize: 0, documentsTable: 0, embeddingsTable: 0, metadataTable: 0 },
-          replication: { lag: 0, status: `active` }
+          replication: { lag: 0, status: `active' }'`
         } },
         vectorIndex: {
           indexHealth: 'good',
@@ -1211,13 +1211,13 @@ interface VectorHealth {
 }
 
 // Add small typed shapes for exports to avoid `any`
-type ExportTimeRange = { start: Date;, end: Date };
+type ExportTimeRange = { start: Date; end: Date };
 
 type ExportLogEntry = { timestamp: string;, overall: SystemHealth['overall']; vectorAvgQueryTime: number | null;
   documentProcessingRate: number | null;
 };
 
-type PerformanceAnalyticsResult = { timeSeries: Array<{ timestamp: Date;, metrics: PerformanceMetrics }>;
+type PerformanceAnalyticsResult = { timeSeries: Array<{ timestamp: Date; metrics: PerformanceMetrics }>;
   trends: Trends;
   recommendations: string[];
 };

@@ -145,7 +145,7 @@ export const PUT: RequestHandler = async ({ params, locals, request }) => {
         makeHttpErrorPayload({ message: 'Invalid update payload', code: 'VALIDATION_ERROR', details: err.errors })
       );
     }
-    console.error('Update timeline event error:', err);
+    console.error('Update timeline event error:', err);'
     return error(
       500,
       makeHttpErrorPayload({
@@ -205,7 +205,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       }
     });
   } catch (err: any) {
-    console.error('Delete timeline event error:', err);
+    console.error('Delete timeline event error:', err);'
     return error(
       500,
       makeHttpErrorPayload({

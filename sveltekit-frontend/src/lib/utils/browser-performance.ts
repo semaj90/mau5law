@@ -3,7 +3,7 @@
  * (moved out of component files; pure TS module)
  */
 
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 
 // Define LayoutShift interface if not globally available
 interface LayoutShift extends PerformanceEntry { value: number;, hadRecentInput: boolean;

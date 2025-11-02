@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   }
 
   try {
-    // Fetch user's RAG documents and queries
+    // Fetch user's RAG documents and queries'
     // This would query your vectors table with pgvector
     return {
       documents: [],

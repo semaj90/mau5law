@@ -28,7 +28,7 @@ const EvidenceQuerySchema = z.object({
 });
 
 // Derive SortBy type from the Zod schema to avoid `any`
-type SortBy = z.infer<typeof EvidenceQuerySchema>['sortBy'];
+type SortBy = z.infer<typeof, EvidenceQuerySchema>['sortBy'];
 
 /*
  * GET /api/v1/evidence/by-case/[caseId]
@@ -38,11 +38,11 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
     }
     const { caseId } = params;
     if (!caseId) {
-      return error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));
+      return error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: `MISSING_CASE_ID` }));
     }
 
     // Parse query parameters (fixed missing paren)
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 
     // Get evidence for the case
     // Replace loose-typed evidenceResult with typed version
-    const evidenceResult: { success: boolean;, data: EvidenceItem[]; total?: number; error?: any } =
+    const evidenceResult: { success: boolean; data: EvidenceItem[]; total?: number; error?: any } =
       await evidenceService.listByCase(caseId, serviceOptions);
 
     if (!evidenceResult.success) {
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
             // Call MCP server for Gemma embeddings analysis
             const mcpResponse = await fetch('http://localhost:3002/mcp/evidence-analyze', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': `application/json` },
               body: JSON.stringify({
                , evidenceId: evidence.id,
                 content: evidence.content,

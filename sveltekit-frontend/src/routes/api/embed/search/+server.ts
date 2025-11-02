@@ -30,16 +30,16 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
 async function generateRAGResponse(query: string, context: SimilarChunk[]): Promise<string> {
   try {
     const contextText = context.map(c => `${c.chunk_text}`).join('\n\n');
-    const prompt = `Based on the following legal context, provide a comprehensive response to the query.
+    const prompt = `Based on the following legal context, provide a comprehensive response to the query.`
 Context:
 ${contextText}
 Query: ${query}
-Response: ';
+Response: ';'
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
-        model: 'legal:latest',
+       , model: 'legal:latest',
         prompt: prompt,
         stream: false,
         options: {
@@ -55,7 +55,7 @@ Response: ';
     const data = (await response.json()) as OllamaGenerateResponse;
     return data.response.trim();
   } catch (err) {
-    console.error('RAG generation error:', err);
+    console.error('RAG generation error:', err);'
     throw new Error(`RAG generation failed: ${err instanceof Error ? err.message : String(err)}`);
   }
 }
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
         WHERE 1 - (embedding <=> ${JSON.stringify(queryEmbedding)}) > ${threshold}
         ORDER BY similarity DESC
         LIMIT ${limit}
-    `)
+    `)`
     ).rows as SimilarChunk[];
 
     let ragResponse: string | null = null;
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
         type: 'chat_conversation',
         conversationId: chunk.id,
         role: chunk.role || 'unknown',
-        source: `chat_embeddings` }
+        source: `chat_embeddings' }'`
     }));
 
     return json({
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (err) {
-    console.error('Vector search error:', err);
+    console.error('Vector search error:', err);'
     const message = err instanceof Error ? err.message : 'An unknown error occurred';
     return error(500, `Search failed: ${message}`);
   }

@@ -43,8 +43,8 @@ type AnalysisContext = {
 // ============================================================================
 // FORM STATE INTEGRATION TYPES
 // ============================================================================
-export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } ? S : { status: any;, context: any };
-export interface FormMachineIntegration<M extends { getSnapshot: () => unknown }> { form: ReturnType<typeof superForm>;, actor: M;
+export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } ? S : { status: any; context: any };
+export interface FormMachineIntegration<M, extends { getSnapshot: () => unknown }> { form: ReturnType<typeof, superForm>;, actor: M;
   state: Writable<unknown>;
   context: Writable<unknown>;
   isValid: Readable<boolean>;
@@ -68,7 +68,7 @@ export interface FormOptions {
 export function createDocumentUploadForm(
   data: SuperValidated<z.infer<typeof DocumentUploadSchema>> | z.infer<typeof DocumentUploadSchema> | undefined,
   options: FormOptions = {}
-): FormMachineIntegration<ReturnType<typeof createActor>> {
+): FormMachineIntegration<ReturnType<typeof, createActor>> {
   const actor = createActor(documentUploadMachine);
   actor.start();
   const form = superForm(data, {
@@ -143,7 +143,7 @@ export function createDocumentUploadForm(
   });
   if (options.autoSave) {
     const autoSaveDelay = options.autoSaveDelay ?? 2000;
-    let autoSaveTimeout: ReturnType<typeof setTimeout>;
+    let autoSaveTimeout: ReturnType<typeof, setTimeout>;
     form.form.subscribe($form => {
       const sf = $form as SuperFormSnapshot;
       if (sf.valid) {
@@ -175,7 +175,7 @@ export function createDocumentUploadForm(
 export function createCaseCreationForm(
   data: SuperValidated<z.infer<typeof CaseCreationSchema>> | z.infer<typeof CaseCreationSchema> | undefined,
   options: FormOptions = {}
-): FormMachineIntegration<ReturnType<typeof createActor>> {
+): FormMachineIntegration<ReturnType<typeof, createActor>> {
   const actor = createActor(caseCreationMachine);
   actor.start();
   const form = superForm(data, {
@@ -242,7 +242,7 @@ export function createCaseCreationForm(
     if (stateValue === 'completed' && options.onSuccess) options.onSuccess(caseCtx?.createdCase);
     else if (caseCtx?.error && options.onError) options.onError(caseCtx.error);
   });
-  actor.send({ type: `START_CREATION` } as unknown);
+  actor.send({ type: `START_CREATION' } as unknown);'`
   return {
     form,
     actor,
@@ -260,7 +260,7 @@ export function createCaseCreationForm(
 export function createSearchForm(
   data: SuperValidated<z.infer<typeof SearchQuerySchema>> | z.infer<typeof SearchQuerySchema> | undefined,
   options: FormOptions = {}
-): FormMachineIntegration<ReturnType<typeof createActor>> {
+): FormMachineIntegration<ReturnType<typeof, createActor>> {
   const actor = createActor(searchMachine);
   actor.start();
   const form = superForm(data, {
@@ -322,7 +322,7 @@ export function createSearchForm(
       options.onSuccess({ results: searchCtx?.results, analytics: searchCtx?.analytics });
     else if (stateValue === 'error' && options.onError) options.onError(searchCtx?.error ?? 'Search failed');
   });
-  actor.send({ type: `LOAD_HISTORY` } as unknown);
+  actor.send({ type: `LOAD_HISTORY' } as unknown);'`
   return {
     form,
     actor,
@@ -340,7 +340,7 @@ export function createSearchForm(
 export function createAIAnalysisForm(
   data: SuperValidated<z.infer<typeof AIAnalysisSchema>> | z.infer<typeof AIAnalysisSchema> | undefined,
   options: FormOptions = {}
-): FormMachineIntegration<ReturnType<typeof createActor>> {
+): FormMachineIntegration<ReturnType<typeof, createActor>> {
   const actor = createActor(aiAnalysisMachine);
   actor.start();
   const form = superForm(data, {
@@ -417,7 +417,7 @@ export function createAIAnalysisForm(
 // ============================================================================
 // UTILITY FUNCTIONS
 // ============================================================================
-export function createFormValidator<T extends z.ZodType>(schema: T) {
+export function createFormValidator<T extends, z.ZodType>(schema: T) {
   return {
     validate: (data: any): data is z.infer<T> => {
       return schema.safeParse(data).success;
@@ -432,7 +432,7 @@ export function createFormValidator<T extends z.ZodType>(schema: T) {
     }
   };
 }
-export function createMultiStepForm<T extends z.ZodType[]>(...schemas: T) {
+export function createMultiStepForm<T extends, z.ZodType[]>(...schemas: T) {
   const currentStep = writable(0);
   const isLastStep = derived(currentStep, $step => $step === schemas.length - 1);
   const isFirstStep = derived(currentStep, $step => $step === 0);
@@ -478,7 +478,7 @@ export class FormStatePersistence {
       const stored = localStorage.getItem(this.storageKey);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) return parsed.data;
+        if (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) return, parsed.data;
       }
     } catch (error) {
       console.warn('Failed to load form state:', error);
@@ -493,7 +493,7 @@ export class FormStatePersistence {
     }
   }
   createAutoSave(store: Writable<unknown>, delayMs = 1000) {
-    let timeout: ReturnType<typeof setTimeout>;
+    let timeout: ReturnType<typeof, setTimeout>;
     return store.subscribe(value => {
       clearTimeout(timeout);
       timeout = setTimeout(() => this.save(value), delayMs);
@@ -513,4 +513,4 @@ export const FORM_STORAGE_KEYS = {
   DOCUMENT_UPLOAD: 'legal-ai:document-upload',
   CASE_CREATION: 'legal-ai:case-creation',
   SEARCH_QUERY: 'legal-ai:search-query',
-  AI_ANALYSIS: `legal-ai:ai-analysis` } as const;
+  AI_ANALYSIS: `legal-ai:ai-analysis' } as const;'`

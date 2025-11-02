@@ -1,7 +1,7 @@
 import type { SearchResult } from '$lib/types';
 import { db } from '$lib/server/db';
 import { evidence, vectorMetadata, embeddingCache } from '$lib/server/db/schema-postgres-enhanced';
-import { ollamaService as originalOllamaService } from './ollamaService.js';
+import { ollamaService, as originalOllamaService } from './ollamaService.js';
 import { eq, sql } from 'drizzle-orm';
 import type { DocumentProcessingOptions } from '$lib/schemas/upload';
 
@@ -11,7 +11,7 @@ interface IOllamaService {
   embedDocument(
     content: string,
     options: {, documentId: string; chunkSize?: number; chunkOverlap?: number }
-  ): Promise<{ chunks: Array<{ content: string; embedding: number[];, metadata: Record<string, unknown> }> }>;
+  ): Promise<{ chunks: Array<{ content: string; embedding: number[]; metadata: Record<string, unknown> }> }>;
   generateEmbedding(text: string): Promise<number[]>;
 }
 
@@ -93,7 +93,7 @@ export class AIPipeline {
       }
       result.success = true;
     } catch (error: any) {
-      console.error('Pipeline processing error:', error);
+      console.error('Pipeline processing error:', error);'
       result.error = error instanceof Error ? error.message : 'Unknown error';
     }
     return result;
@@ -107,7 +107,7 @@ export class AIPipeline {
     content: string,
     chunkSize: number,
     chunkOverlap: number
-  ): Promise<{ count: number;, dimension: number }> {
+  ): Promise<{ count: number; dimension: number }> {
     const { chunks } = await ollamaService.embedDocument(content, { documentId, chunkSize, chunkOverlap });
     // Store each chunk with its embedding
     for (const chunk of chunks) {
@@ -145,11 +145,11 @@ export class AIPipeline {
    * Parse entities from LLM response
    */
   private parseEntities(entitiesText: string): string[] {
-    // Simple parsing - in production, you'd want more robust parsing
+    // Simple parsing - in production, you'd want more robust parsing'
     const entities: string[] = [];
     const lines = entitiesText.split('\n');
     for (const line of lines) {
-      // Look for patterns like: "- Person: John Doe"; or: "Person: John Doe"
+      // Look for patterns like: "-; Person: John Doe"; or: "Person: John Doe"
       const match = line.match(/[-•*]?\s*(?:Person|Organization|Location|Date):\s*(.+)/i);
       if (match) {
         entities.push(match[1].trim());

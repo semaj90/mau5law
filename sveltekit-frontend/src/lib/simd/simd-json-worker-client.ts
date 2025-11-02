@@ -60,7 +60,7 @@ export class SIMDJSONWorkerClient {
     // Handle initialization complete
     if (type === 'INIT_COMPLETE') {
       this.isReady = message.success || false;
-      console.log(`🔧 SIMD JSON Worker initialization: ${this.isReady ? 'success' : 'failed' }`);
+      console.log(`🔧 SIMD JSON Worker initialization: ${this.isReady ? 'success' : 'failed` }`);'`
     }
     // Handle pending requests
     const pending = this.pendingRequests.get(id);

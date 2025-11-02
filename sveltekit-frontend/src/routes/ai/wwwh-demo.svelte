@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import WWWHAnalyzer from '$lib/components/ai/WWWHAnalyzer.svelte';
 </script>
 

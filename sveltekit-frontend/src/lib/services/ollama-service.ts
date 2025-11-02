@@ -43,7 +43,7 @@ function getErrorMessage(e: any): string {
   }
 }
 
-function createTimeoutSignal(timeoutMs = 5000): { signal: AbortSignal;, clear: () => void } {
+function createTimeoutSignal(timeoutMs = 5000): { signal: AbortSignal; clear: () => void } {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   return { signal: controller.signal, clear: () => clearTimeout(id) };
@@ -208,7 +208,7 @@ class OllamaService {
     try {
       const modelfile = `
 FROM ${modelPath}
-TEMPLATE: """<start_of_turn>user
+TEMPLATE: """<start_of_turn>user"
 {{ .Prompt }}<end_of_turn>
 <start_of_turn>model
 {{ .Response }}<end_of_turn>"""
@@ -217,7 +217,7 @@ PARAMETER top_p 0.9
 PARAMETER top_k 40
 PARAMETER repeat_penalty 1.1
 SYSTEM: """You are a specialized legal AI assistant with expertise in case law analysis, legal research, and document review. Provide accurate, well-reasoned responses that would be helpful to legal professionals."""
-`;
+`;`
       const response = await fetch(`${this.baseUrl}/api/create`, {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
@@ -455,7 +455,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
       const content = (document?.content || document?.text || '').toString();
       const embeddings = await this.generateEmbeddings(content);
       const snippet = content.substring(0, 2000);
-      const analysisPrompt = `Analyze this legal document and provide:
+      const analysisPrompt = `Analyze this legal document and provide:`
 1. A concise summary
 2. Key legal points
 3. Potential risks or issues
@@ -464,7 +464,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
 
 Document content:
 ${snippet}
-`;
+`;`
       const analysis = await this.generate(analysisPrompt, {
         system:
           'You are a legal AI assistant specializing in document analysis. Provide structured, accurate analysis.',
@@ -497,7 +497,7 @@ ${snippet}
       models: this.availableModels.map(m => ({
         name: m.name,
         sizeMB: Math.round((m.size || 0) / (1024 * 1024)),
-        family: m.details?.family || 'unknown` })),
+        family: m.details?.family || 'unknown` })),'`
       capabilities: {
         textGeneration: this.isAvailable && !!this.gemma3Model,
         embeddings: true,

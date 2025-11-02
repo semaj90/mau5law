@@ -80,7 +80,7 @@ export async function searchSimilarDocuments(
       WHERE 1 - (embedding <=> ${vectorString}::vector) > ${similarityThreshold}
       ORDER BY embedding <=> ${vectorString}::vector
       LIMIT ${limit}
-    `)) as DBRow[];
+    `)) as DBRow[];`
     return results.map(row => {
       const id = row.id !== undefined ? String(row.id) : '';
       const title = typeof row.title === 'string' ? row.title : undefined;
@@ -241,7 +241,7 @@ export async function hybridSearch(
       WHERE to_tsvector('english', content) @@ plainto_tsquery('english', ${queryText})
       ORDER BY rank DESC
       LIMIT ${Math.floor(limit * 0.3)}
-    `)) as DBRow[];
+    `)) as DBRow[];`
     const textSearchResults: SimilarityResult[] = textResults.map(row => {
       const id = row.id !== undefined ? String(row.id) : '';
       const title = typeof row.title === 'string' ? row.title : undefined;
@@ -309,13 +309,13 @@ export async function testVectorOperations(): Promise<{ pgvectorAvailable: boole
 }
 // New interface for the return type of processExtendedThinking
 interface ProcessExtendedThinkingResult { result: SimilarityResult[];, thinkingStages: ExtendedThinkingStage[];
-  cachePerformance: { hot: number; warm: number;, cold: number };
+  cachePerformance: { hot: number; warm: number; cold: number };
 }
 // GRPMO Extended Thinking Engine
 export class GRPMOOrchestrator {
   private config: GRPMOConfig;
   // Narrowed memoryCache type from any to SimilarityResult[]
-  private memoryCache: Map<string, { data: SimilarityResult[]; timestamp: number;, layer: string }> = new Map();
+  private memoryCache: Map<string, { data: SimilarityResult[]; timestamp: number; layer: string }> = new Map();
   private reinfrocementAgent: PPOAgent;
   constructor(config: GRPMOConfig = defaultGRPMOConfig) {
     this.config = config;
@@ -400,7 +400,7 @@ export class GRPMOOrchestrator {
   private async retrieveFromCache(
     key: string,
     layer: string
-  ): Promise<{ data: SimilarityResult[];, timestamp: number } | null> {
+  ): Promise<{ data: SimilarityResult[]; timestamp: number } | null> {
     const cached = this.memoryCache.get(key);
     if (!cached) return null;
     const age = Date.now() - cached.timestamp;
@@ -424,8 +424,7 @@ export class GRPMOOrchestrator {
     const compressed = data.map(item => ({
       id: String(item.id).slice(0, 8),
       sim: Math.round(item.similarity * 127),
-      key: item.metadata?.keywords && item.metadata.keywords[0] ? item.metadata.keywords[0] : ''
-    }));
+      key: item.metadata?.keywords && item.metadata.keywords[0] ? item.metadata.keywords[0] : `` }));
     return JSON.stringify(compressed);
   }
   private hashString(str: string): string {
@@ -494,7 +493,7 @@ class PPOAgent {
   }
   private generateStateKey(context: PPOContext): string {
     const qlen = context?.query?.length ?? 0;
-    return `${context.userId ?? 'anon'}:${context.caseId ?? 'global` }:${qlen}`;
+    return `${context.userId ?? 'anon'}:${context.caseId ?? 'global` }:${qlen}`;'`
   }
   async updatePolicy(stateKey: string, reward: number, action: number[]): Promise<void> {
     const currentPolicy = this.policyNetwork.get(stateKey) || action;
@@ -507,4 +506,4 @@ class PPOAgent {
 }
 // Global GRPMO instance
 export const grpmoOrchestrator = new GRPMOOrchestrator();
-export { type SimilarityResult, type GRPMOConfig, type ExtendedThinkingStage, type PPOState };
+export { type, SimilarityResult, type GRPMOConfig, type ExtendedThinkingStage, type PPOState };

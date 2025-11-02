@@ -24,7 +24,7 @@ const evidenceNodeSchema = z.object({
   userId: z.string()
 })
 
-type EvidenceNode = z.infer<typeof evidenceNodeSchema>;
+type EvidenceNode = z.infer<typeof, evidenceNodeSchema>;
 
 type ApiRequestBody = {
   action?: 'save_node' | 'save_canvas_state';
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (err: any) {
-    console.error('Save API error:', getErrorMessage(err));
+    console.error('Save API error:', getErrorMessage(err));'
     return json(
       {
         error: 'Failed to save evidence',
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       default: return json({ error: "Invalid action" }, { status: 400 })
     }
   } catch (err: any) {
-    console.error("Load API error:", getErrorMessage(err))
+    console.error("Load API error:", getErrorMessage(err))"
     return json(
       {
         error: 'Failed to load evidence',

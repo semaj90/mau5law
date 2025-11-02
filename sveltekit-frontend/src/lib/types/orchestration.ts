@@ -99,7 +99,7 @@ export interface OrchestrationOptions {
 // Performance and Metrics Types
 export interface PerformanceMetrics { cpu_usage: number;, memory_usage: number; // Assuming a single numeric value like percentage or MB
   disk_usage: number; // Assuming a single numeric value like percentage or GB
-  network_io: { rx_mbps: number;, tx_mbps: number }; // More specific type for network I/O
+  network_io: { rx_mbps: number; tx_mbps: number }; // More specific type for network I/O
   service_response_times: Record<string, number>;
   error_rates: Record<string, number>;
   throughput: Record<string, number>;

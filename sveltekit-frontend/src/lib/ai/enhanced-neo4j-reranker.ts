@@ -1,7 +1,7 @@
 import { QdrantService } from './qdrant-service.js';
 import type { DocumentEmbedding } from './som-rag-system.js';
 // use named imports: driver factory and auth helper
-import { driver as neo4jDriverFactory, auth } from 'neo4j-driver';
+import { driver, as neo4jDriverFactory, auth } from 'neo4j-driver';
 import type { Driver, Record as Neo4jRecord } from 'neo4j-driver';
 export type UserContext = {
   user_id: string;
@@ -308,7 +308,7 @@ export class EnhancedNeo4jReranker {
       evidence_chain: ['evidence_collection', 'chain_of_custody'],
       legal_precedents: ['State v. Example (2020)'],
       entity_relationships: [
-        {
+        {,
           source_entity: 'entity_a',
           target_entity: 'entity_b',
           relationship_type: 'contains',

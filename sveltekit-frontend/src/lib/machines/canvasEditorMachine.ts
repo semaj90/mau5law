@@ -13,20 +13,20 @@ export interface CanvasEditorContext { reportId: string;, canvasState: any | nu
 }
 export type CanvasEditorEvent =
   | { type: 'CANVAS_INITIALIZED' }
-  | { type: 'STATE_LOADED';, state: any }
-  | { type: 'SELECT_OBJECT';, object: any }
+  | { type: 'STATE_LOADED'; state: any }
+  | { type: 'SELECT_OBJECT'; object: any }
   | { type: 'DESELECT' }
-  | { type: 'ADD_TO_HISTORY';, state: string }
+  | { type: 'ADD_TO_HISTORY'; state: string }
   | { type: 'UNDO' }
   | { type: 'REDO' }
   | { type: 'SAVE_START' }
-  | { type: 'SAVE_SUCCESS';, state: any }
-  | { type: 'SAVE_ERROR';, error: any }
-  | { type: 'TOOL_CHANGED';, tool: string }
-  | { type: 'TAGS_GENERATED';, tags: string[] }
+  | { type: 'SAVE_SUCCESS'; state: any }
+  | { type: 'SAVE_ERROR'; error: any }
+  | { type: 'TOOL_CHANGED'; tool: string }
+  | { type: 'TAGS_GENERATED'; tags: string[] }
   | { type: 'COLLABORATION_ENABLED' }
   | { type: 'COLLABORATION_DISABLED' }
-  | { type: 'REMOTE_CHANGE';, change: any };
+  | { type: 'REMOTE_CHANGE'; change: any };
 export const canvasEditorMachine = createMachine({
   id: 'canvasEditor',
   initial: 'idle',
@@ -45,9 +45,9 @@ export const canvasEditorMachine = createMachine({
       }
     },
     ready: {
-      type: 'parallel',
-      states: { selection: {, initial: 'none',
-          states: { none: {, on: { SELECT_OBJECT: {, target: 'selected',
+     , type: 'parallel',
+      states: {, selection: {, initial: 'none',
+          states: {, none: {, on: {, SELECT_OBJECT: {, target: 'selected',
                   actions: assign({
                    , selectedObjects: ({ event }) => [event.object]
                   })
@@ -152,7 +152,7 @@ export const canvasEditorMachine = createMachine({
           })
         },
         TOOL_CHANGED: {
-          // Tool changes don't affect state, just trigger side effects
+          // Tool changes don't affect state, just trigger side effects'
         },
         TAGS_GENERATED: {
           // Tags are handled in component state

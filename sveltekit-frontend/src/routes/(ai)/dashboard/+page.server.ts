@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   };
 
   const recentCases = [
-    {
+    {,
       id: 'case_001',
       title: 'Smith v. Johnson Corp',
       caseType: 'Employment Dispute',

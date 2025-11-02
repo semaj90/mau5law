@@ -46,7 +46,7 @@ export const GET: RequestHandler = async () => {
       healthStatus.services.redis.message = 'Redis connection assumed healthy';
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('Health check error:', error);
+      console.error('Health check error:', error);'
       healthStatus.status = 'degraded';
     }
     return json(healthStatus, {

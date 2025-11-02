@@ -100,7 +100,7 @@ export function mockTensorData(length: number): Float32Array {
 }
 // --- End of local stubs ---
 
-// Define interfaces for the Go Tensor Service's raw response
+// Define interfaces for the Go Tensor Service's raw response'
 interface GoTensorProcessingResultRaw {
   processedData?: Float32Array;
   embeddings?: Float32Array;
@@ -167,8 +167,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
            , status: 'offline',
             lastCheck: new Date(),
-            error: error instanceof Error ? error.message : 'Unknown error'
-          }
+            error: error instanceof Error ? error.message : 'Unknown error` }'`
         });
       }
     case 'metrics':
@@ -205,15 +204,13 @@ export const GET: RequestHandler = async ({ url }) => {
             operation: testRequest.operation
           },
           testVector: Array.from(testData).slice(0, 10), // First 10 values for preview
-          message: 'Test tensor data generated successfully'
-        }
+          message: `Test tensor data generated successfully` }
       });
     } // Added closing brace
     default: return json(
         {
           success: false,
-          error: 'Unknown endpoint.; Available: health, metrics, test'
-        },
+          error: `Unknown endpoint.; Available: health, metrics, test` },
         { status: 400 }
       );
   }
@@ -235,7 +232,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Create tensor request
     const tensorRequest: TensorRequest = {
-      id: `api_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Changed substr to slice
+      id: 'api_${Date.now()}_${Math.random().toString(36).slice(2, 11)}', // Changed substr to slice
       documentId,
       data: Array.isArray(data) ? new Float32Array(data) : data,
       operation,
@@ -252,7 +249,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         data: {
-          id: response.id,
+         , id: response.id,
           success: response.success,
           result: response.result
             ? {
@@ -265,8 +262,7 @@ export const POST: RequestHandler = async ({ request }) => {
             : undefined,
           error: response.error,
           timestamp: response.timestamp,
-          source: 'go-service'
-        }
+          source: 'go-service` }'`
       });
     } catch (serviceError) {
       // Fallback to mock processing
@@ -288,8 +284,7 @@ export const POST: RequestHandler = async ({ request }) => {
           processingTime: Math.random() * 1000 + 500
         },
         timestamp: new Date(),
-        source: 'mock-fallback'
-      };
+        source: `mock-fallback` };
       return json({
         success: true,
         data: mockResult
@@ -299,8 +294,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Request processing failed'
-      },
+        error: error instanceof Error ? error.message : `Request processing failed` },
       { status: 500 }
     );
   }
@@ -348,8 +342,7 @@ export const PUT: RequestHandler = async ({ request }) => {
             timestamp: response.timestamp
           })),
           batchSize: responses.length,
-          source: 'go-service'
-        }
+          source: 'go-service` }'`
       });
     } catch (serviceError) {
       // Fallback to mock batch processing
@@ -373,15 +366,13 @@ export const PUT: RequestHandler = async ({ request }) => {
           processingTime: Math.random() * 2000 + 500
         },
         timestamp: new Date(),
-        source: 'mock-fallback'
-      }));
+        source: `mock-fallback` }));
       return json({
         success: true,
         data: {
          , responses: mockResponses,
           batchSize: mockResponses.length,
-          source: 'mock-fallback'
-        }
+          source: `mock-fallback` }
       });
     }
   } catch (error) {

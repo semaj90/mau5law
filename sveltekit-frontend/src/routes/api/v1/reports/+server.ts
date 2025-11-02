@@ -1,7 +1,7 @@
 import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Reports API Routes with Lucia v3 Authentication
- * GET /api/v1/reports - List user's reports (with pagination)
+ * GET /api/v1/reports - List user's reports (with pagination)'
  * POST /api/v1/reports - Create new report
  */
 import { json, type RequestHandler } from '@sveltejs/kit';
@@ -20,12 +20,12 @@ const CreateReportSchema = z.object({
   tags: z.array(z.unknown()).optional(),
   metadata: z.record(z.unknown()).optional()
 });
-type CreateReportData = z.infer<typeof CreateReportSchema>;
+type CreateReportData = z.infer<typeof, CreateReportSchema>;
 
 class ReportsCRUDService {
   constructor(private userId: string) {}
 
-  async list(options: {, page: number; limit: number }) {
+  async list(options: {, page: number;, limit: number }) {
     const { page, limit } = options;
     const offset = (page - 1) * limit;
     const [tc] = await db.select({ c: count() }).from(reports);
@@ -35,7 +35,7 @@ class ReportsCRUDService {
     return { data, page, limit, total, totalPages };
   }
 
-  async listByCase(caseId: string, options: {, page: number; limit: number }) {
+  async listByCase(caseId: string, options: {, page: number;, limit: number }) {
     const { page, limit } = options;
     const offset = (page - 1) * limit;
     const [tc] = await db.select({ c: count() }).from(reports).where(eq(reports.caseId, caseId));
@@ -98,7 +98,7 @@ function formatError(err: any): string {
 }
 /*
  * GET /api/v1/reports
- * List user's reports with pagination and filtering
+ * List user's reports with pagination and filtering'
  */
 export const GET: RequestHandler = async ({ request, locals }) => {
   try {
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       success: true,
       data: result.data,
       pagination: {
-        page: result.page,
+       , page: result.page,
         limit: result.limit,
         total: result.total,
         totalPages: result.totalPages,

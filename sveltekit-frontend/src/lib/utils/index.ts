@@ -44,7 +44,7 @@ export function formatDate(date: Date | string): string {
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit` });
+    minute: `2-digit' });'`
 }
 export function formatProcessingTime(ms: number): string {
   if (ms < 1000) return `${ms}ms`;
@@ -57,7 +57,7 @@ export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 }
 // ===== PERFORMANCE UTILITIES =====
-export function debounce<T extends (...args: any[]) => unknown>(; func: T,
+export function debounce<T, extends (...args: any[]) => unknown>(; func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
   let timeout: number | undefined;
@@ -71,7 +71,7 @@ export function debounce<T extends (...args: any[]) => unknown>(; func: T,
     }, wait);
   };
 }
-export function throttle<T extends (...args: any[]) => unknown>(; func: T,
+export function throttle<T, extends (...args: any[]) => unknown>(; func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
   let inThrottle = $state<boolean>(false);
@@ -100,8 +100,7 @@ export function getCaseStatusStyling(status: string): string {
     'in-progress': 'bg-yellow-100 text-yellow-800 border-yellow-200',
     'closed': 'bg-green-100 text-green-800 border-green-200',
     'suspended': 'bg-gray-100 text-gray-800 border-gray-200',
-    'archived': 'bg-purple-100 text-purple-800 border-purple-200'
-  };
+    'archived': 'bg-purple-100 text-purple-800 border-purple-200' };
   return styles[status as keyof typeof styles] || styles['open'];
 }
 export function getEvidenceTypeStyling(type: string): string {
@@ -111,7 +110,7 @@ export function getEvidenceTypeStyling(type: string): string {
     'video': 'bg-purple-50 border-purple-200 text-purple-700',
     'image': 'bg-orange-50 border-orange-200 text-orange-700',
     'physical': 'bg-gray-50 border-gray-200 text-gray-700',
-    'digital': 'bg-cyan-50 border-cyan-200 text-cyan-700` };
+    'digital': `bg-cyan-50 border-cyan-200 text-cyan-700' };'`
   return styles[type as keyof typeof styles] || styles['document'];
 }
 // ===== USER UTILITIES =====

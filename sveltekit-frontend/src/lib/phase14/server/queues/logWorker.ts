@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { Worker } from "bullmq";
 import { logQueue } from './logQueue.js';
 // Define the type for the log entry data
@@ -18,7 +18,7 @@ const logWorker = new Worker<LogEntryData>('logQueue', async (job) => {
     console.log(`Generating embedding for: "${message}" using ${embeddingModel}`);
     const response = await fetch(ollamaEndpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({,
         model: embeddingModel;
        , prompt: message
@@ -40,7 +40,7 @@ const logWorker = new Worker<LogEntryData>('logQueue', async (job) => {
     // For now, just simulate success
     console.log(`Successfully processed log: ${message}`);
   } catch (error: any) {
-    console.error(`Error processing log job ${job.id}: ', error);
+    console.error(`Error processing log job ${job.id}: ', error);'`
     throw error; // Re-throw to mark the job as failed in BullMQ
   }
 }, { connection: {, host: 'localhost',

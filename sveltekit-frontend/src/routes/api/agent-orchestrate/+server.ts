@@ -86,7 +86,7 @@ function getErrorMessage(err: any): string {
 
 // Map raw Context7 response into Context7Analysis
 function mapContext7Analysis(raw: any): Context7Analysis {
-  // raw may be { summary: string;, ok: boolean } or richer object
+  // raw may be { summary: string; ok: boolean } or richer object
   if (raw && typeof raw === 'object') {
     const r = raw as Record<string, unknown>;
     return {
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
           error: 'Prompt is required',
           results: [],
           synthesis: {
-            bestResult: '',
+           , bestResult: '',
             consensusScore: 0,
             recommendations: [],
             nextSteps: []

@@ -86,15 +86,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return await handleSynthesis(data);
       case 'real_time':
         return await handleRealTimeAnalysis(data);
-      default: return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: 'Invalid action` }, { status: 400 });'`
     }
   } catch (error) {
-    console.error('Advanced evidence analysis error:', error);
+    console.error('Advanced evidence analysis error:', error);'
     return json(
       {
         error: 'Analysis failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }
@@ -102,7 +101,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
   const { evidenceId, analysisTypes, caseId, options = {} } = data as AnalyzeRequest;
   if (!evidenceId) {
-    return json({ error: 'Evidence ID required' }, { status: 400 });
+    return json({ error: `Evidence ID required` }, { status: 400 });
   }
   // Get evidence from database
   const evidenceRecord = await dbClient.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
@@ -111,7 +110,7 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
   }
   const evidenceData = evidenceRecord[0];
   // Start analysis with progress tracking
-  const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';
+  const analysisId = 'analysis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';
   // Broadcast analysis start
   if (caseId) {
     websocketBroadcast(caseId, {
@@ -185,7 +184,7 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
   if (!evidenceIds || !Array.isArray(evidenceIds)) {
     return json({ error: `Evidence IDs array required` }, { status: 400 });
   }
-  const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';
+  const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';'`
   const results: BatchResultItem[] = [];
   const errors: BatchErrorItem[] = [];
   // Broadcast batch start
@@ -244,8 +243,7 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
     } catch (error) {
       errors.push({
         evidenceId,
-        error: error instanceof Error ? error.message : 'Analysis failed'
-      });
+        error: error instanceof Error ? error.message : 'Analysis failed` });'`
     }
   }
   // Broadcast batch completion (rename count to avoid duplicate property name)
@@ -280,7 +278,7 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
 async function handleGetAnalysis(data: GetAnalysisRequest): Promise<any> {
   const { evidenceId, analysisId } = data;
   if (!evidenceId && !analysisId) {
-    return json({ error: 'Evidence ID or Analysis ID required' }, { status: 400 });
+    return json({ error: `Evidence ID or Analysis ID required` }, { status: 400 });
   }
   let query = dbClient.select().from(analysisResults);
   if (analysisId) {
@@ -316,7 +314,7 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
   if (!evidenceIds || !Array.isArray(evidenceIds)) {
     return json({ error: `Evidence IDs array required` }, { status: 400 });
   }
-  const synthesisId = `synthesis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';
+  const synthesisId = `synthesis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';'`
   // Broadcast synthesis start
   if (caseId) {
     websocketBroadcast(caseId, {
@@ -331,7 +329,7 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
   }
   try {
     // Get all analysis results for the evidence (safe per-id retrieval)
-    const analysisRecords: Array<{ evidenceId: string;, results: string | Record<string, unknown> }> = [];
+    const analysisRecords: Array<{ evidenceId: string; results: string | Record<string, unknown> }> = [];
     for (const id of evidenceIds) {
       // cast DB query to a typed row array instead of `any`
       const recs = (await dbClient
@@ -410,7 +408,7 @@ async function handleRealTimeAnalysis(data: RealTimeRequest): Promise<any> {
   // Get evidence from database
   const evidenceRecord = await dbClient.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
   if (evidenceRecord.length === 0) {
-    return json({ error: 'Evidence not found' }, { status: 404 });
+    return json({ error: 'Evidence not found` }, { status: 404 });'`
   }
   const evidenceData = evidenceRecord[0];
   // Run quick analysis for real-time display
@@ -471,7 +469,7 @@ async function storeAnalysisResult(evidenceId: string, results: any, analysisId:
     });
   } catch (error) {
     console.error('Failed to store analysis result:', error);
-    // Don't throw - analysis succeeded even if storage failed
+    // Don't throw - analysis succeeded even if storage failed'
   }
 }
 export const GET: RequestHandler = async ({ url }) => {
@@ -505,10 +503,10 @@ export const GET: RequestHandler = async ({ url }) => {
         const healthCheck = await analyzer.healthCheck();
         return json(healthCheck);
       }
-      default: return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: `Invalid action` }, { status: 400 });
     }
   } catch (error) {
-    console.error('Advanced evidence analysis API error:', error);
+    console.error('Advanced evidence analysis API error:', error);'
     return json(
       {
         error: 'Service error',

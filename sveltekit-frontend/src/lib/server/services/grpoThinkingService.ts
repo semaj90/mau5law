@@ -68,7 +68,7 @@ export interface GrpoBatchJob { jobId: string;, responses: GrpoThinkingResponse
   completedAt?: Date;
 }
 // In-memory cache for GRPO embeddings (LRU-like using insertion order)
-type GrpoCacheEntry = { embedding: number[];, ts: number };
+type GrpoCacheEntry = { embedding: number[]; ts: number };
 const grpoEmbeddingCache = new Map<string, GrpoCacheEntry>();
 const grpoInProgress = new Map<string, Promise<number[] | null>>();
 const grpoCacheMaxSize = 2000;
@@ -174,7 +174,7 @@ export async function storeGrpoThinkingResponse(response: GrpoThinkingResponse):
     const vectorString = `[${embedding.join(',')}]`;
     // Store in specialized GRPO table
     await db.execute(
-      sql`INSERT INTO grpo_thinking_responses (
+      sql`INSERT INTO grpo_thinking_responses (`
         conversation_id,
         message_id,
         original_query,
@@ -276,15 +276,15 @@ export async function searchGrpoThinkingResponses(
     let practiceAreaCondition = sql``;
     if (practiceArea && practiceArea.length > 0) {
       // Correctly format array for PostgreSQL: '?' operator
-      const practiceAreaArray = sql`ARRAY[${sql.join(
+      const practiceAreaArray = sql`ARRAY[${sql.join(`
         practiceArea.map(pa => sql`${pa}`),
         sql`, `
-      )}]`;
+      )}]`;`
       practiceAreaCondition = sql`AND (metadata->'practiceArea' ?| ${practiceAreaArray})`;
     }
     // Execute advanced similarity search with timestamp weighting
     const results = await db.execute(
-      sql`WITH similarity_scores AS (
+      sql`WITH similarity_scores AS (`
         SELECT
           message_id,
           conversation_id,
@@ -427,8 +427,8 @@ export async function getTrendingGrpoPatterns(
     const timeCondition = { hour: sql`created_at >= NOW() -, INTERVAL: '1 hour'`,
       day: sql`created_at >= NOW() -; INTERVAL: '1 day'`,
       week: sql`created_at >= NOW() -; INTERVAL: '1 week'`,
-      month: sql`created_at >= NOW() -; INTERVAL: '1 month'` }[timeWindow];
-    const results = await db.execute(sql`WITH thinking_patterns AS (
+      month: sql`created_at >= NOW() -; INTERVAL: '1 month'' }[timeWindow];'`
+    const results = await db.execute(sql`WITH thinking_patterns AS (`
         SELECT
           thinking_type,
           -- Extract common reasoning patterns
@@ -459,10 +459,10 @@ export async function getTrendingGrpoPatterns(
           -- Calculate trend by comparing first and second half of time period
           CASE
             WHEN COUNT(CASE WHEN created_at >= NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1 END) >
-                 COUNT(CASE WHEN created_at < NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1 END) * 1.2
+                 COUNT(CASE WHEN created_at < NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1, END) * 1.2
             THEN: 'increasing'
             WHEN COUNT(CASE WHEN created_at >= NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1 END) <
-                 COUNT(CASE WHEN created_at < NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1 END) * 0.8
+                 COUNT(CASE WHEN created_at < NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1, END) * 0.8
             THEN: 'decreasing'; ELSE: 'stable'
           END as trend
         FROM pattern_analysis
@@ -473,14 +473,14 @@ export async function getTrendingGrpoPatterns(
       FROM aggregated_patterns
       WHERE frequency >= 2  -- At least 2 occurrences
       ORDER BY frequency DESC, avg_confidence DESC
-      LIMIT ${limit}`);
+      LIMIT ${limit}`);`
     const patterns: TrendingPattern[] = results.rows.map((row: TrendingGrpoRow) => ({
       thinkingType: row.thinking_type,
       pattern: row.pattern,
       frequency: parseInt(row.frequency),
       avgConfidence: parseFloat(row.avg_confidence),
       recentExamples: row.recent_examples,
-      trend: row.trend; as: 'increasing' | 'stable' | 'decreasing` }));
+      trend: row.trend; as: 'increasing' | 'stable' | 'decreasing' }));
     grpoLogger.info('GRPO trend analysis completed', {
       patternsFound: patterns.length,
       timeWindow
@@ -499,7 +499,7 @@ export async function initializeGrpoThinkingTable(): Promise<void> {
     await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector`);
     // Create GRPO thinking responses table
     await db.execute(
-      sql`CREATE TABLE IF NOT EXISTS grpo_thinking_responses (
+      sql`CREATE TABLE IF NOT EXISTS grpo_thinking_responses (`
         id SERIAL PRIMARY KEY,
         conversation_id VARCHAR(255) NOT NULL,
         message_id VARCHAR(255) UNIQUE NOT NULL,
@@ -519,28 +519,28 @@ export async function initializeGrpoThinkingTable(): Promise<void> {
     );
     // Create specialized indexes for GRPO search performance
     await db.execute(
-      sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_vector_hnsw
+      sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_vector_hnsw`
       ON grpo_thinking_responses USING hnsw (embedding vector_cosine_ops)
       WITH (m = 16, ef_construction = 64)`
     );
     // Index for conversation lookup
     await db.execute(
-      sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_conversation
+      sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_conversation`
       ON grpo_thinking_responses (conversation_id, created_at DESC)`
     );
     // Index for thinking type filtering
     await db.execute(
-      sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_type_confidence
+      sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_type_confidence`
       ON grpo_thinking_responses (thinking_type, confidence_level, created_at DESC)`
     );
     // GIN index for metadata search
     await db.execute(
-      sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_metadata
+      sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_metadata`
       ON grpo_thinking_responses USING gin (metadata)`
     );
     // Composite index for timestamp-based recommendations
     await db.execute(
-      sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_recommendations
+      sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_recommendations`
       ON grpo_thinking_responses (created_at DESC, confidence_level DESC, thinking_type)`
     );
     grpoLogger.info('GRPO thinking responses table initialized successfully');

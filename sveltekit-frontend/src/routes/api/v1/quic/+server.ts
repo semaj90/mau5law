@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (!serviceConfig) {
         results[serviceName] = {
           success: false,
-          error: 'Service '${serviceName}` not found' };
+          error: 'Service '${serviceName}` not found' };'`
         continue;
       }
       try {
@@ -206,10 +206,10 @@ export const PUT: RequestHandler = async ({ request }) => {
     }
     const serviceConfig = QUIC_SERVICES_CONFIG[service as keyof typeof QUIC_SERVICES_CONFIG];
     if (!serviceConfig) {
-      error(404, ensureError({ message: 'Service '${service}' not found` }));
+      error(404, ensureError({ message: 'Service '${service}' not found` }));'`
     }
     // In a real implementation, this would update the service configuration
-    // For now, we'll simulate the update
+    // For now, we'll simulate the update'
     const updatedConfig = {
       ...serviceConfig,
       ...configuration,
@@ -289,7 +289,7 @@ async function checkServiceHealth(
       }
     } catch (fallbackError) {
       status = 'error';
-      serviceError = `Primary: ${primaryError instanceof Error ? primaryError.message : 'Unknown'}, Fallback: ${fallbackError instanceof Error ? fallbackError.message : `Unknown` }`;
+      serviceError = `Primary: ${primaryError instanceof Error ? primaryError.message : `Unknown` }, Fallback: ${fallbackError instanceof Error ? fallbackError.message : `Unknown` }`;
     }
   }
   const responseTime = Date.now() - startTime;

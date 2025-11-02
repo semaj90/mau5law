@@ -343,7 +343,7 @@ class ComprehensiveIntegrationService {
       console.log(capabilities.available ? '✅ WebGPU acceleration available' : 'ℹ️ WebGPU not available');
     } catch (error: any) {
       this.systemStatus.webGPU.available = $state(false);
-      console.warn('⚠️ WebGPU initialization failed:', error);
+      console.warn('⚠️ WebGPU initialization failed: `, error);'`
     }
   }
 
@@ -360,7 +360,7 @@ class ComprehensiveIntegrationService {
         websocket: true,
         sse: true,
         webrtc: false,
-        primaryChannel: `websocket` };
+        primaryChannel: `websocket' };'`
       console.log('✅ Real-time communication initialized');
     } catch (error: any) {
       console.warn('⚠️ Real-time communication initialization failed:', error);
@@ -479,7 +479,7 @@ class ComprehensiveIntegrationService {
 
       if (this.systemStatus.databases.qdrant && response.semanticAnalysis?.summaryEmbedding) {
         await this.dbOperations.qdrant.upsert('legal_queries', [
-          {
+          {,
             id: response.realtimeStreamId || `query_${Date.now()}`,
             vector: response.semanticAnalysis.summaryEmbedding,
             payload: {
@@ -555,7 +555,7 @@ class ComprehensiveIntegrationService {
   private async insertPostgreSQL(table: string, data: KeyValue): Promise<string> {
     const response = await fetch('http://localhost:8094/api/database/postgres/insert', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({ table, data })
     });
     if (!response.ok) throw new Error('PostgreSQL insert failed');
@@ -566,7 +566,7 @@ class ComprehensiveIntegrationService {
   private async updatePostgreSQL(table: string, id: string, data: KeyValue): Promise<boolean> {
     const response = await fetch('http://localhost:8094/api/database/postgres/update', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({ table, id, data })
     });
     return response.ok;
@@ -590,14 +590,14 @@ class ComprehensiveIntegrationService {
 
   private async deleteRedis(key: string): Promise<boolean> {
     const response = await fetch(`http://localhost:8094/api/database/redis/${encodeURIComponent(key)}`, {
-      method: `DELETE` });
+      method: `DELETE' });'`
     return response.ok;
   }
 
   private async searchQdrant(vector: number[], collection: string, limit = 10): Promise<QdrantSearchResult[]> {
     const response = await fetch(`http://localhost:6333/collections/${encodeURIComponent(collection)}/points/search`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({ vector, limit, with_payload: true })
     });
     if (!response.ok) throw new Error('Qdrant search failed');
@@ -608,7 +608,7 @@ class ComprehensiveIntegrationService {
   private async upsertQdrant(collection: string, points: QdrantPoint[]): Promise<boolean> {
     const response = await fetch(`http://localhost:6333/collections/${encodeURIComponent(collection)}/points`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({ points })
     });
     return response.ok;
@@ -623,7 +623,7 @@ class ComprehensiveIntegrationService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Basic bmVvNGo6cGFzc3dvcmQ=` },
+        Authorization: `Basic bmVvNGo6cGFzc3dvcmQ=' },'`
       body: JSON.stringify({, statements: [{, statement: cypher, parameters: params }]
       })
     });
@@ -667,7 +667,7 @@ class ComprehensiveIntegrationService {
       WHERE id(a) = $from AND id(b) = $to
       CREATE (a)-[r:${type} $props]->(b)
       RETURN id(r) as relationshipId
-    `;
+    `;`
     const result = await this.queryNeo4j(cypher, {
       from Number.isFinite(Number(from)) ? Number(from) : from,
       to: Number.isFinite(Number(to)) ? Number(to) : to,

@@ -115,13 +115,13 @@ export interface UploadedFile { id: string;, filename: string;
 // Placeholder for AI processing results
 export interface AIResults {
   summary?: string;
-  entities?: { type: string;, value: string }[];
-  riskAssessment?: { level: 'low' | 'medium' | 'high';, details: string };
+  entities?: { type: string; value: string }[];
+  riskAssessment?: { level: 'low' | 'medium' | 'high'; details: string };
   comparison?: any; // Add comparison property here
   [key: string]: any;
 }
 // Placeholder for a created case from the API
-export interface CreatedCase extends z.infer<typeof CaseCreationSchema> { id: string;, createdAt: string;
+export interface CreatedCase extends z.infer<typeof, CaseCreationSchema> { id: string;, createdAt: string;
   updatedAt: string;
 }
 // Placeholder for a search result item
@@ -134,8 +134,8 @@ export interface SearchResult { id: string;, title: string;
 // Placeholder for AI analysis results
 export interface AIAnalysisResult {
   summary?: string;
-  entities?: { type: string;, value: string }[];
-  risk?: { level: string;, details: string };
+  entities?: { type: string; value: string }[];
+  risk?: { level: string; details: string };
   recommendations?: string[];
   [key: string]: any;
 }
@@ -143,7 +143,7 @@ export interface AIAnalysisResult {
 // Define the input type for the processDocument actor
 interface ProcessDocumentActorInput {
   documentId?: string;
-  options?: z.infer<typeof DocumentUploadSchema>['aiProcessing'];
+  options?: z.infer<typeof, DocumentUploadSchema>['aiProcessing'];
   file?: File;
   title?: string;
   description?: string;
@@ -177,7 +177,7 @@ export interface SearchContext { query: z.infer<typeof SearchQuerySchema> | null
   validationErrors: Record<string, string[]>;
   isSearching: boolean;
   searchHistory: string[];
-  filters: z.infer<typeof SearchQuerySchema>['filters'];
+  filters: z.infer<typeof, SearchQuerySchema>['filters'];
   pagination: { page: number;, pageSize: number;
     total: number;
   };
@@ -201,10 +201,10 @@ export interface AIAnalysisContext { analysisData: z.infer<typeof AIAnalysisSche
 // DOCUMENT UPLOAD STATE MACHINE
 // ============================================================================
 type DocumentUploadEvent =
-  | { type: 'SUBMIT_FORM';, data: z.infer<typeof DocumentUploadSchema> }
-  | { type: 'UPDATE_FORM';, data: z.infer<typeof DocumentUploadSchema> }
-  | { type: 'UPLOAD_PROGRESS';, progress: number }
-  | { type: 'PROCESSING_PROGRESS';, progress: number }
+  | { type: 'SUBMIT_FORM'; data: z.infer<typeof DocumentUploadSchema> }
+  | { type: 'UPDATE_FORM'; data: z.infer<typeof DocumentUploadSchema> }
+  | { type: 'UPLOAD_PROGRESS'; progress: number }
+  | { type: 'PROCESSING_PROGRESS'; progress: number }
   | { type: 'RETRY' }
   | { type: 'RESET' }
   | { type: 'SKIP_PROCESSING' }
@@ -215,7 +215,7 @@ export const documentUploadMachine = createMachine(
     id: 'documentUpload',
     initial: 'idle',
     context: {
-      formData: null,
+     , formData: null,
       validationErrors: {},
       uploadProgress: 0,
       uploadedFile: null,
@@ -225,7 +225,7 @@ export const documentUploadMachine = createMachine(
       retryCount: 0,
       maxRetries: 3
     } as DocumentUploadContext,
-    states: { idle: {, on: { SUBMIT_FORM: {, target: 'validating',
+    states: {, idle: {, on: {, SUBMIT_FORM: {, target: 'validating',
             actions: assign({
              , formData: ({ event }) => (event as DocumentUploadEvent & { type: 'SUBMIT_FORM' }).data,
               validationErrors: {}, // Clear previous errors
@@ -284,7 +284,7 @@ export const documentUploadMachine = createMachine(
       },
       uploaded: {
         always: [
-          {
+          {,
             // explicitly type ctx to avoid implicit any
             target: 'processing',
             cond: (; ctx: DocumentUploadContext // Explicitly type ctx
@@ -338,9 +338,9 @@ export const documentUploadMachine = createMachine(
         }
       },
       uploadError: { on: {, RETRY: [
-            {
+            {,
               // use functional assign to ensure correct typing for ctx modifications (see retry logic)
-              cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly type ctx
+              cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly type, ctx
               target: 'uploading', // Go back to uploading
               actions: assign(({ context }) => ({
                 // Changed from (ctx: DocumentUploadContext) to ({ context })
@@ -356,9 +356,9 @@ export const documentUploadMachine = createMachine(
         }
       },
       processingError: { on: {, RETRY: [
-            {
+            {,
               target: 'processing',
-              cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly type ctx
+              cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly type, ctx
               actions: assign(({ context }) => ({
                 // Changed from (ctx: DocumentUploadContext) to ({ context })
                 retryCount: context.retryCount + 1,
@@ -384,7 +384,7 @@ export const documentUploadMachine = createMachine(
     actors: {
       /**
        * Validates document upload form data.
-       * @param input {z.infer<typeof DocumentUploadSchema>} - The form data to validate.
+       * @param input {z.infer<typeof, DocumentUploadSchema>} - The form data to validate.
        * @returns {true} if valid, otherwise throws field errors as Record<string, string[]>.
        */
       validateDocumentForm: fromPromise(async ({ input }) => {
@@ -465,7 +465,7 @@ export const documentUploadMachine = createMachine(
 
           return {
             results: {
-              ...(baseResults ?? {}), // Access baseResults directly, it's already AIResults | null
+              ...(baseResults ?? {}), // Access baseResults directly, it's already AIResults | null'
               comparison
             },
             processingTime: Date.now() - started
@@ -481,7 +481,7 @@ export const documentUploadMachine = createMachine(
 type CaseCreationEvent =
   | { type: 'START_CREATION' }
   | { type: 'LOAD_DRAFT' }
-  | { type: 'UPDATE_FORM';, data: z.infer<typeof CaseCreationSchema> }
+  | { type: 'UPDATE_FORM'; data: z.infer<typeof CaseCreationSchema> }
   | { type: 'AUTO_SAVE' }
   | { type: 'VALIDATE' }
   | { type: 'SUBMIT' }
@@ -501,15 +501,15 @@ export const caseCreationMachine = createMachine(
       isAutoSaving: false,
       lastSaved: null
     } as CaseCreationContext, // Explicitly cast to CaseCreationContext
-    states: { idle: {, on: {
-          START_CREATION: 'creating',
+    states: {, idle: {, on: {
+         , START_CREATION: 'creating',
           LOAD_DRAFT: 'loadingDraft'
         }
       },
-      loadingDraft: { invoke: {, id: 'loadDraft',
+      loadingDraft: {, invoke: {, id: 'loadDraft',
           src: 'loadDraft',
           onDone: {
-            target: 'editing',
+           , target: 'editing',
             actions: assign({
               // Correctly type the event and access output
              , formData: ({ event }) => (event as DoneActorEvent<z.infer<typeof CaseCreationSchema> | null>).output
@@ -523,7 +523,7 @@ export const caseCreationMachine = createMachine(
             actions: assign({
               // Correctly type the event and access data
               formData: ({ event }) =>
-                (event as { type: 'UPDATE_FORM';, data: z.infer<typeof CaseCreationSchema> }).data
+                (event as { type: 'UPDATE_FORM';, data: z.infer<typeof, CaseCreationSchema> }).data
             })
           }
         }
@@ -532,13 +532,12 @@ export const caseCreationMachine = createMachine(
             actions: assign({
               // Correctly type the event and access data
               formData: ({ event }) =>
-                (event as { type: 'UPDATE_FORM';, data: z.infer<typeof CaseCreationSchema> }).data
+                (event as { type: 'UPDATE_FORM';, data: z.infer<typeof, CaseCreationSchema> }).data
             })
           },
           AUTO_SAVE: 'autoSaving',
           VALIDATE: 'validating',
-          SUBMIT: 'validating'
-        },
+          SUBMIT: 'validating` },'`
         after: {
           5000: 'autoSaving', // Auto-save every 5 seconds
         }
@@ -579,7 +578,7 @@ export const caseCreationMachine = createMachine(
                   const cleanedErrors: Record<string, string[]> = {};
                   for (const key in fieldErrors) {
                     if (Object.prototype.hasOwnProperty.call(fieldErrors, key)) {
-                      cleanedErrors[key] = fieldErrors[key] || []; // Ensure it's an array
+                      cleanedErrors[key] = fieldErrors[key] || []; // Ensure it's an array'
                     }
                   }
                   return cleanedErrors;
@@ -626,8 +625,7 @@ export const caseCreationMachine = createMachine(
         }
       },
       completed: { on: {, NEW_CASE: 'idle',
-          EDIT_CASE: 'editing'
-        }
+          EDIT_CASE: `editing` }
       }
     }
   },
@@ -670,7 +668,7 @@ export const caseCreationMachine = createMachine(
 // SEARCH STATE MACHINE
 // ============================================================================
 type SearchEvent =
-  | { type: 'SEARCH';, data: z.infer<typeof SearchQuerySchema> }
+  | { type: 'SEARCH'; data: z.infer<typeof SearchQuerySchema> }
   | { type: 'LOAD_HISTORY' }
   | { type: 'REFINE_SEARCH' }
   | { type: 'CLEAR_RESULTS' }
@@ -738,7 +736,7 @@ export const searchMachine = createMachine(
                   const cleanedErrors: Record<string, string[]> = {};
                   for (const key in fieldErrors) {
                     if (Object.prototype.hasOwnProperty.call(fieldErrors, key)) {
-                      cleanedErrors[key] = fieldErrors[key] || []; // Ensure it's an array
+                      cleanedErrors[key] = fieldErrors[key] || []; // Ensure it's an array'
                     }
                   }
                   return cleanedErrors;
@@ -825,7 +823,7 @@ export const searchMachine = createMachine(
             actions: assign({
               // Removed explicit generics from assign
               results: ({ context, event }) => [
-                // Corrected destructuring
+                // Corrected destructuring,
                 ...context.results, // Corrected context access
                 ...((event as DoneActorEvent<PerformSearchOutput>)?.output?.results ?? []),
               ],
@@ -833,12 +831,10 @@ export const searchMachine = createMachine(
                 (event as DoneActorEvent<PerformSearchOutput>).output.pagination ?? { page: 1, pageSize: 20, total: 0 }
             })
           },
-          onError: 'results'
-        }
+          onError: 'results` }'`
       },
       error: { on: {, RETRY: 'searching',
-          NEW_SEARCH: 'idle'
-        }
+          NEW_SEARCH: `idle` }
       }
     }
   },
@@ -916,12 +912,12 @@ interface PerformAnalysisOutput { results: AIAnalysisResult | null;, confidence
 
 // Define the union of all possible events for the AIAnalysisMachine
 type AIAnalysisEvent =
-  | { type: 'START_ANALYSIS';, data: z.infer<typeof AIAnalysisSchema> }
-  | { type: 'STREAM_CONTENT';, content: string }
+  | { type: 'START_ANALYSIS'; data: z.infer<typeof AIAnalysisSchema> }
+  | { type: 'STREAM_CONTENT'; content: string }
   | { type: 'NEW_ANALYSIS' }
   | { type: 'RETRY_ANALYSIS' }
   | { type: 'RETRY' };
-// Internal XState events for actor completion/error are not part of the machine's public event type.
+// Internal XState events for actor completion/error are not part of the machine's public event type.'
 // They are handled by onDone/onError transitions.
 
 export const aiAnalysisMachine = createMachine(
@@ -929,7 +925,7 @@ export const aiAnalysisMachine = createMachine(
     id: 'aiAnalysis',
     initial: 'idle',
     context: {
-      analysisData: null,
+     , analysisData: null,
       validationErrors: {},
       analysisResults: null,
       confidence: 0,
@@ -940,7 +936,7 @@ export const aiAnalysisMachine = createMachine(
       isStreaming: false,
       streamedContent: ''
     } as AIAnalysisContext,
-    states: { idle: {, on: { START_ANALYSIS: {, target: 'validating',
+    states: {, idle: {, on: {, START_ANALYSIS: {, target: 'validating',
             actions: assign({
              , analysisData: ({ event }) => (event as AIAnalysisEvent & { type: 'START_ANALYSIS' }).data ?? null
             })
@@ -961,7 +957,7 @@ export const aiAnalysisMachine = createMachine(
                   const cleanedErrors: Record<string, string[]> = {};
                   for (const key in fieldErrors) {
                     if (Object.prototype.hasOwnProperty.call(fieldErrors, key)) {
-                      cleanedErrors[key] = fieldErrors[key] || []; // Ensure it's an array
+                      cleanedErrors[key] = fieldErrors[key] || []; // Ensure it's an array'
                     }
                   }
                   return cleanedErrors;
@@ -1021,12 +1017,10 @@ export const aiAnalysisMachine = createMachine(
         }
       },
       completed: { on: {, NEW_ANALYSIS: 'idle',
-          RETRY_ANALYSIS: 'analyzing'
-        }
+          RETRY_ANALYSIS: 'analyzing` }'`
       },
       error: { on: {, RETRY: 'analyzing',
-          NEW_ANALYSIS: 'idle'
-        }
+          NEW_ANALYSIS: `idle` }
       }
     }
   },

@@ -43,10 +43,10 @@ const originalGETHandler: RequestHandler = async ({ params, url }) => {
   const key = params.key;
   if (!key) return json({ success: false, error: 'Key required' }, { status: 400 });
   const includeSummary = url.searchParams.get('include') === 'summary';
-  // Narrow cached's shape to avoid `any`
+  // Narrow cached's shape to avoid `any`'
   const cached = (await getCache(key)) as { entry?: CacheEntry; source?: string };
   if (!cached.entry) {
-    return json({ success: false, hit: false, key, message: 'Cache miss' }, { status: 404 });
+    return json({ success: false, hit: false, key, message: 'Cache miss` }, { status: 404 });'`
   }
 
   const now = Date.now();
@@ -92,7 +92,7 @@ const originalGETHandler: RequestHandler = async ({ params, url }) => {
 };
 const originalDELETEHandler: RequestHandler = async ({ params }) => {
   const key = params.key
-  if (!key) return json({ success: false, error: 'Key required' }, { status: 400 })
+  if (!key) return json({ success: false, error: 'Key required` }, { status: 400 })'`
   await deleteCache(key)
   return json({ success: true, deleted: key, timestamp: new Date().toISOString() })
 }

@@ -40,8 +40,8 @@ interface T5TransformResponse { success: boolean;, task: string;
     recommendations?: string[];
     // Add specific types for structured output from different tasks
     analysis?: string;
-    sentiment?: { label: string;, score: number };
-    complexity?: { level: string; score: number;, factors: string[] };
+    sentiment?: { label: string; score: number };
+    complexity?: { level: string; score: number; factors: string[] };
     extracted?: string;
     structuredData?: StructuredDataOutput; // Use the new interface
     confidence?: number;
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(response);
     } catch (serviceError: any) {
       // Changed from any to unknown
-      console.error('T5 Transformer service error:', serviceError);
+      console.error('T5 Transformer service error:', serviceError);'
       // Fallback to mock processing for development
       const mockResult = await generateMockT5Response(input, task, domain);
       return json({
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     // Changed from any to unknown
-    console.error('T5 Transformer API error:', error);
+    console.error('T5 Transformer API error:', error);'
     return json(
       {
         success: false,
@@ -225,14 +225,14 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 't5-transformer',
       status: 'operational',
       model: {
-        name: 'T5-Legal-v2.1',
+       , name: 'T5-Legal-v2.1',
         type: 'sequence-to-sequence',
         parameters: '3B',
         specialization: 'Legal document processing'
       },
       capabilities: {
-        tasks: [
-          {
+       , tasks: [
+          {,
            , name: 'summarize',
             description: 'Generate concise summaries of legal documents',
             inputRange: '100-10000 tokens',
@@ -260,14 +260,12 @@ export const GET: RequestHandler = async ({ url }) => {
             name: 'paraphrase',
             description: 'Rephrase legal text for clarity',
             inputRange: '10-2000 tokens',
-            outputRange: '10-2500 tokens'
-          },
+            outputRange: '10-2500 tokens` },'`
           {
             name: 'translate',
             description: 'Translate legal documents (if supported)',
             inputRange: '10-5000 tokens',
-            outputRange: '10-6000 tokens'
-          },
+            outputRange: `10-6000 tokens` }
         ],
         domains: ['legal', 'contract', 'litigation', 'compliance', 'general'],
         outputFormats: ['text', 'json', 'structured']
@@ -351,7 +349,7 @@ function extractLegalEntities(text: string): Array<LegalEntity> {
   }
   return entities.slice(0, 10);
 }
-function analyzeSentiment(text: string): { label: string;, score: number } {
+function analyzeSentiment(text: string): { label: string; score: number } {
   // Simple sentiment analysis
   const positiveWords = ['agree', 'benefit', 'good', 'positive', 'favorable'];
   const negativeWords = ['dispute', 'breach', 'violation', 'penalty', 'damages'];
@@ -364,7 +362,7 @@ function analyzeSentiment(text: string): { label: string;, score: number } {
     score: Math.round((score + 1) * 50) / 100
   };
 }
-function assessComplexity(text: string): { level: string; score: number;, factors: string[] } {
+function assessComplexity(text: string): { level: string; score: number; factors: string[] } {
   const avgWordLength = text.split(/\s+/).reduce((sum, word) => sum + word.length, 0) / text.split(/\s+/).length;
   const sentenceCount = text.split(/[.!?]+/).length;
   const avgSentenceLength = text.split(/\s+/).length / sentenceCount;
@@ -499,7 +497,7 @@ async function generateMockT5Response(input: string, task: string, domain: strin
   let structured: T5TransformResponse['structured'] = {};
   switch (task) {
     case 'summarize':
-      output = `This document ${domain === 'contract' ? 'establishes contractual obligations' : `contains legal provisions` } that require careful consideration of the parties' rights and responsibilities.`;
+      output = `This document ${domain === 'contract' ? 'establishes contractual obligations' : `contains legal provisions` } that require careful consideration of the parties' rights and responsibilities.`;'
       confidence = 0.88;
       structured = {
         summary: output,

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import {
     FileText,
     Headphones,
@@ -21,7 +21,7 @@
   // Svelte 5 event handling
   let { $$events } = $props<{
     compare: (evidence: Evidence) => void;
-    compared: (data: { evidence: Evidence; result: any }) => void;
+    compared: (data: { evidence: Evidence;, result: any }) => void;
   }>();
   // small helper - use project-wide helper in the future
   const getOllamaEndpoint = () => (import.meta.env.VITE_OLLAMA_URL ?? 'http://ollama:11434');
@@ -94,7 +94,7 @@
   transitionscale={{ duration: 200, easing: quintOut }}
 >
   <!-- Header -->
-  <div class="flex items-center justify-between px-3 py-3 bg-gray-50 border-b border-gray-200">
+  <div class="flex items-center justify-between px-3 py-3 bg-gray-50 border-b, border-gray-200">
     <div
       class="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border capitalize"
       data-type={evidence?.evidenceType ?? evidence?.type}
@@ -114,12 +114,12 @@
       class:text-indigo-700={(evidence?.evidenceType ?? evidence?.type) === 'link'}
       class:border-indigo-200={(evidence?.evidenceType ?? evidence?.type) === 'link'}
     >
-      <svelte:component this={IconComponent} size={16} />
+      <svelte:component, this={IconComponent} size={16} />
       <span>{evidence?.evidenceType ?? evidence?.type}</span>
     </div>
-    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-      <!-- Prefer a named slot for custom actions; fallback to built-in compare button -->
-      <slot name="actions" {evidence}>
+    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100, transition-opacity">
+      <!-- Prefer a named slot for custom actions; fallback to built-in compare, button -->
+      <slot, name="actions" {evidence}>
         {#if showCompare}
           <button
             class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
@@ -128,17 +128,17 @@
             aria-busy={comparing}
             disabled={comparing}
           >
-            <Search size={14} />
+            <Search, size={14} />
           </button>
         {/if}
       </slot>
     </div>
   </div>
   <!-- Content -->
-  <div class="px-3 py-3">
-    <!-- Preview (for images/videos) -->
+  <div class="px-3, py-3">
+    <!-- Preview (for, images/videos) -->
     {#if (evidence?.evidenceType ?? evidence?.type) === 'image' && evidence?.url}
-      <div class="relative w-full mb-3 rounded-lg overflow-hidden bg-gray-50">
+      <div class="relative w-full mb-3 rounded-lg overflow-hidden, bg-gray-50">
         <img
           src={evidence.url}
           alt={evidence.title ?? 'evidence'}
@@ -148,71 +148,71 @@
         />
       </div>
     {:else if (evidence?.evidenceType ?? evidence?.type) === 'video' && evidence?.url}
-      <div class="relative w-full mb-3 rounded-lg overflow-hidden bg-gray-50">
-        <video src={evidence.url} preload="metadata" controls={false} muted class="w-full h-auto max-h-48 object-cover">
-          <track kind="captions" />
+      <div class="relative w-full mb-3 rounded-lg overflow-hidden, bg-gray-50">
+        <video src={evidence.url} preload="metadata" controls={false} muted class="w-full h-auto max-h-48, object-cover">
+          <track, kind="captions" />
         </video>
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/60 rounded-full p-3 text-white">
-          <Video size={24} />
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/60 rounded-full p-3, text-white">
+          <Video, size={24} />
         </div>
       {/if}
-    <!-- Title and Description -->
-    <div class="flex flex-col gap-2">
-      <h3 class="font-semibold text-base text-gray-900 leading-tight line-clamp-2">
+    <!-- Title and, Description -->
+    <div class="flex flex-col, gap-2">
+      <h3 class="font-semibold text-base text-gray-900 leading-tight, line-clamp-2">
         {evidence?.title}
       </h3>
       {#if evidence?.description && !compact}
-        <p class="text-sm text-gray-500 leading-snug line-clamp-3">
+        <p class="text-sm text-gray-500 leading-snug, line-clamp-3">
           {evidence.description}
         </p>
       {/if}
       <!-- Metadata -->
-      <div class="flex flex-wrap gap-2 my-2">
+      <div class="flex flex-wrap gap-2, my-2">
         {#if evidence?.metadata?.createdAt || evidence?.createdAt}
-          <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
+          <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5, rounded">
             {new Date(evidence?.metadata?.createdAt ?? evidence?.createdAt ?? '').toLocaleDateString()}
           </span>
         {/if}
         {#if fileSize > 0}
-          <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
+          <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5, rounded">
             {formatFileSize(fileSize)}
           </span>
         {/if}
         {#if evidence?.metadata?.format}
-          <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
+          <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5, rounded">
             {evidence.metadata.format.toUpperCase()}
           </span>
         {/if}
       </div>
       <!-- Tags -->
       {#if evidence?.tags && evidence.tags.length > 0}
-        <div class="flex flex-wrap gap-1 mt-2">
+        <div class="flex flex-wrap gap-1, mt-2">
           {#each Array.isArray(evidence.tags.slice(0, 3)) ? evidence.tags.slice(0, 3) : [] as tag}
-            <span class="flex items-center gap-1 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
-              <Tag size={10} />
+            <span class="flex items-center gap-1 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded border, border-blue-200">
+              <Tag, size={10} />
               {tag}
             </span>
           {/each}
           {#if evidence.tags.length > 3}
-            <span class="text-xs text-gray-500 font-medium">+{evidence.tags.length - 3}</span>
+            <span class="text-xs text-gray-500, font-medium">+{evidence.tags.length - 3}</span>
           {/if}
         {/if}
     </div>
   </div>
-  <!-- Footer (if has URL and is a link) -->
+  <!-- Footer (if has URL and is a, link) -->
   {#if evidence?.url && (evidence?.evidenceType ?? evidence?.type) === 'link'}
-    <div class="px-3 py-3 border-t border-gray-200 bg-gray-50">
+    <div class="px-3 py-3 border-t border-gray-200, bg-gray-50">
       <a
         href={evidence.url}
         target="_blank"
         rel="noopener noreferrer"
         class="flex items-center gap-1 text-indigo-600 hover:text-indigo-800 text-sm font-medium"
       >
-        <Link size={14} />
+        <Link, size={14} />
         Open Link
       </a>
     {/if}
 </div>
-<!-- Tooltip section removed - replaced with native title attributes -->
-<!-- Tooltip section removed - replaced with native title attributes -->
+<!-- Tooltip section removed - replaced with native title, attributes -->
+<!-- Tooltip section removed - replaced with native title, attributes -->
       >

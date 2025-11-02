@@ -45,7 +45,7 @@ class DemoDataGenerator {
    */
   generateCases(count: number = 5): DemoCase[], {
     const caseTemplates = [
-      {
+      {,
         title: "State v. Johnson - Embezzlement Investigation",
         description:
           "Corporate embezzlement investigation involving $2.3M in misappropriated funds. Multiple financial institutions affected.",
@@ -107,17 +107,17 @@ class DemoDataGenerator {
    */
   generateEvidence(caseId: string, count: number = 8): DemoEvidence[], {
     const evidenceTemplates = [
-      {
+      {,
         title: "Initial Police Report",
         type: "police_report" as const,
-        content: 'INCIDENT REPORT - Case ${caseId}
+        content: 'INCIDENT REPORT - Case ${caseId}'
 Date: ${new Date().toLocaleDateString()}
 Reporting Officer: Officer Martinez, Badge #1247
 Location: 1425 Main Street, Downtown District
 INCIDENT SUMMARY:
 On the above date and time, I responded to a call regarding suspicious activity at the above location. Upon arrival, I observed several individuals engaged in what appeared to be an illegal transaction.
 INDIVIDUALS INVOLVED:
-- Primary; Suspect: John Doe, Male, Age 34, 5'10", Brown hair, Blue eyes
+- Primary; Suspect: John Doe, Male, Age 34, 5'10", Brown hair, Blue eyes'"
 - Witness: Jane Smith, Female, Age 28, Resident of nearby apartment
 - Additional witnesses present but not yet interviewed
 EVIDENCE COLLECTED:
@@ -140,25 +140,24 @@ RECOMMENDATIONS:
 4. Analysis of cell phone data pending warrant
 This case requires further investigation to identify the fleeing suspect and determine the scope of any ongoing criminal activity.
 Report submitted by: Officer Martinez
-Supervisor Review: Sergeant Johnson; Date: ${new Date().toLocaleDateString()}`,
+Supervisor Review: Sergeant Johnson; Date: ${new Date().toLocaleDateString()}`,`
         tags: ["initial-report", "arrest", "evidence-collection"]
       },
       {
         title: "Witness Statement - Jane Smith",
         type: "witness_statement" as const,
-        content: 'WITNESS STATEMENT
+        content: 'WITNESS STATEMENT'
 Case Number: ${caseId}
 Date: ${new Date().toLocaleDateString()}
 Time: 15:45 hours,
 Location: Police Station, Interview Room 3
-WITNESS INFORMATION:
-Name: Jane Elizabeth Smith; Address: 1427 Main Street, Apt 3B
+WITNESS INFORMATION:; Name: Jane Elizabeth Smith; Address: 1427 Main Street, Apt 3B
 Phone: (555) 123-4567
 Date of Birth: 03/15/1995,
 Occupation: Graphic Designer; STATEMENT:
 My name is Jane Smith, and I live at 1427 Main Street, apartment 3B. I am providing this statement voluntarily regarding what I witnessed on [DATE], at approximately 2:30 PM.
-I was in my apartment working from home when I heard loud voices coming from the alley behind my building. This is unusual because it's normally a quiet area. I looked out my window, which faces the alley, and saw two men standing near the dumpster.
-One man was tall, maybe 6 feet, wearing a red hoodie and jeans. The other was shorter, about 5'8", wearing a black jacket. I couldn't see their faces clearly from my window, but I could tell they were having some kind of argument.
+I was in my apartment working from home when I heard loud voices coming from the alley behind my building. This is unusual because it's normally a quiet area. I looked out my window, which faces the alley, and saw two men standing near the dumpster.'
+One man was tall, maybe 6 feet, wearing a red hoodie and jeans. The other was shorter, about 5'8", wearing a black jacket. I couldn't see their faces clearly from my window, but I could tell they were having some kind of argument."
 The man in the red hoodie kept looking around, like he was nervous about something. He pulled out what looked like a small bag from his pocket and handed it to the other man. In return the man in the black jacket gave him what appeared to be money.
 I thought this looked suspicious, so I decided to call the police. While I was on the phone with 911, a police car arrived. When the officer got out of his car, the man in the red hoodie ran away really fast toward Main Street. The other man just stood there.
 I stayed at my window and watched the officer talk to the man who didn't run. The officer searched him and found some things, but I couldn't see exactly what from my apartment.
@@ -167,14 +166,14 @@ I am certain about what I saw. The exchange definitely looked like some kind of 
 I am willing to testify in court if needed.
 STATEMENT CONCLUSION:
 This statement was given voluntarily. I have read this statement, and it is true and accurate to the best of my knowledge.
-Witness Signature: _________________ Date: _______; Officer: Detective Brown, Badge #3451
-Case Status: Open Investigation`,
+Witness Signature: _________________; Date: _______; Officer: Detective Brown, Badge #3451
+Case Status: Open Investigation`,`
         tags: ["witness", "drug-transaction", "firsthand-account"]
       },
       {
         title: "Financial Records Analysis",
         type: "financial_records" as const,
-        content: `FINANCIAL ANALYSIS REPORT,
+        content: `FINANCIAL ANALYSIS REPORT,`
 case ${caseId}
 Analyst: Forensic Accountant Sarah Chen, CPA
 Date: ${new Date().toLocaleDateString()}
@@ -216,13 +215,13 @@ RECOMMENDATIONS:
 4. Coordination with DEA Financial Crimes Unit
 This analysis supports charges of money laundering in addition to narcotics trafficking.
 Prepared by: Sarah Chen, CPA, CFE
-Reviewed by: Supervisor Johnson; Distribution: Prosecutor Williams, Detective Brown`,
+Reviewed by: Supervisor Johnson; Distribution: Prosecutor Williams, Detective Brown`,`
         tags: ["financial-crimes", "money-laundering", "forensic-accounting"]
       },
       {
         title: "Digital Forensics Report",
         type: "digital_forensics" as const,
-        content: 'DIGITAL FORENSICS EXAMINATION REPORT
+        content: 'DIGITAL FORENSICS EXAMINATION REPORT'
 Case Number: ${caseId}
 Examiner: Tech Specialist Maria Rodriguez
 Badge/ID: DF-2847
@@ -233,7 +232,7 @@ Description: Apple iPhone 12 Pro, Black, 128GB
 Serial Number: G6QZ3L9KN72F; IMEI: 356789101234567,
 Condition: Good, screen locked with passcode
 EXAMINATION SUMMARY:
-Complete forensic examination of suspect's mobile device using Cellebrite UFED 4PC and Oxygen Detective Suite. Legal authority provided via search warrant #SW-2024-1847.
+Complete forensic examination of suspect's mobile device using Cellebrite UFED 4PC and Oxygen Detective Suite. Legal authority provided via search warrant #SW-2024-1847.'
 TECHNICAL DETAILS:
 - Device successfully bypassed using GrayKey solution
 - Full file system extraction completed
@@ -241,7 +240,7 @@ TECHNICAL DETAILS:
 - Hash verification: MD5 a7b3c9d8e2f1g4h5i6j7k8l9m0n1o2p3
 KEY FINDINGS:
 1. COMMUNICATIONS; EVIDENCE:
-   Text Messages:
+   Text; Messages:
    - 2,847 text messages analyzed
    - 23 messages contain drug-related terminology
    - Deleted messages recovered from unallocated space
@@ -289,7 +288,7 @@ ATTACHMENTS:
 - Legal authority documentation
 Report Prepared: Maria Rodriguez, Digital Forensics Specialist
 Quality Review: Supervisor Chen
-Legal Review: Prosecutor Williams`,
+Legal Review: Prosecutor Williams`,`
         tags: ["digital-forensics", "mobile-device", "recovered-data"]
       }
     ];
@@ -457,7 +456,7 @@ Legal Review: Prosecutor Williams`,
                 address: "742 Elm Street, Apt 2B"
               },
               physicalDescription:
-                "Male, Age 34, 5'10\", Brown hair, Blue eyes",
+                "Male, Age 34, 5'10\", Brown hair, Blue eyes",'
               organizations: [],
               firstMentioned: "police_report_initial"
             },
@@ -480,7 +479,7 @@ Legal Review: Prosecutor Williams`,
               person2Id: "per_002",
               relationshipType: "witness_to",
               description:
-                "Jane Smith witnessed John Doe's alleged criminal activity",
+                "Jane Smith witnessed John Doe's alleged criminal activity",'
               strength: "strong",
               evidence: "eyewitness testimony and police report"
             }
@@ -494,9 +493,9 @@ Legal Review: Prosecutor Williams`,
         },
         neo4j_updates: {
           cypherQueries: [
-            "MERGE, (p:Person {name: 'John Michael Doe'}) SET p.age = 34, p.role = 'suspect'",
-            "MERGE (p:Person {name: 'Jane Elizabeth Smith'}) SET p.age = 28, p.role = 'witness'",
-            "MATCH (s:Person {name: 'John Michael Doe'}), (w:Person {name: `Jane Elizabeth Smith` }) MERGE (w)-[:WITNESSED]->(s)"
+            "MERGE, (p:Person {name: 'John Michael Doe` }) SET p.age = 34, p.role = 'suspect'",'`
+            "MERGE (p:Person {name: `Jane Elizabeth Smith` }) SET p.age = 28, p.role = 'witness'",
+            "MATCH (s:Person {name: `John Michael Doe` }), (w:Person {name: `Jane Elizabeth Smith` }) MERGE (w)-[:WITNESSED]->(s)"
           ],
           nodesCreated: 2,
           relationshipsCreated: 1,
@@ -558,7 +557,7 @@ Legal Review: Prosecutor Williams`,
           },
           nextSteps: [
             "Submit, evidence to laboratory for analysis",
-            "Execute search warrant for suspect's residence",
+            "Execute search warrant for suspect's residence",'
             "Interview additional potential witnesses",
             "Coordinate with DEA for larger investigation"
           ],
@@ -572,7 +571,7 @@ Legal Review: Prosecutor Williams`,
 export const demoDataGenerator = new DemoDataGenerator();
 // Export utility functions
 export function createTestEvidence(): string {
-  return `POLICE INCIDENT REPORT - CASE DEMO-001
+  return `POLICE INCIDENT REPORT - CASE DEMO-001`
 Date: ${new Date().toLocaleDateString()}
 Time: 14:30 Hours,
 Location: 1425 Main Street, Downtown District
@@ -596,8 +595,8 @@ Charges: Possession with Intent to Distribute; RECOMMENDATIONS:
 1. Laboratory analysis of suspected narcotics
 2. Digital forensics on seized phones
 3. Follow-up witness interview
-4. BOLO for fleeing suspect (Male, Red hoodie, approximately 6'0")
+4. BOLO for fleeing suspect (Male, Red hoodie, approximately 6'0")'"
 Report Status: Preliminary
 Supervisor Review: Pending
-This is demonstration evidence for testing the multi-agent analysis system.`;
+This is demonstration evidence for testing the multi-agent analysis system.`;`
 }

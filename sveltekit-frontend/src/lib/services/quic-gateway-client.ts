@@ -83,7 +83,7 @@ export interface HealthStatusData { status: 'ok' | 'degraded' | 'unhealthy';, m
 export class QUICGatewayClient {
   private config: QUICGatewayConfig;
   private connectionPool: Map<string, WebTransport> = new Map();
-  private requestCache: Map<string, { response: QUICResponse<unknown>;, timestamp: number }> = new Map();
+  private requestCache: Map<string, { response: QUICResponse<unknown>; timestamp: number }> = new Map();
   private performanceData: Array<{ timestamp: number;, responseTime: number;
     success: boolean;
     protocol: string;
@@ -99,7 +99,7 @@ export class QUICGatewayClient {
     latency: 0,
     throughput: 0,
     errorRate: 0,
-    connectionPool: { active: 0, idle: 0, total: 0 },
+    connectionPool: {, active: 0, idle: 0, total: 0 },
     capabilities: {, http3: false, zeroRTT: false, streaming: false, multiplexing: false }
   });
 
@@ -255,7 +255,7 @@ export class QUICGatewayClient {
         lastError = error instanceof Error ? error : new Error(String(error));
         attempt++;
         if (attempt < maxAttempts) {
-          console.warn(`⚠️ Request attempt ${attempt} failed, retrying: ', lastError);
+          console.warn(`⚠️ Request attempt ${attempt} failed, retrying: ', lastError);'`
           await this.sleep(Math.pow(2, attempt) * 1000);
         }
       }
@@ -369,7 +369,7 @@ export class QUICGatewayClient {
     return this.request({
       method: 'GET',
       endpoint: '/health',
-      priority: 'medium` });
+      priority: 'medium` });'`
   }
 
   /**
@@ -566,7 +566,7 @@ export class QUICGatewayClient {
         latency: 0,
         throughput: 0,
         errorRate: 0,
-        connectionPool: { active: 0, idle: 0, total: 0 },
+        connectionPool: {, active: 0, idle: 0, total: 0 },
         capabilities: {, http3: false, zeroRTT: false, streaming: false, multiplexing: false }
       }
     );

@@ -1,4 +1,4 @@
-/// <reference lib="dom" />
+/// <reference, lib="dom" />
 // Local standalone types; avoid importing SvelteKit types to prevent conflicts
 /**
  * 🎯 COMPREHENSIVE TYPE DEFINITIONS
@@ -23,14 +23,14 @@ export interface DerivedRune<T> {
 export interface EffectRune {
   (): void | (() => void);
 }
-export interface PropsRune<T extends Record<string, unknown>> {
+export interface PropsRune<T extends, Record<string, unknown>> {
   (): T;
 }
 export interface BindableRune<T> {
   (initial?: T): T;
 }
 // Snippet types (from Svelte 5)
-export interface Snippet<Parameters extends readonly unknown[] = []> {
+export interface Snippet<Parameters extends readonly, unknown[] = []> {
   (...args: Parameters): {
     render(): string;
     setup?(): void;
@@ -38,14 +38,14 @@ export interface Snippet<Parameters extends readonly unknown[] = []> {
   };
 }
 // Component types
-export interface Component<Props extends Record<string, unknown> = Record<string, unknown>> {
+export interface Component<Props extends, Record<string, unknown> = Record<string, unknown>> {
   (props: Props): {
     render(): string;
     setup?(): void;
     teardown?(): void;
   };
 }
-export type ComponentProps<T> = T extends Component<infer P> ? P : never;
+export type ComponentProps<T> = T extends Component<infer, P> ? P : never;
 // Action types
 export interface ActionReturn<Parameter = unknown> {
   update?: (parameter: Parameter) => void;
@@ -108,10 +108,10 @@ export interface RequestHandler {
 }
 // SvelteKit hooks
 export interface Handle {
-  (input: {, event: RequestEvent; resolve: any }): Promise<Response>;
+  (input: {, event: RequestEvent;, resolve: any }): Promise<Response>;
 }
 export interface HandleError {
-  (input: {, error: any; event: RequestEvent }): any;
+  (input: {, error: any;, event: RequestEvent }): any;
 }
 export interface HandleFetch {
   (input: { event: RequestEvent; request: Request;, fetch: typeof fetch }): Promise<Response>;
@@ -142,7 +142,7 @@ export interface SQL<T = Record<string, unknown>> {
   typings?: { [key: string]: string };
   shouldInlineParams?: boolean;
   sql: string;
-  /** Phantom property to reference generic T so linters/TS don't complain about unused type param */
+  /** Phantom property to reference generic T so linters/TS don't complain about unused type param */'
   _rowType?: T;
 }
 export interface QueryResult<T = unknown> { rows: T[];, rowCount: number;
@@ -220,8 +220,8 @@ export interface DrizzleColumnHelpers { pgTable: any;, serial: any;
   not: any;
   sql: any;
 }
-export interface DrizzleTable<T extends Record<string, unknown> = Record<string, unknown>> {
-  // Fixed: Added closing: '>'; _: { name: string;, columns: T;
+export interface DrizzleTable<T extends, Record<string, unknown> = Record<string, unknown>> {
+  // Fixed: Added; closing: '>'; _: { name: string;, columns: T;
     schema?: string;
     baseName: string;
   };
@@ -435,7 +435,7 @@ export interface TestContext {
 }
 export interface ExpectationResult { pass: boolean;, message: string;
 }
-export interface MockFunction<T extends (...args: any[]) => unknown = (...args: any[]) => unknown> {
+export interface MockFunction<T, extends (...args: any[]) => unknown = (...args: any[]) => unknown> {
   (...args: Parameters<T>): ReturnType<T>;
   mockImplementation(fn: T): this;
   mockReturnValue(_value: ReturnType<T>): this;
@@ -445,7 +445,7 @@ export interface MockFunction<T extends (...args: any[]) => unknown = (...args: 
   mockReset(): this;
   mockRestore(): this;
   calls: Parameters<T>[];
-  results: { type: 'return' | 'throw';, value: any }[];
+  results: { type: 'return' | 'throw'; value: any }[];
 }
 // ===== ENVIRONMENT TYPES =====
 export interface EnvironmentConfig {

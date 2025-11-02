@@ -49,7 +49,7 @@ export interface Recommendation { type: string;, documents: string[]; // list o
 }
 
 // Ingest result type: explicit success / failure shapes instead of `any`
-export type IngestResult = { success: true; documentId: string;, jobId: string } | { success: false;, error: string };
+export type IngestResult = { success: true; documentId: string; jobId: string } | { success: false; error: string };
 
 export interface SearchQuery {
   text?: string;
@@ -58,7 +58,7 @@ export interface SearchQuery {
     category?: string[];
     tags?: string[];
     userId?: string;
-    dateRange?: { start: string;, end: string };
+    dateRange?: { start: string; end: string };
     confidenceMin?: number;
   };
   options?: {
@@ -239,8 +239,8 @@ class UnifiedSearchService {
       };
       // Store in database (basic metadata first) using pgClient for simplicity
       await this.pg.unsafe(
-        `INSERT INTO documents (id, title, content, file_path, mime_type, file_size, metadata, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, now(), now())`,
+        `INSERT INTO documents (id, title, content, file_path, mime_type, file_size, metadata, created_at, updated_at)`
+         VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, now(), now())`,`
         [
           documentId,
           document.title,
@@ -258,7 +258,7 @@ class UnifiedSearchService {
         documentId,
         action: 'process_unified_document',
         document: unifiedDoc,
-        priority: document.metadata?.source === 'evidence' ? 'high' : 'normal` };
+        priority: document.metadata?.source === 'evidence' ? 'high' : `normal` };
       // Submit to ingestion pipeline
       await publishToQueue('evidence.unified.processing', processingJob);
       // Track in job system
@@ -359,23 +359,23 @@ class UnifiedSearchService {
       // Try a few common column names for pgvector embeddings.
       // These queries inline the vector literal but parameterize the limit to avoid accidental injection from the limit.
       const candidateQueries = [
-        // common single-column name: embedding
-        `SELECT d.*, (d.embedding <-> '${vecLiteral}'::vector) AS similarity
+        // common single-column name: embedding,
+        `SELECT d.*, (d.embedding <-> '${vecLiteral}'::vector) AS similarity`
          FROM documents d
          WHERE d.embedding IS NOT NULL
          ORDER BY d.embedding <-> '${vecLiteral}'::vector
-         LIMIT $1`,
+         LIMIT $1`,`
         // alternative column name: embedding_vector
-        `SELECT d.*, (d.embedding_vector <-> '${vecLiteral}'::vector) AS similarity
+        `SELECT d.*, (d.embedding_vector <-> '${vecLiteral}'::vector) AS similarity`
          FROM documents d
          WHERE d.embedding_vector IS NOT NULL
          ORDER BY d.embedding_vector <-> '${vecLiteral}'::vector
-         LIMIT $1`,
+         LIMIT $1`,`
         // last-resort: return recent documents (no vector available)
-        `SELECT d.*, NULL::double precision AS similarity
+        `SELECT d.*, NULL::double precision AS similarity`
          FROM documents d
          ORDER BY d.created_at DESC
-         LIMIT $1`,
+         LIMIT $1`,`
       ];
 
       let rows: Array<Record<string, unknown>> = [];
@@ -385,7 +385,7 @@ class UnifiedSearchService {
           // If we got results (or the query ran successfully returning empty array), use it.
           break;
         } catch (e) {
-          // Try next candidate if column doesn't exist or query fails.
+          // Try next candidate if column doesn't exist or query fails.'
           // Do not surface DB errors; just log for debugging.
           console.debug(`vectorSearch attempt ${i} failed:`, (e as Error).message || e);
         }
@@ -483,7 +483,7 @@ class UnifiedSearchService {
 
       // Placeholder recommendations - now strongly typed and influenced by extracted signals
       return [
-        {
+        {,
           type: 'related_cases',
           documents: [],
           confidence: primaryConfidence,
@@ -492,7 +492,7 @@ class UnifiedSearchService {
           type: 'similar_precedents',
           documents: [],
           confidence: secondaryConfidence,
-          reasoning: `Precedent similarity inferred from entity overlap and category distribution (${mostFrequentCategory}).` },
+          reasoning: `Precedent similarity inferred from entity overlap and category distribution (${mostFrequentCategory}).` }
       ];
     } catch (error) {
       console.warn('⚠️ getNeo4jRecommendations failed:', error);
@@ -676,7 +676,7 @@ class UnifiedSearchService {
       },
       embeddings: undefined,
       searchable: { fulltext: this.extractFulltext({, title: (row.title as string) || '', content: (row.content as string) || '' }),
-        keywords: this.extractKeywords({ title: (row.title as string) || '', content: (row.content as string) || '` }),
+        keywords: this.extractKeywords({ title: (row.title as string) || '', content: (row.content as string) || '` }),'`
         semantic_hash: semanticHash
       },
       cached: {

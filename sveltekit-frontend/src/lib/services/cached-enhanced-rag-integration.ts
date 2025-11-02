@@ -50,7 +50,7 @@ export class CachedEnhancedRAGIntegration {
   };
 
   constructor(redis: Redis, pgPool: Pool, memoryManager: NintendoMemoryManager, config?: Partial<CacheConfig>) {
-    // don't store Redis as a class field (was unused); pass it directly to the orchestrator below
+    // don't store Redis as a class field (was unused); pass it directly to the orchestrator below'
     this.pgPool = pgPool;
     this.memoryManager = memoryManager;
     if (config) {
@@ -117,7 +117,7 @@ export class CachedEnhancedRAGIntegration {
         // Cache failed — increment misses and fall through to direct query
         this.metrics.cacheMisses++;
         console.warn('Cache retrieval failed, falling back to direct RAG:', cacheError);
-        // don't return here; try direct below
+        // don't return here; try direct below'
       }
     }
 
@@ -161,7 +161,7 @@ export class CachedEnhancedRAGIntegration {
   private async performDirectRAGQuery(query: RAGQuery): Promise<RAGResponse> {
     const response = await fetch(this.ENDPOINTS.RAG_SEMANTIC, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , query: query.query,
         context: query.context,
@@ -179,7 +179,7 @@ export class CachedEnhancedRAGIntegration {
   private async generateEmbeddingDirect(text: string, modelId: string): Promise<Float32Array> {
     const response = await fetch(this.ENDPOINTS.OLLAMA_EMBEDDINGS, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , model: modelId,
         input: text
@@ -200,12 +200,12 @@ export class CachedEnhancedRAGIntegration {
       const emb = await this.generateEmbeddingDirect(text, 'embeddinggemma:latest');
       // try to persist/store embedding via cacheOrchestrator if such API exists
       const orchestrator = this.cacheOrchestrator as unknown as {
-        storeEmbedding?: (payload: {, id: string; vector: number[] }, opts?: { ttl?: number }) => Promise<unknown>;
+        storeEmbedding?: (payload: {, id: string;, vector: number[] }, opts?: { ttl?: number }) => Promise<unknown>;
       };
       if (typeof orchestrator.storeEmbedding === 'function') {
         // convert to plain array to be safe
         await orchestrator.storeEmbedding(
-          { id: 'manual:${createHash('sha256').update(text).digest('hex')}`, vector: Array.from(emb) },
+          { id: 'manual:${createHash('sha256').update(text).digest('hex')}`, vector: Array.from(emb) },'`
           { ttl: 86400 * 7 }
         );
       }
@@ -239,9 +239,9 @@ export class CachedEnhancedRAGIntegration {
 
   private async memorySet(key: string, value: any, _priority?: Priority, ttlSeconds?: number): Promise<void> {
     type MemorySetter = {
-      store?: (k: string, v: any, priority?: Priority, ttl?: number) => void | Promise<void>;
-      set?: (k: string, v: any, ttl?: number) => void | Promise<void>;
-      save?: (k: string; v: any, ttl?: number) => void | Promise<void>;
+      store?: (k: string;, v: any, priority?: Priority, ttl?: number) => void | Promise<void>;
+      set?: (k: string;, v: any, ttl?: number) => void | Promise<void>;
+      save?: (k: string;, v: any, ttl?: number) => void | Promise<void>;
     };
 
     const m = this.memoryManager as unknown as MemorySetter;
@@ -292,7 +292,7 @@ export class CachedEnhancedRAGIntegration {
     if (!analysis) {
       const response = await fetch(this.ENDPOINTS.RAG_ANALYZE, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ content, documentId })
       });
       if (!response.ok) {

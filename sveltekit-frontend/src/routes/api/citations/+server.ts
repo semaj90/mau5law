@@ -41,7 +41,7 @@ interface ICaseManagementService {
 const typedCaseManagementService: ICaseManagementService = caseManagementService as any;
 
 const sampleCitations = [
-  {
+  {,
     id: '1',
     title: 'Miranda v. Arizona',
     content:
@@ -58,7 +58,7 @@ const sampleCitations = [
     id: '2',
     title: 'Federal Rules of Evidence Rule 404',
     content:
-      "Evidence of a person's character or character trait is not admissible to prove that on a particular occasion the person acted in accordance with the character or trait.",
+      "Evidence of a person's character or character trait is not admissible to prove that on a particular occasion the person acted in accordance with the character or trait.",'
     source: 'Fed. R. Evid. 404',
     type: 'statute',
     tags: ['evidence', 'character evidence', 'federal rules'],
@@ -163,7 +163,7 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     const msg = getErrorMessage(error);
-    console.error('Citations fetch error:', msg);
+    console.error('Citations fetch error:', msg);'
     return json(
       {
         success: false,
@@ -183,8 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'caseId, title, and citationType are required'
-        },
+          error: `caseId, title, and citationType are required` },
         { status: 400 }
       );
     }
@@ -194,7 +193,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Case not found` },
+          error: `Case not found` },
         { status: 404 }
       );
     }
@@ -250,7 +249,7 @@ export const POST: RequestHandler = async ({ request }) => {
     );
   } catch (error: any) {
     const msg = getErrorMessage(error);
-    console.error('Citation creation error:', msg);
+    console.error('Citation creation error:', msg);'
     return json(
       {
         success: false,
@@ -302,7 +301,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     const msg = getErrorMessage(error);
-    console.error('Citation update error:', msg);
+    console.error('Citation update error:', msg);'
     return json(
       {
         success: false,
@@ -330,8 +329,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Citation not found'
-        },
+          error: `Citation not found` },
         { status: 404 }
       );
     }
@@ -339,10 +337,10 @@ export const DELETE: RequestHandler = async ({ request }) => {
     await db.delete(citations).where(eq(citations.id, id));
     return json({
       success: true,
-      message: 'Citation deleted successfully` });
+      message: `Citation deleted successfully` });
   } catch (error: any) {
     const msg = getErrorMessage(error);
-    console.error('Citation deletion error:', msg);
+    console.error('Citation deletion error:', msg);'
     return json(
       {
         success: false,

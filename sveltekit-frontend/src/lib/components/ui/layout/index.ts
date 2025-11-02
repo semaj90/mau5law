@@ -8,7 +8,7 @@
  * @see https://en.wikipedia.org/wiki/Golden_ratio
  * @see Context7 best practices for CSS Grid layouts
  */
-export { default as GoldenRatioGrid } from "./GoldenRatioGrid.svelte";
+export { default, as GoldenRatioGrid } from "./GoldenRatioGrid.svelte";
 /**
  * Golden Ratio Constants
  * Use these in your components for consistent mathematical proportions

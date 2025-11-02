@@ -204,7 +204,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         text,
         'simd-tensor',
         [
-          {
+          {,
             id: textKey,
             score: stats.semantic_preservation_score ?? 0
           },
@@ -223,7 +223,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     return json(response);
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error('SIMD LangExtract error:', message);
+    console.error('SIMD LangExtract error:', message);'
     return json(
       {
         error: 'SIMD LangExtract processing failed',
@@ -259,8 +259,7 @@ export const GET: RequestHandler = async () => {
       endpoints: {
         process: 'POST - Process text with SIMD tiling and vertex caching',
         benchmark: 'POST with; benchmark: true - Performance testing',
-        batch: 'POST with; texts: [] - Batch processing'
-      },
+        batch: 'POST with; texts: [] - Batch processing` },'`
       timestamp: Date.now()
     };
 
@@ -269,8 +268,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: 'Failed to get SIMD LangExtract status'
-      },
+        error: `Failed to get SIMD LangExtract status` },
       { status: 500 }
     );
   }
@@ -321,7 +319,7 @@ async function getStandardEmbedding(text: string, model: string, fetch: typeof g
     if (fastApiUrl) {
       const resp = await fetch(`${fastApiUrl.replace(/\/$/, '')}/embed`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: { 'content-type': `application/json` },
         body: JSON.stringify({ text, model })
       });
       if (resp.ok) {

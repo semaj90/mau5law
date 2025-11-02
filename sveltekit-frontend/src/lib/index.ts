@@ -23,8 +23,8 @@ export { EnhancedApiClient, apiClient as enhancedApiClient } from './services/en
 // Temporarily commented to avoid LegalDocument export conflict
 // export * from './components/index.js'
 // ===== FILE UPLOAD SERVICES =====
-export { default as localStorageFiles } from './services/localStorage-file-fallback.js';
-export { default as enhancedFileUpload } from './services/enhanced-file-upload.js';
+export { default, as localStorageFiles } from './services/localStorage-file-fallback.js';
+export { default, as enhancedFileUpload } from './services/enhanced-file-upload.js';
 // ===== UTILITIES & TYPES =====
 export {
   cn,
@@ -131,7 +131,7 @@ if (typeof globalThis !== 'undefined') {
 }
 // ===== ENHANCED SERVICES & STORES =====
 // Global User Store with Svelte 5 Runes
-export { default as globalUserStore } from './stores/global-user-store.svelte.js';
+export { default, as globalUserStore } from './stores/global-user-store.svelte.js';
 // Search Services with Fuse.js Integration
 export {
   searchService,
@@ -162,7 +162,7 @@ export default {
 // ===== TYPESCRIPT ERROR RESOLUTION UTILITIES =====
 export const typeScriptErrorResolution = {
   // Utility to enhance objects with missing properties
-  enhanceWithMissingProperties: <T extends object>(obj: T, properties: Partial<T>): T => {
+  enhanceWithMissingProperties: <T extends, object>(obj: T, properties: Partial<T>): T => {
     return { ...obj, ...properties };
   },
   // Safe property access with type assertions

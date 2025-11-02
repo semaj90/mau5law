@@ -27,7 +27,7 @@ import type { RequestHandler } from './$types.js'
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const documentTypes = [
-      {
+      {,
         id: 'motion_to_suppress',
         name: 'Motion to Suppress Evidence',
         category: 'litigation',

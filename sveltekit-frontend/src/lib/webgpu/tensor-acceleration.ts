@@ -128,7 +128,7 @@ export class WebGPUTensorAccelerator {
           let b = vectorB[index];
           result[index] = a * b;
         }
-      `,
+      `,`
       cosineReduction: `
         @group(0) @binding(0) var<storage, read> dotProducts: array<f32>;
         @group(0) @binding(1) var<storage, read> normA: array<f32>;
@@ -165,7 +165,7 @@ export class WebGPUTensorAccelerator {
             result[workgroup_id.x] = cosine;
           }
         }
-      `,
+      `,`
       embedding: `
         @group(0) @binding(0) var<storage, read> input: array<u32>;
         @group(0) @binding(1) var<storage, read> weights: array<f32>;
@@ -190,7 +190,7 @@ export class WebGPUTensorAccelerator {
             output[output_index] = 0.0;
           }
         }
-      `,
+      `,`
       matrixMultiply: `
         @group(0) @binding(0) var<storage, read> matrixA: array<f32>;
         @group(0) @binding(1) var<storage, read> matrixB: array<f32>;
@@ -233,7 +233,7 @@ export class WebGPUTensorAccelerator {
             result[row * N + col] = sum;
           }
         }
-      ` };
+      ' };'
     for (const [name, source] of Object.entries(shaders)) {
       const shader = this.device.createShaderModule({
         label: `${name}Shader`,
@@ -267,7 +267,7 @@ export class WebGPUTensorAccelerator {
         layout: 'auto',
         compute: {
          , module: shader,
-          entryPoint: 'main` }
+          entryPoint: 'main' }
       });
       const bindGroup = this.device.createBindGroup({
         layout: computePipeline.getBindGroupLayout(0),
@@ -520,7 +520,7 @@ export class WebGPUTensorAccelerator {
       layout: 'auto',
       compute: {
        , module: shader,
-        entryPoint: 'main` }
+        entryPoint: 'main' }
     });
     const bindGroup = this.device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),

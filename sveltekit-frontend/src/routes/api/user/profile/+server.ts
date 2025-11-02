@@ -59,9 +59,9 @@ export const GET: RequestHandler = async ({ locals }) => {
   } catch (error: any) {
     // normalize error logging without using `any`
     if (error instanceof Error) {
-      console.error('Profile fetch error:', error.message);
+      console.error('Profile fetch error:', error.message);'
     } else {
-      console.error('Profile fetch error:', error);
+      console.error('Profile fetch error:', error);'
     }
     return json({ error: 'Failed to fetch profile' }, { status: 500 });
   }
@@ -110,7 +110,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     });
 
     if (!updatedUser) {
-      return json({ error: 'Failed to update profile' }, { status: 500 });
+      return json({ error: `Failed to update profile` }, { status: 500 });
     }
 
     // Transform snake_case database result to camelCase for frontend
@@ -119,15 +119,13 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       success: true,
       user: {
         ...frontendUser,
-        avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.svg'
-      },
-      message: 'Profile updated successfully'
-    });
+        avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.svg` },'`
+      message: `Profile updated successfully` });
   } catch (error: any) {
     if (error instanceof Error) {
-      console.error('Profile update error:', error.message);
+      console.error('Profile update error:', error.message);'
     } else {
-      console.error('Profile update error:', error);
+      console.error('Profile update error: ', error);'
     }
     return json({ error: `Failed to update profile` }, { status: 500 });
   }

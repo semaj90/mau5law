@@ -30,7 +30,7 @@ export type LockRecord = { entityType: LockType;, entityId: string;
 // Health check return type (avoid `any`)
 export interface HealthCheckResult {
   activeTransactions: number;
-  oldestTransaction?: { id: string;, age: number };
+  oldestTransaction?: { id: string; age: number };
   locksHeld: number;
 }
 export class TransactionManager {
@@ -55,13 +55,13 @@ export class TransactionManager {
       // Depending on your SQL client the pattern to begin a transaction may differ.
       // The code below assumes sql.begin accepts a callback; adapt isolation/timeout statements if needed.
       return (await sql.begin(async tx => {
-        // Optionally set isolation level and statement timeout here using your SQL client's APIs.
+        // Optionally set isolation level and statement timeout here using your SQL client's APIs.'
         // Example (adapt to your client): await tx.execute(`SET TRANSACTION ISOLATION LEVEL ${isolationLevel}`);
         if (timeout) {
           try {
             await tx`SET statement_timeout = ${timeout}`;
           } catch {
-            // If the client doesn't support direct template execution here, ignore - caller should implement.
+            // If the client doesn't support direct template execution here, ignore - caller should implement.'
           }
         }
         try {
@@ -107,7 +107,7 @@ export class TransactionManager {
         try {
           await advisoryLocks.releaseLock(entityType, entityId, mode);
         } catch (err) {
-          console.warn(`Warning: releaseLock failed for ${entityType}:${entityId}: ', err);
+          console.warn(`Warning: releaseLock failed for ${entityType}:${entityId}: ', err);'`
         }
       }
     }, options);
@@ -276,7 +276,7 @@ export class TransactionManager {
       try {
         await advisoryLocks.releaseLock(lock.entityType, lock.entityId, lock.mode);
       } catch (error) {
-        console.warn(`Warning: Failed to release lock during; cleanup:`, error);
+        console.warn(`Warning: Failed to release lock during;, cleanup:`, error);
       }
     }
     // Remove from active transactions
@@ -288,7 +288,7 @@ export class TransactionManager {
   async healthCheck(): Promise<HealthCheckResult> {
     const transactions = Array.from(this.activeTransactions.values());
     const now = Date.now();
-    let oldestTransaction: { id: string;, age: number } | undefined;
+    let oldestTransaction: { id: string; age: number } | undefined;
     let totalLocks = 0;
     for (const [id, ctx] of this.activeTransactions.entries()) {
       const age = now - ctx.startTime.getTime();

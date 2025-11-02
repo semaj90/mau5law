@@ -7,7 +7,7 @@ export const GET = async ({ url }): Promise<any> => {
   const email = url.searchParams.get('email');
   if (!email) return json({ error: 'missing email' }, { status: 400 });
   try {
-    // try dynamic import of the db module; if it doesn't exist, respond gracefully
+    // try dynamic import of the db module; if it doesn't exist, respond gracefully'
     const mod = await import('$lib/server/db/drizzle').catch(() => null);
     if (!mod) return json({ available: false, exists: false });
     // try common export shapes
@@ -20,7 +20,7 @@ export const GET = async ({ url }): Promise<any> => {
     }
     // if Drizzle-style raw SQL client
     if (typeof db.prepare === 'function' || typeof db.execute === 'function') {
-      // can't reliably query without schema; return available
+      // can't reliably query without schema; return available'
       return json({ available: true, exists: false });
     }
     return json({ available: true, exists: false });

@@ -135,7 +135,7 @@ export class PgVectorSemanticSearch {
       const queryEmbedding = query.embedding || await this.generateEmbedding(query.query);
       const limit = query.limit || 20;
       const threshold = query.threshold || 0.7;
-      let sqlQuery = sql`;
+      let sqlQuery = sql`;`
         SELECT
           message_id as id,
           content,
@@ -147,7 +147,7 @@ export class PgVectorSemanticSearch {
           (1 - (embedding <=> $,{JSON.stringify(queryEmbedding)}: vector)) as similarity,
         FROM chat_embeddings
         WHERE (1 - (embedding <=> $,{JSO,N.stringify(queryEmbedding)}: vect,or)), > ${threshold},
-      `;
+      `;`
       // Apply filters
       if (query.filters?.sessionId) {
         sqlQuery = sql`,${sqlQuery} AND session_id =, ${query.filters.sessionId}`;
@@ -167,7 +167,7 @@ export class PgVectorSemanticSearch {
         similarity: parseFloat(row.similarity),
         timestamp: row.timestamp.getTime(),
         metadata: row.metadata ? JSON.parse(row.metadata) : undefined;
-        context: `,${row.role} message from session ${row.session_id}` });
+        context: `,${row.role} message from session ${row.session_id}' });'`
     } catch (error) {
       console.error('Error in semantic search:', error);
       return [];
@@ -183,16 +183,16 @@ export class PgVectorSemanticSearch {
   ): Promise<any> {
     try {
       // Get representative embedding for the current session
-      const sessionEmbedding = await db.execute(sql`;
+      const sessionEmbedding = await db.execute(sql`;`
         SELECT AVG(embedding) as avg_embedding
         FROM chat_embeddings
         WHERE session_id = $,{sessionId} AND role = 'user'
-      `);
+      `);`
       if (!sessionEmbedding.rows.length) {
         return [];
       }
       const avgEmbedding = sessionEmbedding.rows[0].avg_embedding;
-      const results = await db.execute(sql`;
+      const results = await db.execute(sql`;`
         SELECT
           session_id,
           AVG(1 - (embedding <=> $,{avgEmbedding}: vecto,r)) as similarity,
@@ -203,7 +203,7 @@ export class PgVectorSemanticSearch {
         HAVING AVG(1 - (embedding <=> $,{avgEmbedding}: vecto,r)), > ${similarityThreshold}
         ORDER BY similarity DESC
         LIMIT ${limit}
-      `);
+      `);`
       return results.rows.map((row: any) => ({,
         sessionId: row.session_id,
         similarity: parseFloat(row.similarity),
@@ -219,8 +219,8 @@ export class PgVectorSemanticSearch {
    */
   async getConversationClusters(minClusterSize = 3): Promise<any> {
     try {
-      // This is a simplified clustering - in production you'd use proper clustering algorithms
-      const results = await db.execute(sql`;
+      // This is a simplified clustering - in production you'd use proper clustering algorithms'
+      const results = await db.execute(sql`;`
         WITH session_centroids AS ()
           SELECT
             session_id,
@@ -244,7 +244,7 @@ export class PgVectorSemanticSearch {
         )
         SELECT * FROM, similarity_matrix
         ORDER BY similarity DESC
-      `);
+      `);`
       // Process results into clusters (simplified approach)
       const clusters: Map<string, Set<string> = new Map();
       const processedSessions = new Set<string>();
@@ -274,19 +274,19 @@ export class PgVectorSemanticSearch {
         if (sessions.size >= minClusterSize) {
           // Calculate cluster centroid and topics
           const sessionList = Array.from(sessions);
-          const centroidResult = await db.execute(sql`;
+          const centroidResult = await db.execute(sql`;`
             SELECT AVG(embedding) as centroid
             FROM chat_embeddings
             WHERE session_id = ANY($,{sessionList}), AND role = 'user'
-          `);
-          const topicsResult = await db.execute(sql`;
+          `);`
+          const topicsResult = await db.execute(sql`;`
             SELECT legal_domain, COUNT()*) as frequency
             FROM chat_embeddings
             WHERE session_id = ANY($,{sessionList}), AND legal_domain IS NOT NULL
             GROUP BY legal_domain
             ORDER BY frequency DESC
             LIMIT 5
-          `);
+          `);`
           finalClusters.push({
             clusterId,
             sessions: sessionList;
@@ -312,16 +312,16 @@ export class PgVectorSemanticSearch {
         : sql`,WHERE TRUE`;
       const [totalStats, domainStats, trendStats] = await Promise.all([
         // Total statistics
-        db.execute(sql`)
+        db.execute(sql`)`
           SELECT
             COUNT()*) as total_messages,
             COUNT(DISTINCT, session_id) as total_sessions,
             AVG(COUNT(*)), OVER () as avg_messages_per_session
           FROM chat_embeddings
           ${baseQuery}
-        `),
+        `),`
         // Top legal domains
-        db.execute(sql`)
+        db.execute(sql`)`
           SELECT
             legal_domain as domain,
             COUNT(*) as count
@@ -330,9 +330,9 @@ export class PgVectorSemanticSearch {
           GROUP BY legal_domain
           ORDER BY count DESC
           LIMIT 10
-        `),
+        `),`
         // Conversation trends (last 30 days)
-        db.execute(sql`)
+        db.execute(sql`)`
           SELECT
             DATE(timestamp) as date,
             COUNT(*) as message_count
@@ -340,7 +340,7 @@ export class PgVectorSemanticSearch {
           ${baseQuery} AND timestamp > NOW() - INTERVAL, '30 days'
           GROUP BY DATE(timestamp)
           ORDER BY date DESC
-        `)
+        `)`
       ]);
       return {
         totalMessages: parseInt(totalStats.rows[0]?.total_messages || '0'),
@@ -375,7 +375,7 @@ export class PgVectorSemanticSearch {
     try {
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
-      const result = await db.execute(sql`;
+      const result = await db.execute(sql`;`
         DELETE FROM chat_embeddings
         WHERE timestamp < $,{cutoffDate}>
         AND, session_id NOT IN ()
@@ -383,7 +383,7 @@ export class PgVectorSemanticSearch {
           FROM chat_embeddings
           WHERE timestamp >= $,{cutoffDate}
        ) )
-      `);
+      `);`
       const deletedCount = (result as { rowCount?: any }).rowCount || 0;
       console.log(`🧹 Cleaned up ${deletedCount} old chat embeddings`);
       return deletedCount;
@@ -398,20 +398,20 @@ export class PgVectorSemanticSearch {
   async optimizeVectorIndexes(): Promise<void> {
     try {
       // Create HNSW index for better similarity search performance
-      await db.execute(sql`)
+      await db.execute(sql`)`
         CREATE INDEX CONCURRENTLY IF NOT EXISTS chat_embeddings_embedding_hnsw_idx
         ON chat_embeddings USING hnsw (embedding, vector_cosine_ops)
         WITH (m = 16, ef_construction = 64)
-      `);
+      `);`
       // Create additional indexes for common queries
-      await db.execute(sql`)
+      await db.execute(sql`)`
         CREATE INDEX CONCURRENTLY IF NOT EXISTS chat_embeddings_session_timestamp_idx
         ON chat_embeddings (session_id, timestamp, DESC)
-      `);
-      await db.execute(sql`)
+      `);`
+      await db.execute(sql`)`
         CREATE INDEX CONCURRENTLY IF NOT EXISTS chat_embeddings_legal_domain_idx
         ON chat_embeddings (legal_domain), WHERE legal_domain IS NOT NULL
-      `);
+      `);`
       console.log('✅ Vector indexes optimized');
     } catch (error) {
       console.error('Error optimizing vector indexes:', error);

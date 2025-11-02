@@ -69,7 +69,7 @@ interface SynthesizedEvidence { summary: string;, analysis: string;
   recommendations: string[];
   methodology: string;
   sourceCount: number;
-  correlations: Array<{ type: string; description: string;, items: string[] }>;
+  correlations: Array<{ type: string; description: string; items: string[] }>;
   timeline: { events: Array<{, date: Date | string;
       evidenceId: string;
       title: string;
@@ -78,7 +78,7 @@ interface SynthesizedEvidence { summary: string;, analysis: string;
     }>;
     timespan: { start: Date | string;, end: Date | string;
     };
-    gaps: Array<{ start: string; end: string;, days: number }>;
+    gaps: Array<{ start: string; end: string; days: number }>;
   } | null;
   patterns: Array<{ type: string;, description: string;
     data: Array<{ type?: string; tag?: string; count: number }>;
@@ -173,11 +173,11 @@ export interface SynthesisResult { synthesizedEvidence: SynthesizedEvidence;, e
 }
 
 // New: XState types for synthesis machine
-type SynthesisContext = { request: SynthesisRequest & {;, userId: string };
+type SynthesisContext = { request: SynthesisRequest & {; userId: string };
   evidenceItems: EvidenceItem[];
   synthesisResult: SynthesisResult | null;
   synthesizedEvidenceRecord: EvidenceItem | null;
-  error: { message: string;, code: string; details?: string; stage?: string } | null;
+  error: { message: string; code: string; details?: string; stage?: string } | null;
   cachedAt: string | null;
   userId: string;
 };
@@ -192,8 +192,7 @@ async function initRedis(): Promise<void> {
   if (!redisClient) {
     try {
       redisClient = createClient({
-        url: REDIS_URL || 'redis://localhost:6379'
-      }) as RedisClientType;
+        url: REDIS_URL || 'redis://localhost:6379` }) as RedisClientType;'`
       await redisClient.connect();
     } catch (error: any) {
       console.error('Redis connection failed:', error);
@@ -222,8 +221,8 @@ async function publishSynthesisUpdate(type: string, data: Record<string, unknown
 
 // XState v5 Synthesis Machine
 const synthesisMachine = createMachine({
-  types: {} as { context: SynthesisContext;, events: SynthesisEvents;
-    input: SynthesisRequest & {, userId: string };
+  types: {} as {, context: SynthesisContext;, events: SynthesisEvents;
+   , input: SynthesisRequest & {, userId: string };
   },
   id: 'evidenceSynthesis',
   initial: 'idle',
@@ -246,7 +245,7 @@ const synthesisMachine = createMachine({
           return cached ? JSON.parse(cached) : null;
         }),
         onDone: [
-          {
+          {,
             guard: ({ event }) => event.output !== null,
             target: 'success',
             actions: assign({
@@ -270,7 +269,7 @@ const synthesisMachine = createMachine({
     },
     validatingInput: {
       always: [
-        {
+        {,
           guard: ({ context }) => !context.request.evidenceIds || context.request.evidenceIds.length < 2,
           target: 'failure',
           actions: assign({ error: {, message: 'At least 2 evidence items required for synthesis',
@@ -308,8 +307,7 @@ const synthesisMachine = createMachine({
             error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'ACCESS_DENIED',
-              stage: 'verifyingCaseAccess'
-            })
+              stage: 'verifyingCaseAccess` })'`
           })
         }
       }
@@ -338,8 +336,7 @@ const synthesisMachine = createMachine({
             error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'EVIDENCE_FETCH_FAILED',
-              stage: 'fetchingEvidence'
-            })
+              stage: `fetchingEvidence` })
           })
         }
       }
@@ -395,7 +392,7 @@ const synthesisMachine = createMachine({
               summary: context.synthesisResult.synthesizedEvidence.analysis,
               tags: ['synthesized', context.request.synthesisType, ...extractTagsFromEvidence(context.evidenceItems)],
               chainOfCustody: [
-                {
+                {,
                   action: 'synthesis_created',
                   userId: context.userId, // Use userId from context
                   timestamp: new Date().toISOString(),
@@ -407,8 +404,7 @@ const synthesisMachine = createMachine({
               ],
               uploadedBy: context.userId, // Use userId from context
               isAdmissible: true,
-              confidentialityLevel: 'restricted'
-            })
+              confidentialityLevel: `restricted` })
             .returning();
           return synthesizedEvidence[0];
         }),
@@ -497,19 +493,19 @@ const synthesisMachine = createMachine({
       }
     },
     success: { type: 'final' },
-    failure: { type: 'final' }
+    failure: { type: 'final` }'`
   }
 });
 
 // Type helper for XState snapshot
-type SynthesisSnapshot = SnapshotFrom<typeof synthesisMachine>; // Changed to SnapshotFrom
+type SynthesisSnapshot = SnapshotFrom<typeof, synthesisMachine>; // Changed to SnapshotFrom
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   const startTime = Date.now();
   const requestId = randomUUID(); // Use randomUUID for a more robust unique ID
 
   if (!locals.user) {
-    return json({ error: 'Unauthorized' }, { status: 401 });
+    return json({ error: `Unauthorized` }, { status: 401 });
   }
 
   try {
@@ -533,7 +529,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     );
 
     await Promise.race([
-      new Promise<void>(resolve => {
+      new Promise<void>(resolve => {,
         actor.subscribe((snapshot: SynthesisSnapshot) => {
           if (snapshot.value === 'success' || snapshot.value === 'failure') {
             resolve();
@@ -582,7 +578,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
     });
   } catch (error: any) {
-    console.error(`❌ [${requestId}] Evidence synthesis error: ', error);
+    console.error(`❌ [${requestId}] Evidence synthesis error: ', error);'`
     return json(
       {
         error: 'Evidence synthesis failed',
@@ -643,7 +639,7 @@ async function synthesizeEvidence(
   const ragScore = calculateHighRAGScore(evidenceItems, ragResult, embedding, synthesisType);
 
   return { synthesizedEvidence: {, summary: analysis,
-      analysis: 'Synthesis Analysis (${synthesisType}):\n\n${analysis}\n\nRecommendations:\n- ${recommendations.join('\n- ')}`,
+      analysis: 'Synthesis Analysis (${synthesisType}):\n\n${analysis}\n\nRecommendations:\n- ${recommendations.join('\n- ')}`,'`
       recommendations: recommendations,
       methodology: synthesisType,
       sourceCount: evidenceItems.length,
@@ -663,7 +659,7 @@ function generateSynthesisPrompt(
   synthesisType: string,
   customPrompt?: string
 ): string {
-  const basePrompt = `Legal Evidence Synthesis Task
+  const basePrompt = `Legal Evidence Synthesis Task`
 Synthesis Type: ${synthesisType}
 Evidence Items: ${evidenceContext.length}
 
@@ -672,9 +668,9 @@ ${evidenceContext
   .map(
     (item, idx) => `
   ${idx + 1}. Title: ${item.title}
-     Type: ${item.type}${item.subType ? ` (${item.subType})` : ''}
+     Type: ${item.type}${item.subType ? ` (${item.subType})` : `` }
      Content: ${item.content}
-     Tags: ${item.tags?.join(', ') || 'None` }
+     Tags: ${item.tags?.join(', ') || 'None` }'`
      ${item.collectedAt ? `Collected: ${new Date(item.collectedAt).toLocaleDateString()}` : `` }
      ${item.location ? `Location: ${item.location}` : `` }
   `
@@ -690,11 +686,11 @@ Instructions:
 - Generate actionable recommendations
 - Assess evidentiary value and admissibility implications
 ${synthesisType === 'timeline' ? '- Create chronological sequence with gaps identified' : ''}
-${synthesisType === 'correlation' ? '- Focus on connections and causal relationships' : ''}
-${synthesisType === 'compare' ? '- Highlight similarities, differences, and contradictions' : ''}
+${synthesisType === 'correlation' ? '- Focus on connections and causal relationships' : '` }'`
+${synthesisType === 'compare' ? '- Highlight similarities, differences, and contradictions' : `` }
 ${synthesisType === 'merge' ? '- Combine evidence into coherent narrative' : `` }
 
-Provide comprehensive analysis: ';
+Provide comprehensive analysis: ';'
 
   return basePrompt;
 }
@@ -756,7 +752,7 @@ function extractTagsFromEvidence(evidenceItems: EvidenceItem[]): string[] {
 function identifyCorrelations(evidenceItems: EvidenceItem[]): Array<{ type: string;, description: string;
   items: string[];
 }> {
-  const correlations: Array<{ type: string; description: string;, items: string[] }> = [];
+  const correlations: Array<{ type: string; description: string; items: string[] }> = [];
 
   const datedItems = evidenceItems.filter(item => item.collectedAt);
   if (datedItems.length > 1) {
@@ -796,7 +792,7 @@ function buildTimeline(evidenceItems: EvidenceItem[]): { events: Array<{, date:
   }>;
   timespan: { start: Date | string;, end: Date | string;
   };
-  gaps: Array<{ start: string; end: string;, days: number }>;
+  gaps: Array<{ start: string; end: string; days: number }>;
 } | null {
   const datedItems = evidenceItems
     .filter((item): item is EvidenceItem & { collectedAt: Date | string } => !!item.collectedAt)
@@ -820,8 +816,8 @@ function buildTimeline(evidenceItems: EvidenceItem[]): { events: Array<{, date:
 
 function identifyTimelineGaps(
   datedItems: Array<EvidenceItem & {, collectedAt: Date | string }>
-): Array<{ start: string; end: string;, days: number }> {
-  const gaps: Array<{ start: string; end: string;, days: number }> = [];
+): Array<{ start: string; end: string; days: number }> {
+  const gaps: Array<{ start: string; end: string; days: number }> = [];
   for (let i = 1; i < datedItems.length; i++) {
     const prev = new Date(datedItems[i - 1].collectedAt);
     const curr = new Date(datedItems[i].collectedAt);
@@ -927,12 +923,12 @@ async function addToEnhancedRAG(
 // Get synthesis suggestions endpoint
 export const GET: RequestHandler = async ({ url, locals }) => {
   if (!locals.user) {
-    return json({ error: 'Unauthorized' }, { status: 401 });
+    return json({ error: 'Unauthorized` }, { status: 401 });'`
   }
 
   const caseId = url.searchParams.get('caseId');
   if (!caseId) {
-    return json({ error: 'Case ID required' }, { status: 400 });
+    return json({ error: `Case ID required` }, { status: 400 });
   }
 
   try {
@@ -1043,7 +1039,7 @@ async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Prom
 function findSimilarEvidence(evidenceItems: EvidenceItem[]): EvidenceItem[] {
   const typeGroups = evidenceItems.reduce(
     (acc, item) => {
-      const key = `${item.evidenceType}-${item.subType || 'general` }`;
+      const key = `${item.evidenceType}-${item.subType || 'general` }`;'`
       if (!acc[key]) acc[key] = [];
       acc[key].push(item);
       return acc;

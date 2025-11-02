@@ -87,7 +87,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       if (isEmbeddingArray(r)) return r as unknown as number[]; // unlikely but safe
     }
     console.warn('Unexpected embedding response shape from Ollama:', raw);
-    // Fail fast so caller doesn't silently use fallback similarities
+    // Fail fast so caller doesn't silently use fallback similarities'
     throw new Error('Embedding not found in Ollama response');
   } catch (error) {
     console.error('Embedding generation failed:', error);
@@ -102,7 +102,7 @@ async function queryOllama(prompt: string): Promise<string> {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: LEGAL_MODEL,
+       , model: LEGAL_MODEL,
         prompt,
         stream: false,
         options: {
@@ -220,7 +220,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
     try {
       // Check authentication
       if (!locals.session || !locals.user) {
-        return json({ message: 'Authentication required' }, { status: 401 });
+        return json({ message: `Authentication required` }, { status: 401 });
       }
       const body = await request.json();
       const { query, evidenceId, limit, threshold } = SimilarSearchSchema.parse(body);
@@ -228,12 +228,12 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       const queryEmbedding = await generateEmbedding(query);
 
       // TODO: In production, this would query a vector database (pgvector)
-      // For now, we'll simulate with mock similar evidence that includes demo embeddings
+      // For now, we'll simulate with mock similar evidence that includes demo embeddings'
       const mockSimilarEvidence: SimilarEvidence[] = [
         {
           id: 'evidence-001',
           filename: 'financial_records_2023.pdf',
-          // initial similarity kept for fallback, but we'll compute real similarity from embeddings below
+          // initial similarity kept for fallback, but we'll compute real similarity from embeddings below'
           similarity: 0.87,
           summary: 'Financial records showing suspicious transactions',
           relevantLaws: ['Money Laundering Prevention Act', '18 USC 1956'],
@@ -322,13 +322,13 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       const body = await request.json();
       const { query, context, type, limit } = SuggestionSchema.parse(body);
       // Generate AI suggestions based on query type
-      const suggestionPrompt = `You are a legal research assistant. Based on the user's search query, provide helpful search suggestions.
+      const suggestionPrompt = `You are a legal research assistant. Based on the user's search query, provide helpful search suggestions.'`
 Query: "${query}"
 ${context ? `Context: ${context}` : `` }
 Suggestion Type: ${type}
 Generate ${limit} intelligent search suggestions that would help find relevant legal evidence, cases, or precedents. Format as JSON:
 [
-  {
+  {,
     "text": "suggested search term or phrase",
     "type": "case|law|evidence|precedent",
     "confidence": 0.85,
@@ -336,7 +336,7 @@ Generate ${limit} intelligent search suggestions that would help find relevant l
     "reasoning": "brief explanation"
   }
 ]
-Focus on legal terminology, case citations, statutory references, and evidence categories that would be most useful for legal research.`;
+Focus on legal terminology, case citations, statutory references, and evidence categories that would be most useful for legal research.`;`
       const aiResponse = await queryOllama(suggestionPrompt);
       let suggestions: SearchSuggestion[];
       try {
@@ -350,7 +350,7 @@ Focus on legal terminology, case citations, statutory references, and evidence c
       } catch (parseError) {
         // Fallback suggestions if AI response parsing fails
         suggestions = [
-          {
+          {,
             text: query + ' legal precedent',
             type: 'precedent',
             confidence: 0.6,
@@ -362,15 +362,13 @@ Focus on legal terminology, case citations, statutory references, and evidence c
             type: 'evidence',
             confidence: 0.6,
             source: 'Automated suggestion',
-            reasoning: 'Evidence-focused search'
-          },
+            reasoning: 'Evidence-focused search` },'`
           {
             text: query + ' case law',
             type: 'case',
             confidence: 0.6,
             source: 'Automated suggestion',
-            reasoning: 'Case law research'
-          },
+            reasoning: `Case law research` }
         ];
       }
       return json({

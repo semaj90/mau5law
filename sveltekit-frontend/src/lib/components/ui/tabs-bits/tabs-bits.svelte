@@ -1,6 +1,6 @@
 <!-- tabs-bits.svelte -->
-<script lang="ts">
-  import { Tabs as TabsPrimitive } from 'bits-ui';
+<script, lang="ts">
+  import { Tabs, as TabsPrimitive } from 'bits-ui';
   import { cn } from '$lib/utils';
   let {
     value = $bindable(),

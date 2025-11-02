@@ -7,7 +7,7 @@
  * - Hardcoded fallbacks (lowest priority)
  *
  * Usage:
- * ```typescript
+ * ```typescript`
  * import { ServiceDiscovery } from '$lib/server/helpers/service-discovery';
  *
  * const discovery = new ServiceDiscovery();
@@ -99,7 +99,7 @@ export class ServiceDiscovery {
       }
     } catch (error) {
       console.warn(
-        `[ServiceDiscovery] Error discovering ${serviceName}, using fallback: ',
+        `[ServiceDiscovery] Error discovering ${serviceName}, using fallback: ','`
         error
       );
       url = config.fallback;
@@ -153,7 +153,7 @@ export class ServiceDiscovery {
   /**
    * Get cache statistics
    */
-  getCacheStats(): { size: number;, entries: string[] } {
+  getCacheStats(): { size: number; entries: string[] } {
     return {
       size: this.cache.size,
       entries: Array.from(this.cache.keys())

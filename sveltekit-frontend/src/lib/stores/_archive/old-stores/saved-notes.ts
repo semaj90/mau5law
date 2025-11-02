@@ -211,7 +211,7 @@ class NotesManager {
       const response: Response = await fetch(`${apiEndpoint}/sync`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json` }
+          'Content-Type': 'application/json' }
       });
 
       if (response.ok) {

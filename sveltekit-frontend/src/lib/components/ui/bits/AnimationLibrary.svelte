@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { fade, fly, scale, slide, blur, draw } from 'svelte/transition';
   import { quintOut, elasticOut, backOut, bounceOut } from 'svelte/easing';
   import { createEventDispatcher } from 'svelte';
@@ -38,7 +38,7 @@
   }: EnhancedAnimationLibraryProps = $props();
   // Typed dispatcher avoids deprecated createEventDispatcher signature
   const dispatch = createEventDispatcher<{ motionPreferenceChange: { reduced: boolean } }>();
-  // Check for user's motion preferences
+  // Check for user's motion preferences'
   let prefersReducedMotion = $state<boolean>(false);
   $effect(() => {
     if (typeof window !== 'undefined') {
@@ -133,7 +133,7 @@
         return {
           duration: config.duration ?? 500, // Fixed syntax
           delay: config.delay ?? 0,
-          css: (t: number) => ` // Fixed backtick placement
+          css: (t: number) => ` // Fixed backtick placement`
             transform: translateX(${t < 0.5 ? Math.random() * 10 - 5 : 0}px) scale(${0.8 + t * 0.2});
             opacity: ${t};
             filter: hue-rotate(${Math.random() * 2 - 1 * 180}deg) contrast(${1 + (Math.random() * 2 - 1) * 0.5});
@@ -152,7 +152,7 @@
         return {
           duration: config.duration ?? 800, // Fixed syntax
           delay: config.delay ?? 0,
-          css: (t: number) => ` // Fixed backtick placement
+          css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
             transform: scale(${0.95 + t * 0.05});
             box-shadow:
@@ -171,7 +171,7 @@
         return {
           duration: config.duration ?? 400, // Fixed syntax
           delay: config.delay ?? 0,
-          css: (t: number) => ` // Fixed backtick placement
+          css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
             transform: scale(${0.9 + t * 0.1});
             image-rendering: pixelated;
@@ -188,7 +188,7 @@
         return {
           duration: config.duration ?? 200, // Fixed syntax
           delay: config.delay ?? 0,
-          css: (t: number) => ` // Fixed backtick placement
+          css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
             transform: translateY(${(1 - t) * 5}px);
             filter: blur(${(1 - t) * 1}px);
@@ -203,7 +203,7 @@
         return {
           duration: config.duration ?? 300, // Fixed syntax
           delay: config.delay ?? 0,
-          css: (t: number) => ` // Fixed backtick placement
+          css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
             transform: translateX(${(1 - t) * 30}px) scale(${0.98 + t * 0.02});
             box-shadow: 0 ${t * 4}px ${t * 16}px rgba(0, 0, 0, ${t * 0.1});
@@ -263,9 +263,9 @@
   export { prefersReducedMotion }
 </script>
 
-<!-- Animation library doesn't render anything, it's a utility component -->
-<!-- Use a slot for children content instead of expecting a `children` prop -->
-<!-- Replaced Svelte 5 {@render} (caused parse error) with standard slot for compatibility -->
+<!-- Animation library doesn't render anything, it's a utility, component -->
+<!-- Use a slot for children content instead of expecting, a `children` prop -->
+<!-- Replaced Svelte 5 {@render} (caused parse error) with standard slot for, compatibility -->
 <slot />
 
 <style>

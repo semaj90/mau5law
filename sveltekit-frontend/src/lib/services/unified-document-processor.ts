@@ -30,7 +30,7 @@ export interface DocumentProcessingConfig { enableOCR: boolean;, enableLegalAna
 
 export interface LegalEntity { text: string;, type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'case_number' | 'statute' | 'legal_term';
   confidence: number;
-  position: { start: number;, end: number };
+  position: { start: number; end: number };
   context?: string;
 }
 
@@ -53,15 +53,15 @@ export interface TextChunk { id: string;, content: string;
 
 export interface DocumentStructure {
   title?: string;
-  headers: Array<{ level: number; text: string;, position: number; pageNumber?: number }>;
+  headers: Array<{ level: number; text: string; position: number; pageNumber?: number }>;
   sections: Array<{ id: string;, title: string;
     content: string;
     subsections: Array<Record<string, unknown>>;
     type: string;
-    pageRange: { start: number;, end: number };
+    pageRange: { start: number; end: number };
   }>;
   footnotes: string[];
-  references: Array<{ text: string; type: string; citation?: string; url?: string;, confidence: number }>;
+  references: Array<{ text: string; type: string; citation?: string; url?: string; confidence: number }>;
   signatures: Array<Record<string, unknown>>;
   tables: Array<Record<string, unknown>>;
   images: Array<Record<string, unknown>>;
@@ -282,7 +282,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
     // Move helper to function-body root to satisfy TS rules
     const performLegalAnalysis = async (
       text: string
-    ): Promise<{ summary: string; keywords: string[];, legalDomains: string[] }> => {
+    ): Promise<{ summary: string; keywords: string[]; legalDomains: string[] }> => {
       if (!text) return { summary: '', keywords: [], legalDomains: [] };
       const svc = legalNLP as unknown as LegalNLPService;
       if (typeof svc?.analyzeLegalDocument === 'function') {
@@ -323,8 +323,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
         processingMethod: 'none',
         pageCount: 0,
         languageDetected: 'en',
-        quality: 'poor'
-      },
+        quality: 'poor' },
       embeddings: {
         chunks: [],
         vectors: [],
@@ -348,7 +347,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
           images: []
         }
       },
-      summarization: { sections: [], keyInsights: [], confidence: 0, executiveSummary: `` },
+      summarization: { sections: [], keyInsights: [], confidence: 0, executiveSummary: `' },'`
       storage: { documentHash: '', encryptionStatus: false },
       metadata: {
         processingTime: 0,
@@ -389,7 +388,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
           processingMethod: 'tesseract',
           pageCount: 1,
           languageDetected: 'en',
-          quality: `good` };
+          quality: `good' };'`
         baseResult.metadata.performance.ocrTime = Date.now() - t0;
         stagesCompleted.push('OCR');
       }
@@ -549,7 +548,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
         };
         const res = await fetch(url, {
           method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify(body)
         });
 
@@ -594,14 +593,14 @@ class UnifiedDocumentProcessor extends EventEmitter {
         const queryText = `
           SELECT document_id, chunk_id, content, embedding <=> $1::vector AS similarity, metadata
           FROM document_embeddings
-          ${options?.documentType ? "WHERE metadata->>'documentType' = $3" : `` }
+          ${options?.documentType ? "WHERE metadata->>'documentType' = $3" : `' }'`
           ORDER BY similarity ASC
           LIMIT $2
-        `;
+        `;`
         const params: (string | number)[] = [vectorLiteral, limit];
         if (options?.documentType) params.push(options.documentType);
 
-        // Do not use QueryResult<T> generic; use pg's QueryResult and assert row shape explicitly
+        // Do not use QueryResult<T> generic; use pg's QueryResult and assert row shape explicitly'
         const res = await pgPool.query(queryText, params);
         const rows = (res.rows ?? []) as PgRow[]; // explicit cast for row shape
         return rows.map(r => ({
@@ -613,7 +612,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
         }));
       }
     } catch (err) {
-      console.error('searchEmbeddings error:', err);
+      console.error('searchEmbeddings error:', err);'
       return [];
     }
   }
@@ -677,8 +676,7 @@ export const documentProcessingUtils = { createDefaultConfig: (priority: 'low' |
     chunkSize: 500,
     confidence: 0.7,
     priority,
-    outputFormat: 'full'
-  }),
+    outputFormat: 'full' }),
   createLegalConfig: (; documentType: 'contract' | 'litigation' | 'compliance' | 'discovery'
   ): DocumentProcessingConfig => ({
     enableOCR: true,
@@ -693,8 +691,8 @@ export const documentProcessingUtils = { createDefaultConfig: (priority: 'low' |
     confidence: 0.8,
     priority: documentType === 'litigation' ? 'critical' : 'high',
     legalContext: documentType,
-    outputFormat: `full` }),
-  validateResult: (result: ProcessingResult): { valid: boolean;, issues: string[] } => {
+    outputFormat: `full' }),'`
+  validateResult: (result: ProcessingResult): { valid: boolean; issues: string[] } => {
     const issues: string[] = [];
     if (!result.documentId) issues.push('Missing document ID');
     if (result.success && result.metadata.stagesCompleted.length === 0)
@@ -743,7 +741,7 @@ interface QdrantResponse {
   data?: { result?: QdrantHit[] };
 }
 
-// <-- NEW: typed row shape returned by pg query
+// <-- NEW: typed row shape returned by pg, query
 interface PgRow { document_id: string;, chunk_id: string;
   content: string;
   similarity: number;
@@ -757,7 +755,7 @@ export interface SummarizeResult {
   legalDomains?: string[];
   confidence?: number;
   highlights?: string[]; // optional extracted highlights
-  sections?: Array<{ title?: string; summary?: string; pageRange?: { start: number;, end: number } }>;
+  sections?: Array<{ title?: string; summary?: string; pageRange?: { start: number; end: number } }>;
   raw?: Record<string, unknown>; // preserve additional provider-specific fields
 }
 
@@ -767,9 +765,9 @@ export interface LegalNLPService {
   splitText?: (text: string, chunkSize?: number, overlap?: number) => string[] | Promise<string[]>;
   embedText?: (text: string) => number[] | Promise<number[]>;
   embed?: (text: string) => number[] | Promise<number[]>;
-  analyzeLegalDocument?: (text: string) => Promise<{ summary: string; keywords: string[];, legalDomains: string[] }>;
-  analyze?: (text: string) => Promise<{ summary: string; keywords: string[];, legalDomains: string[] }>;
-  summarize?: (text: string) => Promise<SummarizeResult>; // <-- typed result
+  analyzeLegalDocument?: (text: string) => Promise<{ summary: string; keywords: string[]; legalDomains: string[] }>;
+  analyze?: (text: string) => Promise<{ summary: string; keywords: string[]; legalDomains: string[] }>;
+  summarize?: (text: string) => Promise<SummarizeResult>; // <-- typed, result
   isReady?: boolean;
   initialized?: boolean;
   isInitialized?: boolean;
@@ -847,7 +845,7 @@ export const ollamaClient: OllamaClient = {
     try {
       const res = await fetch(`${url}/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({, model: process.env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest', text })
       });
       if (!res.ok) throw new Error(`Ollama embed failed ${res.status}`);
@@ -919,7 +917,7 @@ export interface QdrantIndexer {
     collection: string,
     vector: number[],
     limit?: number
-  ): Promise<Array<{ id: string | number;, score: number; payload?: Record<string, unknown> }>>;
+  ): Promise<Array<{ id: string | number; score: number; payload?: Record<string, unknown> }>>;
 }
 
 // Try to create a typed adapter when QDRANT is configured; fallback to the in-file HTTP helper
@@ -938,7 +936,7 @@ export const qdrantIndexer: QdrantIndexer = {
       const url = `${QDRANT_URL}/collections/${encodeURIComponent(collection)}/points?wait=true`;
       const res = await fetch(url, {
         method: 'PUT',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({ points })
       });
       return res.ok;
@@ -956,7 +954,7 @@ export const qdrantIndexer: QdrantIndexer = {
       const url = `${QDRANT_URL}/collections/${encodeURIComponent(collection)}/points/search`;
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({ vector, limit, with_payload: true })
       });
       if (!res.ok) return [];

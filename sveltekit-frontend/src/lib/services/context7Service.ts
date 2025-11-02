@@ -13,7 +13,7 @@ export interface VectorIntelligence { query: string;, results: Array<Record<str
   suggestions: string[];
 }
 export interface AutoFixResult { success: boolean;, timestamp: string;
-  summary: { filesProcessed: number; filesFixed: number; totalIssues: number; dryRun: boolean;, area: string };
+  summary: { filesProcessed: number; filesFixed: number; totalIssues: number; dryRun: boolean; area: string };
   fixes: Record<string, Array<Record<string, unknown>>>;
   configImprovements: string[];
   recommendations: string[];
@@ -94,7 +94,7 @@ export class Context7Service {
   // Analyze a component (cached, sets reactive store)
   public async analyzeComponent(component: string, context?: string): Promise<Context7Analysis> {
     this.isAnalyzing.set(true);
-    const cacheKey = `analysis-${component}-${context ?? 'default` }`;
+    const cacheKey = `analysis-${component}-${context ?? 'default` }`;'`
     if (this.cacheEnabled && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey) as Context7Analysis;
       this.currentAnalysis.set(cached);
@@ -187,7 +187,7 @@ export class Context7Service {
           filesFixed: 0,
           totalIssues: 0,
           dryRun: !!options?.dryRun,
-          area: options?.area ?? 'all` },
+          area: options?.area ?? 'all` },'`
         fixes: {} as Record<string, Array<Record<string, unknown>>>,
         configImprovements: [],
         recommendations: []
@@ -209,7 +209,7 @@ export class Context7Service {
           filesFixed: 0,
           totalIssues: 0,
           dryRun: !!options?.dryRun,
-          area: options?.area ?? 'all` },
+          area: options?.area ?? 'all` },'`
         fixes: {} as Record<string, Array<Record<string, unknown>>>,
         configImprovements: [],
         recommendations: [error instanceof Error ? error.message : 'Unknown error']
@@ -229,8 +229,8 @@ export class Context7Service {
 
       // Reuse component analysis as a high-level guidance source
       const analysis = await this.analyzeComponent(
-        `legal-document-${caseType ?? 'general` }`,
-        `Legal document analysis for ${jurisdiction ?? 'general` }`
+        `legal-document-${caseType ?? 'general` }`,'`
+        `Legal document analysis for ${jurisdiction ?? 'general` }`'`
       );
 
       // Simple heuristic for riskScore and confidence based on extracted entities
@@ -298,10 +298,10 @@ export class Context7Service {
   // Fallback/default helpers
   private getDefaultTools(): Context7Tool[] {
     return [
-      {
+      {,
         name: 'analyze-stack',
         description: 'Analyze technology stack components',
-        schema: { type: 'object', properties: { component: {, type: 'string' } } }
+        schema: { type: 'object', properties: { component: {, type: `string` } } }
       },
       {
         name: 'generate-best-practices',
@@ -373,7 +373,7 @@ export class Context7Service {
    * @returns A list of suggested integrations.
    */
   async suggestIntegration(system: string, securityAspect: string): Promise<string[]> {
-    console.log(`Context7: Suggesting integration; for: '${system}' with security, aspect: '${securityAspect}'`);
+    console.log(`Context7: Suggesting integration;, for: '${system}' with security, aspect: '${securityAspect}'`);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 150));
     return [
@@ -389,7 +389,7 @@ export class Context7Service {
    * @returns A list of best practice recommendations.
    */
   async generateBestPractices(area: string): Promise<string[]> {
-    console.log(`Context7: Generating best practices for; area: '${area}'`);
+    console.log(`Context7: Generating best practices for;, area: '${area}'`);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 120));
     if (area === 'performance') {

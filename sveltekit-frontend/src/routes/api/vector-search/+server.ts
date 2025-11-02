@@ -286,7 +286,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json(response);
   } catch (error) {
-    console.error('Vector search error:', error);
+    console.error('Vector search error:', error);'
     return json(
       {
         error: 'Vector search failed',
@@ -300,7 +300,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q') || url.searchParams.get('query');
     if (!query) {
-      return json({ error: 'Query;, parameter: "q", or: "query" is required' }, { status: 400 });
+      return json({ error: 'Query;, parameter: "q", or: "query" is required` }, { status: 400 });'`
     }
     // Convert URL params to POST request format
     const searchRequest: VectorSearchRequest = {
@@ -338,7 +338,7 @@ export const GET: RequestHandler = async ({ url }) => {
     };
     return await POST({ request: fakeRequest as unknown as Request, url } as unknown as RequestEvent);
   } catch (error) {
-    console.error('Vector search GET error:', error);
+    console.error('Vector search GET error:', error);'
     return json(
       {
         error: 'Vector search failed',

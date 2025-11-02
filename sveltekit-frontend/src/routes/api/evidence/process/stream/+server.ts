@@ -12,7 +12,7 @@ type ServerFileLike = {
 };
 
 type ActorLike = {
-  subscribe?: (
+  subscribe?: (;
     listener: (state: any) => void
   ) => (() => void) | { unsubscribe?: () => void } | { stop?: () => void } | undefined;
   send?: (evt: any) => void;
@@ -23,7 +23,7 @@ type ActorLike = {
 
 // Active processing sessions (no longer store controllers; GET opens SSE connections on demand)
 // changed: actor typed as ActorLike instead of `any`
-const activeSessions = new Map<string, { actor: ActorLike;, startTime: number }>();
+const activeSessions = new Map<string, { actor: ActorLike; startTime: number }>();
 
 // POST starts or updates a processing session (no SSE here)
 export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
@@ -42,7 +42,7 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
       : `evidence_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
   // typed session retrieval to avoid: 'unknown' actor
-  let session = activeSessions.get(evidenceKey) as { actor: ActorLike;, startTime: number } | undefined;
+  let session = activeSessions.get(evidenceKey) as { actor: ActorLike; startTime: number } | undefined;
   if (!session) {
     // cast createActor result to ActorLike for local usage
     const actor: ActorLike = createActor(evidenceProcessingMachine, { input: {, evidenceId: evidenceKey,
@@ -60,14 +60,14 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
   // If file provided, send event (can support multiple POSTs)
   if (file) {
     try {
-      // Create a server-safe mock file if File isn't available (Node environments)
+      // Create a server-safe mock file if File isn't available (Node environments)'
       let mockFile: File | ServerFileLike;
       if (typeof File !== 'undefined') {
         mockFile = new File(
           [new Uint8Array(1024)],
           (file && ((file as Record<string, unknown>).name as string)) || 'document.pdf',
           {
-            type: (file && ((file as Record<string, unknown>).type as string)) || 'application/pdf` }
+            type: (file && ((file as Record<string, unknown>).type as string)) || 'application/pdf` }'`
         );
       } else {
         mockFile = {
@@ -84,7 +84,7 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
     } catch (e) {
       return new Response(JSON.stringify({ error: 'Failed to stage file', details: String(e) }), {
         status: 500,
-        headers: { 'Content-Type': `application/json` }
+        headers: { 'Content-Type': 'application/json' }
       });
     }
   }
@@ -97,7 +97,7 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
     JSON.stringify({
       evidenceId: evidenceKey,
       status: 'started',
-      streamingEndpoint: `/api/evidence/process/stream?evidenceId=${encodeURIComponent(evidenceKey)}' }),
+      streamingEndpoint: '/api/evidence/process/stream?evidenceId=${encodeURIComponent(evidenceKey)}' }),
     { headers: { 'Content-Type': 'application/json' } }
   );
 }) as unknown as RequestHandler;
@@ -118,16 +118,16 @@ export const PUT = (async ({ request }: RequestEvent): Promise<Response> => {
     return new Response(
       JSON.stringify({
         success: true,
-        message: 'Event ${typeof event === 'object' && event !== null ? (event as Record<string, unknown>).type : String(event)} sent to session ${evidenceId}` }),
+        message: 'Event ${typeof event === 'object' && event !== null ? (event as Record<string, unknown>).type : String(event)} sent to session ${evidenceId}` }),'`
       {
-        headers: { 'Content-Type': `application/json` }
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: `Failed to send, event: ${String(
+      JSON.stringify({ error: 'Failed to send, event: ${String('
           (error as unknown) instanceof Error ? (error as Error).message : error
-        )}' }),
+        )}' }),'
       {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
@@ -142,14 +142,14 @@ export const GET = (async ({ url }: RequestEvent): Promise<Response> => {
   if (!evidenceId) {
     return new Response(JSON.stringify({ error: 'evidenceId query param is required' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json` }'`
     });
   }
   const session = activeSessions.get(evidenceId);
   if (!session) {
-    return new Response(JSON.stringify({ error: 'No active session for evidenceId' }), {
+    return new Response(JSON.stringify({ error: `No active session for evidenceId` }), {
       status: 404,
-      headers: { 'Content-Type': `application/json` }
+      headers: { 'Content-Type`: `application/json` }'`
     });
   }
   const encoder = new TextEncoder();
@@ -236,13 +236,13 @@ export const DELETE = (async ({ url }: RequestEvent): Promise<Response> => {
   if (!session) {
     return new Response(JSON.stringify({ error: 'No active session found' }), {
       status: 404,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json` }'`
     });
   }
   // graceful, typed stop
   safeStop(session.actor);
   activeSessions.delete(evidenceId);
-  return new Response(JSON.stringify({ success: true, message: 'Session cancelled' }), {
+  return new Response(JSON.stringify({ success: true, message: `Session cancelled` }), {
     headers: { 'Content-Type': `application/json` }
   });
 }) as unknown as RequestHandler;

@@ -11,8 +11,8 @@ try {
   _redis = null;
 }
 
-export async function logStructuredError(payload: { source: string;, level: 'error' | 'warn' | 'info';
-  event: string;
+export async function logStructuredError(payload: {, source: string;, level: 'error' | 'warn' | 'info';
+ , event: string;
  , message: string;
   error?: any;
   context?: Record<string, unknown>;

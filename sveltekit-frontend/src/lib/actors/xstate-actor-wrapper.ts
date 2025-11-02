@@ -56,7 +56,7 @@ export interface DocumentProcessingOutput {
   documentId: string;
   summary?: string;
   entities?: Array<any>;
-  embeddings?: { chunks: number;, dimensions: number };
+  embeddings?: { chunks: number; dimensions: number };
   processingTime: number;
   success: boolean;
 }
@@ -65,7 +65,7 @@ export const documentProcessingActor = fromPromise(async ({ input }: { input: Do
   try {
     const response = await fetchWithTimeout('/api/ai/process-document', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify(input),
       timeout: 60000, // 60s timeout for document processing
     });
@@ -103,7 +103,7 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
   try {
     const response = await fetchWithTimeout('/api/ai/legal-analysis', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify(input),
       timeout: 45000
     });
@@ -140,7 +140,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
   try {
     const response = await fetchWithTimeout('/api/ai/rag-search', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify(input),
       timeout: 30000
     });
@@ -152,24 +152,24 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
       results: data.results || [],
       totalResults: data.totalResults || 0,
       processingTime: Date.now() - startTime,
-      model: data?.model || 'unknown` } as RAGSearchOutput;
+      model: data?.model || 'unknown' } as RAGSearchOutput;
   } catch (error: any) {
     throw new Error(`RAG search actor failed: ${error.message}`);
   }
 });
 // ===== ACTOR FACTORY FUNCTIONS =====
-export function createEmbeddingActor(input: EmbeddingActorInput): ActorRefFrom<typeof embeddingActor> {
+export function createEmbeddingActor(input: EmbeddingActorInput): ActorRefFrom<typeof, embeddingActor> {
   return createActor(embeddingActor, { input });
 }
 export function createDocumentProcessingActor(
   input: DocumentProcessingInput
-): ActorRefFrom<typeof documentProcessingActor> {
+): ActorRefFrom<typeof, documentProcessingActor> {
   return createActor(documentProcessingActor, { input });
 }
-export function createLegalAnalysisActor(input: LegalAnalysisInput): ActorRefFrom<typeof legalAnalysisActor> {
+export function createLegalAnalysisActor(input: LegalAnalysisInput): ActorRefFrom<typeof, legalAnalysisActor> {
   return createActor(legalAnalysisActor, { input });
 }
-export function createRAGSearchActor(input: RAGSearchInput): ActorRefFrom<typeof ragSearchActor> {
+export function createRAGSearchActor(input: RAGSearchInput): ActorRefFrom<typeof, ragSearchActor> {
   return createActor(ragSearchActor, { input });
 }
 // ===== WORKFLOW ORCHESTRATION ACTOR =====
@@ -279,7 +279,7 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
     throw new Error(`Workflow actor failed: ${error.message}`);
   }
 });
-export function createWorkflowActor(input: WorkflowInput): ActorRefFrom<typeof workflowActor> {
+export function createWorkflowActor(input: WorkflowInput): ActorRefFrom<typeof, workflowActor> {
   return createActor(workflowActor, { input });
 }
 // ===== UTILITY FUNCTIONS =====

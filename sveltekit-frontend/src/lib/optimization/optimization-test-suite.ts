@@ -25,7 +25,7 @@ interface CacheStats { cache: {, size: number };
 interface RedisSOMCacheOptimizer {
   set(key: string, value: any, options?: { metadata?: Record<string, unknown> }): Promise<void>;
   get(key: string): Promise<unknown>;
-  analyzeAccessPatterns(): Promise<{ clusters: any[];, recommendations: string[] }>;
+  analyzeAccessPatterns(): Promise<{ clusters: any[]; recommendations: string[] }>;
   getStats(): CacheStats;
   // Added to match ImportedEnhancedOptimizationSuite expectations:
   initialize(): Promise<void>;
@@ -229,7 +229,7 @@ export class OptimizationTestSuite {
           throw new Error('VS Code Optimizer component is not available for memory monitoring.');
         }
         const stats = (await vscode.getStats()) || { cache: {, utilization: 50 }, commands: 0 }; // Used local variable
-        const memory_efficient = stats.cache.utilization < 90; // Less than 90% cache utilization
+        const memory_efficient = stats.cache.utilization < 90; // Less than 90% cache, utilization
         tests.push({
           name: 'Memory Usage Monitoring',
           passed: memory_efficient,
@@ -272,11 +272,11 @@ export class OptimizationTestSuite {
       return {
         name: 'Redis SOM Cache Tests',
         tests: [
-          {
+          {,
             name: 'Cache component not available',
             passed: false,
             duration_ms: 0,
-            error: `Redis SOM Cache component is null or undefined` },
+            error: `Redis SOM Cache component is null or undefined` }
         ],
         passed: 0,
         failed: 1,
@@ -359,7 +359,7 @@ export class OptimizationTestSuite {
           await cache.set(`pressure_test_${i}`, large_data); // Used local variable
         }
         const after_stats = cache.getStats() || { cache: {, size: 0 }, memory: { utilization: 0 } }; // Used local variable
-        const handled_pressure = after_stats.memory.utilization <= 100; // Should not exceed 100%
+        const handled_pressure = after_stats.memory.utilization <= 100; // Should not exceed, 100%
         tests.push({
           name: 'Memory Pressure Handling',
           passed: handled_pressure,
@@ -403,7 +403,7 @@ export class OptimizationTestSuite {
       return {
         name: 'Docker Optimizer Tests',
         tests: [
-          {
+          {,
             name: 'Docker component not available',
             passed: false,
             duration_ms: 0,
@@ -544,12 +544,11 @@ export class OptimizationTestSuite {
       return {
         name: 'JSON WASM Optimizer Tests',
         tests: [
-          {
+          {,
             name: 'JSON WASM Optimizer component not available',
             passed: false,
             duration_ms: 0,
-            error: 'JSON WASM Optimizer component is null or undefined'
-          },
+            error: 'JSON WASM Optimizer component is null or undefined` }'`
         ],
         passed: 0,
         failed: 1,
@@ -636,8 +635,7 @@ export class OptimizationTestSuite {
           duration_ms: performance.now() - start,
           details: {
             wasm_available: wasm_initialized,
-            note: wasm_initialized ? 'WebAssembly acceleration available' : 'Using JavaScript fallback'
-          }
+            note: wasm_initialized ? 'WebAssembly acceleration available' : `Using JavaScript fallback` }
         });
       } catch (error: any) {
         // Changed type
@@ -673,11 +671,11 @@ export class OptimizationTestSuite {
       return {
         name: 'Context7 Integration Tests',
         tests: [
-          {
+          {,
             name: 'Context7 Integrator component not available',
             passed: false,
             duration_ms: 0,
-            error: `Context7 Integrator component is null or undefined` },
+            error: `Context7 Integrator component is null or undefined` }
         ],
         passed: 0,
         failed: 1,
@@ -801,7 +799,7 @@ export class OptimizationTestSuite {
     };
     // Benchmark VS Code commands
     {
-      // Removed: 'const start = performance.now();' as it was unused for this benchmark's metric
+      // Removed: 'const start = performance.now();' as it was unused for this benchmark's metric'
       let successful_commands = 0;
       const commands = ['cache.optimize', 'docker.checkHealth', 'typescript.checkTypes'];
       const vscode = this.suite.vscode;
@@ -967,7 +965,7 @@ export class OptimizationTestSuite {
 ## Test Suite Results
 ${report.test_suites
   .map(
-    (suite: TestSuite) => `### ${suite.name} ${suite.overall_passed ? '✅' : `❌` }
+    (suite: TestSuite) => `### ${suite.name} ${suite.overall_passed ? '✅' : `❌` }`
 - Passed: ${suite.passed}/${suite.tests.length} tests
 - Duration: ${(suite.total_duration_ms / 1000).toFixed(2)}s
 ${suite.tests
@@ -978,14 +976,14 @@ ${suite.tests
   .join('\n\n')}
 ## Recommendations
 ${report.recommendations.map((rec: string) => `- ${rec}`).join('\n')}
-`;
+`;`
   }
 }
 // === Factory Functions ===
 export function createTestSuite(): OptimizationTestSuite {
   return new OptimizationTestSuite();
 }
-export async function runQuickValidation(): Promise<{ passed: boolean; summary: string;, details: ValidationReport }> {
+export async function runQuickValidation(): Promise<{ passed: boolean; summary: string; details: ValidationReport }> {
   // Changed return type
   const testSuite = createTestSuite();
   const report = await testSuite.runAllTests();

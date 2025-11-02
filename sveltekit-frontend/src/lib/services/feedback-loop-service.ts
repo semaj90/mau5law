@@ -3,7 +3,7 @@ import type { User } from '$lib/types';
  * Enhanced Feedback Loop Service with PostgreSQL + pgvector
  * Collects user ratings, trains on interactions, and provides adaptive AI responses with semantic analysis
  */
-import { db as untypedDb } from '$lib/server/db/drizzle'; // Import as untypedDb
+import { db, as untypedDb } from '$lib/server/db/drizzle'; // Import as untypedDb
 import { NodePgDatabase } from 'drizzle-orm/node-postgres'; // For typing Drizzle DB
 import * as mainSchema from '$lib/server/db/schema'; // Import main schema as a namespace
 import { feedbackSchema } from '$lib/server/db/schema-feedback'; // Import feedback schema as a named export
@@ -138,8 +138,8 @@ export class FeedbackLoopService {
       return ratingId;
     } catch (error: any) {
       // Changed from any to unknown
-      console.error('❌ Error collecting rating: `, error);
-      throw new Error(`Failed to collect rating: ${error instanceof Error ? error.message : `Unknown error` }`);
+      console.error('❌ Error collecting rating: `, error);'`
+      throw new Error(`Failed to collect rating: ${error instanceof Error ? error.message : `Unknown error' }`);'`
     }
   }
   /**
@@ -206,10 +206,10 @@ export class FeedbackLoopService {
           )}]: real[]) > 0.8
         ORDER BY similarity DESC
         LIMIT 5
-      `);
+      `);`
       if (similarInteractions.rows.length > 0) {
         console.log(`🔍 Found ${similarInteractions.rows.length} similar low-rated interactions for pattern analysis`);
-        // This could trigger specialized training for this user's problem areas
+        // This could trigger specialized training for this user's problem areas'
         for (const interaction of similarInteractions.rows) {
           console.log(`   - Similarity: ${(interaction.similarity as number).toFixed(3)}, Score: ${interaction.score}`);
         }
@@ -324,7 +324,7 @@ export class FeedbackLoopService {
       //   .where(and(eq(db.userRatings.userId, userId), lt(db.userRatings.score, 3)))
       //   .orderBy(desc(db.userRatings.timestamp))
       //   .limit(10);
-      // Create training scenarios based on user's common queries and weak areas
+      // Create training scenarios based on user's common queries and weak areas'
       for (const query of pattern.commonQueries.slice(0, 5)) {
         for (const weakArea of pattern.learningProgress.weakAreas) {
           const trainingScenario = {
@@ -341,7 +341,7 @@ export class FeedbackLoopService {
       console.log(`📚 Scheduled personalized training for user ${userId}: ${this.trainingQueue.length} scenarios`);
     } catch (error: any) {
       // Changed from any to unknown
-      console.error('❌ Error scheduling personalized training: `, error);
+      console.error('❌ Error scheduling personalized training: `, error);'`
     }
   }
   /**
@@ -482,7 +482,7 @@ export class FeedbackLoopService {
       personalizedSettings: {
         responseTimeThreshold: pattern.responseTimeThreshold,
         qualityExpectations: pattern.qualityExpectations,
-        difficultyPreference: pattern.commonQueries.length > 5 ? 'intermediate' : `beginner` }
+        difficultyPreference: pattern.commonQueries.length > 5 ? 'intermediate' : `beginner' }'`
     };
   }
   /**
@@ -499,7 +499,7 @@ export class FeedbackLoopService {
       const totalRatings = recentRatings.length;
       const averageRating =
         totalRatings > 0
-          ? recentRatings.reduce((sum, r) => sum + r.score, 0) / totalRatings // Use r.score directly as it's a number
+          ? recentRatings.reduce((sum, r) => sum + r.score, 0) / totalRatings // Use r.score directly as it's a number'
           : 0;
       // Calculate rating distribution
       const ratingDistribution: { [score: number]: number } = {};

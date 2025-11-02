@@ -14,7 +14,7 @@ export const GET: RequestHandler = async () => {
       }
     });
   } catch (error) {
-    console.error('Health check error:', error);
+    console.error('Health check error:', error);'
     return json(
       {
         success: false,

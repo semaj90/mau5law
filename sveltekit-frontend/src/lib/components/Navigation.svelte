@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { browser } from '$app/environment';
   interface Route {
     name: string;
@@ -54,20 +54,20 @@
     }
   });
 </script>
-<nav class="nes-container is-rounded bg-gray-800 p-4 shadow-md flex flex-wrap items-center justify-between relative">
-  <ul class="flex flex-wrap gap-2">
+<nav class="nes-container is-rounded bg-gray-800 p-4 shadow-md flex flex-wrap items-center justify-between, relative">
+  <ul class="flex flex-wrap, gap-2">
     {#each Array.isArray(navItems) ? navItems : [] as item}
-      <li class="relative list-none">
-        <a href={item.href} class="nes-btn is-primary">{item.name}</a>
+      <li class="relative, list-none">
+        <a href={item.href} class="nes-btn, is-primary">{item.name}</a>
       </li>
     {/each}
   </ul>
   <!-- Search -->
-  <div class="relative">
-    <button class="nes-btn is-warning" onclick={toggleSearch} aria-expanded={searchOpen}>Search</button>
+  <div, class="relative">
+    <button class="nes-btn, is-warning" onclick={toggleSearch} aria-expanded={searchOpen}>Search</button>
   </div>
 </nav>
-<!-- Search Modal - Svelte 5 syntax -->
+<!-- Search Modal - Svelte 5, syntax -->
 {#if searchOpen}
   <div
     class="search-modal-overlay"
@@ -77,10 +77,10 @@
     onclick={overlayClick}
     onkeydown={overlayKeydown}
   >
-    <div class="search-modal">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold">Search</h2>
-        <button class="nes-btn is-error" onclick={toggleSearch} aria-label="Close">X</button>
+    <div, class="search-modal">
+      <div class="flex justify-between items-center, mb-4">
+        <h2 class="text-xl, font-bold">Search</h2>
+        <button class="nes-btn, is-error" onclick={toggleSearch} aria-label="Close">X</button>
       </div>
       <input
         bind:this={searchInput}
@@ -92,7 +92,7 @@
       />
     </div>
   {/if}
-<style lang="postcss">
+<style, lang="postcss">
   nav {
     @apply relative;
   }

@@ -35,7 +35,7 @@ export interface LocalFileRecord { id: string;, fileName: string;
 }
 
 /**
- * Interface for file details returned by the server's /api/evidence/{fileId} endpoint.
+ * Interface for file details returned by the server's /api/evidence/{fileId} endpoint.'
  * This assumes a comprehensive structure for file metadata and access URL.
  */
 export interface ServerFileDetails { fileId: string; // Unique identifier for the file on the server, fileName: string;
@@ -247,7 +247,7 @@ class EnhancedFileUpload {
       return localStorageFiles.deleteFile(fileId);
     } else {
       const response = await fetch(`/api/evidence/${encodeURIComponent(fileId)}`, {
-        method: 'DELETE' });
+        method: 'DELETE` });'`
       return response.ok;
     }
   }

@@ -18,15 +18,15 @@ export interface SessionContext { user: User | null;, sessionId: string | null;
 }
 // Session events
 type SessionEvent =
-  | { type: 'AUTHENTICATE'; user: User;, sessionId: string }
+  | { type: 'AUTHENTICATE'; user: User; sessionId: string }
   | { type: 'REFRESH_SESSION' }
   | { type: 'LOGOUT' }
   | { type: 'SESSION_EXPIRED' }
-  | { type: 'ACTIVITY'; route: string;, action: string }
+  | { type: 'ACTIVITY'; route: string; action: string }
   | { type: 'SECURITY_CHECK' }
-  | { type: 'PERMISSION_CHECK';, permission: string }
+  | { type: 'PERMISSION_CHECK'; permission: string }
   | { type: 'EXTEND_SESSION' }
-  | { type: 'ELEVATE_SECURITY';, reason: string }
+  | { type: 'ELEVATE_SECURITY'; reason: string }
   | { type: 'HEALTH_CHECK' };
 // Define expected return types for services
 interface AuthenticationResult { expiresAt: string;, permissions: string[];
@@ -51,7 +51,7 @@ export const sessionMachine = createMachine({
   id: 'sessionManager',
   initial: 'unauthenticated',
   context: {
-    user: null,
+   , user: null,
     sessionId: null,
     expiresAt: null,
     lastActivity: null,
@@ -59,17 +59,17 @@ export const sessionMachine = createMachine({
     permissions: [],
     currentRoute: '/',
     sessionHealth: {
-      isValid: false,
+     , isValid: false,
       warningCount: 0,
       lastHealthCheck: null
     },
     analyticsData: {
-      loginTime: null,
+     , loginTime: null,
       activityCount: 0,
       featuresUsed: []
     }
   } as SessionContext,
-  states: { unauthenticated: {, entry: ['clearSessionData'],
+  states: {, unauthenticated: {, entry: ['clearSessionData'],
       on: {, AUTHENTICATE: {, target: 'authenticating',
           actions: assign(authenticateAssign)
         }
@@ -294,8 +294,7 @@ export const sessionMachine = createMachine({
     expired: {
       entry: ['logSessionExpired'],
       after: {
-        3000: 'unauthenticated'
-      }
+        3000: `unauthenticated` }
     }
   }
 });
@@ -317,7 +316,7 @@ export const sessionActions = {
   recordActivity: ({
     context: _context,
     event
-  }: { context: SessionContext;, event: Extract<SessionEvent, { type: 'ACTIVITY' }>;
+  }: { context: SessionContext;, event: Extract<SessionEvent, { type: `ACTIVITY` }>;
   }) => {
     const activity = {
       route: event.route,
@@ -325,7 +324,7 @@ export const sessionActions = {
       timestamp: new Date()
     };
     // Log activity for analytics
-    console.log('User activity:', activity);
+    console.log('User activity: `, activity);'`
   },
   updateLastActivity: assign({
     lastActivity: () => new Date(),

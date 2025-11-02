@@ -280,7 +280,7 @@ export class LangChainOllamaIntegration {
       Focus on key legal concepts, obligations, rights, and potential issues.
       Document:
       {content}
-      Legal, Summary: ');
+      Legal, Summary: ');'
     try {
       const chain = summaryPrompt.pipe(this.chatModel).pipe(new StringOutputParser());
       const result = await chain.invoke({ content: content.slice(0, 4000) }); // Limit for context
@@ -379,7 +379,7 @@ export class LangChainOllamaIntegration {
   private async callGoMicroserviceRAG(
     question: string,
     context: string[]
-  ): Promise<{ success: boolean;, data: RagResult | null }> {
+  ): Promise<{ success: boolean; data: RagResult | null }> {
     try {
       const response = await fetch(`${this.config.goMicroservice.enhancedRAGUrl}/api/rag`, {
         method: 'POST',
@@ -423,7 +423,7 @@ export class LangChainOllamaIntegration {
       if (context.length > 0) {
         const contextDocs = context.map((text, index) => ({
           pageContent: text,
-          metadata: {, source: `context-${index}`, type: 'context' }
+          metadata: {, source: `context-${index}`, type: `context` }
         }));
         await this.vectorStore.addDocuments(contextDocs);
       }
@@ -531,7 +531,7 @@ export class LangChainOllamaIntegration {
       - Highlight any potential legal issues or precedents
       - Use professional legal terminology
       - If uncertain, state limitations clearly
-      Answer: ';
+      Answer: ';'
     const prompt = PromptTemplate.fromTemplate(legalPrompt);
     this.qaChain = RetrievalQAChain.fromLLM(
       this.chatModel as any, // Workaround for library type issue
@@ -589,14 +589,13 @@ export class LangChainOllamaIntegration {
 export const langChainOllamaService = new LangChainOllamaIntegration({
   ollamaBaseUrl: 'http://localhost:11434',
   models: {
-    chat: 'gemma3-legal',
-    embedding: 'nomic-embed-text'
-  },
+   , chat: 'gemma3-legal',
+    embedding: `nomic-embed-text` },
   gpu: {
-    enabled: true,
+   , enabled: true,
     device: 'RTX3060Ti',
     llamaCppConfig: {
-      ngl: 35, // RTX 3060 Ti optimized
+     , ngl: 35, // RTX 3060 Ti optimized
       contextSize: 4096,
       batchSize: 8
     }

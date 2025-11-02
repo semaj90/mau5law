@@ -72,7 +72,7 @@ function safeNumber(obj: any, key: string, fallback = 0): number {
   const record = obj as Record<string, unknown>;
   const v = record[key];
   if (typeof v === 'number' && Number.isFinite(v)) return v;
-  // if it's a numeric string, try to coerce safely
+  // if it's a numeric string, try to coerce safely'
   if (typeof v === 'string' && v.trim() !== '') {
     const n = Number(v);
     if (Number.isFinite(n)) return n;
@@ -93,7 +93,7 @@ function hasProcessingMetricsShape(v: any): boolean {
 export class UnifiedLegalOrchestrationService {
   private orchestrator: OptimizedRabbitMQOrchestrator;
 
-  // Use defensive, minimal shapes so we don't depend on exact exported member names
+  // Use defensive, minimal shapes so we don't depend on exact exported member names'
   private queueManager: {
     start?: (orchestrator?: any, opts?: any) => Promise<void> | void;
     attachQueue?: (queueName: string, types: JobType[]) => Promise<void> | void;
@@ -106,7 +106,7 @@ export class UnifiedLegalOrchestrationService {
   private stateManager: {
     start?: (opts?: any) => Promise<void> | void;
     createJobStatusStore?: (jobId: string) => Readable<JobStatus | undefined>;
-    subscribe?: (sub: {, type: string; handler: (data: any) => void }) => void;
+    subscribe?: (sub: {, type: string;, handler: (data: any) => void }) => void;
     getActiveSubscriptions?: () => number;
     shutdown?: () => Promise<void> | void;
   } = {};
@@ -173,7 +173,7 @@ export class UnifiedLegalOrchestrationService {
       const jobType = request.processingPipeline[i];
       const previousJobId = i > 0 ? jobIds[i - 1] : undefined;
 
-      // Build a permissive job shape that matches the orchestrator's expectations
+      // Build a permissive job shape that matches the orchestrator's expectations'
       const orchestratorJob: Partial<OrchestratorJobDefinition> = {
         type: String(jobType),
         payload: {

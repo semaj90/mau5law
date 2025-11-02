@@ -36,7 +36,7 @@ async function testStep(stepName: string, testFn: () => Promise<unknown>): Promi
   } catch (error: any) {
     const responseTime = Date.now() - startTime;
     const errMsg = error instanceof Error ? error.message : String(error);
-    console.error(`❌ ${stepName} - Failed: ', errMsg);
+    console.error(`❌ ${stepName} - Failed: ', errMsg);'`
     return {
       step: stepName,
       status: 'error',
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async event => {
   testResults.push(
     await testStep('OCR Service Health Check', async () => {
       if (mockModeFlag) {
-        return { ocr: {, status: 'mock-operational' } };
+        return { ocr: {, status: `mock-operational` } };
       }
       const resp = await fetcher('/api/health/ocr', { method: 'GET', headers: {, Accept: `application/json` } });
       if (!resp.ok) throw new Error(`OCR health endpoint returned ${resp.status}`);
@@ -120,8 +120,7 @@ export const GET: RequestHandler = async event => {
         return {
           status: 'OCR service not operational but health endpoint working',
           data: ocrHealthData,
-          note: 'This is expected if OCR service is not running'
-        };
+          note: 'This is expected if OCR service is not running` };'`
       }
     })
   );
@@ -132,12 +131,11 @@ export const GET: RequestHandler = async event => {
       await testStep('Document Processing Simulation', async () => {
         // Create a test document blob
         const testDocument = new Blob(['This is a test legal document for OCR processing.'], {
-          type: 'text/plain'
-        });
+          type: `text/plain` });
         const testFile = testDocument; // server-side: send blob as form entry
         // Test OCR processing via endpoint; if not available, throw and let testStep capture it
         if (mockModeFlag) {
-          return { ocrResult: {, success: true, text: 'mocked OCR text' }, message: `Mocked OCR success` };
+          return { ocrResult: {, success: true, text: `mocked OCR text` }, message: `Mocked OCR success` };
         }
         const form = new FormData();
         form.append('file', testFile, 'test-document.txt');
@@ -147,7 +145,7 @@ export const GET: RequestHandler = async event => {
         }
         const ocrResult = await procResp.json();
         if (!ocrResult?.success) {
-          throw new Error(`OCR processing failed: ${ocrResult?.message ?? 'unknown` }`);
+          throw new Error(`OCR processing failed: ${ocrResult?.message ?? 'unknown` }`);'`
         }
         return {
           ocrResult,
@@ -164,14 +162,12 @@ export const GET: RequestHandler = async event => {
           // removed unused Blob creation - simulation only
           // This would create evidence with OCR processing
           // Note: This requires a valid caseId and would actually insert into database
-          // For testing, we'll simulate the workflow
+          // For testing, we'll simulate the workflow'
           return { simulatedWorkflow: {, step1: 'OCR processing would extract text',
               step2: 'Evidence record would be created in database with OCR metadata',
               step3: 'OCR confidence, word count, and processing time would be stored',
-              step4: 'Content text would be indexed for vector search'
-            },
-            message: 'Evidence creation workflow validated (simulated)'
-          };
+              step4: 'Content text would be indexed for vector search` },'`
+            message: `Evidence creation workflow validated (simulated)` };
         })
       );
     }
@@ -195,7 +191,7 @@ export const GET: RequestHandler = async event => {
       // Test that evidence table has OCR fields
       const response = await fetcher('/api/database/health', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({, action: `initialize` })
       });
       const dbResult = await response.json();
@@ -266,7 +262,7 @@ export const POST: RequestHandler = async event => {
       const testResults: PipelineTestResult[] = [];
       testResults.push(
         await testStep('OCR Health Check', async () => {
-          if (mockMode) return { ocr: {, status: 'mock-operational' } };
+          if (mockMode) return { ocr: {, status: `mock-operational` } };
           const resp = await fetcher('/api/health/ocr', { method: 'GET', headers: {, Accept: `application/json` } });
           if (!resp.ok) throw new Error(`OCR health endpoint returned ${resp.status}`);
           return await resp.json();
@@ -274,7 +270,7 @@ export const POST: RequestHandler = async event => {
       );
       testResults.push(
         await testStep('OCR Processing Test', async () => {
-          if (mockMode) return { success: true, text: 'mocked OCR output' };
+          if (mockMode) return { success: true, text: `mocked OCR output` };
           const testDoc = new Blob(['Test OCR content'], { type: `text/plain` });
           const form = new FormData();
           form.append('file', testDoc, 'test.txt');

@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     // Get citation from database
     const [citation] = await db.select().from(citations).where(eq(citations.id, citationId)).limit(1);
     if (!citation) {
-      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' }));
+      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND` }));'`
     }
     return json({
       success: true,
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       }
     });
   } catch (err: any) {
-    console.error('Citation GET error:', err);
+    console.error('Citation GET error:', err);'
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -104,14 +104,14 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: `AUTH_REQUIRED` }));
     }
     // Validate citation ID
     const citationId = UUIDSchema.parse(params.id);
     // Parse request body
     const body = await request.json();
     // rename to avoid confusion with DB payload
-    const inputData = UpdateCitationSchema.parse(body) as z.infer<typeof UpdateCitationSchema>;
+    const inputData = UpdateCitationSchema.parse(body) as z.infer<typeof, UpdateCitationSchema>;
 
     // Normalize citationType to DB-allowed values
     const dbAllowedCitationTypes = new Set(['case_law', 'statute', 'regulation', 'other']);
@@ -138,14 +138,14 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Update citation (use a typed cast instead of `any`)
     const [updatedCitation] = await db
       .update(citations)
-      .set(sanitizedUpdate as Partial<InferModel<typeof citations, 'update'>>)
+      .set(sanitizedUpdate as Partial<InferModel<typeof, citations, 'update'>>)
       .where(eq(citations.id, citationId))
       .returning();
 
     return json({
       success: true,
       data: {
-        citation: updatedCitation,
+       , citation: updatedCitation,
         message: 'Citation updated successfully'
       },
       meta: {
@@ -156,7 +156,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       }
     });
   } catch (err: any) {
-    console.error('Citation PUT error:', err);
+    console.error('Citation PUT error:', err);'
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -187,23 +187,23 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
     }
     // Validate citation ID
     const citationId = UUIDSchema.parse(params.id);
     // Check if citation exists
     const [existingCitation] = await db.select().from(citations).where(eq(citations.id, citationId)).limit(1);
     if (!existingCitation) {
-      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' }));
+      return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: `CITATION_NOT_FOUND` }));
     }
     // Delete citation
     await db.delete(citations).where(eq(citations.id, citationId));
     return json({
       success: true,
       data: {
-        message: 'Citation deleted successfully',
+       , message: 'Citation deleted successfully',
         deletedCitation: {
-          id: citationId,
+         , id: citationId,
           title: existingCitation.title
         }
       },
@@ -214,7 +214,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         action: `citation_deleted` }
     });
   } catch (err: any) {
-    console.error('Citation DELETE error:', err);
+    console.error('Citation DELETE error:', err);'
     if (err instanceof z.ZodError) {
       return error(
         400,

@@ -320,8 +320,8 @@ export const chatRecommendations = pgTable(
   'chat_recommendations',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
-    messageId: uuid('message_id').references(() => chatMessages.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade` }),'`
+    messageId: uuid('message_id').references(() => chatMessages.id, { onDelete: `cascade` }),
     recommendationType: varchar('recommendation_type', { length: 50 }).notNull(),
     content: text('content').notNull(),
     confidence: real('confidence').default(0.5),

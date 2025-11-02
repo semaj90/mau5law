@@ -10,7 +10,7 @@ import { tmpdir } from 'os';
 import { db } from '$lib/server/db';
 import { sql } from 'drizzle-orm';
 import { queueVectorEmbedding } from '$lib/server/services/background-job-queue';
-import { generateEmbeddings as serverGenerateEmbeddings } from '$lib/server/services/embedding-service';
+import { generateEmbeddings, as serverGenerateEmbeddings } from '$lib/server/services/embedding-service';
 import { queueDocumentProcessing, DocumentProcessingJobData } from '$lib/services/queue-service';
 
 const execAsync = promisify(exec);
@@ -233,7 +233,7 @@ export const POST = async ({ request, locals }) => {
         })},
 				${'minio://' + minioResult.bucket + '/' + minioResult.objectName}
 			)
-		`);
+		`);`
 
     // Insert chunks with embeddings
     for (let i = 0; i < chunks.length; i++) {
@@ -249,7 +249,7 @@ export const POST = async ({ request, locals }) => {
 					${chunks[i]},
 					${embedding ? sql`${JSON.stringify(embedding)}::vector` : null}
 				)
-			`);
+			`);`
     }
 
     console.log(`✅ [Upload] Stored document and ${chunks.length} chunks in PostgreSQL`);
@@ -351,7 +351,7 @@ export const POST = async ({ request, locals }) => {
 /**
  * Chunk text into overlapping segments
  */
-function chunkText(text: string, options: {, maxChunkChars: number; overlapChars: number }): string[] {
+function chunkText(text: string, options: {, maxChunkChars: number;, overlapChars: number }): string[] {
   const { maxChunkChars, overlapChars } = options;
   const chunks: string[] = [];
   let start = 0;
@@ -373,9 +373,9 @@ async function indexInQdrant(
   documentId: string,
   chunks: string[],
   embeddings: number[][],
-  metadata: { filename: string;, userId: string;
+  metadata: {, filename: string;, userId: string;
     caseId?: string;
-    bucket: string;
+   , bucket: string;
    , objectName: string;
   }
 ): Promise<void> {
@@ -386,7 +386,7 @@ async function indexInQdrant(
     // Create collection if not exists
     await fetch(`${qdrantUrl}/collections/${collectionName}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({, vectors: {, size: embeddings[0]?.length || 384,
           distance: `Cosine` }
       })
@@ -440,11 +440,11 @@ export const GET = async () => {
       file: 'File (required)',
       caseId: 'string (optional)',
       description: `string (optional)` },
-    example: { curl: `curl -X POST, http://localhost:5173/api/v1/documents/upload \\
+    example: { curl: `curl -X POST, http://localhost:5173/api/v1/documents/upload \\`
   -H "Cookie: legal_ai_session=..." \\
   -F "file=@contract.pdf" \\
   -F "caseId=case_123" \\
-  -F "description=Employment contract"` },
+  -F "description=Employment contract"` },`
     timestamp: new Date().toISOString()
   });
 };

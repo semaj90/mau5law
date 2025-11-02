@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { aiAccessibilityPatterns } from '$lib/services/ai-accessibility-patterns';
   import { accessibilityService } from '$lib/services/accessibility-service';
@@ -98,9 +98,9 @@
   role="region"
   aria-label={`${operation} interface with accessibility enhancements`}
 >
-  <!-- Voice Commands Toggle -->
+  <!-- Voice Commands, Toggle -->
   {#if enableVoiceCommands}
-    <div class="voice-commands-control">
+    <div, class="voice-commands-control">
       <button
         class={`voice-toggle nes-btn ${voiceCommandsActive ? 'is-success' : 'is-primary'}`}
         onclick={handleVoiceCommand}
@@ -115,41 +115,41 @@
         {/if}
       </button>
       {#if voiceCommandsActive}
-        <div class="voice-status" role="status" aria-live="polite">
+        <div, class="voice-status" role="status" aria-live="polite">
           Voice commands active. Say: "help" for available commands.
         {/if}
     {/if}
-  <!-- AI Status Indicator -->
-  <div class="ai-status-indicator {status}" role="status" aria-live="polite" aria-atomic="true">
+  <!-- AI Status, Indicator -->
+  <div, class="ai-status-indicator {status}" role="status" aria-live="polite" aria-atomic="true">
     {#if status === 'processing'}
-      <div class="processing-indicator">
-        <span class="spinner" aria-hidden="true">⚡</span>
-        <span class="status-text">{operation} in progress...</span>
+      <div, class="processing-indicator">
+        <span, class="spinner" aria-hidden="true">⚡</span>
+        <span, class="status-text">{operation} in progress...</span>
       </div>
     {:else if status === 'completed'}
-      <div class="success-indicator">
-        <span class="icon" aria-hidden="true">✅</span>
-        <span class="status-text">{operation} completed</span>
+      <div, class="success-indicator">
+        <span, class="icon" aria-hidden="true">✅</span>
+        <span, class="status-text">{operation} completed</span>
       </div>
     {:else if status === 'error'}
-      <div class="error-indicator">
-        <span class="icon" aria-hidden="true">❌</span>
-        <span class="status-text">{operation} failed</span>
+      <div, class="error-indicator">
+        <span, class="icon" aria-hidden="true">❌</span>
+        <span, class="status-text">{operation} failed</span>
       {/if}
   </div>
-  <!-- Main Content Area -->
-  <div class="ai-content-area" bind:this={containerElement} role="main" aria-label={`${operation} results`}>
+  <!-- Main Content, Area -->
+  <div, class="ai-content-area" bind:this={containerElement} role="main" aria-label={`${operation} results`}>
     {#if children}
       {@render children()}
     {/if}
   </div>
-  <!-- AI Accessibility Help -->
-  <details class="ai-help-section">
-    <summary class="help-toggle">
-      <span class="help-icon" aria-hidden="true">❓</span>
+  <!-- AI Accessibility, Help -->
+  <details, class="ai-help-section">
+    <summary, class="help-toggle">
+      <span, class="help-icon" aria-hidden="true">❓</span>
       Accessibility Help
     </summary>
-    <div class="help-content">
+    <div, class="help-content">
       <h3>Available Features</h3>
       <ul>
         <li><strong>Voice Commands:</strong> {enableVoiceCommands ? 'Enabled' : 'Disabled'}</li>

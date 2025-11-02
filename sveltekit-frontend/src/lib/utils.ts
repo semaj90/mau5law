@@ -34,10 +34,10 @@ export function formatDate(date: string | Date): string {
   const d = new Date(date);
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - d.getTime()) / 1000);
-  if (diffInSeconds < 60) return 'Just now';
-  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
-  if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+  if (diffInSeconds < 60) return 'Just, now';
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes, ago`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours, ago`;
+  if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days, ago`;
   return d.toLocaleDateString();
 }
 /**
@@ -49,7 +49,7 @@ export function generateId(): string {
 /**
  * Debounce function
  */
-export function debounce<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
+export function debounce<T, extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
     clearTimeout(timeoutId);
@@ -59,7 +59,7 @@ export function debounce<T extends (...args: any[]) => any>(func: T, delay: numb
 /**
  * Throttle function
  */
-export function throttle<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
+export function throttle<T, extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
   let lastCall = 0;
   return (...args: Parameters<T>) => {
     const now = Date.now();
@@ -169,13 +169,12 @@ export function getEvidenceTypeStyling(type: string) {
       label: 'Audio',
       color: 'text-harvard-gold',
       bgColor: 'bg-harvard-gold/10',
-      borderColor: 'border-harvard-gold'
-    },
+      borderColor: `border-harvard-gold` },
     'physical': {
       label: 'Physical',
       color: 'text-legal-evidence',
       bgColor: 'bg-legal-evidence/10',
-      borderColor: 'border-legal-evidence` }
+      borderColor: `border-legal-evidence` }
   };
   return typeMap[type.toLowerCase()] || typeMap['document'];
 }
@@ -292,12 +291,11 @@ export const theme = { colors: {, nier: {
       info: '#2A4A5A',
       evidence: '#3A4A5A',
       case '#A51C30',
-      document: '#6A7A8A'
-    }
+      document: `#6A7A8A` }
   },
   gradients: {
     crimson: 'linear-gradient(135deg, #A51C30 0%, #C42847 100%)',
     gold: 'linear-gradient(135deg, #C9A96E 0%, #B8965A 100%)',
     nier: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 50%, #3A3A3A 100%)',
-    hero: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #A51C30 100%)` }
+    hero: `linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #A51C30 100%)` }
 };

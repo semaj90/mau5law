@@ -25,7 +25,7 @@ export class SSE {
   /**
    * Send event to client
    */
-  send(_event: {, type: string; data: any }): void {
+  send(_event: {, type: string;, data: any }): void {
     const message = `event: ${event.type}\ndata: ${JSON.stringify(event.data)}\n\n`;
     for (const [clientId, stream] of this.clients) {
       try {

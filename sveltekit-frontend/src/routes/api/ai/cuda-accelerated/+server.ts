@@ -195,7 +195,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           cuda_server: {
-            available: healthResponse.ok,
+           , available: healthResponse.ok,
             ...healthData
           },
           endpoints: {
@@ -262,8 +262,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'query_vector array is required'
-        },
+          error: `query_vector array is required` },
         { status: 400 }
       );
     }
@@ -296,8 +295,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       ...result,
       cuda_accelerated: true,
       vector_dimensions: 768,
-      search_algorithm: 'cuda_optimized_cosine_similarity'
-    });
+      search_algorithm: 'cuda_optimized_cosine_similarity` });'`
   } catch (error: any) {
     return json(
       {
@@ -317,8 +315,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'queries array is required'
-        },
+          error: `queries array is required` },
         { status: 400 }
       );
     }
@@ -402,7 +399,7 @@ const originalDELETEHandler: RequestHandler = async () => {
 };
 // '$lib/middleware/redis-orchestrator-middleware' needs to be configured with the password.
 // Ensure REDIS_PASSWORD is set in your environment variables (e.g., 'redis')
-// and that the middleware's Redis client uses it (e.g., via REDIS_URL or explicit password option).
+// and that the middleware's Redis client uses it (e.g., via REDIS_URL or explicit password option).'
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
 export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler)

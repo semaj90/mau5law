@@ -47,8 +47,8 @@ class QdrantService {
   }
   async healthCheck(): Promise<boolean> {
     try {
-      // The client doesn't have a direct health check method in this version,
-      // so we'll infer health by trying to get collections.
+      // The client doesn't have a direct health check method in this version,'
+      // so we'll infer health by trying to get collections.'
       const response = await this.client.getCollections();
       return !!response;
     } catch (error: any) {

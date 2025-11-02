@@ -86,7 +86,7 @@ class InProcessWorkerPool implements WorkerPool {
     while (this.running && this.activeWorkers < this.maxWorkers && this.queue.length > 0) {
       const item = this.queue.shift()!;
       this.activeWorkers++;
-      // schedule work asynchronously so we don't block event loop synchronously
+      // schedule work asynchronously so we don't block event loop synchronously'
       setImmediate(async () => {
         try {
           const result = await item.fn();
@@ -172,8 +172,8 @@ export class ConcurrencyOrchestrator {
     // use an indirect dynamic import to avoid TypeScript statically resolving the: 'xstate' module
     const dynamicImport = Function('s', 'return import(s)') as (s: string) => Promise<unknown>;
     const xstate = await dynamicImport('xstate').catch((e: any) => {
-      // fail gracefully if xstate isn't available at runtime
-      throw new Error('xstate module import failed: ` + String(e));
+      // fail gracefully if xstate isn't available at runtime'
+      throw new Error('xstate module import failed: ` + String(e));'`
     });
 
     // Provide small, explicit function shapes instead of `Function` to keep type-safety and avoid lint complaints
@@ -206,16 +206,16 @@ export class ConcurrencyOrchestrator {
           activeWorkers: 0,
           maxWorkers: defaultMaxWorkers,
           queueStats: {
-            pending: 0,
+           , pending: 0,
             processing: 0,
             completed: 0,
             failed: 0
           }
         },
-        states: { initializing: {, invoke: {
-              src: 'initializeServices',
+        states: {, initializing: {, invoke: {
+             , src: 'initializeServices',
               onDone: {
-                target: 'ready',
+               , target: 'ready',
                 actions: assign({
                   // use DoneEvent instead of `any`
                  , maxWorkers: (_ctx: ConcurrencyContext, evt: DoneEvent) => {
@@ -347,8 +347,7 @@ export class ConcurrencyOrchestrator {
                       success: true,
                       data: res.result,
                       duration: 0,
-                      workerId: 'thread'
-                    } as WorkerResult;
+                      workerId: `thread` } as WorkerResult;
                   }
                   throw new Error(res?.error ?? 'Thread worker failed');
                 };
@@ -382,7 +381,7 @@ export class ConcurrencyOrchestrator {
                   success: false,
                   error: formatError(entry.reason),
                   duration: 0,
-                  workerId: 'error` });
+                  workerId: `error` });
               }
             });
 
@@ -478,15 +477,14 @@ export class ConcurrencyOrchestrator {
      return this.submitTask({
        type: 'canvas',
        payload: { canvasId, operation, params },
-       priority: 'medium'
-     });
+       priority: `medium` });
    }
 
    async submitAITask(prompt: string, context?: any): Promise<string> {
      return this.submitTask({
        type: 'ai',
        payload: { prompt, context },
-       priority: 'high` });
+       priority: `high` });
    }
 
    // Loki.js integration methods - use module-level lokiInstance
@@ -758,16 +756,15 @@ async function processAnalysisTask(payload: any): Promise<unknown> {
         if (hasGenerateLegalResponse(service)) {
           const safeData = typeof data === 'string' ? data : JSON.stringify(data, getCircularReplacer(), 2);
           const response = await service.generateLegalResponse(`Analyze this legal document: ${safeData}`, {
-            legalContext: 'research'
-          });
-          return typeof response === 'string' ? { text: response } : (response ?? { text: '` });
+            legalContext: `research` });
+          return typeof response === 'string' ? { text: response } : (response ?? { text: '' });
         }
-        return { error: 'AI service API not found', text: `' };
+        return { error: 'AI service API not found', text: `` };
       } catch (err) {
         return {
           error: 'AI service unavailable',
           detail: err instanceof Error ? err.message : String(err),
-          text: '` };
+          text: `` };
       }
     }
     case 'similarity':
@@ -805,14 +802,14 @@ async function processAITask(payload: any): Promise<unknown> {
         max_tokens: 2048,
         legalContext
       });
-      return typeof response === 'string' ? { text: response } : (response ?? { text: '` });
+      return typeof response === 'string' ? { text: response } : (response ?? { text: '' });
     }
-    return { error: 'AI service API not found', text: `' };
+    return { error: 'AI service API not found', text: `` };
   } catch (err) {
     return {
       error: 'AI service unavailable',
       detail: err instanceof Error ? err.message : String(err),
-      text: '` };
+      text: `` };
   }
 }
 

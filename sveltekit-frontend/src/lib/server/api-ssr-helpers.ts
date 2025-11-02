@@ -25,7 +25,7 @@ export interface BitsUICompatibleData {
  * Creates an SSR-optimized JSON response for Bits UI components
  * Enhanced with GPU-accelerated serialization and thread-safe operations
  */
-export async function createSSRResponse<T extends BitsUICompatibleData>(
+export async function createSSRResponse<T extends, BitsUICompatibleData>(
   data: T,
   options?: {
     cached?: boolean;
@@ -114,7 +114,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
   return json(response, { status });
 }
 /**
- * Sanitizes data to ensure it's serializable for SSR
+ * Sanitizes data to ensure it's serializable for SSR'
  * Handles Date objects, functions, undefined values, etc.
  */ export function sanitizeForSSR<T>(data: T): T {
   if (data === null || data === undefined) {
@@ -144,7 +144,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
 /**
  * Page data loader helper for Bits UI SSR
  */
-export async function loadWithSSR<T extends BitsUICompatibleData>(loader: () => Promise<T>, fallback: T): Promise<T> {
+export async function loadWithSSR<T extends, BitsUICompatibleData>(loader: () => Promise<T>, fallback: T): Promise<T> {
   try {
     const data = await loader();
     return sanitizeForSSR(data);
@@ -156,12 +156,12 @@ export async function loadWithSSR<T extends BitsUICompatibleData>(loader: () => 
 /**
  * Batch API calls for efficient SSR data loading
  */
-export async function batchSSRRequests<T extends { [key: string]: any }>(
+export async function batchSSRRequests<T, extends { [key: string]: any }>(
   requests: { [K in keyof T]: () => Promise<T[K]> },
   timeout = 5000
 ): Promise<T> {
   const results = {} as T;
-  const requestEntries = Object.entries(requests) as Array<[keyof T, () => Promise<any>]>;
+  const requestEntries = Object.entries(requests) as Array<[keyof, T, () => Promise<any>]>;
   await Promise.allSettled(
     requestEntries.map(async ([key, requestFn]) => {
       try {
@@ -171,7 +171,7 @@ export async function batchSSRRequests<T extends { [key: string]: any }>(
         const result = await Promise.race([requestFn(), timeoutPromise]);
         results[key] = sanitizeForSSR(result);
       } catch (error) {
-        console.error(`SSR batch request failed for ${String(key)}: ', error);
+        console.error(`SSR batch request failed for ${String(key)}: ', error);'`
         results[key] = null;
       }
     })
@@ -212,7 +212,7 @@ export function validateSSRResponse<T>(response: any, validator: (data: any) => 
 /**
  * Enhanced wrapper for API route handlers with GPU and thread-safe support
  */
-export function withSSRHandler<T extends BitsUICompatibleData>(
+export function withSSRHandler<T extends, BitsUICompatibleData>(
   handler: (_event: Parameters<RequestHandler>[0]) => Promise<T | Response>,
   options?: {
     gpuAccelerated?: boolean;
@@ -298,7 +298,7 @@ export function withSSRHandler<T extends BitsUICompatibleData>(
 /**
  * Enhanced batch SSR requests with GPU acceleration
  */
-export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
+export async function batchSSRRequestsGPU<T, extends { [key: string]: any }>(
   requests: { [K in keyof T]: () => Promise<T[K]> },
   options: {
     timeout?: number;
@@ -309,7 +309,7 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
 ): Promise<T> {
   const { timeout = 5000, gpuAccelerated = false, cacheResults = false, threadSafe = true } = options;
   const results = {} as T;
-  const requestEntries = Object.entries(requests) as Array<[keyof T, () => Promise<any>]>;
+  const requestEntries = Object.entries(requests) as Array<[keyof, T, () => Promise<any>]>;
   // Use GPU coordinator for large batch operations
   if (gpuAccelerated && requestEntries.length > 10) {
     try {
@@ -364,7 +364,7 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
           });
         }
       } catch (error) {
-        console.error(`SSR batch request failed for ${String(key)}: ', error);
+        console.error(`SSR batch request failed for ${String(key)}: ', error);'`
         results[key] = null;
       }
     })
@@ -404,6 +404,6 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
       cognitive_cache: { threadSafe: false },
       serializer: { activeWorkers: 0 },
       gpu_coordinator: { gpuAvailable: false },
-      overall_status: 'unhealthy` };
+      overall_status: 'unhealthy' };
   }
 }

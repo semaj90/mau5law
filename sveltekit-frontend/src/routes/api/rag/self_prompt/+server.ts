@@ -27,7 +27,7 @@ async function initialVectorSearch(query: string, k: number): Promise<Passage[]>
       WHERE embedding IS NOT NULL
       ORDER BY embedding <=> ${embLiteral}::vector
       LIMIT ${k}
-    `;
+    `;`
     return rows as any;
   } catch (e) {
     console.error('initialVectorSearch error', e);
@@ -44,7 +44,7 @@ async function fetchGraphNeighbors(passageIds: string[], k: number): Promise<Pas
       AND ge.edge_type IN ('similarity','citation')
     ORDER BY ge.weight DESC
     LIMIT ${k}
-  `;
+  `;`
   return rows as any;
 }
 function extractConcepts(passages: Passage[]): string[] {
@@ -80,14 +80,14 @@ function composePrompt(
 export const POST: RequestHandler = async ({ request }) => {
   const t0 = performance.now();
   const { query, k = 5, neighborK = 12, useCache = true } = await request.json();
-  if (!query) return new Response(JSON.stringify({ error: `query required` }), { status: 400 });
+  if (!query) return new Response(JSON.stringify({ error: 'query required` }), { status: 400 });'`
   const redis = getRedisService();
-  const cacheKey = `selfp:v1:${query.toLowerCase()}:${k}:${neighborK}';
+  const cacheKey = `selfp:v1:${query.toLowerCase()}:${k}:${neighborK}';'`
   if (useCache) {
     const cached = await redis.getCache(cacheKey);
     if (cached) {
       return new Response(JSON.stringify({ ...cached, cached: true, took_ms: Math.round(performance.now() - t0) }), {
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json` }'`
       });
     }
   }

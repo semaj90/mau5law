@@ -6,8 +6,8 @@ import type { Message } from '$lib/types';
 // { type: 'pack', payload: RankingSet }
 // { type: 'unpack', blob: ArrayBuffer }
 // { type: 'fetch', key: string, endpoint?: string, format?: 'raw'|'json' }
-interface CanonicalResult { docId: string; score: number; flags: number;, summaryHash: string; targetUrlId?: string }
-interface RankingSet { results: CanonicalResult[]; query: string; totalResults: number; timestamp: number;, version: number }
+interface CanonicalResult { docId: string; score: number; flags: number; summaryHash: string; targetUrlId?: string }
+interface RankingSet { results: CanonicalResult[]; query: string; totalResults: number; timestamp: number; version: number }
 
 interface WasmExports {
   pack_rankings(json: string): Uint8Array | string; // WASM can return Uint8Array directly or a pointer/len (represented as string for now)
@@ -59,7 +59,7 @@ self.onmessage = async (ev: MessageEvent) => {
                 wasmReady = true;
               }
             } catch (error) {
-              // Intentionally ignore if the stub import fails, as it's optional.
+              // Intentionally ignore if the stub import fails, as it's optional.'
               // console.warn("Optional WASM stub import failed:", error);
             }
           }
@@ -113,7 +113,7 @@ self.onmessage = async (ev: MessageEvent) => {
       }
       case 'fetch': {
         const { key, endpoint, format } = msg as { key: string; endpoint?: string; format?: 'raw' | 'json' };
-        const url = `${endpoint || defaultEndpoint}/${encodeURIComponent(key)}${format === 'json' ? '?format=json' : '' }`;
+        const url = `${endpoint || defaultEndpoint}/${encodeURIComponent(key)}${format === 'json' ? '?format=json' : '` }`;'`
         const res = await fetch(url);
         if (!res.ok) {
           self.postMessage({ type: 'fetch:error', error: res.status });

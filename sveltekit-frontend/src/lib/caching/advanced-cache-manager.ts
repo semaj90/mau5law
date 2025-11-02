@@ -302,7 +302,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
           localStorage.removeItem(k);
         }
       } catch (e) {
-        // best-effort, don't throw
+        // best-effort, don't throw'
         console.warn('AdvancedCacheManager: failed to clear persisted items', e);
       }
     }

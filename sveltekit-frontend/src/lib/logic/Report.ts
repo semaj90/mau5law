@@ -16,8 +16,8 @@ export class Report {
   public id: string;
   public title: Writable<string>;
   public content: Writable<ContentNode[]>;
-  public position: Writable<{ x: number;, y: number }>;
-  public size: Writable<{ width: number;, height: number }>;
+  public position: Writable<{ x: number; y: number }>;
+  public size: Writable<{ width: number; height: number }>;
   public isDirty: Writable<boolean>;
   public version: Writable<number>;
   public historyManager: HistoryManager;

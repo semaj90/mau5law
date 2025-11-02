@@ -73,7 +73,7 @@ interface AnalyticsExtensions {
 
 // Self-learning model for continuous improvement
 class LLMSelfLearningModel {
-  // now accepts context so callers' context parameter is used and no: 'unused variable' warnings occur
+  // now accepts context so callers' context parameter is used and no: 'unused variable' warnings occur'
   async updateFromInteractions(
     context: CaseMemoryContext,
     interactions: Interaction[],
@@ -152,8 +152,8 @@ export class CaseMemoryEngine {
   }
 
   // Store new interaction and update memory context
-  async recordInteraction(params: { case_id: string;, user_id: string;
-    interaction_type: InteractionType;
+  async recordInteraction(params: {, case_id: string;, user_id: string;
+   , interaction_type: InteractionType;
    , content: string;
     response?: string;
     metadata?: Record<string, unknown>;
@@ -281,7 +281,7 @@ export class CaseMemoryEngine {
           search_count: interactionTypes.filter(t => t === 'search').length
         },
         estimated_value: 0.7,
-        timing_suggestion: 'immediate` });
+        timing_suggestion: `immediate' });'`
     }
 
     // Pattern: User viewed documents -> suggest synthesis
@@ -293,10 +293,10 @@ export class CaseMemoryEngine {
           type: 'next_action',
           confidence: 0.75,
           reasoning: 'User reviewed multiple documents; synthesis recommended',
-          prompt_template: 'I notice you've reviewed ${viewedDocs.length} documents. Would you like a synthesis showing how these relate to your case strategy?`,
+          prompt_template: 'I notice you've reviewed ${viewedDocs.length} documents. Would you like a synthesis showing how these relate to your case strategy?`,`
           context_variables: { document_count: viewedDocs.length, case_id: context.case_id },
           estimated_value: 0.8,
-          timing_suggestion: 'immediate` });
+          timing_suggestion: `immediate' });'`
       }
     }
 
@@ -307,13 +307,13 @@ export class CaseMemoryEngine {
         type: 'next_action',
         confidence: 0.6,
         reasoning: 'Extended session detected; a summary may help',
-        prompt_template: 'You've been working on this case for over 2 hours. Would you like a summary of what we've covered and suggested next steps?`,
+        prompt_template: 'You've been working on this case for over 2 hours. Would you like a summary of what we've covered and suggested next steps?`,'`
         context_variables: {
           session_duration: context.temporal_context.total_session_time,
           interaction_count: recentInteractions.length
         },
         estimated_value: 0.6,
-        timing_suggestion: 'soon` });
+        timing_suggestion: `soon' });'`
     }
 
     return recommendations;
@@ -348,10 +348,10 @@ export class CaseMemoryEngine {
             key_points: topCase.payload?.key_similarities ?? []
           },
           estimated_value: score,
-          timing_suggestion: 'background` });
+          timing_suggestion: `background' });'`
       }
     } catch (err) {
-      console.warn('findRelatedCaseRecommendations error:', String(err));
+      console.warn('findRelatedCaseRecommendations error:', String(err));'
     }
     return recommendations;
   }
@@ -366,14 +366,14 @@ export class CaseMemoryEngine {
         type: 'research_suggestion',
         confidence: gap.confidence ?? 0.5,
         reasoning: gap.reasoning ?? 'Potential gap identified',
-        prompt_template: 'I noticed we haven't explored ${gap.area}. Shall I research relevant precedents and statutes?`,
+        prompt_template: 'I noticed we haven't explored ${gap.area}. Shall I research relevant precedents and statutes?`,`
         context_variables: {
           research_area: gap.area,
           importance_level: gap.importance,
           suggested_sources: gap.sources ?? []
         },
         estimated_value: gap.potential_impact ?? 0.5,
-        timing_suggestion: gap.urgency ?? 'background` });
+        timing_suggestion: gap.urgency ?? 'background' });
     }
     return recommendations;
   }
@@ -389,15 +389,14 @@ export class CaseMemoryEngine {
         type: 'document_analysis',
         confidence: 0.7,
         reasoning: 'Unanalyzed documents may contain important evidence',
-        prompt_template: 'I; see: "${topDoc.title}" hasn't been analyzed fully. Shall I perform a detailed analysis?`,
+        prompt_template: 'I; see: "${topDoc.title}" hasn't been analyzed fully. Shall I perform a detailed analysis?`,`
         context_variables: {
           document_id: topDoc.id,
           document_title: topDoc.title,
           potential_relevance: topDoc.potential_relevance
         },
         estimated_value: 0.6,
-        timing_suggestion: 'background'
-      });
+        timing_suggestion: 'background' });
     }
     return recommendations;
   }
@@ -422,14 +421,14 @@ export class CaseMemoryEngine {
       }
       return [];
     } catch (err) {
-      console.warn('getTemporalInteractions error:', String(err));
+      console.warn('getTemporalInteractions error:', String(err));'
       return [];
     }
   }
 
   // more strongly-typed analysis helper
   private async analyzeUserPatterns(user_id: string, interactions: Interaction[]): Promise<UserPatternAnalysis> {
-    // lightweight heuristic using interactions (uses parameters so TS won't flag them unused)
+    // lightweight heuristic using interactions (uses parameters so TS won't flag them unused)'
     const count = Array.isArray(interactions) ? interactions.length : 0;
     const expertise: UserExpertise = count > 50 ? 'expert' : count > 10 ? 'intermediate' : 'novice';
     const patterns: string[] = [];
@@ -440,7 +439,7 @@ export class CaseMemoryEngine {
     return {
       expertise_level: expertise,
       patterns,
-      response_style: 'detailed_with_examples` };
+      response_style: `detailed_with_examples' };'`
   }
 
   private buildMemoryDegrees(interactions: Interaction[], now: number) {
@@ -470,7 +469,7 @@ export class CaseMemoryEngine {
   }
 
   private calculateFrequency(interactions: Interaction[]) {
-    if (interactions.length < 2) return 0;
+    if (interactions.length < 2) return, 0;
     const newest = interactions[0].timestamp ?? Date.now();
     const oldest = interactions[interactions.length - 1].timestamp ?? Date.now();
     const timeSpanHours = Math.max(1 / 3600, (newest - oldest) / (60 * 60 * 1000));
@@ -496,7 +495,7 @@ export class CaseMemoryEngine {
       }
       // fallback: no-op
     } catch (err) {
-      console.warn('storeInteraction error:', String(err));
+      console.warn('storeInteraction error:', String(err));'
     }
   }
 

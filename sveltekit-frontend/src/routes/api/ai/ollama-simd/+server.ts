@@ -282,7 +282,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json(enhancedResponse);
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('Ollama-SIMD processing error:', error);
+    console.error('Ollama-SIMD processing error:', error);'
     return json(
       {
         response: '',
@@ -291,12 +291,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         error: error instanceof Error ? error.message : 'An unknown error occurred', // Safely access error message
         simd_results: {
           // Ensure this also provides a complete object
-          enabled: false,
+         , enabled: false,
           compressed_tiles: [],
           total_compression_ratio: 0,
           instant_ui_components: [],
           processing_stats: {
-            ollama_time: 0, // Set to 0 or appropriate default on error
+           , ollama_time: 0, // Set to 0 or appropriate default on error
             simd_compression_time: 0,
             ui_generation_time: 0,
             total_pipeline_time: 0,
@@ -325,7 +325,7 @@ const originalGETHandler: RequestHandler = async () => {
       success: true,
       service: 'ollama-simd-bridge',
       ollama_status: {
-        available: ollamaStatus.ollamaAvailable,
+       , available: ollamaStatus.ollamaAvailable,
         primary_model: ollamaStatus.primaryModel,
         fallback_model: ollamaStatus.legalFallback,
         available_models: ollamaStatus.availableModels,
@@ -333,7 +333,7 @@ const originalGETHandler: RequestHandler = async () => {
         cache_size: ollamaStatus.cacheSize
       },
       simd_capabilities: {
-        seven_bit_compression: true,
+       , seven_bit_compression: true,
         compression_ratios: [7, 25, 50, 109, 200],
         quality_tiers: ['nes', 'snes', 'n64'],
         instant_ui_generation: true,
@@ -355,8 +355,7 @@ const originalGETHandler: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: 'Failed to get system status'
-      },
+        error: 'Failed to get system status' },
       { status: 500 }
     );
   }
@@ -364,8 +363,8 @@ const originalGETHandler: RequestHandler = async () => {
 // Helper function: Process with web worker
 async function processWithWebWorker(
   text: string,
-  options: { compression_target: number;, quality_tier: string;
-    generate_ui_components: boolean;
+  options: {, compression_target: number;, quality_tier: string;
+   , generate_ui_components: boolean;
    , task_type: SIMDTaskType; // Changed from string to SIMDTaskType
   }
 ): Promise<SIMDProcessingResult> {
@@ -374,7 +373,7 @@ async function processWithWebWorker(
   console.warn('Web worker processing is simulated. Implement actual web worker logic.');
   return {
     compressedTiles: [
-      {
+      {,
         id: 'mock-tile-1',
         compressedData: { length: 100 },
         compressionRatio: 0.5,
@@ -412,7 +411,7 @@ async function processSIMDDirect(
 
   return simdTextTilingEngine.processText(text, {
     type: engineTaskType, // Using the mapped type
-    context: 'ollama-direct` }) as unknown as SIMDProcessingResult; // Cast result via unknown
+    context: `ollama-direct' }) as unknown as SIMDProcessingResult; // Cast result via unknown'`
 }
 // Helper function: Update XState session
 async function updateXStateSession(sessionId: string, data: XStateSessionUpdateData): Promise<any> {
@@ -422,7 +421,7 @@ async function updateXStateSession(sessionId: string, data: XStateSessionUpdateD
     session_id: sessionId,
     machine_state: 'processing_complete',
     conversation_history: [
-      {
+      {,
         type: 'user',
         content: data.query,
         timestamp: new Date().toISOString()
@@ -453,20 +452,20 @@ function generateQuickCSS(tile: SIMDTile, qualityTier: string): string {
   // Explicitly type tile
   const hue = (tile.compressedData[0] / 127) * 360;
   const pixelSize = qualityTier === 'nes' ? '2px' : qualityTier === 'snes' ? '1.5px' : '1px';
-  return `.tile-${tile.id} {
+  return `.tile-${tile.id} {`
     background: hsl(${hue.toFixed(0)}, 70%, 50%); /* Added semicolon */
     font-family: 'Courier New', monospace; /* Added semicolon */
     font-size: ${(tile.tileMetadata.semanticDensity * 1.5 + 0.5).toFixed(1)}em; /* Added semicolon */
     image-rendering: pixelated; /* Added semicolon */
     text-shadow: ${pixelSize} ${pixelSize} 0px rgba(0,0,0,0.8); /* Added semicolon */
-  }`;
+  }`;`
 }
 // Helper function: Generate quick DOM
 function generateQuickDOM(tile: SIMDTile, index: number): string {
   // Explicitly type tile
-  return `<span class="tile-${tile.id}" data-index="${index}">
-    ${tile.tileMetadata.categories?.join(' ') || 'content` }
-  </span>`;
+  return `<span, class="tile-${tile.id}" data-index="${index}">`
+    ${tile.tileMetadata.categories?.join(' ') || 'content' }
+  </span>`;`
 }
 // Helper function: Calculate tokens per second
 function calculateTokensPerSecond(text: string, timeMs: number): number {
@@ -488,8 +487,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: 'Failed to update configuration'
-      },
+        error: 'Failed to update configuration' },
       { status: 500 }
     );
   }
@@ -510,7 +508,7 @@ const originalDELETEHandler: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: 'Failed to clear caches` },
+        error: 'Failed to clear caches' },
       { status: 500 }
     );
   }

@@ -5,7 +5,7 @@ declare module 'xstate' {
     options?: { actions?: any; services?: any; guards?: any }
   ): any;
 
-  export function assign<T extends Record<string, any> = Record<string, any>>(
+  export function assign<T extends, Record<string, any> = Record<string, any>>(
     assignment: Partial<T> | ((ctx: T, ev: any) => Partial<T>)
   ): any;
 

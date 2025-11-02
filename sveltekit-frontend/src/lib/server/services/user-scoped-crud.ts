@@ -22,8 +22,8 @@ export const CreateCaseSchema = z.object({
   metadata: z.record(z.any()).optional()
 });
 export const UpdateCaseSchema = CreateCaseSchema.partial();
-export type CreateCaseData = z.infer<typeof CreateCaseSchema>;
-export type UpdateCaseData = z.infer<typeof UpdateCaseSchema>;
+export type CreateCaseData = z.infer<typeof, CreateCaseSchema>;
+export type UpdateCaseData = z.infer<typeof, UpdateCaseSchema>;
 
 export interface ListOptions { page: number;, limit: number;
   sortBy: 'title' | 'created_at' | 'updated_at' | 'status' | 'priority';
@@ -181,8 +181,8 @@ export const CreateEvidenceSchema = z.object({
 export const UpdateEvidenceSchema = CreateEvidenceSchema.partial().extend({
   id: cuidSchema
 });
-export type CreateEvidenceData = z.infer<typeof CreateEvidenceSchema>;
-export type UpdateEvidenceData = z.infer<typeof UpdateEvidenceSchema>;
+export type CreateEvidenceData = z.infer<typeof, CreateEvidenceSchema>;
+export type UpdateEvidenceData = z.infer<typeof, UpdateEvidenceSchema>;
 
 // Extend EvidenceCRUDService with full CRUD matching route usage
 export class EvidenceCRUDService {
@@ -210,7 +210,7 @@ export class EvidenceCRUDService {
   }
 
   async listByCase(caseId: string, options: Partial<ListOptions> = {}): Promise<any> {
-    const { page = 1, limit = 20, sortBy = 'updated_at', sortOrder = 'desc` } = options;
+    const { page = 1, limit = 20, sortBy = 'updated_at', sortOrder = 'desc` } = options;'`
     const offset = (page - 1) * limit;
 
     const sortMap: Record<string, any> = {

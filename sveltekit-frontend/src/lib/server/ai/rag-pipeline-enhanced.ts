@@ -112,7 +112,7 @@ const createDefaultConfig = (): RAGConfig => ({
     // Prioritize DATABASE_URL for Docker compatibility, fallback to individual components
     databaseUrl:
       process.env.DATABASE_URL ||
-      `postgresql://${process.env.DATABASE_USER || 'legal_admin'}:${process.env.DATABASE_PASSWORD || '123456'}@${process.env.DATABASE_HOST || 'localhost'}:${process.env.DATABASE_PORT || '5432'}/${process.env.DATABASE_NAME || 'legal_ai_db` }`,
+      `postgresql://${process.env.DATABASE_USER || 'legal_admin'}:${process.env.DATABASE_PASSWORD || '123456'}@${process.env.DATABASE_HOST || 'localhost'}:${process.env.DATABASE_PORT || '5432'}/${process.env.DATABASE_NAME || 'legal_ai_db` }`,'`
     max: parseInt(process.env.DATABASE_MAX_CONNECTIONS || '20'),
     idle_timeout: parseInt(process.env.DATABASE_IDLE_TIMEOUT || '20'),
     // Simplified SSL handling for postgres-js with connection string
@@ -128,7 +128,7 @@ const createDefaultConfig = (): RAGConfig => ({
     // Prioritize REDIS_URL for Docker compatibility, fallback to individual components
     redisUrl:
       process.env.REDIS_URL ||
-      `redis://:${process.env.REDIS_PASSWORD || 'redis'}@${process.env.REDIS_HOST || 'localhost'}:${process.env.REDIS_PORT || '6379'}/${process.env.REDIS_DB || '0` }`,
+      `redis://:${process.env.REDIS_PASSWORD || 'redis'}@${process.env.REDIS_HOST || 'localhost'}:${process.env.REDIS_PORT || '6379'}/${process.env.REDIS_DB || '0` }`,'`
     maxRetriesPerRequest: parseInt(process.env.REDIS_MAX_RETRIES || '3'),
     cacheTtl: parseInt(process.env.RAG_CACHE_TTL || '86400'),
     enableReadyCheck: true,
@@ -271,7 +271,7 @@ interface DBChunkRow { id: string;, content: string;
   [key: string]: any;
 }
 
-type CombinedResult = DBChunkRow & { score: number;, highlights: string[] };
+type CombinedResult = DBChunkRow & { score: number; highlights: string[] };
 
 export interface AutoTag { tag: string;, confidence: number;
 }
@@ -329,7 +329,7 @@ class InputValidator {
       sanitized = sanitized.replace(/<[^>]*>?/gm, '');
     }
     if (this.securityConfig.sanitization.removeSqlChars) {
-      sanitized = sanitized.replace(/['";`]/g, '');
+      sanitized = sanitized.replace(/['";`]/g, '');'"`
     }
     return sanitized.trim();
   }
@@ -399,7 +399,7 @@ class RateLimiter {
  */
 class MetricsCollector {
   private counters: Map<string, number> = new Map();
-  private timings: Map<string, { total: number; count: number;, last: number }> = new Map();
+  private timings: Map<string, { total: number; count: number; last: number }> = new Map();
 
   incrementCounter(name: string, value = 1): void {
     this.counters.set(name, (this.counters.get(name) || 0) + value);
@@ -499,12 +499,12 @@ type RunnableInvokeInput = {
 
 /**
  * Type for the output of Runnable.invoke.
- * Can be a string or a more complex object (e.g., from Ollama's /api/generate).
+ * Can be a string or a more complex object (e.g., from Ollama's /api/generate).'
  */
 type RunnableInvokeOutput = string | { response: string; [key: string]: any };
 
 /**
- * Minimal OllamaHTTPEmbeddings adapter for generating embeddings via Ollama's HTTP API.
+ * Minimal OllamaHTTPEmbeddings adapter for generating embeddings via Ollama's HTTP API.'
  * Implements EmbeddingsProvider interface.
  */
 class OllamaHTTPEmbeddings implements EmbeddingsProvider {
@@ -543,8 +543,8 @@ class OllamaHTTPEmbeddings implements EmbeddingsProvider {
 }
 
 /**
- * Minimal OllamaHTTPLLM adapter for generating text via Ollama's HTTP API.
- * Provides an: 'invoke' method compatible with LangChain's Runnable interface.
+ * Minimal OllamaHTTPLLM adapter for generating text via Ollama's HTTP API.'
+ * Provides an: 'invoke' method compatible with LangChain's Runnable interface.'
  */
 class OllamaHTTPLLM implements Runnable<RunnableInvokeInput, RunnableInvokeOutput> {
   constructor(
@@ -570,7 +570,7 @@ class OllamaHTTPLLM implements Runnable<RunnableInvokeInput, RunnableInvokeOutpu
         headers: {
           'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: this.model,
+         , model: this.model,
           prompt: prompt,
           options: {
            , temperature: this.temperature,
@@ -587,7 +587,7 @@ class OllamaHTTPLLM implements Runnable<RunnableInvokeInput, RunnableInvokeOutpu
       }
 
       const data = await response.json();
-      // Ollama's /api/generate with stream: false returns { model, created_at, response, done, ... }
+      // Ollama's /api/generate with stream: false returns { model, created_at, response, done, ... }'
       if (typeof data.response === 'string') {
         return data.response;
       }
@@ -611,8 +611,8 @@ class OllamaHTTPLLM implements Runnable<RunnableInvokeInput, RunnableInvokeOutpu
 export class EnhancedLegalRAGPipeline {
   private config: RAGConfig;
   private initialized = $state(false);
-  private sql?: ReturnType<typeof postgres>; // Corrected type
-  private db?: ReturnType<typeof drizzle>;
+  private sql?: ReturnType<typeof, postgres>; // Corrected type
+  private db?: ReturnType<typeof, drizzle>;
   private redis?: Redis;
   private embeddings?: EmbeddingsProvider; // changed type
   private llm?: Runnable<RunnableInvokeInput, RunnableInvokeOutput>; // changed type
@@ -694,7 +694,7 @@ export class EnhancedLegalRAGPipeline {
         lazyConnect: this.config.redis.lazyConnect,
         retryStrategy: (times: number) => Math.min(times * 50, 2000),
         reconnectOnError: (err: Error) => {
-          console.warn('Redis reconnect on error:', err?.message || err);
+          console.warn('Redis reconnect on error:', err?.message || err);'
           return String(err?.message || '').includes('READONLY');
         }
       });
@@ -928,7 +928,7 @@ export class EnhancedLegalRAGPipeline {
     } catch (err: any) {
       const error = err instanceof Error ? err : new Error(String(err));
       const processingTime = Date.now() - startTime;
-      console.error('[RAG] Ingestion error:', error);
+      console.error('[RAG] Ingestion error:', error);'
       this.metrics.incrementCounter('ingestion_errors');
       this.metrics.recordTiming('ingestion_error_time', processingTime);
       throw error;
@@ -948,7 +948,7 @@ export class EnhancedLegalRAGPipeline {
         threshold = this.config.rag.similarityThreshold,
         userId,
         includeMetadata = true,
-        sortBy = 'relevance` } = params;
+        sortBy = 'relevance` } = params;'`
       // Rate limiting if userId provided
       if (userId && !this.rateLimiter.isAllowed(userId)) {
         throw new Error('Rate limit exceeded. Please try again later.');
@@ -960,7 +960,7 @@ export class EnhancedLegalRAGPipeline {
 
       // Build SQL conditions using template literals
       let vectorWhereClause = `1 - (dc.embedding::vector <=> '${JSON.stringify(queryEmbedding)}'::vector) > ${threshold}`;
-      let keywordWhereClause = `to_tsvector('english', dc.content) @@ plainto_tsquery('english', '${query.replace(/'/g, "''")}')`;
+      let keywordWhereClause = `to_tsvector('english', dc.content) @@ plainto_tsquery('english', '${query.replace(/'/g, "''")}')`;'
       if (caseId && this.validator.validateUUID(caseId)) {
         vectorWhereClause += ` AND dc.metadata->>'caseId' = '${caseId}'`;
         keywordWhereClause += ` AND dc.metadata->>'caseId' = '${caseId}'`;
@@ -984,7 +984,7 @@ export class EnhancedLegalRAGPipeline {
         WHERE ${sql.raw(vectorWhereClause)}
         ORDER BY dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector
         LIMIT ${limit * 2}
-      `) as DBChunkRow[];
+      `) as DBChunkRow[];`
 
       // Perform keyword search
       const keywordResults = (await this.sql!`
@@ -1002,7 +1002,7 @@ export class EnhancedLegalRAGPipeline {
         WHERE ${sql.raw(keywordWhereClause)}
         ORDER BY text_rank DESC
         LIMIT ${limit}
-      `) as DBChunkRow[];
+      `) as DBChunkRow[];`
 
       // Combine and deduplicate results with typed Map
       const combinedResults: Map<string, CombinedResult> = new Map();
@@ -1066,7 +1066,7 @@ export class EnhancedLegalRAGPipeline {
       return searchResults;
     } catch (err: any) {
       const error = err instanceof Error ? err : new Error(String(err));
-      console.error('[RAG] Search error:', error);
+      console.error('[RAG] Search error:', error);'
       this.metrics.incrementCounter('search_errors');
       throw error;
     }
@@ -1105,7 +1105,7 @@ export class EnhancedLegalRAGPipeline {
       if (requireSources && relevantDocs.length === 0) {
         return {
           answer:
-            "I couldn't find relevant information in the knowledge base to answer your question. Please provide more context or try rephrasing your question.",
+            "I couldn't find relevant information in the knowledge base to answer your question. Please provide more context or try rephrasing your question.",'
           sources: [],
           confidence: 0,
           keyPoints: [],
@@ -1116,26 +1116,25 @@ export class EnhancedLegalRAGPipeline {
       const context = relevantDocs
         .map(
           (doc, idx) =>
-            `[Source ${idx + 1}]:\nTitle: ${doc.title}\nContent: ${doc.content}\nConfidentiality: ${doc.confidentialityLevel || 'public` }`
+            `[Source ${idx + 1}]:\nTitle: ${doc.title}\nContent: ${doc.content}\nConfidentiality: ${doc.confidentialityLevel || 'public` }`'`
         )
         .join('\n\n---\n\n');
       // Create enhanced legal prompt
       const promptTemplate = PromptTemplate.fromTemplate(`
 You are an expert legal AI assistant specializing in legal analysis and research. Answer the question based ONLY on the provided context.
 ${conversationContext ? `Previous Conversation Context:\n${conversationContext}\n\n` : ''}
-Legal Context:
-{context}
-Question: {question}, Instructions:
+Legal, Context:
+{context}, Question: {question}, Instructions:
 1. Provide a clear, accurate answer based solely on the context provided
 2. Cite specific sources using [Source N] notation when referencing information
 3. Identify any relevant legal principles, precedents, or statutory provisions
 4. Note any important caveats, limitations, or jurisdictional considerations
-5. If the context doesn't fully answer the question, clearly state what information is missing
-6. Maintain a professional legal tone appropriate for ${confidentialityLevel || 'general` } matters
+5. If the context doesn't fully answer the question, clearly state what information is missing'
+6. Maintain a professional legal tone appropriate for ${confidentialityLevel || 'general` } matters'`
 7. Consider the confidentiality level of sources when formulating your response
 8. Highlight any potential legal risks or compliance issues
 9. Provide actionable recommendations where appropriate
-Answer: ');
+Answer: ');'
       // Create chain and generate answer
       const chain = RunnableSequence.from([promptTemplate, this.llm!, new StringOutputParser()]);
       const llmResponse = await Promise.race([
@@ -1206,7 +1205,7 @@ Answer: ');
     } catch (err: any) {
       const error = err instanceof Error ? err : new Error(String(err));
       const processingTime = Date.now() - startTime;
-      console.error('[RAG] QA error:', error);
+      console.error('[RAG] QA error:', error);'
       this.metrics.incrementCounter('qa_errors');
       // Log failed query
       try {
@@ -1235,9 +1234,8 @@ Answer: ');
       const sanitizedText = this.validator.validateAndSanitize(contractText, 1048576);
       await this.ensureInitialized();
       const contractPrompt = PromptTemplate.fromTemplate(`
-You are a legal expert specializing in contract analysis with extensive experience in ${jurisdiction || 'various jurisdictions` }. Analyze the following contract and provide a comprehensive structured assessment.
-${jurisdiction ? `Jurisdiction: ${jurisdiction}\n` : `` }
-Contract:
+You are a legal expert specializing in contract analysis with extensive experience in ${jurisdiction || 'various jurisdictions` }. Analyze the following contract and provide a comprehensive structured assessment.'`
+${jurisdiction ? `Jurisdiction: ${jurisdiction}\n` : `` }, Contract:
 {contract}
 Provide your analysis in the following structured, format:
 1. CONTRACT TYPE & PARTIES
@@ -1274,7 +1272,7 @@ Provide your analysis in the following structured, format:
 - Data privacy and security considerations
 - Industry-specific compliance requirements
 Provide specific clause references and line numbers where applicable. Focus on practical legal advice.
-      `);
+      `);`
       const chain = RunnableSequence.from([contractPrompt, this.llm!, new StringOutputParser()]);
       const llmResponse = await Promise.race([
         chain.invoke({ contract: sanitizedText }),
@@ -1289,7 +1287,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
       const processingTime = Date.now() - startTime;
       this.metrics.incrementCounter('contracts_analyzed');
       this.metrics.recordTiming('contract_analysis_time', processingTime, {
-        jurisdiction: jurisdiction || 'general` });
+        jurisdiction: jurisdiction || 'general` });'`
       return {
         ...parsedAnalysis,
         confidence: 0.85,
@@ -1299,7 +1297,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
       };
     } catch (err: any) {
       const error = err instanceof Error ? err : new Error(String(err));
-      console.error('[RAG] Contract analysis error:', error);
+      console.error('[RAG] Contract analysis error:', error);'
       this.metrics.incrementCounter('contract_analysis_errors');
       throw error;
     }
@@ -1316,11 +1314,11 @@ Provide specific clause references and line numbers where applicable. Focus on p
       Return ONLY a JSON array of tags with confidence scores (0-1):
       [{"tag": "contract law", "confidence": 0.95}, {"tag": "intellectual property", "confidence": 0.87}, ...]
       Limit to 10 most relevant tags.
-    `);
+    `);`
     const chain = RunnableSequence.from([tagPrompt, this.llm!, new StringOutputParser()]);
     try {
       const llmResponse = await Promise.race([
-        chain.invoke({
+        chain.invoke({,
           documentType,
           content: content.substring(0, 3000)
         }),
@@ -1476,7 +1474,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
   }
   /**
    * Assess legal risks mentioned in text
-   */ private assessLegalRisks(text: string): { level: 'low' | 'medium' | 'high';, factors: string[] } {
+   */ private assessLegalRisks(text: string): { level: 'low' | 'medium' | 'high'; factors: string[] } {
     const highRiskTerms = ['breach', 'violation', 'penalty', 'criminal', 'fraud', 'negligence'];
     const mediumRiskTerms = ['liability', 'compliance', 'regulation', 'obligation', 'duty'];
     const lowRiskTerms = ['notice', 'disclosure', 'review', 'standard'];

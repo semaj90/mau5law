@@ -231,7 +231,7 @@ export class StatelessAPICoordinator {
       node.status = 'ACTIVE';
       node.lastHeartbeat = Date.now();
     } catch (error: any) {
-      console.error(`Failed to initialize connection to ${node.id}: ', error);
+      console.error(`Failed to initialize connection to ${node.id}: ', error);'`
       node.status = 'INACTIVE';
     }
   }
@@ -274,7 +274,7 @@ export class StatelessAPICoordinator {
           (
             prev,
             current // Corrected semicolon
-          ) => (prev.load < current.load ? prev : current) // Corrected closing parenthesis
+          ) => (prev.load < current.load ? prev : current) // Corrected closing, parenthesis
         );
       case 'WEIGHTED':
         const weightedNode = availableNodes.reduce((prev, current) => {
@@ -336,7 +336,7 @@ export class StatelessAPICoordinator {
       node.metadata.processedTasks += 1;
       this.updateActiveNodes();
     } catch (error: any) {
-      console.error(`Failed to route task to ${node.id}: ', error);
+      console.error(`Failed to route task to ${node.id}: ', error);'`
       this.markNodeDegraded(node.id);
       // Retry with different node
       if (task.retryCount < task.maxRetries) {

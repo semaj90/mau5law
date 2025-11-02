@@ -40,7 +40,7 @@ export const POST: RequestHandler = async (event) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json` },
+          Accept: `application/json' },'`
         body: JSON.stringify({
           messages,
           model,
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async (event) => {
 
       if (!bridgeResponse.ok) {
         const errorText = await bridgeResponse.text();
-        console.error('TensorRT bridge error:', errorText);
+        console.error('TensorRT bridge error:', errorText);'
         return json(
           {
             error: 'TensorRT bridge failed',
@@ -76,13 +76,12 @@ export const POST: RequestHandler = async (event) => {
         created: Math.floor(Date.now() / 1000),
         model,
         choices: [
-          {
+          {,
             index: 0,
             message: {
               role: 'assistant',
-              content: bridgeData.response || bridgeData.output || 'No response generated'
-            },
-            finish_reason: 'stop` },
+              content: bridgeData.response || bridgeData.output || 'No response generated` },'`
+            finish_reason: `stop' }'`
         ],
         usage: {
           total_tokens: Math.ceil((fullPrompt + (bridgeData.output || '')).length / 4),
@@ -112,7 +111,7 @@ export const POST: RequestHandler = async (event) => {
     }
   } catch (error: any) {
     const detail = error instanceof Error ? error.message : String(error);
-    console.error('TensorRT Chat API error:', detail);
+    console.error('TensorRT Chat API error:', detail);'
     return json(
       {
         error: 'Failed to generate response',

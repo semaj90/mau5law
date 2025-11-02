@@ -36,7 +36,7 @@ async function getOpenAIEmbedding(text: string): Promise<any> {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${OPENAI_API_KEY}`,
-      'Content-Type': 'application/json' },
+      'Content-Type': `application/json` },
     body: JSON.stringify({
      , model: 'text-embedding-3-small', // 1536 dimensions, good for legal text;
       input: text,
@@ -83,7 +83,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const { text, model = 'mock', dimensions }: EmbedRequest = await request.json()
     if (!text || typeof text !== 'string') {
       return json(
-        { error: 'Text is required and must be a string' },)
+        { error: `Text is required and must be a string` },)
         { status: 400 }
       )
     }
@@ -128,7 +128,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         break
       }
       default: return json(
-          { error: 'Unsupported, model: ${model}., Use: 'openai', 'nomic', or: 'mock`' },)
+          { error: 'Unsupported, model: ${model}., Use: 'openai', 'nomic', or: 'mock`' },)'`
           { status: 400 }
         )
     }
@@ -139,17 +139,17 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
     return json(result)
   }, catch (error) {
-    console.error('Embedding generation error:', error)
+    console.error('Embedding generation error:', error)'
     if (error instanceof Error) {
       if (error.message.includes('API key')) {
         return json(
-          { error: 'Embedding service configuration error' },)
+          { error: 'Embedding service configuration error` },)'`
           { status: 500 }
         )
       }
       if (error.message.includes('rate limit') || error.message.includes('quota')) {
         return json(
-          { error: 'Rate limit exceeded. Please try again later.' },)
+          { error: `Rate limit exceeded. Please try again later.` },)
           { status: 429 }
         )
       }

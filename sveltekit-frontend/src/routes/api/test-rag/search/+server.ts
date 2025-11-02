@@ -189,10 +189,10 @@ export const POST: RequestHandler = async ({ request }) => {
     const { query, searchType = 'hybrid', limit = 10, threshold = 0.7 } = await request.json();
 
     if (!query || typeof query !== 'string') {
-      return json({ error: `Query is required` }, { status: 400 });
+      return json({ error: 'Query is required` }, { status: 400 });'`
     }
 
-    console.log(`\n🔍 [Test RAG Search] Query: "${query}" (type=${searchType}, limit=${limit})');
+    console.log(`\n🔍 [Test RAG Search] Query: "${query}" (type=${searchType}, limit=${limit})');'`
 
     let results: SearchResult[] = [];
     let queryEmbedding: number[] | null = null;
@@ -264,7 +264,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('[Test RAG Search] Search error:', error);
+    console.error('[Test RAG Search] Search error:', error);'
     return json(
       {
         error: 'Search failed',
@@ -298,7 +298,7 @@ export const GET: RequestHandler = async ({ url }) => {
           .from(testRagEmbeddings)
           .limit(1)) as Array<{ count: number }>;
         const sesCountRows = (await db
-          .select({ count: sql<number>`COUNT(*)' })
+          .select({ count: sql<number>`COUNT(*)` })
           .from(testRagSearchSessions)
           .limit(1)) as Array<{ count: number }>;
 
@@ -307,7 +307,7 @@ export const GET: RequestHandler = async ({ url }) => {
         sesCount = Array.isArray(sesCountRows) && sesCountRows[0] ? Number(sesCountRows[0].count) : 0;
       } catch (countErr) {
         console.warn('[Test RAG] Failed to read table counts:', countErr);
-        // keep counts as -1 to indicate they couldn't be fetched
+        // keep counts as -1 to indicate they couldn't be fetched'
       }
 
       // Check qdrant health if available
@@ -322,7 +322,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         healthy: qdrantHealthy && !!db,
         stats: {
-          documents: docCount,
+         , documents: docCount,
           embeddings: embCount,
           searchSessions: sesCount
         },
@@ -337,7 +337,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json({ success: true, action });
   } catch (err: any) {
-    console.error('[Test RAG Search] GET error:', err);
+    console.error('[Test RAG Search] GET error:', err);'
     return json({ error: 'Failed', details: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }
 };

@@ -3,7 +3,7 @@
 import { writable, derived, get } from 'svelte/store';
 import { browser } from '$app/environment';
 /* Replace static import (may not exist at build time) with dynamic public env */
-import { env as PUBLIC_ENV } from '$env/dynamic/public';
+import { env, as PUBLIC_ENV } from '$env/dynamic/public';
 import type { UserRole, Permission } from './roles.js';
 
 // Add a minimal ServerUser shape to satisfy Partial<ServerUser>
@@ -147,7 +147,7 @@ export class AuthStore {
     if (!browser) return;
     authState.update(state => ({ ...state, isLoading: true }));
     try {
-      // Check if there's an existing session
+      // Check if there's an existing session'
       await this.checkSession();
       // Start session monitoring
       this.startSessionMonitoring();
@@ -193,7 +193,7 @@ export class AuthStore {
       }
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Login error:', msg);
+      console.error('Login error:', msg);'
       return { success: false, error: 'Network error during login' };
     } finally {
       authState.update(state => ({ ...state, isLoading: false }));
@@ -227,7 +227,7 @@ export class AuthStore {
       }
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Registration error:', msg);
+      console.error('Registration error:', msg);'
       return { success: false, error: 'Network error during registration' };
     } finally {
       authState.update(state => ({ ...state, isLoading: false }));
@@ -242,7 +242,7 @@ export class AuthStore {
       await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Logout error:', msg);
+      console.error('Logout error:', msg);'
     } finally {
       this.clearAuth();
       this.stopSessionMonitoring();
@@ -269,7 +269,7 @@ export class AuthStore {
       }
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Session check error:', msg);
+      console.error('Session check error:', msg);'
       this.clearAuth();
       return false;
     }
@@ -303,7 +303,7 @@ export class AuthStore {
       }
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Profile update error:', msg);
+      console.error('Profile update error:', msg);'
       return { success: false, error: 'Network error during profile update' };
     }
   }
@@ -319,8 +319,7 @@ export class AuthStore {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ currentPassword, newPassword }),
-        credentials: 'include'
-      });
+        credentials: `include` });
       const result = await this.parseApiResponse(response);
       return {
         success: response.ok && !!result.success,
@@ -328,8 +327,8 @@ export class AuthStore {
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Password change error:', msg);
-      return { success: false, error: 'Network error during password change' };
+      console.error('Password change error: ', msg);'
+      return { success: false, error: `Network error during password change` };
     }
   }
   /**

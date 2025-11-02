@@ -147,8 +147,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
       }
     });
   } catch (err: any) {
-    console.error('Error auto-saving document:', extractErrorMessage(err));
-    return json({ success: false, error: 'Failed to auto-save document' }, { status: 500 });
+    console.error('Error auto-saving document: `, extractErrorMessage(err));'`
+    return json({ success: false, error: `Failed to auto-save document` }, { status: 500 });
   }
 };
 
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async ({ params }) => {
   try {
     const documentId = params.id;
     if (!documentId) {
-      return json({ success: false, error: `Document ID is required` }, { status: 400 });
+      return json({ success: false, error: 'Document ID is required' }, { status: 400 });
     }
 
     if (legalDocuments) {
@@ -177,7 +177,7 @@ export const GET: RequestHandler = async ({ params }) => {
           })
           .from(legalDocuments as unknown)
           .where(
-            // cast column expression to string to avoid using `any' in the eq call
+            // cast column expression to string to avoid using `any' in the eq call'`
             eq((legalDocuments as unknown as { id: any }).id as unknown as string, documentId)
           )
           .limit(1);
@@ -215,7 +215,7 @@ export const GET: RequestHandler = async ({ params }) => {
       }
     });
   } catch (err: any) {
-    console.error('Error fetching auto-save status:', extractErrorMessage(err));
-    return json({ success: false, error: `Failed to fetch auto-save status` }, { status: 500 });
+    console.error('Error fetching auto-save status: `, extractErrorMessage(err));'`
+    return json({ success: false, error: 'Failed to fetch auto-save status' }, { status: 500 });
   }
 };

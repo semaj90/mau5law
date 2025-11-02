@@ -42,7 +42,7 @@ class MockWasmLLM implements WasmLLMService {
     }
     // Mock streaming response with legal-focused content
     const responses = [
-      "I understand you're working on a legal matter. ",
+      "I understand you're working on a legal matter. ",'
       'As a WebAssembly-powered assistant, I can provide basic legal guidance, ',
       'though my capabilities are more limited than the full Ollama models. ',
       '\n\nBased on your query, I can offer the following insights:\n\n',
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
       });
       fullPrompt += '\n';
     }
-    fullPrompt += `User: ${message}\nAssistant: ';
+    fullPrompt += `User: ${message}\nAssistant: ';'`
     // For streaming responses
     if (stream) {
       const encoder = new TextEncoder();
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
               metadata: {
                 type: 'sources',
                 sources: [
-                  {
+                  {,
                     type: 'system',
                     content: 'WebAssembly Legal Assistant',
                     confidence: 0.7
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 metadata: {
                   type: 'text',
                   confidence: 0.75,
-                  model: 'webassembly-llm` }
+                  model: `webassembly-llm` }
               };
               const data = `data: ${JSON.stringify(streamChunk)}\n\n`;
               controller.enqueue(encoder.encode(data));
@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
             controller.enqueue(encoder.encode('data: [DONE]\n\n'));
             controller.close();
           } catch (error: any) {
-            console.error('WebAssembly streaming error:', error);
+            console.error('WebAssembly streaming error:', error);'
             const errorChunk = {
               text: 'I apologize, but I encountered an error processing your request in WebAssembly mode. Please try again or connect to the full Ollama service for enhanced capabilities.',
               metadata: { type: 'error', error: error.message }
@@ -191,10 +191,10 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       response: fullResponse,
       metadata: {
-        model: 'webassembly-llm',
+       , model: 'webassembly-llm',
         confidence: 0.75,
         sources: [
-          {
+          {,
            , type: 'system',
             content: 'WebAssembly Legal Assistant',
             confidence: 0.7
@@ -202,11 +202,10 @@ export const POST: RequestHandler = async ({ request }) => {
         ],
         conversationId,
         timestamp: new Date().toISOString(),
-        note: 'Response generated using WebAssembly fallback. Connect to Ollama for enhanced capabilities.'
-      }
+        note: `Response generated using WebAssembly fallback. Connect to Ollama for enhanced capabilities.` }
     });
   } catch (error: any) {
-    console.error('WebAssembly chat API error:', error);
+    console.error('WebAssembly chat API error:', error);'
     return json(
       {
         success: false,
@@ -239,7 +238,7 @@ export const GET: RequestHandler = async () => {
           'Limited legal knowledge base',
         ]
       },
-      note: 'WebAssembly mode provides basic functionality when Ollama is unavailable` });
+      note: `WebAssembly mode provides basic functionality when Ollama is unavailable` });
   } catch (error: any) {
     return json(
       {

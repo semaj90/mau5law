@@ -37,7 +37,7 @@ export const GET: RequestHandler = ({ url }) => {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
       };
 
-      send({ type: 'sse_hello', data: {, message: 'YoRHa stream online' }, ts: new Date().toISOString() });
+      send({ type: 'sse_hello', data: {, message: 'YoRHa stream online` }, ts: new Date().toISOString() });'`
 
       intervalId = setInterval(
         () =>

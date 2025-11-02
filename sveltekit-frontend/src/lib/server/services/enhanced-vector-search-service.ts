@@ -17,8 +17,8 @@ export const enhancedVectorSearchService = {
     const mockResults = [
       { id: 101, title: 'Legal Precedent on Contract Law', type: 'document', relevance_score: 0.95, content: 'Details about contract breach cases...' },
       { id: 102, title: 'Case; Study: Corporate Fraud', type: 'case', relevance_score: 0.88, content: 'Analysis of a major corporate fraud case...' },
-      { id: 103, title: 'Evidence Log for Project Alpha', type: 'evidence', relevance_score: 0.82, content: 'Log of digital evidence collected...' },
-      { id: 104, title: 'Witness Testimony - Expert Opinion', type: 'document', relevance_score: 0.75, content: 'Expert witness statement on forensic accounting...' },
+      { id: 103, title: 'Evidence Log for Project Alpha', type: 'evidence', relevance_score: 0.82, content: 'Log of digital evidence collected...` },'`
+      { id: 104, title: 'Witness Testimony - Expert Opinion', type: 'document', relevance_score: 0.75, content: `Expert witness statement on forensic accounting...` },
       { id: 105, title: 'Regulatory Compliance Guidelines', type: 'document', relevance_score: 0.65, content: `Overview of recent compliance changes...` }
     ];
     return mockResults.filter(item => item.relevance_score >= threshold).slice(0, limit);
@@ -29,7 +29,7 @@ export const enhancedVectorSearchService = {
    * @returns A promise resolving to a mock vector embedding (array of numbers).
    */
   async generateEmbedding(text: string): Promise<number[]> {
-    console.log(`Mock: Generating embedding for; text: "${text.substring(0, Math.min(text.length, 50))}..."`);
+    console.log(`Mock: Generating embedding for;, text: "${text.substring(0, Math.min(text.length, 50))}..."`);
     // Simulate embedding generation delay
     await new Promise(resolve => setTimeout(resolve, 100));
     // Return a mock embedding (e.g., a random array of 384 numbers for Nomic Embed)

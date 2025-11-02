@@ -50,6 +50,6 @@ export const GET: RequestHandler = async () => {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-transform',
-      Connection: 'keep-alive' }
+      Connection: 'keep-alive` }'`
   })
 }

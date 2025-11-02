@@ -39,7 +39,7 @@ const SEARCH_TOPICS = {
   SEARCH_RESPONSE: 'legal.search.response',
   SEARCH_SUGGESTIONS: 'legal.search.suggestions',
   SEARCH_ANALYTICS: 'legal.search.analytics',
-  SEARCH_CACHE_INVALIDATE: `legal.search.cache.invalidate` } as const;
+  SEARCH_CACHE_INVALIDATE: `legal.search.cache.invalidate' } as const;'`
 // Search Request/Response Types
 export interface SearchRequest { id: string;, query: string;
   searchType: 'semantic' | 'text' | 'hybrid';
@@ -76,7 +76,7 @@ export interface SearchSuggestion { query: string;, score: number;
   frequency: number;
   lastUsed: number;
 }
-// Move SearchResult to top-level so it's a valid TypeScript type (cannot declare `type` inside a class)
+// Move SearchResult to top-level so it's a valid TypeScript type (cannot declare `type` inside a class)'
 export type SearchResult = {
   id: string;
   score?: number;
@@ -240,7 +240,7 @@ export class NatsQuicSearchService {
         // Update metrics
         this.updateMetrics(Date.now() - startTime);
       } catch (error) {
-        console.error('❌ Search processing error:', error);
+        console.error('❌ Search processing error:', error);'
         // Send error response
         if (msg.reply) {
           const errorResponse: SearchResponse = {
@@ -296,7 +296,7 @@ export class NatsQuicSearchService {
         timestamp: Date.now()
       };
     } catch (error) {
-      console.error('❌ Search execution error:', error);
+      console.error('❌ Search execution error:', error);'
       return {
         id: request.id,
         success: false,
@@ -312,7 +312,7 @@ export class NatsQuicSearchService {
     try {
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: fastStringify({
          , model: model || 'embeddinggemma:latest',
           prompt: query.slice(0, 2048)
@@ -340,7 +340,7 @@ export class NatsQuicSearchService {
       options: {
         limit: request.options?.limit,
         threshold: request.options?.threshold,
-        model: request.options?.model || 'unknown` }
+        model: request.options?.model || 'unknown' }
     };
     return createHash('sha256').update(JSON.stringify(keyData)).digest('hex').substring(0, 16);
   }
@@ -352,7 +352,7 @@ export class NatsQuicSearchService {
       const cached = await redisService.get(`search:${cacheKey}`);
       return cached as SearchResponse | null;
     } catch (error) {
-      console.error('❌ Cache retrieval error:', error);
+      console.error('❌ Cache retrieval error:', error);'
       return null;
     }
   }
@@ -381,7 +381,7 @@ export class NatsQuicSearchService {
       }
       await redisService.set(`search:${cacheKey}`, response, ttl);
     } catch (error) {
-      console.error('❌ Cache storage error:', error);
+      console.error('❌ Cache storage error:', error);'
     }
   }
   /**
@@ -429,7 +429,7 @@ export class NatsQuicSearchService {
       }
       this.metrics.suggestionsGenerated++;
     } catch (error) {
-      console.error('❌ Suggestion generation error:', error);
+      console.error('❌ Suggestion generation error:', error);'
     }
   }
   /**
@@ -467,7 +467,7 @@ export class NatsQuicSearchService {
       (async () => {
         for await (const msg of subscription) {
           clearTimeout(timeout);
-          // use optional chaining in case the runtime subscription doesn't expose unsubscribe()
+          // use optional chaining in case the runtime subscription doesn't expose unsubscribe()'
           subscription.unsubscribe?.();
           this.searchQueue.delete(searchId);
           const responseDecoded = this.codec.decode(msg.data) as unknown;

@@ -10,12 +10,12 @@ let redisAvailable = $state<boolean>(false);
 
 try {
   // createRedisInstance may throw if environment is not configured or Redis is unavailable
-  // It's okay if this runs during SSR; we catch and fall back to a safe proxy below
+  // It's okay if this runs during SSR; we catch and fall back to a safe proxy below'
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   redisClient = createRedisInstance();
   if (redisClient) {
     redisAvailable = true;
-    // Attach an error handler so unhandled errors don't crash the process
+    // Attach an error handler so unhandled errors don't crash the process'
     // Some ioredis types can be strict; cast to a minimal shape to attach handler safely
     const rc = redisClient as unknown as { on?: (ev: string, cb: (err: any) => void) => void };
     rc.on?.('error', (err: any) => {
@@ -48,7 +48,7 @@ async function callRedis<T>(client: IORedis, command: string, ...args: any[]): P
     const result = await client[command](...args);
     return result as T;
   } catch (error) {
-    console.error(`Error calling Redis command: '${command}': ', error);
+    console.error(`Error calling Redis command: '${command}': ', error);'`
     return undefined;
   }
 }
@@ -170,7 +170,7 @@ export class RedisLLMCache {
       query: query.trim().toLowerCase(),
       caseId: context.caseId || 'global',
       legalCategory: context.legalCategory || 'general',
-      practiceArea: context.practiceArea || 'default` };
+      practiceArea: context.practiceArea || 'default` };'`
     const hashInput = JSON.stringify(normalized);
     return createHash('sha256').update(hashInput).digest('hex');
   }
@@ -211,7 +211,7 @@ export class RedisLLMCache {
   static async cacheResponse(
     query: string,
     response: string,
-    metadata: { confidence: number;, model_used: string;
+    metadata: {, confidence: number;, model_used: string;
      , processing_time: number;
       sources?: any[];
       context?: Record<string, unknown>;

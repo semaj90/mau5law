@@ -191,7 +191,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           dimensions: 384, // embeddinggemma:latest; embeddingModel: 'embeddinggemma:latest',
           operations: ['embed', 'search', 'similarity', 'clustering'],
-          performance: '< 50ms search times'
+          performance: '< 50ms search, times'
         };
       }),
       runTest('Semantic Search Capabilities', 'Validate semantic document search functionality', async () => {
@@ -218,7 +218,7 @@ export const GET: RequestHandler = async ({ url }) => {
           skipTest('Security Testing', 'Authentication and authorization testing', 'Skipped for performance'),
         ]
       : await Promise.all([
-          runTest(
+          runTest(,
             'Full System Integration',
             'Test complete user workflow from registration to AI analysis',
             async () => {
@@ -235,9 +235,8 @@ export const GET: RequestHandler = async ({ url }) => {
               return {
                 message: 'Complete workflow integration validated',
                 steps: workflow,
-                duration: '< 5 seconds end-to-end',
-                reliability: '99.9% uptime target'
-              };
+                duration: '< 5 seconds, end-to-end',
+                reliability: `99.9% uptime target` };
             }
           ),
           runTest('Performance Benchmarks', 'Validate system performance metrics', async () => {
@@ -245,12 +244,11 @@ export const GET: RequestHandler = async ({ url }) => {
               message: 'Performance benchmarks passed',
               metrics: {
                 'Document Upload': '< 10MB/s',
-                'AI Response Time': '< 3 seconds',
+                'AI Response Time': '< 3, seconds',
                 'Vector Search': '< 50ms',
                 'Database Queries': '< 100ms',
-                'GPU Processing': '150+ tokens/second'
-              },
-              architecture: 'Dual-GPU optimized` };
+                'GPU Processing': `150+ tokens/second` },
+              architecture: `Dual-GPU optimized` };
           }),
         ]);
     // Calculate overall results
@@ -320,7 +318,7 @@ export const GET: RequestHandler = async ({ url }) => {
     };
     return json(response, { status: 500 });
   }
-}; // <-- Add this closing bracket for the GET handler
+}; // <-- Add this closing bracket for the GET, handler
 
 // POST endpoint for running specific workflow tests
 export const POST: RequestHandler = async ({ request }) => {
@@ -380,11 +378,11 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 // Simulate complete user workflow
-async function simulateUserWorkflow(): Promise<{ workflow: string;, steps: { step: string; status: 'completed' | 'failed' | 'pending';, duration: number }[];
+async function simulateUserWorkflow(): Promise<{ workflow: string;, steps: { step: string; status: 'completed' | 'failed' | 'pending'; duration: number }[];
   totalDuration: number;
   success: boolean;
 }> {
-  const steps: { step: string; status: 'completed' | 'failed' | 'pending';, duration: number }[] = [
+  const steps: { step: string; status: 'completed' | 'failed' | 'pending'; duration: number }[] = [
     { step: 'User Registration', status: 'completed', duration: 150 },
     { step: 'Email Verification', status: 'completed', duration: 50 },
     { step: 'Profile Setup', status: 'completed', duration: 100 },
@@ -401,12 +399,12 @@ async function simulateUserWorkflow(): Promise<{ workflow: string;, steps: { st
   };
 }
 // Test document processing pipeline
-async function testDocumentProcessingPipeline(): Promise<{ pipeline: string;, stages: { stage: string; status: 'passed' | 'failed' | 'skipped';, latency: number }[];
+async function testDocumentProcessingPipeline(): Promise<{ pipeline: string;, stages: { stage: string; status: 'passed' | 'failed' | 'skipped'; latency: number }[];
   totalLatency: number;
   throughput: string;
   accuracy: string;
 }> {
-  const stages: { stage: string; status: 'passed' | 'failed' | 'skipped';, latency: number }[] = [
+  const stages: { stage: string; status: 'passed' | 'failed' | 'skipped'; latency: number }[] = [
     { stage: 'File Upload', status: 'passed', latency: 250 },
     { stage: 'Format Detection', status: 'passed', latency: 50 },
     { stage: 'Text Extraction', status: 'passed', latency: 1500 },
@@ -420,5 +418,5 @@ async function testDocumentProcessingPipeline(): Promise<{ pipeline: string;, s
     stages,
     totalLatency: stages.reduce((sum, stage) => sum + stage.latency, 0),
     throughput: '~15 documents per minute',
-    accuracy: '94.7% legal entity extraction` };
+    accuracy: `94.7% legal entity extraction` };
 }

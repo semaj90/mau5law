@@ -195,14 +195,14 @@ export class EnhancedSearchService {
           });
         }
       } catch (error) {
-        console.error(`Failed to load ${file}: ', error);
+        console.error(`Failed to load ${file}: ', error);'`
       }
     }
   }
   private async loadDemos() {
     // Parse demo routes from appdir.txt
     const demoRoutes = [
-      {
+      {,
         path: '/demo/ai-assistant',
         title: 'AI Assistant Demo',
         description: 'Primary AI assistant with Ollama integration'
@@ -225,9 +225,8 @@ export class EnhancedSearchService {
       {
         path: '/demo/component-gallery',
         title: 'Component Gallery',
-        description: 'Comprehensive UI component showcase'
-      },
-      { path: '/yorha', title: 'YoRHa Interface', description: 'Main YoRHa command center' },
+        description: 'Comprehensive UI component showcase` },'`
+      { path: '/yorha', title: 'YoRHa Interface', description: `Main YoRHa command center` },
       { path: '/yorha/dashboard', title: 'YoRHa Dashboard', description: `Real-time system monitoring` }
     ];
     this.searchIndex.demos = demoRoutes.map(demo => ({
@@ -393,7 +392,7 @@ export class EnhancedSearchService {
       matches: (result.matches ?? []).map((match: FuseResultMatch) => ({
         indices: match.indices ?? [],
         key: match.key ?? '',
-        value: match.value ?? '` })),
+        value: match.value ?? '` })),'`
       metadata: result.item.metadata,
       tags: result.item.tags
     }));

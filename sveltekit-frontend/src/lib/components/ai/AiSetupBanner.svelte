@@ -1,8 +1,8 @@
-<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- Consider wrapping this component in an ErrorBoundary for better error, handling -->
 <!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
-<!-- @migration-task Error while migrating Svelte code: Identifier: 'autoFetch' has already been declared;
+<!-- @migration-task Error while migrating Svelte code: Identifier: 'autoFetch' has already been, declared;
 https: //svelte.dev/e/js_parse_error -->
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   // $props is a Svelte rune provided by the compiler/runtime — do not import it.
   // Types
@@ -71,28 +71,28 @@ https: //svelte.dev/e/js_parse_error -->
 
 {#if data}
   {#if !data.ok}
-    <div class="ai-setup-banner" role="status" aria-live="polite">
-      <div class="title">AI setup check</div>
+    <div, class="ai-setup-banner" role="status" aria-live="polite">
+      <div, class="title">AI setup check</div>
       {#if data.message}
-        <div class="msg">{data.message}{/if}
-      <div class="grid">
-        <div class="item">
-          <span class="label">GPU</span>
-          <span class:ok={data.details?.ai_summarize_checks?.gpu} class:bad={!data.details?.ai_summarize_checks?.gpu}>
+        <div, class="msg">{data.message}{/if}
+      <div, class="grid">
+        <div, class="item">
+          <span, class="label">GPU</span>
+          <span, class:ok={data.details?.ai_summarize_checks?.gpu} class:bad={!data.details?.ai_summarize_checks?.gpu}>
             {data.details?.ai_summarize_checks?.gpu ? 'Ready' : 'Unavailable'}
           </span>
         </div>
 
-        <div class="item">
-          <span class="label">Ollama</span>
-          <span class:ok={data.details?.ai_summarize_checks?.ollama} class:bad={!data.details?.ai_summarize_checks?.ollama}>
+        <div, class="item">
+          <span, class="label">Ollama</span>
+          <span, class:ok={data.details?.ai_summarize_checks?.ollama} class:bad={!data.details?.ai_summarize_checks?.ollama}>
             {data.details?.ai_summarize_checks?.ollama ? 'Healthy' : 'Down'}
           </span>
         </div>
 
-        <div class="item">
-          <span class="label">Model</span>
-          <span class:ok={data.details?.ai_summarize_checks?.model} class:bad={!data.details?.ai_summarize_checks?.model}>
+        <div, class="item">
+          <span, class="label">Model</span>
+          <span, class:ok={data.details?.ai_summarize_checks?.model} class:bad={!data.details?.ai_summarize_checks?.model}>
             {#if data.details?.ollama?.required_model}
               {data.details?.ai_summarize_checks?.model ? 'Present' : `Missing (${data.details.ollama.required_model})`}
             {:else}
@@ -101,7 +101,7 @@ https: //svelte.dev/e/js_parse_error -->
           </span>
 
           {#if data.details?.ollama?.required_model && !data.details?.ai_summarize_checks?.model}
-            <button class="pull" onclick={() => pullModel()} aria-label="Pull required model">Pull model</button>
+            <button, class="pull" onclick={() => pullModel()} aria-label="Pull required model">Pull model</button>
           {/if}
         </div>
       </div>

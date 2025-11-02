@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           query: ragRequest.query,
           context: {
-            similarDocs: [],
+           , similarDocs: [],
             embeddings: [],
             processingTime: 0,
             metadata: {
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const threshold = typeof ragRequest.options?.threshold === 'number' ? ragRequest.options!.threshold! : 0.4;
 
       // Call embedding API per-document (service expects text: string). `useGPU` is not a property on EmbeddingRequest,
-      // so we don't pass it here. We still keep `useGPU` variable for metadata only.
+      // so we don't pass it here. We still keep `useGPU` variable for metadata only.'
       const isRecord = (v: any): v is Record<string, unknown> => typeof v === 'object' && v !== null;
 
       const extractFirstEmbedding = (resp: any): any | undefined => {
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request }) => {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Enhanced RAG API error:', error);
+    console.error('Enhanced RAG API error:', error);'
     return json(
       {
         error: 'Failed to process RAG query',
@@ -235,7 +235,7 @@ export const GET: RequestHandler = async () => {
             default: 0.7,
             description: 'Response creativity (0.0-1.0)'
           },
-          threshold: { type: 'number', default: 0.4, description: 'Minimum similarity threshold' }
+          threshold: { type: 'number', default: 0.4, description: 'Minimum similarity threshold` }'`
         }
       }
     },
@@ -244,18 +244,16 @@ export const GET: RequestHandler = async () => {
       query: 'string',
       context: {
         similarDocs: [
-          {
+          {,
             document: 'string',
             score: 'number',
-            index: 'number'
-          },
+            index: `number` }
         ],
         processingTime: 'number',
         metadata: {
           model: 'string',
           gpuUsed: 'boolean',
-          vectorDimensions: 'number'
-        }
+          vectorDimensions: `number` }
       },
       options: `object` },
     integration: {

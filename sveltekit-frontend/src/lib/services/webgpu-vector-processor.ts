@@ -13,7 +13,7 @@ class QdrantService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
          , points: [
-            {
+            {,
               id,
               vector: embedding,
               payload: {
@@ -132,7 +132,7 @@ export class WebGPUVectorProcessor {
       this.queue!.writeBuffer(candidatesBuffer, 0, new Float32Array(candidateVectors.flat()));
       // Create compute shader for dot product
       const shaderModule = this.device.createShaderModule({
-        code: `
+        code: '
           @group(0) @binding(0) var<storage, read> query: array<f32>;
           @group(0) @binding(1) var<storage, read> candidates: array<f32>;
           @group(0) @binding(2) var<storage, read_write> results: array<f32>;
@@ -147,14 +147,13 @@ export class WebGPUVectorProcessor {
             }
             results[index] = dot_product;
           }
-        ' });
+        ' });'
       // Create compute pipeline
       const pipeline = this.device.createComputePipeline({
         layout: 'auto',
         compute: {
          , module: shaderModule,
-          entryPoint: 'main'
-        }
+          entryPoint: 'main' }
       });
       // Create bind group
       const bindGroup = this.device.createBindGroup({

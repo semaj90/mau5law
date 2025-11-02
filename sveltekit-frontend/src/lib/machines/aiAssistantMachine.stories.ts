@@ -104,7 +104,7 @@ export const Processing: Story = { args: {, initialContext: {
       isProcessing: true;
       response: 'Analyzing legal document... Please wait.',
       conversationHistory: [
-        {
+        {,
           id: '1',
           type: 'user',
           content: 'Analyze the contractual obligations in this employment agreement',
@@ -112,7 +112,7 @@ export const Processing: Story = { args: {, initialContext: {
         }
       ],
       processingQueue: [
-        {
+        {,
           id: 'job-1',
           type: 'legal_analysis',
           status: 'processing',
@@ -138,7 +138,7 @@ export const StreamingMode: Story = { args: {, initialContext: {
       isProcessing: true;
       response: 'Based on my analysis of the merger agreement, I can identify several key provisions:\n\n1. **Purchase Price and Payment Terms**: The agreement specifies...',
       conversationHistory: [
-        {
+        {,
           id: '1',
           type: 'user',
           content: 'What are the key provisions in this merger agreement?',
@@ -150,7 +150,7 @@ export const StreamingMode: Story = { args: {, initialContext: {
       preferredProtocol: 'websocket',
       activeProtocol: 'websocket',
       collaborationUsers: [
-        {
+        {,
           id: 'user-1',
           name: 'Sarah Chen',
           role: 'Senior Attorney',
@@ -174,7 +174,7 @@ export const MultiDocumentAnalysis: Story = { args: {, initialContext: {
       isProcessing: true;
       response: 'Comparing 3 contracts for risk analysis...',
       conversationHistory: [
-        {
+        {,
           id: '1',
           type: 'user',
           content: 'Compare these three contracts for common risk factors',
@@ -182,7 +182,7 @@ export const MultiDocumentAnalysis: Story = { args: {, initialContext: {
         }
       ],
       currentDocuments: [
-        {
+        {,
           id: 'doc-1',
           filename: 'Service_Agreement_2024.pdf',
           title: 'Service Agreement 2024',
@@ -211,7 +211,7 @@ export const MultiDocumentAnalysis: Story = { args: {, initialContext: {
         }
       ],
       processingQueue: [
-        {
+        {,
           id: 'compare-job',
           type: 'multi_document_analysis',
           status: 'processing',
@@ -263,7 +263,7 @@ export const HighPerformanceMode: Story = { args: {, initialContext: {
       },
       gpuProcessingEnabled: true,
       processingQueue: [,
-        {
+        {,
           id: 'deep-analysis',
           type: 'semantic_analysis',
           status: 'processing',
@@ -293,7 +293,7 @@ export const ErrorRecovery: Story = { args: {, initialContext: {
       isProcessing: false;
       response: '',
       conversationHistory: [
-        {
+        {,
           id: '1',
           type: 'user',
           content: 'Analyze this corrupted document',
@@ -325,7 +325,7 @@ export const ErrorRecovery: Story = { args: {, initialContext: {
         ['upload-service', { state: 'half-open', failures: 2, lastFailure: Date.now() - 15000 }]
       ]),
       processingQueue: [
-        {
+        {,
           id: 'retry-job',
           type: 'document_recovery',
           status: 'waiting',
@@ -350,7 +350,7 @@ export const CollaborativeMode: Story = { args: {, initialContext: {
       isProcessing: true;
       response: 'Analyzing case precedents and drafting motion...',
       conversationHistory: [
-        {
+        {,
           id: '1',
           type: 'user',
           content: 'Draft a motion for summary judgment based on these case files',
@@ -372,7 +372,7 @@ export const CollaborativeMode: Story = { args: {, initialContext: {
       natsConnected: true,
       activeStreaming: true,
       collaborationUsers: [,
-        {
+        {,
           id: 'user-1',
           name: 'Michael Torres',
           role: 'Lead Attorney',
@@ -413,7 +413,7 @@ export const Context7Integration: Story = { args: {, initialContext: {
       isProcessing: true;
       response: 'Analyzing your SvelteKit architecture and generating Context7-compliant component...',
       conversationHistory: [
-        {
+        {,
           id: '1',
           type: 'user',
           content: 'Help me implement a new Svelte 5 component for case management',
@@ -437,7 +437,7 @@ export const Context7Integration: Story = { args: {, initialContext: {
         ['bits-ui-components', { data: 'Cached Bits UI patterns...', timestamp: Date.now() - 1800000 }]
       ]),
       processingQueue: [
-        {
+        {,
           id: 'context7-analysis',
           type: 'code_generation',
           status: 'processing',

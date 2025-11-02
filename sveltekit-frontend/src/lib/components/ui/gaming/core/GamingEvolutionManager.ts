@@ -15,7 +15,7 @@ interface DeviceCapabilities {
   cores: number;
   gpu: 'basic' | 'discrete' | 'integrated' | 'unknown';
   connection: 'slow' | 'fast' | 'unknown';
-  screenSize: { width: number;, height: number };
+  screenSize: { width: number; height: number };
   pixelRatio: number;
   webgl: boolean;
   webgpu: boolean;
@@ -94,7 +94,7 @@ export class GamingEvolutionManager {
     // choose and apply optimal era
     const optimal = this.determineOptimalEra();
     if (optimal !== this.currentState.currentEra) {
-      // apply without awaiting so initialization doesn't block unnecessarily
+      // apply without awaiting so initialization doesn't block unnecessarily'
       this.setEra(optimal).catch(() => {
         /* ignore */
       });
@@ -104,7 +104,7 @@ export class GamingEvolutionManager {
     // memory pressure monitoring if available
     try {
       // performance.memory is non-standard; guard access
-      const perfAny = performance as unknown as { memory?: { usedJSHeapSize: number;, jsHeapSizeLimit: number } };
+      const perfAny = performance as unknown as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } };
       if (perfAny && typeof perfAny.memory !== 'undefined') {
         this.monitorMemoryPressure();
       }
@@ -217,7 +217,7 @@ export class GamingEvolutionManager {
   private monitorMemoryPressure(): void {
     const checkMemory = () => {
       try {
-        const perfAny = performance as unknown as { memory?: { usedJSHeapSize: number;, jsHeapSizeLimit: number } };
+        const perfAny = performance as unknown as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } };
         const memory = perfAny.memory;
         if (!memory) return;
         const memoryRatio = memory.usedJSHeapSize / memory.jsHeapSizeLimit;

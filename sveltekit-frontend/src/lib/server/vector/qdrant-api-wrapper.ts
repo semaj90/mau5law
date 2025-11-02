@@ -3,9 +3,9 @@
  * Compatible with @qdrant/js-client-rest ^1.15.1
  */
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { productionLogger as logger } from '../production-logger.js';
+import { productionLogger, as logger } from '../production-logger.js';
 export class QdrantApiWrapper {
-  private client: InstanceType<typeof QdrantClient>;
+  private client: InstanceType<typeof, QdrantClient>;
   constructor(config: {, url: string; apiKey?: string }) {
     this.client = new QdrantClient({
       url: config.url,
@@ -281,8 +281,7 @@ export class QdrantApiWrapper {
         error,
         {
           component: 'QdrantApiWrapper',
-          service: 'qdrant'
-        })
+          service: 'qdrant` })'`
         { collection: collectionName, field,: fieldName }
       );
       throw error;
@@ -293,7 +292,7 @@ export class QdrantApiWrapper {
     try {
       // Simple collection list to verify connectivity
       await this.client.getCollections();
-      return { status: 'healthy', service: 'qdrant' }
+      return { status: 'healthy', service: `qdrant` }
     } catch (error: any) {
       logger.error('Qdrant health check failed', error, {
         component: 'QdrantApiWrapper',

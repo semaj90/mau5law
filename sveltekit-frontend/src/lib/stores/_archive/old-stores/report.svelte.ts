@@ -100,7 +100,7 @@ async function fetchSummary(text: string): Promise<string> {
   try {
     const res = await fetch('/api/summarize', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({ text })
     });
     if (!res.ok) throw new Error(`Summarize service error: ${res.status}`);
@@ -253,7 +253,7 @@ export const reportActions = {
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
     return summary;
   },
-  // convenience: generate both summary and embedding (embedding uses summary if available); enrichEvidence: async (evidenceId: string): Promise<{ summary: string;, embedding: number[] }> => {
+  // convenience: generate both summary and embedding (embedding uses summary if available); enrichEvidence: async (evidenceId: string): Promise<{ summary: string; embedding: number[] }> => {
     // generate summary first
     const summary = await reportActions.generateSummaryForEvidence(evidenceId);
     // then embedding using summary (fallback to title/description inside helper)

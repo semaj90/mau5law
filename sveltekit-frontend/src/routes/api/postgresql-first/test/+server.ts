@@ -15,7 +15,7 @@ import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db/index.js'
 import { evidence, documentMetadata } from '$lib/server/db/schema-unified.js';
 import { eq, sql } from 'drizzle-orm';
-import { v4 as uuidv4 } from 'uuid';
+import { v4, as uuidv4 } from 'uuid';
 import { createClient } from 'redis';
 import { postgresqlQdrantSync } from '$lib/services/postgresql-qdrant-sync.js';
 
@@ -39,7 +39,7 @@ const SAMPLE_EVIDENCE = {
     4. TERMINATION
     Either party may terminate this agreement with 30 days written notice.
     This agreement is governed by the laws of the State of California.
-  ` };
+  ` };`
 export interface TestWorkflowRequest {
   userId?: string;
   caseId?: string;
@@ -58,7 +58,7 @@ export interface TestWorkflowResult { correlationId: string;, testType: string;
   redis: { status: string; [key: string]: any };
   ingestService: { status: string; [key: string]: any };
   qdrantSync: { status: string; [key: string]: any };
-  summary: { success: boolean;, errors: string[] };
+  summary: { success: boolean; errors: string[] };
 }
 
 // helper: safe error-to-string
@@ -91,8 +91,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       steps: [],
       postgresql: { status: 'pending' },
       redis: { status: 'pending' },
-      ingestService: { status: 'pending' },
-      qdrantSync: { status: 'pending' },
+      ingestService: { status: 'pending` },'`
+      qdrantSync: { status: `pending` },
       summary: { success: false, errors: [] }
     };
     // Step 1: Test PostgreSQL Evidence Creation
@@ -136,8 +136,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               throw new Error('Redis createClient is not a function');
             }
             const redisClient = createClient({
-              url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
-            });
+              url: import.meta.env.REDIS_URL || 'redis://localhost:6379` });'`
             await redisClient.connect();
             const eventData = {
               type: 'evidence',
@@ -169,7 +168,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               error: msg
             };
             results.summary.errors.push(`Redis event publishing failed: ${msg}`);
-            console.error(`❌ Step 2 failed: ', error);
+            console.error(`❌ Step 2 failed: ', error);'`
           }
         }
         // Step 3: Test Go Ingest Service Integration
@@ -223,7 +222,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             const msg = getErrorMessage(error);
             results.ingestService = { status: 'error', error: msg };
             results.summary.errors.push(`Ingest service failed: ${msg}`);
-            console.error(`❌ Step 3 failed: ', msg);
+            console.error(`❌ Step 3 failed: ', msg);'`
           }
         }
         // Step 4: Test Qdrant Sync Service
@@ -254,7 +253,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             const msg = getErrorMessage(error);
             results.qdrantSync = { status: 'error', error: msg };
             results.summary.errors.push(`Qdrant sync failed: ${msg}`);
-            console.error(`❌ Step 4 failed: ', msg);
+            console.error(`❌ Step 4 failed: ', msg);'`
           }
         }
       } catch (error: any) {
@@ -270,7 +269,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     if (results.summary.success) {
       console.log(`🎉 PostgreSQL-first workflow test completed successfully!`);
     } else {
-      console.log(`⚠️  PostgreSQL-first workflow test completed with errors: ', results.summary.errors);
+      console.log(`⚠️  PostgreSQL-first workflow test completed with errors: ', results.summary.errors);'`
     }
     return json({
       success: results.summary.success,
@@ -281,7 +280,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     });
   } catch (error: any) {
     const msg = getErrorMessage(error);
-    console.error('❌ Test endpoint error:', msg);
+    console.error('❌ Test endpoint error:', msg);'
     return json(
       {
         success: false,
@@ -310,7 +309,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'sync-stats': {
         // Get Qdrant sync statistics (guard optional method)
         const statsFn = (postgresqlQdrantSync as unknown as { getStats?: () => Promise<unknown> }).getStats;
-        const syncStats = statsFn ? await statsFn() : { message: 'getStats not available on postgresqlQdrantSync' };
+        const syncStats = statsFn ? await statsFn() : { message: 'getStats not available on postgresqlQdrantSync` };'`
         return json({ success: true, message: 'Qdrant sync statistics retrieved', data: syncStats });
       }
       default: return json({
@@ -321,8 +320,7 @@ export const GET: RequestHandler = async ({ url }) => {
               'POST /': 'Run full workflow test',
               'GET ?action=health': 'Check system health',
               'GET ?action=stats': 'Get PostgreSQL statistics',
-              'GET ?action=sync-stats': 'Get Qdrant sync statistics'
-            },
+              'GET ?action=sync-stats': `Get Qdrant sync statistics` },
             testTypes: [
               'full - Complete workflow test',
               'evidence_only - PostgreSQL evidence creation only',
@@ -338,7 +336,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 async function checkSystemHealth(): Promise<Record<string, unknown>> {
-  type ServiceStatus = { status: 'unknown' | 'healthy' | 'unhealthy' | 'degraded';, details: any | null };
+  type ServiceStatus = { status: 'unknown' | 'healthy' | 'unhealthy' | 'degraded'; details: any | null };
   const health: { postgresql: ServiceStatus;, redis: ServiceStatus;
     ingestService: ServiceStatus;
     qdrant: ServiceStatus;
@@ -371,7 +369,7 @@ async function checkSystemHealth(): Promise<Record<string, unknown>> {
     } else {
       health.redis = {
         status: 'unhealthy',
-        details: { error: 'redis.createClient is not available in this environment' }
+        details: { error: `redis.createClient is not available in this environment` }
       };
     }
   } catch (error: any) {
@@ -427,20 +425,20 @@ async function getPostgreSQLStats(): Promise<Record<string, unknown>> {
         COUNT(CASE WHEN title_embedding IS NOT NULL THEN 1 END) as evidence_with_title_embeddings,
         COUNT(CASE WHEN content_embedding IS NOT NULL THEN 1 END) as evidence_with_content_embeddings
       FROM evidence
-    `);
+    `);`
     const [documentStats] = await db.execute(sql`
       SELECT
         COUNT(*) as total_documents,
         COUNT(CASE WHEN processing_status = 'completed' THEN 1 END) as completed_documents
       FROM document_metadata
-    `);
+    `);`
     const [embeddingStats] = await db.execute(sql`
       SELECT
         COUNT(*) as total_embeddings,
         COUNT(DISTINCT embedding_model) as unique_models,
         AVG(chunk_size) as avg_chunk_size
       FROM document_embeddings
-    `);
+    `);`
     return {
       evidence: evidenceStats,
       documents: documentStats,

@@ -261,7 +261,7 @@ class EnhancedCachingService {
       return null;
     } catch (error) {
       this.stats.errors++;
-      console.error('Cache get error:', String(error));
+      console.error('Cache get error:', String(error));'
       return null;
     }
   }
@@ -282,7 +282,7 @@ class EnhancedCachingService {
       return true;
     } catch (error) {
       this.stats.errors++;
-      console.error('Cache set error:', String(error));
+      console.error('Cache set error:', String(error));'
       return false;
     }
   }
@@ -291,7 +291,7 @@ class EnhancedCachingService {
       return this.cache.delete(key);
     } catch (error) {
       this.stats.errors++;
-      console.error('Cache delete error:', String(error));
+      console.error('Cache delete error:', String(error));'
       return false;
     }
   }
@@ -301,7 +301,7 @@ class EnhancedCachingService {
       return true;
     } catch (error) {
       this.stats.errors++;
-      console.error('Cache clear error:', String(error));
+      console.error('Cache clear error:', String(error));'
       return false;
     }
   }
@@ -333,7 +333,7 @@ class EnhancedCachingService {
     }
     return results;
   }
-  async batchSet<T>(items: Array<{, key: string; value: T; options?: CacheOptions }>): Promise<boolean[]> {
+  async batchSet<T>(items: Array<{, key: string;, value: T; options?: CacheOptions }>): Promise<boolean[]> {
     // Individual sets for simple implementation
     const promises = items.map(item => this.set(item.key, item.value, item.options || {}));
     return await Promise.all(promises);
@@ -356,7 +356,7 @@ class EnhancedCachingService {
     await this.set(cacheKey, cacheData, {
       ttl: options.ttl || 600000, // 10 minutes default for search results
       tags: ['search', 'legal-ai', ...(options.tags || [])],
-      priority: options.priority || 'medium` });
+      priority: options.priority || 'medium' });
   }
   async getCachedSearchResults(query: string, options: SearchCacheOptions = {}): Promise<unknown[] | null> {
     const cacheKey = `search:${this.hashQuery(query)}`;
@@ -371,7 +371,7 @@ class EnhancedCachingService {
     await this.set(cacheKey, analysis, {
       ttl: options.ttl || 3600000, // 1 hour default for document analysis
       tags: ['analysis', 'document', documentId, ...(options.tags || [])],
-      priority: options.priority || 'high` });
+      priority: options.priority || 'high' });
   }
   async getCachedDocumentAnalysis(documentId: string, options: CacheOptions = {}): Promise<unknown | null> {
     const cacheKey = `analysis:${documentId}`;
@@ -382,7 +382,7 @@ class EnhancedCachingService {
     await this.set(cacheKey, results, {
       ttl: options.ttl || 1800000, // 30 minutes default for vector results
       tags: ['vector', 'similarity', ...(options.tags || [])],
-      priority: options.priority || 'high` });
+      priority: options.priority || 'high' });
   }
   async getCachedVectorSimilarity(queryHash: string, options: CacheOptions = {}): Promise<unknown[] | null> {
     const cacheKey = `vector:${queryHash}`;
@@ -398,7 +398,7 @@ class EnhancedCachingService {
       return 1;
     } catch (error) {
       this.stats.errors++;
-      console.error('Cache invalidation error:', String(error));
+      console.error('Cache invalidation error:', String(error));'
       return 0;
     }
   }
@@ -508,7 +508,7 @@ export function getNESCacheStats(): Record<string, unknown> {
       initialized: true,
       memoryUsage: memFn ? memFn.call(nesOrchestrator) : 'N/A',
       cacheHierarchy: hierFn ? hierFn.call(nesOrchestrator) : 'N/A',
-      performance: perfFn ? perfFn.call(nesOrchestrator) : 'N/A` };
+      performance: perfFn ? perfFn.call(nesOrchestrator) : 'N/A' };
   }
   return { initialized: false };
 }

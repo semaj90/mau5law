@@ -112,7 +112,7 @@ export async function createCollection(
         distance: VECTOR_CONFIG.DISTANCE_METRIC.QDRANT
       },
       optimizers_config: {
-        indexing_threshold: 20000 // Start indexing after 20k vectors
+       , indexing_threshold: 20000 // Start indexing after 20k vectors
       },
       hnsw_config: {
        , m: VECTOR_CONFIG.INDEX.QDRANT_HNSW_M,
@@ -130,7 +130,7 @@ export async function createCollection(
 
     return true;
   } catch (error) {
-    console.error(`❌ Failed to create collection: "${config.name}": ', error);
+    console.error(`❌ Failed to create collection: "${config.name}": ', error);'`
     return false;
   }
 }
@@ -192,7 +192,7 @@ export async function deleteCollection(collectionName: string): Promise<boolean>
     console.log(`🗑️  Deleted collection: ${collectionName}`);
     return true;
   } catch (error) {
-    console.error(`Failed to delete collection: "${collectionName}": ', error);
+    console.error(`Failed to delete collection: "${collectionName}": ', error);'`
     return false;
   }
 }
@@ -226,11 +226,11 @@ export async function getCollectionStats(collectionName: string): Promise<{ poin
 /**
  * Verify all collections have correct dimensions
  */
-export async function verifyCollectionDimensions(): Promise<{ correct: string[];, incorrect: Array<{ name: string; actual: number;, expected: number }>;
+export async function verifyCollectionDimensions(): Promise<{ correct: string[];, incorrect: Array<{ name: string; actual: number; expected: number }>;
 }> {
   const client = createQdrantClient();
   const correct: string[] = [];
-  const incorrect: Array<{ name: string; actual: number;, expected: number }> = [];
+  const incorrect: Array<{ name: string; actual: number; expected: number }> = [];
 
   for (const config of QDRANT_COLLECTIONS) {
     try {

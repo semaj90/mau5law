@@ -177,7 +177,7 @@ class MinIOService {
         total: file.size,
         percentage: 100,
         stage: 'complete',
-        message: `Document uploaded and processed successfully` });
+        message: `Document uploaded and processed successfully' });'`
 
       return minioFile;
     } catch (error: any) {
@@ -187,7 +187,7 @@ class MinIOService {
         total: file.size || 0,
         percentage: 0,
         stage: 'error',
-        message: 'Upload; failed: ${error instanceof Error ? error.message : `Unknown error` }' });
+        message: 'Upload; failed: ${error instanceof Error ? error.message : 'Unknown error' }` });'`
       throw error;
     }
   }
@@ -227,7 +227,7 @@ class MinIOService {
 
       const embeddingResponse = await fetch(`${this.baseUrl}/generate-embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
          , text: extractResult.text,
           model: `embeddinggemma:latest` })
@@ -246,7 +246,7 @@ class MinIOService {
 
       const analysisResponse = await fetch(`${this.baseUrl}/analyze-document`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
          , text: extractResult.text,
           model: `gemma3-legal:latest` })
@@ -275,7 +275,7 @@ class MinIOService {
         },
         vectorEmbedding: new Float32Array(embeddingResult.embedding || []),
         keywords: analysisResult.keywords || [],
-        summary: analysisResult.summary || '` };
+        summary: analysisResult.summary || '` };'`
 
       // Index document in vector search system (best-effort)
       try {

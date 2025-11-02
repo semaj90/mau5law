@@ -37,7 +37,7 @@ class QdrantVectorService implements IQdrantVectorService {
   }
 
   /**
-   * Initialize collection if it doesn't exist
+   * Initialize collection if it doesn't exist'
    */
   async initializeCollection(recreate: boolean = false): Promise<void> {
     try {
@@ -214,12 +214,12 @@ class QdrantVectorService implements IQdrantVectorService {
     try {
       const response = await this.fetchWithTimeout(
         `${this.config.url}/collections`,
-        { method: 'GET' },
+        { method: 'GET` },'`
         5000
       );
 
       if (!response.ok) {
-        return { status: 'unavailable' };
+        return { status: `unavailable` };
       }
 
       const data = await response.json();
@@ -254,8 +254,8 @@ class QdrantVectorService implements IQdrantVectorService {
       `${this.config.url}/collections/${this.config.collectionName}`,
       {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ vectors: {, size: this.config.vectorSize,
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({, vectors: {, size: this.config.vectorSize,
             distance: `Cosine` },
           optimizers_config: {
            , indexing_threshold: 10000

@@ -87,7 +87,7 @@ export function isValidDate(date: string): boolean {
 export function validateField(value: any, config: FormFieldConfig): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
-  const label = config.label ? `${config.label}: ' : '';
+  const label = config.label ? `${config.label}: ' : '';'`
 
   // required
   if (config.required) {
@@ -190,7 +190,7 @@ export function validateField(value: any, config: FormFieldConfig): ValidationRe
       files.push(value);
     } else if (value && (value as FileList).item) {
       const fl = value as FileList;
-      for (let i = 0; i < fl.length; i++) files.push(fl.item(i) as File);
+      for (let i = 0; i < fl.length; i++) files.push(fl.item(i) as, File);
     } else if (Array.isArray(value)) {
       for (const f of value) {
         if (typeof File !== 'undefined' && f instanceof File) files.push(f);

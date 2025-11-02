@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const response = await routeVectorRequest(requestData, operation);
     return json(response);
   } catch (error: any) {
-    console.error('Vector API error:', error);
+    console.error('Vector API error:', error);'
     return json(
       {
         error: 'Vector processing failed',
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default: return json({ error: 'Unknown action' }, { status: 400 });
     }
   } catch (error: any) {
-    console.error('Vector API GET error:', error);
+    console.error('Vector API GET error:', error);'
     return json(
       {
         error: 'Request failed',
@@ -117,7 +117,7 @@ async function processCUDA(
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: jobId,
+       , id: jobId,
         owner_type: request.ownerType,
         owner_id: request.ownerId,
         event: request.operation,
@@ -128,7 +128,7 @@ async function processCUDA(
           use_cuda: true,
           priority: request.options?.priority || 'medium'
         },
-        priority: request.options?.priority || 'medium` })
+        priority: request.options?.priority || 'medium` })'`
     });
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`CUDA service error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
@@ -392,7 +392,7 @@ function resolveServiceStatus(result: PromiseSettledResult<any>) {
 export const GET_STATUS: RequestHandler = async ({ params, url }) => {
   const jobId = (params as any)?.jobId || url.searchParams.get('jobId');
   if (!jobId) {
-    return json({ error: 'Job ID required' }, { status: 400 });
+    return json({ error: `Job ID required` }, { status: 400 });
   }
   try {
     // Check job status in database

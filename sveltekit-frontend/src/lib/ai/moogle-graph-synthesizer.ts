@@ -17,24 +17,24 @@ type TextureRegion = {
   format?: string;
   data?: Uint8Array;
 };
-type CHR_ROM_Region = { offset: number; size: number;, data: Uint8Array };
+type CHR_ROM_Region = { offset: number; size: number; data: Uint8Array };
 type TensorSlice = { data: Float32Array; metadata?: any };
-type LODLevel = { level: number; vertexCount: number;, indexCount: number };
+type LODLevel = { level: number; vertexCount: number; indexCount: number };
 type NESGPUIntegration = {
-  storeTexture?: (name: string; data: any) => Promise<void>;
+  storeTexture?: (name: string;, data: any) => Promise<void>;
   compute3DLayout?: (nodes: any[]) => Promise<any>;
 };
 type NESMemoryArchitecture = {
   allocateCHR_ROM?: (size: number, tag?: string) => Promise<any>;
-  writeCHR_ROM?: (addr: number; data: Uint8Array) => Promise<void>;
+  writeCHR_ROM?: (addr: number;, data: Uint8Array) => Promise<void>;
 };
 type DimensionalTensorStore = {
-  storeTensorSlice?: (name: string; slice: any) => Promise<void>;
+  storeTensorSlice?: (name: string;, slice: any) => Promise<void>;
   getStats?: () => Promise<any>;
 };
 type SOMWebGPUCache = {
   getCachedLayout?: (_key: string) => any;
-  setCachedLayout?: (_key: string; layout: any) => void;
+  setCachedLayout?: (_key: string;, layout: any) => void;
   clusterEmbeddings?: any;
   storeEmbedding?: any;
   getStats?: () => Promise<any>;
@@ -47,9 +47,9 @@ type GPUTensorWorker = {
 };
 export interface MoogleVisualizationConfig { width: number;, height: number;
   backgroundColor: string;
-  nodeSize: { min: number;, max: number };
-  edgeThickness: { min: number;, max: number };
-  meshDimensions: { width: number; height: number;, depth: number };
+  nodeSize: { min: number; max: number };
+  edgeThickness: { min: number; max: number };
+  meshDimensions: { width: number; height: number; depth: number };
   vertexCount: number;
   lodLevels: number;
   colorScheme: 'semantic' | 'type' | 'score' | 'legal' | 'evidence' | 'rainbow';
@@ -74,7 +74,7 @@ export interface Moogle2DOutput { canvas: HTMLCanvasElement;, imageData: ImageD
   base64: string;
   svg: string;
   metadata: { nodePositions: Array<any>;, edgePositions: Array<any>;
-    bounds: { minX: number; maxX: number; minY: number;, maxY: number };
+    bounds: { minX: number; maxX: number; minY: number; maxY: number };
     renderTime: number;
   };
 }
@@ -86,8 +86,8 @@ export interface Moogle3DMesh { vertices: Float32Array;, indices: Uint32Array;
   indexBuffer: ArrayBuffer;
   lodMeshes: Array<any>;
   metadata: { nodePositions: Array<any>;, edgeGeometry: Array<any>;
-    boundingBox: { min: number[]; max: number[];, center: number[] };
-    meshStats: { vertexCount: number; triangleCount: number;, memoryUsage: number };
+    boundingBox: { min: number[]; max: number[]; center: number[] };
+    meshStats: { vertexCount: number; triangleCount: number; memoryUsage: number };
     renderTime: number;
   };
 }
@@ -469,15 +469,14 @@ export class MoogleGraphSynthesizer {
         evidence: '#FF5722',
         entity: '#9C27B0',
         concept: '#FFC107',
-        relationship: '#607D8B'
-      },
+        relationship: `#607D8B` },
       edgeColors: {
         cites: '#FF9800',
         contains: '#8BC34A',
         related: '#03DAC6',
         similar: '#E91E63',
         references: '#00BCD4',
-        contradicts: '#F44336` },
+        contradicts: `#F44336` },
       layout: 'legal-context',
       physics: { gravity: 0.1, repulsion: 100, attraction: 0.05, damping: 0.9 },
       reinforcementLearning: {
@@ -686,7 +685,7 @@ export class MoogleGraphSynthesizer {
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
     config: MoogleVisualizationConfig
-  ): Promise<Map<string, { x: number;, y: number }>> {
+  ): Promise<Map<string, { x: number; y: number }>> {
     switch (config.layout) {
       case 'force-directed':
         return this.forceDirectedLayout(nodes, edges, config);
@@ -699,9 +698,9 @@ export class MoogleGraphSynthesizer {
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
     config: MoogleVisualizationConfig
-  ): Promise<Map<string, { x: number;, y: number }>> {
-    const positions = new Map<string, { x: number;, y: number }>();
-    const velocities = new Map<string, { x: number;, y: number }>();
+  ): Promise<Map<string, { x: number; y: number }>> {
+    const positions = new Map<string, { x: number; y: number }>();
+    const velocities = new Map<string, { x: number; y: number }>();
     for (const nodeId of nodes.keys()) {
       positions.set(nodeId, {
         x: (Math.random() - 0.5) * config.width * 0.8,
@@ -711,7 +710,7 @@ export class MoogleGraphSynthesizer {
     }
     const iterations = config.qualityLevel === 'ultra' ? 1000 : config.qualityLevel === 'high' ? 500 : 200;
     for (let i = 0; i < iterations; i++) {
-      const forces = new Map<string, { x: number;, y: number }>();
+      const forces = new Map<string, { x: number; y: number }>();
       for (const nodeId of nodes.keys()) forces.set(nodeId, { x: 0, y: 0 });
       for (const [id1, pos1] of positions) {
         for (const [id2, pos2] of positions) {
@@ -762,8 +761,8 @@ export class MoogleGraphSynthesizer {
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
     config: MoogleVisualizationConfig
-  ): Promise<Map<string, { x: number;, y: number }>> {
-    const positions = new Map<string, { x: number;, y: number }>();
+  ): Promise<Map<string, { x: number; y: number }>> {
+    const positions = new Map<string, { x: number; y: number }>();
     const typeGroups: Record<string, SoraGraphNode[]> = {
       case [],
       evidence: [],
@@ -776,7 +775,7 @@ export class MoogleGraphSynthesizer {
       if (typeGroups[node.type]) typeGroups[node.type].push(node);
       else typeGroups.document.push(node);
     }
-    const groupCenters: Record<string, { x: number;, y: number }> = {
+    const groupCenters: Record<string, { x: number; y: number }> = {
       case { x: 0, y: -config.height * 0.3 },
       evidence: { x: -config.width * 0.25, y: 0 },
       document: { x: config.width * 0.25, y: 0 },
@@ -799,10 +798,10 @@ export class MoogleGraphSynthesizer {
     return positions;
   }
   private centerAndScalePositions(
-    positions: Map<string, { x: number;, y: number }>,
+    positions: Map<string, { x: number; y: number }>,
     width: number,
     height: number
-  ): Map<string, { x: number;, y: number }> {
+  ): Map<string, { x: number; y: number }> {
     if (positions.size === 0) return positions;
     const coords = Array.from(positions.values());
     const minX = Math.min(...coords.map(p => p.x));
@@ -818,7 +817,7 @@ export class MoogleGraphSynthesizer {
     const centerY = height / 2;
     const offsetX = (minX + maxX) / 2;
     const offsetY = (minY + maxY) / 2;
-    const out = new Map<string, { x: number;, y: number }>();
+    const out = new Map<string, { x: number; y: number }>();
     for (const [nodeId, pos] of positions) {
       out.set(nodeId, { x: centerX + (pos.x - offsetX) * scale, y: centerY + (pos.y - offsetY) * scale });
     }
@@ -828,7 +827,7 @@ export class MoogleGraphSynthesizer {
     canvas: HTMLCanvasElement,
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
-    positions: Map<string, { x: number;, y: number }>,
+    positions: Map<string, { x: number; y: number }>,
     config: MoogleVisualizationConfig
   ) {
     // For now, fall back to canvas rendering for deterministic output
@@ -838,7 +837,7 @@ export class MoogleGraphSynthesizer {
     canvas: HTMLCanvasElement,
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
-    positions: Map<string, { x: number;, y: number }>,
+    positions: Map<string, { x: number; y: number }>,
     config: MoogleVisualizationConfig
   ) {
     const ctx = canvas.getContext('2d')!;
@@ -866,15 +865,15 @@ export class MoogleGraphSynthesizer {
       ctx.fill();
     }
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const svg = `<svg width="${canvas.width}" height="${canvas.height}" xmlns="http://www.w3.org/2000/svg"></svg>`;
+    const svg = `<svg, width="${canvas.width}" height="${canvas.height}" xmlns="http://www.w3.org/2000/svg"></svg>`;
     return { imageData, svg };
   }
   private async calculate3DLayout(
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
     config: MoogleVisualizationConfig
-  ): Promise<Map<string, { x: number; y: number;, z: number }>> {
-    const positions = new Map<string, { x: number; y: number;, z: number }>();
+  ): Promise<Map<string, { x: number; y: number; z: number }>> {
+    const positions = new Map<string, { x: number; y: number; z: number }>();
     for (const nodeId of nodes.keys()) {
       positions.set(nodeId, {
         x: (Math.random() - 0.5) * config.meshDimensions.width,
@@ -887,7 +886,7 @@ export class MoogleGraphSynthesizer {
   private async generateMeshGeometry(
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
-    positions: Map<string, { x: number; y: number;, z: number }>,
+    positions: Map<string, { x: number; y: number; z: number }>,
     config: MoogleVisualizationConfig
   ) {
     const vertexCount = nodes.size * 8;
@@ -956,13 +955,13 @@ export class MoogleGraphSynthesizer {
     return lodMeshes;
   }
   private calculateEdgeCurve(
-    start: { x: number; y: number;, z: number },
-    end: { x: number; y: number;, z: number }
+    start: { x: number; y: number; z: number },
+    end: { x: number; y: number; z: number }
   ): number[] {
     const mid = { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2, z: (start.z + end.z) / 2 + 10 };
     return [mid.x, mid.y, mid.z];
   }
-  private hexToRgb(hex: string): { r: number; g: number;, b: number } {
+  private hexToRgb(hex: string): { r: number; g: number; b: number } {
     const cleaned = hex.replace('#', '');
     if (cleaned.length === 3) {
       const r = parseInt(cleaned[0] + cleaned[0], 16);
@@ -980,7 +979,7 @@ export class MoogleGraphSynthesizer {
   }
   private async loadGraphShaders(): Promise<void> {
     if (!this.gl) return;
-    const vertexShaderSource = `#version 300 es
+    const vertexShaderSource = `#version 300 es`
       in vec3 position;
       in vec3 normal;
       in vec2 uv;
@@ -995,8 +994,8 @@ export class MoogleGraphSynthesizer {
         vUv = uv;
         vColor = color;
       }
-    `;
-    const fragmentShaderSource = `#version 300 es
+    `;`
+    const fragmentShaderSource = `#version 300 es`
       precision highp float;
       in vec3 vNormal;
       in vec2 vUv;
@@ -1006,7 +1005,7 @@ export class MoogleGraphSynthesizer {
         float lighting = max(0.3, dot(normalize(vNormal), normalize(vec3(1.0, 1.0, 1.0))));
         fragColor = vec4(vColor.rgb * lighting, vColor.a);
       }
-    `;
+    `;`
     const vertexShader = this.compileShader(vertexShaderSource, this.gl.VERTEX_SHADER);
     const fragmentShader = this.compileShader(fragmentShaderSource, this.gl.FRAGMENT_SHADER);
     if (vertexShader && fragmentShader) {
@@ -1017,7 +1016,7 @@ export class MoogleGraphSynthesizer {
       if (this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
         this.shaderPrograms.set('graph', program);
       } else {
-        console.error('Program link error:', this.gl.getProgramInfoLog(program));
+        console.error('Program link error:', this.gl.getProgramInfoLog(program));'
       }
     }
   }
@@ -1028,7 +1027,7 @@ export class MoogleGraphSynthesizer {
     this.gl.shaderSource(shader, source);
     this.gl.compileShader(shader);
     if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-      console.error('Shader compilation error:', this.gl.getShaderInfoLog(shader));
+      console.error('Shader compilation error:', this.gl.getShaderInfoLog(shader));'
       this.gl.deleteShader(shader);
       return null;
     }
@@ -1156,7 +1155,7 @@ export class MoogleGraphSynthesizer {
       };
     }
   }
-  public getCacheStats(): { size: number; memoryUsage: number;, hitRate: number } {
+  public getCacheStats(): { size: number; memoryUsage: number; hitRate: number } {
     return { size: this.renderingCache.size, memoryUsage: this.renderingCache.size * 1024, hitRate: 0.75 };
   }
   // WASM stubs

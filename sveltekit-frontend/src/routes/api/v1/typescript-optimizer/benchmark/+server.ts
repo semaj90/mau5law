@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Invalid strategy: must; be: "speed", "quality", or: "comparison"'
+          error: 'Invalid; strategy: must; be: "speed", "quality", or: "comparison"'
         },
         { status: 400 }
       );
@@ -64,8 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
         api_version: '2.0.0',
         go_service_url: ENHANCED_API_BASE_URL,
         sveltekit_benchmark_suite: true,
-        hardware_info: 'NVIDIA RTX 3060 Ti, 16GB RAM'
-      }
+        hardware_info: 'NVIDIA RTX 3060 Ti, 16GB RAM` }'`
     });
   } catch (error: any) {
     console.error('Benchmark Error:', error);
@@ -85,8 +84,8 @@ export const GET: RequestHandler = async () => {
   return json({
     service: 'TypeScript Optimizer Benchmark Suite',
     available_benchmarks: [
-      {
-        type: 'speed',
+      {,
+       , type: 'speed',
         description: 'Performance comparison across different processing endpoints',
         tests: ['cpu_baseline', 'optimized', 'gpu_accelerated', 'go_llama_direct'],
         metrics: ['latency', 'throughput', 'efficiency']
@@ -105,7 +104,7 @@ export const GET: RequestHandler = async () => {
       },
     ],
     parameters: {
-      max_error_count: 200,
+     , max_error_count: 200,
       max_iterations: 10,
       min_iterations: 1,
       supported_strategies: ['speed', 'quality', 'comparison']
@@ -149,7 +148,7 @@ async function runSpeedBenchmark(errorCount: number, iterations: number): Promis
           successfulRuns++;
         }
       } catch (err: any) {
-        console.warn(`Benchmark iteration ${i + 1} failed for ${endpoint.name}: ', err);
+        console.warn(`Benchmark iteration ${i + 1} failed for ${endpoint.name}: ', err);'`
       }
     }
     if (endpointResults.length > 0) {
@@ -211,7 +210,7 @@ async function runQualityBenchmark(errorCount: number, iterations: number): Prom
           qualityScores.push(confidence * 100);
         }
       } catch (err: any) {
-        console.warn(`Quality test iteration ${i + 1} failed for ${strategy.name}: ', err);
+        console.warn(`Quality test iteration ${i + 1} failed for ${strategy.name}: ', err);'`
       }
     }
     results.push({

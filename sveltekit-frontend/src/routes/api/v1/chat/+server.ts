@@ -26,7 +26,7 @@ type RedisGPUResult = {
   stats?: Record<string, unknown>;
 } | null;
 
-type RAGRetrievalResult = { docs: Array<{;, id: string;
+type RAGRetrievalResult = { docs: Array<{; id: string;
     score?: number;
     snippet?: string;
     source?: string;
@@ -215,14 +215,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         session_id,
         message: response.content || response.message,
         embedding: Array.isArray(response.embedding) ? response.embedding : [],
-        context_type: 'new'
-      });
+        context_type: 'new` });'`
     }
 
     return json({
       success: true,
       data: {
-        content: response.content || response.message,
+       , content: response.content || response.message,
         session_id,
         metadata: {
          , execution_path: response._metadata?.execution_path,
@@ -233,7 +232,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       }
     });
   } catch (error: any) {
-    console.error('Chat API error:', getErrorMessage(error));
+    console.error('Chat API error:', getErrorMessage(error));'
     // Track error analytics
     try {
       await analytics.trackEvent(
@@ -252,8 +251,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       {
         error: 'Chat processing failed',
         details: getErrorMessage(error),
-        status: 'error'
-      },
+        status: `error` },
       { status: 500 }
     );
   }
@@ -277,7 +275,7 @@ export const GET: RequestHandler = async ({ url }) => {
       };
       controller.enqueue(encoder.encode(`data: ${fastStringify(payload)}\n\n`));
 
-      // In a real implementation, you'd setup listeners for:
+      // In a real implementation, you'd setup listeners for:'
       // - LLM stream chunks from service worker
       // - Real-time updates from RabbitMQ
       // - Vector search results
@@ -311,10 +309,10 @@ async function handleParallelChatExecution({
 }: { message: string;, userId: string;
   sessionId: string;
   caseId?: string;
-  model: string;
-  temperature: number;
-  options: ParallelOptions;
-  clientIP: string;
+ , model: string;
+ , temperature: number;
+ , options: ParallelOptions;
+ , clientIP: string;
  , startTime: number;
 }): Promise<any> {
   try {
@@ -336,7 +334,7 @@ async function handleParallelChatExecution({
         caseId,
         jurisdiction: options.jurisdiction,
         practiceArea: options.practiceArea,
-        priority: options.priority || 'normal` },
+        priority: options.priority || 'normal` },'`
       parallelExecution: {
         enableQuantizedLLM: true,
         enableGRPMOThinking: true,
@@ -376,13 +374,12 @@ async function handleParallelChatExecution({
         created: Math.floor(Date.now() / 1000),
         model: model,
         choices: [
-          {
+          {,
             index: 0,
             message: {
               role: 'assistant',
-              content: responseText || 'No response generated'
-            },
-            finish_reason: `stop` },
+              content: responseText || 'No response generated` },'`
+            finish_reason: `stop` }
         ],
         usage: {
           prompt_tokens: estimateTokens(message),
@@ -440,7 +437,7 @@ async function handleParallelChatExecution({
 
     // Log performance in development
     if (dev) {
-      console.log('🚀 Parallel Chat Execution Complete: `, {
+      console.log('🚀 Parallel Chat Execution Complete: `, {'`
         totalLatency: executionMetrics.totalLatency,
         parallelEfficiency: executionMetrics.parallelEfficiency,
         servicesExecuted: Object.keys(serviceResults || {}).length,
@@ -450,7 +447,7 @@ async function handleParallelChatExecution({
 
     return json(response);
   } catch (error: any) {
-    console.error('Parallel chat execution error:', getErrorMessage(error));
+    console.error('Parallel chat execution error:', getErrorMessage(error));'
     // Fallback to single-service execution
     try {
       // contextualMemoryChatService.sendMessage has a zero-arg signature; call it accordingly
@@ -466,13 +463,13 @@ async function handleParallelChatExecution({
           created: Math.floor(Date.now() / 1000),
           model: model,
           choices: [
-            {
+            {,
               index: 0,
               message: {
                 role: 'assistant',
                 content
               },
-              finish_reason: `stop` },
+              finish_reason: `stop` }
           ]
         },
         parallel: { executionMetrics: {, totalLatency: performance.now() - startTime, parallelEfficiency: 0 },

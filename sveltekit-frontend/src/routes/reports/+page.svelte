@@ -1,11 +1,11 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Case } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import type { Report } from '$lib/types/index';
   import TauriAPI from '$lib/tauri';
 
   // Stores & helpers
-  import { reports as reportsStore, activeReport, isSaving, saveReport, loadReports } from '$lib/stores/reports';
+  import { reports, as reportsStore, activeReport, isSaving, saveReport, loadReports } from '$lib/stores/reports';
 
   // Local UI state (avoid colliding with `reports` store name)
   let reportList: Report[] = [];
@@ -117,37 +117,37 @@ import type { Case } from '$lib/types';
   <title>Reports - Legal Case Management</title>
 </svelte:head>
 
-<div class="space-y-4">
-  <div class="editor">
+<div, class="space-y-4">
+  <div, class="editor">
     <h2>Quick Draft (hover to autosave)</h2>
-    <input bind:value={title} placeholder="Title" />
-    <!-- Added role and aria-label to satisfy a11y rule for interactive handlers -->
-    <div role="region" aria-label="Quick draft editor" onmouseenter={handleHoverStart} onmouseleave={handleHoverEnd}>
-      <textarea bind:value={content} placeholder="Write your report here..."></textarea>
+    <input, bind:value={title} placeholder="Title" />
+    <!-- Added role and aria-label to satisfy a11y rule for interactive, handlers -->
+    <div role="region" aria-label="Quick draft, editor" onmouseenter={handleHoverStart} onmouseleave={handleHoverEnd}>
+      <textarea bind:value={content} placeholder="Write your report, here..."></textarea>
     </div>
     {#if $isSaving}
-      <p class="saving">Saving...</p>
+      <p, class="saving">Saving...</p>
     {/if}
   </div>
 
-  <div class="space-y-4">
-    <h1 class="space-y-4">Reports</h1>
-    <a href="/report-builder" class="space-y-4">
-      <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+  <div, class="space-y-4">
+    <h1, class="space-y-4">Reports</h1>
+    <a, href="/report-builder" class="space-y-4">
+      <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6, 0H6" />
       </svg>
       New Report
     </a>
   </div>
 
   {#if loading}
-    <div class="space-y-4">
-      <div class="space-y-4"></div>
-      <span class="space-y-4">Loading reports...</span>
+    <div, class="space-y-4">
+      <div, class="space-y-4"></div>
+      <span, class="space-y-4">Loading reports...</span>
     </div>
   {:else if error}
-    <div class="space-y-4">
-      <svg xmlns="http://www.w3.org/2000/svg" class="space-y-4" fill="none" viewBox="0 0 24 24">
+    <div, class="space-y-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="space-y-4" fill="none" viewBox="0 0 24, 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -158,8 +158,8 @@ import type { Case } from '$lib/types';
       <span>{error}</span>
     </div>
   {:else if reportList.length === 0}
-    <div class="space-y-4">
-      <svg class="space-y-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div, class="space-y-4">
+      <svg class="space-y-4" fill="none" viewBox="0 0 24, 24" stroke="currentColor">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -167,29 +167,29 @@ import type { Case } from '$lib/types';
           d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
         />
       </svg>
-      <h3 class="space-y-4">No reports</h3>
-      <p class="space-y-4">Get started by creating a new report.</p>
-      <div class="space-y-4">
-        <a href="/report-builder" class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      <h3, class="space-y-4">No reports</h3>
+      <p, class="space-y-4">Get started by creating a new report.</p>
+      <div, class="space-y-4">
+        <a, href="/report-builder" class="space-y-4">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24, 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6, 0H6" />
           </svg>
           New Report
         </a>
       </div>
     </div>
   {:else}
-    <div class="space-y-4">
+    <div, class="space-y-4">
       {#each reportList as report (report.id)}
-        <div class="space-y-4">
-          <div class="space-y-4">
-            <div class="space-y-4">
-              <div class="space-y-4">
-                <h2 class="space-y-4">
-                  <a href={`/reports/${report.id}`} class="space-y-4">{report.title}</a>
+        <div, class="space-y-4">
+          <div, class="space-y-4">
+            <div, class="space-y-4">
+              <div, class="space-y-4">
+                <h2, class="space-y-4">
+                  <a, href={`/reports/${report.id}`} class="space-y-4">{report.title}</a>
                 </h2>
-                <p class="space-y-4">{report.summary}</p>
-                <div class="space-y-4">
+                <p, class="space-y-4">{report.summary}</p>
+                <div, class="space-y-4">
                   <span>Type: {report.reportType ?? '—'}</span>
                   <span>Created: {formatDate(report.createdAt ?? new Date())}</span>
                   <span>Words: {report.wordCount ?? 0}</span>
@@ -198,33 +198,33 @@ import type { Case } from '$lib/types';
                   {/if}
                 </div>
                 {#if report.tags && report.tags.length > 0}
-                  <div class="space-y-4">
+                  <div, class="space-y-4">
                     {#each Array.isArray(report.tags) ? report.tags : [] as tag}
-                      <span class="space-y-4">{tag}</span>
+                      <span, class="space-y-4">{tag}</span>
                     {/each}
                   </div>
                 {/if}
               </div>
-              <div class="space-y-4">
-                <!-- use getStatusBadgeClass so it's read and apply a default -->
-                <span class={getStatusBadgeClass(report.status ?? 'draft') + ' space-y-4'}>
+              <div, class="space-y-4">
+                <!-- use getStatusBadgeClass so it's read and apply a, default -->'
+                <span, class={getStatusBadgeClass(report.status ?? 'draft') + ' space-y-4'}>
                   {report.status ?? 'draft'}
                 </span>
-                <div class="space-y-4">
-                  <button tabindex={0} class="space-y-4" aria-label="Actions menu">
-                    <svg class="space-y-4" fill="currentColor" viewBox="0 0 20 20">
+                <div, class="space-y-4">
+                  <button tabindex={0} class="space-y-4" aria-label="Actions, menu">
+                    <svg class="space-y-4" fill="currentColor" viewBox="0 0 20, 20">
                       <path
                         d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
                       />
                     </svg>
                   </button>
-                  <ul class="space-y-4">
-                    <li><a href={`/reports/${report.id}`}>View</a></li>
-                    <li><a href={`/reports/${report.id}/edit`}>Edit</a></li>
+                  <ul, class="space-y-4">
+                    <li><a, href={`/reports/${report.id}`}>View</a></li>
+                    <li><a, href={`/reports/${report.id}/edit`}>Edit</a></li>
                     <li>
-                      <a href={`/api/reports/${report.id}/export/pdf`} target="_blank">Export PDF</a>
+                      <a, href={`/api/reports/${report.id}/export/pdf`} target="_blank">Export PDF</a>
                     </li>
-                    <li><button class="space-y-4">Delete</button></li>
+                    <li><button, class="space-y-4">Delete</button></li>
                   </ul>
                 </div>
               </div>

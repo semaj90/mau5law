@@ -50,8 +50,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           aiMetadata = {
             analysis: aiData.response,
             confidence: 0.85,
-            model: 'gemma3-legal'
-          };
+            model: `gemma3-legal` };
         }
       } catch (error: any) {
         console.warn('AI analysis failed', { requestId, error: error.message });
@@ -183,7 +182,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     // Format data for YoRHa interface
     const formattedData = data.map((item: any, index) => ({
       ...item,
-      yorha_id: '${dataType.toUpperCase()}-${String(offset + index + 1).padStart(6, '0')}`,
+      yorha_id: '${dataType.toUpperCase()}-${String(offset + index + 1).padStart(6, '0')}`,'`
       yorha_status: item.status || 'ACTIVE',
       yorha_type: dataType.toUpperCase(),
       yorha_priority: item.priority || 'MEDIUM',
@@ -211,25 +210,22 @@ export const GET: RequestHandler = async ({ url, request }) => {
         processingTime: Date.now() - startTime,
         aiAnalysis: aiMetadata,
         service: 'yorha-legal-data-api',
-        version: '4.0.0'
-      },
+        version: '4.0.0` },'`
       // YoRHa interface enhancements
       yorhaStatus: {
         systemStatus: 'OPERATIONAL',
         dataIntegrity: 'VERIFIED',
         searchAccuracy: search ? 'HIGH' : 'N/A',
         aiEnhancement: useAI ? 'ENABLED' : 'DISABLED',
-        vectorSearch: vectorSearch ? 'ENABLED' : 'DISABLED'
-      }
+        vectorSearch: vectorSearch ? 'ENABLED' : `DISABLED` }
     });
   } catch (error: any) {
-    console.error('YoRHa legal data fetch error:', error);
+    console.error('YoRHa legal data fetch error:', error);'
     return json(
       {
         success: false,
         error: error.message || 'Failed to fetch legal data',
-        service: 'yorha-legal-data-api'
-      },
+        service: `yorha-legal-data-api` },
       { status: 500 }
     );
   }
@@ -300,16 +296,14 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       data: result[0],
       message: `${dataType} created successfully`,
-      service: 'yorha-legal-data-api'
-    });
+      service: `yorha-legal-data-api` });
   } catch (error: any) {
-    console.error('YoRHa legal data creation error:', error);
+    console.error('YoRHa legal data creation error:', error);'
     return json(
       {
         success: false,
         error: error.message || 'Failed to create legal data',
-        service: 'yorha-legal-data-api'
-      },
+        service: `yorha-legal-data-api` },
       { status: 500 }
     );
   }
@@ -362,16 +356,14 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       data: result[0],
       message: `${dataType} updated successfully`,
-      service: 'yorha-legal-data-api'
-    });
+      service: `yorha-legal-data-api` });
   } catch (error: any) {
-    console.error('YoRHa legal data update error:', error);
+    console.error('YoRHa legal data update error:', error);'
     return json(
       {
         success: false,
         error: error.message || 'Failed to update legal data',
-        service: 'yorha-legal-data-api'
-      },
+        service: `yorha-legal-data-api` },
       { status: 500 }
     );
   }
@@ -402,10 +394,9 @@ export const DELETE: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: `${dataType} deleted successfully`,
-      service: 'yorha-legal-data-api'
-    });
+      service: `yorha-legal-data-api` });
   } catch (error: any) {
-    console.error('YoRHa legal data deletion error:', error);
+    console.error('YoRHa legal data deletion error:', error);'
     return json(
       {
         success: false,

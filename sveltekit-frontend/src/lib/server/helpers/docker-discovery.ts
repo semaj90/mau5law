@@ -12,7 +12,7 @@
  * - Opt-in via DEV_DOCKER_DISCOVERY=true feature flag
  *
  * Usage:
- * ```typescript
+ * ```typescript`
  * import { discoverServiceEndpoint } from '$lib/server/helpers/docker-discovery';
  *
  * // Try env var first, then Docker discovery, then fallback
@@ -46,7 +46,7 @@ interface DiscoveryResult {
   containerName: string;
 }
 // Cache results in memory (TTL: 5 minutes)
-const DISCOVERY_CACHE = new Map<string, { result: DiscoveryResult;, timestamp: number }>();
+const DISCOVERY_CACHE = new Map<string, { result: DiscoveryResult; timestamp: number }>();
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 // Docker client (lazy-initialized)
 let dockerClient: Docker | null = null;
@@ -56,7 +56,7 @@ let dockerClient: Docker | null = null;
 function getDockerClient(): Docker {
   if (!dockerClient) {
     // On Windows/Mac with Docker Desktop, Unix socket is usually:
-    // - Windows:; npipe:////./pipe/docker_engine
+    // -; Windows:; npipe:////./pipe/docker_engine
     // - Mac: /var/run/docker.sock
     // dockerode auto-detects in most cases
     dockerClient = new Docker();
@@ -71,7 +71,7 @@ function isDiscoveryEnabled(): boolean {
   return enabled;
 }
 /**
- * Check if we're in a development environment
+ * Check if we're in a development environment'
  */
 function isDevEnvironment(): boolean {
   const isDev = process.env.NODE_ENV === 'development' ||
@@ -86,7 +86,7 @@ function isDevEnvironment(): boolean {
 function getPortMapping(
   container: Docker.ContainerInspectInfo,
   targetPort: number
-): { host: string;, port: number } | null {
+): { host: string; port: number } | null {
   try {
     const portKey = `${targetPort}/tcp`;
     const portBindings = container.NetworkSettings?.Ports?.[portKey];
@@ -227,7 +227,7 @@ async function discoverContainerPort(
     port: portMapping.port,
     url: `http://${portMapping.host}:${portMapping.port}`,
     containerId: container.Id.substring(0, 12),
-    containerName: container.Name || 'unknown' };
+    containerName: container.Name || 'unknown` };'`
   // Cache result
   DISCOVERY_CACHE.set(cacheKey, { result, timestamp: Date.now() });
   return result;
@@ -283,7 +283,7 @@ export async function verifyServiceEndpoint(
  */
 export async function listRunningContainers(): Promise<
   Array<{ name: string;, image: string;
-    ports: Record<number, { host: string;, port: number }>;
+    ports: Record<number, { host: string; port: number }>;
   }>
 > {
   try {
@@ -293,7 +293,7 @@ export async function listRunningContainers(): Promise<
       containers.map(async (c: Docker.ContainerInfo) => {
         // Fix: Explicitly type 'c'
         const full = await docker.getContainer(c.Id).inspect();
-        const ports: Record<number, { host: string;, port: number }> = {};
+        const ports: Record<number, { host: string; port: number }> = {};
         if (full.NetworkSettings?.Ports) {
           for (const [portKey, bindings] of Object.entries(full.NetworkSettings.Ports)) {
             const port = parseInt(portKey.split('/')[0], 10);

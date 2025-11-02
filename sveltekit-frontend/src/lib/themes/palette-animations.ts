@@ -113,7 +113,7 @@ export class PaletteAnimationController {
     const b = Math.round(fromRgb.b + (toRgb.b - fromRgb.b) * progress);
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   }
-  private hexToRgb(hex: string): { r: number; g: number;, b: number } | null {
+  private hexToRgb(hex: string): { r: number; g: number; b: number } | null {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
       r: parseInt(result[1], 16),
@@ -205,7 +205,7 @@ export class PaletteAnimationController {
         0% { transform: translateY(0) }
         100% { transform: translateY(4px) }
       }
-    `;
+    `;`
     this.injectCSS('palette-scanlines', scanlineCSS);
     document.body.classList.add('palette-scanlines');
   }
@@ -224,7 +224,7 @@ export class PaletteAnimationController {
           filter: drop-shadow(var(--chromatic-offset, 0px) 0 red)
                  drop-shadow(calc(var(--chromatic-offset, 0px) * -1) 0 blue);
         }
-      `;
+      `;`
       this.injectCSS('chromatic-aberration', aberrationCSS);
     }
   }
@@ -248,7 +248,7 @@ export class PaletteAnimationController {
           90% { transform: translateX(-2px) scaleX(1.01) }
           100% { transform: translateX(0) }
         }
-      `;
+      `;`
       this.injectCSS('palette-glitch', glitchCSS);
       document.body.classList.add('palette-glitch');
     }
@@ -266,7 +266,7 @@ export class PaletteAnimationController {
           image-rendering: crisp-edges;
           filter: contrast(1.1) saturate(1.2);
         }
-      `;
+      `;`
       this.injectCSS('palette-pixelate', pixelateCSS);
       document.body.classList.add('palette-pixelate');
     }
@@ -291,7 +291,7 @@ export class PaletteAnimationController {
           transform: perspective(1000px) rotateX(${intensity * 2}deg);
           filter: brightness(1.1) contrast(1.2);
         }
-      `;
+      `;`
       this.injectCSS('palette-crt', crtCSS);
       document.body.classList.add('palette-crt');
     }
@@ -301,7 +301,7 @@ export class PaletteAnimationController {
     // Apply interpolated colors
     for (const [key, transition] of this.transitions) {
       if (key.includes('[')) {
-        // Handle accent color arrays
+        // Handle accent color arrays,
         const [$, indexStr] = key.split('['); // Renamed: 'baseKey'; to: '$'
         const index = parseInt(indexStr.replace(']', ''));
         root.style.setProperty(`--console-accent-${index}`, transition.current);

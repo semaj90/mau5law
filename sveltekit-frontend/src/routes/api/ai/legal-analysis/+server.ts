@@ -127,8 +127,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         practiceArea: doc.practiceArea,
         jurisdiction: doc.jurisdiction,
         similarity: doc.similarity,
-        content: doc.content.substring(0, 300) + '...'
-      })),
+        content: doc.content.substring(0, 300) + '...' })),
       performance: {
         embeddingTimeMs: embeddingTime,
         searchTimeMs: searchTime,
@@ -147,7 +146,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       }
     });
   } catch (error) {
-    console.error('Legal analysis error:', error);
+    console.error('Legal analysis error:', error);'
     return json(
       {
         error: 'Legal analysis failed',
@@ -165,12 +164,12 @@ export const GET: RequestHandler = async () => {
     const dbStats = await legalVectorService.getDocumentStatistics();
     return json({
       status: 'healthy',
-      services: { tensorrt: {, available: !!tensorrtHealth,
+      services: {, tensorrt: {, available: !!tensorrtHealth,
           url: process.env.TENSORRT_URL || 'http://localhost:8100',
           health: tensorrtHealth
         },
         database: {
-          available: true,
+         , available: true,
           statistics: dbStats
         }
       },
@@ -183,11 +182,11 @@ export const GET: RequestHandler = async () => {
       }
     });
   } catch (error) {
-    console.error('Health check error:', error);
+    console.error('Health check error:', error);'
     return json(
       {
         status: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error` },
+        error: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }

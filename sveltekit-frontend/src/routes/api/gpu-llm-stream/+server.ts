@@ -77,10 +77,10 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(new TextEncoder().encode(`data: ${completeData}\n\n`));
           controller.close();
         } catch (err) {
-          console.error('Streaming error:', err);
+          console.error('Streaming error:', err);'
           const errorData = JSON.stringify({
             type: 'error',
-            message: err instanceof Error ? err.message : 'Unknown error` });
+            message: err instanceof Error ? err.message : `Unknown error' });'`
           controller.enqueue(new TextEncoder().encode(`data: ${errorData}\n\n`));
           controller.close();
         }
@@ -96,20 +96,19 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (err) {
-    console.error('API error:', err);
+    console.error('API error:', err);'
     throw error(500, err instanceof Error ? err.message : 'Internal server error');
   }
 };
 export const GET: RequestHandler = async () => {
   try {
-    await getPipeline(); // ensure pipeline initialized, don't assign to an unused variable
+    await getPipeline(); // ensure pipeline initialized, don't assign to an unused variable'
     // Return memory stats and system info
     const stats = {
       status: 'ready',
       gpu: {
         available: typeof navigator !== 'undefined' && 'gpu' in navigator,
-        webgpu: typeof GPUAdapter !== 'undefined'
-      },
+        webgpu: typeof GPUAdapter !== 'undefined' },
       memory: {
         // Server-side memory info
         heapUsed: process.memoryUsage().heapUsed,
@@ -123,10 +122,10 @@ export const GET: RequestHandler = async () => {
     };
     return new Response(JSON.stringify(stats), {
       headers: {
-        'Content-Type': 'application/json` }
+        'Content-Type': `application/json' }'`
     });
   } catch (err) {
-    console.error('Stats error:', err);
+    console.error('Stats error:', err);'
     throw error(500, 'Failed to get system stats');
   }
 };

@@ -33,9 +33,9 @@ export interface StreamingStats {
 }
 
 class Neo4j3DEngine {
-  async getRecommendations(options: { nodeId: string;, nodeType: string;
-    maxNodes: number;
-    maxDepth: number;
+  async getRecommendations(options: {, nodeId: string;, nodeType: string;
+   , maxNodes: number;
+   , maxDepth: number;
    , includeEmbeddings: boolean;
   }): Promise<RecommendationGraph> {
     console.log('Fetching recommendations for:', options.nodeId);

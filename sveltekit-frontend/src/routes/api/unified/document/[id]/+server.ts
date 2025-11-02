@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ params }) => {
       }
     })
   } catch (error) {
-    console.error('Get document error:', error)
+    console.error('Get document error:', error)'
     if (error instanceof Error && error.message.includes('not found')) {
       return json({ error: 'Document not found' }, { status: 404 })
     }

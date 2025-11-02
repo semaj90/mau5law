@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported — do NOT import runes explicitly.
   // XState Transition Monitoring & Visualization
@@ -23,7 +23,7 @@ import type { Case } from '$lib/types';
     'auth-machine': {
       currentState: 'authenticated',
       transitions: [
-        {
+        {,
           id: 'logout',
           event: 'LOGOUT',
           from: 'authenticated',
@@ -61,7 +61,7 @@ import type { Case } from '$lib/types';
     'case-management-machine': {
       currentState: 'reviewing',
       transitions: [
-        {
+        {,
           id: 'submit',
           event: 'SUBMIT_CASE',
           from: 'reviewing',
@@ -134,8 +134,8 @@ import type { Case } from '$lib/types';
   function getTransitionColor(transition: any) {
     const ts = transition?.timestamp ? new Date(transition.timestamp).getTime() : 0;
     const age = Date.now() - ts;
-    if (age < 30000) return 'border-green-200 bg-green-50';
-    if (age < 300000) return 'border-blue-200 bg-blue-50';
+    if (age < 30000) return 'border-green-200, bg-green-50';
+    if (age < 300000) return 'border-blue-200, bg-blue-50';
     return 'border-gray-200 bg-gray-50';
   }
 
@@ -150,57 +150,57 @@ import type { Case } from '$lib/types';
 
 <svelte:head>
   <title>State Transitions - {machineId} - Legal AI Platform</title>
-  <meta name="description" content="Monitor and visualize XState machine transitions" />
+  <meta name="description" content="Monitor and visualize XState machine, transitions" />
 </svelte:head>
-<div class="page-container">
-  <header class="page-header">
-    <div class="header-content">
-      <div class="breadcrumb">
-        <a href="/state/machines" class="breadcrumb-link">State Machines</a>
-        <span class="breadcrumb-separator">→</span>
-        <span class="breadcrumb-current">{machineId}</span>
+<div, class="page-container">
+  <header, class="page-header">
+    <div, class="header-content">
+      <div, class="breadcrumb">
+        <a, href="/state/machines" class="breadcrumb-link">State Machines</a>
+        <span, class="breadcrumb-separator">→</span>
+        <span, class="breadcrumb-current">{machineId}</span>
       </div>
       <h1>🔄 Transition Monitor</h1>
       <p>Real-time transitions for <strong>{machineId}</strong></p>
-      <div class="current-state-display">
-        <span class="state-label">Current State:</span>
-        <span class="current-state {getStateColor(currentState)}">{currentState}</span>
+      <div, class="current-state-display">
+        <span, class="state-label">Current State:</span>
+        <span, class="current-state {getStateColor(currentState)}">{currentState}</span>
       </div>
     </div>
-    <div class="machine-selector">
-      <select bind:value={machineId} class="machine-select">
-        <option value="auth-machine">Authentication Machine</option>
-        <option value="case-management-machine">Case Management Machine</option>
-        <option value="rag-pipeline-machine">RAG Pipeline Machine</option>
-        <option value="gpu-allocation-machine">GPU Allocation Machine</option>
+    <div, class="machine-selector">
+      <select, bind:value={machineId} class="machine-select">
+        <option, value="auth-machine">Authentication Machine</option>
+        <option, value="case-management-machine">Case Management Machine</option>
+        <option, value="rag-pipeline-machine">RAG Pipeline Machine</option>
+        <option, value="gpu-allocation-machine">GPU Allocation Machine</option>
       </select>
-      <button class="nes-btn ghost" onclick={loadTransitions}>
+      <button class="nes-btn, ghost" onclick={loadTransitions}>
         Refresh
       </button>
     </div>
   </header>
 
-  <main class="page-content">
+  <main, class="page-content">
     {#if loading}
-      <div class="loading-state">
-        <div class="spinner"></div>
+      <div, class="loading-state">
+        <div, class="spinner"></div>
         <p>Loading transitions for {machineId}...</p>
       </div>
     {:else if transitions.length === 0}
-      <div class="empty-state">
+      <div, class="empty-state">
         <h2>🎯 No Transitions Recorded</h2>
-        <p>This state machine hasn't recorded any transitions yet.</p>
+        <p>This state machine hasn't recorded any transitions yet.</p>'
       </div>
     {:else}
-      <div class="transitions-timeline">
-        <div class="timeline-header">
+      <div, class="transitions-timeline">
+        <div, class="timeline-header">
           <h2>📊 Transition History ({transitions.length})</h2>
-          <div class="timeline-stats">
+          <div, class="timeline-stats">
             <span>Avg Duration {Math.round(transitions.reduce((sum, t) => sum + (t.duration || 0), 0) / transitions.length)}ms</span>
           </div>
         </div>
-        <div class="timeline-container">
-          <!-- Replace complex inline each with a simple each over sortedTransitions -->
+        <div, class="timeline-container">
+          <!-- Replace complex inline each with a simple each over, sortedTransitions -->
           {#each sortedTransitions as transition}
             <button
               type="button"
@@ -208,45 +208,45 @@ import type { Case } from '$lib/types';
               aria-pressed={selectedTransition?.id === transition.id}
               onclick={() => selectedTransition = selectedTransition?.id === transition.id ? null : transition}
             >
-              <div class="transition-header">
-                <div class="transition-flow">
-                  <span class="state-from">{transition.from}</span>
-                  <div class="transition-arrow">
-                    <span class="arrow">→</span>
-                    <span class="event-label">{transition.event}</span>
+              <div, class="transition-header">
+                <div, class="transition-flow">
+                  <span, class="state-from">{transition.from}</span>
+                  <div, class="transition-arrow">
+                    <span, class="arrow">→</span>
+                    <span, class="event-label">{transition.event}</span>
                   </div>
-                  <span class="state-to">{transition.to}</span>
+                  <span, class="state-to">{transition.to}</span>
                 </div>
-                <div class="transition-meta">
+                <div, class="transition-meta">
                   <span class="duration">{formatDuration(transition.duration || 0)}</span>
-                  <span class="timestamp">{new Date(transition.timestamp).toLocaleTimeString()}</span>
+                  <span, class="timestamp">{new Date(transition.timestamp).toLocaleTimeString()}</span>
                 </div>
               </div>
               {#if selectedTransition?.id === transition.id}
-                <div class="transition-details">
-                  <div class="details-grid">
-                    <div class="detail-section">
+                <div, class="transition-details">
+                  <div, class="details-grid">
+                    <div, class="detail-section">
                       <h4>Context</h4>
-                      <pre class="context-display">{JSON.stringify(transition.context, null, 2)}</pre>
+                      <pre, class="context-display">{JSON.stringify(transition.context, null, 2)}</pre>
                     </div>
-                    <div class="detail-section">
+                    <div, class="detail-section">
                       <h4>Guards ({(transition.guards || []).length})</h4>
-                      <div class="guards-list">
+                      <div, class="guards-list">
 -                        {#each Array.isArray((transition.guards || [])) ? (transition.guards || []) : [] as guard}
 +                        {#each transition.guards || [] as guard}
-                          <span class="guard-badge">✓ {guard}</span>
+                          <span, class="guard-badge">✓ {guard}</span>
                         {/each}
                         {#if !(transition.guards || []).length}
-                          <span class="no-guards">No guards</span>
+                          <span, class="no-guards">No guards</span>
                         {/if}
                       </div>
                     </div>
-                    <div class="detail-section">
+                    <div, class="detail-section">
                       <h4>Actions ({(transition.actions || []).length})</h4>
-                      <div class="actions-list">
+                      <div, class="actions-list">
 -                        {#each Array.isArray((transition.actions || [])) ? (transition.actions || []) : [] as action}
 +                        {#each transition.actions || [] as action}
-                          <span class="action-badge">⚡ {action}</span>
+                          <span, class="action-badge">⚡ {action}</span>
                         {/each}
                       </div>
                     </div>
@@ -259,24 +259,24 @@ import type { Case } from '$lib/types';
       </div>
     {/if}
 
-    <div class="transition-controls">
-      <div class="controls-card">
-        <div class="controls-header">
-          <h3 class="controls-title">Trigger Transitions</h3>
+    <div, class="transition-controls">
+      <div, class="controls-card">
+        <div, class="controls-header">
+          <h3, class="controls-title">Trigger Transitions</h3>
         </div>
-        <div class="controls-content">
-          <div class="control-buttons">
-            <button class="nes-btn" onclick={() => triggerTransition('LOGOUT')}>
+        <div, class="controls-content">
+          <div, class="control-buttons">
+            <button, class="nes-btn" onclick={() => triggerTransition('LOGOUT')}>
               Trigger Logout
             </button>
-            <button class="nes-btn ghost" onclick={() => triggerTransition('REFRESH_TOKEN')}>
+            <button class="nes-btn, ghost" onclick={() => triggerTransition('REFRESH_TOKEN')}>
               Refresh Token
             </button>
-            <button class="nes-btn ghost" onclick={() => triggerTransition('VIEW_PROFILE')}>
+            <button class="nes-btn, ghost" onclick={() => triggerTransition('VIEW_PROFILE')}>
               View Profile
             </button>
           </div>
-          <p class="control-note">
+          <p, class="control-note">
             ⚠️ These are test triggers. In production, transitions are triggered by application events.
           </p>
         </div>

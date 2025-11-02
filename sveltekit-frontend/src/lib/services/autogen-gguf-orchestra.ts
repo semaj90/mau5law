@@ -382,7 +382,7 @@ export class AutoGenGGUFOrchestra {
         repeatPenalty: 1.1,
         stopTokens: ['END_RESPONSE', '\n\n---'],
         // map our agent priority (uppercase) into the lowercase request-level field expected by runtimes
-        priority: (agent.priority ?? 'MEDIUM').toLowerCase() as unknown; as: 'low' | 'medium' | 'high' | 'critical` };
+        priority: (agent.priority ?? 'MEDIUM').toLowerCase() as unknown; as: 'low' | 'medium' | 'high' | 'critical' };
       // Execute with GGUF runtime (GPU accelerated) - safe call with fallback
       const stepStartTime = Date.now();
       let response: GGUFInferenceResponse | null = null;
@@ -414,7 +414,7 @@ export class AutoGenGGUFOrchestra {
         result: response!.text,
         processingTime: stepProcessingTime,
         tokens: response!.tokens?.length || 0,
-        model: agent?.model || 'unknown` });
+        model: agent?.model || 'unknown' });
       totalTokens += response!.tokens?.length || 0;
       totalGpuUtilization += 75; // Estimated GPU utilization for RTX 3060 Ti
     }
@@ -447,7 +447,7 @@ export class AutoGenGGUFOrchestra {
     return { documentAnalysis: {, type: 'DOCUMENT_REVIEW',
         agents: ['user_proxy', 'document_reviewer', 'legal_analyst'],
         workflow: [
-          {
+          {,
             stepId: 'initial_review',
             agentId: 'document_reviewer',
             instruction: 'Review this document and identify key issues, missing clauses, and areas of concern',
@@ -473,7 +473,7 @@ export class AutoGenGGUFOrchestra {
         type: 'RESEARCH',
         agents: ['user_proxy', 'research_assistant', 'legal_analyst'],
         workflow: [
-          {
+          {,
             stepId: 'research_query',
             agentId: 'research_assistant',
             instruction: 'Conduct comprehensive legal research on the given topic',
@@ -498,7 +498,7 @@ export class AutoGenGGUFOrchestra {
         type: 'COMPLIANCE_CHECK',
         agents: ['user_proxy', 'compliance_checker', 'legal_analyst'],
         workflow: [
-          {
+          {,
             stepId: 'compliance_review',
             agentId: 'compliance_checker',
             instruction: 'Check this document/process for regulatory compliance',
@@ -636,7 +636,7 @@ export function createAutoGenOrchestra() {
         overall: $status.initialized && $status.ggufReady ? 'HEALTHY' : 'DEGRADED',
         agentEfficiency: ($metrics.completedTasks / Math.max($metrics.totalTasks, 1)) * 100,
         throughput: $metrics.tokensPerSecond,
-        uptime: $status.initialized ? 'OPERATIONAL' : 'OFFLINE` }))
+        uptime: $status.initialized ? 'OPERATIONAL' : 'OFFLINE' }))
     },
     // API methods
     executeTask: orchestra.executeTask.bind(orchestra),

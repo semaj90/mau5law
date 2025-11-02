@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     );
   } catch (error) {
-    console.error('File listing error:', error);
+    console.error('File listing error:', error);'
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to list files',
@@ -108,11 +108,11 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json` }'`
       }
     );
   } catch (error) {
-    console.error('File deletion error:', error);
+    console.error('File deletion error:', error);'
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to delete file',

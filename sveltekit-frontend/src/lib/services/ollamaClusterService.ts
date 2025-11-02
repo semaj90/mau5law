@@ -40,7 +40,7 @@ export interface ClusterStatusResponse { healthy: boolean;, message: string;
 
 const initialConfig: OllamaClusterConfig = {
   instances: [
-    {
+    {,
       id: 'ollama-primary',
       url: 'http://localhost:11434',
       port: 11434,
@@ -85,7 +85,7 @@ const initialConfig: OllamaClusterConfig = {
     legal_analysis: 'gemma3-legal',
     embeddings: 'nomic-embed-text',
     general_chat: 'deeds-web',
-    document_summary: 'gemma3-legal` }
+    document_summary: 'gemma3-legal' }
 };
 
 // Core stores
@@ -310,7 +310,7 @@ export class OllamaClusterService {
       const response = await fetch(`${instance.url}${endpoint}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },
+          'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
         signal: createTimeoutSignal(60000)
       });
@@ -334,7 +334,7 @@ export class OllamaClusterService {
       }
     } catch (error: any) {
       // Log once and mark instance unhealthy
-      console.error(`Request to ${instance.id} failed: ', error);
+      console.error(`Request to ${instance.id} failed: ', error);'`
 
       // Mark instance as unhealthy on failure and set a high response_time
       ollamaClusterStore.update(cfg => ({

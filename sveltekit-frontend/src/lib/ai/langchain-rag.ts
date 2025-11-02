@@ -101,7 +101,7 @@ export class LegalRAGService {
   // Legal-specific prompt templates
   private readonly LEGAL_PROMPTS = {
     STANDARD_RAG: ChatPromptTemplate.fromTemplate(`
-You are a specialized legal AI assistant. Answer the user's question based solely on the provided legal document context.
+You are a specialized legal AI assistant. Answer the user's question based solely on the provided legal document context.'
 Context from legal documents:)
 {context}
 Question: {question}
@@ -112,7 +112,7 @@ Instructions:
 - Use appropriate legal terminology
 - Identify key legal concepts, parties, and obligations
 - If asked about jurisdiction-specific laws, note any applicable jurisdictions mentioned in the context
-Answer:`),
+Answer:`),`
     THINKING_MODE_RAG: ChatPromptTemplate.fromTemplate(`
 You are a specialized legal AI assistant operating in: "thinking mode." Provide comprehensive legal analysis based on the provided context.
 Context from legal, documents:)
@@ -126,7 +126,7 @@ Instructions for thinking mode:
 - Consider statutory requirements and regulatory compliance
 - Suggest areas that may require additional research or legal counsel
 - Provide detailed citations to specific document sections
-Comprehensive Analysis:`),
+Comprehensive Analysis:`),`
     VERBOSE_RAG: ChatPromptTemplate.fromTemplate(`
 You are a specialized legal AI assistant providing detailed legal analysis based on the provided context.
 Context from legal documents:)
@@ -140,7 +140,7 @@ Instructions for verbose mode:
 - Address potential compliance requirements
 - Provide detailed document analysis with specific citations
 - Include guidance on next steps or recommended actions
-Detailed Legal Analysis:`),
+Detailed Legal Analysis:`),`
     QUERY_GENERATION: PromptTemplate.fromTemplate(`
 You are a legal research assistant. Generate diverse search queries to find relevant information for the following question.
 Original question: {question}
@@ -148,7 +148,7 @@ Generate 3 different search queries that would help find relevant legal, informa
 1. A query focusing on legal concepts and principles
 2. A query focusing on specific legal terms and definitions
 3. A query focusing on practical applications and implications
-Only return the queries, one per line.`)
+Only return the queries, one per line.`)`
   };
   constructor(config: LegalRAGConfig) {
     this.config = config;
@@ -213,7 +213,7 @@ Only return the queries, one per line.`)
           return {
             async getRelevantDocuments(query: string) {
               try {
-                // Prefer calling the store's similaritySearch if available
+                // Prefer calling the store's similaritySearch if available'
                 if (typeof mockStore.similaritySearch === 'function') {
                   return await mockStore.similaritySearch(query, baseK);
                 }
@@ -266,7 +266,7 @@ Only return the queries, one per line.`)
             headers: {
               'Content-Type': `application/json` },
             body: JSON.stringify({
-              query: question,
+             , query: question,
               limit: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,
               threshold: confidenceThreshold,
               filters: {
@@ -282,7 +282,7 @@ Only return the queries, one per line.`)
               const enhancedRetrievedDocs = semanticData.results.map((result: SemanticSearchResult) => ({
                 pageContent:
                   result?.content ||
-                  `${result?.title || 'Untitled'}\n\n${result?.metadata?.summary || 'No content available` }`,
+                  `${result?.title || 'Untitled' }\n\n${result?.metadata?.summary || 'No content available` }`,'`
                 metadata: {
                   ...result.metadata,
                   title: result?.title,
@@ -383,7 +383,7 @@ Only return the queries, one per line.`)
         formatDocumentsAsString,
       ]);
       const ragChain = RunnableSequence.from([
-        RunnableMap.from({
+        RunnableMap.from({,
           context: contextRetriever,
           question: new RunnablePassthrough()
         }),
@@ -393,11 +393,11 @@ Only return the queries, one per line.`)
       ]);
       const [answer, retrievedDocs] = await Promise.all([
         ragChain.invoke(question).catch((error: any) => {
-          console.warn('RAG chain error:', error);
+          console.warn('RAG chain error:', error);'
           return 'Unable to generate response due to processing error.';
         }),
         retriever.getRelevantDocuments(question).catch((error: any) => {
-          console.warn('Document retrieval error:', error);
+          console.warn('Document retrieval error:', error);'
           return [];
         }),
       ]);
@@ -464,7 +464,7 @@ Only return the queries, one per line.`)
       } catch {
         // ignore stats collection failures
       }
-      console.log(`✅ Indexed ${chunks.length} chunks for document ${metadata.documentId ?? metadata.id ?? 'unknown` }`);
+      console.log(`✅ Indexed ${chunks.length} chunks for document ${metadata.documentId ?? metadata.id ?? 'unknown` }`);'`
       return ids || [];
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -492,8 +492,8 @@ Only return the queries, one per line.`)
     comparisonFocus: string,
     options: RAGQueryOptions = {}
   ): Promise<RAGResult> {
-    const query = `Compare and contrast the following aspects across the provided documents: ${comparisonFocus}.
-    Identify similarities, differences, and any potential conflicts or inconsistencies.`;
+    const query = `Compare and contrast the following aspects across the provided documents: ${comparisonFocus}.`
+    Identify similarities, differences, and any potential conflicts or inconsistencies.`;`
     // Note: Filter would be applied in the query method
     // const filter = {
     //   documentId: { $in: documentIds },
@@ -507,8 +507,8 @@ Only return the queries, one per line.`)
    * Extract specific legal information
    */
   async extractLegalEntities(query: string, documentType?: string, options: RAGQueryOptions = {}): Promise<RAGResult> {
-    const entityQuery = `Extract and list all ${query} mentioned in the legal documents.
-    Provide specific references to where each item is mentioned.`;
+    const entityQuery = `Extract and list all ${query} mentioned in the legal documents.`
+    Provide specific references to where each item is mentioned.`;`
     return await this.query(entityQuery, {
       ...options,
       documentType
@@ -775,7 +775,7 @@ Only return the queries, one per line.`)
     // Narrow module shape for pdfjs-dist (supports both default export and top-level functions)
     type PDFJSModule = {
       default?: {
-        getDocument(src: {, data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
+        getDocument(src: {;, data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
         GlobalWorkerOptions?: { workerSrc?: string };
       };
       getDocument?(src: {, data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
@@ -789,7 +789,7 @@ Only return the queries, one per line.`)
         // @ts-ignore - This path may not exist if only the main package is installed
         pdfjsModule = (await import('pdfjs-dist/legacy/build/pdf')) as PDFJSModule;
       } catch {
-        // Fallback to main package if legacy build isn't present
+        // Fallback to main package if legacy build isn't present'
         // @ts-ignore - This module might not be installed
         pdfjsModule = (await import('pdfjs-dist').catch(() => null)) as PDFJSModule | null;
       }
@@ -805,7 +805,7 @@ Only return the queries, one per line.`)
           pdfjs.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.6.172/build/pdf.worker.min.js';
         }
       } catch {
-        // Non-fatal if worker configuration isn't possible in the runtime.
+        // Non-fatal if worker configuration isn't possible in the runtime.'
       }
       const arrayBuffer = await file.arrayBuffer();
       if (typeof pdfjs.getDocument !== 'function') {
@@ -820,7 +820,7 @@ Only return the queries, one per line.`)
       const resolvePDFDocument = async (
         task: PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy
       ): Promise<PDFDocumentProxy> => {
-        // If it's an object that exposes a `.promise` property, treat it as a LoadingTask.
+        // If it's an object that exposes a `.promise` property, treat it as a LoadingTask.'
         if (typeof task === 'object' && task !== null && 'promise' in task) {
           const maybeLoading = task as PDFLoadingTask;
           const maybePromise = maybeLoading.promise as unknown;
@@ -829,7 +829,7 @@ Only return the queries, one per line.`)
             typeof maybePromise === 'object' &&
             typeof (maybePromise as { then?: any }).then === 'function'
           ) {
-            // await the loading task's promise
+            // await the loading task's promise'
             return (await (maybePromise as Promise<PDFDocumentProxy>)) as PDFDocumentProxy;
           }
         }
@@ -837,7 +837,7 @@ Only return the queries, one per line.`)
         if (typeof task === 'object' && task !== null && typeof (task as { then?: any }).then === 'function') {
           return (await (task as Promise<PDFDocumentProxy>)) as PDFDocumentProxy;
         }
-        // Otherwise assume it's already a PDFDocumentProxy
+        // Otherwise assume it's already a PDFDocumentProxy'
         return task as PDFDocumentProxy;
       };
       const pdf = await resolvePDFDocument(loadingTask);
@@ -1078,8 +1078,7 @@ Only return the queries, one per line.`)
       md: 'text/markdown',
       html: 'text/html',
       htm: 'text/html',
-      rtf: 'application/rtf'
-    };
+      rtf: 'application/rtf` };'`
     return mimeTypes[extension || ''] || 'application/octet-stream';
   }
   /**
@@ -1119,7 +1118,7 @@ Only return the queries, one per line.`)
         queryCount: this.queryCount || 0,
         indexSize: indexSizeEstimate,
         averageQueryTime,
-        averageResponseTime: averageQueryTime, // don't have separate response tracking; reuse query time
+        averageResponseTime: averageQueryTime, // don't have separate response tracking; reuse query time'
         indexStatus: health.status === 'healthy' ? 'healthy' : 'degraded',
         uptime: Math.max(0, uptimeMs)
       };
@@ -1176,7 +1175,7 @@ type HealthCheckResult = { status: 'healthy' | 'unhealthy';, vectorStoreConnect
   errorMessage?: string;
 };
 type MetadataMatch = { value: string | number | boolean };
-type MetadataCondition = { key: string;, match: MetadataMatch };
+type MetadataCondition = { key: string; match: MetadataMatch };
 type MetadataFilter = { must?: MetadataCondition[] } | Record<string, never>;
 type UploadMetadata = Partial<LegalDocumentMetadata> | Record<string, unknown>;
 interface UploadOptions {

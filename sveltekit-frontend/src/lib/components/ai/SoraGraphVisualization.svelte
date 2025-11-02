@@ -1,7 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy, createEventDispatcher } from "svelte";
   import { writable, type Writable, get } from 'svelte/store';
@@ -202,7 +202,7 @@ https://svelte.dev/e/js_parse_error -->
       }
       const reinforcementStats = soraTraversal.getReinforcementStats?.() ?? { totalNodes: 0, avgVisitCount: 0 };
       const tensorStats = (await (soraTraversal.getTensorStats?.() ?? Promise.resolve({ totalSlices: 0 })));
-      const cacheStats = await (moogleSynthesizer.getEnhancedCacheStats?.() ?? Promise.resolve({ renderingCache: { hitRate: 0 } }));
+      const cacheStats = await (moogleSynthesizer.getEnhancedCacheStats?.() ?? Promise.resolve({ renderingCache: {, hitRate: 0 } }));
       const viz2 = get(visualization2D);
       const viz3 = get(visualization3D);
       stats.set({
@@ -324,26 +324,26 @@ https://svelte.dev/e/js_parse_error -->
   data-theme={theme}
 >
   {#if $loading}
-    <div class="loading-overlay">
-      <div class="spinner"></div>
+    <div, class="loading-overlay">
+      <div, class="spinner"></div>
       <p>Traversing graph with Sora AI...</p>
-      <div class="loading-stats">
+      <div, class="loading-stats">
         {#if enableReinforcementLearning}
-          <span class="loading-detail">🧠 Reinforcement Learning Active</span>
+          <span, class="loading-detail">🧠 Reinforcement Learning Active</span>
         {/if}
         {#if enableGPUAcceleration}
-          <span class="loading-detail">⚡ GPU Acceleration Enabled</span>
+          <span, class="loading-detail">⚡ GPU Acceleration Enabled</span>
         {/if}
       </div>
     {/if}
   {#if $error}
-    <div class="error-overlay">
+    <div, class="error-overlay">
       <h3>⚠️ Visualization Error</h3>
       <p>{$error}</p>
-      <button onclick={() => error.set(null)}>Dismiss</button>
+      <button, onclick={() => error.set(null)}>Dismiss</button>
     {/if}
   {#if (mode === '2d' || mode === 'both') && !$loading}
-    <div class="canvas-container" class:hidden={mode === '3d'}>
+    <div, class="canvas-container" class:hidden={mode === '3d'}>
       <canvas
         bind:this={canvas2D}
         width={width}
@@ -351,15 +351,15 @@ https://svelte.dev/e/js_parse_error -->
         class="visualization-canvas canvas-2d"
         onclick={e => handleCanvasClick(e, false)}
       ></canvas>
-      <div class="canvas-controls">
-        <button class="control-btn" title="Zoom In">🔍+</button>
-        <button class="control-btn" title="Zoom Out">🔍-</button>
-        <button class="control-btn" title="Reset View">⟲</button>
-        <button class="control-btn" title="Export">💾</button>
+      <div, class="canvas-controls">
+        <button class="control-btn" title="Zoom, In">🔍+</button>
+        <button class="control-btn" title="Zoom, Out">🔍-</button>
+        <button class="control-btn" title="Reset, View">⟲</button>
+        <button, class="control-btn" title="Export">💾</button>
       </div>
     {/if}
   {#if (mode === '3d' || mode === 'both') && !$loading}
-    <div class="canvas-container" class:hidden={mode === '2d'}>
+    <div, class="canvas-container" class:hidden={mode === '2d'}>
       <canvas
         bind:this={canvas3D}
         width={width}
@@ -367,29 +367,29 @@ https://svelte.dev/e/js_parse_error -->
         class="visualization-canvas canvas-3d"
         onclick={e => handleCanvasClick(e, true)}
       ></canvas>
-      <div class="canvas-controls">
-        <button class="control-btn" title="Rotate">🔄</button>
-        <button class="control-btn" title="Pan">👆</button>
-        <button class="control-btn" title="LOD Toggle">📊</button>
-        <button class="control-btn" title="Mesh Export">📦</button>
+      <div, class="canvas-controls">
+        <button, class="control-btn" title="Rotate">🔄</button>
+        <button, class="control-btn" title="Pan">👆</button>
+        <button class="control-btn" title="LOD, Toggle">📊</button>
+        <button class="control-btn" title="Mesh, Export">📦</button>
       </div>
     {/if}
   {#if mode === 'both' && !$loading}
-    <div class="mode-switcher">
-      <button class="mode-btn" class:active={true}>2D</button>
-      <button class="mode-btn" class:active={false}>3D</button>
+    <div, class="mode-switcher">
+      <button, class="mode-btn" class:active={true}>2D</button>
+      <button, class="mode-btn" class:active={false}>3D</button>
     {/if}
   {#if $paths.length > 0 && interactive}
-    <div class="path-explorer">
+    <div, class="path-explorer">
       <h4>🛤️ Traversal Paths ({$paths.length})</h4>
-      <div class="path-list">
+      <div, class="path-list">
         {#each $paths.slice(0, 5) as path, index}
-          <div class="path-item" class:high-score={path.totalScore > 0.8} onclick={() => handlePathSelection(index)}>
-            <div class="path-header">
-              <span class="path-score">Score: {path.totalScore.toFixed(3)}</span>
-              <span class="path-length">Nodes: {path.nodes.length}</span>
+          <div, class="path-item" class:high-score={path.totalScore > 0.8} onclick={() => handlePathSelection(index)}>
+            <div, class="path-header">
+              <span, class="path-score">Score: {path.totalScore.toFixed(3)}</span>
+              <span, class="path-length">Nodes: {path.nodes.length}</span>
             </div>
-            <div class="path-preview">
+            <div, class="path-preview">
               {path.nodes.slice(0, 3).map(n => (n.label ?? n.id)).join(' → ')}{path.nodes.length > 3 ? '...' : ''}
             </div>
           </div>
@@ -397,24 +397,24 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   {#if $stats && Object.keys($stats).length > 0}
-    <div class="stats-panel">
+    <div, class="stats-panel">
       <h4>📊 Performance Stats</h4>
-      <div class="stat-grid">
-        <div class="stat-item">
-          <span class="stat-label">Paths Found</span>
-          <span class="stat-value">{$stats.paths}</span>
+      <div, class="stat-grid">
+        <div, class="stat-item">
+          <span, class="stat-label">Paths Found</span>
+          <span, class="stat-value">{$stats.paths}</span>
         </div>
-        <div class="stat-item">
-          <span class="stat-label">Graph Nodes</span>
-          <span class="stat-value">{$stats.totalNodes}</span>
+        <div, class="stat-item">
+          <span, class="stat-label">Graph Nodes</span>
+          <span, class="stat-value">{$stats.totalNodes}</span>
         </div>
-        <div class="stat-item">
-          <span class="stat-label">Cache Hit Rate</span>
-          <span class="stat-value">{($stats.cacheHitRate * 100 ?? 0).toFixed(1)}%</span>
+        <div, class="stat-item">
+          <span, class="stat-label">Cache Hit Rate</span>
+          <span, class="stat-value">{($stats.cacheHitRate * 100 ?? 0).toFixed(1)}%</span>
         </div>
-        <div class="stat-item">
-          <span class="stat-label">Render Time</span>
-          <span class="stat-value">{$stats.renderTime ? $stats.renderTime.toFixed(0) + 'ms' : '0ms'}</span>
+        <div, class="stat-item">
+          <span, class="stat-label">Render Time</span>
+          <span, class="stat-value">{$stats.renderTime ? $stats.renderTime.toFixed(0) + 'ms' : '0ms'}</span>
         </div>
       </div>
     {/if}

@@ -186,7 +186,7 @@ export class XStateIntegrationService {
           logic.restoreSnapshot = m.restoreSnapshot.bind(m);
         }
 
-        // If no logic existed and we didn't add anything, return original; otherwise return adapted copy
+        // If no logic existed and we didn't add anything, return original; otherwise return adapted copy'
         if (!m.logic && Object.keys(logic).length === 0) return m;
         return { ...m, logic };
       };
@@ -211,7 +211,7 @@ export class XStateIntegrationService {
           queuedSubs.length = 0;
           return realActor;
         } catch (err) {
-          console.warn(`XState: failed to create actor for ${name} at start(), keeping fallback: ', err);
+          console.warn(`XState: failed to create actor for ${name} at start(), keeping fallback: ', err);'`
           realActor = null;
           return null;
         }
@@ -479,23 +479,22 @@ export class XStateIntegrationService {
       // Initialize AI assistant with user context
       this.aiAssistantActor.send({
         type: 'SET_MODEL',
-        model: 'gemma3-legal:latest'
-      });
+        model: 'gemma3-legal:latest' });
       // Check service health
-      this.aiAssistantActor.send({ type: `CHECK_SERVICE_HEALTH` });
+      this.aiAssistantActor.send({ type: 'CHECK_SERVICE_HEALTH' });
       // Show success notification
       this.showNotification({
         type: 'success',
         title: 'Welcome!',
-        message: 'Welcome back, ${authContext.user.firstName || authContext.user.email || 'User` }!' });
+        message: 'Welcome back, ${authContext.user.firstName || authContext.user.email || 'User' }!' });
       // Load user-specific data
       await this.loadUserData(authContext.user);
     }
   }
   private onLogout(): void {
     // Clear all state
-    this.sessionActor.send({ type: 'LOGOUT' });
-    this.aiAssistantActor.send({ type: 'CLEAR_CONVERSATION' });
+    this.sessionActor.send({ type: 'LOGOUT` });'`
+    this.aiAssistantActor.send({ type: `CLEAR_CONVERSATION` });
     // Clear UI state
     this.globalState.update(global => ({
       ...global,
@@ -517,7 +516,7 @@ export class XStateIntegrationService {
   }
   private async loadUserData(user: User): Promise<void> {
     try {
-      // Load user's active cases
+      // Load user's active cases'
       // const casesResponse = await services.queryRAG('active cases', {
       //   userId: user.id,
       //   department: user.department,
@@ -714,7 +713,7 @@ export class XStateIntegrationService {
       this.showNotification({
         type: 'error',
         title: 'Upload Failed',
-        message: error instanceof Error ? error.message : `Could not upload ${file.name}.' });
+        message: error instanceof Error ? error.message : `Could not upload ${file.name}.` });
       return { success: false, error };
     }
   }
@@ -735,7 +734,7 @@ export class XStateIntegrationService {
       this.webTransport = new WebTransportService({
         webtransportUrl: this.getWebTransportUrl(),
         websocketUrl: this.getWebSocketUrl(),
-        httpUrl: 'http://${typeof window !== 'undefined' ? window.location.host : `localhost:5173` }/api/realtime`,
+        httpUrl: 'http://${typeof window !== 'undefined' ? window.location.host : `localhost:5173` }/api/realtime`,'`
         maxReconnectAttempts: 3,
         reconnectInterval: 1000
       });
@@ -814,8 +813,8 @@ export class XStateIntegrationService {
   /**
    * Get transport status for diagnostics
    */
-  public getTransportStatus(): { connected: boolean; transport: string;, messaging: object } {
-    // Note: WebTransportService doesn't expose state publicly, so we provide a fallback
+  public getTransportStatus(): { connected: boolean; transport: string; messaging: object } {
+    // Note: WebTransportService doesn't expose state publicly, so we provide a fallback'
     return {
       connected: this.webTransport !== null,
       transport: this.webTransport !== null ? 'connected' : 'disconnected',

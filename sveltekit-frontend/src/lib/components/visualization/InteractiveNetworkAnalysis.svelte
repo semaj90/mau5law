@@ -2,7 +2,7 @@
   Interactive Network Analysis Component
   Advanced network visualization for evidence relationships and collaboration patterns
 -->
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
@@ -313,47 +313,47 @@
     }
   }
 </script>
-<!-- Minimal DOM container for D3 to attach the SVG -->
-<div bind:this={containerElement} class="d3-container"></div>
-<!-- Add minimal UI that uses the CSS classes and state variables so selectors are considered used -->
+<!-- Minimal DOM container for D3 to attach the, SVG -->
+<div, bind:this={containerElement} class="d3-container"></div>
+<!-- Add minimal UI that uses the CSS classes and state variables so selectors are considered, used -->
 {#if interactive}
-  <div class="controls-panel">
-    <div class="analysis-controls">
-      <label for="analysis">Analysis mode</label>
-      <select id="analysis" onchange={(e) => setAnalysisMode((e.target as HTMLSelectElement).value as any)}>
-        <option value="relationships" selected={analysisMode === 'relationships'}>Relationships</option>
-        <option value="importance" selected={analysisMode === 'importance'}>Importance</option>
-        <option value="timeline" selected={analysisMode === 'timeline'}>Timeline</option>
-        <option value="similarity" selected={analysisMode === 'similarity'}>Similarity</option>
+  <div, class="controls-panel">
+    <div, class="analysis-controls">
+      <label, for="analysis">Analysis mode</label>
+      <select, id="analysis" onchange={(e) => setAnalysisMode((e.target as HTMLSelectElement).value as any)}>
+        <option, value="relationships" selected={analysisMode === 'relationships'}>Relationships</option>
+        <option, value="importance" selected={analysisMode === 'importance'}>Importance</option>
+        <option, value="timeline" selected={analysisMode === 'timeline'}>Timeline</option>
+        <option, value="similarity" selected={analysisMode === 'similarity'}>Similarity</option>
       </select>
     </div>
-    <div class="view-controls">
-      <label><input type="checkbox" bind:checked={showClusters} /> Show clusters</label>
-      <label><input type="checkbox" bind:checked={showMetrics} /> Show metrics</label>
+    <div, class="view-controls">
+      <label><input, type="checkbox" bind:checked={showClusters} /> Show clusters</label>
+      <label><input, type="checkbox" bind:checked={showMetrics} /> Show metrics</label>
     </div>
-    <div class="action-controls">
-      <button class="btn-control" onclick={() => { calculateNetworkMetrics(); }}>Recalc</button>
-      <button class="btn-control" onclick={() => { createVisualization(); }}>Refresh</button>
+    <div, class="action-controls">
+      <button, class="btn-control" onclick={() => { calculateNetworkMetrics(); }}>Recalc</button>
+      <button, class="btn-control" onclick={() => { createVisualization(); }}>Refresh</button>
     </div>
   {/if}
 {#if showMetrics}
-  <div class="metrics-panel">
+  <div, class="metrics-panel">
     <h3>Network Metrics</h3>
-    <div class="metrics-grid">
+    <div, class="metrics-grid">
       <!-- replaced <label> with non-form span to satisfy a11y rule:
            "A form label must be associated with a control" -->
-      <div class="metric"><span class="metric-label">Nodes</span><span>{networkMetrics.nodeCount ?? nodes.length}</span></div>
-      <div class="metric"><span class="metric-label">Links</span><span>{networkMetrics.linkCount ?? links.length}</span></div>
+      <div, class="metric"><span, class="metric-label">Nodes</span><span>{networkMetrics.nodeCount ?? nodes.length}</span></div>
+      <div, class="metric"><span, class="metric-label">Links</span><span>{networkMetrics.linkCount ?? links.length}</span></div>
     </div>
   {/if}
 {#if selectedNode}
-  <div class="node-details-panel">
-    <button class="btn-close" onclick={closeNodeDetails}>✕</button>
+  <div, class="node-details-panel">
+    <button, class="btn-close" onclick={closeNodeDetails}>✕</button>
     <h3>{selectedNode.label ?? 'Node'}</h3>
-    <div class="details-content">
+    <div, class="details-content">
       <p>Type: {selectedNode.type}</p>
       <p>Importance: {selectedNode.importance}</p>
-      <div class="connected-nodes">
+      <div, class="connected-nodes">
         <h4>Connected</h4>
         <ul>
           {#each Array.isArray((links.filter(l => l.source === selectedNode.id || l.target === selectedNode.id)
@@ -366,8 +366,8 @@
     </div>
   {/if}
 {#if isLoading}
-  <div class="loading-overlay">
-    <div class="spinner"></div>
+  <div, class="loading-overlay">
+    <div, class="spinner"></div>
     <div>Loading network…</div>
   {/if}
 <style>

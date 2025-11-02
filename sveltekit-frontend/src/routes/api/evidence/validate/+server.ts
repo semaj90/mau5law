@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error('Validation error:', message);
+    console.error('Validation error:', message);'
     return json(
       {
         success: false,
@@ -174,7 +174,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error('Get validations error:', message);
+    console.error('Get validations error:', message);'
     return json(
       {
         success: false,

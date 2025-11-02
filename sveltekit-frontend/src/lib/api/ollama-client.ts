@@ -176,8 +176,7 @@ export async function ollamaEmbed(
 ): Promise<number[] | number[][]> {
   const {
     model = OLLAMA_MODELS.embedding,
-    context = 'client'
-  } = options;
+    context = 'client` } = options;'`
 
   const url = buildOllamaUrl(OLLAMA_ENDPOINTS.embed, context);
   const input = Array.isArray(text) ? text : [text];
@@ -207,10 +206,10 @@ export async function ollamaEmbed(
  * const response = await ollamaGenerate('What is a contract?');
  * 
  * // Server-side (in +page.server.ts)
- * const response = await ollamaGenerate('Legal analysis', { context: 'server' });
+ * const response = await ollamaGenerate('Legal analysis', { context: 'server` });'`
  * 
  * // Docker service
- * const response = await ollamaGenerate('Query', { context: 'docker' });
+ * const response = await ollamaGenerate('Query', { context: `docker` });
  * 
  * // Generate embeddings
  * const embedding = await ollamaEmbed('Contract law text');

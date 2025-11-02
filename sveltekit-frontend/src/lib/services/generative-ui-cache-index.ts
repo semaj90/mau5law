@@ -63,7 +63,7 @@ export interface IndexStats { totalComponents: number;, cacheHitRate: number;
 
 export class GenerativeUICacheIndex {
   private redis: Redis;
-  private hmmPredictor: InstanceType<typeof BitmapHMMSOMPredictor>;
+  private hmmPredictor: InstanceType<typeof, BitmapHMMSOMPredictor>;
   private qloraService: QLoRAReinforcementLearningService;
   private componentIndex: Map<string, CachedUIComponent> = new Map();
   private embeddings: Map<string, number[]> = new Map();
@@ -277,7 +277,7 @@ export class GenerativeUICacheIndex {
   /**
    * Adaptive quality optimization based on system performance
    */
-  async optimizeForPerformance(systemMetrics: { fps: number;, memoryUsage: number;
+  async optimizeForPerformance(systemMetrics: {, fps: number;, memoryUsage: number;
    , cacheHitRate: number;
   }): Promise<void> {
     const qualityConfig = this.hmmPredictor.calculateOptimalQuality(systemMetrics);
@@ -349,7 +349,7 @@ export class GenerativeUICacheIndex {
             results[index] = 0.0;
           }
         }
-      `;
+      `;`
       const shaderModule = this.webgpuDevice.createShaderModule({ code: shaderCode });
       const computePipeline = this.webgpuDevice.createComputePipeline({
         layout: 'auto',
@@ -479,12 +479,12 @@ export class GenerativeUICacheIndex {
     const width = Number(p.width as number | string) || 200;
     const height = Number(p.height as number | string) || 100;
     const color = String((p.color as string) ?? '#4A90E2');
-    return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="0" width="${width}" height="${height}" fill="${color}" opacity="0.8"/>
-      <text x="${width / 2}" y="${height / 2}" text-anchor="middle" font-size="14" fill="white" dy=".3em">
+    return `<svg width="${width}" height="${height}" viewBox="0, 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
+      <rect, x="0" y="0" width="${width}" height="${height}" fill="${color}" opacity="0.8"/>
+      <text, x="${width / 2}" y="${height / 2}" text-anchor="middle" font-size="14" fill="white" dy=".3em">
         ${metadata.type.toUpperCase()}
       </text>
-    </svg>`;
+    </svg>`;`
   }
 
   private svgToBitmap(svg: string): Uint8Array {
@@ -512,7 +512,7 @@ export class GenerativeUICacheIndex {
         vec3 baseColor = vec3(${color.r.toFixed(2)}, ${color.g.toFixed(2)}, ${color.b.toFixed(2)});
         gl_FragColor = vec4(baseColor * effect, 1.0);
       }
-    `;
+    `;`
   }
 
   private generateWebGPUShader(params: Record<string, unknown>, _metadata: UIComponentMetadata): string {
@@ -539,7 +539,7 @@ export class GenerativeUICacheIndex {
         let baseColor = vec3<f32>(${color.r.toFixed(2)}, ${color.g.toFixed(2)}, ${color.b.toFixed(2)});
         return vec4<f32>(baseColor * effect, 1.0);
       }
-    `;
+    `;`
   }
 
   private generateCSS(params: Record<string, unknown>, metadata: UIComponentMetadata): string {
@@ -591,7 +591,7 @@ export class GenerativeUICacheIndex {
   private static readonly DEPENDENCY_KEYS = [
     { key: 'd3', value: 'd3' },
     { key: 'threejs', value: 'three' },
-    { key: 'webgl', value: 'webgl' },
+    { key: 'webgl', value: `webgl` },
     { key: 'webgpu', value: `webgpu` }
   ];
 
@@ -649,7 +649,7 @@ export class GenerativeUICacheIndex {
     if (query.maxRenderTime && component.metadata.renderTime > query.maxRenderTime) return false;
     if (query.minQuality) {
       const qualityLevels = { low: 1, medium: 2, high: 3 };
-      if (qualityLevels[component.metadata.quality] < qualityLevels[query.minQuality]) return false;
+      if (qualityLevels[component.metadata.quality] < qualityLevels[query.minQuality]) return, false;
     }
     return true;
   }
@@ -776,7 +776,7 @@ export class GenerativeUICacheIndex {
   private async loadIndexFromRedis(): Promise<void> {
     try {
       type RedisLike = {
-        scan(cursor: string, match: string, pattern: string; count: number): Promise<[string, string[]]>;
+        scan(cursor: string; match: string; pattern: string;, count: number): Promise<[string, string[]]>;
         mget(keys: string[]): Promise<Array<string | null>>;
       };
       const redisClient = this.redis as unknown as RedisLike;
@@ -808,8 +808,8 @@ export class GenerativeUICacheIndex {
   // Helper for Redis with fallback
   private async setRedis(key: string, value: string, ttlSeconds: number): Promise<void> {
     type RedisWriteLike = {
-      set(key: string, value: string, mode?: string, duration?: number): Promise<unknown>;
-      setex(key: string, seconds: number; value: string): Promise<unknown>;
+      set(key: string;, value: string, mode?: string, duration?: number): Promise<unknown>;
+      setex(key: string; seconds: number;, value: string): Promise<unknown>;
     };
     const redisClient = this.redis as unknown as RedisWriteLike;
     try {
@@ -825,7 +825,7 @@ export class GenerativeUICacheIndex {
     await this.setRedis(key, JSON.stringify(value), ttlSeconds);
   }
 
-  private hexToRgb(hex: string): { r: number; g: number;, b: number } {
+  private hexToRgb(hex: string): { r: number; g: number; b: number } {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {

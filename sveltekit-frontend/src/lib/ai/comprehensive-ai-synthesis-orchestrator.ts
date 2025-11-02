@@ -202,7 +202,7 @@ export class ComprehensiveAISynthesisOrchestrator {
     console.log(`📊 PERFORMANCE MONITORING:`, {
       accuracy: metrics.qloraAccuracy.toFixed(3),
       cacheHitRate: metrics.cacheHitRate.toFixed(3),
-      avgLatency: `${metrics.averageLatency.toFixed(1)}ms` });
+      avgLatency: `${metrics.averageLatency.toFixed(1)}ms' });'`
     // Adaptive optimizations based on metrics
     if (metrics.qloraAccuracy < 0.85) {
       await this.triggerAccuracyImprovement();
@@ -443,7 +443,7 @@ export class ComprehensiveAISynthesisOrchestrator {
       error: {
         message: error.message || 'Unknown synthesis error',
         component: error.component || 'orchestrator',
-        recovery: 'Retry with fallback configuration` }
+        recovery: 'Retry with fallback configuration' }
     };
   }
   private async updateModelsAndCache(request: SynthesisRequest, response: SynthesisResponse): Promise<void> {

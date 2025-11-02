@@ -20,7 +20,7 @@ function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   console.log('✅ PostgreSQL database connected successfully');
   return _db;
 }
-export const db: PostgresJsDatabase<typeof schema> = new Proxy({} as any, {
+export const db: PostgresJsDatabase<typeof, schema> = new Proxy({} as any, {
   get(target, prop, receiver) {
     const database = initializeDatabase();
     if (!database) {

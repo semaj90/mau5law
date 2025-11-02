@@ -9,7 +9,7 @@ import * as schema from './schema-postgres.js';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 // Minimal pool/client shapes to avoid importing: 'pg' types broadly
-type LocalClientLike = { query: (;, textOrConfig: string | {, text: string; values?: any[] },
+type LocalClientLike = { query: (; textOrConfig: string | {;, text: string; values?: any[] },
     params?: any[]
   ) => Promise<{ rows?: RowLike[] }>;
   release?: () => void;
@@ -18,7 +18,7 @@ type LocalClientLike = { query: (;, textOrConfig: string | {, text: string; val
 type LocalPoolLike = {
   connect?: () => Promise<LocalClientLike>;
   end?: () => Promise<void>;
-  on?: (event: string; handler: (...args: any[]) => void) => void;
+  on?: (event: string;, handler: (...args: any[]) => void) => void;
   totalCount?: number;
   idleCount?: number;
   waitingCount?: number;
@@ -51,7 +51,7 @@ export function getAppPool(): LocalPoolLike {
   if (!appPool) {
     const validation = validateDatabaseConfig();
     if (!validation.valid) {
-      throw new Error(`Invalid database configuration: ${validation.errors?.join?.(', ') ?? 'unknown` }`);
+      throw new Error(`Invalid database configuration: ${validation.errors?.join?.(', ') ?? 'unknown' }`);
     }
     const environment = (process.env.NODE_ENV as: 'development' | 'production' | 'test') || 'development';
     appPool = resolvePool();
@@ -60,7 +60,7 @@ export function getAppPool(): LocalPoolLike {
     }
     // Attach basic handlers if available
     try {
-      appPool.on?.('error', (err: Error) => console.error('Database pool; error:', err));
+      appPool.on?.('error', (err: Error) => console.error('Database pool; error:', err));'
       appPool.on?.('connect', () => console.log('✅ Database pool connection established'));
     } catch (e) {
       console.warn('Failed to attach appPool handlers', e);
@@ -80,7 +80,7 @@ export function getAdminPool(): LocalPoolLike {
       throw new Error('No admin database pool available (poolShim and pgClient.pool missing).');
     }
     try {
-      adminPool.on?.('error', (err: Error) => console.error('Admin database pool; error:', err));
+      adminPool.on?.('error', (err: Error) => console.error('Admin database pool; error:', err));'
       adminPool.on?.('connect', () => console.log('🔧 Admin database pool connection established'));
     } catch (e) {
       console.warn('Failed to attach adminPool handlers', e);
@@ -108,7 +108,7 @@ export function getPostgresJsClient(): any {
 /**
  * Get Drizzle database instance (postgres-js adapter)
  */
-export function getDrizzleDb(): PostgresJsDatabase<typeof schema> {
+export function getDrizzleDb(): PostgresJsDatabase<typeof, schema> {
   if (!drizzleDb) {
     const client = getPostgresJsClient();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -152,7 +152,7 @@ export async function testDatabaseConnection(): Promise<{
   try {
     const pool = getAppPool();
     if (!pool?.connect) {
-      return { success: false, error: `App pool unavailable or missing connect()` };
+      return { success: false, error: 'App pool unavailable or missing connect()' };
     }
     const conn = await pool.connect();
     try {
@@ -163,7 +163,7 @@ export async function testDatabaseConnection(): Promise<{
         FROM information_schema.tables
         WHERE table_schema = 'public'
         ORDER BY table_name
-      `);
+      `);`
       const tables = (tablesResult.rows || [])
         .map((r: RowLike) => r['table_name'] as string | undefined)
         .filter(Boolean) as string[];
@@ -171,7 +171,7 @@ export async function testDatabaseConnection(): Promise<{
         SELECT extname
         FROM pg_extension
         ORDER BY extname
-      `);
+      `);`
       const extensions = (extensionsResult.rows || [])
         .map((r: RowLike) => r['extname'] as string | undefined)
         .filter(Boolean) as string[];
@@ -192,7 +192,7 @@ export async function testDatabaseConnection(): Promise<{
     console.error('Database connection test failed:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : `Unknown error` };
+      error: error instanceof Error ? error.message : `Unknown error' };'`
   }
 }
 

@@ -2,7 +2,7 @@
   Enhanced Bits - Profile Container
   Reusable container component for profile-style pages
 -->
-<script lang="ts">
+<script, lang="ts">
   interface Props {
     maxWidth?: string;
     padding?: string;
@@ -10,7 +10,7 @@
   }
   let { maxWidth = '800px', padding = '24px', children }: Props = $props();
 </script>
-<div class="profile-container" style="max-width: {maxWidth} padding: {padding}">
+<div, class="profile-container" style="max-width: {maxWidth} padding: {padding}">
   <slot />
 </div>
 <style>

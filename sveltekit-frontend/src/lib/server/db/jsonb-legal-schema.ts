@@ -199,7 +199,7 @@ export class LegalJsonbOperations {
       WHERE metadata->>'practiceArea' = ${practiceArea}
         AND (metadata->'semantics'->>'precedentStrength')::real >= ${minRelevance}
       ORDER BY (metadata->'aiMetadata'->>'confidence')::real DESC
-    `;
+    `;`
   }
   /**
    * Complex legal entity search with JSONB path queries
@@ -212,10 +212,10 @@ export class LegalJsonbOperations {
       SELECT DISTINCT d.id, d.title, d.metadata
       FROM legal_documents_jsonb d,
            jsonb_array_elements(d.metadata->'parties') AS party
-      WHERE party->>'name' ILIKE ${`%${partyName}%` }
+      WHERE party->>'name' ILIKE ${`%${partyName}%' }'`
         ${roleFilter}
       ORDER BY d.updated_at DESC
-    `;
+    `;`
   }
   /**
    * Citation network analysis with graph-like JSONB queries
@@ -246,7 +246,7 @@ export class LegalJsonbOperations {
       )
       SELECT * FROM citation_tree
       ORDER BY depth, title
-    `;
+    `;`
   }
   /**
    * Advanced evidence chain of custody verification
@@ -282,7 +282,7 @@ export class LegalJsonbOperations {
         (metadata->'chainOfCustody'->-1->>'custodian') as current_custodian
       FROM evidence_jsonb
       WHERE id = ${evidenceId}
-    `;
+    `;`
   }
   /**
    * Semantic case similarity with JSONB metadata scoring
@@ -339,7 +339,7 @@ export class LegalJsonbOperations {
       WHERE similarity_score >= ${threshold}
       ORDER BY similarity_score DESC
       LIMIT 20
-    `;
+    `;`
   }
   /**
    * Legal concept extraction and clustering
@@ -377,7 +377,7 @@ export class LegalJsonbOperations {
         END as importance_level
       FROM concept_counts
       ORDER BY frequency DESC, concept
-    `;
+    `;`
   }
 }
 // ============================================================================
@@ -399,9 +399,9 @@ export class LegalJsonbOperations {
 // ============================================================================
 // TYPE EXPORTS
 // ============================================================================
-export type LegalMetadata = z.infer<typeof LegalMetadataSchema>;
-export type CaseMetadata = z.infer<typeof CaseMetadataSchema>;
-export type EvidenceMetadata = z.infer<typeof EvidenceMetadataSchema>;
+export type LegalMetadata = z.infer<typeof, LegalMetadataSchema>;
+export type CaseMetadata = z.infer<typeof, CaseMetadataSchema>;
+export type EvidenceMetadata = z.infer<typeof, EvidenceMetadataSchema>;
 export type LegalDocument = typeof legalDocumentsJsonb.$inferSelect;
 export type NewLegalDocument = typeof legalDocumentsJsonb.$inferInsert;
 export type Case = typeof casesJsonb.$inferSelect;

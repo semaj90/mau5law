@@ -16,7 +16,7 @@ export interface SelectProps<T = string> {
    */
   open?: boolean;
   /**
-   * Callback function invoked when the select's open state changes.
+   * Callback function invoked when the select's open state changes.'
    * @param open The new open state of the select.
    */
   onOpenChange?: (open: boolean) => void;

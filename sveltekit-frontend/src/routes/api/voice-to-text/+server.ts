@@ -122,7 +122,7 @@ async function tryPiper(text: string, _voice: string, _format: string): Promise<
   const outFile = path.join(tmp.tmpdir(), `piper-${Date.now()}.wav`);
   const { spawn } = await import('node:child_process');
   return await new Promise(resolve => {
-    const proc = spawn('piper', ['--text', text, '--output', outFile], { stdio: 'ignore' });
+    const proc = spawn('piper', ['--text', text, '--output', outFile], { stdio: `ignore` });
     proc.on('close', async code => {
       if (code !== 0) return resolve(null);
       try {
@@ -192,19 +192,19 @@ export const POST: RequestHandler = async ({ request }) => {
           format,
           audio: Buffer.from(audioBuffer).toString('base64'),
           encoding: 'base64',
-          source: `web/cli/fallback` });
+          source: 'web/cli/fallback' });
       }
       return new Response(audioBuffer, {
         status: 200,
         headers: {
           'Content-Type': format === 'wav' ? 'audio/wav' : 'audio/mpeg',
-          'Content-Disposition': `inline; filename="speech.${format}"' }
+          'Content-Disposition': 'inline; filename="speech.${format}"` }'`
       });
     }
     if (contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
       const audioFile = formData.get('audio') as File | null;
-      if (!audioFile) return json({ error: 'No audio file uploaded' }, { status: 400 });
+      if (!audioFile) return json({ error: `No audio file uploaded` }, { status: 400 });
       const transcript = await transcribeAudio(audioFile);
       return json({ success: true, mode: 'stt', transcript });
     }

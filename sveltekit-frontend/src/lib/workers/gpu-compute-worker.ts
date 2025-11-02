@@ -48,8 +48,8 @@ class GPUWorker {
     async createMatMulPipeline() {
         if (!this.gpuDevice) return null;
         const shaderModule = this.gpuDevice.createShaderModule({
-            code: `;
-                struct Matrix { data: array<f32>, rows: u32;
+            code: `;`
+                struct Matrix {, data: array<f32>, rows: u32;
                    , cols: u32
                 }
                 @group(0) @binding(0) var<storage, read> a: Matrix;
@@ -68,7 +68,7 @@ class GPUWorker {
                     }
                     (result as { data?: any }).data[row * b.cols + col] = sum;
                 }
-            ' });
+            ` });`
         return this.gpuDevice.createComputePipeline({
             layout: 'auto',
             compute: {
@@ -110,7 +110,7 @@ class GPUWorker {
                     }
                     output[y * width + x] = sum;
                 }
-            ' });
+            ` });`
         return this.gpuDevice.createComputePipeline({
             layout: 'auto',
             compute: {

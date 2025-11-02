@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { databaseOrchestrator, type EventData } from '$lib/server/database-orchestrator';
 
-// Provide an underscore-prefixed export for compatibility with SvelteKit's export rules
+// Provide an underscore-prefixed export for compatibility with SvelteKit's export rules'
 export const _databaseOrchestrator = databaseOrchestrator;
 
 // GET /api/database-orchestrator/events - Get recent events

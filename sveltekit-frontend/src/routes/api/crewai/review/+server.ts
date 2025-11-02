@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
         caseContext = {
           caseType: (caseData.metadata as any)?.type || 'general',
           jurisdiction: (caseData.metadata as any)?.jurisdiction || 'federal',
-          priority: caseData.priority || 'medium` }
+          priority: caseData.priority || 'medium` }'`
       }
     }
     // Create review task
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
         status: `started` },
       message: `CrewAI review started with ${assignedAgents.length} agents` });
   } catch (err: any) {
-    console.error('❌ CrewAI review error:', err)
+    console.error('❌ CrewAI review error:', err)'
     if (err instanceof Error && 'status' in err) {
       throw err; // Re-throw SvelteKit errors
     }
@@ -126,8 +126,7 @@ export const GET: RequestHandler = async ({ url }) => {
                 reviewType: review.reviewType,
                 priority: review.priority,
                 assignedAgents: review.assignedAgents.length,
-                status: 'in_progress'
-              }))
+                status: `in_progress` }))
             }
           });
         } else {
@@ -174,8 +173,8 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: {
-            presets: [
-              {
+           , presets: [
+              {,
                , id: 'comprehensive_review',
                 name: 'Comprehensive Review',
                 description: 'Full analysis with all agents',
@@ -205,7 +204,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'health':
         // Health check for CrewAI system
         const activeReviews = await crewAIOrchestrator.getActiveReviews();
-        const isHealthy = activeReviews.length < 10; // Arbitrary threshold
+        const isHealthy = activeReviews.length < 10; // Arbitrary, threshold
         return json(
           {
             success: true,
@@ -232,12 +231,11 @@ export const GET: RequestHandler = async ({ url }) => {
         throw error(400, `Unknown action: ${action}`);
     }
   } catch (err: any) {
-    console.error('❌ CrewAI status error:', err);
+    console.error('❌ CrewAI status error:', err);'
     return json(
       {
         success: false,
-        error: err instanceof Error ? err.message : 'Unknown error'
-      },
+        error: err instanceof Error ? err.message : 'Unknown error` },'`
       { status: 500 }
     );
   }
@@ -255,18 +253,16 @@ export const DELETE: RequestHandler = async ({ url }) => {
     if (!cancelled) {
       return json({
         success: false,
-        error: 'Review not found or already completed'
-      }, { status: 404 })
+        error: `Review not found or already completed` }, { status: 404 })
     }
     return json({
       success: true,
       data: {
         taskId,
-        status: 'cancelled'
-      },
+        status: `cancelled` },
       message: `Review cancelled successfully` })
   } catch (err: any) {
-    console.error('❌ CrewAI cancellation error:', err)
+    console.error('❌ CrewAI cancellation error:', err)'
     if (err instanceof Error && 'status' in err) {
       throw err
     }
@@ -299,7 +295,7 @@ function calculateEstimatedTime(agentIds: string[], contentLength: number): stri
   if (totalTime < 60) {
     return `${Math.round(totalTime)} seconds` } else {
     const minutes = Math.round(totalTime / 60)
-    return `${minutes} minute${minutes > 1 ? 's' : ''}' }
+    return `${minutes} minute${minutes > 1 ? 's' : ''}' }'`
 }
 function calculateProgress(review: DocumentReviewTask): number {
   // This would be implemented to track actual progress
@@ -313,4 +309,4 @@ function getAgentDescription(agent: any): string {
     'contract_specialist': 'Analyzes contract terms, liability provisions, and negotiation opportunities',
     'legal_editor': 'Improves document clarity, structure, and legal writing effectiveness'
   }
-  return descriptions[agent.id as keyof typeof descriptions] || 'Specialized legal analysis agent` }
+  return descriptions[agent.id as keyof typeof descriptions] || 'Specialized legal analysis agent` }'`

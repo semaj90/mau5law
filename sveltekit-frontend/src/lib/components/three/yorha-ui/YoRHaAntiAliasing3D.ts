@@ -76,7 +76,7 @@ const FXAAShader = { uniforms: {, tDiffuse: { value: null },
       vUv = uv;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
-  `,
+  `,`
   fragmentShader: `
     precision highp float;
     uniform sampler2D tDiffuse;
@@ -159,7 +159,7 @@ export const TAAShader = { uniforms: {, tDiffuse: { value: null },
       vUv = uv;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
-  `,
+  `,`
   fragmentShader: `
     precision highp float;
     uniform sampler2D tDiffuse;
@@ -253,7 +253,7 @@ export const SMAAShader = { uniforms: {, tDiffuse: { value: null },
       vOffset[2] = vUv.xyxy + texelSize.xyxy * vec4(0.0, -1.0, 0.0, 1.0);
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
-  `,
+  `,`
   fragmentShader: `
     precision highp float;
     uniform sampler2D tDiffuse;
@@ -327,7 +327,7 @@ export const SMAAShader = { uniforms: {, tDiffuse: { value: null },
       }
       gl_FragColor = weights;
     }
-  ` }
+  ` }`
 // Enhanced Anti-Aliasing Shader for geometry
 const EnhancedAAShader = { uniforms: {, baseColor: { value: new THREE.Color(YORHA_COLORS.primary.beige) },
     edgeColor: { value: new THREE.Color(YORHA_COLORS.primary.black) },
@@ -348,7 +348,7 @@ const EnhancedAAShader = { uniforms: {, baseColor: { value: new THREE.Color(YOR
       vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
-  `,
+  `,`
   fragmentShader: `
     precision highp float;
     uniform vec3 baseColor;
@@ -441,7 +441,7 @@ const EnhancedAAShader = { uniforms: {, baseColor: { value: new THREE.Color(YOR
       color = pow(color, vec3(1.0 / 2.2));
       gl_FragColor = vec4(color, 1.0);
     }
-  ` }
+  ' }'
 // TAA (Temporal Anti-Aliasing) Manager
 class TAAManager {
   private history: THREE.WebGLRenderTarget[] = [];

@@ -2,7 +2,7 @@
 // Connects SvelteKit frontend to MinIO Docker container
 import { json } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import { Client as MinIOClient } from 'minio';
+import { Client, as MinIOClient } from 'minio';
 import type { RequestHandler } from './$types';
 interface MinIOUploadResult { success: boolean;, document_id: string;
   object_path: string;
@@ -72,11 +72,11 @@ export const POST: RequestHandler = async ({ request }) => {
     // TODO: Trigger document processing pipeline
     return json(uploadResult);
   } catch (error) {
-    console.error('MinIO upload error:', error);
+    console.error('MinIO upload error:', error);'
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Upload failed` },
+        error: error instanceof Error ? error.message : 'Upload failed' },
       { status: 500 }
     );
   }

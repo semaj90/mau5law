@@ -20,7 +20,7 @@ export interface InlineSuggestion { id: string;, type: 'completion' | 'grammar'
   replacement?: string;
   confidence: number;
   reasoning: string;
-  range?: { start: number;, end: number };
+  range?: { start: number; end: number };
   metadata?: {
     sourceType?: string;
     relevanceScore?: number;
@@ -45,8 +45,8 @@ export interface AITaskResult<T = unknown> {
   error?: string;
 }
 
-type AIActor = ReturnType<typeof createActor<typeof aiProcessingMachine>>;
-type GoActor = ReturnType<typeof createActor<typeof goMicroserviceMachine>>;
+type AIActor = ReturnType<typeof, createActor<typeof, aiProcessingMachine>>;
+type GoActor = ReturnType<typeof, createActor<typeof, goMicroserviceMachine>>;
 
 // Simple LRUMap implementation
 class LRUMap<K, V> extends Map<K, V> {
@@ -305,7 +305,7 @@ export const applySuggestionToText = (
   text: string,
   suggestion: InlineSuggestion,
   cursorPosition: number
-): { newText: string;, newCursorPosition: number } => {
+): { newText: string; newCursorPosition: number } => {
   if (suggestion.type === 'completion') {
     const newText = text.slice(0, cursorPosition) + suggestion.text + text.slice(cursorPosition);
     return {

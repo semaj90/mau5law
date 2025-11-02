@@ -87,7 +87,7 @@ export interface QdrantIndexer {
     collection: string,
     vector: number[],
     topK?: number
-  ): Promise<Array<{ id: string;, score: number; payload?: Record<string, unknown> }>>;
+  ): Promise<Array<{ id: string; score: number; payload?: Record<string, unknown> }>>;
 }
 
 export interface PGJsonPersistence {
@@ -224,20 +224,18 @@ export class AIErrorFixer {
   private createFixPrompt(error: ErrorAnalysisResult): string {
     const line = error.line || 0;
     const original = error.originalCode ?? '// Code not available';
-    return `You are a TypeScript expert. Fix this error:; Error: ${error.code || 'unknown'} - ${error.message || ''}
+    return `You are a TypeScript expert. Fix this error:; Error: ${error.code || 'unknown'} - ${error.message || ''}`
 File: ${error.file || 'unknown'}
 Line: ${line}
-Category: ${error.category || 'general` }
+Category: ${error.category || 'general` }'`
 Context around line ${line}:
-\`\`\`typescript
+\`\`\`typescript`
 // Line ${Math.max(0, line - 1)}:
 // Line ${line}: ${original}
 \`\`\`
-Provide ONLY the fixed code for line ${line} with this format:
-FIXED_CODE: [your fix here]; REASONING: [brief explanation]
-CONFIDENCE: [0.0-1.0]
-Common fixes for ${error.code || 'unknown` }:
-${this.getCommonFixes(error.code || '')}`;
+Provide ONLY the fixed code for line ${line} with this format:; FIXED_CODE: [your fix here]; REASONING: [brief explanation]; CONFIDENCE: [0.0-1.0]
+Common fixes for ${error.code || 'unknown` }:'`
+${this.getCommonFixes(error.code || '')}`;`
   }
 
   private getCommonFixes(code: string): string {
@@ -247,8 +245,7 @@ ${this.getCommonFixes(error.code || '')}`;
       TS2307: '- Fix module path\n- Install missing package\n- Check file exists',
       TS2457: '- Rename type alias\n- Use different name\n- Avoid reserved keywords',
       TS1005: '- Add missing semicolon\n- Add missing comma\n- Check syntax',
-      TS1128: '- Add missing declaration\n- Complete the statement\n- Fix syntax'
-    };
+      TS1128: `- Add missing declaration\n- Complete the statement\n- Fix syntax` };
     return fixes[code] || '- Manual review required\n- Check TypeScript documentation';
   }
 
@@ -298,7 +295,7 @@ ${this.getCommonFixes(error.code || '')}`;
   private async validateFix(fix: ErrorFix): Promise<boolean> {
     if (!fix || !fix.fixedText) return false;
     if (fix.fixedText === fix.originalText) return false;
-    if (fix.confidence < this.config.confidenceThreshold) return false;
+    if (fix.confidence < this.config.confidenceThreshold) return, false;
 
     // Basic heuristics: strategy-based minimal checks
     try {
@@ -437,7 +434,7 @@ ${this.getCommonFixes(error.code || '')}`;
     try {
       const resp = await fetch('/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({, model: this.config.embeddingModel, text })
       });
       if (!resp.ok) return [];
@@ -450,7 +447,7 @@ ${this.getCommonFixes(error.code || '')}`;
   }
   // --- end helper ---
 
-  async applyFixes(fixes: ErrorFix[]): Promise<{ applied: number; failed: number;, results: any[] }> {
+  async applyFixes(fixes: ErrorFix[]): Promise<{ applied: number; failed: number; results: any[] }> {
     const results: any[] = [];
     let applied = 0;
     let failed = 0;
@@ -481,10 +478,10 @@ ${this.getCommonFixes(error.code || '')}`;
       // Read file via API; the endpoint must exist on the server-side
       const resp = await fetch(`/api/files/read`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({, file: fix.file })
       });
-      if (!resp.ok) return { errorId: fix.errorId, success: false, reason: 'Could not read file' };
+      if (!resp.ok) return { errorId: fix.errorId, success: false, reason: `Could not read file` };
 
       const { content } = await resp.json();
       const lines = typeof content === 'string' ? content.split(/\r?\n/) : [];
@@ -498,7 +495,7 @@ ${this.getCommonFixes(error.code || '')}`;
 
       const writeResp = await fetch(`/api/files/write`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({, file: fix.file, content: lines.join('\n') })
       });
 

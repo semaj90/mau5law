@@ -81,7 +81,7 @@ describe('AI Service Orchestrator', () => {
 
   describe('Error Handling', () => {
     it('should gracefully handle initialization with unavailable providers', async () => {
-      // This test validates that the orchestrator doesn't crash if providers are unavailable
+      // This test validates that the orchestrator doesn't crash if providers are unavailable'
       const orchest = new AIServiceOrchestrator();
       expect(async () => {
         await orchest.initialize();

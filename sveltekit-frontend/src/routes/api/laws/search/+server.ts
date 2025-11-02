@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 // Mock legal database - in production this would connect to a real legal database
 const mockLegalDatabase = [
-  {
+  {,
     id: 'ca-pen-187',
     title: 'California Penal Code Section 187 - Murder',
     description: 'Defines murder as the unlawful killing of a human being, or a fetus, with malice aforethought.',
@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('Laws search error:', error);
+    console.error('Laws search error:', error);'
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -214,7 +214,7 @@ export async function performVectorSearch(query: string, jurisdiction: string, c
       return Array.isArray(result.results) ? (result.results as Law[]) : [];
     }
   } catch (error: any) {
-    console.error('Vector search error:', error instanceof Error ? error.message : String(error));
+    console.error('Vector search error:', error instanceof Error ? error.message : String(error));'
   }
   return [];
 }

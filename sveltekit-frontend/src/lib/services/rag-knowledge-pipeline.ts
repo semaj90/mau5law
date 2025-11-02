@@ -248,8 +248,8 @@ export class RAGKnowledgePipeline {
             type: 'object',
             properties: { people: {, type: 'array', items: { type: 'string' } },
               organizations: { type: 'array', items: { type: 'string' } },
-              locations: { type: 'array', items: { type: 'string' } },
-              dates: { type: 'array', items: { type: 'string' } },
+              locations: { type: 'array', items: { type: 'string` } },'`
+              dates: { type: 'array', items: { type: `string` } },
               legalCitations: { type: 'array', items: { type: `string` } }
             }
           }
@@ -261,11 +261,11 @@ export class RAGKnowledgePipeline {
     // Call Ollama with function calling
     const response = await fetch(`${getOllamaEndpoint()}/api/chat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: this.SYNTHESIS_MODEL,
         messages: [
-          {
+          {,
             role: 'system',
             content: `You are a legal AI assistant. Extract structured metadata from documents.` },
           {
@@ -770,8 +770,8 @@ export class RAGKnowledgePipeline {
             type: 'object',
             properties: { people: {, type: 'array', items: { type: 'string' } },
               organizations: { type: 'array', items: { type: 'string' } },
-              locations: { type: 'array', items: { type: 'string' } },
-              dates: { type: 'array', items: { type: 'string' } },
+              locations: { type: 'array', items: { type: 'string` } },'`
+              dates: { type: 'array', items: { type: `string` } },
               legalCitations: { type: 'array', items: { type: `string` } }
             }
           }
@@ -783,11 +783,11 @@ export class RAGKnowledgePipeline {
     // Call Ollama with function calling
     const response = await fetch(`${getOllamaEndpoint()}/api/chat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: this.SYNTHESIS_MODEL,
         messages: [
-          {
+          {,
             role: 'system',
             content: `You are a legal AI assistant. Extract structured metadata from documents.` },
           {

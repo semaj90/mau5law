@@ -15,7 +15,7 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { json } from "@sveltejs/kit"
 import { getCache, setCache, hashPayload, CACHE_CONSTANTS, deleteCache } from '$lib/server/summarizeCache'
 import type { RequestHandler } from './$types';
@@ -194,7 +194,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     raw = (await request.json()) as SummarizeRequest;
   } catch {
-    return json({ success: false, error: 'Invalid JSON body' } as SummarizeResponse, { status: 400 });
+    return json({ success: false, error: 'Invalid JSON body` } as SummarizeResponse, { status: 400 });'`
   }
   try {
     const { text, type = 'legal', options = {} as SummarizeOptions } = raw;
@@ -218,7 +218,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       mode,
       bullets,
       maxTokens,
-      type === 'legal' ? 'legal document' : 'document',
+      type === 'legal' ? 'legal document' : 'document`,'`
       structuredRequested
     );
 
@@ -331,7 +331,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       result = await executePrimary();
     } catch (err: any) {
       // Log the error for diagnostics instead of creating an unused variable
-      console.error('Primary model generate error:', err);
+      console.error('Primary model generate error:', err);'
       if (model !== FALLBACK_MODEL) {
         try {
           fallbackUsed = true;
@@ -469,7 +469,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
-    console.error('AI summarization error:', errMsg);
+    console.error('AI summarization error:', errMsg);'
     return json(
       {
         success: false,
@@ -489,7 +489,7 @@ const originalDELETEHandler: RequestHandler = async ({ params, url }) => {
     await deleteCache(key);
     return json({ success: true, deleted: key, timestamp: new Date().toISOString() });
   } catch (err: any) {
-    return json({ success: false, error: `Failed to delete cache entry` }, { status: 500 });
+    return json({ success: false, error: 'Failed to delete cache entry` }, { status: 500 });'`
   }
 };
 
@@ -530,8 +530,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			headers: { 'Content-Type': 'application/json' }
 		});
 	} catch (err) {
-		console.error('Summarization error:', err);
-		return new Response(JSON.stringify({ success: false, error: `Summarization failed` }), { status: 500 });
+		console.error('Summarization error: ', err);'
+		return new Response(JSON.stringify({ success: false, error: 'Summarization failed` }), { status: 500 });'`
 	}
 };
 

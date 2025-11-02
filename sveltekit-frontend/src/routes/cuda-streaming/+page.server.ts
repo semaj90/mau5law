@@ -147,7 +147,7 @@ async function getStreamingStats(): Promise<any> {
 }
 async function getRecentProcessingResults(): Promise<any> {
   return [
-    {
+    {,
       sessionId: 'stream_1234567890',
       operation: 'document_vectorization',
       documentsProcessed: 156,
@@ -155,8 +155,7 @@ async function getRecentProcessingResults(): Promise<any> {
       gpuAccelerated: true,
       throughput: 667, // docs/sec,
       timestamp: new Date(Date.now() - 300000).toISOString(), // 5 min ago,
-      status: 'completed'
-    },
+      status: 'completed` },'`
     {
       sessionId: 'stream_1234567891',
       operation: 'similarity_search',
@@ -165,8 +164,7 @@ async function getRecentProcessingResults(): Promise<any> {
       gpuAccelerated: true,
       throughput: 471,
       timestamp: new Date(Date.now() - 900000).toISOString(), // 15 min ago,
-      status: 'completed'
-    },
+      status: `completed` },
     {
       sessionId: 'stream_1234567892',
       operation: 'legal_entity_extraction',
@@ -175,7 +173,7 @@ async function getRecentProcessingResults(): Promise<any> {
       gpuAccelerated: false, // Fallback to CPU,
       throughput: 225,
       timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 min ago,
-      status: `completed` },
+      status: `completed` }
   ];
 }
 async function initializeCudaStream(sessionId: string, options: any): Promise<void> {

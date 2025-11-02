@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -59,7 +59,7 @@
   function reportError() {
     if (browser) {
       const errorReport = {
-        path: currentPath
+        path: currentPath,
         error: errorDetails;
         stack: errorStack
         userAgent: navigator.userAgent,
@@ -77,38 +77,38 @@
   }
 </script>
 {#if hasError && !fallback}
-  <div class="error-boundary-container">
-    <div class="error-boundary-content">
-      <div class="error-icon">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="8" x2="12" y2="12" />
-          <line x1="12" y1="16" x2="12.01" y2="16" />
+  <div, class="error-boundary-container">
+    <div, class="error-boundary-content">
+      <div, class="error-icon">
+        <svg width="64" height="64" viewBox="0 0 24, 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle, cx="12" cy="12" r="10" />
+          <line, x1="12" y1="8" x2="12" y2="12" />
+          <line, x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
       </div>
-      <h2 class="error-title">{title}</h2>
-      <p class="error-message">We encountered an unexpected error while loading this page. This might be temporary.</p>
+      <h2, class="error-title">{title}</h2>
+      <p, class="error-message">We encountered an unexpected error while loading this page. This might be temporary.</p>
       {#if errorDetails}
-        <details class="error-details">
+        <details, class="error-details">
           <summary>Technical Details</summary>
-          <div class="error-details-content">
+          <div, class="error-details-content">
             <p><strong>Error:</strong> {errorDetails}</p>
             <p><strong>Path:</strong> {currentPath}</p>
             {#if errorStack}
-              <pre class="error-stack">{errorStack}</pre>
+              <pre, class="error-stack">{errorStack}</pre>
             {/if}
           </div>
         </details>
       {/if}
-      <div class="error-actions">
+      <div, class="error-actions">
         {#if showRefreshButton}
-          <button class="nes-btn is-primary" onclick={refreshPage}> Try Again </button>
+          <button class="nes-btn, is-primary" onclick={refreshPage}> Try Again </button>
         {/if}
-        <button class="nes-btn" variant="ghost" onclick={goHome}> Go Home </button>
+        <button, class="nes-btn" variant="ghost" onclick={goHome}> Go Home </button>
         {#if showReportButton}
-          <button class="nes-btn" variant="ghost" onclick={reportError}> Report Issue </button>
+          <button, class="nes-btn" variant="ghost" onclick={reportError}> Report Issue </button>
         {/if}
-        <button class="nes-btn" variant="ghost" size="sm" onclick={reset}> Reset </button>
+        <button, class="nes-btn" variant="ghost" size="sm" onclick={reset}> Reset </button>
       </div>
     </div>
   </div>

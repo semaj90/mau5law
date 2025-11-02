@@ -106,7 +106,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     };
     return json(response);
   } catch (error: any) {
-    console.error('Legal research API error:', error);
+    console.error('Legal research API error:', error);'
     return json(
       {
         error: 'Research failed',
@@ -161,7 +161,7 @@ async function performLegalResearch(topic: string, options: LegalResearchOptions
 async function searchCaseLaw(topic: string, options: LegalResearchOptions): Promise<LegalResearchResult[]> {
   // Mock case law search - in production, integrate with Westlaw, LexisNexis, etc.
   const mockCases = [
-    {
+    {,
       title: `${topic} - Landmark Case`,
       citation: 'United States v. Example, 123 F.3d 456 (9th Cir. 2023)',
       summary: `Key case establishing precedent for ${topic} in federal jurisdiction.`,
@@ -196,7 +196,7 @@ async function searchCaseLaw(topic: string, options: LegalResearchOptions): Prom
 async function searchStatutes(topic: string, options: LegalResearchOptions): Promise<LegalResearchResult[]> {
   // Mock statute search
   const mockStatutes = [
-    {
+    {,
       title: `Federal ${topic} Act`,
       citation: '18 U.S.C. § 1234',
       summary: `Primary federal statute governing ${topic} matters.`,
@@ -215,7 +215,7 @@ async function searchStatutes(topic: string, options: LegalResearchOptions): Pro
 async function searchRegulations(topic: string, options: LegalResearchOptions): Promise<LegalResearchResult[]> {
   // Mock regulation search
   const mockRegulations = [
-    {
+    {,
       title: `${topic} Regulations`,
       citation: '29 C.F.R. § 567.8',
       summary: `Implementing regulations for ${topic} compliance.`,
@@ -254,24 +254,24 @@ async function generateResearchAnalysis(
 ): Promise<string> {
   try {
     // For now, return a mock analysis since ollamaService is not imported
-    return `Research Analysis for ${topic}:
+    return `Research Analysis for ${topic}:`
  Based on the ${results.length} sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include:
  • Review of relevant precedents and their current validity
  • Analysis of jurisdictional variations and conflicts
  • Assessment of practical implementation challenges
  • Monitoring of ongoing legal developments
- ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `' }
- This research provides a foundation for further legal analysis and case preparation.`;
+ ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `` }
+ This research provides a foundation for further legal analysis and case preparation.`;`
   } catch (error: any) {
-    console.warn('AI analysis generation failed: `, error instanceof Error ? error.message : String(error));
-    return `Research Analysis for ${topic}:
+    console.warn('AI analysis generation failed: `, error instanceof Error ? error.message : String(error));'`
+    return `Research Analysis for ${topic}:`
  Based on the ${results.length} sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include:
  • Review of relevant precedents and their current validity
  • Analysis of jurisdictional variations and conflicts
  • Assessment of practical implementation challenges
  • Monitoring of ongoing legal developments
- ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `' }
- This research provides a foundation for further legal analysis and case preparation.`;
+ ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `` }
+ This research provides a foundation for further legal analysis and case preparation.`;`
   }
 }
 function generateResearchRecommendations(_topic: string, results: LegalResearchResult[], userRole?: string): string[] {

@@ -31,7 +31,7 @@ export type Source = { id: string;, title: string;
   type: string;
 };
 
-type StageProgress = { progress: number;, complete: boolean; error?: string };
+type StageProgress = { progress: number; complete: boolean; error?: string };
 
 type ProgressTracking = {
   stages: Record<string, StageProgress>;
@@ -147,10 +147,10 @@ class StreamingService extends EventEmitter {
         currentStage: 'initialization'
       });
       // Initialize progress tracking
-      this.progressTracking.set(streamId, { stages: {, query_analysis: { progress: 0, complete: false },
-          retrieval: { progress: 0, complete: false },
-          ranking: { progress: 0, complete: false },
-          prompt_construction: { progress: 0, complete: false },
+      this.progressTracking.set(streamId, { stages: {, query_analysis: {, progress: 0, complete: false },
+          retrieval: {, progress: 0, complete: false },
+          ranking: {, progress: 0, complete: false },
+          prompt_construction: {, progress: 0, complete: false },
           quality_assessment: {, progress: 0, complete: false }
         },
         sources: [],
@@ -203,7 +203,7 @@ class StreamingService extends EventEmitter {
         streamId,
         'ranking',
         async () => {
-          options.onStage?.('ranking', { status: 'starting' });
+          options.onStage?.('ranking', { status: 'starting` });'`
           const ranked = await this.streamRanking(sources, progress => {
             options.onProgress?.('ranking', progress);
           });
@@ -222,7 +222,7 @@ class StreamingService extends EventEmitter {
         streamId,
         'prompt_construction',
         async () => {
-          options.onStage?.('prompt_construction', { status: 'starting' });
+          options.onStage?.('prompt_construction', { status: `starting` });
           const prompt = await this.constructPromptWithProgress(options.input, rankedSources, progress => {
             options.onProgress?.('prompt_construction', progress);
           });
@@ -469,10 +469,10 @@ class StreamingService extends EventEmitter {
       if (i === 0) {
         prompt += 'System: You are a legal AI assistant.\n';
       } else if (i === 1) {
-        prompt += `Context: ${sources
+        prompt += `Context: ${sources`
           .slice(0, 3)
           .map(s => s.title)
-          .join(', ')}\n`;
+          .join(', ')}\n`;`
       } else {
         prompt += `Query: ${input.query}\n`;
       }

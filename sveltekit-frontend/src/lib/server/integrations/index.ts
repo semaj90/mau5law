@@ -5,7 +5,7 @@
  * for the Legal AI platform with typed interfaces and production-ready integrations.
  *
  * @example Basic usage
- * ```ts
+ * ```ts`
  * import { getLegalAIPipeline } from '$lib/server/integrations';
  *
  * const pipeline = getLegalAIPipeline();
@@ -14,7 +14,7 @@
  * // Ingest a document
  * const doc = await pipeline.ingestDocument(
  *   'Contract content...',
- *   { title: 'Employment Contract', type: 'contract', jurisdiction: 'CA' }
+ *   { title: 'Employment Contract', type: 'contract', jurisdiction: 'CA` }'`
  * );
  *
  * // Search documents
@@ -25,7 +25,7 @@
  * ```
  *
  * @example Individual services
- * ```ts
+ * ```ts`
  * import { getOllamaService, getRedisCache, getQdrantService } from '$lib/server/integrations';
  *
  * const ollama = getOllamaService();
@@ -34,7 +34,7 @@
  *
  * // Use services independently
  * const embedding = await ollama.embedText('test');
- * await redis.set('key', { data: 'value' });
+ * await redis.set('key', { data: 'value` });'`
  * await qdrant.upsertVector('id', embedding, { metadata: {} });
  * ```
  */

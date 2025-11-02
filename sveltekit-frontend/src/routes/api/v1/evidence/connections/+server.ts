@@ -112,12 +112,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         data: {
           connection,
           evidence1: {
-            id: evidence1.id,
+           , id: evidence1.id,
             title: evidence1.title,
             evidenceType: evidence1.evidenceType
           },
           evidence2: {
-            id: evidence2.id,
+           , id: evidence2.id,
             title: evidence2.title,
             evidenceType: evidence2.evidenceType
           }
@@ -160,7 +160,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
     }
     // Parse query parameters
     const queryParams = Object.fromEntries(url.searchParams.entries());
@@ -168,7 +168,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     // This would need to be implemented in the service to fetch connections
     // For now, return a mock structure to show the expected format
     const mockConnections = [
-      {
+      {,
         id: '12345',
         evidenceId1: 'evidence-1',
         evidenceId2: 'evidence-2',
@@ -182,8 +182,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         evidence1: {
           id: 'evidence-1',
           title: 'Physical Evidence A',
-          evidenceType: 'physical'
-        },
+          evidenceType: `physical` },
         evidence2: {
           id: 'evidence-2',
           title: 'Physical Evidence B',

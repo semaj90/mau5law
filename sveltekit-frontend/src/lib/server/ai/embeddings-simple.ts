@@ -71,7 +71,7 @@ export async function generateEmbedding(text: string, options: EmbeddingOptions 
     if (cache) await cacheEmbedding(cacheKey, normalized, ttl);
     return normalized;
   } catch (err) {
-    console.error('generateEmbedding error:', err);
+    console.error('generateEmbedding error:', err);'
     return null;
   }
 }
@@ -79,10 +79,10 @@ export async function generateEmbedding(text: string, options: EmbeddingOptions 
 async function generateOpenAIEmbedding(text: string): Promise<number[]> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error('OPENAI_API_KEY not set');
-  const body = { input: text, model: 'text-embedding-3-small' };
+  const body = { input: text, model: 'text-embedding-3-small` };'`
   const res = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
-    headers: {, Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    headers: {, Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json` },'`
     body: JSON.stringify(body)
   });
   if (!res.ok) {
@@ -90,7 +90,7 @@ async function generateOpenAIEmbedding(text: string): Promise<number[]> {
     throw new Error(`OpenAI error ${res.status}: ${errBody}`);
   }
   const data = await res.json();
-  // supports OpenAI's { data: [ { embedding } ] }
+  // supports OpenAI's { data: [ { embedding } ] }'
   const emb = Array.isArray(data?.data) ? data.data[0]?.embedding : data?.embedding;
   if (!Array.isArray(emb)) throw new Error('Invalid OpenAI embedding response');
   return emb as number[];
@@ -100,7 +100,7 @@ async function generateOllamaEmbedding(text: string, model: string): Promise<num
   const url = process.env.OLLAMA_URL || 'http://localhost:11434';
   const res = await fetch(`${url}/api/embeddings`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json` },'`
     body: JSON.stringify({, model: model, prompt: text })
   });
   if (!res.ok) {
@@ -133,7 +133,7 @@ export async function generateBatchEmbeddings(
   texts: string[],
   options: EmbeddingOptions = {}
 ): Promise<(number[] | null)[]> {
-  const { model = 'local' } = options;
+  const { model = 'local` } = options;'`
   const out: (number[] | null)[] = [];
   for (const t of texts) {
     try {

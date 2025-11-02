@@ -70,7 +70,7 @@ export async function setCache(key: string, value: string, ttl?: number): Promis
       await redisClient.set(key, value);
     }
   } catch (error) {
-    console.error('Redis setCache error:', error);
+    console.error('Redis setCache error:', error);'
   }
 }
 
@@ -82,7 +82,7 @@ export async function getCache(key: string): Promise<string | null> {
     await ensureRedisReady();
     return await redisClient.get(key);
   } catch (error) {
-    console.error('Redis getCache error:', error);
+    console.error('Redis getCache error:', error);'
     return null;
   }
 }
@@ -95,7 +95,7 @@ export async function deleteCache(key: string): Promise<boolean> {
     await ensureRedisReady();
     return (await redisClient.del(key)) > 0;
   } catch (error) {
-    console.error('Redis deleteCache error:', error);
+    console.error('Redis deleteCache error:', error);'
     return false;
   }
 }
@@ -113,7 +113,7 @@ export async function setCacheIfNotExists(key: string, value: string, ttl?: numb
     const result = await redisClient.set(key, value, 'NX');
     return result === 'OK';
   } catch (error) {
-    console.error('Redis setCacheIfNotExists error:', error);
+    console.error('Redis setCacheIfNotExists error:', error);'
     return false;
   }
 }
@@ -127,7 +127,7 @@ export async function getMultipleCache(keys: string[]): Promise<(string | null)[
     await ensureRedisReady();
     return (await redisClient.mget(keys)) ?? [];
   } catch (error) {
-    console.error('Redis getMultipleCache error:', error);
+    console.error('Redis getMultipleCache error:', error);'
     return keys.map(() => null);
   }
 }
@@ -195,7 +195,7 @@ export async function getCachedEmbedding(text: string): Promise<number[] | null>
     const cached = await getCache(key);
     return cached ? (JSON.parse(cached) as number[]) : null;
   } catch (error) {
-    console.error('Error getting cached embedding: `, error);
+    console.error('Error getting cached embedding: `, error);'`
     return null;
   }
 }
@@ -273,7 +273,7 @@ export async function clearEmbeddingCache(): Promise<number> {
 export async function getRedisHealth(): Promise<{
   healthy: boolean;
   ping?: number;
-  memory?: { used: string;, total: string };
+  memory?: { used: string; total: string };
 }> {
   try {
     await ensureRedisReady();
@@ -290,7 +290,7 @@ export async function getRedisHealth(): Promise<{
       ping,
       memory: {
         used: usedMatch ? usedMatch[1] : 'unknown',
-        total: totalMatch ? totalMatch[1] : 'unknown` }
+        total: totalMatch ? totalMatch[1] : 'unknown' }
     };
   } catch (error) {
     console.error('Error checking Redis health:', error);

@@ -55,7 +55,7 @@ export class DrizzleCHRROMBridge {
     console.log('🔗 Initializing Drizzle CHR-ROM Bridge...');
     try {
       // In production, this would connect to actual Drizzle client
-      // For now, we'll simulate with mock data
+      // For now, we'll simulate with mock data'
       await this.loadRecentDocuments();
       await this.setupChangeListeners();
       this.initialized = true;
@@ -87,8 +87,7 @@ export class DrizzleCHRROMBridge {
           parties: ['TechCorp Inc.', 'DevStudio LLC'],
           value: 150000,
           duration_months: 12,
-          jurisdiction: 'Delaware'
-        },
+          jurisdiction: 'Delaware` },'`
         created_at: new Date('2024-01-15T10:30:00Z'),
         updated_at: new Date('2024-01-15T11:45:00Z')
       },
@@ -260,7 +259,7 @@ export class DrizzleCHRROMBridge {
   private async getDocumentEntities(docId: string): Promise<DrizzleEntityExtraction[]> {
     // Mock implementation
     return [
-      {
+      {,
         id: 'entity_001',
         document_id: docId,
         entity_type: 'organization',
@@ -288,7 +287,7 @@ export class DrizzleCHRROMBridge {
   private async getDocumentEmbeddings(docId: string): Promise<DrizzleDocumentEmbedding[]> {
     // Mock implementation
     return [
-      {
+      {,
         id: 'embedding_001',
         document_id: docId,
         embedding_type: 'document',

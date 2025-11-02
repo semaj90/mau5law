@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { Button } from '$lib/components/ui/button/Button.svelte';
   import { LoginModal } from '$lib/components/auth/LoginModal.svelte';
@@ -36,18 +36,18 @@
     if (typeof registerUnsub === 'function') registerUnsub();
   });
 </script>
-<header class="bg-white border-b border-slate-200 sticky top-0 z-40">
-  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-    <div class="flex items-center gap-2">
-      <div class="text-2xl font-bold text-blue-600">⚖️</div>
-      <h1 class="text-xl font-bold text-slate-900">Legal AI</h1>
+<header class="bg-white border-b border-slate-200 sticky top-0, z-40">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center, justify-between">
+    <div class="flex items-center, gap-2">
+      <div class="text-2xl font-bold, text-blue-600">⚖️</div>
+      <h1 class="text-xl font-bold, text-slate-900">Legal AI</h1>
     </div>
-    <nav class="flex items-center gap-3">
+    <nav class="flex items-center, gap-3">
       {#if $userStore}
-        <!-- Authenticated User Menu with Dropdown -->
+        <!-- Authenticated User Menu with, Dropdown -->
         <UserProfileDropdown />
       {:else}
-        <!-- Unauthenticated User Menu -->
+        <!-- Unauthenticated User, Menu -->
         <Button
           onclick={() => (showLoginModal = true)}
           variant="secondary"
@@ -65,6 +65,6 @@
     </nav>
   </div>
 </header>
-<!-- bind component instances and remove template on: handlers -->
-<LoginModal bind:open={showLoginModal} bind:this={loginModalRef} />
-<RegisterModal bind:open={showRegisterModal} bind:this={registerModalRef} />
+<!-- bind component instances and remove template, on: handlers -->
+<LoginModal, bind:open={showLoginModal} bind:this={loginModalRef} />
+<RegisterModal, bind:open={showRegisterModal} bind:this={registerModalRef} />

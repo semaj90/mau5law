@@ -92,9 +92,9 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: {
-            integration: fullStatus,
+           , integration: fullStatus,
             endpoints: {
-              status: '/api/workers/rabbitmq/tensor?action=status',
+             , status: '/api/workers/rabbitmq/tensor?action=status',
               health: '/api/workers/rabbitmq/tensor?action=health',
               ports: '/api/workers/rabbitmq/tensor?action=ports',
               queues: '/api/workers/rabbitmq/tensor?action=queues'
@@ -222,7 +222,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
         return json({
           success: true,
-          message: 'Vector ${batchProcess ? 'batch ' : '' }normalization submitted`,
+          message: 'Vector ${batchProcess ? 'batch ' : '' }normalization submitted`,'`
           data: {
            , jobId: normalizeJobId,
             vectorCount: vectors.length,
@@ -280,15 +280,14 @@ export const POST: RequestHandler = async ({ request }) => {
            , jobId: benchmarkJobId,
             vectorCount: benchmarkVectors.length,
             dimensions: benchmarkQuery.length,
-            benchmarkType: 'similarity_performance'
-          }
+            benchmarkType: 'similarity_performance` }'`
         });
       }
       default: {
         return json(
           {
             success: false,
-            error: {, message: 'Unknown, action: ${action}' }
+            error: {, message: `Unknown, action: ${action}` }
           },
           { status: 400 }
         );

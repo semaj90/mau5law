@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { cn } from '$lib/utils/cn';
   interface CardFooterProps {
     class?: string;
@@ -9,7 +9,7 @@
     childre;
   }: CardFooterProps = $props();
 </script>
-<div class={cn('shadcn-card-footer', className)}>
+<div, class={cn('shadcn-card-footer', className)}>
   <slot />
 </div>
 <style>

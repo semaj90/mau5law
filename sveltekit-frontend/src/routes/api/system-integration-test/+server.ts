@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Test pgvector
         const vectorTest = await db.execute(sql`SELECT '[1,2,3]'::vector <-> '[1,2,4]'::vector as distance`);
         // Test document count
-        const docCount = await db.select({ count: sql<number>`COUNT(*)' }).from(schema.legalDocuments);
+        const docCount = await db.select({ count: sql<number>`COUNT(*)` }).from(schema.legalDocuments);
         results.results.database = {
           status: 'connected',
           version: (dbVersion[0] as { version: string }).version,
@@ -228,7 +228,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return await runEndToEndTest(data);
       case 'cleanup':
         return await cleanupTestData();
-      default: return json({ success: false, error: 'Unknown action' }, { status: 400 });
+      default: return json({ success: false, error: 'Unknown action` }, { status: 400 });'`
     }
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : 'Unknown request error';
@@ -285,7 +285,7 @@ async function stressTestWorker(iterations: number, workerId: number): Promise<S
 }
 async function runEndToEndTest(_options: Record<string, unknown> = {}): Promise<Response> {
   const testId = `e2e-${Date.now()}`;
-  const results: { steps: string[]; errors: string[];, success: boolean } = {
+  const results: { steps: string[]; errors: string[]; success: boolean } = {
     steps: [],
     errors: [],
     success: true
@@ -352,11 +352,11 @@ async function cleanupTestData(): Promise<Response> {
     // Clean up any test data
     const deletedDocs = await db
       .delete(schema.legalDocuments)
-      .where(sql`title LIKE: '%Test%' OR title; LIKE: '%test%'`)
+      .where(sql`title LIKE: '%Test%' OR title;, LIKE: '%test%'`)
       .returning({ id: schema.legalDocuments.id })
     const deletedChunks = await db
       .delete(schema.documentChunks)
-      .where(sql`document_id LIKE: 'test-%' OR document_id; LIKE: 'e2e-%'`)
+      .where(sql`document_id LIKE: 'test-%' OR document_id;, LIKE: 'e2e-%'`)
       .returning({ id: schema.documentChunks.id })
     // Clean Redis test keys
     const testKeys = await redisService.keys('test:*')

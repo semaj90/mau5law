@@ -83,12 +83,11 @@ export const POST: RequestHandler = async ({ request }) => {
       context: uploadedFiles.map(f => f.fileName).join(', ')
     });
   } catch (error) {
-    console.error('RAG ingest error:', error);
+    console.error('RAG ingest error:', error);'
     return json(
       {
         error: 'Failed to process files',
-        detail: error instanceof Error ? error.message : 'Unknown error'
-      },
+        detail: error instanceof Error ? error.message : 'Unknown error` },'`
       { status: 500 }
     );
   }
@@ -161,7 +160,7 @@ async function storeInVectorDB(data: any): Promise<any> {
             content = EXCLUDED.content,
             embedding = EXCLUDED.embedding,
             metadata = EXCLUDED.metadata
-        `,
+        `,`
           [
             chunkId,
             data.content,

@@ -60,7 +60,7 @@ async function ensureGrpoInitialized(): Promise<void> {
       } else {
         console.warn('GRPO database initialization failed with unknown error, continuing without DB features:', error);
       }
-      grpoInitialized = true; // Don't block API
+      grpoInitialized = true; // Don't block API'
     }
   }
 }
@@ -109,10 +109,10 @@ function validateGrpoThinkingResponse(data: Partial<GrpoThinkingResponse>): { va
     return { valid: false, error: 'thinkingChain is required' };
   }
   if (data.thinkingChain.length < 50) {
-    return { valid: false, error: 'thinkingChain must be at least 50 characters' };
+    return { valid: false, error: 'thinkingChain must be at least 50 characters` };'`
   }
   if (data.thinkingChain.length > 50000) {
-    return { valid: false, error: 'thinkingChain too long (max 50000 characters)' };
+    return { valid: false, error: `thinkingChain too long (max 50000 characters)` };
   }
   if (
     typeof data.confidenceLevel !== 'undefined' &&
@@ -141,7 +141,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             service: 'grpo-thinking-v3',
             requestId,
             features: {
-              reasoningChainIndexing: true,
+             , reasoningChainIndexing: true,
               timestampRecommendations: true,
               batchProcessing: true,
               trendAnalysis: true,
@@ -281,7 +281,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             recommendations,
             count: recommendations.length,
             criteria: {
-              timeWindow: '7 days',
+             , timeWindow: '7 days',
               confidenceThreshold: 0.7,
               similarityThreshold: 0.6,
               recentBiasEnabled: true
@@ -301,8 +301,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             dbStats = {
               totalResponses: 'unknown',
               avgConfidence: 'unknown',
-              commonThinkingTypes: 'unknown'
-            };
+              commonThinkingTypes: `unknown` };
           } catch {
             // DB not available
           }

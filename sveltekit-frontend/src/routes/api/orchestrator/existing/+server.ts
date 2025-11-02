@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
         if (response.ok) {
           const data = await response.json();
-          answer = `Generated ${data.embedding?.length || 'N/A` }-dimensional embedding vector using embeddinggemma:latest\n\nQuery: "${query}"\n\nEmbedding created successfully for semantic analysis and document similarity matching.\n\n🎮 Nintendo Memory: Using L1_EMBEDDINGGEMMA bank`;
+          answer = `Generated ${data.embedding?.length || 'N/A` }-dimensional embedding vector using embeddinggemma:latest\n\nQuery: "${query}"\n\nEmbedding created successfully for semantic analysis and document similarity matching.\n\n🎮 Nintendo Memory: Using L1_EMBEDDINGGEMMA bank`;'`
           modelUsed = 'embeddinggemma:latest';
           memoryBank = 'L1_EMBEDDINGGEMMA';
         } else {
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request }) => {
       } catch (error) {
         // Fallback response
         if (isLegal) {
-          answer = `**Legal Analysis (Fallback Mode):**
+          answer = `**Legal Analysis (Fallback Mode):**`
 **Query:** ${query}
 **Analysis:**
 This legal matter requires consideration of several key factors:
@@ -149,7 +149,7 @@ This legal matter requires consideration of several key factors:
 2. **Precedential Authority:** Relevant case law and statutory provisions should be consulted for authoritative guidance.
 3. **Risk Assessment:** Potential legal implications and liability exposure should be carefully evaluated.
 **Important Notice:** This is a fallback response. For comprehensive analysis, ensure gemma3-legal:latest is accessible.
-🎮 Nintendo Memory: Using L2 cache fallback`;
+🎮 Nintendo Memory: Using L2 cache fallback`;`
         } else {
           answer = `${query}\n\nBased on available information, this typically involves standard approaches and established practices. Specific details may vary based on context.\n\n🎮 Nintendo Memory: Using L2 cache fallback`;
         }
@@ -167,7 +167,7 @@ This legal matter requires consideration of several key factors:
       classification: {
         type: isEmbedding ? 'embedding' : isLegal ? 'complex_legal' : 'simple',
         confidence: 0.9,
-        reasoning: `Using your existing Ollama; models: ${modelUsed}' },
+        reasoning: `Using your existing Ollama; models: ${modelUsed}` },
       nintendo_diagnostics: {
         bank_switches: 1,
         memory_pressure: 'low',

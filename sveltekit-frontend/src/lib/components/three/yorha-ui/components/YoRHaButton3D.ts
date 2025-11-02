@@ -29,7 +29,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       depth: options.depth || 0.15,
       borderRadius: options.rounded ? 0.3 : options.borderRadius || 0.05,
       shadow: {
-        enabled: true,
+       , enabled: true,
         color: YORHA_COLORS.primary.black,
         blur: 0.3,
         intensity: 0.4,

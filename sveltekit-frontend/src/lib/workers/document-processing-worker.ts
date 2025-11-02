@@ -3,12 +3,12 @@ import { rabbitMQService } from '../services/rabbitmq-service.js';
 import { db } from '$lib/server/db';
 import * as schema from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
-import { v4 as uuidv4 } from 'uuid';
+import { v4, as uuidv4 } from 'uuid';
 // Add: LangChain text splitter for semantic chunking
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 // New imports for real download/temp file handling
-import { promises as fs } from 'fs';
+import { promises, as fs } from 'fs';
 import path from 'path';
 import os from 'os';
 
@@ -199,7 +199,7 @@ class DocumentProcessingWorker {
       console.log(`✅ Successfully processed document: ${job.documentId}`);
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ Error processing document ${job.documentId}: ', message);
+      console.error(`❌ Error processing document ${job.documentId}: ', message);'`
       await this.updateProcessingStatus(job.documentId, 'failed', `Processing failed: ${message}`);
       this.failedCount++;
     } finally {
@@ -330,7 +330,7 @@ class DocumentProcessingWorker {
         const embeddingResponse = await this.getFetch()('http://localhost:11434/api/embeddings', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json` },
+            'Content-Type': 'application/json' },
           body: JSON.stringify({
            , model: 'embeddinggemma:latest',
             prompt: chunk.content
@@ -344,7 +344,7 @@ class DocumentProcessingWorker {
         embeddings.push({
           chunkId: chunk.id,
           embedding: embeddingResult.embedding,
-          model: 'nomic-embed-text` });
+          model: 'nomic-embed-text' });
       } catch (err) {
         console.warn(`Embedding API error for chunk ${chunk.id}:`, err);
       }
@@ -388,7 +388,7 @@ class DocumentProcessingWorker {
       const resp = await this.getFetch()('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },
+          'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gemma3-legal',
           prompt: `Please provide a comprehensive legal analysis and summary of the following; document:\n\n${extractedText.slice(0, 4000)}`,

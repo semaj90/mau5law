@@ -192,7 +192,7 @@ class SSRLegalAPICache {
         tier: this.selectOptimalTier(endpoint, processedResponse),
         ttl: cacheEntry.ttl,
         priority: this.determinePriority(endpoint), // Removed incorrect type assertion syntax
-        type: 'ssr_legal_api` });
+        type: 'ssr_legal_api' });
       console.log(`💾 SSR Cache SET: ${cacheKey} (quantized: ${cacheEntry.quantized})`);
     } catch (error) {
       console.error('SSR cache store failed:', error);
@@ -290,7 +290,7 @@ class SSRLegalAPICache {
     const invalidated = matchedPatterns.length;
     // Note: actual invalidation would call parallelCacheOrchestrator if supported.
     console.log(
-      `🗑️ Cache invalidation requested for pattern: ${pattern} (user: ${userId ?? 'any` }) — matched ${invalidated} known pattern(s)`
+      `🗑️ Cache invalidation requested for pattern: ${pattern} (user: ${userId ?? 'any' }) — matched ${invalidated} known pattern(s)`
     );
     return invalidated;
   }
@@ -359,11 +359,11 @@ class SSRLegalAPICache {
     return 'l2';
   }
   private isCacheable(endpoint: string, response: LegalAPIResponse): boolean {
-    // Don't cache errors
+    // Don't cache errors'
     if (!response.success) {
       return false;
     }
-    // Don't cache user-specific real-time data
+    // Don't cache user-specific real-time data'
     if (endpoint.includes('/auth/') || endpoint.includes('/session/')) {
       return false;
     }
@@ -432,7 +432,7 @@ class SSRLegalAPICache {
     const meta = response.meta;
     if (meta && (meta.aiModel ?? meta.timestamp ?? meta.processingTime)) {
       return [
-        {
+        {,
           model: meta.aiModel,
           timestamp: meta.timestamp,
           processingTime: meta.processingTime

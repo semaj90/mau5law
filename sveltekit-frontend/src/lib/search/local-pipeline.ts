@@ -13,7 +13,7 @@ type MaybePromise<T> = T | Promise<T>;
 
 // Very small in-memory TTL cache (fallback when Redis is not available)
 class TinyTTLCache<V> {
-  private map = new Map<string, { v: V;, t: number }>();
+  private map = new Map<string, { v: V; t: number }>();
   constructor(private ttlMs = 60_000) {}
   get(k: string): V | undefined {
     const hit = this.map.get(k);

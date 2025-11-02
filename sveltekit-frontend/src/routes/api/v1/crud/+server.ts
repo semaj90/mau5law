@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = (url.searchParams.get('action') as string) || 'list';
   const id = url.searchParams.get('id');
   try {
-    if (!entity) return error(400, ensureError({ message: 'entity parameter required' }));
+    if (!entity) return error(400, ensureError({ message: 'entity parameter required` }));'`
     const table = getTable(entity);
     if (action === 'read') {
       if (!id) return error(400, ensureError({ message: `id required for read` }));
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // use a typed unknown accessor inside a SQL template to avoid `any` usage
         .where(sql`${idCol} = ${id}`)
         .limit(1);
-      if (!rows?.length) return error(404, ensureError({ message: '${entity} with ID ${id} not found' }));
+      if (!rows?.length) return error(404, ensureError({ message: '${entity} with ID ${id} not found` }));'`
       return json({ success: true, data: rows[0] });
     }
     // list
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const rows = await db.select().from(table).limit(limit).offset(offset);
     return json({ success: true, data: rows, metadata: {, total: rows.length, page, limit } });
   } catch (err: any) {
-    console.error('CRUD GET error:', err);
+    console.error('CRUD GET error:', err);'
     return error(500, ensureError({ message: 'Internal server error', details: String(err) }));
   }
 };
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         // avoid `(table as any).id` by using an unknown-typed accessor in SQL template
         .where(sql`${(table as unknown as Record<string, unknown>)['id']} = ${id}`)
         .returning();
-      if (!result?.length) return error(404, ensureError({ message: '${entity} with ID ${id} not found' }));
+      if (!result?.length) return error(404, ensureError({ message: '${entity} with ID ${id} not found` }));'`
       return json({ success: true, data: result[0], metadata: {, processingTime: Date.now() - start } });
     }
 
@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     const rows = await db.select().from(table).limit(50);
     return json({ success: true, data: rows });
   } catch (err: any) {
-    console.error('CRUD POST error:', err);
+    console.error('CRUD POST error:', err);'
     return error(500, ensureError({ message: 'Internal server error', details: String(err) }));
   }
 };

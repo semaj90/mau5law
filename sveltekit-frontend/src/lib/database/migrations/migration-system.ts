@@ -102,7 +102,7 @@ export class DatabaseMigrator {
         rollback_sql TEXT,
         metadata JSONB
       );
-    `;
+    `;`
   }
   async loadMigrations(): Promise<Migration[]> {
     const directory = path.isAbsolute(this.migrationsPath)
@@ -163,7 +163,7 @@ export class DatabaseMigrator {
             error_message = EXCLUDED.error_message,
             rollback_sql = EXCLUDED.rollback_sql,
             metadata = EXCLUDED.metadata;
-    `;
+    `;`
   }
   async migrate(): Promise<MigrationResult[]> {
     await this.initialize();
@@ -220,7 +220,7 @@ export class DatabaseMigrator {
       WHERE success = TRUE
       ORDER BY executed_at DESC
       LIMIT 1;
-    `;
+    `;`
     if (!lastMigration) {
       return null;
     }
@@ -233,7 +233,7 @@ export class DatabaseMigrator {
       await tx`
         DELETE FROM schema_migrations
         WHERE version = ${lastMigration.version};
-      `;
+      `;`
     });
     const durationMs = Math.round(performance.now() - start);
     return {
@@ -243,7 +243,7 @@ export class DatabaseMigrator {
       applied: false
     };
   }
-  async validateIntegrity(): Promise<{ valid: boolean;, issues: string[] }> {
+  async validateIntegrity(): Promise<{ valid: boolean; issues: string[] }> {
     const issues: string[] = [];
     const migrations = await this.loadMigrations();
     const applied = await this.getAppliedVersions();
@@ -270,7 +270,7 @@ export class DatabaseMigrator {
       FROM schema_migrations
       WHERE success = TRUE
       ORDER BY executed_at DESC;
-    `;
+    `;`
     const appliedVersions = new Set(
       appliedRows.map((row: {, version: string }) => row.version),
     );
@@ -317,7 +317,7 @@ export async function runMigrationCLI(command: string, args: string[] = []): Pro
         console.log('Migration Status');
         console.log(`  Applied: ${status.appliedMigrations}`);
         console.log(`  Pending: ${status.pendingMigrations}`);
-        console.log(`  Last: ${status.lastMigration ?? 'None' }`);
+        console.log(`  Last: ${status.lastMigration ?? 'None` }`);'`
         console.log(`  Healthy: ${status.systemHealthy}`);
         break;
       }
@@ -334,7 +334,7 @@ export async function runMigrationCLI(command: string, args: string[] = []): Pro
       }
       case 'validate': {
         const validation = await migrator.validateIntegrity();
-        console.log(`Validation: ${validation.valid ? 'ok' : 'issues detected' }`);
+        console.log(`Validation: ${validation.valid ? 'ok' : 'issues detected` }`);'`
         validation.issues.forEach(issue => console.log(`  - ${issue}`));
         break;
       }

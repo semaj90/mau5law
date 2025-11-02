@@ -99,11 +99,11 @@ export const GET: RequestHandler = async ({ url }) => {
         The analysis includes both federal and state law considerations.
         Section 3: Conclusion
         Based on the analysis above, we conclude that the legal framework supports our position.
-        `;
+        `;`
         // Simulate chunking (1000 chars with 200 overlap)
         const chunkSize = 1000;
         const chunkOverlap = 200;
-        const chunks: { index: number; content: string; startIndex: number; endIndex: number;, length: number }[] = [];
+        const chunks: { index: number; content: string; startIndex: number; endIndex: number; length: number }[] = [];
         let startIndex = 0;
         while (startIndex < sampleDocument.length) {
           const endIndex = Math.min(startIndex + chunkSize, sampleDocument.length);
@@ -122,14 +122,14 @@ export const GET: RequestHandler = async ({ url }) => {
           test: 'document_chunking',
           status: 'success',
           data: {
-            original_length: sampleDocument.length,
+           , original_length: sampleDocument.length,
             chunk_count: chunks.length,
             chunk_size: chunkSize,
             chunk_overlap: chunkOverlap,
             chunks: chunks.map(c => ({
              , index: c.index,
               length: c.length,
-              preview: c.content.substring(0, 50) + '...` }))
+              preview: c.content.substring(0, 50) + '...` }))'`
           },
           duration: Date.now() - startTime
         });
@@ -152,7 +152,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const documents = Array.from({ length: 5 }, (_, i) => ({
           id: `doc_${i + 1}`,
           embedding: Array.from({, length: 768 }, () => Math.random() * 2 - 1),
-          content: `Sample legal document ${i + 1} containing relevant legal information.' }));
+          content: 'Sample legal document ${i + 1} containing relevant legal information.' }));
 
         // Calculate cosine similarities
         const similarities = documents.map(doc => {
@@ -280,14 +280,13 @@ export const GET: RequestHandler = async ({ url }) => {
         legal_analysis: 'sentence-transformer integration',
         caching: 'in-memory with TTL',
         database_integration: 'PostgreSQL pgvector',
-        chunking_strategy: 'legal-aware with overlap'
-      },
+        chunking_strategy: `legal-aware with overlap` },
       integration_status: {
         qdrant_service: 'compatible',
         som_clustering: 'compatible',
         nes_cache: 'compatible',
         postgresql_sync: 'ready',
-        vector_dimensions: '768 (corrected)` }
+        vector_dimensions: `768 (corrected)` }
     });
   } catch (err: any) {
     return json(

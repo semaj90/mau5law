@@ -83,9 +83,9 @@ export class CrewAIService {
         id: "case-investigator",
         role: "Lead Case Investigator",
         goal: "Conduct comprehensive legal case investigation and evidence analysis",
-        backstory: `You are an experienced criminal investigator with 15 years in law enforcement.
+        backstory: `You are an experienced criminal investigator with 15 years in law enforcement.`
         You specialize in complex cases involving financial crimes, digital evidence, and witness coordination.
-        Your expertise includes evidence collection protocols, interview techniques, and case documentation standards.`,
+        Your expertise includes evidence collection protocols, interview techniques, and case documentation standards.`,`
         tools: [
           "evidence_analyzer",
           "witness_interview_tool",
@@ -107,9 +107,9 @@ export class CrewAIService {
         id: "legal-analyst",
         role: "Senior Legal Analyst",
         goal: "Provide legal analysis, precedent research, and case strategy recommendations",
-        backstory: 'You are a senior legal analyst with expertise in criminal and civil law.
-        You have worked with major law firms and prosecutor's offices for over 12 years.
-        Your specialties include case law research, legal precedent analysis, and litigation strategy.`,
+        backstory: 'You are a senior legal analyst with expertise in criminal and civil law.'
+        You have worked with major law firms and prosecutor's offices for over 12 years.'
+        Your specialties include case law research, legal precedent analysis, and litigation strategy.`,`
         tools: [
           "legal_research_tool",
           "precedent_finder",
@@ -131,9 +131,9 @@ export class CrewAIService {
         id: "evidence-specialist",
         role: "Digital Evidence Specialist",
         goal: "Analyze digital evidence, verify authenticity, and ensure admissibility",
-        backstory: `You are a certified digital forensics expert with advanced training in cybersecurity
+        backstory: `You are a certified digital forensics expert with advanced training in cybersecurity`
         and digital evidence analysis. You have testified as an expert witness in over 100 cases.
-        Your expertise covers mobile forensics, network analysis, and digital chain of custody procedures.`,
+        Your expertise covers mobile forensics, network analysis, and digital chain of custody procedures.`,`
         tools: [
           "digital_forensics_tool",
           "metadata_analyzer",
@@ -155,9 +155,9 @@ export class CrewAIService {
         id: "report-writer",
         role: "Legal Report Writer",
         goal: "Synthesize analysis into comprehensive legal reports and recommendations",
-        backstory: `You are a professional legal writer with expertise in creating clear, comprehensive reports
+        backstory: `You are a professional legal writer with expertise in creating clear, comprehensive reports`
         for law enforcement and legal proceedings. You have authored hundreds of investigation reports,
-        legal briefs, and expert summaries. Your writing is known for clarity, accuracy, and legal precision.`,
+        legal briefs, and expert summaries. Your writing is known for clarity, accuracy, and legal precision.`,`
         tools: [
           "report_generator",
           "citation_formatter",
@@ -181,12 +181,12 @@ export class CrewAIService {
         id: "initial-investigation",
         description:
           "Conduct initial case investigation and evidence inventory",
-        expectedOutput: `Comprehensive investigation report; including:
+        expectedOutput: `Comprehensive investigation report; including:`
         - Case summary and key facts
         - Evidence inventory with classification
         - Timeline of events
         - Identified witnesses and persons of interest
-        - Initial assessment of case strength`,
+        - Initial assessment of case strength`,`
         agent: "case-investigator",
         tools: ["evidence_analyzer", "timeline_builder", "case_documentation"]
       },
@@ -194,12 +194,12 @@ export class CrewAIService {
         id: "legal-research",
         description:
           "Research applicable laws, precedents, and legal strategies",
-        expectedOutput: `Legal analysis report; containing:
+        expectedOutput: `Legal analysis report; containing:`
         - Applicable statutes and regulations
         - Relevant case precedents with citations
         - Legal theories and potential charges
         - Jurisdictional considerations
-        - Recommended legal strategies`,
+        - Recommended legal strategies`,`
         agent: "legal-analyst",
         tools: ["legal_research_tool", "precedent_finder", "statute_analyzer"],
         dependencies: ["initial-investigation"]
@@ -208,12 +208,12 @@ export class CrewAIService {
         id: "evidence-analysis",
         description:
           "Perform detailed analysis of all digital and physical evidence",
-        expectedOutput: `Evidence analysis report; with:
+        expectedOutput: `Evidence analysis report; with:`
         - Detailed evidence examination results
         - Authenticity verification status
         - Chain of custody validation
         - Admissibility assessment
-        - Technical findings and metadata analysis`,
+        - Technical findings and metadata analysis`,`
         agent: "evidence-specialist",
         tools: [
           "digital_forensics_tool",
@@ -225,13 +225,13 @@ export class CrewAIService {
       {
         id: "final-report",
         description: "Compile comprehensive final report with recommendations",
-        expectedOutput: `Final investigation report; including:
+        expectedOutput: `Final investigation report; including:`
         - Executive summary
         - Detailed findings from all team members
         - Evidence analysis conclusions
         - Legal recommendations
         - Next steps and action items
-        - Professional formatting with proper citations`,
+        - Professional formatting with proper citations`,`
         agent: "report-writer",
         tools: ["report_generator", "citation_formatter", "legal_writer"],
         dependencies: ["legal-research", "evidence-analysis"]
@@ -259,9 +259,9 @@ export class CrewAIService {
         id: "contract-reviewer",
         role: "Senior Contract Reviewer",
         goal: "Analyze contract terms, identify risks, and assess legal compliance",
-        backstory: `You are a senior attorney specializing in contract law with 20 years experience
+        backstory: `You are a senior attorney specializing in contract law with 20 years experience`
         in commercial transactions. You have reviewed thousands of contracts across various industries
-        and are expert at identifying potential issues, risks, and non-standard terms.`,
+        and are expert at identifying potential issues, risks, and non-standard terms.`,`
         tools: [
           "contract_analyzer",
           "risk_assessor",
@@ -283,9 +283,9 @@ export class CrewAIService {
         id: "compliance-officer",
         role: "Legal Compliance Officer",
         goal: "Ensure contract compliance with applicable regulations and standards",
-        backstory: `You are a legal compliance officer with expertise in regulatory requirements
+        backstory: `You are a legal compliance officer with expertise in regulatory requirements`
         across multiple industries. You specialize in ensuring contracts meet all applicable
-        legal standards, industry regulations, and corporate governance requirements.`,
+        legal standards, industry regulations, and corporate governance requirements.`,`
         tools: [
           "regulatory_checker",
           "standards_validator",
@@ -307,9 +307,9 @@ export class CrewAIService {
         id: "negotiation-advisor",
         role: "Contract Negotiation Advisor",
         goal: "Provide strategic negotiation recommendations and alternative terms",
-        backstory: `You are a skilled contract negotiator with extensive experience in complex
+        backstory: `You are a skilled contract negotiator with extensive experience in complex`
         commercial deals. You excel at identifying negotiation opportunities, proposing alternative
-        terms, and developing win-win solutions that protect client interests.`,
+        terms, and developing win-win solutions that protect client interests.`,`
         tools: [
           "negotiation_analyzer",
           "alternative_drafter",
@@ -332,12 +332,12 @@ export class CrewAIService {
       {
         id: "contract-review",
         description: "Perform comprehensive contract review and risk analysis",
-        expectedOutput: `Contract review report; with:
+        expectedOutput: `Contract review report; with:`
         - Key terms summary
         - Risk assessment with severity ratings
         - Problematic clauses identification
         - Missing provisions analysis
-        - Overall contract strength assessment`,
+        - Overall contract strength assessment`,`
         agent: "contract-reviewer",
         tools: ["contract_analyzer", "risk_assessor", "term_extractor"]
       },
@@ -345,12 +345,12 @@ export class CrewAIService {
         id: "compliance-check",
         description:
           "Verify contract compliance with all applicable regulations",
-        expectedOutput: `Compliance analysis; including:
+        expectedOutput: `Compliance analysis; including:`
         - Regulatory requirements assessment
         - Industry standards verification
         - Corporate governance compliance
         - Legal requirement satisfaction
-        - Compliance gaps and recommendations`,
+        - Compliance gaps and recommendations`,`
         agent: "compliance-officer",
         tools: [
           "regulatory_checker",
@@ -362,12 +362,12 @@ export class CrewAIService {
       {
         id: "negotiation-strategy",
         description: "Develop negotiation strategy and alternative terms",
-        expectedOutput: `Negotiation strategy report; with:
+        expectedOutput: `Negotiation strategy report; with:`
         - Key negotiation points
         - Alternative term proposals
         - Leverage analysis
         - Risk mitigation strategies
-        - Recommended negotiation approach`,
+        - Recommended negotiation approach`,`
         agent: "negotiation-advisor",
         tools: [
           "negotiation_analyzer",
@@ -469,7 +469,7 @@ export class CrewAIService {
       await fetch(`${this.baseUrl}/api/execution/${executionId}/cancel`, {
         method: "POST",
         headers: {
-          ...(this.apiKey ? {, Authorization: `Bearer ${this.apiKey}` } : {})
+          ...(this.apiKey ? {, Authorization: `Bearer ${this.apiKey}' } : {})'`
         }
       });
     } catch (err) {
@@ -500,7 +500,7 @@ export class CrewAIService {
       const res = await fetch(`${this.baseUrl}/api/tools`, {
         method: "GET",
         headers: {
-          ...(this.apiKey ? {, Authorization: 'Bearer ${this.apiKey}` } : {})
+          ...(this.apiKey ? {, Authorization: 'Bearer ${this.apiKey}' } : {})
         }
       });
       if (!res.ok) throw new Error("Failed to get tools");

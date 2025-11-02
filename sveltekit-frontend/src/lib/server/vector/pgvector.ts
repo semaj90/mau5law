@@ -14,7 +14,7 @@ const isString = (v: any): v is string => typeof v === 'string';
 const isNumber = (v: any): v is number => typeof v === 'number';
 const isStringArray = (v: any): v is string[] => Array.isArray(v) && v.every(e => typeof e === 'string');
 
-// Define LegalCaseInfo type locally as it's not exported from sharedTypes
+// Define LegalCaseInfo type locally as it's not exported from sharedTypes'
 export type LegalCaseInfo = { id: string;, jurisdiction: string;
   parties: Party[];
   datesFiled: string[];
@@ -39,7 +39,7 @@ export async function upsertToPGVector(item: DocumentItem | VisionItem): Promise
     VALUES ($1, $2, $3)
     ON CONFLICT (id)
     DO UPDATE SET doc = EXCLUDED.doc, vector = EXCLUDED.vector
-  `;
+  `;`
 
   await POOL.query(sql, [id, JSON.stringify(doc), vector]);
   return { ok: true };
@@ -55,7 +55,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
     FROM embeddings
     ORDER BY vector <#> $1
     LIMIT $2
-  `;
+  `;`
 
   const res = await POOL.query(sql, [queryVector, topK]);
 
@@ -111,7 +111,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
 
     // Extract and validate `case` information
     let caseId = '';
-    let jurisdiction: string = ''; // Ensure it's always a string
+    let jurisdiction: string = ''; // Ensure it's always a string'
     let parties: Party[] = []; // Initialize as Party[]
     let datesFiled: string[] | undefined = undefined;
     let courtLevel: LegalCaseInfo['courtLevel'] | undefined = undefined;
@@ -149,8 +149,8 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       id: caseId || '',
       jurisdiction: jurisdiction || 'unknown', // Ensure jurisdiction is always a string
       parties,
-      datesFiled: datesFiled ?? [], // Ensure it's always an array, even if empty
-      courtLevel: courtLevel ?? 'district` };
+      datesFiled: datesFiled ?? [], // Ensure it's always an array, even if empty'
+      courtLevel: courtLevel ?? 'district' };
 
     // Corrected classification parsing with type guard and defaults
     let classification: LegalMetadata['classification'] = {
@@ -186,7 +186,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       // Add other known properties from MetaShape if they are part of LegalMetadata
       // and need to be preserved. Avoid spreading: 'meta' directly to prevent type issues.
       // For example, if LegalMetadata can have a: 'title'; property:
-      // title: isString(meta?.title) ? (meta!.title as string) : undefined,
+      //; title: isString(meta?.title) ? (meta!.title as string) : undefined,
       case defaultCase, // Assign the validated case information
       classification: classification, // Assign the validated classification information
       processing: processing, // Assign the validated processing information

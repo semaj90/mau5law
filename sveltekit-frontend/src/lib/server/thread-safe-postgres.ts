@@ -111,7 +111,7 @@ export class ThreadSafePostgres {
   /**
    * Thread-safe JSONB document operations
    */
-  async storeJsonbDocument<T extends Record<string, unknown>>(
+  async storeJsonbDocument<T extends, Record<string, unknown>>(
     table: string,
     id: string,
     document: T,
@@ -144,7 +144,7 @@ export class ThreadSafePostgres {
             content = EXCLUDED.content,
             metadata = EXCLUDED.metadata,
             updated_at = NOW()
-        `;
+        `;`
 
         await client.query(query, [id, JSON.stringify(document), JSON.stringify(options.metadata || {})]);
 
@@ -158,7 +158,7 @@ export class ThreadSafePostgres {
         activeTxs.delete(queryId);
       }
     } catch (error) {
-      console.error(`Failed to store JSONB document ${id}: ', error);
+      console.error(`Failed to store JSONB document ${id}: ', error);'`
       return false;
     } finally {
       release();
@@ -210,7 +210,7 @@ export class ThreadSafePostgres {
             return content as T[];
           }
 
-          // If it's a single item, normalize to array so callers always get T[]
+          // If it's a single item, normalize to array so callers always get T[]'
           if (content !== undefined && content !== null) {
             return [content as T];
           }
@@ -419,7 +419,7 @@ export class ThreadSafePostgres {
         console.warn(`Failed to update cache metadata for ${effectiveCacheKey}:`, err);
       }
     } catch (error) {
-      console.warn(`GPU processing failed for query ${queryId}: ', error);
+      console.warn(`GPU processing failed for query ${queryId}: ', error);'`
     }
   }
 
@@ -451,10 +451,10 @@ export class ThreadSafePostgres {
           SELECT
             id,
             1 - (embedding <=> $1::vector) as similarity
-            ${includeMetadata ? ', content, metadata' : '' }
+            ${includeMetadata ? ', content, metadata' : '` }'`
           FROM ${table}
           WHERE 1 - (embedding <=> $1::vector) > $2
-        `;
+        `;`
 
         // Add JSONB filtering conditions
         let paramIndex = 3;
@@ -478,7 +478,7 @@ export class ThreadSafePostgres {
         activeTxs.delete(queryId);
       }
     } catch (error) {
-      console.error(`Vector similarity search failed: ', error);
+      console.error(`Vector similarity search failed: ', error);'`
       return [];
     } finally {
       release();
@@ -489,7 +489,7 @@ export class ThreadSafePostgres {
    * Batch JSONB operations with thread safety
    */
   async batchJsonbOperations(
-    operations: Array<{ type: 'insert' | 'update' | 'delete';, table: string;
+    operations: Array<{, type: 'insert' | 'update' | 'delete';, table: string;
      , id: string;
       data?: any;
     }>,
@@ -519,7 +519,7 @@ export class ThreadSafePostgres {
               query = `
                 INSERT INTO ${op.table} (id, content, metadata, created_at, updated_at)
                 VALUES ($1, $2, $3, NOW(), NOW())
-              `;
+              `;`
               params.push(op.id, JSON.stringify(op.data || {}), JSON.stringify({}));
               break;
 
@@ -528,7 +528,7 @@ export class ThreadSafePostgres {
                 UPDATE ${op.table}
                 SET content = $2, updated_at = NOW()
                 WHERE id = $1
-              `;
+              `;`
               params.push(op.id, JSON.stringify(op.data || {}));
               break;
 
@@ -560,7 +560,7 @@ export class ThreadSafePostgres {
         activeTxs.delete(batchId);
       }
     } catch (error) {
-      console.error(`Batch JSONB operations failed: ', error);
+      console.error(`Batch JSONB operations failed: ', error);'`
       return false;
     } finally {
       release();
@@ -630,7 +630,7 @@ export class ThreadSafePostgres {
         activeTxs.delete(id);
         console.warn(`Cleaned up stuck transaction: ${id}`);
       } catch (error) {
-        console.error(`Failed to cleanup transaction ${id}: ', error);
+        console.error(`Failed to cleanup transaction ${id}: ', error);'`
       }
     }
   }
@@ -640,7 +640,7 @@ export class ThreadSafePostgres {
 export const threadSafePostgres = ThreadSafePostgres.getInstance();
 
 // Utility functions for easy access
-export async function safeJsonbStore<T extends Record<string, unknown>>(
+export async function safeJsonbStore<T extends, Record<string, unknown>>(
   table: string,
   id: string,
   document: T,

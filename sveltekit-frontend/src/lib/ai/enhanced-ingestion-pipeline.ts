@@ -117,7 +117,7 @@ export interface IngestionStats { total_processed: number;, successful: number;
 interface MultimodalProcessor { process: (evidence: MultimodalEvidence) => Promise<DocumentEmbedding>;, supportedFormats: string[];
 }
 export class EnhancedIngestionPipeline {
-  private qdrantClient: InstanceType<typeof QdrantClient>;
+  private qdrantClient: InstanceType<typeof, QdrantClient>;
   private pgPool: Pool;
   private rabbitConnection: any;
   private neo4jDriver: Driver;
@@ -151,8 +151,7 @@ export class EnhancedIngestionPipeline {
   ) {
     // Initialize connections
     this.qdrantClient = new QdrantClient({
-      url: config.qdrantUrl || 'http://localhost:6333'
-    });
+      url: config.qdrantUrl || 'http://localhost:6333` });'`
     // Use postgres-js client via shim for pool-like behavior
     this.pgPool = poolShim;
     this.neo4jDriver = neo4j.driver(config.neo4jUrl || 'bolt://localhost:7687', neo4j.auth.basic('neo4j', 'password'));
@@ -185,8 +184,7 @@ export class EnhancedIngestionPipeline {
     } catch (error: any) {
       console.error('❌ Failed to initialize ingestion pipeline:', error);
       errorHandler.system('Pipeline initialization failed', {
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
+        error: error instanceof Error ? error.message : `Unknown error` });
       throw error;
     }
   }
@@ -196,12 +194,12 @@ export class EnhancedIngestionPipeline {
       const exists = collections.collections.some(c => c.name === collectionName);
       if (!exists) {
         await this.qdrantClient.createCollection(collectionName, { vectors: {, size: 384, // Default embedding size
-            distance: 'Cosine` }
+            distance: `Cosine` }
         });
         console.log(`✅ Created collection: ${collectionName}`);
       }
     } catch (error: any) {
-      console.error(`❌ Failed to ensure collection ${collectionName}: ', error);
+      console.error(`❌ Failed to ensure collection ${collectionName}: ', error);'`
       throw error;
     }
   }
@@ -378,7 +376,7 @@ export class EnhancedIngestionPipeline {
     } catch (error: any) {
       console.error(`❌ Failed to process document ${document.id}:`, error);
       errorHandler.analysis(`Document processing failed: ${document.id}`, {
-        error: error instanceof Error ? error.message : 'Unknown error` });
+        error: error instanceof Error ? error.message : `Unknown error` });
       this.updateStats(document.metadata.evidence_type, -1, Date.now() - startTime, false);
       throw error;
     }
@@ -504,8 +502,7 @@ export class EnhancedIngestionPipeline {
     } catch (error: any) {
       console.error('❌ Enhanced search failed:', error);
       errorHandler.system('Enhanced search failed', {
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
+        error: error instanceof Error ? error.message : `Unknown error` });
       throw error;
     }
   }
@@ -519,7 +516,7 @@ export class EnhancedIngestionPipeline {
     } catch (error: any) {
       console.error('❌ Failed to get collection info:', error);
       errorHandler.system('Failed to get collection info', {
-        error: error instanceof Error ? error.message : 'Unknown error` });
+        error: error instanceof Error ? error.message : `Unknown error` });
       throw error;
     }
   }
@@ -567,7 +564,7 @@ export class EnhancedIngestionPipeline {
     } catch (error: any) {
       console.error(`❌ Failed to process multimodal evidence ${evidence.id}:`, error);
       errorHandler.analysis(`Multimodal evidence processing failed: ${evidence.id}`, {
-        error: error instanceof Error ? error.message : 'Unknown error` });
+        error: error instanceof Error ? error.message : `Unknown error` });
       throw error;
     }
   }
@@ -591,7 +588,7 @@ export class EnhancedIngestionPipeline {
       Evidence Type: ${evidence.type}
       Content: ${evidenceContent.substring(0, 2000)}
       Based on the legal context, provide a concise analysis and suggest the next logical step.
-    `;
+    `;`
     const analysisResult = await copilotOrchestrator(prompt, {});
     return analysisResult.selfPrompt;
   }
@@ -603,9 +600,9 @@ export class EnhancedIngestionPipeline {
       Text: ${evidence.extracted_content.text || 'N/A'}
       Objects: ${evidence.extracted_content.objects?.map(o => o.class).join(', ') || 'N/A'}
       Transcription: ${evidence.extracted_content.transcription || 'N/A'}
-      Scene Summary: ${evidence.extracted_content.scene_summary || 'N/A` }
+      Scene Summary: ${evidence.extracted_content.scene_summary || 'N/A` }'`
       Processing Content: ${processingResult.content}
-    `;
+    `;`
   }
   /**
    * Determine legal category based on evidence analysis
@@ -634,11 +631,11 @@ export class EnhancedIngestionPipeline {
       `📊 Quantization: ${metrics.originalSize}B → ${metrics.quantizedSize}B (${metrics.compressionRatio.toFixed(1)}x compression, ${metrics.memoryReduction} saved)`
     );
     await this.qdrantService.upsertPoints('legal_documents', [
-      {
+      {,
         id: docEmbedding.id,
         vector: docEmbedding.embedding, // Keep full precision for search accuracy
         payload: {
-          content: docEmbedding.content,
+         , content: docEmbedding.content,
           ...docEmbedding.metadata,
           embedding_quantized: quantizedBase64, // Store quantized for memory optimization
           quantization_stats: {
@@ -674,7 +671,7 @@ export class EnhancedIngestionPipeline {
       entities: [...new Set(entities)].slice(0, 10),
       keywords,
       confidence: 0.85,
-      language: 'en` };
+      language: `en` };
   }
   /**
    * Generate embedding for text content

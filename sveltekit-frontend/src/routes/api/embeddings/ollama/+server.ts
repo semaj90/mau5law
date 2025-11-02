@@ -17,7 +17,7 @@
  * - Dynamic model configuration from environment
  *
  * Performance:
- * - Cache; hits: <1ms (Redis retrieval)
+ * - Cache; hits: <1ms (Redis, retrieval)
  * - Fresh embeddings: 50-100ms (GPU processing)
  * - Batch processing supported
  */
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
       service: 'ollama-centralized'
     });
   } catch (err) {
-    console.error('❌ embeddings/ollama error:', err);
+    console.error('❌ embeddings/ollama error:', err);'
 
     if (err instanceof Response) {
       throw err;
@@ -136,7 +136,7 @@ export const GET: RequestHandler = async () => {
       model_available: hasEmbeddingModel,
       available_models: models.map((m: any) => m.name),
       production: true,
-      service: 'ollama-centralized' });
+      service: 'ollama-centralized` });'`
   } catch (err) {
     console.error('❌ [Ollama API] Health check failed:', err);
     throw error(503, 'Ollama service unavailable');

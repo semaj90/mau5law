@@ -11,6 +11,6 @@ export const GET: RequestHandler = async () => {
   }
   return new Response(lines.join('\n'), {
     status: 200,
-    headers: { 'content-type': 'text/csv', 'cache-control': 'no-store' }
+    headers: { 'content-type': 'text/csv', 'cache-control': 'no-store` }'`
   });
 };

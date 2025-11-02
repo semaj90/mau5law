@@ -2,7 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { serverRerank } from '$lib/server/ai/reranker';
 
 export const POST: RequestHandler = async ({ request, headers }) => {
-  const input = (await request.json()) as { query?: string; candidates?: { id: string;, text: string }[] };
+  const input = (await request.json()) as { query?: string; candidates?: { id: string; text: string }[] };
 
   if (!input?.query || !Array.isArray(input.candidates)) {
     return new Response(JSON.stringify({ error: 'Invalid input' }), { status: 400 });
@@ -36,9 +36,9 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Server rerank failed:', err);
 
     // Fallback to WebGPU client-side stub (or a simplified server-side fallback)
-    // Note: The prompt implies webgpuRerankFallback is client-side, but here it's called server-side as a fallback.
+    // Note: The prompt implies webgpuRerankFallback is client-side, but here it's called server-side as a fallback.'
     // For a true client-side WebGPU fallback, the client would call it directly if the server fails.
-    // Here, we'll use it as a simplified server-side fallback if the main rerank fails.
+    // Here, we'll use it as a simplified server-side fallback if the main rerank fails.'
     const fallback = await webgpuRerankFallback(body.query, body.candidates);
     return json(fallback, { status: 200 });
   }

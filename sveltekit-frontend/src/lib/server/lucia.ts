@@ -1,6 +1,6 @@
 import { and, eq, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { sessions as sessionsTable } from '$lib/server/db/unified-schema';
+import { sessions, as sessionsTable } from '$lib/server/db/unified-schema';
 import bcrypt from 'bcryptjs';
 import type { Cookies } from '@sveltejs/kit';
 
@@ -118,7 +118,7 @@ export function deleteSessionCookie(cookies: Cookies): void {
   };
   cookies.set('session_id', '', clearOptions);
   cookies.set('session', '', clearOptions);
-  cookies.delete('session_id', { path: '/' });
+  cookies.delete('session_id', { path: '/` });'`
   cookies.delete('session', { path: `/` });
 }
 

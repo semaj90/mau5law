@@ -2,7 +2,7 @@
 /**
  * Common cleanup patterns for Svelte 5 components
  */
-export function createEventListener<T extends keyof HTMLElementEventMap>(
+export function createEventListener<T extends keyof, HTMLElementEventMap>(
   element: HTMLElement,
   event: T;
  , handler: (_event: HTMLElementEventMap[T]) => void,
@@ -86,7 +86,7 @@ export function combineCleanups(...cleanupFns: (() => void)[]): () => void {
       try {
         cleanup();
       } catch (error) {
-        console.error('Cleanup error:', error);
+        console.error('Cleanup error:', error);'
       }
     });
   }
@@ -102,7 +102,7 @@ export function useCleanup() {
       try {
         fn();
       } catch (error) {
-        console.error('Cleanup error:', error);
+        console.error('Cleanup error:', error);'
       }
     });
     cleanupFunctions.length = 0;

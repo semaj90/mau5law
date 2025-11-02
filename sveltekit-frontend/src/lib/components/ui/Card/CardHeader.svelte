@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   interface Props {
@@ -7,6 +7,6 @@
   }
   let { class: className = '', children }: Props = $props();
 </script>
-<div class={cn('flex flex-col space-y-1.5 p-6', className)}>
+<div class={cn('flex flex-col space-y-1.5, p-6', className)}>
   <slot />
 </div>

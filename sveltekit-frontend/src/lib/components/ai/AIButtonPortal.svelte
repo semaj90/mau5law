@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { Button } from '$lib/components/ui/Button.svelte';
   interface Props {
     position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
@@ -7,8 +7,8 @@
   let { position = 'bottom-right', show = true }: Props = $props();
 </script>
 {#if show}
-  <div class="ai-button-portal space-y-4" data-position={position}>
-    <Button.Root class="bits-btn">AI Assistant</Button.Root>
+  <div class="ai-button-portal, space-y-4" data-position={position}>
+    <Button.Root, class="bits-btn">AI Assistant</Button.Root>
   {/if}
 <style>
   /* @unocss-include */

@@ -75,12 +75,12 @@ try:
         print("TENSORRT_RESULT:", json.dumps(result))
     run_tensorrt_inference()
 except ImportError as e:
-    print("TENSORRT_ERROR: TensorRT-LLM not; available:", str(e))
+    print("TENSORRT_ERROR: TensorRT-LLM not;, available:", str(e))
     sys.exit(1)
 except Exception as e:
     print("TENSORRT_ERROR:", str(e))
     sys.exit(1)
-`;
+`;`
     return new Promise((resolve, reject) => {
       const pythonProcess = spawn(this.pythonEnv, ['-c', script]);
       let output = '';
@@ -190,10 +190,10 @@ try:
         print("PYTORCH_RESULT:", json.dumps(result))
     run_awq4_inference()
 except ImportError as e:
-    print(f"AWQ4_ERROR: Required packages not; available: {e}")
+    print(f"AWQ4_ERROR: Required packages not;, available: {e}")
     # Fallback to simple response
     result = {
-        "text": f"Legal AI Response: I've analyzed your query; regarding: '{request.prompt[:100]}...' Based on standard legal principles, this matter requires careful consideration of applicable regulations, contractual obligations, and potential legal risks. I recommend consulting with qualified legal counsel for specific guidance.",
+        "text": f"Legal AI Response: I've analyzed your query; regarding: '{request.prompt[:100]}...' Based on standard legal principles, this matter requires careful consideration of applicable regulations, contractual obligations, and potential legal risks. I recommend consulting with qualified legal counsel for specific guidance.",'
         "tokens": 35,
         "inference_time": 0.1,
         "model_used": "Fallback-Legal"
@@ -209,7 +209,7 @@ except Exception as e:
         "model_used": "Enhanced-Fallback"
     }
     print("PYTORCH_RESULT:", json.dumps(result))
-`;
+`;`
     return new Promise((resolve, reject) => {
       const pythonProcess = spawn('python3', ['-c', script]);
       let output = '';
@@ -234,7 +234,7 @@ except Exception as e:
           resolve({ text: `Legal, Analysis: ${request.prompt} - Professional legal guidance available. Recommend consultation with qualified legal counsel.`,
             tokens: 15,
             inference_time: 0.05,
-            model_used: 'Emergency-Fallback' });
+            model_used: 'Emergency-Fallback` });'`
         }
       });
       // Timeout after 60 seconds

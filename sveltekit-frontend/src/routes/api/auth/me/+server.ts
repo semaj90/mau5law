@@ -53,7 +53,7 @@ export const GET: RequestHandler = async (event) => {
     return json({
       success: true,
       user: {
-        id: user.id,
+       , id: user.id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,

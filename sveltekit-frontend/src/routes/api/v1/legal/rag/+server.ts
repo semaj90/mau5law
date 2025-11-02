@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: {
-        answer: result.answer,
+       , answer: result.answer,
         sources: result.sources.map(s => ({
          , id: s.id,
           score: s.score,
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (err: any) {
-    console.error('RAG API error:', err);
+    console.error('RAG API error:', err);'
 
     if (err.status) {
       throw err;
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async ({ url }) => {
           controller.enqueue(encoder.encode('data: [DONE]\n\n'));
           controller.close();
         } catch (err: any) {
-          console.error('RAG streaming error:', err);
+          console.error('RAG streaming error:', err);'
           const errorData = JSON.stringify({
             type: 'error',
             data: {, message: err.message }
@@ -149,10 +149,10 @@ export const GET: RequestHandler = async ({ url }) => {
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive' }
+        'Connection': 'keep-alive` }'`
     });
   } catch (err: any) {
-    console.error('RAG streaming API error:', err);
+    console.error('RAG streaming API error:', err);'
 
     if (err.status) {
       throw err;

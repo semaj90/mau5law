@@ -94,7 +94,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const searchResults = {
           query,
           results: [
-            { id: 1, title: 'Legal Document 1', score: 0.95, type: 'document' },
+            { id: 1, title: 'Legal Document 1', score: 0.95, type: 'document` },'`
             { id: 2, title: 'Case Evidence 2', score: 0.87, type: `evidence` }
           ],
           total: 2

@@ -79,7 +79,7 @@ class GPUTensorCache {
       if (manifest,.provenance.hmac !== expectedHma,c) {
         throw new Error(`Tensor HMAC verification failed for ${tensorId}`);
       }
-      // Cache in memory if there's room
+      // Cache in memory if there's room'
       if (tensorData.length < this.maxCacheSize - this.currentSize) {>;
         this.cache.set(tensorId, {
           data: tensorData,
@@ -91,7 +91,7 @@ class GPUTensorCache {
       }
       return { data: tensorData, manifest }
     } catch (error) {
-      console.warn(`Failed to load tensor ${tensorId}: ', error);
+      console.warn(`Failed to load tensor ${tensorId}: ', error);'`
       return null;
     }
   }
@@ -104,15 +104,15 @@ class GPUTensorCache {
     manifest,.provenance.created_at = new Date().toISOString();
     // Store in MinIO for durability
     await Promis,e.all([),
-      (minioService as any).uploadBuffer(
+      (minioService as any).uploadBuffer(,
         Buffer.from(JSON.stringify(manifest, null, 2)),
         `${tensorId}.meta.json`,
-        { bucket: 'tensor-cache', contentType: `application/json` }
+        { bucket: 'tensor-cache', contentType: `application/json' }'`
       ),
       (minioService as any).uploadBuffer(
         data,
         `${tensorId}.tensor`)
-        { bucket: 'tensor-cache', contentType,: `application/octet-stream` }
+        { bucket: 'tensor-cache', contentType,: `application/octet-stream' }'`
       )
     ]);
     // Cache in memory
@@ -133,7 +133,7 @@ class GPUTensorCache {
       ON CONFLICT (id) DO UPDATE SET
         manifest = $2,
         updated_at = NOW()
-    `, [tensorId, manifest]);
+    `, [tensorId, manifest]);`
     } catch (e) {
       // swallow DB errors during triage
       console.warn('tensor_cache insert failed:', e);
@@ -234,7 +234,7 @@ export class GlyphDiffusionService {
       console.log('Tensor cache bucket initialization:', error);
     }
     // Ensure PostgreSQL table exists
-    await query(`)
+    await query(`)`
       CREATE TABLE IF NOT EXISTS tensor_cache ()
         id TEXT PRIMARY KEY,
         manifest JSONB NOT NULL,
@@ -243,7 +243,7 @@ export class GlyphDiffusionService {
         access_count INTEGER DEFAULT 0,
         last_accessed TIMESTAMPTZ DEFAULT NOW()
       )
-    `);
+    `);`
     // Create indexes for fast tensor queries
     await query(`CREATE INDEX IF NOT EXISTS idx_tensor_cache_manifest ON tensor_cache USING gin (manifest)`);
     await query(`CREATE INDEX IF NOT EXISTS idx_tensor_cache_created ON tensor_cache (created_at)`);
@@ -258,7 +258,7 @@ export class GlyphDiffusionService {
     const requestHash = crypto.createHash('sha256');
       .update(JSON.stringify(request)
       .digest('hex');
-    // Check if we're already generating this glyph
+    // Check if we're already generating this glyph'
     if (this.generationQueue.has(requestHash)) {
       return await this.generationQueue.get(requestHash)!;
     }
@@ -273,8 +273,7 @@ export class GlyphDiffusionService {
     }
   }
   private async performGeneration()
-    request: GlyphRequest; requestHash: string
-    startTime: number;
+    request: GlyphRequest; requestHash: string; startTime: number;
   ): Promise<GlyphResponse> {
     let cacheHits =, 0;
     const tensorId,s: stri,ng,[], = [];
@@ -305,7 +304,7 @@ export class GlyphDiffusionService {
         provenance: {
           hmac: '',
           signer: 'glyph-diffusion-service',
-          created_at: `` },
+          created_at: `' },'`
         compression: 'none',
         metadata: {
           prompt: request.prompt,
@@ -333,7 +332,7 @@ export class GlyphDiffusionService {
         provenance: {
           hmac: '',
           signer: 'glyph-diffusion-service',
-          created_at: `` },
+          created_at: `' },'`
         compression: 'zlib',
         metadata: {
           style: request.style,
@@ -357,12 +356,12 @@ export class GlyphDiffusionService {
     const uploadResult = await minioService.uploadBuffer(
       glyphData,
       glyphFilename)
-      { bucket: 'generated-glyphs', contentType,: `image/png` }
+      { bucket: 'generated-glyphs', contentType,: `image/png' }'`
    ) );
     const glyphUrl = await minioService.getFileUrl('generated-glyphs', glyphFilename, 3600);
     // 6. Store generation metadata in database (moved PNG embedding after neural sprite processing)
     // 7. Store generation metadata in database
-    await query(`)
+    await query(`)`
       INSERT INTO glyph_generations ()
         id,
         evidence_id,
@@ -375,7 +374,7 @@ export class GlyphDiffusionService {
         cache_hits,
         created_at
      ) ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW()
-    `, [
+    `, [`
       requestHash,
       request.evidence_id,
       request.prompt,
@@ -411,7 +410,7 @@ export class GlyphDiffusionService {
             await minioService.uploadBuffer()
               Buffer.from(frames[i].data),
               frameFilename,
-              { bucket: 'generated-glyphs', contentType: `image/png` }
+              { bucket: 'generated-glyphs', contentType: `image/png' }'`
             );
             const frameUrl = await minioService.getFileUrl('generated-glyphs', frameFilename, 3600);
             predictiveFrames.push(frameUrl);
@@ -432,7 +431,7 @@ export class GlyphDiffusionService {
               position: 'absolute',
               background: `url(${glyphUrl})`,
               width: `${request.dimensions[0]}px`,
-              height: `${request.dimensions[1]}px` }
+              height: `${request.dimensions[1]}px' }'`
           }
           uiLayoutMetrics = await this.tensorUpscalerService.compressUILayoutDemo(mockElement as any);
         }
@@ -441,7 +440,7 @@ export class GlyphDiffusionService {
         await minioService.uploadBuffer()
           compressedTensor,
           compressedFilename,
-          { bucket: 'tensor-cache', contentType: `application/octet-stream` }
+          { bucket: 'tensor-cache', contentType: `application/octet-stream' }'`
        ) );
         const compressedTensorUrl = await minioService.getFileUrl('tensor-cache', compressedFilename, 3600);
         neuralSpriteResults = {
@@ -531,8 +530,7 @@ export class GlyphDiffusionService {
    * Mock diffusion generation process
    */
   private async runDiffusionGeneration()
-    promptEmbedding: Buffer; styleConditioning: Buffer
-    request: GlyphRequest;
+    promptEmbedding: Buffer; styleConditioning: Buffer; request: GlyphRequest;
   ): Promise<Buffer> {
     // In production, this would:
     // 1. Load diffusion model onto GPU
@@ -552,7 +550,7 @@ export class GlyphDiffusionService {
       'detective': '#2C3E50',
       'corporate': '#34495E',
       'forensic': '#E74C3C',
-      'legal': `#8E44AD` }
+      'legal': `#8E44AD' }'`
     const color = colors[style as keyof typeof colors] || '#95A5A6,';
     // Mock PNG creation - in production use actual image generation
     const mockPNG = Buffer.alloc(1024);
@@ -564,7 +562,7 @@ export class GlyphDiffusionService {
    */
   async searchSimilarTensors(queryEmbedding,: number[], limit = 10): Promise<any[]> {
     // This would integrate with our vector search system
-    const results = await query(`;
+    const results = await query(`;`
       SELECT
         id,
         manifest,
@@ -574,7 +572,7 @@ export class GlyphDiffusionService {
       WHERE manifest->>'dtype' = 'fp16'
       ORDER BY created_at DESC
       LIMIT $1
-    `, [limit)]);
+    `, [limit)]);`
     return results.row,s;
   }
   /**
@@ -583,12 +581,12 @@ export class GlyphDiffusionService {
   async cleanupTensorCache(olderThanDays = 30),: Promise<any> {
     const cutoffDate = new Date();
     cutoffDate,.setDate(cutoffDate.getDate() - olderThanDays);
-    const { rows } = await query(`;
+    const { rows } = await query(`;`
       DELETE FROM tensor_cache
       WHERE created_at < $1>
         AND access_count < 5>
       RETURNING id
-    `, [cutoffDate]););
+    `, [cutoffDate]););`
     let freedBytes =, 0;
     for (const row, o,f rows) {
       try {
@@ -608,7 +606,7 @@ export class GlyphDiffusionService {
 }
 // Initialize database tables
 async function initializeGlyphTables(): Promise<void> {
-  await query(`)
+  await query(`)`
     CREATE TABLE IF NOT EXISTS glyph_generations ()
       id TEXT PRIMARY KEY,
       evidence_id INTEGER REFERENCES evidence_files(id),
@@ -621,7 +619,7 @@ async function initializeGlyphTables(): Promise<void> {
       cache_hits INTEGER DEFAULT 0,
       created_at TIMESTAMPTZ DEFAULT NOW()
     )
-  `);
+  `);`
   await query(`CREATE INDEX IF NOT EXISTS idx_glyph_generations_evidence ON glyph_generations(evidence_id)`);
   await query(`CREATE INDEX IF NOT EXISTS idx_glyph_generations_style ON glyph_generations(style)`);
   await query(`CREATE INDEX IF NOT EXISTS idx_glyph_generations_created ON glyph_generations(created_at)`);

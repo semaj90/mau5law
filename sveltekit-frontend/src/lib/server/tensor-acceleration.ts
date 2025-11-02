@@ -107,7 +107,7 @@ export class TensorAccelerator {
         // Atomic add for partial results
         result[index / tile_size] += sum;
       }
-    `;
+    `;`
     // Transform pipeline for embedding processing
     const transformShader = `
       @group(0) @binding(0) var<storage, read> input: array<f32>;
@@ -135,7 +135,7 @@ export class TensorAccelerator {
         }
         output[index] = result_value;
       }
-    `;
+    `;`
     // Image analysis pipeline for visual document processing
     const imageAnalysisShader = `
       @group(0) @binding(0) var<storage, read> image_data: array<u32>;
@@ -167,7 +167,7 @@ export class TensorAccelerator {
         atomicAdd(&features[tile_index * 4u + 2u], b); // Avg B
         atomicAdd(&features[tile_index * 4u + 3u], luminance); // Avg luminance
       }
-    `;
+    `;`
     // Create compute pipelines
     const similarityModule = this.device.createShaderModule({ code: similarityShader });
     const transformModule = this.device.createShaderModule({ code: transformShader });
@@ -285,7 +285,7 @@ export class TensorAccelerator {
           computeTime,
           memoryUsage: vectorA.byteLength + vectorB.byteLength + numTiles * 4,
           kernelType: 'tiled-similarity',
-          precision: options.precision || 'fp32` }
+          precision: options.precision || 'fp32` }'`
       };
     } catch (error) {
       console.error('GPU similarity computation failed:', error);
@@ -451,8 +451,7 @@ export class TensorAccelerator {
           computeTime,
           memoryUsage: imageData.byteLength + numFeatures * 4,
           kernelType: 'tiled-image-analysis',
-          precision: options.precision || 'fp32'
-        }
+          precision: options.precision || 'fp32` }'`
       };
     } catch (error) {
       console.error('GPU image analysis failed:', error);

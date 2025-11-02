@@ -95,10 +95,10 @@ class NodeSIMDJSONService {
    */
   private simdOptimizedParse<T>(jsonString: string): T {
     // Pre-process for common legal document patterns
-    if (jsonString.includes('"metadata"') || jsonString.includes('"legal_')) {
+    if (jsonString.includes('"metadata"') || jsonString.includes('"legal_')) {"
       return this.optimizedLegalDocumentParse<T>(jsonString);
     }
-    // Use V8's optimized JSON parsing with hints
+    // Use V8's optimized JSON parsing with hints'
     const parsed = JSON.parse(jsonString);
     // Post-process optimization for known structures
     return this.optimizeObject(parsed);
@@ -111,12 +111,12 @@ class NodeSIMDJSONService {
     const obj: any = {}
     // Extract common fields with optimized regex
     const patterns = {
-      id: /"id"\s*:\s*"([^"]+)"/,
-      title: /"title"\s*:\s*"([^"]+)"/,
-      content: /"content"\s*:\s*"([^"]*?)"/,
+      id: /"id"\s*:\s*"([^"]+)"/,"
+      title: /"title"\s*:\s*"([^"]+)"/,"
+      content: /"content"\s*:\s*"([^"]*?)"/,"
       confidence: /"confidence"\s*:\s*([0-9.]+)/,
-      document_type: /"document_type"\s*:\s*"([^"]+)"/,
-      jurisdiction: /"jurisdiction"\s*:\s*"([^"]+)"/
+      document_type: /"document_type"\s*:\s*"([^"]+)"/,"
+      jurisdiction: /"jurisdiction"\s*:\s*"([^"]+)"/"
     }
     // Fast extraction using optimized patterns
     for (const [key, pattern] of Object.entries(patterns)) {
@@ -245,7 +245,7 @@ class NodeSIMDJSONService {
         try {
           return this.fastParse<T>(jsonStr);
         } catch (error) {
-          console.warn('Batch parse error:', error);
+          console.warn('Batch parse error:', error);'
           return null;
         }
       })
@@ -292,7 +292,7 @@ class NodeSIMDJSONService {
       console.log(`🚀 JSON Benchmark (${iterations} iterations):`, {
         standard: `${standardTime.toFixed(2)}ms`,
         optimized: `${optimizedTime.toFixed(2)}ms`,
-        speedup: `${speedup.toFixed(2)}x faster` });
+        speedup: `${speedup.toFixed(2)}x faster' });'`
     }
     return { standardTime, optimizedTime, speedup }
   }

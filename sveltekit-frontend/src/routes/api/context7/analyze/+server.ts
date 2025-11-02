@@ -6,13 +6,13 @@ import type { RequestHandler } from './$types';
 
 // Types for Context7 analysis payload (avoids 'any')
 type CaseLawConnection = { case string; relevance: number };
-type SemanticMapping = { concept: string;, confidence: number };
+type SemanticMapping = { concept: string; confidence: number };
 
 interface Context7Analysis { id: string;, type: string;
   status: string;
   analysis: { legalEntities: string[];, keyTerms: string[];
     caseLawConnections: CaseLawConnection[];
-    prosecutionRelevance: { score: number;, reasoning: string };
+    prosecutionRelevance: { score: number; reasoning: string };
     semanticMappings: SemanticMapping[];
     riskFactors: string[];
     recommendations: string[];
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json(context7Analysis, { status: 200 });
   } catch (error: any) {
-    console.error('Context7 analysis error:', formatError(error));
+    console.error('Context7 analysis error:', formatError(error));'
     return json(
       {
         error: 'Analysis failed',

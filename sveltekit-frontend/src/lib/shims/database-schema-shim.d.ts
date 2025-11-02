@@ -18,8 +18,8 @@ declare module '$lib/server/db/schema-postgres' {
   // Duplicate removed: // Duplicate; removed: export const; autoTags: any
   // Duplicate removed: // Duplicate; removed: export const; userAiQueries: any
   // Duplicate removed: // Duplicate; removed: export const; vectors: any
-  // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate; removed: export const; cases: any
-  // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate; removed: export const; evidence: any
+  // Duplicate removed: // Duplicate; removed: // Duplicate; removed: // Duplicate; removed: export const; cases: any
+  // Duplicate removed: // Duplicate; removed: // Duplicate; removed: // Duplicate; removed: export const; evidence: any
   // Duplicate removed: // Duplicate; removed: export const; users: any
   // Duplicate removed: // Duplicate; removed: export const; document_chunks: any
   const _default: any;
@@ -34,8 +34,8 @@ declare module '$lib/server/db/index' {
   export const performance: any;
   export const fullStack: any;
   export const cleanup: any;
-  // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate; removed: export const; cases: any
-  // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate; removed: export const; evidence: any
+  // Duplicate removed: // Duplicate; removed: // Duplicate; removed: // Duplicate; removed: export const; cases: any
+  // Duplicate removed: // Duplicate; removed: // Duplicate; removed: // Duplicate; removed: export const; evidence: any
   export const eq: any;
   export const desc: any;
   export const count: any;

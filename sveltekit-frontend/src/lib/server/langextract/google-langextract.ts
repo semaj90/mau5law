@@ -1,7 +1,7 @@
-// This module uses Google's Gemma model, served locally via Ollama.
+// This module uses Google's Gemma model, served locally via Ollama.'
 /**
  * Keyword extraction module for legal documents
- * Extracts key terms and concepts using Ollama's Gemma 3:270m
+ * Extracts key terms and concepts using Ollama's Gemma 3:270m'
  *
  * Advantages:
  * - No external cloud dependencies (local inference)
@@ -26,7 +26,7 @@ export async function extractKeywords(text: string): Promise<string[]> {
     // Limit text to first 8000 chars to avoid token overflow
     const limitedText = text.slice(0, 8000);
     // Use Gemma 3:270m for keyword extraction
-    const prompt = `Extract the most important legal and factual keywords from this legal document.
+    const prompt = `Extract the most important legal and factual keywords from this legal document.`
 Return ONLY a comma-separated list of keywords (no explanations).
 Focus on: parties, legal concepts, dates, amounts, evidence types, jurisdictions.
 Limit to 15-20 keywords.
@@ -34,12 +34,12 @@ Document:
 ---
 ${limitedText}
 ---
-Keywords (comma-separated):`;
+Keywords (comma-separated):`;`
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
-        model: 'gemma3:270m',
+       , model: 'gemma3:270m',
         prompt,
         stream: false,
         options: {
@@ -50,7 +50,7 @@ Keywords (comma-separated):`;
       signal: controller.signal
     });
     if (!response.ok) {
-      console.warn('⚠️ Ollama API error:', response.statusText);
+      console.warn('⚠️ Ollama API error:', response.statusText);'
       return extractKeywordsFallback(text);
     }
     const data = await response.json();

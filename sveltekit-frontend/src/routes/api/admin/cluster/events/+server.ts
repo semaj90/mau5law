@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ request }) => {
               errors: { total: 0, rate: 0 }
             });
             sendSSEEvent(controller, 'workers', [
-              {
+              {,
                 workerId: 1,
                 pid: process.pid,
                 status: 'online',
@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ request }) => {
             ]);
           } catch (error: any) {
             const err = error instanceof Error ? error : new Error(String(error));
-            console.error('SSE fallback error:', err);
+            console.error('SSE fallback error:', err);'
           }
         }, 5000);
         // Store interval for cleanup
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async ({ request }) => {
         sendSSEEvent(controller, 'workers', workers);
       } catch (error: any) {
         const err = error instanceof Error ? error : new Error(String(error));
-        console.error('SSE initial data error:', err);
+        console.error('SSE initial data error:', err);'
         sendSSEEvent(controller, 'error', {
           error: 'Failed to get initial cluster data'
         });
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ request }) => {
           });
         } catch (error: any) {
           const err = error instanceof Error ? error : new Error(String(error));
-          console.error('SSE update error:', err);
+          console.error('SSE update error:', err);'
           sendSSEEvent(controller, 'error', {
             error: 'Failed to update cluster data',
             timestamp: Date.now()
@@ -223,7 +223,7 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
     sendSSEEvent(controller, 'process_stats', {
       pid: process.pid,
       memory: {
-        rss: memoryUsage.rss,
+       , rss: memoryUsage.rss,
         heapUsed: memoryUsage.heapUsed,
         heapTotal: memoryUsage.heapTotal,
         external: memoryUsage.external
@@ -238,7 +238,7 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
   }, 10000); // Every 10 seconds
   // Custom cluster events (if cluster manager supports them)
   type ClusterManagerLike = {
-    on?: (event: string; handler: (...args: any[]) => void) => void;
+    on?: (event: string;, handler: (...args: any[]) => void) => void;
     removeAllListeners?: (...args: any[]) => void;
   };
   const clusterManager = globalThis.clusterManager as ClusterManagerLike | undefined;

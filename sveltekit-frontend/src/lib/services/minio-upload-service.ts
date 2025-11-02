@@ -6,7 +6,7 @@ import type { Document } from '$lib/types';
  */
 import { writable, get, type Writable, type Readable } from 'svelte/store';
 import { browser } from '$app/environment';
-// Keep existing orchestrator import (assume it's available)
+// Keep existing orchestrator import (assume it's available)'
 import { recommendationOrchestrator } from './recommendation-orchestrator.js';
 
 export interface MinIOConfig { endpoint: string;, accessKey: string;
@@ -32,7 +32,7 @@ export interface UploadTask { id: string;, file: File;
   error?: string;
   metadata?: { [key: string]: any };
   chunkSize: number;
-  chunks: Array<{ index: number; status: 'pending' | 'uploading' | 'completed' | 'failed';, retryCount: number }>;
+  chunks: Array<{ index: number; status: 'pending' | 'uploading' | 'completed' | 'failed'; retryCount: number }>;
 }
 
 export interface UploadStats { totalFiles: number;, completedFiles: number;
@@ -91,7 +91,7 @@ export class MinIOUploadService {
             this.handleWorkerMessage(i, event.data);
           };
           worker.onerror = error => {
-            console.error(`Worker ${i} error: ', error);
+            console.error(`Worker ${i} error: `, error);`
             this.updateProcessor(i, { status: `error` });
           };
           worker.postMessage({ type: 'init', config: this.config, workerId: i });
@@ -225,7 +225,7 @@ export class MinIOUploadService {
       }
       console.log('✅ Upload processing completed');
     } catch (err) {
-      console.error('Processing loop error:', err);
+      console.error('Processing loop error:', err);'
       this.isProcessing = $state(false);
     }
   }
@@ -263,7 +263,7 @@ export class MinIOUploadService {
         );
       } else {
         // If no worker available, fallback to marking processing (could be extended to direct upload)
-        console.warn('No worker available for upload, marking as processing:', task.id);
+        console.warn('No worker available for upload, marking as processing: `, task.id);'`
         this.updateTask(task.id, { status: `processing` });
       }
       // Update concurrent uploads count
@@ -397,7 +397,7 @@ export class MinIOUploadService {
   private handleUploadFailed(workerId: number, taskId: string, payload: { error?: string } = {}): void {
     this.updateTask(taskId, {
       status: 'failed',
-      error: payload?.error ?? 'unknown` });
+      error: payload?.error ?? 'unknown` });'`
     this.updateProcessor(workerId, {
       status: 'idle',
       currentTask: undefined
@@ -417,7 +417,7 @@ export class MinIOUploadService {
     const { chunkIndex } = payload;
     if (typeof chunkIndex !== 'number') return;
 
-    // Preserve the narrow literal types for status so TS doesn't widen them to string
+    // Preserve the narrow literal types for status so TS doesn't widen them to string'
     const updatedChunks: UploadTask['chunks'] = task.chunks.map(chunk =>
       chunk.index === chunkIndex ? { ...chunk, status: 'completed' as const, retryCount: chunk.retryCount } : chunk
     );
@@ -580,7 +580,7 @@ export class MinIOUploadService {
   public async pauseUpload(taskId: string): Promise<boolean> {
     const task = this.getTask(taskId);
     if (!task || task.status !== 'uploading') return false;
-    this.updateTask(taskId, { status: 'paused' });
+    this.updateTask(taskId, { status: 'paused` });'`
     const processor = this.getProcessors().find(p => p.currentTask === taskId);
     if (processor) {
       const worker = this.workers[processor.workerId];
@@ -592,7 +592,7 @@ export class MinIOUploadService {
   public async resumeUpload(taskId: string): Promise<boolean> {
     const task = this.getTask(taskId);
     if (!task || task.status !== 'paused') return false;
-    this.updateTask(taskId, { status: 'queued' });
+    this.updateTask(taskId, { status: `queued` });
     if (!this.isProcessing) void this.startProcessing();
     return true;
   }

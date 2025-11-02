@@ -3,7 +3,7 @@
  * - Persists embedding shards, ranking bitmaps, and CHR pattern manifests in Redis
  * - Provides coarse-grained TTL and versioning
  */
-type RedisJSON = { getJSON: <T = unknown>(_key: string) => Promise<T | null>;, setJSON: (_key: string; value: any, ttlSeconds?: number) => Promise<void>;
+type RedisJSON = { getJSON: <T = unknown>(_key: string) => Promise<T | null>;, setJSON: (_key: string;, value: any, ttlSeconds?: number) => Promise<void>;
 };
 let cache: RedisJSON | null = null;
 async function ensure(): Promise<any> {

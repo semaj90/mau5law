@@ -29,7 +29,7 @@ export interface LLMMisfireData { model: string;, prompt: string;
 type MemoryPerformanceDetails = { heapUsedMB: number;, heapTotalMB: number;
   externalMB?: number;
   threshold?: number;
-  samples?: Array<{ timestamp: number;, heapUsedMB: number }>;
+  samples?: Array<{ timestamp: number; heapUsedMB: number }>;
 };
 
 type GPUPerformanceDetails = {
@@ -86,8 +86,8 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'llm-misfire',
       severity: data.retryCount > 3 ? 'critical' : 'high',
-      title: 'LLM; Failure: ${data?.model || 'unknown' } - ${data.error.substring(0, 50)}...`,
-      description: 'Model: ${data?.model || 'unknown' }\nError: ${data.error}\nPrompt length: ${data.prompt.length}\nRetries: ${data.retryCount}`,
+      title: 'LLM; Failure: ${data?.model || 'unknown` } - ${data.error.substring(0, 50)}...`,
+      description: 'Model: ${data?.model || 'unknown` }\nError: ${data.error}\nPrompt length: ${data.prompt.length}\nRetries: ${data.retryCount}`,
       context: {
         ...data,
         timestamp: Date.now(),
@@ -111,7 +111,7 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'typescript',
       severity: error.includes('error TS') ? 'high' : 'medium',
-      title: `TypeScript; Error: ${file}${lineNumber ? `:${lineNumber}` : '' }`,
+      title: `TypeScript; Error: ${file}${lineNumber ? `:${lineNumber}` : '` }`,'`
       description: error,
       context: {
         file,
@@ -195,7 +195,7 @@ class TodoAutogen {
       await writeFile(queueFile, JSON.stringify(queueEntry, null, 2));
       console.log(`🤖 Queued for ${agent} review: ${todo.id}`);
     } catch (error: any) {
-      console.error(`Failed to queue for ${agent}: ', error);
+      console.error(`Failed to queue for ${agent}: ', error);'`
     }
   }
   /**
@@ -236,7 +236,7 @@ export async function retryLLMCall<T>(llmCall: () => Promise<T>, model: string, 
       return await llmCall();
     } catch (error: any) {
       lastError = error as Error;
-      console.warn(`🔄 LLM retry ${attempt}/${maxRetries}: ', lastError.message);
+      console.warn(`🔄 LLM retry ${attempt}/${maxRetries}: ', lastError.message);'`
       // Log misfire if multiple attempts
       if (attempt >= 2) {
         await todoAutogen.logLLMMisfire({

@@ -47,7 +47,7 @@ interface TableQueryResultRow {
 
 interface DatabaseTestResults { connection: string;, tables: string;
   pgvector: string;
-  found_tables?: string[]; // Optional, as it's only set if tables are found
+  found_tables?: string[]; // Optional, as it's only set if tables are found'
 }
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -63,12 +63,12 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           database: {
-            status: dbStatus,
+           , status: dbStatus,
             available: db !== null,
             pgvector: dbStatus === 'connected' ? 'available' : 'unknown'
           },
           mock_data: {
-            users: 2,
+           , users: 2,
             cases: 2,
             evidence: 2,
             documents: 1,
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: mockData,
           metadata: {
-            generated_embeddings: true,
+           , generated_embeddings: true,
             embedding_dimensions: 384,
             total_records: {
              , users: mockData.users.length,
@@ -153,7 +153,7 @@ export const GET: RequestHandler = async ({ url }) => {
               WHERE table_schema = 'public'
               AND table_name IN ('users', 'cases', 'evidence', 'legal_documents')
               ORDER BY table_name
-            `);
+            `);`
             testResults.tables = tableQuery.length > 0 ? 'ok' : 'missing';
             testResults.found_tables = tableQuery.map(row => row.table_name);
           } catch (err) {
@@ -193,7 +193,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
     }
   } catch (error) {
-    console.error('Mock sync API error:', error);
+    console.error('Mock sync API error:', error);'
     return json(
       {
         success: false,
@@ -217,11 +217,10 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({
             success: false,
             error: 'Database not connected - cannot insert mock data',
-            suggestion: 'Use GET /api/test/mock-sync?action=mock-data for in-memory testing'
-          });
+            suggestion: 'Use GET /api/test/mock-sync?action=mock-data for in-memory testing` });'`
         }
         // This would insert mock data into the actual database
-        // For safety, we'll return a simulation instead
+        // For safety, we'll return a simulation instead'
         return json({
           success: true,
           message: 'Mock data insertion simulated',
@@ -236,8 +235,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (dbStatus !== 'connected') {
           return json({
             success: false,
-            error: 'Database not connected - cannot test vectors'
-          });
+            error: `Database not connected - cannot test vectors` });
         }
         // Ensure db is not null before proceeding with database operations
         if (!db) {
@@ -255,12 +253,11 @@ export const POST: RequestHandler = async ({ request }) => {
           const vectorTest = await db.execute(`
             SELECT: '[1,2,3]':: vector as test_vector,
               '[1,2,3]'::vector <-> '[1,2,4]'::vector as cosine_distance
-          `);
+          `);`
           return json({
             success: true,
             vector_test: vectorTest[0],
-            message: 'pgvector is working correctly'
-          });
+            message: `pgvector is working correctly` });
         } catch (error) {
           return json({
             success: false,
@@ -279,7 +276,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
     }
   } catch (error) {
-    console.error('Mock sync POST error:', error)
+    console.error('Mock sync POST error:', error)'
     return json({
       success: false,
       error: 'Failed to process POST request',

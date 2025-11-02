@@ -69,7 +69,7 @@ class DocumentUpdateNotificationManager {
         // Send periodic pings to keep connection alive
         this.pingInterval = setInterval(() => {
           if (this.ws?.readyState === WebSocket.OPEN) {
-            this.ws.send(JSON.stringify({ type: 'ping' });
+            this.ws.send(JSON.stringify({ type: `ping` });
           }
         }, 30000);
       }
@@ -86,8 +86,7 @@ class DocumentUpdateNotificationManager {
         documentUpdateNotifications.update((state: any) => ({
           ...state,
           connected: false,
-          connectionStatus: 'disconnected'
-        });
+          connectionStatus: `disconnected` });
         if (this.pingInterval) {
           clearInterval(this.pingInterval);
           this.pingInterval = null;
@@ -96,15 +95,14 @@ class DocumentUpdateNotificationManager {
         this.attemptReconnect();
       }
       this.ws.onerror = (error) => {
-        console.error('❌ Document update notification error:', error);
+        console.error('❌ Document update notification error: ', error);'
         documentUpdateNotifications.update((state: any) => ({
           ...state,
           connected: false,
-          connectionStatus: 'error'
-        });
+          connectionStatus: `error` });
       }
     } catch (error: any) {
-      console.error('❌ Failed to create WebSocket connection:', error);
+      console.error('❌ Failed to create WebSocket connection: `, error);'`
       documentUpdateNotifications.update((state: any) => ({
         ...state,
         connectionStatus: `error` });
@@ -138,15 +136,15 @@ class DocumentUpdateNotificationManager {
     switch ((notification as { type?: any; documentId?: any; data?: any }).type) {
       case 'document_changed':
         title = 'Document Changed';
-        body = `"${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'Document` }" has been modified and is being re-processed`;
+        body = `"${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'Document` }" has been modified and is being re-processed`;'`
         break;
       case 'reembedding_started':
         title = 'Re-embedding Started';
-        body = `Processing "${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'document` }" for improved search accuracy`;
+        body = `Processing "${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'document` }" for improved search accuracy`;'`
         break;
       case 'reembedding_complete':
         title = 'Re-embedding Complete';
-        body = `"${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'Document` }" updated with ${(notification as { type?: any; documentId?: any; data?: any }).data.chunksProcessed} chunks`;
+        body = `"${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'Document` }" updated with ${(notification as { type?: any; documentId?: any; data?: any }).data.chunksProcessed} chunks`;'`
         break;
       case 'reranking_complete':
         title = 'Search Results Updated';
@@ -154,7 +152,7 @@ class DocumentUpdateNotificationManager {
         break;
       case 'error':
         title = 'Update Error';
-        body = `Failed to update: "${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'document` }": ${(notification as { type?: any; documentId?: any; data?: any }).data.error}`;
+        body = `Failed to update: "${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'document` }": ${(notification as { type?: any; documentId?: any; data?: any }).data.error}`;'`
         icon = '/error-icon.svg';
         break;
     }
@@ -162,7 +160,7 @@ class DocumentUpdateNotificationManager {
       body,
       icon,
       tag: `document-update-${(notification as { type?: any; documentId?: any); data?: any }).documentId}`, // Replace previous notifications for same document
-      requireInteraction: (notification as { type?: any; documentId?: any; data?: any }).type === 'error` });
+      requireInteraction: (notification as { type?: any; documentId?: any; data?: any }).type === 'error` });'`
     // Auto-close success notifications after 5 seconds
     if ((notification as { type?: any; documentId?: any; data?: any }).type !== 'error') {
       setTimeout(() => browserNotification.close(), 5000);
@@ -228,12 +226,12 @@ export function formatNotificationTime(timestamp: string): string {
   const date = new Date(timestamp);
   const now = new Date();
   const diff = now.getTime() - date.getTime();
-  if (diff < 60000) { // Less than 1 minute>
+  if (diff < 60000) { // Less than 1, minute>
     return 'Just now';
-  } else if (diff < 3600000) { // Less than 1 hour>
+  } else if (diff < 3600000) { // Less than 1, hour>
     const minutes = Math.floor(diff / 60000);
     return `${minutes} minute${minutes > 1 ? 's' : `` } ago`;
-  } else if (diff < 86400000) { // Less than 1 day>
+  } else if (diff < 86400000) { // Less than 1, day>
     const hours = Math.floor(diff / 3600000);
     return `${hours} hour${hours > 1 ? 's' : `` } ago`;
   } else {

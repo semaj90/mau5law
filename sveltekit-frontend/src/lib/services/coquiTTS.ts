@@ -1,5 +1,5 @@
 // Coqui TTS browser integration for SvelteKit
-// Attempts to use a custom TTS service endpoint, with a fallback to the browser's SpeechSynthesis API.
+// Attempts to use a custom TTS service endpoint, with a fallback to the browser's SpeechSynthesis API.'
 // Usage: import { speakWithCoqui } from './coquiTTS.js'
 import { env } from '$env/dynamic/public';
 
@@ -35,7 +35,7 @@ export function loadCoquiTTS(): Promise<void> {
 }
 
 /**
- * Speaks the given text using a custom TTS service or the browser's built-in TTS as a fallback.
+ * Speaks the given text using a custom TTS service or the browser's built-in TTS as a fallback.'
  * @param text The text to be spoken.
  * @returns A promise that resolves when speech is finished, or rejects on error.
  */
@@ -73,7 +73,7 @@ export async function speakWithCoqui(text: string): Promise<void> {
 		}
 	}
 
-	// Fallback to browser's SpeechSynthesis API
+	// Fallback to browser's SpeechSynthesis API'
 	if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
 		if (!ttsEndpoint) {
 			console.warn('Custom TTS service not configured (PUBLIC_TTS_URL). Falling back to browser TTS.');

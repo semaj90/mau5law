@@ -84,7 +84,7 @@ export class SIMDGPUTilingEngine {
   }
   private async initialize(): Promise<void> {
     if (this.isInitialized) return;
-    // Check if we're in browser context
+    // Check if we're in browser context'
     if (typeof window === 'undefined') {
       console.log('🚀 SIMD GPU Tiling Engine: Server-side context detected, skipping WebGPU initialization');
       return;
@@ -126,9 +126,7 @@ export class SIMDGPUTilingEngine {
       @group(0) @binding(1) var<storage, read_write> output_tiles: array<f32>;
       @group(0) @binding(2) var<storage, read_write> tile_metadata: array<f32>;
       @group(0) @binding(3) var<uniform> config: Config;
-      struct Config { tile_width: u32, tile_height: u32; image_width: u32
-        image_height: u32; simd_vector_width: u32
-        tensor_compression: f32
+      struct Config { tile_width: u32, tile_height: u32; image_width: u32; image_height: u32; simd_vector_width: u32; tensor_compression: f32
       }
       @compute @workgroup_size(${GPU_TILING_CONFIG.compute.workgroupSize.x}, ${GPU_TILING_CONFIG.compute.workgroupSize.y});
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
@@ -173,16 +171,14 @@ export class SIMDGPUTilingEngine {
         tile_metadata[metadata_offset + 2] = f32(tile_x); // tile position x
         tile_metadata[metadata_offset + 3] = f32(tile_y); // tile position y
       }
-    `;
-    const shaderModule = this.device.createShaderModule({ code: shaderCode;, label: 'SIMD-Evidence-Tiling-Compute'
-    });
+    `;`
+    const shaderModule = this.device.createShaderModule({ code: shaderCode;, label: `SIMD-Evidence-Tiling-Compute` });
     this.computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
        , module: shaderModule,
-        entryPoint: 'main'
-      },
-      label: 'Evidence-Tiling-Pipeline` });
+        entryPoint: `main` },
+      label: `Evidence-Tiling-Pipeline` });
     console.log('🔧 GPU compute pipeline created for evidence tiling');
   }
   /**
@@ -222,7 +218,7 @@ export class SIMDGPUTilingEngine {
     }
     const simdResult = await simdRedisClient.parseJSON(metadata);
     const simdTime = performance.now() - simdStart;
-    console.log(`📊 SIMD parsing: ${simdTime.toFixed(2)}ms (${simdResult.throughput_mbps?.toFixed(2) || 'N/A` } MB/s)`);
+    console.log(`📊 SIMD parsing: ${simdTime.toFixed(2)}ms (${simdResult.throughput_mbps?.toFixed(2) || 'N/A` } MB/s)`);'`
     // Step 2: GPU-accelerated tiling
     const gpuStart = performance.now();
     const tiles = await this.performGPUTiling(imageData, width, height, tileSize, evidenceType, simdTime);
@@ -322,8 +318,7 @@ export class SIMDGPUTilingEngine {
       label: 'Evidence-Tiling-Commands'
     });
     const computePass = commandEncoder.beginComputePass({
-      label: 'Evidence-Tiling-Pass'
-    });
+      label: `Evidence-Tiling-Pass` });
     computePass.setPipeline(this.computePipeline);
     computePass.setBindGroup(0, bindGroup);
     computePass.dispatchWorkgroups(tilesX, tilesY);
@@ -332,12 +327,11 @@ export class SIMDGPUTilingEngine {
     const outputStagingBuffer = this.device.createBuffer({
       size: outputBuffer.size,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-      label: 'Output-Staging'
-    });
+      label: `Output-Staging` });
     const metadataStagingBuffer = this.device.createBuffer({
       size: metadataBuffer.size,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-      label: 'Metadata-Staging` });
+      label: `Metadata-Staging` });
     commandEncoder.copyBufferToBuffer(outputBuffer, 0, outputStagingBuffer, 0, outputBuffer.size);
     commandEncoder.copyBufferToBuffer(metadataBuffer, 0, metadataStagingBuffer, 0, metadataBuffer.size);
     // Submit and wait
@@ -521,7 +515,7 @@ export class SIMDGPUTilingEngine {
         {
           useGPUAcceleration: true,
           batchSize: tiles.length,
-          priority: 'high` }
+          priority: `high` }
       );
     } catch (error) {
       console.warn('Failed to cache tile results:', error);

@@ -16,7 +16,7 @@ import { db, sql } from '$lib/server/db'; // Add concrete types to avoid `any`
 type SearchFilters = {
   documentType?: string[];
   jurisdiction?: string[];
-  dateRange?: { start: string;, end: string };
+  dateRange?: { start: string; end: string };
   practiceArea?: string[];
   riskLevel?: string[];
   // allow additional unknown keys but avoid `any`
@@ -143,7 +143,7 @@ const handler: RequestHandler = async event => {
     };
     return json(response);
   } catch (err) {
-    console.error('Vector search API error: ', err);
+    console.error('Vector search API error: ', err);'
     throw error(500, `Vector search failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
@@ -152,27 +152,27 @@ const handler: RequestHandler = async event => {
 export const POST = withValidationAndRate(handler, null, {
   capacity: 60,
   refillPerSecond: 2,
-  keyPrefix: `rl:v1:vector:search: ` });
+  keyPrefix: `rl:v1:vector:search: ' });'`
 async function generateCUDAEmbedding(text: string, _requestId?: string): Promise<number[]> {
   // Optional: log request id for debugging/tracing without triggering unused-arg lint errors
   if (_requestId) {
-    console.debug(`generateCUDAEmbedding requestId=${_requestId}`);
+    console.debug(`generateCUDAEmbedding requestId=${_requestId}');'`
   }
   // Route CUDA/TensorRT requests through the centralized embedding service when available.
-  // NOTE: `_requestId` is intentionally not sent inside the embed request payload.
+  // NOTE: '_requestId' is intentionally not sent inside the embed request payload.
   const resp = await generateEmbeddings({ texts: [text], model: 'embeddinggemma:latest', mode: `tensorrt` });
   return (resp?.embeddings && resp.embeddings[0]) || [];
 }
 async function generateOllamaEmbedding(text: string): Promise<number[]> {
   // Use the canonical embedding service (which may call Ollama, FastAPI, or other backends)
-  const resp = await generateEmbeddings({ texts: [text], model: `embeddinggemma:latest` });
+  const resp = await generateEmbeddings({ texts: [text], model: `embeddinggemma:latest' });'`
   return (resp?.embeddings && resp.embeddings[0]) || [];
 }
-async function performVectorSearch(params: { embedding: number[];, limit: number;
-  threshold: number;
-  includeMetadata: boolean;
-  filters: SearchFilters;
-  searchMethod: string;
+async function performVectorSearch(params: {, embedding: number[];, limit: number;
+ , threshold: number;
+ , includeMetadata: boolean;
+ , filters: SearchFilters;
+ , searchMethod: string;
  , useCUDA: boolean;
 }): Promise<SearchResult[]> {
   const { embedding, limit, threshold, includeMetadata, filters, searchMethod } = params;
@@ -206,7 +206,7 @@ async function performVectorSearch(params: { embedding: number[];, limit: numbe
     paramIndex += 2;
   }
   // Build the main query
-  const whereClause = filterConditions.length > 0 ? `WHERE ${filterConditions.join(' AND: `)}` : '';
+  const whereClause = filterConditions.length > 0 ? `WHERE ${filterConditions.join(' AND: `)}` : '';'`
   let distanceOperator: string;
   let orderDirection: string;
   switch (searchMethod) {
@@ -233,14 +233,14 @@ async function performVectorSearch(params: { embedding: number[];, limit: numbe
       id,
       content,
       (1 - (embedding ${distanceOperator} $1)) as similarity,
-      ${includeMetadata ? 'metadata,' : `` }
-      ${includeMetadata ? 'embedding,' : `` }
+      ${includeMetadata ? 'metadata,' : `' }'`
+      ${includeMetadata ? 'embedding,' : `' }'`
       created_at
     FROM legal_documents
     ${whereClause}
     ORDER BY embedding ${distanceOperator} $1 ${orderDirection}
     LIMIT $${paramIndex}
-  `;
+  `;`
   const queryParams = [JSON.stringify(embedding), ...filterParams, limit];
 
   // Typed row shape expected from the query
@@ -298,8 +298,8 @@ async function performVectorSearch(params: { embedding: number[];, limit: numbe
         embedding: includeMetadata ? (row.embedding as number[] | undefined) : undefined
       }));
   } catch (dbError) {
-    console.error('Database query error: ', dbError);
-    throw new Error(`Database search failed: ${dbError instanceof Error ? dbError.message : `Unknown error` }`);
+    console.error('Database query error: ', dbError);'
+    throw new Error(`Database search failed: ${dbError instanceof Error ? dbError.message : `Unknown error' }');
   }
 }
 // Enhanced search complexity analysis for legal queries
@@ -367,6 +367,6 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString()
     });
   } catch (err) {
-    throw error(500, `Health check failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    throw error(500, `Health check failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
   }
 };

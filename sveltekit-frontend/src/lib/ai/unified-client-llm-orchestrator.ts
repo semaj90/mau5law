@@ -92,10 +92,10 @@ type WorkerResult = {
   modelUsed?: string;
 };
 
-type CheckCacheResult = { hit: boolean; data?: { response: string; modelUsed: string;, qualityScore: number } };
+type CheckCacheResult = { hit: boolean; data?: { response: string; modelUsed: string; qualityScore: number } };
 
 type ParallelCacheOrchestratorShape = {
-  storeParallel?: (key: string; value: Record<string, unknown>, opts?: Record<string, unknown>) => Promise<void>;
+  storeParallel?: (key: string;, value: Record<string, unknown>, opts?: Record<string, unknown>) => Promise<void>;
   executeParallel?: (payload: Record<string, unknown>) => Promise<any>;
   getPerformanceStats?: () => Promise<{ currentMetrics: Record<string, unknown> }>;
 };
@@ -191,7 +191,7 @@ class UnifiedClientLLMOrchestrator {
             : undefined
       };
     } catch (error) {
-      console.error('Client LLM orchestrator error:', error);
+      console.error('Client LLM orchestrator error:', error);'
       // Fallback to simplest model
       try {
         const fallbackResult = await this.executeFallbackInference(request);
@@ -253,8 +253,8 @@ class UnifiedClientLLMOrchestrator {
       await this.sendWorkerMessage(worker, {
         type: 'LOAD_MODEL',
         data: {
-          modelUrl: '/wasm/gemma-models/gemma-270m.bin',
-          config: {, contextLength: 2048, quantization: 'int8' }
+         , modelUrl: '/wasm/gemma-models/gemma-270m.bin',
+          config: {, contextLength: 2048, quantization: 'int8` }'`
         }
       });
       const model: ModelInstance = {
@@ -275,8 +275,7 @@ class UnifiedClientLLMOrchestrator {
           lastUsed: 0
         },
         worker,
-        modelVariant: 'gemma-270m'
-      };
+        modelVariant: `gemma-270m` };
       this.models.set('gemma270m', model);
       this.activeWorkers.set('gemma270m', worker);
       this.totalGPUMemoryMB += model.memoryFootprint.gpuMemoryMB;
@@ -474,7 +473,7 @@ class UnifiedClientLLMOrchestrator {
   private async executeModelInference(
     model: ModelInstance,
     request: ClientLLMRequest
-  ): Promise<{ response: string;, qualityScore: number; rlMetrics?: Record<string, unknown>; modelUsed?: string }> {
+  ): Promise<{ response: string; qualityScore: number; rlMetrics?: Record<string, unknown>; modelUsed?: string }> {
     model.isActive = true;
     model.performanceMetrics.lastUsed = Date.now();
     try {
@@ -500,7 +499,7 @@ class UnifiedClientLLMOrchestrator {
   private async executeGemmaInference(
     model: ModelInstance,
     request: ClientLLMRequest
-  ): Promise<{ response: string;, qualityScore: number }> {
+  ): Promise<{ response: string; qualityScore: number }> {
     if (!model.worker) {
       throw new Error('Gemma worker not available');
     }
@@ -524,7 +523,7 @@ class UnifiedClientLLMOrchestrator {
   private async executeLegalBERTInference(
     model: ModelInstance,
     request: ClientLLMRequest
-  ): Promise<{ response: string;, qualityScore: number }> {
+  ): Promise<{ response: string; qualityScore: number }> {
     if (!model.onnxSession) {
       throw new Error('Legal-BERT ONNX session not available');
     }
@@ -541,20 +540,19 @@ class UnifiedClientLLMOrchestrator {
   private async executeGemmaLegalInference(
     model: ModelInstance,
     request: ClientLLMRequest
-  ): Promise<{ response: string;, qualityScore: number; rlMetrics?: Record<string, unknown> }> {
+  ): Promise<{ response: string; qualityScore: number; rlMetrics?: Record<string, unknown> }> {
     if (!model.worker) {
       throw new Error('Gemma Legal worker not available');
     }
     const response = (await this.sendWorkerMessage(model.worker, {
       type: 'GENERATE_LEGAL',
       data: {
-        prompt: request.prompt,
+       , prompt: request.prompt,
         maxTokens: 512,
         temperature: 0.4,
         legalContext: {
          , domain: request.context.legalDomain ?? 'general',
-          documentType: request.context.documentType ?? 'generic'
-        }
+          documentType: request.context.documentType ?? 'generic` }'`
       }
     })) as WorkerResult;
 
@@ -567,7 +565,7 @@ class UnifiedClientLLMOrchestrator {
   private async executeLLaMAInference(
     model: ModelInstance,
     request: ClientLLMRequest
-  ): Promise<{ response: string;, qualityScore: number; rlMetrics?: Record<string, unknown> }> {
+  ): Promise<{ response: string; qualityScore: number; rlMetrics?: Record<string, unknown> }> {
     if (!model.worker) {
       throw new Error('LLaMA RL worker not available');
     }
@@ -594,7 +592,7 @@ class UnifiedClientLLMOrchestrator {
   private async executeONNXInference(
     model: ModelInstance,
     request: ClientLLMRequest
-  ): Promise<{ response: string;, qualityScore: number }> {
+  ): Promise<{ response: string; qualityScore: number }> {
     if (!model.onnxSession) {
       throw new Error('ONNX session not available');
     }
@@ -641,7 +639,7 @@ class UnifiedClientLLMOrchestrator {
             type: 'store',
             priority: 'normal',
             payload: {
-              key: cacheKey,
+             , key: cacheKey,
               value: payload,
               meta: {, tier: 'l1', ttl: 10 * 60 * 1000 }
             }
@@ -736,7 +734,7 @@ class UnifiedClientLLMOrchestrator {
   private async evaluateContextSwitch(request: ClientLLMRequest, model: ModelInstance): Promise<ContextSwitchDecision> {
     // Simple heuristic:
     // - If context switching is enabled and the task is legal analysis or explicit context_switch,
-    //   prefer Legal-BERT for analysis if current model isn't Legal-BERT.
+    //   prefer Legal-BERT for analysis if current model isn't Legal-BERT.'
     // - If realtime low-latency requested and current model is heavy, suggest switching to Legal-BERT.
     if (request.modelPreferences.enableContextSwitching) {
       // prefer legal-bert for dedicated context analysis
@@ -746,8 +744,7 @@ class UnifiedClientLLMOrchestrator {
           fromModel: model.id,
           toModel: 'legal-bert',
           switchTime: 50, // small estimate
-          reason: 'Prefer Legal-BERT for context analysis'
-        };
+          reason: `Prefer Legal-BERT for context analysis` };
       }
 
       // realtime preference: move to lower-latency model if current is large
@@ -820,7 +817,7 @@ class UnifiedClientLLMOrchestrator {
     // Fallback to simplest available model
     const gemmaModel = this.models.get('gemma270m');
     if (gemmaModel) {
-      // executeGemmaInference has a precise return type: { response: string;, qualityScore: number }
+      // executeGemmaInference has a precise return type: { response: string; qualityScore: number }
       const result = await this.executeGemmaInference(gemmaModel, request);
       return {
         success: true,

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
@@ -9,7 +9,7 @@ import type { Document } from '$lib/types';
   const { uploadId } = $props<{ uploadId: string }>()
   const { showTensorMetrics } = $props<{ showTensorMetrics: boolean }>()
   const { enableAttentionTracking } = $props<{ enableAttentionTracking: boolean }>()
-  // Socket instance - don't import socket.io-client at module-level (SSR safe)
+  // Socket instance - don't import socket.io-client at module-level (SSR safe)'
   let socket: any = null;
   // local optional reference for uploadStore (populated via dynamic import in onMount)
   let uploadStoreRef: any = null;
@@ -54,7 +54,7 @@ import type { Document } from '$lib/types';
   });
   // Lifecycle
   onMount(async () => {
-    // attempt optional dynamic import of uploadStore (safe if module doesn't export it)
+    // attempt optional dynamic import of uploadStore (safe if module doesn't export it)'
     try {
       const mod = await import('$lib/stores/unified');
       uploadStoreRef = (mod as any).uploadStore ?? (mod as any).default ?? null;
@@ -73,7 +73,7 @@ import type { Document } from '$lib/types';
   // WebSocket initialization and handlers
   async function initializeWebSocket(): Promise<void> {
     connectionStatus.set('connecting');
-    // dynamic import so SSR won't try to load socket.io-client
+    // dynamic import so SSR won't try to load socket.io-client'
     const mod = await import('socket.io-client');
     const io = mod.io;
     socket = io('/api/ws', {
@@ -152,7 +152,7 @@ import type { Document } from '$lib/types';
       });
     });
     socket.on('upload-error', (data: any) => {
-      console.error('❌ Upload error:', data);
+      console.error('❌ Upload error:', data);'
       progressData.update((current) => ({
         ...current,
         error: data?.message ?? data?.error?.message ?? String(data ?? 'Unknown error'),
@@ -253,137 +253,137 @@ import type { Document } from '$lib/types';
     return `${minutes}m ${remainingSeconds}s`;
   }
 </script>
-<!-- Connection Status -->
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-  <div class="flex items-center justify-between mb-4">
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Upload Progress</h3>
-    <div class="flex items-center gap-2">
+<!-- Connection, Status -->
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6, mb-6">
+  <div class="flex items-center justify-between, mb-4">
+    <h3 class="text-lg font-semibold text-gray-900, dark:text-white">Upload Progress</h3>
+    <div class="flex items-center, gap-2">
       <div
         class="w-3 h-3 rounded-full"
         class:bg-green-500={$connectionStatus === 'connected'}
         class:bg-yellow-500={$connectionStatus === 'connecting'}
         class:bg-red-500={$connectionStatus === 'disconnected'}
       ></div>
-      <span class="text-sm text-gray-600 dark:text-gray-400 capitalize">
+      <span class="text-sm text-gray-600 dark:text-gray-400, capitalize">
         {$connectionStatus}
       </span>
     </div>
   </div>
-  <!-- Progress Bar -->
-  <div class="mb-4">
-    <div class="flex justify-between items-center mb-2">
-      <span class="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
+  <!-- Progress, Bar -->
+  <div, class="mb-4">
+    <div class="flex justify-between items-center, mb-2">
+      <span class="text-sm font-medium text-gray-700 dark:text-gray-300, capitalize">
         {$progressData.stage}
       </span>
-      <span class="text-sm text-gray-600 dark:text-gray-400">
+      <span class="text-sm text-gray-600, dark:text-gray-400">
         {$progressData.progress}%
       </span>
     </div>
-    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full, h-2">
       <div
         class="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
         style="width: {$progressData.progress + '%'}"
       ></div>
     </div>
-    <div class="flex justify-between items-center mt-2">
-      <span class="text-xs text-gray-500 dark:text-gray-400 capitalize">
+    <div class="flex justify-between items-center, mt-2">
+      <span class="text-xs text-gray-500 dark:text-gray-400, capitalize">
         Status: {$progressData.status}
       </span>
       {#if $progressData.error}
-        <span class="text-xs text-red-500">
+        <span class="text-xs, text-red-500">
           Error: {$progressData.error}
         </span>
       {/if}
     </div>
   </div>
-  <!-- Real-time Metrics -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-      <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Upload Speed</div>
-      <div class="text-sm font-semibold text-gray-900 dark:text-white">
+  <!-- Real-time, Metrics -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4, mb-4">
+    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg, p-3">
+      <div class="text-xs text-gray-500 dark:text-gray-400, mb-1">Upload Speed</div>
+      <div class="text-sm font-semibold text-gray-900, dark:text-white">
         {formatBytes($realtimeMetrics.uploadSpeed)}/s
       </div>
     </div>
-    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-      <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Processing Time</div>
-      <div class="text-sm font-semibold text-gray-900 dark:text-white">
+    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg, p-3">
+      <div class="text-xs text-gray-500 dark:text-gray-400, mb-1">Processing Time</div>
+      <div class="text-sm font-semibold text-gray-900, dark:text-white">
         {formatDuration($realtimeMetrics.processingTime)}
       </div>
     </div>
-    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-      <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Memory Usage</div>
-      <div class="text-sm font-semibold text-gray-900 dark:text-white">
+    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg, p-3">
+      <div class="text-xs text-gray-500 dark:text-gray-400, mb-1">Memory Usage</div>
+      <div class="text-sm font-semibold text-gray-900, dark:text-white">
         {formatBytes($realtimeMetrics.memoryUsage)}
       </div>
     </div>
-    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-      <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">GPU Utilization</div>
-      <div class="text-sm font-semibold text-gray-900 dark:text-white">
+    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg, p-3">
+      <div class="text-xs text-gray-500 dark:text-gray-400, mb-1">GPU Utilization</div>
+      <div class="text-sm font-semibold text-gray-900, dark:text-white">
         {$realtimeMetrics.gpuUtilization}%
       </div>
     </div>
   </div>
 </div>
-<!-- Tensor Processing Results -->
+<!-- Tensor Processing, Results -->
 {#if showTensorMetrics && Object.keys($tensorResults.metrics || {}).length > 0}
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tensor Processing Results</h3>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-        <div class="text-sm text-blue-600 dark:text-blue-400 mb-1">SOM Clusters</div>
-        <div class="text-2xl font-bold text-blue-700 dark:text-blue-300">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6, mb-6">
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white, mb-4">Tensor Processing Results</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3, gap-4">
+      <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg, p-4">
+        <div class="text-sm text-blue-600 dark:text-blue-400, mb-1">SOM Clusters</div>
+        <div class="text-2xl font-bold text-blue-700, dark:text-blue-300">
           {$tensorResults.clusters.length || 0}
         </div>
       </div>
-      <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-        <div class="text-sm text-green-600 dark:text-green-400 mb-1">Embeddings</div>
-        <div class="text-2xl font-bold text-green-700 dark:text-green-300">
+      <div class="bg-green-50 dark:bg-green-900/20 rounded-lg, p-4">
+        <div class="text-sm text-green-600 dark:text-green-400, mb-1">Embeddings</div>
+        <div class="text-2xl font-bold text-green-700, dark:text-green-300">
           {$tensorResults.embeddings.length || 0}
         </div>
       </div>
-      <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
-        <div class="text-sm text-purple-600 dark:text-purple-400 mb-1">Interpolations</div>
-        <div class="text-2xl font-bold text-purple-700 dark:text-purple-300">
+      <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg, p-4">
+        <div class="text-sm text-purple-600 dark:text-purple-400, mb-1">Interpolations</div>
+        <div class="text-2xl font-bold text-purple-700, dark:text-purple-300">
           {$tensorResults.interpolationResults.length || 0}
         </div>
       </div>
     </div>
-    <!-- Detailed Metrics -->
+    <!-- Detailed, Metrics -->
     {#if Object.keys($tensorResults.metrics || {}).length > 0}
-      <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Processing Metrics</h4>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+      <div class="mt-4 pt-4 border-t border-gray-200, dark:border-gray-700">
+        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300, mb-2">Processing Metrics</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2, text-xs">
           {#each Object.entries($tensorResults.metrics) as [key, value]}
-            <div class="bg-gray-50 dark:bg-gray-700 rounded px-2 py-1">
-              <span class="text-gray-500 dark:text-gray-400">{key}:</span>
-              <span class="text-gray-900 dark:text-white ml-1">{String(value)}</span>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded px-2, py-1">
+              <span class="text-gray-500, dark:text-gray-400">{key}:</span>
+              <span class="text-gray-900 dark:text-white, ml-1">{String(value)}</span>
             </div>
           {/each}
         </div>
       {/if}
   {/if}
-<!-- AI Context Suggestions -->
+<!-- AI Context, Suggestions -->
 {#if $aiSuggestions.suggestions.length > 0}
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">AI Context Suggestions</h3>
-    <div class="space-y-3">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg, p-6">
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white, mb-4">AI Context Suggestions</h3>
+    <div, class="space-y-3">
       {#each Array.isArray($aiSuggestions.suggestions) ? $aiSuggestions.suggestions : [] as suggestion}
-        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-          <div class="text-sm text-gray-900 dark:text-white">
+        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg, p-3">
+          <div class="text-sm text-gray-900, dark:text-white">
             {suggestion.text}
           </div>
-          <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <div class="text-xs text-gray-500 dark:text-gray-400, mt-1">
             Confidence: {Math.round((suggestion.confidence ?? 0) * 100)}%
           </div>
         </div>
       {/each}
     </div>
     {#if $aiSuggestions.relevantDocuments.length > 0}
-      <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Relevant Documents</h4>
-        <div class="space-y-2">
+      <div class="mt-4 pt-4 border-t border-gray-200, dark:border-gray-700">
+        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300, mb-2">Relevant Documents</h4>
+        <div, class="space-y-2">
           {#each Array.isArray($aiSuggestions.relevantDocuments) ? $aiSuggestions.relevantDocuments : [] as doc}
-            <div class="text-sm text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
+            <div class="text-sm text-blue-600 dark:text-blue-400 hover:underline, cursor-pointer">
               {doc.title} ({doc.relevanceScore ?? 0}% match)
             </div>
           {/each}

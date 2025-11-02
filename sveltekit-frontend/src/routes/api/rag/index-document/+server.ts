@@ -19,7 +19,7 @@ import { sql } from 'drizzle-orm';
 import * as schema from '$lib/server/db/schema-postgres';
 import { requireAuth } from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
 
-// Define document interfaces locally since schema doesn't export them
+// Define document interfaces locally since schema doesn't export them'
 interface LegalDocumentData {
   id?: string;
   title: string;
@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       processingTime: Date.now() - startTime
     };
 
-    console.log(`📚 Document indexing completed: ', summary);
+    console.log(`📚 Document indexing completed: ', summary);'`
     return json({
       success: failureCount === 0,
       mode,
@@ -335,8 +335,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(
           {
             success: false,
-            error: 'Document not found'
-          },
+            error: `Document not found` },
           { status: 404 }
         );
       }
@@ -351,7 +350,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         document: {
-          id: document[0].id,
+         , id: document[0].id,
           title: document[0].title,
           documentType: document[0].documentType,
           jurisdiction: document[0].jurisdiction
@@ -390,8 +389,7 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
       return json(
         {
           success: false,
-          error: 'Authentication required'
-        },
+          error: `Authentication required` },
         { status: 401 }
       );
     }
@@ -401,7 +399,7 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
       return json(
         {
           success: false,
-          error: 'Document ID is required` },
+          error: `Document ID is required` },
         { status: 400 }
       );
     }
@@ -416,13 +414,13 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
     await db
       .update(schema.legalDocuments)
       .set({ isActive: false, updatedAt: new Date().toISOString() })
-      .where(sql`id = ${documentId}`);
+      .where(sql'id = ${documentId}');
 
     return json({
       success: true,
       documentId,
       chunksRemoved: Array.isArray(deletedChunks) ? deletedChunks.length : 0,
-      message: 'Document removed from search index` });
+      message: `Document removed from search index` });
   } catch (error: any) {
     return json(
       {

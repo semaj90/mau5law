@@ -6,13 +6,11 @@ import { mockServices, perf } from '../../services/__tests__/setup.js';
 const sessionMachine = createMachine({
   id: 'sessionMachine',
   initial: 'inactive',
-  context: { sessionId: undefined, userId: undefined; activeCase: undefined
-    collaborators: [],
-    lastActivity: undefined; performanceMetrics: undefined
-    error: undefined
+  context: { sessionId: undefined, userId: undefined; activeCase: undefined; collaborators: [],
+    lastActivity: undefined; performanceMetrics: undefined; error: undefined
   },
-  states: { inactive: {, on: {
-        START_SESSION: 'initializing'
+  states: {, inactive: {, on: {
+       , START_SESSION: 'initializing'
       }
     },
     initializing: {, invoke: {, src: fromPromise(async ({ input }) => {
@@ -206,11 +204,11 @@ describe('Session Machine - Legal AI Platform Testing', () => {
         sessionActor.send({
           type: 'START_SESSION',
           userId: `attorney-${i}`,
-          caseId: 'case-${i}' });
+          caseId: `case-${i}` });
         await new Promise(resolve => setTimeout(resolve, 100);
         sessionActor.send({
           type: 'UPDATE_CASE',
-          caseData: {, status: 'in_progress', priority: 'high` }
+          caseData: {, status: 'in_progress', priority: `high` }
         });
         await new Promise(resolve => setTimeout(resolve, 100);
         sessionActor.send({ type: `END_SESSION` });
@@ -263,7 +261,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       // Simulate timeout
-      sessionActor.send({ type: 'SESSION_TIMEOUT' });
+      sessionActor.send({ type: `SESSION_TIMEOUT` });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect(sessionActor.getSnapshot().value).toBe('inactive');
       expect(mockServices.endLegalSession).toHaveBeenCalledWith('session-789');
@@ -296,7 +294,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456` });
+        caseId: `case-456` });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect(evidenceCanvasHandler).toHaveBeenCalledWith('SESSION_ACTIVE',
         expect.objectContaining({
@@ -319,13 +317,13 @@ describe('Phase 5-7 Session Performance Benchmarks', () => {
   it('should establish session coordination baseline for gRPC optimization', () => {
     const stats = perf.getStats('session-creation-lifecycle');
     if (stats) {
-      console.log('\n📊 Session Management Performance Stats: `);
+      console.log('\n📊 Session Management Performance Stats: `);'`
       console.log(`   Average: ${stats.average.toFixed(2)}ms`);
       console.log(`   Min: ${stats.min.toFixed(2)}ms`);
       console.log(`   Max: ${stats.max.toFixed(2)}ms`);
       console.log(`\n🎯 Phase 5-7 Session gRPC Targets:`);
       console.log(`   Multi-user Sessions: 500+ concurrent`);
-      console.log(`   Real-time Updates: <10ms latency`);
+      console.log(`   Real-time Updates: <10ms, latency`);
       console.log(`   Collaboration Events: 10,000+ per session`);
     }
   });

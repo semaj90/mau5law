@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import type { RequestHandler } from './$types.js';
 import { loadObservabilityState, saveObservabilityState } from '$lib/services/observability-persistence';
 import { json } from '@sveltejs/kit';
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('[baseline-diff] Update error:', error instanceof Error ? error.message : error);
+    console.error('[baseline-diff] Update error:', error instanceof Error ? error.message : error);'
     return json({ error: 'Failed to update baselines' }, { status: 500 });
   }
 };

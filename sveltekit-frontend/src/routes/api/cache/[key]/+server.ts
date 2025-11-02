@@ -16,7 +16,7 @@ interface CacheEntry { value: JsonValue;, timestamp: number;
 // Add: dynamic env lookup for Docker/Redis URL (used later when replacing mock with real Redis)
 import { env } from '$env/dynamic/private';
 const $DOCKER_REDIS_URL = env.REDIS_URL ?? env.DOCKER_HOST_URL ?? 'redis://:redis@localhost:6379/0';
-// Use it once so the value is not flagged as unused and so it's visible in logs for future real-Redis integration
+// Use it once so the value is not flagged as unused and so it's visible in logs for future real-Redis integration'
 console.debug('[Cache API] configured Redis URL:', $DOCKER_REDIS_URL);
 
 // Mock cache implementation - would integrate with actual Redis in production
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ params }) => {
     // Check if expired
     if (Date.now() - entry.timestamp > entry.ttl) {
       mockCache.delete(decodedKey);
-      return json({ success: false, error: `Cache key expired` }, { status: 404 });
+      return json({ success: false, error: 'Cache key expired` }, { status: 404 });'`
     }
 
     return json({

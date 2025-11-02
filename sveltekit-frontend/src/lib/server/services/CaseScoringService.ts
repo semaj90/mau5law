@@ -62,7 +62,7 @@ export class CaseScoringService {
         recommendations,
         scoringDate: new Date(),
         model: this.SCORING_MODEL,
-        version: '1.0` };
+        version: `1.0` };
       await this.saveScoring(scoringResult, this.DEFAULT_TEMPERATURE);
       await cognitiveCache.set(cacheKey, scoringResult, { ttl: 3600 }); // Cache for 1 hour
       logger.info('Case scored successfully', {
@@ -94,12 +94,12 @@ export class CaseScoringService {
       request.scoring_criteria != null
         ? request.scoring_criteria
         : (request as unknown as { criteria?: Partial<ScoringCriteria> }).criteria || {};
-    const prompt = `Analyze this legal case for prosecution viability:
+    const prompt = `Analyze this legal case for prosecution viability:`
 Case; Title: ${caseData.title || 'N/A'}
 Description: ${caseData.description || 'N/A'}
 Evidence Count: ${evidenceCount}
 Defendants: ${defendants}
-Jurisdiction: ${caseData.jurisdiction || 'N/A` }
+Jurisdiction: ${caseData.jurisdiction || 'N/A` }'`
 Scoring Criteria Provided:
 ${JSON.stringify(criteriaProvided, null, 2)}
 Provide a comprehensive analysis covering:
@@ -111,7 +111,7 @@ Provide a comprehensive analysis covering:
 6. Likelihood of successful prosecution
 7. Potential challenges and weaknesses
 8. Strategic recommendations
-Be objective, thorough, and consider both strengths and weaknesses.`;
+Be objective, thorough, and consider both strengths and weaknesses.`;`
     // Call typed Ollama service with backward-compatible checks (no optional-call operator)
     let analysisRaw: any = '';
     if (typeof ollama.generateCompletion === 'function') {
@@ -133,7 +133,7 @@ Be objective, thorough, and consider both strengths and weaknesses.`;
     // simplified nullish coalescing for clarity
     const provided =
       request.scoring_criteria ?? (request as unknown as { criteria?: Partial<ScoringCriteria> }).criteria ?? {};
-    const aiScorePrompt = `Based on this case analysis, provide numerical scores (0-1) for each criterion:; Analysis: ${aiAnalysis}
+    const aiScorePrompt = `Based on this case analysis, provide numerical scores (0-1) for each criterion:; Analysis: ${aiAnalysis}`
 Rate the following on a scale of 0 to 1:
 1. Evidence Strength (considering admissibility and weight)
 2. Witness Reliability (considering credibility and consistency)
@@ -141,7 +141,7 @@ Rate the following on a scale of 0 to 1:
 4. Public Interest (considering societal impact and deterrence)
 5. Case Complexity (inverse - lower score for more complex)
 6. Resource Requirements (inverse - lower score for more resources needed)
-Respond in JSON format with keys: evidence_strength, witness_reliability, legal_precedent, public_interest, case_complexity, resource_requirements`;
+Respond in JSON format with keys: evidence_strength, witness_reliability, legal_precedent, public_interest, case_complexity, resource_requirements`;`
     try {
       let aiScoresRaw: any = '{}';
       if (typeof ollama.generateCompletion === 'function') {
@@ -251,17 +251,17 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
     const pubInterest = scores.public_interest ?? 0;
     const complexity = scores.case_complexity ?? 0;
     const resources = scores.resource_requirements ?? 0;
-    if (evidence < 0.6) recommendations.push('Strengthen evidence collection and chain of custody');
-    if (witness < 0.6) recommendations.push('Assess witness credibility and consider additional witnesses');
-    if (precedent < 0.6) recommendations.push('Research additional supporting case law and precedents');
-    if (pubInterest < 0.5) recommendations.push('Consider public interest factors and potential community impact');
+    if (evidence < 0.6) recommendations.push('Strengthen evidence collection and chain of, custody');
+    if (witness < 0.6) recommendations.push('Assess witness credibility and consider additional, witnesses');
+    if (precedent < 0.6) recommendations.push('Research additional supporting case law and, precedents');
+    if (pubInterest < 0.5) recommendations.push('Consider public interest factors and potential community, impact');
     if (complexity > 0.7) recommendations.push('Case complexity is manageable - allocate appropriate resources');
     if (resources > 0.7)
       recommendations.push('Resource requirements are reasonable - proceed with standard allocation');
     const caseData = request.metadata || {};
-    const strategyPrompt = `Based on a case score of ${finalScore}/100 and the following analysis:
-${caseData.description || 'No description provided` }
-Provide 2-3 specific strategic recommendations for the prosecution team.`;
+    const strategyPrompt = `Based on a case score of ${finalScore}/100 and the following analysis:`
+${caseData.description || 'No description provided` }'`
+Provide 2-3 specific strategic recommendations for the prosecution team.`;`
     try {
       let aiRecommendationsRaw: any = null;
       if (typeof ollama.generateCompletion === 'function') {
@@ -341,7 +341,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
       const computedRisk = this.determineRiskLevel(result.score, { low: 40, medium: 60, high: 80 });
       const scoringDate = result.scoringDate ?? new Date();
       const updatedAtIso = new Date().toISOString();
-      const insertRow: InferInsertModel<typeof caseScores> = {
+      const insertRow: InferInsertModel<typeof, caseScores> = {
         caseId: result.caseId,
         score: String(result.score),
         riskLevel: partial.riskLevel ?? computedRisk,
@@ -399,7 +399,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
    */
   private determineRiskLevel(
     score: number,
-    thresholds: { low: number; medium: number;, high: number }
+    thresholds: { low: number; medium: number; high: number }
   ): 'LOW' | 'MEDIUM' | 'HIGH' {
     if (score >= thresholds.high) return 'HIGH';
     if (score >= thresholds.medium) return 'MEDIUM';

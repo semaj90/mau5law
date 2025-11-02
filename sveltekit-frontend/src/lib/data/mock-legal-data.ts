@@ -2,7 +2,7 @@
 // Compatible with the comprehensive schema structure
 
 export const mockUsers = [
-  {
+  {,
     id: 'c7b5e5f0-3c4a-4b1a-8e9f-1a2b3c4d5e6f',
     email: 'attorney1@example.com',
     username: 'attorney1',
@@ -47,7 +47,7 @@ export const mockUsers = [
 ];
 
 export const mockCases = [
-  {
+  {,
     id: 'e9d7g7h2-5e6c-6d3c-a1h0-3c4d5e6f7g8h',
     caseNumber: 'CR-2024-001',
     title: 'People v. Johnson - Embezzlement Investigation',
@@ -102,7 +102,7 @@ export const mockCases = [
 ];
 
 export const mockEvidence = [
-  {
+  {,
     id: 'g1f9i9j4-7g8e-8f5e-c3j2-5e6f7g8h9i0j',
     caseId: 'e9d7g7h2-5e6c-6d3c-a1h0-3c4d5e6f7g8h',
     title: 'Financial Records - Acme Technologies Bank Statements',
@@ -116,7 +116,7 @@ export const mockEvidence = [
     collectedBy: 'David Chen',
     location: 'Acme Technologies CFO Office',
     chainOfCustody: [
-      {
+      {,
         timestamp: '2024-03-20T14:30:00Z',
         officer: 'David Chen',
         action: 'evidence_collected',

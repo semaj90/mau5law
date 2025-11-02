@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error:
-            'Invalid request. "content" must be a string with at least 10 characters and: "type" must be one; of: document, case, evidence, legal-brief, contract.'
+            'Invalid request. "content" must be a string with at least 10 characters; and: "type" must be one; of: document, case, evidence, legal-brief, contract.'
         },
         { status: 400 }
       );
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
          , timestamp: new Date().toISOString(),
           processingTimeMs: Date.now() - started
         }
-      } as APIResponse<typeof summaryResponse>,
+      } as APIResponse<typeof, summaryResponse>,
       { status: 200 }
     );
   } catch (error) {
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: { code: 'INTERNAL_ERROR', message: errorMessage },
+        error: {, code: 'INTERNAL_ERROR', message: errorMessage },
         metadata: {
          , timestamp: new Date().toISOString(),
           processingTimeMs: 0

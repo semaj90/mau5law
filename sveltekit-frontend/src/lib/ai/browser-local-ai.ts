@@ -29,7 +29,7 @@ export interface EmbeddingResult { embeddings: Float32Array[];, processingTime:
   device: string;
   dimensions: number;
 }
-export interface SemanticSearchRequest { query: string;, documents: Array<{ id: string;, text: string; metadata?: any }>;
+export interface SemanticSearchRequest { query: string;, documents: Array<{ id: string; text: string; metadata?: any }>;
   topK?: number;
   threshold?: number;
 }
@@ -70,7 +70,7 @@ export class BrowserCapabilities {
   }
   static canRunModel(
     modelSizeMB: number,
-    capabilities: Awaited<ReturnType<typeof BrowserCapabilities.detect>>
+    capabilities: Awaited<ReturnType<typeof, BrowserCapabilities.detect>>
   ): boolean {
     const requiredMemory = modelSizeMB * 1.5; // 50% overhead
     const hasRequiredTech = capabilities.wasm || capabilities.webgpu;
@@ -184,7 +184,7 @@ export class BrowserLocalAI {
     try {
       // Prepare prompt with system context
       const fullPrompt = request.systemPrompt
-        ? `${request.systemPrompt}\n\nUser: ${request.prompt}\nAssistant: '
+        ? `${request.systemPrompt}\n\nUser: ${request.prompt}\nAssistant: '`
         : request.prompt;
       // Generate text using local model
       const result = await this.textModel.generate(fullPrompt, {
@@ -266,7 +266,7 @@ export class BrowserLocalAI {
     const docTexts = request.documents.map(doc => doc.text);
     const docEmbeddings = await this.generateEmbeddings({ texts: docTexts });
     // Calculate similarities
-    const similarities: Array<{ index: number;, similarity: number }> = [];
+    const similarities: Array<{ index: number; similarity: number }> = [];
     for (let i = 0; i < docEmbeddings.embeddings.length; i++) {
       const docVector = docEmbeddings.embeddings[i];
       const similarity = this.cosineSimilarity(queryVector, docVector);
@@ -379,14 +379,14 @@ export class LegalLocalAI {
         const similarity = this.cosineSimilarity(embeddings.embeddings[i], embeddings.embeddings[j]);
         if (similarity > 0.6) {
           // Generate relationship description using local AI
-          const relationshipPrompt = `Analyze the relationship between these two pieces of evidence:
+          const relationshipPrompt = `Analyze the relationship between these two pieces of evidence:`
 1. ${evidenceNodes[i].title}: ${evidenceNodes[i].content.substring(0, 200)}
 2. ${evidenceNodes[j].title}: ${evidenceNodes[j].content.substring(0, 200)}
-Describe their relationship in one concise phrase: ';
+Describe their relationship in one concise phrase: ';'
           const result = await this.ai.generateText({
             prompt: relationshipPrompt,
             maxTokens: 50,
-            systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.` });
+            systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.' });
           suggestions.push({
             fromId: evidenceNodes[i].id,
             toId: evidenceNodes[j].id,
@@ -399,13 +399,13 @@ Describe their relationship in one concise phrase: ';
     return suggestions.sort((a, b) => b.confidence - a.confidence);
   }
   async generateNotesSuggestions(context: string, existingNotes: string): Promise<string[]> {
-    const prompt = `Given this legal context: "${context}"
+    const prompt = `Given this legal context: "${context}"`
 And existing notes: "${existingNotes}"
-Suggest 3 additional bullet points that should be added to the notes: ';
+Suggest 3 additional bullet points that should be added to the notes: ';'
     const result = await this.ai.generateText({
       prompt,
       maxTokens: 200,
-      systemPrompt: 'You are a legal AI assistant helping with case note preparation.` });
+      systemPrompt: 'You are a legal AI assistant helping with case note preparation.' });
     // Parse suggestions from the response
     return result.text
       .split('\n')

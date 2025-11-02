@@ -192,7 +192,7 @@ class GRPCGemmaEmbeddingClient {
         request,
         (error: grpc.ServiceError | null, response: EmbeddingResponse | undefined) => {
           if (error) {
-            console.error('gRPC embedding error:', error);
+            console.error('gRPC embedding error:', error);'
             reject(error);
             return;
           }
@@ -258,7 +258,7 @@ class GRPCGemmaEmbeddingClient {
         // Process to PostgreSQL immediately for streaming optimization
         if (batchRequest.batch_options.postgresql_optimization) {
           this.streamToPostgreSQL(response).catch(error => {
-            console.warn('PostgreSQL streaming error:', error);
+            console.warn('PostgreSQL streaming error:', error);'
             // record the error for diagnostics
             errors.push(error instanceof Error ? error : new Error(String(error)));
           });
@@ -272,7 +272,7 @@ class GRPCGemmaEmbeddingClient {
         const batchTime = performance.now() - startTime;
         const batchStats = this.calculateBatchStatistics(batchRequest.requests, responses, batchTime);
         if (errors.length > 0) {
-          console.warn(`Streaming completed with ${errors.length} error(s). Example: ', errors[0]);
+          console.warn(`Streaming completed with ${errors.length} error(s). Example: ', errors[0]);'`
         }
         resolve({
           batch_id: batchRequest.batch_id,
@@ -283,7 +283,7 @@ class GRPCGemmaEmbeddingClient {
       });
       // Handle errors
       call.on('error', (error: grpc.ServiceError) => {
-        console.error('Streaming batch error:', error);
+        console.error('Streaming batch error:', error);'
         // record the stream error for diagnostics
         errors.push(error);
         reject(error);
@@ -345,7 +345,7 @@ class GRPCGemmaEmbeddingClient {
           processing_time = EXCLUDED.processing_time,
           confidence_score = EXCLUDED.confidence_score,
           updated_at = NOW()
-      `;
+      `;`
       const embeddingVector = `[${embedding.embedding.join(',')}]`;
       const norm = this.calculateVectorNorm(embedding.embedding);
       await client.query(insertSql, [
@@ -414,7 +414,7 @@ class GRPCGemmaEmbeddingClient {
             updated_at = NOW()
           RETURNING
             CASE WHEN xmax = 0 THEN: 'inserted'; ELSE: 'updated' END as operation
-        `;
+        `;`
         const result = await client.query(bulkUpsertSql, [
           documentIds,
           metadataJsons,
@@ -510,7 +510,7 @@ class GRPCGemmaEmbeddingClient {
    */ async healthCheck(): Promise<boolean> {
     try {
       const healthRequest = {
-        service: 'GemmaEmbeddingService` };
+        service: 'GemmaEmbeddingService' };
       return new Promise(resolve => {
         this.client.Check(
           healthRequest,
@@ -526,7 +526,7 @@ class GRPCGemmaEmbeddingClient {
         );
       });
     } catch (error) {
-      console.warn('gRPC health check error:', error);
+      console.warn('gRPC health check error:', error);'
       return false;
     }
   }
@@ -553,7 +553,7 @@ class CircuitBreaker {
   private lastFailureTime = 0;
   private config: { failureThreshold: number;, recoveryTimeout: number;
   };
-  constructor(config: {, failureThreshold: number; recoveryTimeout: number }) {
+  constructor(config: {, failureThreshold: number;, recoveryTimeout: number }) {
     this.config = config;
   }
   async execute<T>(operation: () => Promise<T>): Promise<T> {

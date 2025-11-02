@@ -249,8 +249,8 @@ describe('VectorSearchService (Integration)', () => {
       ];
 
       const pgResults: SearchResult[] = [
-        { documentId: 'doc2', similarity: 0.87, source: 'postgres' },
-        { documentId: 'doc3', similarity: 0.80, source: 'postgres' }
+        { documentId: 'doc2', similarity: 0.87, source: 'postgres` },'`
+        { documentId: 'doc3', similarity: 0.80, source: `postgres` }
       ];
 
       const merged = await vectorSearch.mergeResults(qdrantResults, pgResults);

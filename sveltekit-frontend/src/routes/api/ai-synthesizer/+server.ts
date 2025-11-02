@@ -17,7 +17,7 @@ type SynthResult = {
   metadata?: Record<string, unknown>;
 };
 
-type Metric = { name: string;, value: number };
+type Metric = { name: string; value: number };
 
 // --- added typed interfaces to replace: 'any' usage ---
 type CacheStats = { hits: number;, misses: number;
@@ -42,9 +42,9 @@ interface TestResult { query: string;, success: boolean;
 
 // Stream update/result shapes returned by aiOrchestrator.processStream
 type ProcessResult = SynthResult;
-type StreamStage = { type: 'stage';, stage: string; detail?: string };
-type StreamChunk = { type: 'chunk';, chunk: string };
-type StreamComplete = { type: 'complete';, result: ProcessResult };
+type StreamStage = { type: 'stage'; stage: string; detail?: string };
+type StreamChunk = { type: 'chunk'; chunk: string };
+type StreamComplete = { type: 'complete'; result: ProcessResult };
 type StreamUpdate = StreamStage | StreamChunk | StreamComplete;
 
 // Safe error-to-string helper
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       activeStreams.set(streamId, {
         query,
         startTime,
-        status: 'initializing` });
+        status: 'initializing' });
       // Start async processing
       processStreamingRequest(streamId, query, context, options as Record<string, unknown>);
       // Return stream ID immediately
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         success: true,
         streamId,
         message: 'Streaming synthesis initiated',
-        streamUrl: `/api/ai-synthesizer/stream/${streamId}' });
+        streamUrl: '/api/ai-synthesizer/stream/${streamId}' });
     }
 
     // Non-streaming request - process synchronously
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
   } catch (err: any) {
     const errMsg = errToString(err);
     // Log error
-    logger.error('[API] Synthesis error:', errMsg);
+    logger.error('[API] Synthesis error:', errMsg);'
     // Track error metrics
     await monitoringService.recordMetric('api_errors_total', 1);
     // Determine status code if present or fallback to 500
@@ -161,7 +161,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (url.pathname.endsWith('/test')) {
       logger.info('[API] Running integration test...');
       const testQueries = [
-        {
+        {,
           query: 'What are the elements of negligence in tort law?',
           expectedSources: ['neo4j', 'pgvector', 'context7']
         },
@@ -184,7 +184,7 @@ export const GET: RequestHandler = async ({ url }) => {
             timeout: 10000
           })) as SynthResult;
 
-          // Safely extract sourcesUsed, ensuring it's an array
+          // Safely extract sourcesUsed, ensuring it's an array'
           const rawSourcesUsed = (raw.metadata as Record<string, unknown>)?.['sourcesUsed'];
           const sourcesUsedArray: any[] = Array.isArray(rawSourcesUsed) ? rawSourcesUsed : [];
 
@@ -258,12 +258,11 @@ export const GET: RequestHandler = async ({ url }) => {
         ollama: health.services.ollama || 'unknown',
         enhancedRAG: health.services.enhancedRAG || 'unknown',
         gpuOrchestrator: health.services.gpuOrchestrator || 'unknown',
-        context7: health.services.context7 || 'unknown'
-      },
+        context7: health.services.context7 || 'unknown` },'`
       models: {
         primary: 'gemma3-legal:latest',
         embeddings: 'nomic-embed-text',
-        fallback: 'gemma2:2b` },
+        fallback: `gemma2:2b` },
       cache: {
         hits: cacheStats.hits,
         misses: cacheStats.misses,
@@ -305,7 +304,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(status);
   } catch (err: any) {
     const errMsg = errToString(err);
-    logger.error('[API] Health check error:', errMsg);
+    logger.error('[API] Health check error:', errMsg);'
     return json(
       {
         status: 'error',
@@ -364,7 +363,7 @@ async function processStreamingRequest(
     }
   } catch (err: any) {
     const errMsg = errToString(err);
-    logger.error(`[API] Streaming error for ${streamId}: ', errMsg);
+    logger.error(`[API] Streaming error for ${streamId}: ', errMsg);'`
     const stream = activeStreams.get(streamId);
     if (stream) {
       stream.status = 'error';

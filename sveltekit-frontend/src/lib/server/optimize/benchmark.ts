@@ -69,7 +69,7 @@ class BenchmarkSuite {
         memoryReduction: metrics.memoryReduction,
         compressionRatio: `${metrics.compressionRatio.toFixed(1)}x`,
         originalSize: `${(metrics.originalSize / 1024).toFixed(1)}KB`,
-        quantizedSize: `${(metrics.quantizedSize / 1024).toFixed(1)}KB' }
+        quantizedSize: `${(metrics.quantizedSize / 1024).toFixed(1)}KB` }
     };
     this.results.push(result);
     return result;

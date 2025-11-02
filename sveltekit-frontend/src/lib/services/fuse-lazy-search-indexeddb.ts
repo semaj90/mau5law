@@ -6,7 +6,7 @@ import type { SearchResult } from '$lib/types';
 import Fuse from '$lib/utils/fuse-import';
 // import type { FuseResult } from 'fuse.js'; // Changed IFuseResult to FuseResult
 
-// Define FuseJsResult type based on the actual Fuse instance's search method
+// Define FuseJsResult type based on the actual Fuse instance's search method'
 // Fix: Derive the return type of the search method from the prototype,
 // then explicitly set the: 'item' property to the generic type T.
 type FuseResult<T> = ReturnType<typeof Fuse.prototype.search>[number] & { item: T };
@@ -84,7 +84,7 @@ export class FuseLazySearchService {
         const db = (event.target as IDBOpenDBRequest).result;
         // Create object store with auto-incrementing key
         if (!db.objectStoreNames.contains(this.storeName)) {
-          const store = db.createObjectStore(this.storeName, { keyPath: 'id' });
+          const store = db.createObjectStore(this.storeName, { keyPath: 'id` });'`
           // Create indexes for efficient searching
           store.createIndex('title', 'title', { unique: false });
           store.createIndex('keywords', 'keywords', { unique: false, multiEntry: true });

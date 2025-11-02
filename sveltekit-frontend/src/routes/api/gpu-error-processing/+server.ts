@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request: _request, url: _url }) => 
     console.log(`   - Fixes generated: ${result.processedErrors}`);
     console.log(`   - Processing time: ${processingTime.toFixed(2)}ms`);
     console.log(
-      `   - GPU utilization: ${(
+      `   - GPU utilization: ${(`
         result as {, performance: {, gpu_utilization: number } }
       ).performance.gpu_utilization.toFixed(1)}%`
     );
@@ -151,7 +151,7 @@ async function processErrorsWithGPU(categorizedErrors: Record<string, ParsedErro
 
 // change signature to return FixSuggestion
 function generateErrorFix(error: ParsedError, category: string): FixSuggestion {
-  const fixTemplates: Record<string, { code: string;, explanation: string }> = { svelte5: {, code: 'let { prop1, prop2, ...restProps } = $props();',
+  const fixTemplates: Record<string, { code: string; explanation: string }> = { svelte5: {, code: 'let { prop1, prop2, ...restProps } = $props();',
       explanation: 'Convert let { ... } = $props(); for Svelte 5 compatibility'
     },
     import {
@@ -161,12 +161,10 @@ function generateErrorFix(error: ParsedError, category: string): FixSuggestion {
     type: { code: '// Add proper type annotations', explanation: 'Fix TypeScript type mismatch' },
     syntax: {
       code: '// Fix syntax error (missing semicolon, bracket, etc.)',
-      explanation: 'Correct syntax issue'
-    },
+      explanation: 'Correct syntax issue` },'`
     binding: {
       code: '// Update Svelte binding syntax',
-      explanation: 'Fix Svelte event or data binding'
-    },
+      explanation: `Fix Svelte event or data binding` },
     unknown: {
       code: '// Review error context and apply appropriate fix',
       explanation: `General error analysis required` }

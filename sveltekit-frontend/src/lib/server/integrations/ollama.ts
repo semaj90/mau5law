@@ -12,7 +12,8 @@ import type {
   ChatOptions,
   ChatResult
 } from '$lib/types/external-services';
-interface OllamaConfig { baseUrl: string;, embeddingModel: string;
+interface OllamaConfig { baseUrl: string;
+, embeddingModel: string;
   chatModel: string;
   timeout?: number;
   retries?: number;
@@ -48,7 +49,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
           `${this.config.baseUrl}/api/embeddings`,
           {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json` },'`
             body: JSON.stringify({
              , model: attemptModel,
               prompt: options?.truncateTo ? text.slice(0, options.truncateTo) : text
@@ -97,7 +98,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
         `${this.config.baseUrl}/api/chat`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json` },'`
           body: JSON.stringify({
             model,
             messages: messages.map(m => ({, role: m.role, content: m.content })),
@@ -132,7 +133,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
     const model = options?.model || this.config.chatModel;
     const response = await fetch(`${this.config.baseUrl}/api/chat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
         model,
         messages: messages.map(m => ({, role: m.role, content: m.content })),
@@ -181,7 +182,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
     try {
       const response = await this.fetchWithTimeout(
         `${this.config.baseUrl}/api/tags`,
-        { method: 'GET' },
+        { method: 'GET` },'`
         5000 // Quick health check timeout
       );
       if (!response.ok) {
@@ -238,4 +239,4 @@ export function getOllamaService(config?: Partial<OllamaConfig>): OllamaService 
 export { OllamaService };
 // No changes needed for this file. The Ollama integration is already configured
 // to be production-ready, using environment variables for endpoints and
-// appropriate model defaults and fallbacks, as per the project's guidelines.
+// appropriate model defaults and fallbacks, as per the project's guidelines.'

@@ -209,7 +209,7 @@ export class LangChainSIMDBridge {
       metadata: {
         totalTokens: lcMeta.totalTokens || 0,
         avgChunkSize: lcMeta.avgChunkSize || 0,
-        model: lcMeta.model || 'unknown` } as { totalTokens: number; avgChunkSize: number;, model: string },
+        model: lcMeta.model || 'unknown` } as { totalTokens: number; avgChunkSize: number; model: string },'`
       // SIMD enhancement data
       simdData: { compressedTiles: (simdResult.compressedTiles as TextTile[]).map(tile => ({, id: tile.id,
           compressedBytes: tile.compressedData?.length || 0,
@@ -244,7 +244,7 @@ export class LangChainSIMDBridge {
    */
   async queryDocuments(
     question: string,
-    context: Parameters<typeof langChainOllamaService.queryDocuments>[1] = {},
+    context: Parameters<typeof, langChainOllamaService.queryDocuments>[1] = {},
     options: {
       generateInstantComponents?: boolean;
       compressionLevel?: number;
@@ -367,8 +367,8 @@ export class LangChainSIMDBridge {
           font-size: 0.9em;
           display: inline-block;
         }
-      `,
-      domStructure: '<span class="cpu-fallback-${tile.id}">${(tile.tileMetadata?.categories || []).join(' ')}</span>`,
+      `,`
+      domStructure: '<span class="cpu-fallback-${tile.id}">${(tile.tileMetadata?.categories || []).join(' ')}</span>`,'`
       interactionHandlers: '',
       renderTime: 1, // Fast CPU fallback
       gpuUtilization: 0
@@ -449,7 +449,7 @@ export class LangChainSIMDBridge {
       Reverse engineering and redistribution are prohibited without written consent.
       The software includes advanced AI capabilities for legal document processing,
       including SIMD-optimized text compression and GPU-accelerated rendering.
-    `;
+    `;`
     try {
       const startTime = Date.now();
       // Test document processing
@@ -477,7 +477,7 @@ export class LangChainSIMDBridge {
         }
       };
     } catch (error) {
-      console.error('Pipeline test failed:', error);
+      console.error('Pipeline test failed: `, error);'`
       return {
         success: false,
         performance: {},

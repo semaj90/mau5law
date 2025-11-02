@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
         throw error(400, 'Invalid search type');
     }
     // Log search session (simplified - could be extended to user activity table)
-    console.log(`[Search] Query: "${query || 'embedding-only` }", Type: ${searchType}, Results: ${results.length}`);
+    console.log(`[Search] Query: "${query || 'embedding-only` }", Type: ${searchType}, Results: ${results.length}`);'`
     const finalResult = {
       success: true,
       results,
@@ -190,7 +190,7 @@ async function vectorSearch(
       isConfidential: row.isConfidential,
       searchType: `vector` })); // Added closing parenthesis
   } catch (err: any) {
-    console.error('[Search] Vector search error:', err);
+    console.error('[Search] Vector search error:', err);'
     return [];
   }
 }
@@ -244,10 +244,9 @@ async function keywordSearch(query: string, limit: number, filters: any): Promis
       createdAt: row.createdAt,
       legalAnalysis: row.analysisResults,
       isConfidential: row.isConfidential,
-      searchType: 'keyword'
-    })); // Added closing parenthesis
+      searchType: `keyword` })); // Added closing parenthesis
   } catch (err: any) {
-    console.error('[Search] Keyword search error:', err);
+    console.error('[Search] Keyword search error:', err);'
     return [];
   }
 }
@@ -425,7 +424,7 @@ export const GET: RequestHandler = async () => {
       const [docResult] = await db.select({ count: sql<number>`count(*)` }).from(legal_documents);
       documentCount = docResult?.count || 0;
       const [embResult] = await db
-        .select({ count: sql<number>`count(*)' })
+        .select({ count: sql<number>`count(*)' })'`
         .from(legal_documents)
         .where(legal_documents.content_embedding.isNotNull()); // Added closing parenthesis
       embeddingCount = embResult?.count || 0;
@@ -435,7 +434,7 @@ export const GET: RequestHandler = async () => {
     // Test cognitive cache
     let cacheStatus = $state<boolean>(false);
     try {
-      await cognitiveCacheManager.get({ key: 'health_check', type: 'legal-data', context: {, action: 'health-test' } });
+      await cognitiveCacheManager.get({ key: 'health_check', type: 'legal-data', context: {, action: 'health-test` } });'`
       cacheStatus = true;
     } catch (err: any) {
       console.warn('[Search] Cognitive cache health check failed:', err);
@@ -444,7 +443,7 @@ export const GET: RequestHandler = async () => {
       status: dbHealth.overall === 'healthy' ? 'healthy' : 'unhealthy',
       service: 'Enhanced Legal Document Search',
       features: {
-        vectorSearch: dbHealth.overall === 'healthy',
+       , vectorSearch: dbHealth.overall === 'healthy',
         keywordSearch: dbHealth.overall === 'healthy',
         hybridSearch: dbHealth.overall === 'healthy',
         semanticSearch: dbHealth.overall === 'healthy',
@@ -459,12 +458,10 @@ export const GET: RequestHandler = async () => {
         overall: dbHealth.overall,
         documents: documentCount, // Added comma
         embeddings: embeddingCount, // Added comma
-        embeddingCoverage: documentCount > 0 ? ((embeddingCount / documentCount) * 100).toFixed(1) + '%' : '0%'
-      },
+        embeddingCoverage: documentCount > 0 ? ((embeddingCount / documentCount) * 100).toFixed(1) + '%' : `0%` },
       cache: {
         cognitive: cacheStatus, // Added comma
-        type: 'ML-driven cognitive cache'
-      },
+        type: `ML-driven cognitive cache` },
       timestamp: new Date().toISOString(),
       version: `3.0.0` });
   } catch (err: any) {

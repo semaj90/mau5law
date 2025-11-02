@@ -2,7 +2,7 @@
   Document Drafting Test Page - Enhanced-Bits Architecture
   Testing the LegalDocumentDrafting with Enhanced-Bits UI components
 -->
-<script lang="ts">
+<script, lang="ts">
   import LegalDocumentDrafting from '$lib/components/ai/LegalDocumentDrafting.svelte';
 </script>
 
@@ -14,7 +14,7 @@
   />
 </svelte:head>
 
-<div class="page-container">
+<div, class="page-container">
   <LegalDocumentDrafting />
 </div>
 

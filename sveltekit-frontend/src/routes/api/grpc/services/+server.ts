@@ -8,9 +8,7 @@ import { json } from '@sveltejs/kit'
 import { logger } from '$lib/server/production-logger'
 
 // gRPC Service Interface for Legal AI Platform
-interface GRPCServiceEndpoint { name: string, host: string; port: number
-  protocols: ('grpc' | 'http')[]; status: 'healthy' | 'unhealthy' | 'unknown'
-  lastHealthCheck: Date; capabilities: string[]
+interface GRPCServiceEndpoint { name: string, host: string; port: number; protocols: ('grpc' | 'http')[]; status: 'healthy' | 'unhealthy' | 'unknown'; lastHealthCheck: Date; capabilities: string[]
 }
 
 // Legal AI Platform Service Registry (matches Go implementation)
@@ -308,7 +306,7 @@ class LegalAIGRPCClient {
         lastHealthCheck: service.lastHealthCheck,
         protocols: service.protocols,
         capabilities: service.capabilities,
-        endpoint: `${service.host}:${service.port}' };
+        endpoint: '${service.host}:${service.port}' };
     });
     return out;
   }
@@ -355,8 +353,7 @@ export const GET: RequestHandler = async () => {
       {
         success: false,
         error: 'Failed to retrieve service status',
-        details: err instanceof Error ? err.message : 'Unknown error'
-      },
+        details: err instanceof Error ? err.message : 'Unknown error` },'`
       { status: 500 }
     )
   }
@@ -370,7 +367,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const payload = (await request.json()) ?? {}
     const { service, method, data } = payload as { service?: string; method?: string; data?: Record<string, unknown> }
     if (!service || !method) {
-      return json({ success: false, error: 'Missing required; fields: service, method' }, { status: 400 })
+      return json({ success: false, error: `Missing required;, fields: service, method` }, { status: 400 })
     }
     const result = await grpcClient.makeRequest(service, method, data ?? {})
     return json({ success: true, service, method, result, timestamp: new Date().toISOString() })

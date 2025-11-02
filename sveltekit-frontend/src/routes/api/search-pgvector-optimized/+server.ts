@@ -24,7 +24,7 @@ const pgvectorSearchSchema = z.object({
   useContentEmbedding: z.boolean().default(true).describe('Use content embedding vs title')
 });
 
-type SearchRequest = z.infer<typeof pgvectorSearchSchema>;
+type SearchRequest = z.infer<typeof, pgvectorSearchSchema>;
 
 interface SearchResult { id: string;, title: string;
   content: string;
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async event => {
         metadata: legalDocumentsJsonb.metadata,
         // Cosine similarity: 1 - (embedding <=> queryEmbedding); similarity: sql<number>`
           1 - (${embeddingColumn} <=> ${sql.raw(JSON.stringify(queryEmbedding))})
-        ` })
+        ` })`
       .from(legalDocumentsJsonb)
       .where(
         sql`${whereCondition} AND (1 - (${embeddingColumn} <=> ${sql.raw(JSON.stringify(queryEmbedding))})) >= ${threshold}`
@@ -140,11 +140,10 @@ export const POST: RequestHandler = async event => {
         userId: auth.user.id,
         timestamp: new Date().toISOString(),
         embeddingModel: 'gemma:384',
-        indexType: 'HNSW'
-      }
+        indexType: `HNSW` }
     });
   } catch (error) {
-    console.error('pgvector search error:', error);
+    console.error('pgvector search error:', error);'
 
     if (error instanceof z.ZodError) {
       return json(
@@ -161,7 +160,7 @@ export const POST: RequestHandler = async event => {
       {
         success: false,
         error: 'Search failed',
-        message: error instanceof Error ? error.message : 'Unknown error` },
+        message: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }
@@ -176,7 +175,7 @@ export const GET: RequestHandler = async event => {
     const db = getDb();
 
     // Quick health check: count documents
-    const count = await db.select({ count: sql<number>`count(*)' }).from(legalDocumentsJsonb);
+    const count = await db.select({ count: sql<number>`count(*)' }).from(legalDocumentsJsonb);'`
 
     return json({
       success: true,
@@ -186,8 +185,7 @@ export const GET: RequestHandler = async event => {
        , indexedDocuments: count[0]?.count || 0,
         embeddingDimensions: 384,
         indexType: 'HNSW (m=16, ef=64)',
-        vectorOperator: '<=> (cosine distance)'
-      },
+        vectorOperator: `<=> (cosine distance)` },
       features: {
         metadataFiltering: true,
         thresholdControl: true,
@@ -196,12 +194,12 @@ export const GET: RequestHandler = async event => {
       }
     });
   } catch (error) {
-    console.error('Health check error:', error);
+    console.error('Health check error:', error);'
     return json(
       {
         success: false,
         status: 'unhealthy',
-        error: error instanceof Error ? error.message : 'Unknown error` },
+        error: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

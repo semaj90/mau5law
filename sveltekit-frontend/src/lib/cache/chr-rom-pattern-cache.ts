@@ -140,7 +140,7 @@ export class CHRROMPatternCache {
       console.log(`❌ CHR-ROM cache miss for pattern: ${patternId} (${responseTime.toFixed(2)}ms)`);
       return null;
     } catch (error) {
-      console.error('❌ CHR-ROM pattern cache error: ', error);
+      console.error('❌ CHR-ROM pattern cache error: ', error);'
       return null;
     }
   }
@@ -180,7 +180,7 @@ export class CHRROMPatternCache {
       const redisKey = `${this.CACHE_PREFIX}pattern:${patternId}`;
       const serializedPattern = this.serializePattern(pattern);
       if (this.redis) {
-        // ioredis typings prefer `set` with EX option instead of `setex'
+        // ioredis typings prefer 'set' with EX option instead of 'setex'
         await this.redis.set(redisKey, serializedPattern, 'EX', 3600); // 1 hour TTL
       }
       // Store in L1 cache

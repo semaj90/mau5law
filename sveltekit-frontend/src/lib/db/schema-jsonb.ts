@@ -132,7 +132,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
   analysis: jsonb('analysis').default(sql`'{}'::jsonb`).notNull(),
   entities: jsonb('entities').default(sql`'[]'::jsonb`).notNull(),
   citations: jsonb('citations').default(sql`'[]'::jsonb`).notNull(),
-  summaryData: jsonb('summary_data').default(sql`'{
+  summaryData: jsonb('summary_data').default(sql`'{'`
     "executive_summary": null,
     "key_findings": [],
     "legal_issues": [],
@@ -144,7 +144,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
     },
     "confidence_score": 0,
     "processing_metrics": {}
-  }'::jsonb`).notNull(),
+  }'::jsonb`).notNull(),'`
   // Processing fields
   status: documentStatusEnum('status').default('pending'),
   processingTimeMs: integer('processing_time_ms'),
@@ -164,7 +164,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
   parentDocumentId: uuid('parent_document_id'),
   // Full-text search vector (generated column)
   searchVector: text('search_vector').generatedAlwaysAs(
-    sql`setweight(to_tsvector('english', coalesce(document_name, '')), 'A') ||
+    sql`setweight(to_tsvector('english', coalesce(document_name, '')), 'A') ||`
         setweight(to_tsvector('english', coalesce(original_text, '')), 'D') ||
         setweight(to_tsvector('english', coalesce(summary->>'executive_summary', '')), 'B')`
   )
@@ -182,7 +182,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
 // Vector embeddings table
 export const documentEmbeddings = pgTable('document_embeddings', {
   id: uuid('id').defaultRandom().primaryKey(),
-  documentId: uuid('document_id').notNull().references(() => aiSummarizedDocuments.id, { onDelete: 'cascade' }),
+  documentId: uuid('document_id').notNull().references(() => aiSummarizedDocuments.id, { onDelete: 'cascade` }),'`
   chunkIndex: integer('chunk_index').notNull(),
   chunkText: text('chunk_text').notNull(),
   embedding: vector('embedding'),
@@ -197,15 +197,15 @@ export const documentEmbeddings = pgTable('document_embeddings', {
 // Summarization jobs queue
 export const summarizationJobs = pgTable('summarization_jobs', {
   id: uuid('id').defaultRandom().primaryKey(),
-  documentId: uuid('document_id').references(() => aiSummarizedDocuments.id, { onDelete: 'cascade' }),
-  config: jsonb('config').default(sql`'{
+  documentId: uuid('document_id').references(() => aiSummarizedDocuments.id, { onDelete: 'cascade` }),'`
+  config: jsonb('config').default(sql`'{'`
     "style": "executive",
     "max_length": 500,
     "temperature": 0.2,
     "include_citations": true,
     "focus_areas": [],
     "language": "en"
-  }'::jsonb`).notNull(),
+  }'::jsonb`).notNull(),'`
   status: documentStatusEnum('status').default('pending'),
   priority: jobPriorityEnum('priority').default('normal'),
   retryCount: integer('retry_count').default(0),
@@ -227,7 +227,7 @@ export const summarizationJobs = pgTable('summarization_jobs', {
 // User preferences
 export const userPreferences = pgTable('user_preferences', {
   userId: uuid('user_id').primaryKey(),
-  preferences: jsonb('preferences').default(sql`'{
+  preferences: jsonb('preferences').default(sql`'{'`
     "default_style": "executive",
     "max_summary_length": 500,
     "include_citations": true,
@@ -241,13 +241,13 @@ export const userPreferences = pgTable('user_preferences', {
       "daily_quota": 100,
       "rate_limit_per_minute": 10
     }
-  }'::jsonb`).notNull(),
-  statistics: jsonb('statistics').default(sql`'{
+  }'::jsonb`).notNull(),'`
+  statistics: jsonb('statistics').default(sql`'{'`
     "total_documents": 0,
     "total_tokens": 0,
     "average_processing_time": 0,
     "last_activity": null
-  }'::jsonb`).notNull(),
+  }'::jsonb`).notNull(),'`
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 });

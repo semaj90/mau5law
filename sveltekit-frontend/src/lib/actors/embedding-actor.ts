@@ -71,7 +71,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingIn
   } catch (error: any) {
     // Map different error types to structured errors
     if (typeof error === 'object' && error !== null && 'code' in error) {
-      // If it's already a structured EmbeddingError, re-throw it
+      // If it's already a structured EmbeddingError, re-throw it'
       throw error as EmbeddingError;
     }
     if (error instanceof Error) {

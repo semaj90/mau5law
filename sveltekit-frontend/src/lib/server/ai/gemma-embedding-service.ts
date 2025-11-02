@@ -233,7 +233,7 @@ export class GemmaEmbeddingService {
       }
     } catch (error) {
       console.error('Failed to cache embedding:', error);
-      // Don't throw - allow processing to continue
+      // Don't throw - allow processing to continue'
     }
   }
   /**
@@ -259,9 +259,9 @@ export class GemmaEmbeddingService {
       }
       return {
         keysCount: keys.length,
-        estimatedMemory: '${(totalMemory / 1024 / 1024).toFixed(2)} MB' };
+        estimatedMemory: `${(totalMemory / 1024 / 1024).toFixed(2)} MB` };
     } catch (error) {
-      console.error('Failed to get cache stats:', error);
+      console.error('Failed to get cache stats: `, error);'`
       return { keysCount: 0, estimatedMemory: `0 MB` };
     }
   }
@@ -349,7 +349,7 @@ export function getOllamaEndpoint(): string {
 		(process.env.NODE_ENV === 'production' && !!process.env.CONTAINER);
 	if (inDocker) {
 		// Use the compose service hostname typically available inside other containers.
-		// Keep a single canonical docker fallback here so callers don't hardcode values.
+		// Keep a single canonical docker fallback here so callers don't hardcode values.'
 		return 'http://ollama:11434';
 	}
 	// Local development fallback

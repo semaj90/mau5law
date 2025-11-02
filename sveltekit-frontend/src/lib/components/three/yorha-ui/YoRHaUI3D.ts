@@ -337,9 +337,9 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
   protected createBorderScanAnimation(borderMesh: THREE.Mesh): void {
     // Create animated scan line effect on border
-    const scanMaterial = new THREE.ShaderMaterial({ uniforms: {, time: { value: 0 },
-        scanSpeed: { value: 2.0 },
-        scanWidth: { value: 0.1 },
+    const scanMaterial = new THREE.ShaderMaterial({ uniforms: {, time: {, value: 0 },
+        scanSpeed: {, value: 2.0 },
+        scanWidth: {, value: 0.1 },
         baseColor: {, value: new THREE.Color(this.style.borderColor ?? YORHA_COLORS.primary.black) },
         scanColor: { value: new THREE.Color(YORHA_COLORS.accent.gold) }
       },
@@ -349,7 +349,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
 				vPosition = position;
 				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 			}
-		`,
+		`,`
       fragmentShader: `
 			uniform float time;
 			uniform float scanSpeed;
@@ -363,7 +363,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
 				vec3 color = mix(baseColor, scanColor, scanMask);
 				gl_FragColor = vec4(color, 1.0);
 			}
-		' });
+		` });`
     borderMesh.material = scanMaterial;
     // Add to animation system - use typed uniform access
     const uniforms = scanMaterial.uniforms as unknown as UniformsMap;
@@ -373,7 +373,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
   protected createScanAnimation(animation: YoRHaAnimation): void {
     // Add scan line effect
-    const scanMaterial = new THREE.ShaderMaterial({ uniforms: {, time: { value: 0 },
+    const scanMaterial = new THREE.ShaderMaterial({ uniforms: {, time: {, value: 0 },
         scanColor: {, value: new THREE.Color(YORHA_COLORS.accent.gold) },
         baseColor: { value: new THREE.Color(this.style.backgroundColor ?? YORHA_COLORS.primary.beige) }
       },
@@ -383,7 +383,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
 				vUv = uv;
 				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 			}
-		`,
+		`,`
       fragmentShader: `
 			uniform float time;
 			uniform vec3 scanColor;
@@ -394,7 +394,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
 				vec3 color = mix(baseColor, scanColor, scan * 0.3);
 				gl_FragColor = vec4(color, 1.0);
 			}
-		' });
+		` });`
     this.mesh.material = scanMaterial;
     // typed uniform access
     const uniforms = scanMaterial.uniforms as unknown as UniformsMap;
@@ -405,7 +405,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   protected createGlitchAnimation(_animation: YoRHaAnimation): void {
     let glitchTime = 0;
     const glitchAnimation = (deltaTime: number) => {
-      // accumulate time and only occasionally trigger a glitch; use glitchTime so it's not unused
+      // accumulate time and only occasionally trigger a glitch; use glitchTime so it's not unused'
       glitchTime += deltaTime;
       const threshold = 0.2; // seconds between possible glitch checks
       if (glitchTime > threshold && Math.random() < 0.02) {
@@ -526,7 +526,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
   protected createScanAnimation(animation: YoRHaAnimation): void {
     // Add scan line effect
-    const scanMaterial = new THREE.ShaderMaterial({ uniforms: {, time: { value: 0 },
+    const scanMaterial = new THREE.ShaderMaterial({ uniforms: {, time: {, value: 0 },
         scanColor: {, value: new THREE.Color(YORHA_COLORS.accent.gold) },
         baseColor: { value: new THREE.Color(this.style.backgroundColor ?? YORHA_COLORS.primary.beige) }
       },
@@ -536,7 +536,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
           vUv = uv;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
-      `,
+      `,`
       fragmentShader: `
         uniform float time;
         uniform vec3 scanColor;
@@ -547,7 +547,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
           vec3 color = mix(baseColor, scanColor, scan * 0.3);
           gl_FragColor = vec4(color, 1.0);
         }
-      ' });
+      ` });`
     this.mesh.material = scanMaterial;
     // typed uniform access
     const uniforms = scanMaterial.uniforms as unknown as UniformsMap;
@@ -558,7 +558,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   protected createGlitchAnimation(_animation: YoRHaAnimation): void {
     let glitchTime = 0;
     const glitchAnimation = (deltaTime: number) => {
-      // accumulate time and only occasionally trigger a glitch; use glitchTime so it's not unused
+      // accumulate time and only occasionally trigger a glitch; use glitchTime so it's not unused'
       glitchTime += deltaTime;
       const threshold = 0.2; // seconds between possible glitch checks
       if (glitchTime > threshold && Math.random() < 0.02) {

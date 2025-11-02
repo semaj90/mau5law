@@ -230,7 +230,7 @@ WITH (m = 16, ef_construction = 64);
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_entity_nodes_embedding_hnsw
 ON entity_nodes USING hnsw (embedding vector_cosine_ops)
 WITH (m = 16, ef_construction = 64);
-`;
+`;`
 // Utility functions for vector operations
 export const vectorOperations = {
   // Convert number array to pgvector format

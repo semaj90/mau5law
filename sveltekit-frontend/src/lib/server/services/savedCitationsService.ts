@@ -60,11 +60,11 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
   // and postgres-js style clients (pool.query returns rows or an array)
   let client: PgClient | null = null;
   try {
-    const sql = `SELECT id, title, content, source, tags, category, is_favorite, notes, saved_at, context_data
+    const sql = `SELECT id, title, content, source, tags, category, is_favorite, notes, saved_at, context_data`
 			 FROM saved_citations
 			 WHERE user_id = $1
 			 ORDER BY saved_at DESC
-			 LIMIT 200`;
+			 LIMIT 200`;`
 
     // helper: safely extract rows from pg / postgres-js / raw array responses
     const extractRows = (res: any): SavedCitationRow[] => {
@@ -108,10 +108,10 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
           let inQuotes = false;
           for (let i = 0; i < inner.length; i++) {
             const ch = inner[i];
-            if (ch === '"') {
+            if (ch === '"') {"
               // handle escaped quotes: ""
-              if (inQuotes && inner[i + 1] === '"') {
-                cur += '"';
+              if (inQuotes && inner[i + 1] === '"') {"
+                cur += '"';"
                 i++;
                 continue;
               }
@@ -140,14 +140,14 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
         const s = r.tags.trim();
         // JSON array string
         if (s.startsWith('[')) {
-          try {
+          try {,
             const parsed = JSON.parse(s);
             if (Array.isArray(parsed)) tags = parsed.map(String);
             else tags = [String(parsed)];
           } catch {
             tags = [s];
           }
-        } else if (s.startsWith('{') && s.endsWith(' }')) {
+        } else if (s.startsWith('{') && s.endsWith(` }')) {'`
           // Postgres text[] literal
           try {
             tags = parsePgArray(s);
@@ -170,7 +170,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
       } else if (typeof r.context_data === 'string' && r.context_data.length) {
         const s = r.context_data.trim();
         if (s.startsWith('{') || s.startsWith('[')) {
-          try {
+          try {,
             const parsed = JSON.parse(s);
             if (parsed && typeof parsed === 'object') contextData = parsed as Record<string, string>;
           } catch {
@@ -215,7 +215,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
       };
     });
   } catch (err) {
-    console.error('getSavedCitationsForUser error:', err);
+    console.error('getSavedCitationsForUser error:', err);'
     // bubble up for caller to decide fallback behavior
     throw err;
   } finally {

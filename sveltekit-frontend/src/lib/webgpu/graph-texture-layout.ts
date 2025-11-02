@@ -30,7 +30,7 @@ export interface GPUTextureData {
   nodeDataBuffer: GPUBuffer; // Storage buffer for node data,
   adjacencyBuffer: GPUBuffer; // Storage buffer for adjacency lists
 }
-export interface LODLevel { level: number;, bounds: { x: number; y: number; width: number;, height: number }; // Add semicolon here
+export interface LODLevel { level: number;, bounds: { x: number; y: number; width: number; height: number }; // Add semicolon here
   nodeCount: number;
   loaded: boolean;
   gpuData?: GPUTextureData;
@@ -39,7 +39,7 @@ export interface LODLevel { level: number;, bounds: { x: number; y: number; wid
 // SPATIAL LAYOUT ALGORITHMS
 // ============================================================================
 class GraphSpatialLayout {
-  private nodePositions = new Map<string, { x: number;, y: number; z?: number }>();
+  private nodePositions = new Map<string, { x: number; y: number; z?: number }>();
   private nodeOrder: string[] = []; // BFS-ordered nodes for cache locality
   /**
    * Breadth-First Search layout for optimal cache performance
@@ -116,7 +116,7 @@ class GraphSpatialLayout {
       });
     }
     for (let iter = 0; iter < iterations; iter++) {
-      const forces = new Map<string, { x: number;, y: number }>();
+      const forces = new Map<string, { x: number; y: number }>();
       // Initialize forces
       for (const node of nodes) {
         forces.set(node.nodeId, { x: 0, y: 0 });
@@ -438,7 +438,7 @@ export class GraphTextureManager {
         // Store result
         results[node_index] = adjusted_confidence;
       }
-    `;
+    `;`
   }
   private encodeDocumentType(documentType: string): number {
     const typeMap: Record<string, number> = {

@@ -98,8 +98,8 @@ type GPUCacheRPCClient = {
   connect?: () => Promise<void>;
   disconnect?: () => Promise<void>;
   retrieve?: (key: string, opts?: any) => Promise<any>;
-  store?: (key: string, data: any, opts?: any) => Promise<void>;
-  updateUserHistory?: (userId: string, action: string; history: any[]) => Promise<void>;
+  store?: (key: string;, data: any, opts?: any) => Promise<void>;
+  updateUserHistory?: (userId: string; action: string;, history: any[]) => Promise<void>;
 };
 
 // === SvelteKit GPU Cache Integration ===
@@ -224,7 +224,7 @@ export class SvelteKitGPUCacheIntegration {
         if (payloadSize <= MAX_STORE_SIZE) {
           const storeOpts: any = { userId };
           if (typeof ttl === 'number') storeOpts.ttl = ttl;
-          // Use safeRpcStore which logs but won't throw
+          // Use safeRpcStore which logs but won't throw'
           await this.safeRpcStore(key, data, storeOpts);
         } else {
           console.warn(`⚠️ Skipping rpcClient.store for ${key}: payload ${payloadSize} bytes exceeds MAX_STORE_SIZE`);
@@ -235,7 +235,7 @@ export class SvelteKitGPUCacheIntegration {
 
       return data;
     } catch (error: any) {
-      console.error(`SSR data fetch error for ${key}: ', error);
+      console.error(`SSR data fetch error for ${key}: ', error);'`
       // fallback to fetcher and bubble only if fetcher fails
       return await fetcher();
     }
@@ -253,7 +253,7 @@ export class SvelteKitGPUCacheIntegration {
           return data;
         }
       } catch (error: any) {
-        console.warn(`⚠️ Failed to preload route ${route}: ', error);
+        console.warn(`⚠️ Failed to preload route ${route}: ', error);'`
       }
       return null;
     });
@@ -350,7 +350,7 @@ export class SvelteKitGPUCacheIntegration {
       console.log(`❌ Cache miss: ${key} (${latency.toFixed(2)}ms)`);
       return null;
     } catch (error: any) {
-      console.error(`Cache get error for ${key}: ', error);
+      console.error(`Cache get error for ${key}: ', error);'`
       return null;
     } finally {
       this.updateCacheState();
@@ -412,7 +412,7 @@ export class SvelteKitGPUCacheIntegration {
 
       console.log(`💾 Stored in cache: ${key} (${size} bytes)`);
     } catch (error: any) {
-      console.error(`Cache set error for ${key}: ', error);
+      console.error(`Cache set error for ${key}: ', error);'`
       throw error;
     } finally {
       this.updateCacheState();
@@ -439,7 +439,7 @@ export class SvelteKitGPUCacheIntegration {
         }
       }
     } catch (error: any) {
-      console.error('Prefetch scheduling error:', error);
+      console.error('Prefetch scheduling error:', error);'
     }
   }
 
@@ -474,7 +474,7 @@ export class SvelteKitGPUCacheIntegration {
         console.log(`✅ Prefetch successful: ${key}`);
       }
     } catch (error: any) {
-      console.warn(`⚠️ Prefetch failed for ${key}: ', error);
+      console.warn(`⚠️ Prefetch failed for ${key}: ', error);'`
     } finally {
       this.prefetchQueue.delete(key);
     }
@@ -514,7 +514,7 @@ export class SvelteKitGPUCacheIntegration {
       }
       console.log(`📊 Synced user history for ${userId}: ${history.length} entries`);
     } catch (error: any) {
-      console.error('User history sync error:', error);
+      console.error('User history sync error:', error);'
     }
   }
 
@@ -538,7 +538,7 @@ export class SvelteKitGPUCacheIntegration {
           cacheStore.createIndex('userId', 'userId');
         }
         if (!db.objectStoreNames.contains('user_history')) {
-          const historyStore = db.createObjectStore('user_history', { keyPath: 'id' });
+          const historyStore = db.createObjectStore('user_history', { keyPath: `id` });
           historyStore.createIndex('userId', 'userId');
           historyStore.createIndex('lastSync', 'lastSync');
         }
@@ -595,7 +595,7 @@ export class SvelteKitGPUCacheIntegration {
   private async initializeLokiJS(): Promise<void> {
     if (!browser || !this.config.lokiJS.enableMemoryCache) return;
     try {
-      // Lazy/dynamic import so SSR won't attempt to load Loki
+      // Lazy/dynamic import so SSR won't attempt to load Loki'
       const lokiModule = await import('lokijs');
       const Loki = lokiModule && (lokiModule as any).default ? (lokiModule as any).default : (lokiModule as any);
 
@@ -666,7 +666,7 @@ export class SvelteKitGPUCacheIntegration {
       this.updateCacheMetrics();
       console.log('🧹 Maintenance tasks completed');
     } catch (error: any) {
-      console.error('Maintenance task error:', error);
+      console.error('Maintenance task error:', error);'
     }
   }
 
@@ -728,7 +728,7 @@ export class SvelteKitGPUCacheIntegration {
       console.log(`🚀 Hydrated ${entries.length} entries from SSR`);
     } catch (error: any) {
       // Log unknown errors safely
-      console.error('SSR hydration error:', error);
+      console.error('SSR hydration error:', error);'
     }
   }
 
@@ -895,7 +895,7 @@ export class SvelteKitGPUCacheIntegration {
       await this.rpcClient.disconnect();
       console.log('🛑 SvelteKit GPU Cache Integration shut down');
     } catch (error: any) {
-      console.error('Shutdown error:', error);
+      console.error('Shutdown error:', error);'
     }
   }
 
@@ -905,7 +905,7 @@ export class SvelteKitGPUCacheIntegration {
     try {
       return await this.rpcClient.retrieve(key, opts);
     } catch (err) {
-      console.warn(`⚠️ rpcClient.retrieve error for ${key}: ', err);
+      console.warn(`⚠️ rpcClient.retrieve error for ${key}: ', err);'`
       return null;
     }
   }
@@ -915,7 +915,7 @@ export class SvelteKitGPUCacheIntegration {
     try {
       await this.rpcClient.store(key, data, opts);
     } catch (err) {
-      console.warn(`⚠️ rpcClient.store warning for ${key}: ', err);
+      console.warn(`⚠️ rpcClient.store warning for ${key}: ', err);'`
     }
   }
 }
@@ -932,12 +932,12 @@ export const createDefaultClientCacheConfig = (): ClientCacheConfig => ({ indexe
     persistInterval: 30000
   },
   prefetch: {
-    enabled: true,
+   , enabled: true,
     maxConcurrentRequests: 3,
     predictiveThreshold: 0.7
   },
   userHistory: {
-    trackingEnabled: true,
+   , trackingEnabled: true,
     maxEntriesPerUser: 1000,
     syncInterval: 60000
   },

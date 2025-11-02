@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
@@ -33,13 +33,13 @@
   );
 </script>
 {#if Trigger}
-  <!-- Use runes-mode dynamic component invocation (components are dynamic by default) -->
-  <Trigger class={triggerClasses} {disabled} {asChild}>
+  <!-- Use runes-mode dynamic component invocation (components are dynamic by, default) -->
+  <Trigger, class={triggerClasses} {disabled} {asChild}>
     <slot />
   </Trigger>
 {:else}
-  <!-- simple fallback while adapter resolves -->
-  <button class={triggerClasses} {disabled} aria-haspopup="menu">
+  <!-- simple fallback while adapter, resolves -->
+  <button, class={triggerClasses} {disabled} aria-haspopup="menu">
     <slot />
   </button>
 {/if}

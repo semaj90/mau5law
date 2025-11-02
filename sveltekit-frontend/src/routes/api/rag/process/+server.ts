@@ -82,7 +82,7 @@ async function extractTextFromImage(buffer: Buffer, mimeType: string): Promise<s
 
     return data.text || '[No text extracted from image]';
   } catch (error) {
-    console.error('Image OCR failed:', error);
+    console.error('Image OCR failed: `, error);'`
     return `[Image OCR failed: ${error instanceof Error ? error.message : `Unknown error` }]`;
   }
 }
@@ -90,7 +90,7 @@ async function extractTextFromImage(buffer: Buffer, mimeType: string): Promise<s
 /**
  * Process file and extract text content
  */
-async function processFile(file: File): Promise<{ content: string;, metadata: any }> {
+async function processFile(file: File): Promise<{ content: string; metadata: any }> {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   let content = '';
@@ -123,7 +123,7 @@ async function processFile(file: File): Promise<{ content: string;, metadata: an
  */
 async function performLegalAnalysis(content: string): Promise<any> {
   try {
-    const prompt = `Analyze this legal document and provide:
+    const prompt = `Analyze this legal document and provide:`
 1. Document type classification
 2. Key parties and entities
 3. Important dates and monetary amounts
@@ -131,7 +131,7 @@ async function performLegalAnalysis(content: string): Promise<any> {
 5. Confidence score (0-1)
 
 Document content:
-${content.substring(0, 4000)}`;
+${content.substring(0, 4000)}`;`
 
     const analysis = await generateChatResponse(
       [{ role: 'user', content: prompt }],
@@ -182,7 +182,7 @@ async function uploadToMinIO(file: File, documentId: string): Promise<string> {
 
     return url;
   } catch (error) {
-    console.error('MinIO upload failed:', error);
+    console.error('MinIO upload failed: `, error);'`
     throw new Error(`Failed to upload to MinIO: ${error instanceof Error ? error.message : `Unknown error` }`);
   }
 }
@@ -210,7 +210,7 @@ export const POST: RequestHandler = async ({ request }) => {
       try {
         // 1. Process file and extract text
         const { content, metadata: fileMetadata } = await processFile(file);
-        console.log(`✅ Extracted ${content.length} characters from ${file.name}');
+        console.log(`✅ Extracted ${content.length} characters from ${file.name}');'`
 
         // 2. Upload to MinIO
         let minioUrl = '';
@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
             console.log(`✅ Generated embedding and indexed in Qdrant + pgvector`);
           } catch (embeddingError) {
-            console.error('Embedding/indexing failed:', embeddingError);
+            console.error('Embedding/indexing failed: `, embeddingError);'`
             embeddingResult = {
               success: false,
               error: embeddingError instanceof Error ? embeddingError.message : `Unknown error` };
@@ -286,7 +286,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
 
       } catch (error) {
-        console.error(`Failed to process file ${file.name}: ', error);
+        console.error(`Failed to process file ${file.name}: ', error);'`
         results.push({
           filename: file.name,
           status: 'error',
@@ -314,9 +314,9 @@ export const POST: RequestHandler = async ({ request }) => {
     });
 
   } catch (error) {
-    console.error('❌ RAG process error:', error);
+    console.error('❌ RAG process error:', error);'
     return json(
-      { error: 'Failed to process files', details: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to process files', details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }
@@ -332,8 +332,7 @@ export const GET: RequestHandler = async () => {
       vectorSearch: 'Qdrant + pgvector hybrid',
       embeddings: services.env.ollamaConfig.embeddingModel,
       legalAnalysis: services.env.ollamaConfig.chatModel,
-      ocr: 'pdf-parse + tesseract.js (optional)'
-    },
+      ocr: `pdf-parse + tesseract.js (optional)` },
     endpoints: {
       process: 'POST /api/rag/process',
       search: 'POST /api/semantic-search',

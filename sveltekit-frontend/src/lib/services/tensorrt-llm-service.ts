@@ -186,7 +186,7 @@ class TensorRTLLMService {
       success: true,
       response: data.text || data.response,
       tokens: data.tokens_generated || data.tokens,
-      model: data.model || 'tensorrt-llm` };
+      model: data.model || 'tensorrt-llm` };'`
   }
   /**
    * Generate inference using Ollama with legal optimization
@@ -300,7 +300,7 @@ class TensorRTLLMService {
         this.modelCache.set(model.name, model);
         console.log(`Warmed up model ${model.name} (${model.backend}) in ${warmupTime}ms`);
       } catch (error) {
-        console.warn(`Failed to warm up model ${model.name}: ', error);
+        console.warn(`Failed to warm up model ${model.name}: ', error);'`
       }
     }
   }
@@ -349,7 +349,7 @@ class TensorRTLLMService {
    * Generate cache key for requests
    */
   private getCacheKey(request: InferenceRequest): string {
-    const key = `${request.prompt}:${request.model || 'default` }:${request.max_tokens || 512}:${request.temperature || 0.1}`;
+    const key = `${request.prompt}:${request.model || 'default` }:${request.max_tokens || 512}:${request.temperature || 0.1}`;'`
     return Buffer.from(key).toString('base64').substring(0, 64);
   }
   /**
@@ -418,7 +418,7 @@ class TensorRTLLMService {
   ): Promise<InferenceResponse> {
     const enhancedPrompt =
       evidenceIds && evidenceIds.length > 0
-        ? `[EVIDENCE ANALYSIS] Case ID: ${caseId || 'unknown` }\nEvidence IDs: ${evidenceIds.join(', ')}\n\nAnalysis Request: ${prompt}`
+        ? `[EVIDENCE ANALYSIS] Case ID: ${caseId || 'unknown` }\nEvidence IDs: ${evidenceIds.join(', ')}\n\nAnalysis Request: ${prompt}`'`
         : prompt;
     return this.generateInference({
       prompt: enhancedPrompt,
@@ -432,8 +432,8 @@ class TensorRTLLMService {
   /**
    * Get inference performance metrics for evidence processing
    */
-  async getPerformanceMetrics(): Promise<{ tensorrt: { avgLatency: number; throughput: number;, available: boolean };
-    ollama: { avgLatency: number; throughput: number;, available: boolean };
+  async getPerformanceMetrics(): Promise<{ tensorrt: { avgLatency: number; throughput: number; available: boolean };
+    ollama: { avgLatency: number; throughput: number; available: boolean };
     cacheHitRate: number;
     totalRequests: number;
   }> {

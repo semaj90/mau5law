@@ -9,16 +9,16 @@ const isDev = process.env.NODE_ENV !== 'production';
 function getDatabaseUrl(): string {
   return (
     process.env.DATABASE_URL ||
-    `postgresql://legal_admin:123456@${process.env.DATABASE_HOST ?? 'postgres'}:${
-      process.env.DATABASE_PORT ?? '5434` }/legal_ai_db`
+    `postgresql://legal_admin:123456@${process.env.DATABASE_HOST ?? 'postgres'}:${`
+      process.env.DATABASE_PORT ?? '5434` }/legal_ai_db`'
   );
 }
 function getAdminDatabaseUrl(): string {
   return (
     process.env.ADMIN_DATABASE_URL ||
     (process.env.ADMIN_DATABASE_HOST &&
-      `postgresql://postgres:postgres@${process.env.ADMIN_DATABASE_HOST}:${
-        process.env.ADMIN_DATABASE_PORT ?? '5432` }/postgres`) ||
+      `postgresql://postgres:postgres@${process.env.ADMIN_DATABASE_HOST}:${`
+        process.env.ADMIN_DATABASE_PORT ?? '5432` }/postgres`) ||'
     getDatabaseUrl()
   );
 }
@@ -32,25 +32,25 @@ let adminDb: NodePgDatabase<typeof schema> | null = null;
 // ===============================
 // Connection Creators
 // ===============================
-export function createRuntimeConnection(): NodePgDatabase<typeof schema> {
+export function createRuntimeConnection(): NodePgDatabase<typeof, schema> {
   if (!runtimeConnectionSingleton) {
     const url = getDatabaseUrl();
     runtimeConnectionSingleton = postgres(url, {
-      max: Number(process.env.PG_MAX_CLIENTS ?? 10),
+      max: Number(process.env.PG_MAX_CLIENTS ?? 10)
     });
-    // drizzle's inferred return may be typed as unknown here -> cast to the expected NodePgDatabase type
-    runtimeDb = drizzle(runtimeConnectionSingleton, { schema }) as unknown as NodePgDatabase<typeof schema>;
+    // drizzle's inferred return may be typed as unknown here -> cast to the expected NodePgDatabase type'
+    runtimeDb = drizzle(runtimeConnectionSingleton, { schema }) as unknown as NodePgDatabase<typeof, schema>;
   }
   return runtimeDb!;
 }
-export function createAdminConnection(): NodePgDatabase<typeof schema> {
+export function createAdminConnection(): NodePgDatabase<typeof, schema> {
   if (!adminConnectionSingleton) {
     const url = getAdminDatabaseUrl();
     adminConnectionSingleton = postgres(url, {
-      max: Number(process.env.PG_ADMIN_MAX_CLIENTS ?? 5),
+      max: Number(process.env.PG_ADMIN_MAX_CLIENTS ?? 5)
     });
     // same cast for admin DB
-    adminDb = drizzle(adminConnectionSingleton, { schema }) as unknown as NodePgDatabase<typeof schema>;
+    adminDb = drizzle(adminConnectionSingleton, { schema }) as unknown as NodePgDatabase<typeof, schema>;
   }
   return adminDb!;
 }
@@ -76,7 +76,7 @@ export async function testAdminConnection(): Promise<boolean> {
   try {
     const client = adminConnectionSingleton ?? postgres(getAdminDatabaseUrl());
     const res: Array<{ ok: number }> = await client`SELECT 1 as ok`;
-    // Only close the connection if we created a new one and it's not the singleton
+    // Only close the connection if we created a new one and it's not the singleton'
     if (!adminConnectionSingleton && typeof (client as unknown as { end?: () => Promise<void> }).end === 'function') {
       await (client as unknown as { end: () => Promise<void> }).end();
     }
@@ -137,7 +137,7 @@ if (!isDev) {
 const dbManager = {
   getDb: createRuntimeConnection,
   getAdminDb: createAdminConnection,
-  closeConnections,
+  closeConnections
 };
 export default dbManager;
 // ===============================

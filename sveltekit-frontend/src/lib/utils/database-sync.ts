@@ -346,7 +346,7 @@ export class DatabaseSyncManager {
     const requestOptions: RequestInit = {
       method,
       headers: {
-        'Content-Type': 'application/json` }
+        'Content-Type': 'application/json' }
     };
     if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
       requestOptions.body = JSON.stringify(data);
@@ -374,7 +374,7 @@ export class DatabaseSyncManager {
     throw new Error('Maximum retry attempts reached');
   }
   private generateOperationId(operation: string, entity: string, id?: string): string {
-    return `${operation}-${entity}-${id || 'new` }-${Date.now()}`;
+    return `${operation}-${entity}-${id || 'new' }-${Date.now()}`;
   }
   private updateLocalCache(entity: string, operation: string, data: Record<string, unknown> | null, id?: string): void {
     // Implement local cache updates based on operation

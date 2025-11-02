@@ -11,8 +11,8 @@ export function createLLMStreamActor({
   const machine = createMachine({
     id: 'llmStream',
     initial: 'idle',
-    states: { idle: {, on: {, START: 'streaming' } },
-      streaming: { invoke: {, src: fromPromise(async ({ input }: {, input: { prompt?: string } }) => {
+    states: {, idle: {, on: {, START: 'streaming' } },
+      streaming: {, invoke: {, src: fromPromise(async ({ input }: {, input: { prompt?: string } }) => {
             const prompt = input.prompt || '';
             const res = await fetch(url, {
               method: 'POST',

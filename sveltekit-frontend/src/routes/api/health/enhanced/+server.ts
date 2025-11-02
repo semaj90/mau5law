@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
           SELECT COUNT(*) as count
           FROM background_jobs
           WHERE status IN ('pending', 'processing')
-        `;
+        `;`
         const pendingJobs = parseInt(jobCount[0]?.count || '0');
         healthCheck.services.backgroundJobs = pendingJobs > 100 ? 'degraded' : 'healthy';
         if (detailed) {
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ url }) => {
             : 500
     });
   } catch (error) {
-    console.error('Health check error:', error);
+    console.error('Health check error:', error);'
     return json(
       {
         status: 'error',
@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ url }) => {
           database: 'unknown',
           migrations: 'unknown',
           backgroundJobs: 'unknown',
-          aiServices: 'unknown` }
+          aiServices: 'unknown' }
       },
       { status: 500 }
     );

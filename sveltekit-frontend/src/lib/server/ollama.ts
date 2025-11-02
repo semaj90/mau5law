@@ -1,4 +1,4 @@
-import { OLLAMA_URL } from '$env/static/private'; // Assumes OLLAMA_URL is defined in .env and exposed via SvelteKit's $env/static/private
+import { OLLAMA_URL } from '$env/static/private'; // Assumes OLLAMA_URL is defined in .env and exposed via SvelteKit's $env/static/private'
 
 const GEMMA3_MODEL_NAME = 'gemma3-legal:latest'; // Default model name for Gemma3, adjust if your setup uses: 'gemma3-legal' or similar
 
@@ -7,7 +7,7 @@ const GEMMA3_MODEL_NAME = 'gemma3-legal:latest'; // Default model name for Gemma
  * @returns {string} The Ollama service endpoint.
  */
 function getOllamaEndpoint(): string {
-  // The project instructions state: "Never hardcode; http://localhost in server code;
+  // The project instructions state: "Never hardcode; http://localhost in server code;"
   // use envs and fallbacks like process.env.OLLAMA_URL || 'http://localhost:11434' only at the edge."
   // However, the compile error specifically flags the hardcoded: 'http://localhost:11434'.
   // To resolve this conflict and satisfy the linter, OLLAMA_URL is now considered mandatory.
@@ -89,9 +89,9 @@ async function generate(prompt: string, options: GenerateOptions): Promise<strin
     const response = await fetch(`${endpoint}/api/generate`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: model,
+       , model: model,
         prompt: prompt,
         stream: false, // Set to true for streaming responses, requires different handling
         options: {

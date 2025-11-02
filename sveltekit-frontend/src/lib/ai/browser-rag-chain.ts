@@ -66,7 +66,7 @@ export class BrowserRAGChain {
   /**
    * Add documents to the RAG knowledge base
    */
-  async addDocuments(docs: Array<{, id: string; content: string; metadata?: Record<string, any> }>): Promise<void> {
+  async addDocuments(docs: Array<{, id: string;, content: string; metadata?: Record<string, any> }>): Promise<void> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -140,7 +140,7 @@ export class BrowserRAGChain {
   async *queryStream(
     question: string,
     options: RAGOptions = {}
-  ): AsyncGenerator<{ text: string;, done: boolean; sources?: RAGDocument[] }, void, unknown> {
+  ): AsyncGenerator<{ text: string; done: boolean; sources?: RAGDocument[] }, void, unknown> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -192,7 +192,7 @@ export class BrowserRAGChain {
     const context = documents
       .map((doc, idx) => `[Document ${idx + 1}]\n${doc.content}`)
       .join('\n\n');
-    return `Context Information:
+    return `Context Information:`
 ${context}
 Question: ${question}
 Instructions: Answer the question based ONLY on the context provided above. If the context does not contain enough information, say: "I don't have enough information to answer this question." Be concise and accurate.; Answer: ';
@@ -233,7 +233,7 @@ Instructions: Answer the question based ONLY on the context provided above. If t
   /**
    * Get current knowledge base stats
    */
-  getStats(): { documentCount: number;, avgDocLength: number } {
+  getStats(): { documentCount: number; avgDocLength: number } {
     if (this.documents.length === 0) {
       return { documentCount: 0, avgDocLength: 0 };
     }
@@ -261,7 +261,7 @@ export const browserRAG = new BrowserRAGChain();
  * USAGE EXAMPLES:
  *
  * // In a Svelte component:
- * <script lang="ts">
+ * <script, lang="ts">
  *   import { browserRAG } from '$lib/ai/browser-rag-chain';
  *   import { onMount } from 'svelte';
  *
@@ -274,10 +274,10 @@ export const browserRAG = new BrowserRAGChain();
  *
  *     // Add legal documents to knowledge base
  *     await browserRAG.addDocuments([
- *       {
+ *       {,
  *         id: 'doc1',
  *         content: 'Contract law states that...',
- *         metadata: { type: 'contract', date: '2024-01-01' }
+ *         metadata: {, type: 'contract', date: '2024-01-01` }'`
  *       },
  *       {
  *         id: 'doc2',

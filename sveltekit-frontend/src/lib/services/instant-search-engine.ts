@@ -7,7 +7,7 @@ import { lokiRedisCache, type CachedDocument } from '../cache/loki-redis-integra
 // Assuming getOllamaEmbedding is configured to use OLLAMA_URL environment variable and specified models (gemma3-legal:latest, embeddinggemma:latest).
 import { getOllamaEmbedding } from '$lib/llm/gemma';
 // Assuming optimizedQdrantService is configured to use QDRANT_URL environment variable.
-import { optimizedQdrantService as qdrant } from '$lib/services/optimized-qdrant-service'; // Updated import path and alias
+import { optimizedQdrantService, as qdrant } from '$lib/services/optimized-qdrant-service'; // Updated import path and alias
 // Assuming lookupSemanticCache and storeSemanticCache (gRPC client) are configured to use appropriate environment variables for their endpoint.
 import { lookupSemanticCache, storeSemanticCache } from '$lib/server/grpc/vector-cache-client'; // New gRPC client import
 
@@ -21,7 +21,7 @@ interface QdrantSearchResult { id: string | number;, score: number;
 interface OptimizedQdrantService {
   search(
     collectionName: string,
-    params: { vector: number[];, limit: number;
+    params: {, vector: number[];, limit: number;
      , with_payload: boolean;
       filter?: any;
     }
@@ -50,7 +50,7 @@ export interface SearchFilters {
   documentTypes?: string[];
   riskLevels?: ('low' | 'medium' | 'high' | 'critical')[];
   jurisdictions?: string[];
-  dateRange?: { start: Date;, end: Date };
+  dateRange?: { start: Date; end: Date };
   confidenceMin?: number;
   priorityMin?: number;
 }
@@ -73,7 +73,7 @@ export interface SearchStats { totalSearches: number;, averageResponseTime: num
   cacheHitRate: number;
   fuzzySearches: number;
   semanticSearches: number;
-  popularQueries: Array<{ query: string;, count: number }>;
+  popularQueries: Array<{ query: string; count: number }>;
   performanceMetrics: { p50: number;, p90: number;
     p95: number;
     p99: number;
@@ -282,7 +282,7 @@ export class InstantSearchEngine extends EventEmitter {
 
       return results;
     } catch (error: any) {
-      console.error(`❌ Search failed for query: "${normalizedQuery}": ', error);
+      console.error(`❌ Search failed for query: "${normalizedQuery}": ', error);'`
       this.updateSearchStats('error', Date.now() - startTime);
       return [];
     }
@@ -398,12 +398,12 @@ export class InstantSearchEngine extends EventEmitter {
           cacheTimestamp: Date.now(),
           accessCount: (r.payload?.accessCount as number) || 0,
           cacheLocation: 'qdrant', // Indicate source
-          syncStatus: 'synced` },
+          syncStatus: 'synced` },'`
         score: r.score,
         semanticScore: r.score, // Store semantic score separately
         combinedScore: r.score,
         resultType: 'semantic',
-        highlights: {}, // Semantic search typically doesn't provide highlights directly
+        highlights: {}, // Semantic search typically doesn't provide highlights directly'
         responseTime: 0
       }));
 
@@ -421,7 +421,7 @@ export class InstantSearchEngine extends EventEmitter {
   }
 
   /**
-   * Builds a Qdrant filter object from InstantSearchEngine's SearchFilters.
+   * Builds a Qdrant filter object from InstantSearchEngine's SearchFilters.'
    * @param filters The search filters to apply.
    * @returns A Qdrant filter object or undefined if no filters.
    */
@@ -622,7 +622,7 @@ export class InstantSearchEngine extends EventEmitter {
       const before = highlighted.substring(0, start);
       const matched = highlighted.substring(start, end + 1);
       const after = highlighted.substring(end + 1);
-      highlighted = `${before}<mark class="bg-yellow-200 dark:bg-yellow-900 px-1 rounded font-medium">${matched}</mark>${after}`;
+      highlighted = `${before}<mark class="bg-yellow-200 dark:bg-yellow-900 px-1 rounded, font-medium">${matched}</mark>${after}`;
     }
     return highlighted;
   }

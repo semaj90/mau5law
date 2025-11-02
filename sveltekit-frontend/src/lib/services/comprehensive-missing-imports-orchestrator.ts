@@ -163,7 +163,7 @@ export class ComprehensiveMissingImportsOrchestrator {
       .map(([file, errors], i) => `${i + 1}. \`${file}\` (${errors.length} errors)`)
       .join('\n');
 
-    const report = `# 🔍 ENHANCED ERROR ANALYSIS REPORT
+    const report = `# 🔍 ENHANCED ERROR ANALYSIS REPORT`
 Generated: ${new Date().toISOString()}
 
 ## 📊 ERROR SUMMARY
@@ -184,7 +184,7 @@ ${topMissingClasses || '- None listed'}
 ${topMissingTypes || '- None listed'}
 
 ## 📂 FILES WITH MOST ERRORS
-${filesWithMostErrors || '- None listed` }
+${filesWithMostErrors || '- None listed` }'`
 
 ## 🔧 CATEGORIZED MISSING ITEMS
 ### Svelte 5 Runes
@@ -200,7 +200,7 @@ ${this.getCategoryItems(analysis, ['postgres', 'Redis', 'sql', 'Loki', 'Collecti
 ${this.getCategoryItems(analysis, ['createMachine', 'createActor', 'assign', 'spawn', 'interpret'])}
 
 ### Environment Variables
-${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type === type.toUpperCase()).map(env => `- \`${env}\``).join('\n') || '- None listed` }
+${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type === type.toUpperCase()).map(env => `- \`${env}\``).join('\n') || '- None listed` }'`
 
 ## 📋 RESOLUTION RECOMMENDATIONS
 1. High Priority: Focus on Svelte 5 runes and SvelteKit imports.
@@ -212,7 +212,7 @@ ${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type ==
 - Web Fetch for community implementations and examples
 - Automated Barrel Store Generation for systematic import resolution
 - Apply Svelte 5 best practices where applicable
-`;
+`;`
 
     return report;
   }
@@ -275,7 +275,7 @@ ${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type ==
   ): Promise<void> {
     const successRate = result.totalErrors > 0 ? Math.round((result.resolvedErrors / result.totalErrors) * 100) : 0;
 
-    const summary = `# 🎯 COMPREHENSIVE MISSING IMPORTS RESOLUTION SUMMARY
+    const summary = `# 🎯 COMPREHENSIVE MISSING IMPORTS RESOLUTION SUMMARY`
  **Execution Time**: ${new Date().toISOString()}
  **Total Processing Time**: ${result.performance.totalTime}ms
  **Analysis Time**: ${result.performance.analysisTime}ms
@@ -292,8 +292,8 @@ ${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type ==
 
  ## ⚙️ CONFIGURATION USED
  - Context7 Integration: ${options.useContext7 ? '✅ Enabled' : '❌ Disabled'}
- - Web Fetch Resolution: ${options.useWebFetch ? '✅ Enabled' : '❌ Disabled'}
- - File Generation: ${options.generateFiles ? '✅ Enabled' : '❌ Disabled'}
+ - Web Fetch Resolution: ${options.useWebFetch ? '✅ Enabled' : '❌ Disabled` }'`
+ - File Generation: ${options.generateFiles ? '✅ Enabled' : `❌ Disabled` }
  - Best Practices: ${options.applyBestPractices ? '✅ Enabled' : `❌ Disabled` }
 
  ## 📋 RECOMMENDATIONS
@@ -302,7 +302,7 @@ ${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type ==
  3. Run \`npm run check\` to validate error reduction.
 
  **Status**: ✅ COMPREHENSIVE MISSING IMPORTS RESOLUTION COMPLETE
- `;
+ `;`
 
      console.log(summary);
    }
@@ -313,8 +313,8 @@ ${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type ==
    async testComprehensiveSystem(): Promise<void> {
      console.log('🧪 Testing comprehensive missing imports system...');
 
-     const mockErrorOutput = `../rag/enhanced-rag-service.ts:715:20: error TS2339: Property: 'QDRANT_URL' does not exist on; type: '{}'.
-../rag/enhanced-rag-service.ts:716:20: error TS2339: Property: 'OLLAMA_URL' does not exist on; type: '{}'`;
+     const mockErrorOutput = `../rag/enhanced-rag-service.ts:715:20: error; TS2339:; Property: 'QDRANT_URL' does not exist on; type: '{}'.`
+../rag/enhanced-rag-service.ts:716:20: error; TS2339:; Property: 'OLLAMA_URL' does not exist on; type: '{}'`;`
 
      // Run a dry execution with generation disabled to validate analysis and guards
      try {

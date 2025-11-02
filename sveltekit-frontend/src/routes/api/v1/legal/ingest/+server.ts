@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (err: any) {
-    console.error('Ingest API error:', err);
+    console.error('Ingest API error:', err);'
 
     if (err.status) {
       throw err; // Re-throw SvelteKit errors
@@ -95,7 +95,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       }
     });
   } catch (err: any) {
-    console.error('Batch ingest API error:', err);
+    console.error('Batch ingest API error:', err);'
 
     if (err.status) {
       throw err;

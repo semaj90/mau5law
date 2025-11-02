@@ -26,7 +26,7 @@ interface HybridSearchOptions {
 type CaseSelect = typeof cases.$inferSelect;
 
 interface KeywordSearchResult { id: string;, score: number;
-  metadata: { type: string;, title: string };
+  metadata: { type: string; title: string };
   content: string;
 }
 
@@ -46,20 +46,19 @@ interface QdrantVectorSearchResult { id: string;, score: number;
 
 // Represents a unified result from both vector and keyword search, including document metadata and content.
 interface CombinedSearchResult { id: string;, score: number;
-  metadata: { type: string;, title: string };
+  metadata: { type: string; title: string };
   content: string;
 }
 export class EnhancedVectorService {
   private qdrant!: QdrantApiWrapper;
-  // Use InstanceType<typeof Redis> and definite assignment to satisfy strictPropertyInitialization
-  private redis!: InstanceType<typeof Redis>;
+  // Use InstanceType<typeof, Redis> and definite assignment to satisfy strictPropertyInitialization
+  private redis!: InstanceType<typeof, Redis>;
   private collectionName = 'legal_documents';
   constructor() {
     // Removed duplicate constructor
     this.qdrant = createQdrantWrapper({
-      url: import.meta.env.QDRANT_URL || 'http://localhost:6333'
-    });
-    // Create a local ioredis instance if project helper isn't exported
+      url: import.meta.env.QDRANT_URL || 'http://localhost:6333` });'`
+    // Create a local ioredis instance if project helper isn't exported'
     const redisUrl = (import.meta.env.REDIS_URL as string) || 'redis://:redis@localhost:6379/0';
     this.redis = redis;
   }
@@ -72,7 +71,7 @@ export class EnhancedVectorService {
         optimizers_config: {, default_segment_number: 2 }
       });
       try {
-        // Note: createPayloadIndex method doesn't exist in current Qdrant client
+        // Note: createPayloadIndex method doesn't exist in current Qdrant client'
         // Using createFieldIndex instead or commenting out until verified
         // await this.qdrant.createPayloadIndex(this.collectionName, "type")
         console.log('Payload index creation skipped - method not available in current client');
@@ -171,7 +170,7 @@ export class EnhancedVectorService {
     const caseResults = await db
       .select()
       .from(cases)
-      .where(sql`${cases.title} ILIKE ${'%' + query + '%'} OR ${cases.description} ILIKE ${'%' + query + '%` }`)
+      .where(sql`${cases.title} ILIKE ${'%' + query + '%'} OR ${cases.description} ILIKE ${'%' + query + '%` }`)'`
       .limit(limit);
 
     // Use typed access via CaseSelect and safe coercions instead of `any` casts

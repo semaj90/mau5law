@@ -28,7 +28,7 @@ export interface WebGPUSOMCache { maxNodes: number;, dimensions: number;
   // Methods that were missing
   findSimilar(vector: Float32Array, k?: number): Array<any>;
   updateWithWeight(id: string, vector: Float32Array, weight: number): void;
-  getStats(): { nodeCount: number; avgSimilarity: number;, lastUpdate: number };
+  getStats(): { nodeCount: number; avgSimilarity: number; lastUpdate: number };
   storeVector(id: string, vector: Float32Array): void;
 }
 // WebGPU Topology Accelerator
@@ -50,7 +50,7 @@ export interface LocalLLMConnector {
 }
 // Hidden Markov Model for AssemblyScript compatibility
 export class HiddenMarkaraiModel {
-  constructor(config: { stateCount: number;, observationCount: number;
+  constructor(config: {, stateCount: number;, observationCount: number;
    , transitionSmoothness: number;
    , emissionSmoothness: number;
   });

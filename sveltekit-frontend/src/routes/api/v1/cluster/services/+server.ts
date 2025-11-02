@@ -10,7 +10,7 @@ import { context7OrchestrationService } from '$lib/services/context7-orchestrati
 /* clarified literal types matching registry API */
 type Category = 'ai_rag' | 'file_upload' | 'xstate_orchestration' | 'protocol' | 'infrastructure';
 type Tier = 'tier1' | 'tier2' | 'tier3' | 'tier4';
-type ServiceWithHealth = ServiceDefinition & { healthy: boolean;, lastHealthCheck: string };
+type ServiceWithHealth = ServiceDefinition & { healthy: boolean; lastHealthCheck: string };
 
 /* runtime allowed lists for safe narrowing */
 const ALLOWED_CATEGORIES: Category[] = ['ai_rag', 'file_upload', 'xstate_orchestration', 'protocol', 'infrastructure'];
@@ -166,22 +166,20 @@ function getProtocolBreakdown(services: ServiceDefinition[]): Record<string, num
 }
 
 async function handleStartServices(serviceNames: string[], _options?: any): Promise<Response> {
-  const results: Record<string, { success: boolean;, message: string }> = {};
+  const results: Record<string, { success: boolean; message: string }> = {};
   for (const serviceName of serviceNames) {
     const service = productionServiceRegistry.getServiceByName(serviceName);
     if (!service) {
       results[serviceName] = {
         success: false,
-        message: 'Service not found in registry'
-      };
+        message: 'Service not found in registry` };'`
       continue;
     }
     try {
       const healthy = await productionServiceRegistry.checkServiceHealth(serviceName);
       results[serviceName] = {
         success: healthy,
-        message: healthy ? 'Service is running' : 'Service failed to start'
-      };
+        message: healthy ? 'Service is running' : `Service failed to start` };
     } catch (error: any) {
       results[serviceName] = {
         success: false,
@@ -197,7 +195,7 @@ async function handleStartServices(serviceNames: string[], _options?: any): Prom
 }
 
 async function handleStopServices(serviceNames: string[]): Promise<Response> {
-  const results: Record<string, { success: boolean;, message: string }> = {};
+  const results: Record<string, { success: boolean; message: string }> = {};
   for (const serviceName of serviceNames) {
     // In production, this would actually stop the service
     results[serviceName] = {

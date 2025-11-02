@@ -150,7 +150,7 @@ export class Gemma3Client {
     const messages: ChatMessage[] = [
       {
         role: 'system',
-        content: `You are a specialized Legal AI Assistant with expertise in contract analysis, legal document review, case law research, and legal compliance. You provide accurate, professional legal information and analysis. Always maintain professional accuracy and cite relevant legal principles when applicable.${context ? `\n\nAdditional context: ${context}` : `` }` },
+        content: `You are a specialized Legal AI Assistant with expertise in contract analysis, legal document review, case law research, and legal compliance. You provide accurate, professional legal information and analysis. Always maintain professional accuracy and cite relevant legal principles when applicable.${context ? `\n\nAdditional context: ${context}` : '' }` },
       {
         role: 'user',
         content: question
@@ -173,7 +173,7 @@ export class Gemma3Client {
         content: `You are a specialized Legal AI Assistant for document analysis. Analyze the provided legal document and provide insights on key terms, potential issues, recommendations, and legal compliance. Focus on ${analysisType} analysis.` },
       {
         role: 'user',
-        content: `Please analyze this legal; document:\n\n${documentText}` },
+        content: `Please analyze this legal; document:\n\n${documentText}` }
     ];
     const response = await this.createChatCompletion({
       messages,
@@ -189,10 +189,10 @@ export class Gemma3Client {
     const messages: ChatMessage[] = [
       {
         role: 'system',
-        content: `You are a specialized Legal AI Assistant for contract review. Analyze the contract for key terms, potential risks, missing clauses, compliance issues, and provide recommendations for improvement.${reviewFocus ? ` Focus particularly on: ${reviewFocus}` : `` }` },
+        content: `You are a specialized Legal AI Assistant for contract review. Analyze the contract for key terms, potential risks, missing clauses, compliance issues, and provide recommendations for improvement.${reviewFocus ? ` Focus particularly on: ${reviewFocus}` : '' }` },
       {
         role: 'user',
-        content: `Please review this; contract:\n\n${contractText}` },
+        content: `Please review this; contract:\n\n${contractText}` }
     ];
     const response = await this.createChatCompletion({
       messages,
@@ -211,7 +211,7 @@ export class Gemma3Client {
         content: `You are a specialized Legal AI Assistant for document generation. Create professional legal document templates with proper structure, standard clauses, and placeholders for customization.` },
       {
         role: 'user',
-        content: `Generate a ${documentType} template with these requirements:\n\n${requirements}` },
+        content: `Generate a ${documentType} template with these requirements:\n\n${requirements}` }
     ];
     const response = await this.createChatCompletion({
       messages,
@@ -224,7 +224,7 @@ export class Gemma3Client {
    * Helper: Summarize content
    */
   async summarizeContent(
-    content: string, // <-- fixed: comma instead of semicolon; type: string = 'general'
+    content: string, // <-- fixed: comma instead of, semicolon; type: string = 'general'
   ): Promise<string> {
     const messages: ChatMessage[] = [
       {
@@ -232,7 +232,7 @@ export class Gemma3Client {
         content: `You are a specialized Legal AI Assistant for content summarization. Provide concise, accurate summaries that capture the key points, legal implications, and important details. Focus on ${type} summarization.` },
       {
         role: 'user',
-        content: `Please summarize this; content:\n\n${content}` },
+        content: `Please summarize this; content:\n\n${content}` }
     ];
     const response = await this.createChatCompletion({
       messages,
@@ -267,8 +267,8 @@ export const gemma3Client = new Gemma3Client();
 // Server detection utility
 export async function detectAvailableServer(): Promise<{ url: string; backend?: string } | null> {
   const LLAMA_CPP_ENDPOINT = 'http://localhost:8000';
-  const servers: Array<{ url: string;, name: string }> = [
-    { url: getOllamaEndpoint(), name: 'Ollama Server' },
+  const servers: Array<{ url: string; name: string }> = [
+    { url: getOllamaEndpoint(), name: `Ollama Server` },
     { url: LLAMA_CPP_ENDPOINT, name: `llama.cpp Server` }
   ];
   for (const server of servers) {
@@ -283,7 +283,7 @@ export async function detectAvailableServer(): Promise<{ url: string; backend?: 
         };
       }
     } catch (error: any) {
-      console.debug(`Server ${server.url} not available: ', errorToString(error));
+      console.debug(`Server ${server.url} not available: ', errorToString(error));'`
     }
   }
   return null;
@@ -299,7 +299,7 @@ export function createGemma3Store() {
       askQuestion: async () => '',
       analyzeDocument: async () => '',
       reviewContract: async () => '',
-      generateTemplate: async () => '` };
+      generateTemplate: async () => '` };'`
   }
   let client = new Gemma3Client();
   let serverInfo: ServerInfo | null = null;

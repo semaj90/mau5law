@@ -65,10 +65,10 @@ const CreateCitationSchema = z.object({
  */
 class CitationsService {
   constructor(private userId: string) {}
-  async getCitations(query: z.infer<typeof CitationsQuerySchema>) {
+  async getCitations(query: z.infer<typeof, CitationsQuerySchema>) {
     // Sample citations data - in production, query citations table
     const sampleCitations = [
-      {
+      {,
         id: crypto.randomUUID(),
         caseId: query.caseId,
         citationType: 'case_law',
@@ -134,7 +134,7 @@ class CitationsService {
       }
     };
   }
-  async createCitation(data: z.infer<typeof CreateCitationSchema>) {
+  async createCitation(data: z.infer<typeof, CreateCitationSchema>) {
     // In production, insert into citations table
     const newCitation = {
       id: crypto.randomUUID(),
@@ -240,7 +240,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const validated = CitationsListResponse.safeParse(payload);
     if (!validated.success) {
       console.error('Citations list response validation failed', validated.error);
-      return error(500, { message: 'Invalid response shape' });
+      return error(500, { message: 'Invalid response shape` });'`
     }
     return json(payload);
   } catch (err: any) {
@@ -261,7 +261,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.session || !locals.user) {
-      return json({ success: false, message: 'Authentication required' }, { status: 401 });
+      return json({ success: false, message: `Authentication required` }, { status: 401 });
     }
     const body = await request.json();
     const validatedData = CreateCitationSchema.parse(body);

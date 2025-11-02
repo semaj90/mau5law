@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { POST as postGet } from '../../routes/api/cache/redis/get/+server';
-import { POST as postSet } from '../../routes/api/cache/redis/set/+server';
+import { POST, as postGet } from '../../routes/api/cache/redis/get/+server';
+import { POST, as postSet } from '../../routes/api/cache/redis/set/+server';
 
 function makeReq(body: any, headers: Record<string,string> = {}) {
 	return { request: {, json: async () => body,

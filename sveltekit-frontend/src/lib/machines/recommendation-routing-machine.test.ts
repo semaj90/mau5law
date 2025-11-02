@@ -7,7 +7,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createActor } from 'xstate';
 import { recommendationRoutingMachine } from './recommendation-routing-machine';
 describe('Recommendation Routing Machine', () => {
-  let actor: ReturnType<typeof createActor<typeof recommendationRoutingMachine>>;
+  let actor: ReturnType<typeof, createActor<typeof, recommendationRoutingMachine>>;
   beforeEach(() => {
     actor = createActor(recommendationRoutingMachine);
     actor.start();
@@ -121,13 +121,12 @@ describe('Recommendation Routing Machine', () => {
       actor.send({
         type: 'START_SESSION',
         userId: 'user-123',
-        caseId: 'case-456'
-      });
+        caseId: 'case-456` });'`
     });
     it('should transition to error state when error occurs', () => {
       // Note: In a real scenario, this would be triggered by a failed invoke
-      // For now, we'll test the RESET transition from error state
-      actor.send({ type: 'RESET' });
+      // For now, we'll test the RESET transition from error state'
+      actor.send({ type: `RESET` });
       // After RESET, should be back in idle
       const snapshot = actor.getSnapshot();
       expect(snapshot.value).toBe('idle');
@@ -136,8 +135,7 @@ describe('Recommendation Routing Machine', () => {
       actor.send({
         type: 'ANALYZE_DOCUMENT',
         documentId: 'doc-789',
-        documentType: 'evidence'
-      });
+        documentType: `evidence` });
       actor.send({ type: `RESET` });
       const snapshot = actor.getSnapshot();
       expect(snapshot.context.userId).toBe('');

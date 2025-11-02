@@ -18,7 +18,7 @@ export class RedisCache {
     });
     (this.client as unknown as EventEmitter).on('error', (err: Error) => {
       this.isConnected = $state(false);
-      console.error('❌ Redis cache error:', err);
+      console.error('❌ Redis cache error:', err);'
     });
   }
   async get<T>(key: string): Promise<T | null> {

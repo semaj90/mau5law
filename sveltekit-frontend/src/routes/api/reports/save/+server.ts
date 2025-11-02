@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
       { status: 200 }
     );
   } catch (error: any) {
-    console.error('Report save error:', error);
+    console.error('Report save error:', error);'
     return json(
       {
         error: 'Failed to save report',
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const reports = await finalQuery.orderBy(aiReports.createdAt);
     return json({ reports }, { status: 200 });
   } catch (error: any) {
-    console.error('Reports load error:', error);
+    console.error('Reports load error:', error);'
     return json(
       {
         error: 'Failed to load reports',
@@ -153,15 +153,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         Bucket: CONFIG.MINIO_BUCKET,
         Key: `reports/${user.id}/${updatedReport.id}.json`,
         Body: JSON.stringify(updatedReport),
-        ContentType: 'application/json` })
+        ContentType: 'application/json' })
     );
 
     // ⚡ Step 4 — Upsert embedding in Qdrant
     const qdrant = new QdrantClient({ url: CONFIG.QDRANT_URL });
     await qdrant.upsert('reports', {
       points: [
-        {
-          id: updatedReport.id,
+        {,
+         , id: updatedReport.id,
           vector: embedding,
           payload: {
            , userId: user.id,
@@ -174,7 +174,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     return new Response(JSON.stringify(updatedReport), { status: 200 });
   } catch (err) {
-    console.error('Report save error:', err);
+    console.error('Report save error:', err);'
     return new Response('Error saving report', { status: 500 });
   }
 };

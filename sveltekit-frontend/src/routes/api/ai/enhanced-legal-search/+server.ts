@@ -67,7 +67,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
       timestamp: new Date().toISOString()
     });
   } catch (err: any) {
-    console.error('Enhanced legal search API error:', err);
+    console.error('Enhanced legal search API error:', err);'
     return json(
       {
         success: false,
@@ -129,7 +129,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
       timestamp: new Date().toISOString()
     });
   } catch (err: any) {
-    console.error('Enhanced legal search POST API error:', err);
+    console.error('Enhanced legal search POST API error:', err);'
     return json(
       {
         success: false,
@@ -257,7 +257,7 @@ async function generateAIEnhancement(
       suggestions: [
         `Try refining your search with terms from ${topResults[0]?.category}`,
         `Consider exploring related ${topResults[0]?.jurisdiction} laws`,
-        `Look for specific sections: ${topResults[0]?.sections?.join(', ') || 'N/A' }`,
+        `Look for specific sections: ${topResults[0]?.sections?.join(', ') || 'N/A` }`,'`
       ].filter(s => !s.includes('N/A')),
       confidence: topResults.reduce((sum, r) => sum + r.confidence, 0) / topResults.length,
       recommendedNextSearch: topResults[0]?.category ? `${query} ${topResults[0].category}` : null

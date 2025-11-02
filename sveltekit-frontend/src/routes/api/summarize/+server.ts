@@ -33,10 +33,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const summary = await generateSummary(content);
     return json({ summary });
   } catch (error: any) {
-    console.error('Summarization error:', error);
+    console.error('Summarization error: ', error);'
     if (error instanceof SyntaxError) {
-      return json({ error: 'Invalid JSON in request body.` }, { status: 400 });
+      return json({ error: 'Invalid JSON in request body.' }, { status: 400 });
     }
-    return json({ error: `Failed to generate summary.` }, { status: 500 });
+    return json({ error: 'Failed to generate summary.' }, { status: 500 });
   }
 };

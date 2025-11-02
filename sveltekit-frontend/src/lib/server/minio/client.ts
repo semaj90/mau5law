@@ -1,4 +1,4 @@
-import { Client as MinioClient } from 'minio';
+import { Client, as MinioClient } from 'minio';
 import { env } from '$env/dynamic/private';
 // Parse MINIO_ENDPOINT which may be: 'host', 'host:port', or: 'http(s)://host:port'
 const _raw = env.MINIO_ENDPOINT || 'localhost';
@@ -45,7 +45,7 @@ export async function ensureBucket(bucketName: string): Promise<boolean> {
   } catch (err: any) {
     // Safe logging for unknown error shapes
     if (err instanceof Error) {
-      console.error('MinIO ensureBucket error:', err.message, err);
+      console.error('MinIO ensureBucket error:', err.message, err);'
     } else {
       console.error('MinIO ensureBucket error (non-Error):', err);
     }

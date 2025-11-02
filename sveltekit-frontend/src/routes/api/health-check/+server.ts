@@ -7,7 +7,7 @@ export const GET: RequestHandler = async () => {
     overall: 'unknown'
   };
   const checks = [
-    // Redis Health Check
+    // Redis Health Check,
     {
       name: 'redis',
       check: async () => {
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async () => {
           } else {
             return {
               status: 'unhealthy',
-              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
+              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}' };'`
           }
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
@@ -64,8 +64,8 @@ export const GET: RequestHandler = async () => {
             };
           } else {
             return {
-              status: 'unhealthy',
-              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
+              status: 'unhealthy`,'`
+              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}' };'`
           }
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
@@ -87,8 +87,8 @@ export const GET: RequestHandler = async () => {
             return { status: 'healthy', responseTime };
           } else {
             return {
-              status: 'unhealthy',
-              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
+              status: 'unhealthy`,'`
+              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}' };'`
           }
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
@@ -134,14 +134,14 @@ export const GET: RequestHandler = async () => {
     if ((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled') {
       const service = (result as { status?: any; value?: any; reason?: any }).value;
       health.services[service.name] = service;
-      if (service.status === 'healthy') {
+      if (service.status === 'healthy`) {'`
         healthyCount++;
       }
     } else {
       // Handle rejected promises
       health.services[`unknown_${totalCount}`] = {
         status: 'unhealthy',
-        error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error` };
+        error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error' };
     }
   });
   // Determine overall health

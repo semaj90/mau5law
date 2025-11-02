@@ -14,7 +14,7 @@ export const GET: RequestHandler = async ({ request }) => {
       const result = await adapter.getSessionAndUser('test-session-id');
       console.log('Minimal adapter result:', result);
     } catch (error: any) {
-      console.error('Minimal adapter error:', error.message);
+      console.error('Minimal adapter error:', error.message);'
       console.error('Minimal adapter query:', error.query);
       console.error('Minimal adapter cause:', error.cause?.message);
       // Return the exact error details

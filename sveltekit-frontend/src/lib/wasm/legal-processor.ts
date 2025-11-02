@@ -41,7 +41,7 @@ interface LegalCitation { type: 'case' | 'statute' | 'regulation' | 'rule';, ci
 interface SensitiveInfo { type: 'ssn' | 'credit_card' | 'phone' | 'email' | 'address' | 'account_number';, value: string;
   masked: string;
   confidence: number;
-  location: { start: number;, end: number }
+  location: { start: number; end: number }
 }
 // Add a concrete type for the structure analysis
 interface DocumentStructure { paragraphs: number;, sections: number;
@@ -59,7 +59,7 @@ export class WasmLegalProcessor {
     if (this.isInitialized) return;
     try {
       // In production, load actual WASM module
-      // For demo, we'll simulate the WASM interface
+      // For demo, we'll simulate the WASM interface'
       this.wasmModule = await this.createMockWasmModule();
       this.isInitialized = true;
       console.log('✅ WebAssembly Legal Processor initialized');
@@ -133,7 +133,7 @@ export class WasmLegalProcessor {
       } else {
         const reason = r.reason;
         const reasonMsg = reason instanceof Error ? reason.message : String(reason);
-        console.error(`Failed to process ${files[index].name}: ', reasonMsg);
+        console.error(`Failed to process ${files[index].name}: ', reasonMsg);'`
         // Add error result
         results.push({
           text: '',

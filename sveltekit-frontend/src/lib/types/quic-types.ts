@@ -52,7 +52,7 @@ export interface DocumentEmbedding { documentId: string;, embedding: Float32Arr
   chunkIndex?: number;
   content?: string;
 }
-export interface AttentionHeatmap { scores: Float32Array;, positions: { x: number; y: number;, timestamp: number }[];
+export interface AttentionHeatmap { scores: Float32Array;, positions: { x: number; y: number; timestamp: number }[];
   timestamp: number;
   activeRegions: AttentionRegion[];
   documentId?: string;
@@ -355,9 +355,9 @@ export type DeepPartial<T> = {
 export type ValueOf<T> = T[keyof T];
 export type NonEmptyArray<T> = [T, ...T[]];
 // Branded types for better type safety
-export type DocumentId = string & { readonly __brand: 'DocumentId' };
-export type TensorId = string & { readonly __brand: 'TensorId' };
-export type StreamId = string & { readonly __brand: 'StreamId' };
+export type DocumentId = string & { readonly __brand: 'DocumentId` };'`
+export type TensorId = string & { readonly __brand: `TensorId` };
+export type StreamId = string & { readonly __brand: `StreamId` };
 export type SOMId = string & { readonly __brand: `SOMId` };
 // Type guards
 export function isDocumentId(value: string): value is DocumentId {

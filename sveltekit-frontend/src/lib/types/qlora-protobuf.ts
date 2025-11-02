@@ -110,7 +110,7 @@ export class QLoRANetworkCacheKey {
   /**
    * Environment-safe async SHA-256 helper.
    * Uses Web Crypto SubtleDigest when available (browsers / modern Node),
-   * otherwise dynamically imports Node's 'crypto' as a fallback.
+   * otherwise dynamically imports Node's 'crypto' as a fallback.'
    */
   private static async sha256Hex(input: string): Promise<string> {
     const encoder = new TextEncoder();
@@ -130,7 +130,7 @@ export class QLoRANetworkCacheKey {
       return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // Fallback: dynamic import Node's crypto (server-side)
+    // Fallback: dynamic import Node's crypto (server-side)'
     const nodeCrypto = await import('crypto');
     return nodeCrypto.createHash('sha256').update(input).digest('hex');
   }
@@ -169,7 +169,7 @@ export interface QLoRABinaryPerformanceMetrics { requestSize: number;, response
   gpuTime?: number;
   serializationTime?: number;
   deserializationTime?: number;
-  // timestamp used for internal bookkeeping (optional so external callers aren't forced to provide it)
+  // timestamp used for internal bookkeeping (optional so external callers aren't forced to provide it)'
   timestamp?: number;
 }
 export class QLoRAPerformanceMonitor {

@@ -68,7 +68,7 @@ type SearchStatusResponse = { status: 'healthy' | 'unhealthy' | 'degraded' | 'un
         averageVectorDimensions: number;
       };
     };
-    redis: { status: 'connected' | 'unavailable';, topQueries: Array<{ query: string;, count: number }>;
+    redis: { status: 'connected' | 'unavailable';, topQueries: Array<{ query: string; count: number }>;
       recentErrors: number;
     };
   };
@@ -124,7 +124,7 @@ type SearchMachineContext = { query: string;, embedding: number[];
   finalResults: VectorResult[];
   options: NonNullable<ActorInputOptions>;
   cachedAt: string | null;
-  error: { message: string; code: string;, stage: string; details?: any } | null;
+  error: { message: string; code: string; stage: string; details?: any } | null;
 };
 
 // --- Add typed helpers to avoid `any` ---
@@ -201,7 +201,7 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
             return null;
           }),
           onDone: [
-            {
+            {,
               guard: ({ event }: { event: any }) => Boolean((event as { output?: FromCacheOutput })?.output),
               actions: assign({
                 finalResults: (_ctx, evt: { output?: FromCacheOutput }) =>
@@ -374,8 +374,7 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
 
           return { finalResults: merged } as Partial<SearchMachineContext>;
         }),
-        target: 'summarizingAndTagging'
-      },
+        target: `summarizingAndTagging` },
       summarizingAndTagging: { invoke: {, src: fromPromise(async ({ input }: { input?: RunPayload }) => {
             const payload = input ?? {};
             // finalResults come from context (the machine writes them) — do not rely on options.finalResults
@@ -392,7 +391,7 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
             try {
               if (summarized) tags = await extractKeywords(summarized);
             } catch (err) {
-              console.warn('⚠️ Keyword extraction failed:', (err as Error).message);
+              console.warn('⚠️ Keyword extraction failed: `, (err as Error).message);'`
             }
             return { summarized, tags } as SummaryInvokeOutput;
           }),
@@ -402,8 +401,7 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
                 summarized: evt.output?.summarized ?? ctx.options?.summarized
               })
             }),
-            target: 'cachingResults'
-          },
+            target: `cachingResults` },
           onError: {
             target: 'cachingResults',
             actions: assign({
@@ -440,16 +438,15 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
                   tags: options.tags,
                   summarized: options.summarized
                 }),
-                redisSetOptions as unknown as Parameters<typeof redis.set>[2]
+                redisSetOptions as unknown as Parameters<typeof, redis.set>[2]
               );
               await redis.zincrby?.(TOP_K_KEY, 1, query);
             }
           }),
           onDone: 'success',
-          onError: 'success'
-        }
+          onError: `success` }
       },
-      success: { type: 'final' },
+      success: { type: `final` },
       failure: { type: `final` }
     }
   },
@@ -499,7 +496,7 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
       throw validationError;
     }
 
-    console.log(`🔍 [${requestId}] Search: "${parsedBody.query?.substring(0, 100) || '[embedding]` }"`);
+    console.log(`🔍 [${requestId}] Search: "${parsedBody.query?.substring(0, 100) || '[embedding]` }"`);'`
 
     // Simplified search path: generate embedding (if not provided) and query the unified vector search service directly.
     // This bypasses the XState machine for a straightforward, observable path.
@@ -704,7 +701,7 @@ export const GET: RequestHandler = async (_event: RequestEvent): Promise<Respons
     // Get top queries from sorted set
     const topQueries = await redis.zrevrange(TOP_K_KEY, 0, 9, 'WITHSCORES');
 
-    const topQueriesFormatted: Array<{ query: string;, count: number }> = [];
+    const topQueriesFormatted: Array<{ query: string; count: number }> = [];
     if (topQueries.length) {
       for (let i = 0; i < topQueries.length; i += 2) {
         topQueriesFormatted.push({ query: topQueries[i], count: Number(topQueries[i + 1]) });

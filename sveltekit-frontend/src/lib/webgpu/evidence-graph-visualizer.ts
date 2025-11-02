@@ -37,7 +37,7 @@ export default { isWebGPUAvailable, initWebGPU, renderFallbackCanvas };
 /**
  * WebGPU Evidence Graph Visualizer Bridge
  *
- * This module acts as a lightweight bridge between the RAG worker's graph updates
+ * This module acts as a lightweight bridge between the RAG worker's graph updates'
  * and a frontend component like EvidenceBoard.svelte. It provides hooks to initialize
  * a rendering context (either WebGPU or a canvas fallback) and to update the
  * visualization with new nodes and edges.
@@ -94,7 +94,7 @@ class EvidenceGraphVisualizer {
         context.configure({
           device,
           format: presentationFormat,
-          alphaMode: 'premultiplied` });
+          alphaMode: 'premultiplied' });
 
         this.context = context;
         this.isWebGPU = true;
@@ -142,7 +142,7 @@ class EvidenceGraphVisualizer {
     console.log('[WebGPU] Rendering graph:', data);
   }
 
-  private renderCanvas2D(data: {, nodes: Required<GraphNode>[]; edges: GraphEdge[] }): void {
+  private renderCanvas2D(data: {, nodes: Required<GraphNode>[];, edges: GraphEdge[] }): void {
     const ctx = this.context as CanvasRenderingContext2D;
     ctx.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
 

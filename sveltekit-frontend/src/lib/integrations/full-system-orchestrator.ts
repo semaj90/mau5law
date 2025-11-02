@@ -3,7 +3,7 @@ import { phase13Integration, initializePhase13, getSystemHealth } from './phase1
 // @ts-expect-error - module may lack type declarations
 import flashAttention2Service from '../services/flash-attention2-service.js';
 // New explicit types to avoid repeated `any` casts and unexpected-any errors
-type Phase13Health = { phase13: { level: number;, status: string };
+type Phase13Health = { phase13: { level: number; status: string };
   services?: any;
   performance?: any;
   recommendations?: any[]; // tightened from Array<any> to unknown[]
@@ -24,7 +24,7 @@ type ErrorAnalysisResult = { timestamp: string;, analysis_method: string;
   category_analysis: ErrorCategory[];
   automation_plan: Record<string, string>;
 };
-type AutoRemediationResult = { applied: number;, results: Array<{ category: string; fixesApplied: number; success: boolean;, details: string[] }>;
+type AutoRemediationResult = { applied: number;, results: Array<{ category: string; fixesApplied: number; success: boolean; details: string[] }>;
   totalFixesAttempted: number;
 };
 export interface SystemOrchestrationConfig { enableFlashAttention: boolean;, enablePhase13Integration: boolean;
@@ -119,7 +119,7 @@ export class FullSystemOrchestrator {
       result.success = result.errors.length === 0;
       this.isInitialized = true;
       console.log(
-        `✅ Full System Orchestration ${result.success ? 'completed successfully' : `completed with warnings` }`
+        `✅ Full System Orchestration ${result.success ? 'completed successfully' : `completed with warnings' }`'`
       );
       console.log(`📊 Services online: ${result.performance.servicesOnline}/${result.performance.totalServices}`);
       return result;
@@ -206,13 +206,13 @@ export class FullSystemOrchestrator {
     try {
       console.log('🔍 Running Context7 multicore error analysis...');
       // Note: The actual analysis would be run here, but it requires the multicore service.
-      // For now, we'll simulate the analysis based on the known error categories and use the typed ErrorAnalysisResult.
+      // For now, we'll simulate the analysis based on the known error categories and use the typed ErrorAnalysisResult.'
       const mockAnalysisResult: ErrorAnalysisResult = {
         timestamp: new Date().toISOString(),
         analysis_method: 'context7_multicore_simulation',
         total_estimated_errors: 1962,
         category_analysis: [
-          {
+          {,
             category: 'svelte5_migration',
             status: 'analyzed',
             estimated_fixes: 800,
@@ -262,7 +262,7 @@ export class FullSystemOrchestrator {
           phase_2: 'UI component API reconciliation (600+ fixes)',
           phase_3: 'CSS selector cleanup (400+ fixes)',
           phase_4: 'Binding pattern validation (162+ fixes)',
-          total_automation_potential: `85%` }
+          total_automation_potential: `85%' }'`
       };
       result.services.errorAnalysis = mockAnalysisResult;
       result.performance.servicesOnline++;
@@ -322,14 +322,14 @@ export class FullSystemOrchestrator {
    */
   private async applyCategoryRemediation(
     category: ErrorCategory
-  ): Promise<{ category: string; attempted: boolean; fixesApplied: number; success: boolean;, details: string[] }> {
+  ): Promise<{ category: string; attempted: boolean; fixesApplied: number; success: boolean; details: string[] }> {
     const result = {
       category: category.category,
       attempted: true,
       fixesApplied: 0,
       success: false,
       details: []
-    } as { category: string; attempted: boolean; fixesApplied: number; success: boolean;, details: string[] };
+    } as { category: string; attempted: boolean; fixesApplied: number; success: boolean; details: string[] };
     try {
       switch (category.category) {
         case 'svelte5_migration':
@@ -471,7 +471,7 @@ export class FullSystemOrchestrator {
       console.log('✅ System cleanup completed');
     } catch (error: any) {
       const message = formatError(error);
-      console.error('❌ Cleanup error:', message);
+      console.error('❌ Cleanup error:', message);'
     }
     this.isInitialized = $state(false);
   }
@@ -482,7 +482,7 @@ export const fullSystemOrchestrator = new FullSystemOrchestrator({
   enablePhase13Integration: true,
   enableErrorAnalysis: true,
   enableAutoRemediation: false, // Can be enabled after manual review
-  performanceMode: `development` });
+  performanceMode: `development' });'`
 /**
  * Initialize the complete system
  * This is the main entry point for full system integration
@@ -524,7 +524,7 @@ export async function initializeCompleteSystem(): Promise<OrchestrationResult> {
 function formatError(err: any): string {
   // Safe formatting for unknown error shapes
   if (!err) return 'Unknown error';
-  if (err instanceof Error) return `${err.message}${err.stack ? '\n' + err.stack : `` }`;
+  if (err instanceof Error) return `${err.message}${err.stack ? '\n' + err.stack : `' }`;'`
   try {
     return typeof err === 'string' ? err : JSON.stringify(err);
   } catch {

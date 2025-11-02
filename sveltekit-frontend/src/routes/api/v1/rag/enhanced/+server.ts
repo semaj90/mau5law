@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ error: 'Invalid request', details: parsed.error.flatten() }, { status: 400 });
   }
   // derive a TypeScript type from the Zod response schema to avoid `any`
-  type RagResponse = z.infer<typeof ragResponseSchema>;
+  type RagResponse = z.infer<typeof, ragResponseSchema>;
   const upstream = await safeFetchJson<RagResponse>(`${RAG_BASE}/rag/enhanced`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
   const validated = ragResponseSchema.safeParse(upstream.data);
   if (!validated.success) {
-    return json({ error: `Invalid upstream response` }, { status: 502 });
+    return json({ error: 'Invalid upstream response` }, { status: 502 });'`
   }
   return json(validated.data);
 };

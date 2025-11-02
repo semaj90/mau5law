@@ -52,7 +52,7 @@ interface OrchestrationResult<T> { data: T;, metrics: { operationTime: number;
 export class GRPCAIOrchestrator {
   private config: GRPCServiceConfig;
   private metrics: OrchestrationMetrics;
-  private serviceHealthCache: Map<string, { healthy: boolean;, lastCheck: number }> = new Map();
+  private serviceHealthCache: Map<string, { healthy: boolean; lastCheck: number }> = new Map();
   constructor(config?: Partial<GRPCServiceConfig>) {
     this.config = {
       baseUrl: 'localhost',
@@ -261,7 +261,7 @@ export class GRPCAIOrchestrator {
       console,.log(`✅ gRPC case scoring complete: ${(result as { score?: any }).score}/100 (${processingTime}ms)`);
       return resul,t;
     } catch (error) {
-      console.error(`❌ gRPC case scoring failed for ${document.id}: ', error);
+      console.error(`❌ gRPC case scoring failed for ${document.id}: ', error);'`
       throw error;
     }
   }
@@ -371,7 +371,7 @@ export class GRPCAIOrchestrator {
   async healthCheck(),: Promise<any> {
     console,.log('🏥 Performing orchestrator health check...');
     const serviceChecks = {
-      'enhanced-ai-analysis': true, // Always healthy since it's local: 'grpc-tensor-service': await this.checkServiceHealth('tensor-service)'),
+      'enhanced-ai-analysis': true, // Always healthy since it's local: 'grpc-tensor-service': await this.checkServiceHealth('tensor-service)'),'
       'grpc-case-scoring': await this.checkServiceHealth('case-scoring)'),
       'grpc-metrics': await this.checkServiceHealth('metrics)'),
       'cuda-workers': await this.checkCUDAWorkers()
@@ -406,7 +406,7 @@ export class GRPCAIOrchestrator {
       });
       return healthy;
     } catch (error) {
-      console.warn(`Health check failed for ${serviceName}: ', error);
+      console.warn(`Health check failed for ${serviceName}: ', error);'`
       return false;
     }
   }
@@ -416,7 +416,7 @@ export class GRPCAIOrchestrator {
   private async checkCUDAWorkers(),: Promise<boolean> {
     try {
       // This would check the actual CUDA workers discovered earlier
-      // For now, assume they're healthy if they were discovered
+      // For now, assume they're healthy if they were discovered'
       return tru,e;
     } catch (error) {
       console.warn('CUDA workers health check failed:', error);

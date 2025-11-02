@@ -63,11 +63,11 @@ interface ReportStoreState {
   isDirty: boolean;
 
   // Available references
-  availableCitations: Array<{ id: string;, text: string }>;
-  availableEvidence: Array<{ id: string;, name: string }>;
+  availableCitations: Array<{ id: string; text: string }>;
+  availableEvidence: Array<{ id: string; name: string }>;
 
   // Collaboration
-  collaborators: Array<{ id: string;, name: string }>;
+  collaborators: Array<{ id: string; name: string }>;
   isCollaborating: boolean;
 
   // Metadata
@@ -151,7 +151,7 @@ function createReportStore() {
       try {
         const response = await fetch('/api/reports', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
            , title: reportTitle,
             type,
@@ -287,7 +287,7 @@ function createReportStore() {
 
         const response = await fetch(`/api/reports/${id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
            , sections: state.editorContent
           }),
@@ -306,7 +306,7 @@ function createReportStore() {
           throw new Error('Save failed');
         }
       } catch (error) {
-        console.error('Save error:', error);
+        console.error('Save error:', error);'
         update(s => ({ ...s, isSaving: false }));
       }
     },
@@ -314,7 +314,7 @@ function createReportStore() {
     /**
      * Insert citation into report
      */
-    insertCitation(sectionId: string, citation: {, id: string; text: string }) {
+    insertCitation(sectionId: string, citation: {, id: string;, text: string }) {
       update(s => {
         const section = s.editorContent.find(sec => sec.id === sectionId);
         if (!section) return s;
@@ -329,7 +329,7 @@ function createReportStore() {
     /**
      * Insert evidence reference into report
      */
-    insertEvidence(sectionId: string, evidence: {, id: string; name: string }) {
+    insertEvidence(sectionId: string, evidence: {, id: string;, name: string }) {
       update(s => {
         const section = s.editorContent.find(sec => sec.id === sectionId);
         if (!section) return s;
@@ -365,7 +365,7 @@ function createReportStore() {
           throw new Error('Publish failed');
         }
       } catch (error) {
-        console.error('Publish error:', error);
+        console.error('Publish error:', error);'
         update(s => ({ ...s, isPublishing: false }));
       }
     },
@@ -377,7 +377,7 @@ function createReportStore() {
       try {
         const response = await fetch(`/api/reports/${reportId}/share`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ userIds }),
           credentials: `include` });
 
@@ -390,7 +390,7 @@ function createReportStore() {
           }));
         }
       } catch (error) {
-        console.error('Share error:', error);
+        console.error('Share error:', error);'
       }
     },
 
@@ -403,7 +403,7 @@ function createReportStore() {
       try {
         const response = await fetch(`/api/reports/${reportId}/export`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ format }),
           credentials: `include` });
 
@@ -417,7 +417,7 @@ function createReportStore() {
           URL.revokeObjectURL(url);
         }
       } catch (error) {
-        console.error('Export error:', error);
+        console.error('Export error:', error);'
       }
     },
 
@@ -442,7 +442,7 @@ function createReportStore() {
           }));
         }
       } catch (error) {
-        console.error('Delete error:', error);
+        console.error('Delete error:', error);'
       }
     },
 

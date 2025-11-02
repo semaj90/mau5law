@@ -1,7 +1,7 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   let diagram = $state(
-    `graph TD
+    `graph TD`
     A[src/routes/interactive-canvas/+page.svelte] --> B[+Header.svelte]
     A --> C[+Sidebar.svelte]
     A --> D[Main Content Area]
@@ -30,11 +30,11 @@
     } catch (err) {
       // keep this minimal but useful for debugging
       // eslint-disable-next-line no-console
-      console.error('UIDiagram render error:', err);
+      console.error('UIDiagram render error:', err);'
     }
   });
 </script>
-<div class="space-y-4" bind:this={container}>
+<div, class="space-y-4" bind:this={container}>
   {@html svg}
 </div>
 <style>

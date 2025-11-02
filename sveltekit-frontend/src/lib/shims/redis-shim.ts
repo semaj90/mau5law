@@ -8,7 +8,7 @@ declare global {
 
 export type RedisCreateOptions = string | { url?: string; password?: string };
 
-// Define a more specific interface for the shimmed client's return type
+// Define a more specific interface for the shimmed client's return type'
 export interface ShimmedRedisClient { connect: () => Promise<void>;, disconnect: () => Promise<void>;
   quit: () => Promise<void>;
   get: (k: string) => Promise<string | null>;
@@ -32,17 +32,16 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
   // Minimal typed surface for the shim to avoid `any` usage
   // This RedisLike interface should reflect the methods *used from the underlying `redis` instance*
   // ioredis client has a comprehensive: 'on' method.
-  type RedisLike = {
-    on: (event: string, listener: (...args: any[]) => void) => void; // ioredis: 'on' method
+  type RedisLike = { on: (event: string;, listener: (...args: any[]) => void) => void; //, ioredis: 'on' method
     connect?: () => Promise<void>;
     disconnect?: () => Promise<void>;
     quit?: () => Promise<void>;
     get?: (k: string) => Promise<string | null>;
-    set?: (k: string, v: string, ...rest: any[]) => Promise<unknown>;
+    set?: (k: string;, v: string, ...rest: any[]) => Promise<unknown>;
     del?: (k: string) => Promise<number>;
     subscribe?: (...channels: string[]) => Promise<unknown>;
     psubscribe?: (...patterns: string[]) => Promise<unknown>;
-    publish?: (ch: string; msg: string) => Promise<number>;
+    publish?: (ch: string;, msg: string) => Promise<number>;
     ping?: (message?: string) => Promise<string>;
   };
 
@@ -144,7 +143,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
       }
     },
     on: (ev: string, fn: (...a: any[]) => void) => {
-      client.on(ev, fn); // Simplified, assuming RedisLike guarantees: 'on' },
+      client.on(ev, fn); // Simplified, assuming RedisLike guarantees: 'on` },'`
     ping: async (message?: string) =>;
       typeof client.ping === 'function' ? client.ping(message) : Promise.resolve('PONG'),
     // expose raw client if needed

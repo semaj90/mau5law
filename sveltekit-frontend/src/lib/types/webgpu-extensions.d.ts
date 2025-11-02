@@ -3,7 +3,7 @@
  * Modern TypeScript definitions for WebGPU + SvelteKit 2 integration
  */
 // Ensure WebGPU types are available globally
-/// <reference types="@webgpu/types" />
+/// <reference, types="@webgpu/types" />
 // Extended WebGPU types for better TypeScript support
 declare global {
   interface Navigator {

@@ -1,6 +1,6 @@
 // Conservative WebGPU augment shim to reduce typing noise during migration.
 // This is permissive by design: it provides optional members used across the
-// codebase so TypeScript errors don't drown the migration workflow.
+// codebase so TypeScript errors don't drown the migration workflow.'
 declare global {
   // Relax GPU feature name to any string used by runtime code
   type GPUFeatureName = string | number | symbol;

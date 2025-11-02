@@ -432,7 +432,7 @@ export class LegalWorkflowOrchestrator {
   private getDocumentProfile(type: string, domain: string): LegalDocumentProfile | null {
     return this.documentProfiles.get(`${type}:${domain}`) || null;
   }
-  private getWorkflowSpecificAssets(context: LegalContext): { essential: string[];, recommended: string[] } {
+  private getWorkflowSpecificAssets(context: LegalContext): { essential: string[]; recommended: string[] } {
     const stage = this.workflowProfiles.get(context.workflowStage);
     if (!stage) {
       return { essential: [], recommended: [] };
@@ -459,7 +459,7 @@ export class LegalWorkflowOrchestrator {
       case 'document_viewer':
         return { ...baseData, viewerConfig: { mode: 'legal', annotations: true } };
       case 'evidence_canvas':
-        return { ...baseData, canvasConfig: { collaboration: true, version: '2.0' } };
+        return { ...baseData, canvasConfig: { collaboration: true, version: '2.0` } };'`
       case 'legal_database':
         return { ...baseData, searchConfig: { domain: context.documentContext?.domain } };
       default: return baseData;
@@ -480,7 +480,7 @@ export class LegalWorkflowOrchestrator {
       await this.redis.lpush('workflow:transitions', JSON.stringify(transitionData));
       await this.redis.ltrim('workflow:transitions', 0, 999); // Keep last 1000 transitions
     } else {
-      // best-effort fallback: prepend a simple set + index key (non-list) so we don't throw at runtime
+      // best-effort fallback: prepend a simple set + index key (non-list) so we don't throw at runtime'
       const fallbackKey = `workflow:transitions:fallback:${Date.now()}`;
       await this.redis.set(fallbackKey, JSON.stringify(transitionData), { EX: 60 * 60 * 24 }); // 1 day
     }

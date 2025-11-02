@@ -60,8 +60,8 @@ interface AIAssistantStoreState {
 
   // Active context
   activeContext: AnalysisContext;
-  contextDocuments: Array<{ id: string; title: string;, type: string }>;
-  relevantCitations: Array<{ id: string;, text: string }>;
+  contextDocuments: Array<{ id: string; title: string; type: string }>;
+  relevantCitations: Array<{ id: string; text: string }>;
 
   // AI Configuration
   aiModel: AIModel;
@@ -81,7 +81,7 @@ interface AIAssistantStoreState {
 
   // Suggestions
   suggestedQueries: string[];
-  suggestedActions: Array<{ label: string;, action: string }>;
+  suggestedActions: Array<{ label: string; action: string }>;
 
   // Metadata
   tokenUsage: number;
@@ -152,7 +152,7 @@ function createAIAssistantStore() {
       }));
 
       try {
-        const state: { activeContext: AnalysisContext; aiModel: AIModel;, temperature: number } = {
+        const state: { activeContext: AnalysisContext; aiModel: AIModel; temperature: number } = {
           activeContext: {},
           aiModel: 'gemma3',
           temperature: 0.7
@@ -166,7 +166,7 @@ function createAIAssistantStore() {
 
         const response = await fetch('/api/ai/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
             query,
             model: state.aiModel,
@@ -222,7 +222,7 @@ function createAIAssistantStore() {
       try {
         const response = await fetch('/api/ai/chat/stream', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ query }),
           credentials: `include` });
 
@@ -257,7 +257,7 @@ function createAIAssistantStore() {
 
         return assistantMessage;
       } catch (error) {
-        console.error('Streaming error:', error);
+        console.error('Streaming error:', error);'
         update(s => ({ ...s, isStreaming: false }));
         throw error;
       }
@@ -296,7 +296,7 @@ function createAIAssistantStore() {
       try {
         const response = await fetch('/api/ai/context', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ query }),
           credentials: `include` });
 
@@ -313,7 +313,7 @@ function createAIAssistantStore() {
           return data;
         }
       } catch (error) {
-        console.error('Context retrieval error:', error);
+        console.error('Context retrieval error:', error);'
         update(s => ({ ...s, isLoading: false }));
       }
     },
@@ -406,7 +406,7 @@ function createAIAssistantStore() {
      * Save conversation
      */
     async saveConversation() {
-      const state: { currentConversationId: string | null;, messages: Message[] } = {
+      const state: { currentConversationId: string | null; messages: Message[] } = {
         currentConversationId: null,
         messages: []
       };
@@ -421,7 +421,7 @@ function createAIAssistantStore() {
       try {
         const response = await fetch(`/api/conversations/${state.currentConversationId}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
            , messages: state.messages
           }),
@@ -434,7 +434,7 @@ function createAIAssistantStore() {
           }));
         }
       } catch (error) {
-        console.error('Save conversation error:', error);
+        console.error('Save conversation error:', error);'
       }
     },
 
@@ -455,7 +455,7 @@ function createAIAssistantStore() {
           }));
         }
       } catch (error) {
-        console.error('Delete error:', error);
+        console.error('Delete error:', error);'
       }
     },
 
@@ -482,7 +482,7 @@ function createAIAssistantStore() {
       try {
         const response = await fetch(`/api/ai/analyze/${scope}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({, context: {} }),
           credentials: `include` });
 
@@ -491,7 +491,7 @@ function createAIAssistantStore() {
           return data.analysis;
         }
       } catch (error) {
-        console.error('Analysis error:', error);
+        console.error('Analysis error:', error);'
       } finally {
         update(s => ({ ...s, isProcessing: false }));
       }
@@ -506,17 +506,16 @@ function createAIAssistantStore() {
       try {
         const response = await fetch(`/api/ai/generate-report/${scope}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json` },'`
           body: JSON.stringify({, context: {} }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
           return data.report;
         }
       } catch (error) {
-        console.error('Report generation error:', error);
+        console.error('Report generation error:', error);'
       } finally {
         update(s => ({ ...s, isProcessing: false }));
       }
@@ -540,7 +539,7 @@ function createAIAssistantStore() {
           return data.suggestions;
         }
       } catch (error) {
-        console.error('Suggestions error:', error);
+        console.error('Suggestions error:', error);'
       }
     }
   };

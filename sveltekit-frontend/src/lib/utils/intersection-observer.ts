@@ -31,7 +31,7 @@ class LazyLoadManager {
   }
   private createObserver() {
     if (!this.supportsIntersectionObserver()) {
-      // running in SSR or browser doesn't support IntersectionObserver
+      // running in SSR or browser doesn't support IntersectionObserver'
       // do not create `this.observer` so observe() will use fallback strategy
       // eslint-disable-next-line no-console
       if (typeof window !== 'undefined') console.warn('IntersectionObserver not supported, using fallback');
@@ -63,7 +63,7 @@ class LazyLoadManager {
           // eslint-disable-next-line no-console
           console.error('lazyLoad callback error', err);
         }
-        // If it's a one-time observation and element is intersecting, stop observing
+        // If it's a one-time observation and element is intersecting, stop observing'
         if (this.options.once && entry.isIntersecting) {
           this.unobserve(entry.target as Element);
         }

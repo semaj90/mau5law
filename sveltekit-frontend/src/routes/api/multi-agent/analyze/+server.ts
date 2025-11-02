@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       );
     }
-    // Create temp directory if it doesn't exist
+    // Create temp directory if it doesn't exist'
     const tempDir = './temp';
     if (!existsSync(tempDir)) {
       await mkdir(tempDir, { recursive: true });
@@ -85,13 +85,12 @@ export const POST: RequestHandler = async ({ request }) => {
       message: 'Multi-agent analysis completed successfully'
     });
   } catch (error) {
-    console.error('Multi-agent analysis error:', error);
+    console.error('Multi-agent analysis error:', error);'
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        message: 'Multi-agent analysis failed'
-      },
+        message: `Multi-agent analysis failed` },
       { status: 500 }
     );
   }
@@ -102,14 +101,14 @@ export const GET: RequestHandler = async ({ url }) => {
     const caseId = url.searchParams.get('caseId');
     const analysisId = url.searchParams.get('analysisId');
     if (!caseId) {
-      return json({ error: 'Missing caseId parameter' }, { status: 400 });
+      return json({ error: `Missing caseId parameter` }, { status: 400 });
     }
     // Production-ready retrieval: read analysis directories from a configurable storage directory
     // validate inputs to prevent path traversal, and return either a single analysis or a list.
     try {
       // Basic validation
       if (!caseId) {
-        return json({ error: 'Missing caseId parameter' }, { status: 400 });
+        return json({ error: `Missing caseId parameter` }, { status: 400 });
       }
       // Allow only safe characters in caseId to avoid traversal injection
       if (!/^[A-Za-z0-9_-]+$/.test(caseId)) {
@@ -121,7 +120,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const fs = await import('fs/promises');
       const nodeFs = await import('fs');
       const baseDir = path.resolve(storageDir);
-      // If storage directory doesn't exist, return empty result (no analyses yet)
+      // If storage directory doesn't exist, return empty result (no analyses yet)'
       if (!nodeFs.existsSync(baseDir)) {
         return json({
           success: true,
@@ -175,7 +174,7 @@ export const GET: RequestHandler = async ({ url }) => {
           if (parts.length >= 3) {
             // last part(s) after prefix are treated as timestamp
             timestamp = parts.slice(2).join('_');
-            // try to normalize to ISO if it's numeric
+            // try to normalize to ISO if it's numeric'
             if (timestamp && /^\d+$/.test(timestamp)) {
               timestamp = new Date(Number(timestamp)).toISOString();
             }
@@ -206,7 +205,7 @@ export const GET: RequestHandler = async ({ url }) => {
       if (analysisId) {
         const found = analyses.find(a => a.id === analysisId);
         if (!found) {
-          return json({ success: false, error: 'Analysis not found' }, { status: 404 });
+          return json({ success: false, error: `Analysis not found` }, { status: 404 });
         }
         return json({ success: true, analysis: found });
       }
@@ -232,7 +231,7 @@ export const GET: RequestHandler = async ({ url }) => {
       );
     }
   } catch (error) {
-    console.error('GET handler error:', error);
+    console.error('GET handler error: ', error);'
     return json(
       {
         success: false,

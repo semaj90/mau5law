@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ request }) => {
       matches = rows.map((row: EvidenceRow) => {
         const tags = Array.isArray(row.tags) ? row.tags : [];
         const prosecutionScore = safeProsecutionScore(row.prosecutionScore);
-        const combined = `${row.fileName ?? ''} ${row.summary ?? ''} ${row.aiSummary ?? '` }`;
+        const combined = `${row.fileName ?? ''} ${row.summary ?? ''} ${row.aiSummary ?? '` }`;'`
         const similarity = textScore(query, combined);
         return {
           id: String(row.id),
@@ -207,7 +207,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({ matches, query, useSemanticSearch, includeContext7 }, { status: 200 });
   } catch (error: any) {
-    console.error('Evidence search error:', error);
+    console.error('Evidence search error:', error);'
     const message = error instanceof Error ? error.message : String(error);
     return json({ error: 'Search failed', message, matches: [] }, { status: 500 });
   }

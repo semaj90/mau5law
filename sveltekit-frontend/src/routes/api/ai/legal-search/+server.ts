@@ -74,7 +74,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('AI legal search error:', error);
+    console.error('AI legal search error:', error);'
     return json(
       {
         success: false,
@@ -94,7 +94,7 @@ async function enhanceWithAI(
   // Replaced: 'any[]'; with: 'Law[]', 'Function' with: 'typeof globalThis.fetch', and: 'any'; with: 'AIAnalysisResultEnhanced'
   try {
     // Use AI to analyze the query and provide legal context
-    const aiAnalysisPrompt = `Analyze this legal search query and provide insights:; Query: "${query}"
+    const aiAnalysisPrompt = `Analyze this legal search query and provide insights:; Query: "${query}"`
 Found Laws:
 ${laws.map(law => `- ${law.title} (${law.code}): ${law.description}`).join('\n')}
 Please provide:
@@ -102,10 +102,10 @@ Please provide:
 2. Key legal concepts involved
 3. Additional search suggestions
 4. Relevance ranking of the found laws
-Format your response as JSON with these fields: summary, concepts, suggestions, rankings`;
+Format your response as JSON with these fields: summary, concepts, suggestions, rankings`;`
     const aiResponse = await fetch('/api/ai/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
        , message: aiAnalysisPrompt,
         temperature: 0.3, // Lower temperature for more focused analysis
@@ -177,7 +177,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
     };
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('AI enhancement error:', error);
+    console.error('AI enhancement error:', error);'
     // Return basic enhancement on AI failure
     return {
       laws: laws.map(law => ({

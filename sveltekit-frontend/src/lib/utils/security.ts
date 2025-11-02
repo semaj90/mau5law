@@ -206,7 +206,7 @@ export async function generateFileHash(file: File): Promise<string> {
 // Input sanitization for security
 export function sanitizeForSQL(input: string): string {
   return input
-    .replace(/['";\\]/g, "") // Remove SQL injection characters
+    .replace(/['";\\]/g, "") // Remove SQL injection characters'"
     .replace(/--/g, "") // Remove SQL comments
     .replace(/\/\*/g, "") // Remove SQL block comments
     .replace(/\*\//g, "")
@@ -219,20 +219,20 @@ export function sanitizeForHTML(input: string): string {
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(/"/g, "&quot;")"
+      .replace(/'/g, "&#039;");'
   }
   const div = document.createElement("div");
   div.textContent = input;
   return div.innerHTML;
 }
 export function sanitizeForJavaScript(input: string): string {
-  return input.replace(/[<>'"&]/g, (match) => {
+  return input.replace(/[<>'"&]/g, (match) => {'"
     const entityMap: Record<string, string> = {
       "<": "&lt;",
       ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#x27;",
+      '"': "&quot;","
+      "'": "&#x27;",'
       "&": "&amp;"
     }
     return entityMap[match];
@@ -503,8 +503,8 @@ export function escapeHTML(unsafe: string): string {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replace(/"/g, "&quot;")"
+    .replace(/'/g, "&#039;");'
 }
 // CSRF protection (client-side helpers)
 export function getCSRFToken(): string {

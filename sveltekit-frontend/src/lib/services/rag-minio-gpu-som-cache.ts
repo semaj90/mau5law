@@ -95,11 +95,11 @@ export class RAGMinIOGPUSOMCache {
   }
 
   // Find Best Matching Unit (BMU)
-  private async findBMU(inputVector: Float32Array): Promise<{ x: number; y: number;, distance: number }> {
+  private async findBMU(inputVector: Float32Array): Promise<{ x: number; y: number; distance: number }> {
     let bestDistance = Infinity;
     let bestX = 0;
     let bestY = 0;
-    const promises: Promise<{ x: number; y: number;, distance: number }>[] = [];
+    const promises: Promise<{ x: number; y: number; distance: number }>[] = [];
 
     for (let i = 0; i < this.gridHeight; i++) {
       for (let j = 0; j < this.gridWidth; j++) {
@@ -147,7 +147,7 @@ export class RAGMinIOGPUSOMCache {
   private async getOptimalCacheLevel(entry: CacheEntry): Promise<'l1' | 'l2' | 'l3'> {
     const bmu = await this.findBMU(entry.vector);
     const clusterActivity = this.somGrid[bmu.y][bmu.x].documents.length;
-    const recentAccess = Date.now() - entry.timestamp < 5 * 60 * 1000; // 5 minutes
+    const recentAccess = Date.now() - entry.timestamp < 5 * 60 * 1000; // 5, minutes
     if (entry.accessCount > 5 && recentAccess && clusterActivity > 3) {
       return 'l1';
     } else if (entry.accessCount > 2 && clusterActivity > 1) {
@@ -228,7 +228,7 @@ export class RAGMinIOGPUSOMCache {
   // Semantic search within clusters (simulated GPU)
   async semanticSearch(queryVector: Float32Array, limit = 10): Promise<CacheEntry[]> {
     const bmu = await this.findBMU(queryVector);
-    const results: Array<{ entry: CacheEntry;, similarity: number }> = [];
+    const results: Array<{ entry: CacheEntry; similarity: number }> = [];
 
     const pushIfFound = async (docId: string) => {
       const entry = this.l1Cache.get(docId) || this.l2Cache.get(docId) || this.l3Cache.get(docId);
@@ -341,8 +341,8 @@ export class RAGMinIOGPUSOMCache {
     return contentScore * vectorMag;
   }
 
-  private getNeighboringClusters(x: number, y: number): Array<{ x: number;, y: number }> {
-    const neighbors: Array<{ x: number;, y: number }> = [];
+  private getNeighboringClusters(x: number, y: number): Array<{ x: number; y: number }> {
+    const neighbors: Array<{ x: number; y: number }> = [];
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
         const nx = x + dx;
@@ -392,8 +392,8 @@ export class RAGMinIOGPUSOMCache {
   }
 
   // Export SOM visualization data for debugging
-  getSOMVisualization(): Array<{ x: number; y: number; docCount: number; lastAccess: number;, clusterId: number }> {
-    const visualization: Array<{ x: number; y: number; docCount: number; lastAccess: number;, clusterId: number }> = [];
+  getSOMVisualization(): Array<{ x: number; y: number; docCount: number; lastAccess: number; clusterId: number }> {
+    const visualization: Array<{ x: number; y: number; docCount: number; lastAccess: number; clusterId: number }> = [];
     for (let i = 0; i < this.gridHeight; i++) {
       for (let j = 0; j < this.gridWidth; j++) {
         visualization.push({

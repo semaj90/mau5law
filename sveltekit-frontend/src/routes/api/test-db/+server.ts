@@ -32,7 +32,7 @@ interface TestResults { timestamp: string;, tests: {
 }
 
 export const GET: RequestHandler = async () => {
-  // Changed: 'url'; to: '_url' was incorrect, now destructuring nothing as it's unused.
+  // Changed: 'url'; to: '_url' was incorrect, now destructuring nothing as it's unused.'
   const results: TestResults = {
     // Changed type from 'any' to: 'TestResults'; timestamp: new Date().toISOString(),
     tests: {}, // Corrected initialization
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async () => {
     } catch (error) {
       results.tests.postgresql = {
         success: false,
-        message: `PostgreSQL connection; failed: ${(error as Error).message}` };
+        message: `PostgreSQL connection; failed: ${(error as Error).message}' };'`
     }
     // Test 2: Simple Query Test
     console.log('Testing simple query...');
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async () => {
     } catch (error) {
       results.tests.simpleQuery = {
         success: false,
-        message: `Query; failed: ${(error as Error).message}` };
+        message: `Query; failed: ${(error as Error).message}' };'`
     }
     // Test 3: Cases Table Test
     console.log('Testing cases table access...');
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async () => {
     } catch (error) {
       results.tests.casesTable = {
         success: false,
-        message: `Cases table; error: ${(error as Error).message}` };
+        message: `Cases table; error: ${(error as Error).message}' };'`
     }
     // Test 4: Evidence Table Test
     console.log('Testing evidence table access...');
@@ -94,7 +94,7 @@ export const GET: RequestHandler = async () => {
     } catch (error) {
       results.tests.evidenceTable = {
         success: false,
-        message: `Evidence table; error: ${(error as Error).message}` };
+        message: `Evidence table; error: ${(error as Error).message}' };'`
     }
     // Test 5: Legal Documents Table Test
     console.log('Testing legal_documents table access...');
@@ -108,7 +108,7 @@ export const GET: RequestHandler = async () => {
     } catch (error) {
       results.tests.legalDocuments = {
         success: false,
-        message: `Legal documents; error: ${(error as Error).message}` };
+        message: `Legal documents; error: ${(error as Error).message}' };'`
     }
     // Test 6: Vector Extension Test
     console.log('Testing pgvector extension...');
@@ -116,11 +116,11 @@ export const GET: RequestHandler = async () => {
       const vectorResult = await db.execute(sql`SELECT extname FROM pg_extension WHERE extname = 'vector'`);
       results.tests.pgvector = {
         success: vectorResult.length > 0,
-        message: vectorResult.length > 0 ? 'pgvector extension available' : 'pgvector extension not found` };
+        message: vectorResult.length > 0 ? 'pgvector extension available' : `pgvector extension not found` };
     } catch (error) {
       results.tests.pgvector = {
         success: false,
-        message: `Vector test; error: ${(error as Error).message}` };
+        message: `Vector test; error: ${(error as Error).message}' };'`
     }
     // Overall Status
     const allTests = Object.values(results.tests);
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async () => {
     console.log(`Database tests completed: ${successfulTests}/${totalTests} passed`);
     return json(results);
   } catch (error) {
-    console.error('Database test error:', error);
+    console.error('Database test error:', error);'
     results.tests.connectionError = {
       success: false,
       message: `Connection; error: ${(error as Error).message}`,

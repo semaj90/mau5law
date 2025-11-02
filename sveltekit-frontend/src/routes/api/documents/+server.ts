@@ -10,7 +10,7 @@ import { eq, desc, and, sql } from 'drizzle-orm';
 import { createEmbedding } from '$lib/services/embedding-service';
 import { redis } from '$lib/server/redis';
 import type { Document, NewDocument } from '$lib/server/schema/documents';
-import type { SQL } from 'drizzle-orm'; // <-- added type import
+import type { SQL } from 'drizzle-orm'; // <-- added type, import
 const CACHE_TTL = 300; // 5 minutes
 
 // Add helper to safely delete keys by pattern using scanIterator (no redis.keys typing reliance)
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const conditions: SQL[] = [];
     if (search) {
       conditions.push(
-        sql`(
+        sql`(`
           to_tsvector('english', ${documents.title}) @@ plainto_tsquery('english', ${search})
           OR to_tsvector('english', ${documents.content}) @@ plainto_tsquery('english', ${search})
         )`
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const results = await query.execute();
 
     const totalQuery = db
-      .select({ count: sql`count(*)' })
+      .select({ count: sql`count(*)` })
       .from(documents)
       .where(conditions.length > 0 ? and(...conditions) : undefined); // no any casts
 
@@ -217,8 +217,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         document: newDocument,
         embeddings_generated: !!(embedding || titleEmbedding || summaryEmbedding),
-        message: 'Document created successfully'
-      },
+        message: `Document created successfully` },
       { status: 201 }
     );
   } catch (error) {
@@ -234,7 +233,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
   try {
     const documentId = url.searchParams.get('id');
     if (!documentId) {
-      return json({ error: 'Document ID is required' }, { status: 400 });
+      return json({ error: `Document ID is required` }, { status: 400 });
     }
 
     const data = (await request.json()) as Partial<Document> & { auto_embed?: boolean };
@@ -272,7 +271,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       updateData.processed_at = new Date();
     }
     if (titleEmbedding) updateData.title_embedding = sql`${JSON.stringify(titleEmbedding)}::vector`;
-    if (summaryEmbedding) updateData.summary_embedding = sql`${JSON.stringify(summaryEmbedding)}::vector';
+    if (summaryEmbedding) updateData.summary_embedding = sql'${JSON.stringify(summaryEmbedding)}::vector';
 
     const updateDataRecord = updateData as Record<string, unknown>;
     delete updateDataRecord.auto_embed;
@@ -292,8 +291,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     return json({
       document: updatedDocument,
       embeddings_updated: !!(embedding || titleEmbedding || summaryEmbedding),
-      message: 'Document updated successfully'
-    });
+      message: 'Document updated successfully` });'`
   } catch (error) {
     console.error('Error updating document:', error);
     return json(
@@ -307,7 +305,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const documentId = url.searchParams.get('id');
     if (!documentId) {
-      return json({ error: 'Document ID is required' }, { status: 400 });
+      return json({ error: `Document ID is required` }, { status: 400 });
     }
 
     const [deletedDocument] = await db

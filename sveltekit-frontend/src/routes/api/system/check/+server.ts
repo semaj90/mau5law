@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
@@ -32,8 +32,8 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     console.error('System status check failed:', error);
     return json(
-      { services: {, ollama: { status: 'error', error: 'System check failed' },
-          database: { status: 'error', error: 'System check failed' }
+      { services: {, ollama: {, status: 'error', error: 'System check failed' },
+          database: {, status: 'error', error: 'System check failed' }
         },
         environment: {, ollamaUrl: OLLAMA_URL },
         timestamp: new Date().toISOString()
@@ -50,7 +50,7 @@ async function checkOllamaStatus(): Promise<OllamaStatus> {
     const response: Response = await fetch(`${OLLAMA_URL}/api/version`, {
       signal: controller.signal,
       headers: {
-        'Content-Type': 'application/json` }
+        'Content-Type': `application/json` }
     });
     clearTimeout(timeoutId);
 
@@ -139,14 +139,13 @@ async function checkDatabaseStatus(): Promise<DatabaseStatus> {
     return {
       status: 'unknown',
       type: 'PostgreSQL',
-      error: 'healthCheck not exported from $lib/server/db/index.js'
-    };
+      error: `healthCheck not exported from $lib/server/db/index.js` };
   } catch (error: any) {
     console.error('Database health check failed:', error);
     return {
       status: 'error',
       type: 'PostgreSQL',
-      error: error instanceof Error ? error.message : 'Unknown error` };
+      error: error instanceof Error ? error.message : `Unknown error` };
   }
 }
 

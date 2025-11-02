@@ -2,13 +2,13 @@ import type { SearchResult } from '$lib/types';
 import Fuse from 'fuse.js';
 
 // Narrow T so keyof T may include non-strings but we only accept string keys
-export function createFuseIndex<T extends Record<string, unknown>>(
+export function createFuseIndex<T extends, Record<string, unknown>>(
   items: T[],
   // Replace non-existent Fuse.FuseOptionKey with a simple input shape
   keys: Array<string | {, name: string; weight?: number }>
 ) {
   // Strongly-typed key shape that Fuse expects at runtime
-  type NormalizedKey = string | { name: string;, weight: number };
+  type NormalizedKey = string | { name: string; weight: number };
 
   const normalizedKeys: NormalizedKey[] = keys.map(k => {
     if (typeof k === 'string') return k;
@@ -35,7 +35,7 @@ export function createFuseIndex<T extends Record<string, unknown>>(
   };
 
   return {
-    // Use Fuse's built-in limit option to avoid slicing and casts
+    // Use Fuse's built-in limit option to avoid slicing and casts'
     search: (q: string, limit = 10): SearchResult[] => {
       // fuse.search accepts a single argument in the current typing.
       // Call it with just the query and apply `limit` by slicing the result.

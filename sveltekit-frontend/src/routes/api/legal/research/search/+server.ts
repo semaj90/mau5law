@@ -8,16 +8,9 @@ interface SearchRequest { query: string, mode: 'semantic' | 'boolean' | 'phrase
     dateRange?: string
     precedentialValue?: string
   }
-  sort: string; page: number
-  limit: number
+  sort: string; page: number; limit: number
 }
-interface LegalDocument { id: string, title: string; citation: string
-  fullCitation: string; court: string
-  jurisdiction: string; dateDecided: string
-  documentType: string; precedentialValue: string
-  summary: string; keyTopics: string[]
-  relevanceScore: number; citedBy: number
-  url: string
+interface LegalDocument { id: string, title: string; citation: string; fullCitation: string; court: string; jurisdiction: string; dateDecided: string; documentType: string; precedentialValue: string; summary: string; keyTopics: string[]; relevanceScore: number; citedBy: number; url: string
   content?: string
   embedding?: number[]
 }
@@ -48,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
       processingTime: results.processingTime
     })
   } catch (error) {
-    console.error('Legal research search error:', error)
+    console.error('Legal research search error:', error)'
     return json({ success: false, error: 'Search failed', results: [], total: 0 }, { status: 500 });
   }
 }
@@ -71,7 +64,7 @@ async function performSemanticSearch(
     FROM legal_documents ld
     LEFT JOIN LATERAL unnest(ld.keywords) as kw(keyword) ON true
     WHERE ld.embedding IS NOT NULL
-  `;
+  `;`
   const params: (string | number | number[])[] = [JSON.stringify(queryEmbedding)];
   let paramIndex = 2;
   // Apply filters
@@ -106,9 +99,9 @@ async function performSemanticSearch(
       $sql += ` ORDER BY ld.date_decided DESC`;
       break;
     case 'citations':
-      $sql += ` ORDER BY (
+      $sql += ` ORDER BY (`
         SELECT COUNT(*) FROM citations c WHERE c.document_id = ld.id
-      ) DESC`;
+      ) DESC`;`
       break;
     case 'court':
       $sql += ` ORDER BY ld.court, relevance_score DESC`;
@@ -131,7 +124,7 @@ async function performSemanticSearch(
       processingTime
     };
   } catch (error) {
-    console.error('Database query error:', error);
+    console.error('Database query error:', error);'
     throw error;
   }
 }
@@ -159,7 +152,7 @@ async function performKeywordSearch(
       LEFT JOIN LATERAL unnest(ld.keywords) as kw(keyword) ON true
       WHERE to_tsvector('english', coalesce(ld.content, ld.full_text, ''))
             @@ phraseto_tsquery('english', $1)
-    `;
+    `;`
     params.push(query);
     paramIndex++;
   } else {
@@ -174,7 +167,7 @@ async function performKeywordSearch(
       LEFT JOIN LATERAL unnest(ld.keywords) as kw(keyword) ON true
       WHERE to_tsvector('english', coalesce(ld.content, ld.full_text, ''))
             @@ to_tsquery('english', $1)
-    `;
+    `;`
     params.push(query.replace(/\s+/g, ' & ')); // Convert to boolean query
     paramIndex++;
   }
@@ -225,7 +218,7 @@ async function performKeywordSearch(
       processingTime
     };
   } catch (error) {
-    console.error('Keyword search error:', error);
+    console.error('Keyword search error:', error);'
     throw error;
   }
 }
@@ -234,7 +227,7 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
     // In production, call your embedding service (OpenAI, local model, etc.)
     const response = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , model: 'nomic-embed-text',
         prompt: query
@@ -266,7 +259,7 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
       keyTopics: [query.split(' ')[0], 'Constitutional Law', 'Supreme Court'],
       relevanceScore: 0.95,
       citedBy: 156,
-      url: '/legal/documents/supreme-court-${query.toLowerCase().replace(/\s+/g, '-')}' },
+      url: '/legal/documents/supreme-court-${query.toLowerCase().replace(/\s+/g, '-')}` },'`
     {
       id: '2',
       title: `Federal Statute - ${query} Regulations`,
@@ -281,7 +274,7 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
       keyTopics: [query.split(' ')[0], 'Federal Law', 'Regulations'],
       relevanceScore: 0.89,
       citedBy: 89,
-      url: '/legal/documents/federal-statute-${query.toLowerCase().replace(/\s+/g, '-')}' },
+      url: '/legal/documents/federal-statute-${query.toLowerCase().replace(/\s+/g, '-')}` },'`
     {
       id: '3',
       title: `Circuit Court Analysis of ${query}`,
@@ -296,7 +289,7 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
       keyTopics: [query.split(' ')[0], 'Circuit Court', 'Appeals'],
       relevanceScore: 0.82,
       citedBy: 43,
-      url: '/legal/documents/circuit-court-${query.toLowerCase().replace(/\s+/g, '-')}' },
+      url: '/legal/documents/circuit-court-${query.toLowerCase().replace(/\s+/g, '-')}` },'`
   ];
   // Apply filters
   let filteredResults = allResults;
@@ -344,7 +337,7 @@ function generateRelatedTopics(query: string): string[] {
   ];
   // Generate query-specific related topics
   const queryWords = query.toLowerCase().split(' ');
-  const relatedTopics: string[] = []; // <-- typed to avoid implicit any[]
+  const relatedTopics: string[] = []; // <-- typed to avoid implicit, any[]
   queryWords.forEach(word => {
     if (word.length > 3) {
       relatedTopics.push(`${word} precedents`);

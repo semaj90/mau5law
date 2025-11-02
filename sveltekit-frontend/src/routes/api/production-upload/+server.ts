@@ -1,5 +1,5 @@
 import type { Case } from '$lib/types';
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 // Production-Quality Document Upload API
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     // Validation
     if (!file) {
       logger.error('No file provided in upload');
-      return json({ success: false, error: `No file provided` }, { status: 400 });
+      return json({ success: false, error: 'No file provided` }, { status: 400 });'`
     }
     if (!caseId) {
       logger.error('No case ID provided');
@@ -100,11 +100,11 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     }
     if (!ALLOWED_TYPES.includes(file.type)) {
       logger.error(`Unsupported file type: ${file.type}`);
-      return json({ success: false, error: `Unsupported file; type: ${file.type}` }, { status: 400 });
+      return json({ success: false, error: `Unsupported file;, type: ${file.type}` }, { status: 400 });
     }
     if (file.size > MAX_FILE_SIZE) {
-      logger.error(`File too large: ${file.size} bytes');
-      return json({ success: false, error: `File too large (max 50MB)` }, { status: 400 });
+      logger.error(`File too large: ${file.size} bytes');'`
+      return json({ success: false, error: 'File too large (max 50MB)` }, { status: 400 });'`
     }
     // Verify case exists
     const existingCase = await db
@@ -114,8 +114,8 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       .limit(1)
       .catch(() => [] as Record<string, unknown>[]); // avoid `any[]`
     if (existingCase.length === 0) {
-      logger.error(`Case not found: ${caseId}');
-      return json({ success: false, error: `Case not found` }, { status: 404 });
+      logger.error(`Case not found: ${caseId}');'`
+      return json({ success: false, error: 'Case not found` }, { status: 404 });'`
     }
     // Create unique IDs
     const documentId = randomUUID();
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     // Save file
     const buffer = Buffer.from(await file.arrayBuffer());
     await writeFile(filePath, buffer);
-    logger.info(`File saved: ${filePath}');
+    logger.info(`File saved: ${filePath}');'`
     // XState machine integration disabled for compilation fix
     logger.info('Starting document processing pipeline');
     // Process based on file type
@@ -233,7 +233,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
           createdAt: new Date(),
           processingStatus: `completed` })
         .returning();
-      // Reference the saved document so linters/compilers don't flag the variable as unused
+      // Reference the saved document so linters/compilers don't flag the variable as unused'
       logger.info('Saved document record', { id: $savedDocument?.id ?? null });
       logger.info(`Document saved to database: ${documentId}`);
     } catch (dbError) {
@@ -289,7 +289,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       }
     } catch (vectorError) {
       logger.error('Vector storage failed', vectorError);
-      // Continue - vector storage failure shouldn't fail the entire upload
+      // Continue - vector storage failure shouldn't fail the entire upload'
     }
     // Generate AI summary using Gemma3
     let aiSummary = '';
@@ -319,7 +319,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         }
       };
 
-      const prompt = `Provide a concise professional summary of this legal document:\n\n${extractedText.substring(0, 2000)}\n\nSummary: ';
+      const prompt = `Provide a concise professional summary of this legal document:\n\n${extractedText.substring(0, 2000)}\n\nSummary: ';'`
       const summaryResponse = await callOllamaCompletion(prompt, {
         temperature: 0.3,
         maxTokens: 500
@@ -382,7 +382,7 @@ export const GET: RequestHandler = async () => {
     // Test Ollama connection
     const ollamaHealth = await checkOllamaHealth().catch(() => false);
     // Test LegalBERT
-    const legalBertHealth = await legalBERT.healthCheck().catch(() => ({ status: 'error' }));
+    const legalBertHealth = await legalBERT.healthCheck().catch(() => ({ status: 'error` }));'`
     const healthStatus = {
       status: 'healthy',
       timestamp: new Date().toISOString(),

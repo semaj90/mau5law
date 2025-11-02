@@ -45,20 +45,20 @@ export interface SelfPrompt { id: string;, prompt: string;
 }
 // XState Events
 export type IdleDetectionEvent =
-  | { type: 'USER_ACTIVITY';, timestamp: number }
+  | { type: 'USER_ACTIVITY'; timestamp: number }
   | { type: 'START_IDLE_DETECTION' }
   | { type: 'STOP_IDLE_DETECTION' }
   | { type: 'IDLE_TIMEOUT' }
-  | { type: 'QUEUE_BACKGROUND_JOB';, job: Omit<BackgroundJob, 'id' | 'createdAt' | 'status'> }
-  | { type: 'JOB_COMPLETED'; jobId: string;, result: any } // Changed from any
-  | { type: 'JOB_FAILED'; jobId: string;, error: string }
+  | { type: 'QUEUE_BACKGROUND_JOB'; job: Omit<BackgroundJob, 'id' | 'createdAt' | 'status'> }
+  | { type: 'JOB_COMPLETED'; jobId: string; result: any } // Changed from any
+  | { type: 'JOB_FAILED'; jobId: string; error: string }
   | { type: 'ENABLE_SELF_PROMPTING' }
   | { type: 'DISABLE_SELF_PROMPTING' }
-  | { type: 'NEO4J_CONNECTED';, connected: boolean }
-  | { type: 'MINIO_CONNECTED';, connected: boolean }
-  | { type: 'RABBITMQ_CONNECTED';, connected: boolean }
-  | { type: 'GENERATE_SELF_PROMPT';, context: SystemContext } // Changed from any
-  | { type: 'SELF_PROMPT_COMPLETED'; promptId: string; response: string;, artifacts: string[] };
+  | { type: 'NEO4J_CONNECTED'; connected: boolean }
+  | { type: 'MINIO_CONNECTED'; connected: boolean }
+  | { type: 'RABBITMQ_CONNECTED'; connected: boolean }
+  | { type: 'GENERATE_SELF_PROMPT'; context: SystemContext } // Changed from any
+  | { type: 'SELF_PROMPT_COMPLETED'; promptId: string; response: string; artifacts: string[] };
 // Interface for system context used in self-prompting
 export interface SystemContext { lastActivity: number;, sessionDuration: number;
   completedJobs: number;
@@ -103,7 +103,7 @@ const idleDetectionServices = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          exchange: 'legal.background',
+         , exchange: 'legal.background',
           routingKey: job.type,
           message: {
            , jobId: job.id,
@@ -158,7 +158,7 @@ const idleDetectionServices = {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
-            bucket: 'self-prompting',
+           , bucket: 'self-prompting',
             key: `prompts/${selectedPrompt.id}.json`,
             data: selectedPrompt,
             metadata: {
@@ -335,7 +335,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
           onDone: {
             target: 'monitoring',
             actions: [
-              assign({
+              assign({,
                 neo4jConnected: (_, event) => event.data.neo4j,
                 minioConnected: (_, event) => event.data.minio,
                 rabbitmqConnected: (_, event) => event.data.rabbitmq
@@ -368,13 +368,12 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
             entry: [() => console.log('😴 User idle detected - starting background processing')],
             initial: 'checking_services',
             states: { checking_services: {, always: [
-                  {
+                  {,
                     target: 'generating_prompts',
                     cond: 'allServicesConnected'
                   },
                   {
-                    target: 'waiting_for_services'
-                  },
+                    target: 'waiting_for_services` }'`
                 ]
               },
               waiting_for_services: {
@@ -399,7 +398,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
                   onDone: {
                     target: 'processing_jobs',
                     actions: [
-                      assign({
+                      assign({,
                         jobQueue: (context, event) => {
                           // event.data is SelfPrompt | null
                           if (!event.data) return context.jobQueue;
@@ -427,10 +426,9 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
               },
               processing_jobs: {
                 always: [
-                  {
+                  {,
                     target: 'job_execution',
-                    cond: 'hasQueuedJobs'
-                  },
+                    cond: `hasQueuedJobs` },
                   {
                     target: '../active', // Return to active monitoring
                   },
@@ -545,7 +543,7 @@ async function storePromptInNeo4j(prompt: SelfPrompt, sessionId: string): Promis
   // Use sessionId to avoid unused-parameter lint errors and to provide useful metadata.
   console.log('📊 Storing self-prompt in Neo4j:', { promptId: prompt.id, sessionId });
   // In production, this would call your Neo4j API endpoint and include sessionId in the payload.
-  // For now, we'll simulate the storage and include sessionId in the simulated metadata.
+  // For now, we'll simulate the storage and include sessionId in the simulated metadata.'
   await new Promise<void>(resolve =>
     setTimeout(() => {
       // simulated persisted record (for debugging)
@@ -585,5 +583,5 @@ async function checkRabbitMQConnection(): Promise<boolean> {
   }
 }
 // Export actor type for TypeScript
-export type IdleDetectionActor = ActorRefFrom<typeof idleDetectionMachine>;
+export type IdleDetectionActor = ActorRefFrom<typeof, idleDetectionMachine>;
 // Helper to create and start the machine

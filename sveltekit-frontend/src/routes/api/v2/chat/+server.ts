@@ -72,13 +72,13 @@ export const GET: RequestHandler = async ({ url }) => {
         status: 'healthy',
         service: 'enhanced-chat-v2',
         features: {
-          pgvectorEmbeddings: true,
+         , pgvectorEmbeddings: true,
           keywordFallback: true,
           streamingSupport: true,
           vectorCache: true
         },
         ollama: {
-          version: version.version || 'unknown',
+         , version: version.version || 'unknown',
           model: 'gemma3-legal:latest'
         },
         database: {
@@ -145,7 +145,7 @@ export const GET: RequestHandler = async ({ url }) => {
       { status: 400 }
     );
   } catch (error: any) {
-    console.error('Enhanced chat GET error:', error);
+    console.error('Enhanced chat GET error:', error);'
     const errMsg = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -180,8 +180,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Message or messages array is required'
-        },
+          error: 'Message or messages array is required' },
         { status: 400 }
       );
     }
@@ -191,7 +190,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'No user message found` },
+          error: 'No user message found' },
         { status: 400 }
       );
     }
@@ -251,7 +250,7 @@ export const POST: RequestHandler = async ({ request }) => {
             controller.enqueue(encoder.encode('data: [DONE]\n\n'));
             controller.close();
           } catch (error: any) {
-            console.error('Streaming error:', error);
+            console.error('Streaming error:', error);'
             const errMsg = error instanceof Error ? error.message : String(error);
             const errorChunk = {
               type: 'error',
@@ -269,7 +268,7 @@ export const POST: RequestHandler = async ({ request }) => {
           'Cache-Control': 'no-cache',
           'Connection': 'keep-alive',
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type` }
+          'Access-Control-Allow-Headers': `Content-Type' }'`
       });
     }
     // For non-streaming responses
@@ -315,7 +314,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     return json(response);
   } catch (error: any) {
-    console.error('Enhanced chat API error:', error);
+    console.error('Enhanced chat API error:', error);'
     return json(
       {
         success: false,

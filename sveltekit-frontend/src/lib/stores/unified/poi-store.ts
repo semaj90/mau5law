@@ -132,8 +132,7 @@ function createPOIStore() {
       update(s => ({ ...s, isLoading: true, error: null }));
       try {
         const response = await fetch(`/api/cases/${caseId}/pois`, {
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -167,7 +166,7 @@ function createPOIStore() {
       try {
         const response = await fetch('/api/pois', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify(poiData),
           credentials: `include` });
 
@@ -198,7 +197,7 @@ function createPOIStore() {
       try {
         const response = await fetch(`/api/pois/${id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify(updates),
           credentials: `include` });
 
@@ -240,7 +239,7 @@ function createPOIStore() {
           }));
         }
       } catch (error) {
-        console.error('Delete error:', error);
+        console.error('Delete error:', error);'
       }
     },
 
@@ -277,10 +276,9 @@ function createPOIStore() {
       try {
         const response = await fetch('/api/pois/relationships', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ poiId1, poiId2, type, strength }),
-          credentials: 'include'
-        });
+          credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
@@ -298,7 +296,7 @@ function createPOIStore() {
           return relationship;
         }
       } catch (error) {
-        console.error('Relationship creation error:', error);
+        console.error('Relationship creation error:', error);'
       }
     },
 
@@ -323,7 +321,7 @@ function createPOIStore() {
       update(s => ({ ...s, isLoading: true }));
 
       try {
-        const state: { pois: PersonOfInterest[];, relationships: POIRelationship[] } = {
+        const state: { pois: PersonOfInterest[]; relationships: POIRelationship[] } = {
           pois: [],
           relationships: []
         };
@@ -334,7 +332,7 @@ function createPOIStore() {
 
         const response = await fetch('/api/pois/analyze', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify(state),
           credentials: `include` });
 
@@ -348,7 +346,7 @@ function createPOIStore() {
           }));
         }
       } catch (error) {
-        console.error('Network analysis error:', error);
+        console.error('Network analysis error: ', error);'
         update(s => ({ ...s, isLoading: false }));
       }
     },
@@ -376,7 +374,7 @@ function createPOIStore() {
           return events;
         }
       } catch (error) {
-        console.error('Timeline error:', error);
+        console.error('Timeline error:', error);'
         return [];
       }
     },
@@ -388,7 +386,7 @@ function createPOIStore() {
       try {
         const response = await fetch(`/api/pois/${poiId}/timeline`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify(event),
           credentials: `include` });
 
@@ -408,7 +406,7 @@ function createPOIStore() {
           return newEvent;
         }
       } catch (error) {
-        console.error('Timeline event error:', error);
+        console.error('Timeline event error:', error);'
       }
     },
 
@@ -436,7 +434,7 @@ function createPOIStore() {
         }
         return 0;
       } catch (error) {
-        console.error('Risk prediction error:', error);
+        console.error('Risk prediction error:', error);'
         return 0;
       }
     },

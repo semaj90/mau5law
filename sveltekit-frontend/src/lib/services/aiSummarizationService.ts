@@ -2,7 +2,7 @@
 import { dev } from '$app/environment';
 
 // Local minimal EvidenceItem stub to avoid namespace/import issues.
-// Keep this lightweight; replace with the project's canonical type when available.
+// Keep this lightweight; replace with the project's canonical type when available.'
 type EvidenceItem = {
   id?: string;
   type?: string;

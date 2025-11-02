@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
           WHERE id != ${docId}
           ORDER BY content_embedding <-> ${embedding}::vector
           LIMIT 10
-        `)
+        `)`
         relatedDocuments = similarDocs.map((doc: any) => ({
           id: doc.id,
           content: doc.content?.substring(0, 500) + '...',
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     try {
       // Mock Neo4j-style relationships for demonstration
       graphConnections = [
-        {
+        {,
           type: 'CITES',
           targetId: `precedent_${Math.floor(Math.random() * 1000)}`,
           targetTitle: 'Legal; Precedent: Contract Interpretation Standards',
@@ -121,8 +121,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
         postgres_query_time: '~15ms',
         vector_search_time: embedding ? '~25ms' : 'skipped',
         graph_traversal_time: '~10ms',
-        total_server_time: '~50ms'
-      }
+        total_server_time: `~50ms` }
     }
     // 7. GPU acceleration integration for advanced analysis (optional)
     let gpuAnalysis = null
@@ -131,12 +130,11 @@ export const GET: RequestHandler = async ({ params, url }) => {
     try {
       const gpuResponse = await fetch('http://localhost:5173/api/gpu/flash-attention', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
          , text: document.content.substring(0, 2000), // First 2000 chars
           context: relatedDocuments.map(d => d.title).slice(0, 3),
-          analysisType: 'legal'
-        })
+          analysisType: `legal` })
       });
       if (gpuResponse.ok) {
         const gpuData = await gpuResponse.json();
@@ -148,7 +146,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
         };
       }
     } catch (gpuError) {
-      console.warn('[API] GPU analysis failed:', gpuError);
+      console.warn('[API] GPU analysis failed: `, gpuError);'`
     }
   }
     // 8. Comprehensive response
@@ -180,7 +178,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     console.log(`[API] Document ${docId} processed successfully with ${relatedDocuments.length} related docs`)
     return json(response)
   } catch (err: any) {
-    console.error('[API] Document fetch failed:', err)
+    console.error('[API] Document fetch failed: `, err)'`
     throw kitError(500, `Failed to fetch document: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 }

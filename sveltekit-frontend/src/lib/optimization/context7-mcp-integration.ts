@@ -51,9 +51,9 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     };
     this.optimizationSuite =
       suite ||
-      // cast via Parameters<> to align with createEnhancedOptimizationSuite's expected param type
+      // cast via Parameters<> to align with createEnhancedOptimizationSuite's expected param type'
       createEnhancedOptimizationSuite(
-        defaultSuiteConfig as unknown as Parameters<typeof createEnhancedOptimizationSuite>[0]
+        defaultSuiteConfig as unknown as Parameters<typeof, createEnhancedOptimizationSuite>[0]
       );
     // start async initialization (do not await in constructor)
     void this.initializeIntegration();
@@ -210,7 +210,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
               'Use memory-mapped files for large datasets',
             ],
             expected_benefit: 'Improve performance by 30-50% while reducing memory usage',
-            code_example: '// Enable high-performance JSON processing\nconst jsonOptimizer = createHighPerformanceJSONProcessor();\njsonOptimizer.setOptimizationLevel('high');` });
+            code_example: '// Enable high-performance JSON processing\nconst jsonOptimizer = createHighPerformanceJSONProcessor();\njsonOptimizer.setOptimizationLevel('high');` });'`
         }
         break;
       case 'memory':
@@ -250,7 +250,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     _context: NonNullable<Context7MCPRequest['optimization_context']>
   ): Promise<OptimizationRecommendation[]> {
     return [
-      {
+      {,
         category: 'performance',
         title: `${feature} Integration Optimization`,
         description: `Optimize ${feature} integration for current resource environment`,
@@ -261,7 +261,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
           'Consider WebAssembly acceleration if applicable',
         ],
         expected_benefit: 'Optimized integration with minimal performance impact',
-        code_example: '// Optimized feature integration\nimport { createEnhancedOptimizationSuite } from '$lib/optimization';\nconst suite = createEnhancedOptimizationSuite();\n// Integrate ${feature} with optimization awareness' },
+        code_example: '// Optimized feature integration\nimport { createEnhancedOptimizationSuite } from '$lib/optimization';\nconst suite = createEnhancedOptimizationSuite();\n// Integrate ${feature} with optimization awareness' }
     ];
   }
   private async generateLibraryOptimizationTips(
@@ -280,12 +280,12 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
           'Enable prefetching for critical routes',
         ],
         expected_benefit: 'Improve page load times by 40-70%',
-        code_example: '// SvelteKit optimization
+        code_example: '// SvelteKit optimization'
 import { preloadData } from '$app/navigation';
 export const load = (async ({ depends }): Promise<any> => {
   depends('app:data');
   return await loadOptimizedData();
-})` },
+})' },'
       drizzle: {
         category: 'performance',
         title: 'Drizzle ORM Optimization',
@@ -297,11 +297,11 @@ export const load = (async ({ depends }): Promise<any> => {
           'Use prepared statements for frequent queries',
         ],
         expected_benefit: 'Reduce database query times by 50-80%',
-        code_example: '// Drizzle optimization
+        code_example: '// Drizzle optimization'
 const db = drizzle(pool, {
   logger: true,
-  casing: `snake_case` });
-// Use with optimization suite caching' },
+  casing: 'snake_case' });
+// Use with optimization suite caching` },`
       'bits-ui': {
         category: 'performance',
         title: 'Bits UI Performance',
@@ -336,18 +336,15 @@ const db = drizzle(pool, {
   ): Promise<NonNullable<Context7MCPResponse['performance_impact']>> {
     const impactEstimates: Record<string, NonNullable<Context7MCPResponse['performance_impact']>> = { performance: {, expected_improvement: 0.4,
         memory_savings_mb: Math.round(context.memory_usage * 0.2),
-        implementation_effort: 'medium'
-      },
+        implementation_effort: `medium` },
       memory: {
         expected_improvement: 0.6,
         memory_savings_mb: Math.round(context.memory_usage * 0.4),
-        implementation_effort: 'high'
-      },
+        implementation_effort: `high` },
       docker: {
         expected_improvement: 0.3,
         memory_savings_mb: Math.round(context.memory_usage * 0.25),
-        implementation_effort: 'medium'
-      }
+        implementation_effort: `medium` }
     };
     return (
       impactEstimates[area] || {
@@ -358,7 +355,7 @@ const db = drizzle(pool, {
   }
   // Utility
   private generateCacheKey(request: Context7MCPRequest): string {
-    return `${request.tool}:${request.component || ''}:${request.area || ''}:${request.feature || ''}:${request.library || '` }`;
+    return `${request.tool}:${request.component || ''}:${request.area || ''}:${request.feature || ''}:${request.library || '` }`;'`
   }
   async runComprehensiveOptimizationAnalysis(): Promise<{ current_metrics: EnhancedPerformanceMetrics;, recommendations: OptimizationRecommendation[];
     estimated_improvements: Record<string, number>;

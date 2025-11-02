@@ -35,7 +35,7 @@ const redis = new Redis({
 export const documentQueue = new Queue<DocumentProcessingJobData, DocumentProcessingJobResult>('document-processing', {
   connection: redis,
   defaultJobOptions: {
-    removeOnComplete: 100,
+   , removeOnComplete: 100,
     removeOnFail: 50,
     attempts: 3,
     backoff: {
@@ -65,7 +65,7 @@ export interface LegalEntity { text: string;, type: string; // e.g., 'PERSON', 
   startOffset?: number; // Optional: starting character index in the document
   endOffset?: number;   // Optional: ending character index in the document
   confidence?: number;  // Optional: confidence score of the detection
-  metadata?: Record<string, unknown>; // <-- changed from Record<string, any>
+  metadata?: Record<string, unknown>; // <-- changed from, Record<string, any>
 }
 
 export interface DocumentProcessingJobResult { success: boolean;, documentId: string;
@@ -119,7 +119,7 @@ function normalizeJobState(state: string): JobStatusResult['status'] {
 }
 
 // Typed helper to call getJobCounts() without using `any`
-// We use `unknown` -> tight interface so TS doesn't complain about `any`.
+// We use `unknown` -> tight interface so TS doesn't complain about `any`.'
 async function getJobCountsFromQueue(q: Queue): Promise<BullJobCounts> {
   return (q as unknown as { getJobCounts: () => Promise<BullJobCounts> }).getJobCounts();
 }

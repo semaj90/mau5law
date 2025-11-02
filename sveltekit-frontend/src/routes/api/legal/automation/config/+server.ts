@@ -4,14 +4,10 @@
  */
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-interface AutomationConfig { id: string, type: string; source: string
-  autoProcessing: boolean; gpuAcceleration: boolean
-  batchSize: number; confidenceThreshold: number
-  processingOptions: string[]; createdAt: string
+interface AutomationConfig { id: string, type: string; source: string; autoProcessing: boolean; gpuAcceleration: boolean; batchSize: number; confidenceThreshold: number; processingOptions: string[]; createdAt: string
 }
 interface ProcessingJob { id: string, configId: string; status: 'pending' | 'processing' | 'completed' | 'failed',
-  documentsProcessed: number; totalDocuments: number
-  startTime: Date
+  documentsProcessed: number; totalDocuments: number; startTime: Date
   endTime?: Date
   errors?: string[]
 }
@@ -143,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       data: {
-        configurations: configs,
+       , configurations: configs,
         jobs: filteredJobs,
         summary: {
          , totalConfigs: configs.length,
@@ -219,8 +215,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       return json(
         {
           success: false,
-          error: 'Configuration ID is required'
-        },
+          error: 'Configuration ID is required` },'`
         { status: 400 }
       );
     }
@@ -229,8 +224,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       return json(
         {
           success: false,
-          error: 'Configuration not found'
-        },
+          error: `Configuration not found` },
         { status: 404 }
       );
     }

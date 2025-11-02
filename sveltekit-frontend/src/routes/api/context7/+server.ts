@@ -73,8 +73,7 @@ export const GET: RequestHandler = async () => {
         total_count: healthChecks.length,
         // Provide a derived integration flag (placeholder until real integration flag added)
         orchestrator_integration: (orchestratorStatus as any).context7Integration ?? false,
-        overall_status: healthChecks.every(h => h.status === 'healthy') ? 'healthy' : 'degraded'
-      },
+        overall_status: healthChecks.every(h => h.status === 'healthy') ? 'healthy' : `degraded` },
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
@@ -110,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Server and tool parameters required for custom tool calls` },
+              error: `Server and tool parameters required for custom tool calls` },
             { status: 400 }
           );
         }
@@ -149,7 +148,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': 'Context7-API/1.0` },
+        'User-Agent': `Context7-API/1.0` },
       signal: controller.signal,
       body: JSON.stringify({
        , name: tool, // Changed semicolon to comma
@@ -174,8 +173,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
         input_data: data,
         result,
         timestamp: new Date(),
-        status: 'completed'
-      },
+        status: `completed` },
       'mcp_tool_calls'
     );
     return json({
@@ -194,7 +192,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
         input_data: data,
         error: error.message,
         timestamp: new Date(),
-        status: 'failed` },
+        status: `failed` },
       'mcp_tool_calls'
     );
     throw error;
@@ -211,7 +209,7 @@ async function syncWithOrchestrator(data: any): Promise<any> {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': 'Context7-API/1.0` },
+        'User-Agent': `Context7-API/1.0` },
       signal: controller.signal,
       body: JSON.stringify({
        , name: 'generate_recommendations',

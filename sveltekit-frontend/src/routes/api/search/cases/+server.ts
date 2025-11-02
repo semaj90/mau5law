@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     // Change: 'any'; to: 'unknown'
-    console.error('Case search error:', error);
+    console.error('Case search error:', error);'
     return json(
       {
         results: [],
@@ -72,7 +72,7 @@ async function searchCasesText(query: string, limit: number, filters: CaseFilter
   // Use new types
   try {
     const whereConditions = [
-      or(
+      or(,
         ilike(cases.title, `%${query}%`),
         ilike(cases.description, `%${query}%`),
         ilike(cases.caseNumber, `%${query}%`)
@@ -98,7 +98,7 @@ async function searchCasesText(query: string, limit: number, filters: CaseFilter
       // Explicitly type case_
       ...case_,
       searchScore: 1.0,
-      matchType: 'text` }));
+      matchType: 'text' }));
   } catch (error: any) {
     // Change: 'any'; to: 'unknown'
     console.error('Text search failed:', error);

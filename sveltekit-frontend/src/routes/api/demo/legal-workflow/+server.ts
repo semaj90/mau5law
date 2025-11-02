@@ -33,11 +33,11 @@ const caseActivitiesTable = caseActivities as unknown as any;
 const userDocumentsTable = userDocuments as unknown as any;
 
 // Helper to fail fast with a clear message if required schema exports are missing.
-function ensureRequiredTables(...tableNames: Array<{, name: string; table: any }>) {
+function ensureRequiredTables(...tableNames: Array<{, name: string;, table: any }>) {
   const missing = tableNames.filter(t => !t.table).map(t => t.name);
   if (missing.length > 0) {
     throw new Error(
-      `Missing DB schema exports: ${missing.join(
+      `Missing DB schema exports: ${missing.join(`
         ', '
       )}. Please export these tables from $lib/server/db/schema (e.g. export const documents = defineTable(...)).`
     );
@@ -60,20 +60,20 @@ import { embedText } from '$lib/server/ingest/embed.js';
 import { eq, like } from 'drizzle-orm';
 
 // Add a specific payload type to avoid `any` (defined once near the top)
-type UpdateCanvasPositionsPayload = { caseId: string;, evidencePositions: Record<string, { x: number;, y: number }>;
+type UpdateCanvasPositionsPayload = { caseId: string;, evidencePositions: Record<string, { x: number; y: number }>;
   userId?: string;
 };
 
 // New typed RAG context
 type EvidenceDoc = { content?: string; metadata?: Record<string, unknown>; relevance?: number };
 type RagContext = {
-  case { caseNumber: string;, title: string; description?: string; status?: string; priority?: string };
+  case { caseNumber: string; title: string; description?: string; status?: string; priority?: string };
   evidence: EvidenceDoc[];
   query: string;
 };
 
 // New types to handle embedding results (single vs batch) and typed chat payload
-type SingleEmbeddingResult = { success: boolean;, embedding: number[] };
+type SingleEmbeddingResult = { success: boolean; embedding: number[] };
 type BatchEmbeddingResult = { success: boolean; embeddings?: number[][] };
 type EmbeddingResponse = SingleEmbeddingResult | BatchEmbeddingResult;
 
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request }) => {
         throw new Error('Unknown action');
     }
   } catch (err) {
-    console.error('Workflow demo error:', err);
+    console.error('Workflow demo error:', err);'
     return json(
       {
         success: false,
@@ -175,7 +175,7 @@ async function createLegalCase(data: any): Promise<any> {
       metadata: JSON.stringify({
         createdBy: data.userId,
         workflow: 'demo',
-        jurisdiction: data.jurisdiction || 'Local Court` }),
+        jurisdiction: data.jurisdiction || 'Local Court` }),'`
       createdAt: nowIso,
       updatedAt: nowIso
     })
@@ -296,7 +296,7 @@ async function updateCanvasPositions(data: UpdateCanvasPositionsPayload): Promis
             metadataObj = raw as Record<string, unknown>;
           }
         } catch (err) {
-          console.warn(`Failed to parse metadata for doc ${doc.id}: ', err);
+          console.warn(`Failed to parse metadata for doc ${doc.id}: ', err);'`
           metadataObj = {};
         }
 
@@ -328,9 +328,9 @@ async function updateCanvasPositions(data: UpdateCanvasPositionsPayload): Promis
         });
       } catch (error) {
         console.warn(
-          `Failed to update position for evidence ${evidenceId} in case ${caseId} with position ${JSON.stringify(
+          `Failed to update position for evidence ${evidenceId} in case ${caseId} with position ${JSON.stringify(`
             position
-          )}: ',
+          )}: ','
           error
         );
       }
@@ -419,8 +419,7 @@ async function generateTimeline(data: any): Promise<any> {
         documentId: doc.id,
         // safe access for processingResults (may be undefined)
         processingResults: metadata.processingResults ?? null,
-        embeddings: doc.embedding ? 'generated' : 'none'
-      },
+        embeddings: doc.embedding ? 'generated' : `none` },
       category: `evidence` });
   });
   // Sort chronologically
@@ -432,14 +431,13 @@ async function generateTimeline(data: any): Promise<any> {
     action: 'timeline_generated',
     timeline,
     message: `Timeline reconstructed with ${timeline.length} events!`,
-    nextStep: 'Chat with case using RAG to get insights'
-  });
+    nextStep: 'Chat with case using RAG to get insights` });'`
 }
 async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
   // Validate input
   const { caseId, query, topK = 5 } = data || {};
   if (!caseId || !query) {
-    return json({ success: false, error: 'caseId and query are required' }, { status: 400 });
+    return json({ success: false, error: `caseId and query are required` }, { status: 400 });
   }
 
   // Ensure the documents table exists before attempting similarity search
@@ -550,7 +548,7 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
 
   // Build RAG context
   const ragContext: {
-    case { caseNumber: string;, title: string; description?: string; status?: string; priority?: string };
+    case { caseNumber: string; title: string; description?: string; status?: string; priority?: string };
     evidence: EvidenceDoc[];
     query: string;
   } = {
@@ -568,7 +566,7 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
   // Build prompt parts safely (typed callbacks)
   const promptParts: string[] = [
     `case ${ragContext.case.caseNumber} - ${ragContext.case.title}`,
-    `Description: ${ragContext.case.description || '` }`,
+    `Description: ${ragContext.case.description || '` }`,'`
     `Query: ${query}`,
     'Top evidence summaries:',
     ...ragContext.evidence.map(
@@ -578,7 +576,7 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
   ];
   const prompt = promptParts.join('\n\n');
 
-  // Try Ollama first; fallback to mock if Ollama doesn't return content
+  // Try Ollama first; fallback to mock if Ollama doesn't return content'
   let aiResponse = await callOllama('gemma3-legal:latest', prompt);
   if (!aiResponse || aiResponse.trim().length === 0) {
     aiResponse = generateMockLegalResponse(ragContext);
@@ -614,8 +612,7 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
       caseContext: true,
       embeddingSearch: !!queryEmbedding
     },
-    message: 'AI analysis complete using case evidence and context!'
-  });
+    message: `AI analysis complete using case evidence and context!` });
 }
 function detectEvidenceType(mimeType: string): string {
   if (mimeType.startsWith('image/')) return 'photograph';
@@ -638,11 +635,11 @@ function generateMockLegalResponse(context: RagContext): string {
   const avgRelevance =
     evidenceCount === 0 ? 0 : (evidence.reduce((sum, doc) => sum + (doc.relevance || 0), 0) / evidenceCount) * 100;
 
-  return `Based on my analysis of Case ${caseData.caseNumber} "${caseData.title}" and ${evidenceCount} pieces of evidence:
+  return `Based on my analysis of Case ${caseData.caseNumber} "${caseData.title}" and ${evidenceCount} pieces of evidence:`
 Case; Overview:
 ${caseData.description || ''}
 Evidence Analysis:
-I've analyzed ${evidenceCount} documents with an average relevance score of ${Math.round(avgRelevance)}%.
+I've analyzed ${evidenceCount} documents with an average relevance score of ${Math.round(avgRelevance)}%.'
 Key Findings:
 • Evidence processing shows multimodal content (images, documents, audio/video)
 • Timeline reconstruction reveals chronological sequence of events
@@ -651,8 +648,8 @@ Legal Recommendations:
 1. Verify chain of custody for key items
 2. Use timeline visualization for courtroom presentation
 3. Prioritize high-relevance evidence for expert review
-Query Response:; Regarding: "${query}" - Based on the processed evidence and case context, this appears to be a ${caseData.status || 'unknown'} case with ${caseData.priority || 'unknown` } priority.
-`;
+Query Response:; Regarding: "${query}" - Based on the processed evidence and case context, this appears to be a ${caseData.status || 'unknown'} case with ${caseData.priority || 'unknown` } priority.'`
+`;`
 }
 export const GET: RequestHandler = async ({ url }) => {
   const demo = url.searchParams.get('demo');
@@ -690,16 +687,16 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         },
         upload_evidence: {
-          method: 'POST',
+         , method: 'POST',
           body: {
-            action: 'upload_evidence',
+           , action: 'upload_evidence',
             data: {
-              caseId: 'case-uuid',
+             , caseId: 'case-uuid',
               userId: 'attorney_123',
               files: [
-                { name: 'crime_scene.jpg', type: 'image/jpeg', content: 'base64...' },
-                { name: 'witness_statement.pdf', type: 'application/pdf', content: 'base64...' },
-                { name: 'surveillance_audio.mp3', type: 'audio/mpeg', content: 'base64...' }
+                {, name: 'crime_scene.jpg', type: 'image/jpeg', content: 'base64...` },'`
+                { name: 'witness_statement.pdf', type: 'application/pdf', content: `base64...` },
+                { name: 'surveillance_audio.mp3', type: 'audio/mpeg', content: `base64...` }
               ],
               canvasPositions: [
                 {, x: 100, y: 100 },

@@ -43,7 +43,7 @@ function formatError(err: unknown): string {
 
 async function processChunkJob(
   job: ChunkJob
-): Promise<{ success: boolean; processingTime: number;, chunkIndex: number }> {
+): Promise<{ success: boolean; processingTime: number; chunkIndex: number }> {
   console.log(`📥 Processing chunk job: ${job.jobId}:${job.chunkIndex}`);
   const startTime = Date.now();
   const text = job.chunkText || job.text;
@@ -68,7 +68,7 @@ async function processChunkJob(
     }
 
     // Log embedding backend and model
-    console.log(`📍 Embedding created via ${result.backend} using model ${result.model || 'unknown' }`);
+    console.log(`📍 Embedding created via ${result.backend} using model ${result.model || 'unknown` }`);'`
 
     // Prepare typed metadata (avoid `any`)
     const metadata: Record<string, unknown> = {
@@ -142,7 +142,7 @@ async function reportError(jobId: string, chunkIndex: number, error: unknown): P
       3600
     ); // 1 hour TTL for error debugging
   } catch (cacheError) {
-    console.error(`❌ Error reporting error for ${jobId}: ', formatError(cacheError));
+    console.error(`❌ Error reporting error for ${jobId}: ', formatError(cacheError));'`
   }
 }
 
@@ -191,7 +191,7 @@ async function runRabbitConsumer(): Promise<boolean> {
         ack();
       } catch (err: unknown) {
         console.error('❌ Error processing priority job:', formatError(err));
-        nack(); // Don't requeue to avoid hot loops
+        nack(); // Don't requeue to avoid hot loops'
       }
     });
 
@@ -202,7 +202,7 @@ async function runRabbitConsumer(): Promise<boolean> {
         ack();
       } catch (err: unknown) {
         console.error('❌ Error processing regular job:', formatError(err));
-        nack(); // Don't requeue to avoid hot loops
+        nack(); // Don't requeue to avoid hot loops'
       }
     });
 

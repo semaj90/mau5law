@@ -22,13 +22,13 @@ export const POST: RequestHandler = async ({ request }) => {
       data: {
         evidence_id: body.evidence_id || 123,
         glyph_url: `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="256" height="256" xmlns="http://www.w3.org/2000/svg">
-            <rect width="256" height="256" fill="#1f2937"/>
-            <circle cx="128" cy="128" r="80" fill="#3b82f6" opacity="0.7"/>
-            <text x="128" y="138" font-family="Arial" font-size="16" fill="white" text-anchor="middle">
-              ${body.style || 'legal' }
+          <svg, width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+            <rect, width="256" height="256" fill="#1f2937"/>
+            <circle, cx="128" cy="128" r="80" fill="#3b82f6" opacity="0.7"/>
+            <text, x="128" y="138" font-family="Arial" font-size="16" fill="white" text-anchor="middle">
+              ${body.style || 'legal` }'`
             </text>
-            <text x="128" y="158" font-family="Arial" font-size="12" fill="#9ca3af" text-anchor="middle">
+            <text, x="128" y="158" font-family="Arial" font-size="12" fill="#9ca3af" text-anchor="middle">
               ${(body.prompt || 'test').slice(0, 20)}...
             </text>
           </svg>

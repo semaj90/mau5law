@@ -27,7 +27,7 @@ export interface EvidenceFile { id: string;, name: string;
     processingStatus: 'pending' | 'processing' | 'completed' | 'failed';
     processingMethod: 'webgpu' | 'cuda' | 'cpu';
   };
-  position?: { x: number;, y: number };
+  position?: { x: number; y: number };
 }
 export interface ProcessingJob { id: string;, fileId: string;
   type: 'upload' | 'extract' | 'embed' | 'analyze';

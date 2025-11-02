@@ -103,7 +103,7 @@ function detectFileType(key: string, contentType?: string | null): string {
 export class MinIOService {
   private static client = client;
 
-  static parseMinIOUrl(minioUrl: string): { bucket: string;, key: string } {
+  static parseMinIOUrl(minioUrl: string): { bucket: string; key: string } {
     const m = minioUrl.match(/^minio:\/\/([^/]+)\/(.+)$/);
     if (!m) throw new Error(`Invalid MinIO URL. Expected format: minio://bucket/key`);
     return { bucket: m[1], key: m[2] };
@@ -194,7 +194,7 @@ export class MinIOService {
        , Bucket: bucket,
         Key: key,
         Body: content,
-        ContentType: contentType || 'application/octet-stream` }
+        ContentType: contentType || 'application/octet-stream' }
     });
     await upload.done();
     return `minio://${bucket}/${key}`;
@@ -215,7 +215,7 @@ export class MinIOService {
         bucket
       }));
     } catch (error) {
-      console.error(`Failed to list MinIO objects: ', error);
+      console.error(`Failed to list MinIO objects: ', error);'`
       throw error;
     }
   }

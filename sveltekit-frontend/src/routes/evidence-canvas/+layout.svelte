@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { page } from '$app/state';
   import { browser } from '$app/environment';
@@ -14,7 +14,7 @@
   let { children }: Props = $props();
 </script>
 
-<div class="evidence-canvas-layout" class:mounted>
+<div, class="evidence-canvas-layout" class:mounted>
   {@render children?.()}
 </div>
 

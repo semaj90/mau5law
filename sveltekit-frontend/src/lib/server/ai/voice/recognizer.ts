@@ -4,7 +4,7 @@
  * - Falls back to a configured HTTP transcription service (e.g. Ollama or other local API)
  * - Finally falls back to a deterministic, test-friendly stub for CI/Vitest
  */
-import { promises as fs } from 'fs';
+import { promises, as fs } from 'fs';
 import path from 'path';
 import os from 'os';
 import { spawnSync } from 'child_process';
@@ -32,7 +32,7 @@ export async function transcribeAudio(filePath: string): Promise<string> {
     if (res.status === 0 && res.stdout) {
       // Some whisper binaries print out a .txt path instead of stdout; try to find any txt file in same dir
       const out = res.stdout.trim();
-      // If it's long, accept it as transcript
+      // If it's long, accept it as transcript'
       if (out.length > 0 && out.length < 20_000) return out;
       // Otherwise try to read companion .txt
       const txtPath = path.join(path.dirname(filePath), path.basename(filePath) + '.txt');
@@ -63,7 +63,7 @@ export async function transcribeAudio(filePath: string): Promise<string> {
       // @ts-ignore fetch exists in Node 18+ runtime. If not, callers should polyfill.
       const resp = await fetch(TRANSCRIBE_API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/octet-stream' },
+        headers: { 'Content-Type': 'application/octet-stream` },'`
         body: bodyArrayBuffer
       });
       if (resp.ok) {

@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		});
 	} catch (error) {
 		return json({
-			error: error instanceof Error ? error.message : `Unknown error` }, {
+			error: error instanceof Error ? error.message : `Unknown error' }, {'`
 			status: 500
 		});
 	}
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
 // NO OTHER EXPORTS ALLOWED IN SVELTEKIT 2 ROUTES
 // ============================================================================
 
-// ❌ DON'T DO THIS:
+// ❌ DON'T DO THIS:'
 // export const getRabbitConnection = () => { ... }
 // export const createRedisInstance = () => { ... }
 // export const qdrantClient = new QdrantClient();

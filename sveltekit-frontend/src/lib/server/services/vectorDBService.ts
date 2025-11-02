@@ -39,7 +39,7 @@ export async function generateEmbedding(text: string, useCache: boolean = true):
   try {
     // Use backend-agnostic gateway (tries: local embedder -> FastAPI -> vLLM -> Ollama -> Go)
     const { embedding } = await getEmbeddingViaGate(fetch, text, {
-      model: process.env.EMBED_MODEL || 'nomic-embed-text` });
+      model: process.env.EMBED_MODEL || 'nomic-embed-text' });
     // Cache the result for performance
     if (useCache && Array.isArray(embedding)) {
       if (embeddingCache.size >= cacheMaxSize) {
@@ -81,7 +81,7 @@ export async function storeChatEmbedding(embeddingData: ChatEmbedding): Promise<
       // Convert embedding array to pgvector format
       const vectorString = `[${embedding.join(',')}]`;
       await db.execute(
-        sql`INSERT INTO chat_embeddings (
+        sql`INSERT INTO chat_embeddings (`
           conversation_id,
           message_id,
           content,
@@ -129,7 +129,7 @@ export async function searchSimilarChats(
     const excludeCondition = excludeConversationId ? sql`AND conversation_id != ${excludeConversationId}` : sql``;
     // Use HNSW index for fast approximate similarity search
     const results = await db.execute(
-      sql`SELECT
+      sql`SELECT`
         content,
         role,
         conversation_id,
@@ -152,9 +152,9 @@ export async function searchSimilarChats(
   } catch (error: any) {
     // Changed from any
     if (error instanceof Error) {
-      console.error('Vector search error:', error.message);
+      console.error('Vector search error:', error.message);'
     } else {
-      console.error('Vector search error: ', error);
+      console.error('Vector search error: ', error);'
     }
     return [];
   }
@@ -166,10 +166,10 @@ export async function searchSimilarChatsKeyword(
   excludeConversationId?: string
 ): Promise<VectorSearchResult[]> {
   try {
-    const excludeCondition = excludeConversationId ? sql`AND conversation_id != ${excludeConversationId}` : sql``;
+    const excludeCondition = excludeConversationId ? sql`AND conversation_id != ${excludeConversationId}' : sql'';'`
     // Use PostgreSQL full-text search as fallback when embeddings are slow
     const results = await db.execute(
-      sql'SELECT
+      sql'SELECT'
         content,
         role,
         conversation_id,
@@ -192,20 +192,20 @@ export async function searchSimilarChatsKeyword(
   } catch (error: any) {
     // Changed from any
     if (error instanceof Error) {
-      console.error('Keyword search error:', error.message);
+      console.error('Keyword search error:', error.message);'
     } else {
-      console.error('Keyword search error:', error);
+      console.error('Keyword search error:', error);'
     }
     return [];
   }
 }
-// Create chat embeddings table if it doesn't exist
+// Create chat embeddings table if it doesn't exist'
 export async function initializeChatEmbeddingsTable(): Promise<void> {
   try {
     // Enable pgvector extension if not already enabled
     await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector`);
     await db.execute(
-      sql`CREATE TABLE IF NOT EXISTS chat_embeddings (
+      sql`CREATE TABLE IF NOT EXISTS chat_embeddings (`
         id SERIAL PRIMARY KEY,
         conversation_id VARCHAR(255) NOT NULL,
         message_id VARCHAR(255) UNIQUE NOT NULL,
@@ -218,18 +218,18 @@ export async function initializeChatEmbeddingsTable(): Promise<void> {
     );
     // Create optimized indexes for fast similarity search
     await db.execute(
-      sql`CREATE INDEX IF NOT EXISTS idx_chat_embeddings_vector_hnsw
+      sql`CREATE INDEX IF NOT EXISTS idx_chat_embeddings_vector_hnsw`
       ON chat_embeddings USING hnsw (embedding vector_cosine_ops)
       WITH (m = 16, ef_construction = 64)`
     );
     // Create index for conversation lookup
     await db.execute(
-      sql`CREATE INDEX IF NOT EXISTS idx_chat_embeddings_conversation
+      sql`CREATE INDEX IF NOT EXISTS idx_chat_embeddings_conversation`
       ON chat_embeddings (conversation_id)`
     );
     // Create index for role-based filtering
     await db.execute(
-      sql`CREATE INDEX IF NOT EXISTS idx_chat_embeddings_role
+      sql`CREATE INDEX IF NOT EXISTS idx_chat_embeddings_role`
       ON chat_embeddings (role)`
     );
     console.log('Chat embeddings table initialized successfully');
@@ -250,7 +250,7 @@ setInterval(() => {
   }
 }, cacheTimeout);
 // This function stores the log and its embedding in PostgreSQL
-export async function storeLogInVectorDB(data: {, log: any; embedding: number[] }): Promise<unknown> {
+export async function storeLogInVectorDB(data: {, log: any;, embedding: number[] }): Promise<unknown> {
   // Changed from any
   // TODO: Implement error_logs table in schema
   console.warn('storeLogInVectorDB: errorLogs table not implemented yet');

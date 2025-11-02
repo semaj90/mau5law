@@ -37,7 +37,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
 };
 
 const originalGETHandler: RequestHandler = async ({ url: _url, locals }) => {
-  // Renamed: 'url' to: '_url' and; used: 'url: _url' for correct destructuring
+  // Renamed: 'url'; to: '_url' and; used: 'url: _url' for correct destructuring
   try {
     const userId = getUserId(locals) || 'anonymous';
     const history = await db.select().from(aiHistory).where(eq(aiHistory.userId, userId));

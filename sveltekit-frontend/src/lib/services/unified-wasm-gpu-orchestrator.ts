@@ -101,23 +101,20 @@ interface YoRHaProcessor {
 }
 // Strongly-typed GPU compute instance matching implemented API surface
 type GPUComputeInstance = {
-  matmul?: (
-    a: Float32Array | number[][] | ArrayLike<number>,
-    b: Float32Array | number[][] | ArrayLike<number>,
+  matmul?: (;
+    a: Float32Array | number[][] | ArrayLike<number>; b: Float32Array | number[][] | ArrayLike<number>,
     m?: number,
     n?: number,
     k?: number
   ) => unknown;
   conv2d?: (
-    input: Float32Array | number[][] | ArrayLike<number>,
-    kernel: Float32Array | number[][] | ArrayLike<number>,
+    input: Float32Array | number[][] | ArrayLike<number>; kernel: Float32Array | number[][] | ArrayLike<number>,
     width?: number,
     height?: number,
     kernel_size?: number
   ) => unknown;
   attention?: (
-    query: Float32Array | number[][] | ArrayLike<number>,
-    key: Float32Array | number[][] | ArrayLike<number>; value: Float32Array | number[][] | ArrayLike<number>,
+    query: Float32Array | number[][] | ArrayLike<number>; key: Float32Array | number[][] | ArrayLike<number>; value: Float32Array | number[][] | ArrayLike<number>,
     seq_len?: number,
     dim?: number
   ) => unknown;
@@ -166,8 +163,8 @@ export class UnifiedWASMGPUOrchestrator {
   private wasmModules = new Map<string, unknown>();
   private isInitialized = $state(false);
   // Monitoring interval handles
-  private healthIntervalId?: ReturnType<typeof setInterval>;
-  private perfIntervalId?: ReturnType<typeof setInterval>;
+  private healthIntervalId?: ReturnType<typeof, setInterval>;
+  private perfIntervalId?: ReturnType<typeof, setInterval>;
   // Reactive Stores
   public status = writable<'initializing' | 'ready' | 'busy' | 'error'>('initializing');
   public performanceMetrics = writable<UnifiedPerformanceMetrics>({
@@ -306,7 +303,7 @@ export class UnifiedWASMGPUOrchestrator {
           const url = new URL(c);
           return url.toString().replace(/\/$/, '');
         } catch {
-          // If it isn't an absolute URL, try to coerce with http:// prefix
+          // If it isn't an absolute URL, try to coerce with http:// prefix'
           try {
             const coerced = c.startsWith('//') ? `http:${c}` : c.match(/^https?:\/\//i) ? c : `http://${c}`;
             const url2 = new URL(coerced);
@@ -331,7 +328,7 @@ export class UnifiedWASMGPUOrchestrator {
       // also log the underlying error for easier debugging
       // keep noise minimal in production; prefer debug-level logging if available
       // eslint-disable-next-line no-console
-      console.warn('getOllamaEndpoint fallback used due to error:', err);
+      console.warn('getOllamaEndpoint fallback used due to error:', err);'
       const hostFallback =
         typeof window !== 'undefined' && window.location?.hostname ? window.location.hostname : 'localhost';
       const protocolFallback =
@@ -372,7 +369,7 @@ export class UnifiedWASMGPUOrchestrator {
         responseTime = Date.now() - t0;
         healthy = res.ok;
       } catch {
-        // don't throw - keep best-effort
+        // don't throw - keep best-effort'
         healthy = !!this.ollamaService;
       }
       statuses.push({
@@ -481,7 +478,7 @@ export class UnifiedWASMGPUOrchestrator {
         const result = await this.executeTask(task);
         this.taskResults.set(task.id, result);
       } catch (error: any) {
-        console.error(`❌ Task ${task.id} execution failed: ', this.getErrorMessage(error));
+        console.error(`❌ Task ${task.id} execution failed: ', this.getErrorMessage(error));'`
         this.taskResults.set(task.id, {
           taskId: task.id,
           success: false,
@@ -625,7 +622,7 @@ export class UnifiedWASMGPUOrchestrator {
         }
       }
     } catch (error: any) {
-      console.error(`Service ${serviceUsed} failed: ', this.getErrorMessage(error));
+      console.error(`Service ${serviceUsed} failed: ', this.getErrorMessage(error));'`
       success = false;
       result = null;
     }
@@ -910,7 +907,7 @@ export class UnifiedWASMGPUOrchestrator {
   }
 
   /**
-   * Initialize WASM modules (gpu_compute, etc.) - provide a safe stub when real WASM isn't available
+   * Initialize WASM modules (gpu_compute, etc.) - provide a safe stub when real WASM isn't available'
    */
   private async initializeWASMModules(): Promise<void> {
     try {

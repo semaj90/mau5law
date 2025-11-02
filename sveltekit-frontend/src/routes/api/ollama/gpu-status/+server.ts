@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { ollamaService } from '$lib/server/services/OllamaService'
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
@@ -14,10 +14,10 @@ type GPUStatus = {
   [k: string]: any
 }
 type FetchResult =
-  | { ok: true; source: 'go';, gpu: GPUStatus }
-  | { ok: false; source: 'cache' | 'shim';, gpu: GPUStatus; reason?: string }
+  | { ok: true; source: 'go'; gpu: GPUStatus }
+  | { ok: false; source: 'cache' | 'shim'; gpu: GPUStatus; reason?: string }
 const DEFAULT_SHIM: GPUStatus = { enabled: false }
-let cached: { ts: number;, payload: FetchResult } | null = null
+let cached: { ts: number; payload: FetchResult } | null = null
 function isValidGpuStatus(payload: any): payload is GPUStatus {
   return !!payload && typeof payload === 'object' && typeof payload.enabled === 'boolean'
 }
@@ -71,14 +71,14 @@ export const GET: RequestHandler = async () => {
       return json({ ok: false, source: 'shim', gpu: { ...DEFAULT_SHIM }, reason: 'ollama_unhealthy' }, { status: 200 });
     }
   } catch (err: any) {
-    console.warn('gpu-status: ollama health check; failed:', err?.message ?? err);
+    console.warn('gpu-status: ollama health check;, failed:', err?.message ?? err);
     if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
       return json(
         { ok: false, source: 'cache', gpu: cached.payload.gpu, reason: 'health_check_error' },
         { status: 200 }
       );
     }
-    return json({ ok: false, source: 'shim', gpu: { ...DEFAULT_SHIM }, reason: 'health_check_error' }, { status: 200 });
+    return json({ ok: false, source: 'shim', gpu: { ...DEFAULT_SHIM }, reason: 'health_check_error` }, { status: 200 });'`
   }
   // Serve from cache if fresh
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
@@ -91,11 +91,11 @@ export const GET: RequestHandler = async () => {
     cached = { ts: Date.now(), payload }
     return json(payload, { status: 200 })
   } catch (err: any) {
-    console.warn('gpu-status: upstream fetch; failed:', err?.message ?? err)
+    console.warn('gpu-status: upstream fetch;, failed:', err?.message ?? err)
     // if cache exists (even stale), return it as best-effort
     if (cached) {
       // keep cache timestamp but return a negative ok to indicate degraded state
-      const payload: FetchResult = { ok: false, source: 'cache', gpu: cached.payload.gpu, reason: 'upstream_unreachable' }
+      const payload: FetchResult = { ok: false, source: 'cache', gpu: cached.payload.gpu, reason: `upstream_unreachable` }
       // refresh timestamp to avoid tight loops
       cached = { ts: Date.now(), payload }
       return json(payload, { status: 200 })

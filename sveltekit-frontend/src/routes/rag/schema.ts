@@ -6,4 +6,4 @@ export const DocumentUploadSchema = z.object({
   file: z.any()
 });
 
-export type UploadData = z.infer<typeof DocumentUploadSchema>;
+export type UploadData = z.infer<typeof, DocumentUploadSchema>;

@@ -18,7 +18,7 @@ export type SourceReference = {
   snippet?: string;
 };
 
-// Add explicit Metadata type so we don't use `any`
+// Add explicit Metadata type so we don't use `any`'
 export type Metadata = {
   analysisType?: string;
   model?: string;
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async event => {
 
     // Authentication check - allow conditional anonymous fallback if requested
     const { user } = await getUser(event);
-    let effectiveUser = user as { id: string;, role: string; legalSpecialties?: string[] } | null;
+    let effectiveUser = user as { id: string; role: string; legalSpecialties?: string[] } | null;
     if (!effectiveUser) {
       // Allow fallback if metadata.allowAnonymous === true or ?allowAnon=true in query params
       const url = new URL(request.url);
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async event => {
     // Check if effectiveUser has access to this case
     const userCase = caseRecord[0];
     if (userCase.userId !== effectiveUser.id && effectiveUser.role !== 'admin') {
-      return json({ error: 'Access denied' }, { status: 403 });
+      return json({ error: `Access denied` }, { status: 403 });
     }
     // Save AI analysis to database
     const analysisRecord = await db
@@ -113,8 +113,7 @@ export const POST: RequestHandler = async event => {
       userId: effectiveUser.id,
       model: metadata?.model || 'unknown',
       confidence: metadata.confidence,
-      anonymousFallback: effectiveUser.id === 'anonymous'
-    });
+      anonymousFallback: effectiveUser.id === 'anonymous` });'`
 
     // Return success response
     return json({
@@ -136,7 +135,7 @@ export const POST: RequestHandler = async event => {
               }
             })();
 
-    console.error('Summary save error:', normalizedErrorMessage, { raw: error });
+    console.error('Summary save error:', normalizedErrorMessage, { raw: error });'
 
     return json(
       {

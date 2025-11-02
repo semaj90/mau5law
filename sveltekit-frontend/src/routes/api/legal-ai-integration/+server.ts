@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
     }
   } catch (error: any) {
-    console.error('Legal AI Integration API error:', error);
+    console.error('Legal AI Integration API error:', error);'
     return json(
       {
         success: false,
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('Document processing error:', error);
+    console.error('Document processing error:', error);'
     return json(
       {
         success: false,
@@ -109,7 +109,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { config } = body;
     // For now, just return the current config
-    // In a full implementation, you'd update the integration config
+    // In a full implementation, you'd update the integration config'
     const currentStatus = legalAIIntegration.getStatus();
     return json({
       success: true,
@@ -121,7 +121,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('Config update error:', error);
+    console.error('Config update error:', error);'
     return json(
       {
         success: false,

@@ -1,5 +1,5 @@
-<!-- YoRHa Dialog Manager Component -->
-<script lang="ts">
+<!-- YoRHa Dialog Manager, Component -->
+<script, lang="ts">
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
   // Svelte 5 runes are auto-imported
   import { YoRHaDialog } from './YoRHaDialog.svelte';
@@ -23,7 +23,7 @@
     dialogStore.reject(dialog.id, 'cancelled');
   }
 </script>
-<!-- Render active dialogs -->
+<!-- Render active, dialogs -->
 {#each dialogs as dialog (dialog.id)}
   <YoRHaDialog
     open={true}

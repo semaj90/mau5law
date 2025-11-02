@@ -22,7 +22,7 @@ const registerSchema = z
     agreeToPrivacy: z.string().transform(val => val === 'true')
   })
   .refine(data => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "Passwords don't match",'
     path: ['confirmPassword']
   })
   .refine(data => data.agreeToTerms === true, {
@@ -89,7 +89,7 @@ export const actions: Actions = {
         if (!validation.success) {
           const errors = validation.error.errors;
           return fail(400, {
-            error: errors[0]?.message || 'Login validation failed` });
+            error: errors[0]?.message || 'Login validation failed` });'`
         }
         // For demo purposes - accept any valid email/password
         console.log('Demo Login:', { email });
@@ -99,18 +99,17 @@ export const actions: Actions = {
           maxAge: 60 * 60 * 24 * 7, // 1 week,
           httpOnly: true,
           secure: false,
-          sameSite: 'lax'
-        });
+          sameSite: `lax` });
         throw redirect(302, '/dashboard');
       }
     } catch (error: any) {
-      // Don't catch redirects
+      // Don't catch redirects'
       if (error instanceof Response) {
         throw error;
       }
-      console.error('Auth error:', error);
+      console.error('Auth error: ', error);'
       return fail(500, {
-        error: 'An error occurred during authentication. Please try again.` });
+        error: `An error occurred during authentication. Please try again.` });
     }
   }
 };

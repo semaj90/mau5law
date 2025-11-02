@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db/index';
 import { users } from '$lib/server/db/schema-postgres';
-// Note: Need proper auth service imports - drizzle-orm doesn't export auth functions
+// Note: Need proper auth service imports - drizzle-orm doesn't export auth functions'
 import { eq } from 'drizzle-orm';
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: 'User not found',
-        step: 'user_lookup` });
+        step: 'user_lookup' });
     }
     const user = existingUser[0];
     console.log(
@@ -32,14 +32,14 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: 'User has no password set',
-        step: 'password_check` });
+        step: 'password_check' });
     }
     if (!user.isActive) {
       console.log(`[TEST LOGIN] User is inactive: ${email}`);
       return json({
         success: false,
         error: 'Account is deactivated',
-        step: 'active_check` });
+        step: 'active_check' });
     }
     // Test password verification
     console.log(`[TEST LOGIN] Testing password verification for: ${email}`);
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: 'Invalid password',
-        step: 'password_verification` });
+        step: 'password_verification' });
     }
     // Test session creation
     console.log(`[TEST LOGIN] Creating session for: ${email}`);
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Login successful',
       user: {
-        id: user.id,
+       , id: user.id,
         email: user.email,
         role: user.role
       },
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: message,
-        step: 'general_error` },
+        step: 'general_error' },
       { status: 500 }
     );
   }

@@ -18,7 +18,7 @@ export async function lookupSemanticCache(embedding: Float32Array): Promise<unkn
     req.setEmbeddingList(Array.from(embedding));
     client.lookup(req, (err: ServiceError | null, res: EmbedLookupResponse) => {
       if (err) {
-        console.error("gRPC Lookup error:", err);
+        console.error("gRPC Lookup error:", err);"
         return reject(err);
       }
       if (!res.getHit()) {
@@ -52,7 +52,7 @@ export async function storeSemanticCache(embedding: Float32Array, value: any, tt
     req.setTtlSeconds(ttlSeconds);
     client.store(req, (err: ServiceError | null, res: EmbedStoreResponse) => {
       if (err) {
-        console.error("gRPC Store error:", err);
+        console.error("gRPC Store error:", err);"
         return reject(err);
       }
       if (res.getSuccess()) {

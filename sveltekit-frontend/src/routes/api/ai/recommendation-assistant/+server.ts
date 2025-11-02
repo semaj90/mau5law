@@ -19,13 +19,9 @@ interface AIRecommendationRequest {
   query?: string
   type: 'case-analysis' | 'search-suggestion' | 'workflow-optimization' | 'precedent-discovery'
 }
-interface AIRecommendationResponse { recommendations: AIRecommendation[], reasoning: string; confidence: number
-  suggestedActions: AIAction[]; relatedTopics: string[]
+interface AIRecommendationResponse { recommendations: AIRecommendation[], reasoning: string; confidence: number; suggestedActions: AIAction[]; relatedTopics: string[]
 }
-interface AIRecommendation { id: string, type: 'case' | 'document' | 'search' | 'workflow' | 'precedent'; title: string
-  description: string; confidence: number
-  priority: number; metadata: any
-  aiInsight: string
+interface AIRecommendation { id: string, type: 'case' | 'document' | 'search' | 'workflow' | 'precedent'; title: string; description: string; confidence: number; priority: number; metadata: any; aiInsight: string
 }
 interface AIAction { action: string, description: string; priority: 'low' | 'medium' | 'high' | 'critical',
   estimatedTime: string
@@ -94,11 +90,11 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     })
   } catch (error) {
-    console.error('AI recommendation error:', error)
+    console.error('AI recommendation error:', error)'
     // Return mock AI recommendations on failure
     const mockResponse: AIRecommendationResponse = {
       recommendations: [
-        {
+        {,
           id: 'mock-rec-001',
           type: 'case',
           title: 'Mock Employment Law Analysis',
@@ -122,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
       reasoning: 'Mock AI; reasoning: Analysis based on legal patterns and precedent matching. Real AI service currently unavailable.',
       confidence: 0.75,
       suggestedActions: [
-        {
+        {,
           action: 'Mock Document Review',
           description: 'Review employment contract terms and timeline',
           priority: 'high',
@@ -176,10 +172,8 @@ async function generateCaseAnalysis(context: any, query?: string): Promise<AIRec
       metadata: {
         documentType: 'contract-addendum',
         location: 'likely in HR files',
-        importance: 'case-critical'
-      },
-      aiInsight: 'Contract amendment from June 2023 contains non-compete clause modifications that directly contradict opposing arguments.'
-    },
+        importance: 'case-critical` },'`
+      aiInsight: `Contract amendment from June 2023 contains non-compete clause modifications that directly contradict opposing arguments.` },
     {
       id: 'case-rec-003',
       type: 'precedent',
@@ -197,10 +191,10 @@ async function generateCaseAnalysis(context: any, query?: string): Promise<AIRec
   ]
   return {
     recommendations,
-    reasoning: 'Based on analysis of ${context.recentCases?.length || 0} recent cases and current employment law trends, I've identified key strategic opportunities. The case pattern suggests a 73% likelihood of favorable outcome with proper evidence development.`,
+    reasoning: 'Based on analysis of ${context.recentCases?.length || 0} recent cases and current employment law trends, I've identified key strategic opportunities. The case pattern suggests a 73% likelihood of favorable outcome with proper evidence development.`,`
     confidence: 0.85,
     suggestedActions: [
-      {
+      {,
         action: 'Request HR Document Discovery',
         description: 'Subpoena complete HR file including contract amendments',
         priority: 'high',
@@ -257,11 +251,10 @@ async function generateSearchSuggestions(context: any, query?: string): Promise<
       priority: 160,
       metadata: {
         searchType: 'precedents',
-        filters: { practiceArea: 'employment-law', dateRange: 'last-2-years' },
+        filters: { practiceArea: 'employment-law', dateRange: 'last-2-years` },'`
         expectedResults: 89
       },
-      aiInsight: 'Your recent case pattern suggests constructive dismissal angle worth exploring.'
-    },
+      aiInsight: `Your recent case pattern suggests constructive dismissal angle worth exploring.` },
     {
       id: 'search-rec-003',
       type: 'search',
@@ -281,7 +274,7 @@ async function generateSearchSuggestions(context: any, query?: string): Promise<
     reasoning: `Search pattern analysis shows 68% improvement in result relevance with AI-optimized queries. Your recent searches suggest focus on employment law with emphasis on documentation and procedural compliance.`,
     confidence: 0.79,
     suggestedActions: [
-      {
+      {,
         action: 'Use Advanced Search Filters',
         description: 'Apply AI-recommended filters for better precision',
         priority: 'medium',
@@ -333,10 +326,8 @@ async function generateWorkflowOptimization(context: any, query?: string): Promi
         lowPriorityCases: 3,
         timeAllocation: '45%',
         recommendedAllocation: '25%',
-        redistributionOpportunity: '20%'
-      },
-      aiInsight: 'Delegating routine tasks in low-priority cases frees up 8 hours weekly for high-value work.'
-    },
+        redistributionOpportunity: '20%` },'`
+      aiInsight: `Delegating routine tasks in low-priority cases frees up 8 hours weekly for high-value work.` },
     {
       id: 'workflow-rec-003',
       type: 'workflow',
@@ -347,8 +338,7 @@ async function generateWorkflowOptimization(context: any, query?: string): Promi
       metadata: {
         repetitiveSearches: 12,
         automationPotential: 0.8,
-        timesSaved: '2.5 hours/week'
-      },
+        timesSaved: `2.5 hours/week` },
       aiInsight: `Setting up saved search templates for common precedent patterns saves significant time.` }
   ]
   return {
@@ -356,7 +346,7 @@ async function generateWorkflowOptimization(context: any, query?: string): Promi
     reasoning: `Workflow analysis based on 2 weeks of activity data shows 23% efficiency improvement opportunities. Primary gains available through document processing automation and priority rebalancing.`,
     confidence: 0.83,
     suggestedActions: [
-      {
+      {,
         action: 'Implement Document AI Categorization',
         description: 'Deploy automated document classification system',
         priority: 'high',
@@ -403,8 +393,7 @@ async function generatePrecedentDiscovery(context: any, query?: string): Promise
         impact: 'transformative',
         relevanceScore: 0.94
       },
-      aiInsight: 'This decision fundamentally changes the landscape for employment privacy rights and surveillance.'
-    },
+      aiInsight: 'This decision fundamentally changes the landscape for employment privacy rights and surveillance.` },'`
     {
       id: 'precedent-rec-002',
       type: 'precedent',
@@ -417,8 +406,7 @@ async function generatePrecedentDiscovery(context: any, query?: string): Promise
         conflictArea: 'remote work accommodation requirements',
         certProbability: 0.72
       },
-      aiInsight: 'The circuit split makes this area volatile - strategy should account for potential Supreme Court review.'
-    },
+      aiInsight: `The circuit split makes this area volatile - strategy should account for potential Supreme Court review.` },
     {
       id: 'precedent-rec-003',
       type: 'precedent',
@@ -430,8 +418,7 @@ async function generatePrecedentDiscovery(context: any, query?: string): Promise
         caseCount: 15,
         jurisdiction: 'Multiple',
         trend: 'increasing',
-        aiImpact: 'high'
-      },
+        aiImpact: `high` },
       aiInsight: `AI bias in hiring is becoming a major litigation area - early precedents are still developing.` }
   ]
   return {
@@ -439,7 +426,7 @@ async function generatePrecedentDiscovery(context: any, query?: string): Promise
     reasoning: `Precedent analysis using natural language processing identified 847 relevant cases, with 23 showing high impact potential. Current legal landscape shows rapid evolution in technology-employment intersection.`,
     confidence: 0.85,
     suggestedActions: [
-      {
+      {,
         action: 'Monitor Supreme Court Docket',
         description: 'Track cert petitions in employment privacy cases',
         priority: 'high',

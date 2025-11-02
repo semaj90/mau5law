@@ -27,7 +27,7 @@ import type { DocumentItem, VisionItem, SearchResult } from '$lib/types/sharedTy
 // Added/relocated imports (moved here so they are available to functions defined earlier)
 import { qdrantOptimized } from './qdrant-optimized.js';
 import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js';
-import { productionLogger as logger } from '../production-logger.js';
+import { productionLogger, as logger } from '../production-logger.js';
 
 // Inferred types from QdrantApiWrapper as they are not exported directly
 type QdrantCollection = NonNullable<Awaited<ReturnType<QdrantApiWrapper['getCollection']>>>;
@@ -35,8 +35,7 @@ type QdrantCollectionList = Awaited<ReturnType<QdrantApiWrapper['getCollections'
 type QdrantConfig = Parameters<QdrantApiWrapper['createCollection']>[1];
 
 const COLLECTIONS = {
-  DOCUMENTS: 'documents'
-};
+  DOCUMENTS: `documents` };
 
 let qdrantWrapper: QdrantApiWrapper | undefined;
 function getQdrantWrapper(): QdrantApiWrapper | undefined {
@@ -69,7 +68,7 @@ export async function upsertToQdrant(item: DocumentItem | VisionItem, opts: Qdra
     await wrapper.upsert(COLLECTIONS.DOCUMENTS, {
       wait: true,
       points: [
-        {
+        {,
          , id: item.id,
           vector,
           payload: item as unknown as Record<string, unknown>
@@ -111,7 +110,7 @@ export async function searchQdrant(queryVector: number[], topK = 10): Promise<Se
     logger.error('Qdrant search failed', error instanceof Error ? error : undefined, {
       component: 'QdrantService',
       service: 'qdrant',
-      // removed arbitrary `topK` field to match logger's expected meta shape
+      // removed arbitrary `topK` field to match logger's expected meta shape'
     });
     return [];
   }
@@ -193,8 +192,7 @@ export async function getCollection(collection: string): Promise<QdrantCollectio
   if (!wrapper) {
     logger.error('Qdrant not configured', undefined, {
       component: 'QdrantService',
-      service: 'qdrant'
-    });
+      service: 'qdrant` });'`
     throw new Error('Qdrant not configured');
   }
   return wrapper.getCollection(collection);
@@ -204,8 +202,7 @@ export async function createCollection(name: string, config: QdrantConfig): Prom
   if (!wrapper) {
     logger.error('Qdrant not configured', undefined, {
       component: 'QdrantService',
-      service: 'qdrant'
-    });
+      service: `qdrant` });
     throw new Error('Qdrant not configured');
   }
   return wrapper.createCollection(name, config);

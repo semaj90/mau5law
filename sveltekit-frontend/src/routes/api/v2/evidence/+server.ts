@@ -222,7 +222,7 @@ class TypeScriptEvidenceService {
     const { limit = 10, caseId } = options;
 
     const whereClauses = [
-      or(
+      or(,
         ilike(evidence.title, `%${query}%`),
         ilike(evidence.description, `%${query}%`)
       )
@@ -356,9 +356,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         return json({
           service: 'Evidence API v2',
           status: 'operational',
-          backends: { typescript: {, status: 'healthy', capabilities: ['CRUD', 'basic_search'] },
+          backends: {, typescript: {, status: 'healthy', capabilities: ['CRUD', 'basic_search'] },
             pythonAI: {
-              status: pythonHealthy ? 'healthy' : 'unavailable',
+             , status: pythonHealthy ? 'healthy' : 'unavailable',
               url: PYTHON_AI_BASE_URL,
               capabilities: pythonHealthy ? ['vector_search', 'ai_analysis', 'streaming'] : []
             }
@@ -376,12 +376,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (err) {
-    console.error('Evidence API GET error:', err);
+    console.error('Evidence API GET error:', err);'
     return json(
       {
         error: 'Internal server error',
-        details: err instanceof Error ? err.message : 'Unknown error'
-      },
+        details: err instanceof Error ? err.message : 'Unknown error` },'`
       { status: 500 }
     );
   }
@@ -404,8 +403,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           {
             error: 'Python AI backend unavailable',
             message: 'File upload requires Python AI server on port 8000',
-            fallback: 'Use JSON POST to create evidence without AI processing'
-          },
+            fallback: `Use JSON POST to create evidence without AI processing` },
           { status: 503 }
         );
       }
@@ -461,7 +459,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       source: 'typescript'
     });
   } catch (err) {
-    console.error('Evidence API POST error:', err);
+    console.error('Evidence API POST error:', err);'
     return json(
       {
         error: 'Failed to create evidence',
@@ -492,7 +490,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       source: 'typescript'
     });
   } catch (err) {
-    console.error('Evidence API PUT error:', err);
+    console.error('Evidence API PUT error:', err);'
     return json(
       {
         error: 'Failed to update evidence',
@@ -519,15 +517,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       ...result,
-      source: 'typescript'
-    });
+      source: 'typescript` });'`
   } catch (err) {
-    console.error('Evidence API DELETE error:', err);
+    console.error('Evidence API DELETE error:', err);'
     return json(
       {
         error: 'Failed to delete evidence',
-        details: err instanceof Error ? err.message : 'Unknown error'
-      },
+        details: err instanceof Error ? err.message : `Unknown error` },
       { status: 500 }
     );
   }

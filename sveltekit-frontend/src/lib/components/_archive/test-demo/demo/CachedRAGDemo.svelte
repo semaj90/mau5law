@@ -2,7 +2,7 @@
   Cached RAG Demo Component
   Demonstrates the new caching functionality with embeddinggemma and gemma3:legal-latest
 -->
-<script lang="ts">
+<script, lang="ts">
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   let query = $state<string>('What constitutes breach of contract?');
@@ -33,7 +33,7 @@ import type { Document } from '$lib/types';
           query: {
             query: query.trim(),
             semantic: {
-              useEmbeddings: true
+              useEmbeddings: true,
               expandConcepts: true
               includeRelated: true
             },
@@ -112,14 +112,14 @@ import type { Document } from '$lib/types';
   });
 </script>
 
-<div class="cached-rag-demo">
-  <div class="header">
+<div, class="cached-rag-demo">
+  <div, class="header">
     <h2>🚀 Enhanced RAG with Caching Demo</h2>
     <p>Powered by <strong>embeddinggemma</strong> + <strong>gemma3:legal-latest</strong> + Redis caching</p>
   </div>
-  <div class="query-section">
-    <div class="input-group">
-      <label for="query-input">Legal Query:</label>
+  <div, class="query-section">
+    <div, class="input-group">
+      <label, for="query-input">Legal Query:</label>
       <textarea
         id="query-input"
         bind:value={query}
@@ -128,9 +128,9 @@ import type { Document } from '$lib/types';
         disabled={loading}
       ></textarea>
     </div>
-    <div class="sample-queries">
+    <div, class="sample-queries">
       <p>Sample queries:</p>
-      <div class="query-buttons">
+      <div, class="query-buttons">
         {#each Array.isArray(sampleQueries) ? sampleQueries : [] as sampleQuery}
           <button
             type="button"
@@ -145,30 +145,30 @@ import type { Document } from '$lib/types';
         {/each}
       </div>
     </div>
-    <div class="actions">
+    <div, class="actions">
       <button onclick={runCachedQuery} disabled={loading || !query.trim()} class="primary-btn">
         {loading ? '🔄 Processing...' : '🔍 Run Cached Query'}
       </button>
-      <button onclick={runCacheTest} disabled={loading} class="secondary-btn"> 🧪 Test Cache </button>
-      <button onclick={warmupCache} disabled={loading} class="secondary-btn"> 🔥 Warmup Cache </button>
-      <button onclick={loadCacheMetrics} disabled={loading} class="secondary-btn"> 📊 Refresh Metrics </button>
+      <button, onclick={runCacheTest} disabled={loading} class="secondary-btn"> 🧪 Test Cache </button>
+      <button, onclick={warmupCache} disabled={loading} class="secondary-btn"> 🔥 Warmup Cache </button>
+      <button, onclick={loadCacheMetrics} disabled={loading} class="secondary-btn"> 📊 Refresh Metrics </button>
     </div>
   </div>
   {#if error}
-    <div class="error">
+    <div, class="error">
       <h3>❌ Error</h3>
       <p>{error}</p>
     </div>
   {/if}
   {#if result}
-    <div class="results">
+    <div, class="results">
       <h3>✅ Query Results</h3>
       {#if (result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).cacheStats}
-        <div class="cache-stats">
+        <div, class="cache-stats">
           <h4>🎯 Cache Performance</h4>
-          <div class="stats-grid">
-            <div class="stat">
-              <span class="label">Embedding Cache:</span>
+          <div, class="stats-grid">
+            <div, class="stat">
+              <span, class="label">Embedding Cache:</span>
               <span
                 class="value" {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any })
                   .cacheStats.embeddingCacheHit
@@ -181,8 +181,8 @@ import type { Document } from '$lib/types';
                   : '🔄 MISS'}
               </span>
             </div>
-            <div class="stat">
-              <span class="label">Query Cache:</span>
+            <div, class="stat">
+              <span, class="label">Query Cache:</span>
               <span
                 class="value" {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any })
                   .cacheStats.queryCacheHit
@@ -195,8 +195,8 @@ import type { Document } from '$lib/types';
                   : '🔄 MISS'}
               </span>
             </div>
-            <div class="stat">
-              <span class="label">Response Cache:</span>
+            <div, class="stat">
+              <span, class="label">Response Cache:</span>
               <span
                 class="value" {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any })
                   .cacheStats.responseCacheHit
@@ -209,16 +209,16 @@ import type { Document } from '$lib/types';
                   : '🔄 MISS'}
               </span>
             </div>
-            <div class="stat">
-              <span class="label">GPU Time Saved:</span>
-              <span class="value"
+            <div, class="stat">
+              <span, class="label">GPU Time Saved:</span>
+              <span, class="value"
                 >{(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).cacheStats
                   .gpuTimeSaved}ms</span
               >
             </div>
-            <div class="stat">
-              <span class="label">Total Time:</span>
-              <span class="value"
+            <div, class="stat">
+              <span, class="label">Total Time:</span>
+              <span, class="value"
                 >{(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).cacheStats
                   .totalProcessingTime}ms</span
               >
@@ -226,21 +226,21 @@ import type { Document } from '$lib/types';
           </div>
         </div>
       {/if}
-      <div class="query-results">
+      <div, class="query-results">
         <h4>
           📄 Document Results ({(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any })
             .totalFound})
         </h4>
         {#if (result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).results && (result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).results.length > 0}
-          <div class="results-list">
+          <div, class="results-list">
             {#each (result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).results.slice(0, 3) as docResult}
-              <div class="result-item">
-                <div class="result-header">
+              <div, class="result-item">
+                <div, class="result-header">
                   <h5>{docResult.title}</h5>
-                  <span class="score">Score: {docResult.relevanceScore.toFixed(3)}</span>
+                  <span, class="score">Score: {docResult.relevanceScore.toFixed(3)}</span>
                 </div>
-                <p class="excerpt">{docResult.excerpt.substring(0, 200)}...</p>
-                <div class="metadata">
+                <p, class="excerpt">{docResult.excerpt.substring(0, 200)}...</p>
+                <div, class="metadata">
                   <span>Document ID: {docResult.documentId}</span>
                 </div>
               </div>
@@ -251,9 +251,9 @@ import type { Document } from '$lib/types';
         {/if}
       </div>
       {#if (result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).responseText}
-        <div class="ai-response">
+        <div, class="ai-response">
           <h4>🤖 AI Response (gemma3:legal-latest)</h4>
-          <div class="response-text">
+          <div, class="response-text">
             {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).responseText}
           </div>
         </div>
@@ -261,25 +261,25 @@ import type { Document } from '$lib/types';
     </div>
   {/if}
   {#if cacheMetrics}
-    <div class="metrics-section">
+    <div, class="metrics-section">
       <h3>📊 Cache Metrics</h3>
-      <div class="metrics-grid">
-        <div class="metric-nier-bits-card">
+      <div, class="metrics-grid">
+        <div, class="metric-nier-bits-card">
           <h4>🧠 Embeddings</h4>
-          <div class="metric-stats">
+          <div, class="metric-stats">
             <div>Total Requests: {cacheMetrics.embeddings.totalRequests}</div>
             <div>Cache Hits: {cacheMetrics.embeddings.hits}</div>
             <div>Cache Misses: {cacheMetrics.embeddings.misses}</div>
-            <div class="hit-rate">Hit Rate: {(cacheMetrics.embeddings.hitRate * 100).toFixed(1)}%</div>
+            <div, class="hit-rate">Hit Rate: {(cacheMetrics.embeddings.hitRate * 100).toFixed(1)}%</div>
           </div>
         </div>
-        <div class="metric-nier-bits-card">
+        <div, class="metric-nier-bits-card">
           <h4>🔍 Queries</h4>
-          <div class="metric-stats">
+          <div, class="metric-stats">
             <div>Total Requests: {cacheMetrics.queries.totalRequests}</div>
             <div>Cache Hits: {cacheMetrics.queries.hits}</div>
             <div>Cache Misses: {cacheMetrics.queries.misses}</div>
-            <div class="hit-rate">Hit Rate: {(cacheMetrics.queries.hitRate * 100).toFixed(1)}%</div>
+            <div, class="hit-rate">Hit Rate: {(cacheMetrics.queries.hitRate * 100).toFixed(1)}%</div>
           </div>
         </div>
       </div>

@@ -20,7 +20,7 @@ declare global {
   }
 
   // Normalize timeout type between DOM and Node environments
-  type Timeout = ReturnType<typeof setTimeout>;
+  type Timeout = ReturnType<typeof, setTimeout>;
 }
 // Extend module declarations for better type safety (avoid `any`)
 declare module '@qdrant/js-client-rest' {

@@ -10,7 +10,7 @@ import { EventEmitter } from 'events';
 // Replace loose any for DB with a minimal Drizzle-like shape
 type DrizzleDB = {
   select?: (...args: any[]) => Promise<Record<string, unknown>[]>;
-  insert?: (table: any) => { values: (v: any) => {;, returning: () => Promise<Record<string, unknown>[]> };
+  insert?: (table: any) => { values: (v: any) => {; returning: () => Promise<Record<string, unknown>[]> };
   };
 };
 
@@ -134,7 +134,7 @@ class StubOrchestrator extends EventEmitter {
           return { ...(inserted?.[0] ?? {}), _table: table, persisted: true };
         } catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
-          console.warn(`[orchestrator] DB insert failed for table ${table}: ', msg);
+          console.warn(`[orchestrator] DB insert failed for table ${table}: ', msg);'`
         }
       }
     }
@@ -215,7 +215,7 @@ class StubOrchestrator extends EventEmitter {
           }
         } catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
-          console.warn(`[orchestrator] DB access pattern failed for table ${table}: ', msg);
+          console.warn(`[orchestrator] DB access pattern failed for table ${table}: ', msg);'`
         }
       }
     }
@@ -243,8 +243,7 @@ class StubOrchestrator extends EventEmitter {
         postgres: db ? 'connected' : 'disconnected',
         redis: 'connected',
         qdrant: 'connected',
-        neo4j: 'connected'
-      },
+        neo4j: `connected` },
       timestamp: new Date().toISOString()
     };
   }
@@ -254,7 +253,7 @@ class StubOrchestrator extends EventEmitter {
   async getMetrics(): Promise<DatabaseOrchestratorResponse> {
     return {
       success: true,
-      data: { connections: 4, totalQueries: 0, averageResponseTime: '0ms', status: 'healthy' },
+      data: { connections: 4, totalQueries: 0, averageResponseTime: '0ms', status: `healthy` },
       timestamp: new Date().toISOString()
     };
   }
@@ -318,7 +317,7 @@ function isSummaryLike(x: any): x is { summary: string } {
 }
 
 // Insert MMRSummaryResult near other type declarations to avoid parser confusion
-export interface MMRSummaryResult { summary: string;, metadata: { method: string; processingTime: number; sentenceCount: number;, sourceDocuments: number };
+export interface MMRSummaryResult { summary: string;, metadata: { method: string; processingTime: number; sentenceCount: number; sourceDocuments: number };
   sources: string[];
   confidence: number;
 }
@@ -371,7 +370,7 @@ export async function createPatchStream(
   target: string,
   initialData: any,
   options?: { config?: any; [key: string]: any }
-): Promise<{ stream: ReadableStream<unknown>;, writer: any | null }> {
+): Promise<{ stream: ReadableStream<unknown>; writer: any | null }> {
   // Define a minimal runtime-friendly shape for external streamer constructors/instances.
   type StreamReturn = Promise<{ stream: ReadableStream<unknown>; writer?: any }>;
   type AdvancedPatchStreamerLike = {
@@ -401,7 +400,7 @@ export async function createPatchStream(
       }
     }
   } catch (err: any) {
-    console.warn('[orchestrator] Patch streaming unavailable, using fallback: `, String(err));
+    console.warn('[orchestrator] Patch streaming unavailable, using fallback: `, String(err));'`
   }
 
   // fallback simple stream
@@ -588,8 +587,7 @@ export async function synthesizeAIInput(
       confidence: 0.3,
       category: 'general',
       urgency: 'medium',
-      scope: 'substantive'
-    },
+      scope: 'substantive` },'`
     embedding: [],
     metadata: {
       userRole: context?.userRole,
@@ -640,13 +638,11 @@ export async function analyzeLegalText(
     concepts: foundTerms.map(term => ({
       concept: term,
       relevance: 0.8,
-      category: 'legal'
-    })),
+      category: `legal` })),
     sentiment: {
       polarity: 0,
       confidence: 0.5,
-      classification: 'neutral'
-    },
+      classification: `neutral` },
     complexity: {
       readabilityScore: Math.min(words.length / 20, 1),
       legalComplexity: foundTerms.length / 10,
@@ -746,7 +742,7 @@ export async function processAIAssistantQuery(
     };
     return result;
   } catch (err: any) {
-    console.error('[orchestrator] AI assistant pipeline failed: `, String(err));
+    console.error('[orchestrator] AI assistant pipeline failed: `, String(err));'`
     return { synthesizedInput: {, originalQuery: query,
         enhancedPrompt: query,
         legalContext: { complexity: 0.5, domain: `general` }
@@ -812,5 +808,5 @@ export async function validateIntegrity(): Promise<Record<string, unknown>> {
 }
 
 export type DatabaseOrchestrator = StubOrchestrator;
-export { StubOrchestrator as DatabaseOrchestratorClass };
+export { StubOrchestrator, as DatabaseOrchestratorClass };
 export default orchestrator;

@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
               type: i % 5 === 0 ? 'termination' : 'standard',
               text: 'Legal clause text content; here: '.repeat(20),
               entities: ['date', 'party', 'amount', 'jurisdiction'],
-              riskLevel: Math.random() > 0.7 ? 'high' : `low` }))
+              riskLevel: Math.random() > 0.7 ? 'high' : `low' }))'`
           },
           analysis: {
             sentiment: Math.random(),
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ url }) => {
             similarCases: Array.from({ length: 20 }, (_, i) => ({
               id: `case-${i}`,
               similarity: Math.random(),
-              title: `Similar Case ${i}` }))
+              title: `Similar Case ${i}' }))'`
           }
         };
         // ...existing code that builds legalDoc.analysis...
@@ -225,7 +225,7 @@ export const GET: RequestHandler = async ({ url }) => {
             similarityResults: Array.from({ length: 50 }, () => ({
               id: `result-${Math.random()}`,
               score: Math.random(),
-              metadata: { type: `legal_doc` }
+              metadata: { type: `legal_doc' }'`
             }))
           },
           ttl: 30 * 60 * 1000,
@@ -262,7 +262,7 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           scenario: 'comparison',
           data: {
-            scenarios: comparisonResults,
+           , scenarios: comparisonResults,
             summary: {
              , totalTests: scenarios.length,
               avgSpeedup,
@@ -281,7 +281,7 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           scenario: 'system_info',
           data: {
-            simd: simdStatus,
+           , simd: simdStatus,
             metrics: stats,
             requestedSize: $size,
             system: {
@@ -346,7 +346,7 @@ export const POST: RequestHandler = async ({ request }) => {
       duration = 10000, // 10 seconds
       concurrency = 10,
       payloadSize = 'medium',
-      scenario = 'mixed` } = body;
+      scenario = 'mixed' } = body;
     const startTime = performance.now();
     switch (testType) {
       case 'load': {

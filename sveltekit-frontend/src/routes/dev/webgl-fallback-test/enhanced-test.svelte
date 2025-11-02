@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -47,14 +47,14 @@ if (browser) {
     testResults.webgl2.supported = !!webgl2Context;
     if (webgl2Context) {
       const ext = webgl2Context.getExtension('EXT_color_buffer_float');
-      append(`WebGL2: ${testResults.webgl2.supported ? '✅ Supported' : '❌ Not supported'} ${ext ? '(Float textures: ✅)' : '(Float textures: ❌)'}`);
+      append(`WebGL2: ${testResults.webgl2.supported ? '✅ Supported' : '❌ Not supported'} ${ext ? '(Float, textures: ✅)' : '(Float textures: ❌)'}`);
     }
     // WebGL1 support check
     const webgl1Context = canvas2d.getContext('webgl') || canvas2d.getContext('experimental-webgl');
     testResults.webgl1.supported = !!webgl1Context;
     if (webgl1Context) {
       const ext = webgl1Context.getExtension('OES_texture_float');
-      append(`WebGL1: ${testResults.webgl1.supported ? '✅ Supported' : '❌ Not supported'} ${ext ? '(Float textures: ✅)' : '(Float textures: ❌)'}`);
+      append(`WebGL1: ${testResults.webgl1.supported ? '✅ Supported' : '❌ Not supported'} ${ext ? '(Float, textures: ✅)' : '(Float textures: ❌)'}`);
     }
     // WebAssembly support check
     testResults.wasm.supported = typeof WebAssembly !== 'undefined';
@@ -112,7 +112,7 @@ if (browser) {
       append('🎉 Gemma3 270M performance analysis completed successfully');
     } catch (error) {
       append(`❌ Test error: ${error}`);
-      console.error('Performance test error:', error);
+      console.error('Performance test error:', error);'
     } finally {
       isTestingInProgress = false;
       currentTest = '';
@@ -150,7 +150,7 @@ if (browser) {
           }
           result[y * size + x] = sum;
         }
-      `;
+      `;`
       const computeShader = device.createShaderModule({ code: computeShaderSource });
       const computePipeline = device.createComputePipeline({
         layout: 'auto',
@@ -410,90 +410,90 @@ if (browser) {
   }
 </script>
 
-<div class="webgl-test-container">
-  <div class="header">
+<div, class="webgl-test-container">
+  <div, class="header">
     <h1>🚀 WebGL2/WebGPU Fallback Test</h1>
     <p><strong>Target:</strong> Gemma3 270M WebAssembly Optimization</p>
     <p><strong>Architecture:</strong> WebGPU → WebGL2 → WebGL1 → WASM CPU</p>
-    <div class="info-grid">
-      <div class="info-item">
-        <div class="info-label">Matrix Size</div>
-        <div class="info-value">{matrixSize}×{matrixSize}</div>
+    <div, class="info-grid">
+      <div, class="info-item">
+        <div, class="info-label">Matrix Size</div>
+        <div, class="info-value">{matrixSize}×{matrixSize}</div>
       </div>
-      <div class="info-item">
-        <div class="info-label">Model Target</div>
-        <div class="info-value">Gemma3 270M</div>
+      <div, class="info-item">
+        <div, class="info-label">Model Target</div>
+        <div, class="info-value">Gemma3 270M</div>
       </div>
-      <div class="info-item">
-        <div class="info-label">Test Iterations</div>
-        <div class="info-value">{iterations}</div>
+      <div, class="info-item">
+        <div, class="info-label">Test Iterations</div>
+        <div, class="info-value">{iterations}</div>
       </div>
-      <div class="info-item">
-        <div class="info-label">Embedding Dim</div>
-        <div class="info-value">384</div>
+      <div, class="info-item">
+        <div, class="info-label">Embedding Dim</div>
+        <div, class="info-value">384</div>
       </div>
     </div>
   </div>
-  <div class="test-controls">
-    <button class="test-button" onclick={runPerformanceTests} disabled={isTestingInProgress}>
+  <div, class="test-controls">
+    <button, class="test-button" onclick={runPerformanceTests} disabled={isTestingInProgress}>
       {isTestingInProgress ? '🔄 Running Gemma3 270M Tests...' : '🚀 Start Performance Tests'}
     </button>
   </div>
   {#if isTestingInProgress}
-    <div class="progress-container">
-      <div class="progress-text">{currentTest}</div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: {progressPercent}%"></div>
+    <div, class="progress-container">
+      <div, class="progress-text">{currentTest}</div>
+      <div, class="progress-bar">
+        <div, class="progress-fill" style="width: {progressPercent}%"></div>
       </div>
-      <div class="progress-percent">{progressPercent}% complete</div>
+      <div, class="progress-percent">{progressPercent}% complete</div>
     </div>
   {/if}
   {#if Object.values.some(r => r.tested)}
-    <div class="results-grid">
+    <div, class="results-grid">
       {#if testResults.webgpu.tested}
-        <div class="result-card">
+        <div, class="result-card">
           <h3>🚀 WebGPU</h3>
-          <div class={testResults.webgpu.error ? 'status-error' : 'status-success'}>
+          <div, class={testResults.webgpu.error ? 'status-error' : 'status-success'}>
             {testResults.webgpu.error ? `❌ ${testResults.webgpu.error}` : '✅ Success'}
           </div>
           {#if testResults.webgpu.performance}
-            <div class="performance-metric">Average: {testResults.webgpu.performance.avgTime}ms</div>
+            <div, class="performance-metric">Average: {testResults.webgpu.performance.avgTime}ms</div>
             <div
               class="performance-metric performance-highlight"
               style={getPerformanceColor(testResults.webgpu.performance.opsPerSecond)}
             >
               {testResults.webgpu.performance.opsPerSecond} ops/sec
             </div>
-            <div class="performance-note">Compute shaders for Gemma3 270M</div>
+            <div, class="performance-note">Compute shaders for Gemma3 270M</div>
           {/if}
         </div>
       {/if}
       {#if testResults.webgl2.tested}
-        <div class="result-card">
+        <div, class="result-card">
           <h3>⚡ WebGL2</h3>
-          <div class={testResults.webgl2.error ? 'status-error' : 'status-success'}>
+          <div, class={testResults.webgl2.error ? 'status-error' : 'status-success'}>
             {testResults.webgl2.error ? `❌ ${testResults.webgl2.error}` : '✅ Success'}
           </div>
           {#if testResults.webgl2.performance}
-            <div class="performance-metric">Average: {testResults.webgl2.performance.avgTime}ms</div>
+            <div, class="performance-metric">Average: {testResults.webgl2.performance.avgTime}ms</div>
             <div
               class="performance-metric performance-highlight"
               style={getPerformanceColor(testResults.webgl2.performance.opsPerSecond)}
             >
               {testResults.webgl2.performance.opsPerSecond} ops/sec
             </div>
-            <div class="performance-note">Transform feedback for neural networks</div>
+            <div, class="performance-note">Transform feedback for neural networks</div>
           {/if}
         </div>
       {/if}
       {#if testResults.webgl1.tested}
-        <div class="result-card">
+        <div, class="result-card">
           <h3>⚠️ WebGL1</h3>
-          <div class={testResults.webgl1.error ? 'status-error' : 'status-success'}>
+          <div, class={testResults.webgl1.error ? 'status-error' : 'status-success'}>
             {testResults.webgl1.error ? `❌ ${testResults.webgl1.error}` : '✅ Success'}
           </div>
           {#if testResults.webgl1.performance}
-            <div class="performance-metric">Average: {testResults.webgl1.performance.avgTime}ms</div>
+            <div, class="performance-metric">Average: {testResults.webgl1.performance.avgTime}ms</div>
             <div
               class="performance-metric performance-highlight"
               style={getPerformanceColor(testResults.webgl1.performance.opsPerSecond)}
@@ -501,19 +501,19 @@ if (browser) {
               {testResults.webgl1.performance.opsPerSecond} ops/sec
             </div>
             {#if testResults.webgl1.performance.note}
-              <div class="performance-note">{testResults.webgl1.performance.note}</div>
+              <div, class="performance-note">{testResults.webgl1.performance.note}</div>
             {/if}
           {/if}
         </div>
       {/if}
       {#if testResults.wasm.tested}
-        <div class="result-card">
+        <div, class="result-card">
           <h3>🔄 WebAssembly</h3>
-          <div class={testResults.wasm.error ? 'status-error' : 'status-success'}>
+          <div, class={testResults.wasm.error ? 'status-error' : 'status-success'}>
             {testResults.wasm.error ? `❌ ${testResults.wasm.error}` : '✅ Success'}
           </div>
           {#if testResults.wasm.performance}
-            <div class="performance-metric">Average: {testResults.wasm.performance.avgTime}ms</div>
+            <div, class="performance-metric">Average: {testResults.wasm.performance.avgTime}ms</div>
             <div
               class="performance-metric performance-highlight"
               style={getPerformanceColor(testResults.wasm.performance.opsPerSecond)}
@@ -521,7 +521,7 @@ if (browser) {
               {testResults.wasm.performance.opsPerSecond} ops/sec
             </div>
             {#if testResults.wasm.performance.note}
-              <div class="performance-note">{testResults.wasm.performance.note}</div>
+              <div, class="performance-note">{testResults.wasm.performance.note}</div>
             {/if}
           {/if}
         </div>
@@ -529,14 +529,14 @@ if (browser) {
     </div>
   {/if}
   {#if testResults.recommendation}
-    <div class="recommendation">
+    <div, class="recommendation">
       <h3>🎯 Gemma3 270M Deployment Recommendation</h3>
-      <div class="recommendation-text">{testResults.recommendation}</div>
+      <div, class="recommendation-text">{testResults.recommendation}</div>
     </div>
   {/if}
-  <div class="log-container">
+  <div, class="log-container">
     <h2>📋 Test Log</h2>
-    <div class="log-output">{log}</div>
+    <div, class="log-output">{log}</div>
   </div>
 </div>
 

@@ -70,7 +70,7 @@ async function forwardToExternalService(entry: LogEntry): Promise<void> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.LOGGING_API_KEY}' },
+          'Authorization': `Bearer ${import.meta.env.LOGGING_API_KEY}` },
         body: JSON.stringify(entry)
       });
     }
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
   } catch (err: any) {
     // Normalize unknown error for safe logging
     const errMsg = err instanceof Error ? err.message : typeof err === 'object' ? JSON.stringify(err) : String(err);
-    console.error('Logging endpoint error:', errMsg);
+    console.error('Logging endpoint error:', errMsg);'
     throw error(500, 'Failed to process log entry');
   }
 };

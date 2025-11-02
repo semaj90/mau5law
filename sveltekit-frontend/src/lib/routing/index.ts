@@ -225,7 +225,7 @@ export function registerRoutes(routes: Array<): GeneratedRoute[] {
 export function matchRoute(
   pattern: string;
  , path: string;
-): { match: boolean;, params: Record<string, string> } {
+): { match: boolean; params: Record<string, string> } {
   const patternParts = pattern.split('/').filter(Boolean);
   const pathParts = path.split('/').filter(Boolean);
   if (patternParts.length !== pathParts.length) {
@@ -345,8 +345,7 @@ export const ROUTE_EVENTS = {
   ROUTE_UNREGISTERED: 'route:unregistered',
   NAVIGATION_START: 'navigation:start',
   NAVIGATION_END: 'navigation:end',
-  GUARD_EXECUTED: 'guard:executed'
-} as const;
+  GUARD_EXECUTED: 'guard:executed` } as const;'`
 export const ROUTE_CATEGORIES = {
   MAIN: 'main',
   DEMO: 'demo',
@@ -354,8 +353,7 @@ export const ROUTE_CATEGORIES = {
   DEV: 'dev',
   AI: 'ai',
   LEGAL: 'legal',
-  DYNAMIC: 'dynamic'
-} as const;
+  DYNAMIC: `dynamic` } as const;
 export const ROUTE_STATUS = {
   ACTIVE: 'active',
   BETA: 'beta',

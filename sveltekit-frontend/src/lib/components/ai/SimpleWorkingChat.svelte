@@ -1,5 +1,5 @@
-<!-- Simple Working Chat Component for CUDA AI Backend -->
-<script lang="ts">
+<!-- Simple Working Chat Component for CUDA AI, Backend -->
+<script, lang="ts">
   import { Input } from '$lib/components/ui/input';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -92,7 +92,7 @@
         messages = [...messages, errorMessage];
       }
     } catch (error) {
-      console.error('❌ Chat error:', error);
+      console.error('❌ Chat error:', error);'
       const errorMessage = {
         role: 'assistant' as const,
         content: `Network error: ${error.message}`,
@@ -129,47 +129,47 @@
     }
   }
 </script>
-<div class="w-full max-w-4xl mx-auto h-[600px] flex flex-col nes-container">
-  <div class="yorha-panel-header">
-    <div class="flex items-center justify-between">
-      <h3 class="nes-text is-primary flex items-center gap-2">
+<div class="w-full max-w-4xl mx-auto h-[600px] flex flex-col, nes-container">
+  <div, class="yorha-panel-header">
+    <div class="flex items-center, justify-between">
+      <h3 class="nes-text is-primary flex items-center, gap-2">
         🤖 Legal AI Chat
-        <Badge variant="ghost" class="text-xs">
-          <div class="w-2 h-2 rounded-full {getStatusColor()} mr-1"></div>
+        <Badge, variant="ghost" class="text-xs">
+          <div class="w-2 h-2, rounded-full {getStatusColor()} mr-1"></div>
           {getStatusText()}
         </Badge>
       </h3>
-      <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>Clear Chat</Button.Root>
+      <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>Clear Chat</Button.Root>
     </div>
   </div>
-  <div class="yorha-panel-content flex-1 flex flex-col gap-4 overflow-hidden">
-    <!-- Messages Area -->
-    <ScrollArea class="flex-1 p-4 border rounded-lg bg-muted/20">
-      <div class="space-y-4">
+  <div class="yorha-panel-content flex-1 flex flex-col gap-4, overflow-hidden">
+    <!-- Messages, Area -->
+    <ScrollArea class="flex-1 p-4 border rounded-lg, bg-muted/20">
+      <div, class="space-y-4">
         {#each Array.isArray(messages) ? messages : [] as message}
-          <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
+          <div, class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
             <div
               class="max-w-[70%] p-3 rounded-lg" {message.role === 'user'
                 ? 'bg-primary text-primary-foreground ml-auto'
                 : 'bg-muted text-muted-foreground'}"
             >
-              <div class="text-sm font-medium mb-1">
+              <div class="text-sm font-medium, mb-1">
                 {message.role === 'user' ? '👤 You' : '🤖 AI Assistant'}
-                <span class="text-xs opacity-70 ml-2">{message.timestamp}</span>
+                <span class="text-xs opacity-70, ml-2">{message.timestamp}</span>
               </div>
-              <div class="whitespace-pre-wrap">{message.content}</div>
+              <div, class="whitespace-pre-wrap">{message.content}</div>
               {#if message.role === 'assistant' && message.confidence}
-                <div class="flex gap-2 mt-2 text-xs opacity-70">
-                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                <div class="flex gap-2 mt-2 text-xs, opacity-70">
+                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200, text-gray-700"
                     >Confidence: {Math.round(message.confidence * 100)}%</span
                   >
                   {#if message.tokensPerSecond}
-                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200, text-gray-700"
                       >{Math.round(message.tokensPerSecond)} tok/s</span
                     >
                   {/if}
                   {#if message.taskId}
-                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200, text-gray-700"
                       >Task: {message.taskId.slice(-8)}</span
                     >
                   {/if}
@@ -178,15 +178,15 @@
           </div>
         {/each}
         {#if isLoading}
-          <div class="flex justify-start">
-            <div class="max-w-[70%] p-3 rounded-lg bg-muted nes-text is-disabled">
-              <div class="text-sm font-medium mb-1">🤖 AI Assistant</div>
-              <div class="flex items-center gap-2">
-                <div class="animate-pulse">Thinking...</div>
-                <div class="flex gap-1">
-                  <div class="w-2 h-2 bg-current rounded-full animate-bounce"></div>
-                  <div class="w-2 h-2 bg-current rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                  <div class="w-2 h-2 bg-current rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+          <div class="flex, justify-start">
+            <div class="max-w-[70%] p-3 rounded-lg bg-muted nes-text, is-disabled">
+              <div class="text-sm font-medium, mb-1">🤖 AI Assistant</div>
+              <div class="flex items-center, gap-2">
+                <div, class="animate-pulse">Thinking...</div>
+                <div class="flex, gap-1">
+                  <div class="w-2 h-2 bg-current rounded-full, animate-bounce"></div>
+                  <div class="w-2 h-2 bg-current rounded-full, animate-bounce" style="animation-delay: 0.1s"></div>
+                  <div class="w-2 h-2 bg-current rounded-full, animate-bounce" style="animation-delay: 0.2s"></div>
                 </div>
               </div>
             </div>
@@ -194,8 +194,8 @@
       </div>
     </ScrollArea>
     <Separator />
-    <!-- Input Area -->
-    <div class="flex gap-2">
+    <!-- Input, Area -->
+    <div class="flex, gap-2">
       <Input
         bind:value={inputMessage}
         placeholder="Ask the AI about legal matters..."
@@ -211,8 +211,8 @@
         {isLoading ? '⏳' : '📤'} Send
       </Button.Root>
     </div>
-    <!-- Status Info -->
-    <div class="text-xs nes-text is-disabled flex justify-between items-center">
+    <!-- Status, Info -->
+    <div class="text-xs nes-text is-disabled flex justify-between, items-center">
       <span> GPU: RTX 3060 Ti • Model: Gemma3-Legal • Port: 8096 </span>
       <span>
         {messages.length} messages
@@ -220,11 +220,11 @@
     </div>
   </div>
 </div>
-<!-- Debug Panel (Development Only) -->
+<!-- Debug Panel (Development, Only) -->
 {#if lastResponse && process.env.NODE_ENV === 'development'}
-  <details class="mt-4 p-4 bg-muted rounded-lg text-xs">
-    <summary class="cursor-pointer">🔍 Debug Info</summary>
-    <pre class="mt-2 overflow-auto">{JSON.stringify(lastResponse, null, 2)}</pre>
+  <details class="mt-4 p-4 bg-muted rounded-lg, text-xs">
+    <summary, class="cursor-pointer">🔍 Debug Info</summary>
+    <pre class="mt-2, overflow-auto">{JSON.stringify(lastResponse, null, 2)}</pre>
   </details>
 {/if}
 <style>

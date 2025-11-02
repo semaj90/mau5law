@@ -200,7 +200,7 @@ class LODCacheEngine {
           vertex: this.createWebGL1ComputeVertexShader(),
           fragment: this.createWebGL1EmbeddingFragmentShader()
         },
-        cpu: { uniforms: {, processingMode: `embedding-generation` } }
+        cpu: { uniforms: {, processingMode: `embedding-generation' } }'`
       })
     );
     if (embeddingShaders && CLIENT_ENV.SHADER_DEBUG) {
@@ -386,7 +386,7 @@ class LODCacheEngine {
     // Leverage existing SIMD engine for tile-level compression
     const simdResult = await simdTextTilingEngine.processText(text, {
       type: 'general',
-      context: 'cache-engine` });
+      context: 'cache-engine' });
     // Extract hierarchical text segments
     const segments = this.extractHierarchicalSegments(text);
     return {
@@ -684,7 +684,7 @@ class LODCacheEngine {
           }
         });
       } catch (err) {
-        console.warn('Failed to post to background worker, falling back to synchronous preprocess: `, err);
+        console.warn('Failed to post to background worker, falling back to synchronous preprocess: `, err);'`
         void this.syncPreprocessRelatedContent(entry, context);
       }
     } else {
@@ -780,50 +780,50 @@ class SVGSummarizationProcessor {
     const char = String.fromCharCode(compressed[0]);
     const complexity = compressed[2];
     const color = `hsl(${(compressed[1] / 127) * 360}, 70%, 50%)`;
-    return `<svg width="16" height="16" viewBox="0 0 16 16">
-      <rect fill="${color}" width="16" height="16" rx="${complexity / 20}" opacity="${opacity}"/>
-      <text x="8" y="12" text-anchor="middle" font-size="12" fill="white">${char}</text>
-    </svg>`;
+    return `<svg width="16" height="16" viewBox="0 0 16, 16">`
+      <rect, fill="${color}" width="16" height="16" rx="${complexity / 20}" opacity="${opacity}"/>
+      <text, x="8" y="12" text-anchor="middle" font-size="12" fill="white">${char}</text>
+    </svg>`;`
   }
   async generateTileSVG(compressed: Uint8Array, text: string): Promise<string> {
     const hue = (compressed[0] / 127) * 360;
     const words = text.split(' ').slice(0, 3).join(' ');
     // small usage of quality here for font-size
     const fontSize = this.quality === 'fast' ? 5 : this.quality === 'high' ? 7 : 6;
-    return `<svg width="32" height="32" viewBox="0 0 32 32">
-      <rect fill="hsl(${hue}, 60%, 40%)" width="32" height="32" rx="4"/>
-      <foreignObject x="2" y="2" width="28" height="28">
-        <div style="font-size:${fontSize}px;color:white;text-align:center;line-height:1.2">${words}</div>
+    return `<svg width="32" height="32" viewBox="0 0 32, 32">`
+      <rect, fill="hsl(${hue}, 60%, 40%)" width="32" height="32" rx="4"/>
+      <foreignObject, x="2" y="2" width="28" height="28">
+        <div, style="font-size:${fontSize}px;color:white;text-align:center;line-height:1.2">${words}</div>
       </foreignObject>
-    </svg>`;
+    </svg>`;`
   }
   async generateBlockSVG(compressed: Uint8Array, text: string): Promise<string> {
     const segments = Math.min(compressed.length / 7, 5);
     let rects = '';
     for (let i = 0; i < segments; i++) {
       const hue = (compressed[i * 7] / 127) * 360;
-      rects += `<rect x="${i * 12}" y="0" width="10" height="64" fill="hsl(${hue}, 60%, 50%)"/>`;
+      rects += `<rect, x="${i * 12}" y="0" width="10" height="64" fill="hsl(${hue}, 60%, 50%)"/>`;
     }
-    return `<svg width="64" height="64" viewBox="0 0 64 64">
+    return `<svg width="64" height="64" viewBox="0 0 64, 64">`
       ${rects}
-      <foreignObject x="0" y="45" width="64" height="19">
-        <div style="font-size:4px;color:black;text-align:center">${text.slice(0, 50)}...</div>
+      <foreignObject, x="0" y="45" width="64" height="19">
+        <div, style="font-size:4px;color:black;text-align:center">${text.slice(0, 50)}...</div>
       </foreignObject>
-    </svg>`;
+    </svg>`;`
   }
   async generateSectionSVG(compressed: Uint8Array, text: string): Promise<string> {
-    return `<svg width="256" height="256" viewBox="0 0 256 256">
+    return `<svg width="256" height="256" viewBox="0 0 256, 256">`
       <defs>
-        <pattern id="textPattern" patternUnits="userSpaceOnUse" width="20" height="20">
-          <rect width="20" height="20" fill="hsl(${(compressed[0] / 127) * 360}, 50%, 90%)"/>
-          <circle cx="10" cy="10" r="3" fill="hsl(${(compressed[10] / 127) * 360}, 70%, 40%)"/>
+        <pattern, id="textPattern" patternUnits="userSpaceOnUse" width="20" height="20">
+          <rect, width="20" height="20" fill="hsl(${(compressed[0] / 127) * 360}, 50%, 90%)"/>
+          <circle, cx="10" cy="10" r="3" fill="hsl(${(compressed[10] / 127) * 360}, 70%, 40%)"/>
         </pattern>
       </defs>
-      <rect fill="url(#textPattern)" width="256" height="256"/>
-      <foreignObject x="10" y="10" width="236" height="236">
-        <div style="font-size:8px;line-height:1.3;color:#333;overflow:hidden">${text.slice(0, 400)}...</div>
+      <rect, fill="url(#textPattern)" width="256" height="256"/>
+      <foreignObject, x="10" y="10" width="236" height="236">
+        <div, style="font-size:8px;line-height:1.3;color:#333;overflow:hidden">${text.slice(0, 400)}...</div>
       </foreignObject>
-    </svg>`;
+    </svg>`;`
   }
   async generateDocumentSVG(compressed: Uint8Array, text: string): Promise<string> {
     const tiles = Math.min(compressed.length / 7, 25);
@@ -832,15 +832,15 @@ class SVGSummarizationProcessor {
       const x = (i % 5) * 100;
       const y = Math.floor(i / 5) * 100;
       const hue = (compressed[i * 7] / 127) * 360;
-      grid += `<rect x="${x + 5}" y="${y + 5}" width="90" height="90" fill="hsl(${hue}, 50%, 70%)" rx="5"/>`;
+      grid += `<rect, x="${x + 5}" y="${y + 5}" width="90" height="90" fill="hsl(${hue}, 50%, 70%)" rx="5"/>`;
     }
-    return `<svg width="512" height="512" viewBox="0 0 512 512">
-      <rect fill="#f8f9fa" width="512" height="512"/>
+    return `<svg width="512" height="512" viewBox="0 0 512, 512">`
+      <rect, fill="#f8f9fa" width="512" height="512"/>
       ${grid}
-      <foreignObject x="20" y="450" width="472" height="50">
-        <div style="font-size:10px;color:#666;text-align:center">${text.slice(0, 100)}... (${text.length} chars)</div>
+      <foreignObject, x="20" y="450" width="472" height="50">
+        <div, style="font-size:10px;color:#666;text-align:center">${text.slice(0, 100)}... (${text.length} chars)</div>
       </foreignObject>
-    </svg>`;
+    </svg>`;`
   }
 }
 class VectorMetadataEncoder {
@@ -894,7 +894,7 @@ class VectorMetadataEncoder {
     const duration = performance.now() - start;
     telemetryBus.publish({
       type: 'lod.embed.end',
-      meta: {, durationMs: duration, dimensions: this.dimensions, backend: this.cacheEngine?.activeBackend ?? 'cpu` }
+      meta: {, durationMs: duration, dimensions: this.dimensions, backend: this.cacheEngine?.activeBackend ?? 'cpu' }
     });
     // Emit memory usage snapshot if provider exposes it
     try {
@@ -950,7 +950,7 @@ class VectorMetadataEncoder {
         value = tanh(value / f32(segmentLength + 1);
         embeddings[embeddingIndex] = value;
       }
-    `;
+    `;`
     const runCompute = (hybridGPU as unknown as { runComputeShader?: Function }).runComputeShader;
     if (!runCompute) {
       // Fallback directly to CPU path if compute helper missing
@@ -1079,7 +1079,7 @@ class VectorMetadataEncoder {
         segments: segmentCount,
         dimension: adaptiveDim,
         totalFloats: batched.length,
-        reduction: 'mean+std+freq+norm` }
+        reduction: 'mean+std+freq+norm' }
     });
     return embeddings;
   }
@@ -1143,7 +1143,7 @@ LODCacheEngine.prototype.createWebGPUEmbeddingShader = function (): string {
         value = tanh(value / f32(segmentLength + 1);
         embeddings[embeddingIndex] = value;
       }
-    `;
+    `;`
 };
 LODCacheEngine.prototype.createWebGPUClusteringShader = function (): string {
   return `
@@ -1176,7 +1176,7 @@ LODCacheEngine.prototype.createWebGPUClusteringShader = function (): string {
         }
         clusters[embeddingId] = bestCluster;
       }
-    `;
+    `;`
 };
 LODCacheEngine.prototype.createWebGPUSimilarityShader = function (): string {
   return `
@@ -1214,10 +1214,10 @@ LODCacheEngine.prototype.createWebGPUSimilarityShader = function (): string {
         // For dot product (type 2), use similarity as-is
         similarities[docId] = similarity;
       }
-    `;
+    `;`
 };
 LODCacheEngine.prototype.createWebGL2ComputeVertexShader = function (): string {
-  return `#version 300 es
+  return `#version 300 es`
       in vec2 a_position;
       in float a_index;
       out float v_index;
@@ -1225,10 +1225,10 @@ LODCacheEngine.prototype.createWebGL2ComputeVertexShader = function (): string {
         gl_Position = vec4(a_position, 0.0, 1.0);
         v_index = a_index;
       }
-    `;
+    `;`
 };
 LODCacheEngine.prototype.createWebGL2EmbeddingFragmentShader = function (): string {
-  return `#version 300 es
+  return `#version 300 es`
       precision highp float;
       in float v_index;
       out vec4 fragColor;
@@ -1258,10 +1258,10 @@ LODCacheEngine.prototype.createWebGL2EmbeddingFragmentShader = function (): stri
         float dimIndex = mod(v_index, u_config.x);
         fragColor = generateEmbedding(segmentId, dimIndex);
       }
-    `;
+    `;`
 };
 LODCacheEngine.prototype.createWebGL2ClusteringFragmentShader = function (): string {
-  return `#version 300 es
+  return `#version 300 es`
       precision highp float;
       in float v_index;
       out vec4 fragColor;
@@ -1291,10 +1291,10 @@ LODCacheEngine.prototype.createWebGL2ClusteringFragmentShader = function (): str
         }
         fragColor = vec4(bestCluster / clusterCount, 0.0, 0.0, 1.0);
       }
-    `;
+    `;`
 };
 LODCacheEngine.prototype.createWebGL2SimilarityFragmentShader = function (): string {
-  return `#version 300 es
+  return `#version 300 es`
       precision highp float;
       in float v_index;
       out vec4 fragColor;
@@ -1319,7 +1319,7 @@ LODCacheEngine.prototype.createWebGL2SimilarityFragmentShader = function (): str
           docNorm += docVal * docVal;
         }
         // Normalize based on similarity type
-        if (similarityType < 0.5) { // Cosine similarity
+        if (similarityType < 0.5) { // Cosine, similarity
           float normProduct = sqrt(queryNorm * docNorm);
           if (normProduct > 0.0) {
             similarity = similarity / normProduct;
@@ -1327,7 +1327,7 @@ LODCacheEngine.prototype.createWebGL2SimilarityFragmentShader = function (): str
         }
         fragColor = vec4(similarity, 0.0, 0.0, 1.0);
       }
-    `;
+    `;`
 };
 LODCacheEngine.prototype.createWebGL1ComputeVertexShader = function (): string {
   return `
@@ -1338,7 +1338,7 @@ LODCacheEngine.prototype.createWebGL1ComputeVertexShader = function (): string {
         gl_Position = vec4(a_position, 0.0, 1.0);
         v_index = a_index;
       }
-    `;
+    `;`
 };
 LODCacheEngine.prototype.createWebGL1EmbeddingFragmentShader = function (): string {
   return `
@@ -1354,7 +1354,7 @@ LODCacheEngine.prototype.createWebGL1EmbeddingFragmentShader = function (): stri
         // @ts-ignore
         gl_FragColor = vec4(value, 0.0, 0.0, 1.0);
       }
-    `;
+    `;`
 };
 LODCacheEngine.prototype.createWebGL1ClusteringFragmentShader = function (): string {
   return `
@@ -1374,7 +1374,7 @@ LODCacheEngine.prototype.createWebGL1ClusteringFragmentShader = function (): str
         // @ts-ignore
         gl_FragColor = vec4(cluster / 3.0, 0.0, 0.0, 1.0);
       }
-    `;
+    `;`
 };
 LODCacheEngine.prototype.createWebGL1SimilarityFragmentShader = function (): string {
   return `
@@ -1404,7 +1404,7 @@ LODCacheEngine.prototype.createWebGL1SimilarityFragmentShader = function (): str
         // @ts-ignore
         gl_FragColor = vec4(similarity, 0.0, 0.0, 1.0);
       }
-    `;
+    `;`
 };
 // (Legacy in-class shader methods removed; prototype-based implementations above are authoritative.)
 // Export singleton instance

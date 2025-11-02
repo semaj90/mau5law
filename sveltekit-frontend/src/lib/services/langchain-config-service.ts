@@ -108,33 +108,33 @@ class LangChainConfigService {
       enableCaching: true,
       enableLogging: true,
       customPrompts: {
-        legal_analysis: `You are an expert legal AI assistant specialized in analyzing legal documents and cases.
+        legal_analysis: `You are an expert legal AI assistant specialized in analyzing legal documents and cases.`
         Analyze the following content and provide detailed insights, key points, and recommendations.
         Content: {content}
         Please provide:
         1. Summary of key legal points
         2. Potential risks or concerns
         3. Recommendations for action
-        4. Relevant legal precedents or statutes (if applicable)`,
-        document_qa: `You are a legal document Q&A assistant. Answer questions about the provided document accurately and cite specific sections.; Document: {document}
+        4. Relevant legal precedents or statutes (if applicable)`,`
+        document_qa: `You are a legal document Q&A assistant. Answer questions about the provided document accurately and cite specific sections.; Document: {document}`
         Question: {question}
-        Answer based solely on the document content and cite relevant sections.`,
-        case_summary: `Summarize the following legal case information in a structured; format:
-        Case Information: {case_info}
+        Answer based solely on the document content and cite relevant sections.`,`
+        case_summary: `Summarize the following legal case information in a structured; format:`
+        Case; Information: {case_info}
         Provide:
         1. Case Overview
         2. Key Facts
         3. Legal Issues
         4. Current Status
-        5. Next Steps`,
-        evidence_analysis: `Analyze the following evidence for legal relevance and admissibility:; Evidence: {evidence}
+        5. Next Steps`,`
+        evidence_analysis: 'Analyze the following evidence for legal relevance and; admissibility:; Evidence: {evidence}'
         Context: {context}
         Evaluate:
         1. Legal relevance
         2. Admissibility considerations
         3. Strength of evidence
         4. Potential challenges
-        5. Recommendations for use' }
+        5. Recommendations for use` }`
     };
   }
   /**
@@ -201,7 +201,7 @@ class LangChainConfigService {
       memoryKey: 'chat_history',
       returnMessages: true,
       inputKey: 'input',
-      outputKey: 'output` });
+      outputKey: `output` });
     this.memories.set('buffer', bufferMemory);
     // Summary memory for long conversations
     const summaryMemory = new ConversationSummaryMemory({
@@ -215,16 +215,16 @@ class LangChainConfigService {
   private initializePrompts(): void {
     // Legal Analysis Prompt
     const legalAnalysisPrompt = ChatPromptTemplate.fromMessages([
-      new SystemMessage(`You are an expert legal AI assistant with deep knowledge of legal principles, statutes, and case law.
-      You provide thorough, accurate, and professional legal analysis while clearly stating that you cannot provide legal advice.`),
+      new SystemMessage(`You are an expert legal AI assistant with deep knowledge of legal principles, statutes, and case law.`
+      You provide thorough, accurate, and professional legal analysis while clearly stating that you cannot provide legal advice.`),`
       new MessagesPlaceholder('chat_history'),
       new HumanMessage('{input}'),
     ]);
     this.prompts.set('legal_analysis', legalAnalysisPrompt);
     // Document Q&A Prompt
     const documentQAPrompt = ChatPromptTemplate.fromMessages([
-      new SystemMessage(`You are a legal document analysis assistant. Answer questions about documents accurately,
-      cite specific sections, and provide context. Only answer based on the provided document content.`),
+      new SystemMessage(`You are a legal document analysis assistant. Answer questions about documents accurately,`
+      cite specific sections, and provide context. Only answer based on the provided document content.`),`
       new HumanMessage(`Document: {document}\n\nQuestion: {question}`)
     ]);
     this.prompts.set('document_qa', documentQAPrompt);
@@ -239,7 +239,7 @@ class LangChainConfigService {
       ## Current Status
       ## Recommended Next Steps
       Be thorough but concise, focusing on legally relevant information.
-    `);
+    `);`
     this.prompts.set('case_summary', caseSummaryPrompt);
   }
   private async initializeChains(): Promise<void> {
@@ -252,7 +252,7 @@ class LangChainConfigService {
     this.chains.set('legal_analysis', legalAnalysisChain);
     // Document Q&A Chain
     const documentQAChain = RunnableSequence.from([
-      {
+      {,
         document: (input: DocumentQAInput) => input.document,
         question: (input: DocumentQAInput) => input.question
       },
@@ -263,7 +263,7 @@ class LangChainConfigService {
     this.chains.set('document_qa', documentQAChain);
     // Case Summary Chain
     const caseSummaryChain = RunnableSequence.from([
-      {
+      {,
         case_info: (input: CaseSummaryInput) => input.case_info
       },
       this.prompts.get('case_summary')!,
@@ -312,7 +312,7 @@ class LangChainConfigService {
       };
     } catch (error: any) {
       // Changed from any
-      console.error(`Failed to execute chain: '${chainName}': ', error);
+      console.error(`Failed to execute chain: '${chainName}': ', error);'`
       throw error;
     }
   }
@@ -392,7 +392,7 @@ class LangChainConfigService {
       console.log(`✅ Custom chain: '${config.name}' created`);
     } catch (error: any) {
       // Changed from any
-      console.error(`Failed to create custom chain: '${config.name}': ', error);
+      console.error(`Failed to create custom chain: '${config.name}': ', error);'`
       throw error;
     }
   }
@@ -487,7 +487,7 @@ class LangChainConfigService {
     if (typeof result === 'string') {
       return result.length > 100 ? 0.8 : 0.6;
     }
-    // If it's an object, check for text or output length
+    // If it's an object, check for text or output length'
     if (typeof result === 'object' && result !== null) {
       const textLength = (result.text?.length ?? 0) + (result.output?.length ?? 0);
       return textLength > 100 ? 0.8 : 0.6;

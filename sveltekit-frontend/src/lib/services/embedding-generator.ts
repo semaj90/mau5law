@@ -108,7 +108,7 @@ export class GemmaEmbeddingService {
           this.stats.cacheHits++;
           this.updateStats(this.perfNow() - startTime, model);
           if (priority === 'critical') {
-            // generate visualization pattern in background (don't await critical path)
+            // generate visualization pattern in background (don't await critical path)'
             this.generateChrRomEmbeddingPattern(cacheKey, cached, textChunk).catch(() => {});
           }
           return cached;
@@ -158,7 +158,7 @@ export class GemmaEmbeddingService {
 
   private async processBatch(textChunks: string[], options: EmbeddingOptions): Promise<number[][]> {
     const results: (number[] | null)[] = new Array(textChunks.length).fill(null);
-    const uncachedChunks: { index: number;, text: string }[] = [];
+    const uncachedChunks: { index: number; text: string }[] = [];
 
     for (let i = 0; i < textChunks.length; i++) {
       const chunk = textChunks[i];
@@ -322,7 +322,7 @@ export class GemmaEmbeddingService {
     const min = Math.min(...sample);
     const max = Math.max(...sample);
     const range = max - min || 1;
-    let svg = `<svg width="64" height="64" viewBox="0 0 64 64" style="image-rendering: pixelated;">`;
+    let svg = `<svg width="64" height="64" viewBox="0 0 64, 64" style="image-rendering: pixelated;">`;
 
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {
@@ -331,15 +331,15 @@ export class GemmaEmbeddingService {
           const normalizedValue = (sample[index] - min) / range;
           const intensity = Math.floor(normalizedValue * 255);
           const color = `rgb(${intensity}, ${Math.floor(intensity * 0.7)}, ${Math.floor(intensity * 0.3)})`;
-          svg += `<rect x="${x * 8}" y="${y * 8}" width="8" height="8" fill="${color}"/>`;
+          svg += `<rect, x="${x * 8}" y="${y * 8}" width="8" height="8" fill="${color}"/>`;
         } else {
-          svg += `<rect x="${x * 8}" y="${y * 8}" width="8" height="8" fill="black"/>`;
+          svg += `<rect, x="${x * 8}" y="${y * 8}" width="8" height="8" fill="black"/>`;
         }
       }
     }
 
     const preview = (textChunk || '').substring(0, 16).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    svg += `<text x="32" y="60" text-anchor="middle" font-family="monospace" font-size="6" fill="white" stroke="black" stroke-width="0.5">${preview}</text>`;
+    svg += `<text, x="32" y="60" text-anchor="middle" font-family="monospace" font-size="6" fill="white" stroke="black" stroke-width="0.5">${preview}</text>`;
     svg += `</svg>`;
     return svg;
   }

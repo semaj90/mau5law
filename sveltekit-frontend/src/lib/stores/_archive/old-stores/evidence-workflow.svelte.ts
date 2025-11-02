@@ -25,9 +25,9 @@ const evidenceProcessingMachine = createMachine({
   id: 'evidenceProcessor',
   initial: 'idle',
   // Using xstate v5 generic types requires runtime noop; cast for compile-time only
-  types: {} as { context: EvidenceContext;, events: EvidenceEvents },
+  types: {} as {, context: EvidenceContext; events: EvidenceEvents },
   context: {
-    file: null,
+   , file: null,
     evidenceId: '',
     caseId: '',
     metadata: null,
@@ -37,7 +37,7 @@ const evidenceProcessingMachine = createMachine({
     error: null,
     artifactUrl: null
   },
-  states: { idle: {, on: { START_PROCESSING: {, target: 'validating',
+  states: {, idle: {, on: {, START_PROCESSING: {, target: 'validating',
           actions: assign({
            , file: ({ event }) => (event as StartProcessingEvent).file,
             evidenceId: ({ event }) => (event as StartProcessingEvent).evidenceId,
@@ -110,7 +110,7 @@ const evidenceProcessingMachine = createMachine({
           // Use static API per PNGEmbedExtractor implementation
           const pngWithMetadata = await PNGEmbedExtractor.embedMetadata(
             fileBuffer,
-            context.metadata as NonNullable<typeof context.metadata>
+            context.metadata as NonNullable<typeof, context.metadata>
           );
           return pngWithMetadata;
         },
@@ -124,8 +124,7 @@ const evidenceProcessingMachine = createMachine({
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }) => (event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Embedding failed'
-          })
+            error: ({ event }) => (event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Embedding failed` })'`
         }
       }
     },
@@ -147,7 +146,7 @@ const evidenceProcessingMachine = createMachine({
           const response = await fetch('http://localhost:8095/api/artifacts/upload', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json` },
+              'Content-Type': `application/json` },
             body: JSON.stringify(uploadData)
           });
           if (!response.ok) {
@@ -174,8 +173,7 @@ const evidenceProcessingMachine = createMachine({
       }
     },
     error: { on: {, RETRY: 'validating',
-        RESET: 'idle'
-      }
+        RESET: `idle` }
     }
   }
 } as any);
@@ -233,7 +231,7 @@ export const searchArtifacts = async (searchParams: {
   const response = await fetch('http://localhost:8095/api/artifacts/search', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json` },
+      'Content-Type': `application/json` },
     body: JSON.stringify(searchParams)
   });
   if (!response.ok) {

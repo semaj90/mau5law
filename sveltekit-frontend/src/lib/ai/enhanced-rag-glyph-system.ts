@@ -222,7 +222,7 @@ class EnhancedRAGGlyphSystem {
       );
       return glyphRAGResponse;
     } catch (error: any) {
-      console.error('Enhanced RAG processing error:', error);
+      console.error('Enhanced RAG processing error:', error);'
       // Return fallback response with error information
       return { response: `I encountered an error while processing your, query: ${error.message}. Please try rephrasing your question.`,
         confidence: 0.1,
@@ -468,14 +468,14 @@ class EnhancedRAGGlyphSystem {
     queryAnalysis: QueryAnalysis,
     contextHistory?: string[]
   ): Promise<string> {
-    const contextParts = ['# Enhanced Context from Compressed Glyphs', '', '## Primary Context Glyphs: `];
+    const contextParts = ['# Enhanced Context from Compressed Glyphs', '', '## Primary Context Glyphs: `];'`
     // Add primary glyph contexts
     synthesizedContext.primary_glyphs.slice(0, 5).forEach((glyphId: string, index: number) => {
       const glyph = synthesizedContext.glyph_map.get(glyphId);
       if (glyph) {
         contextParts.push(`${index + 1}. **${glyph.semantic_summary}**`);
         contextParts.push(
-          `   - Compressed: ${Array.from(glyph.compressed_representation)
+          `   - Compressed: ${Array.from(glyph.compressed_representation)`
             .map((b: any) => (b as number).toString(16))
             .join('')}`
         );
@@ -489,7 +489,7 @@ class EnhancedRAGGlyphSystem {
       contextParts.push('## Semantic Clusters:');
       synthesizedContext.semantic_clusters.forEach((cluster: number, index: number) => {
         contextParts.push(
-          `- Cluster ${cluster}: ${synthesizedContext.cluster_summaries[cluster] || 'Related concepts' }`
+          `- Cluster ${cluster}: ${synthesizedContext.cluster_summaries[cluster] || 'Related concepts` }`'`
         );
       });
       contextParts.push('');
@@ -640,19 +640,19 @@ class EnhancedRAGGlyphSystem {
     const hue = (compressed[0] / 127) * 360;
     const saturation = 50 + (compressed[1] / 127) * 40;
     const lightness = 40 + (compressed[2] / 127) * 30;
-    return `<svg width="24" height="24" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="10" fill="hsl(${hue}, ${saturation}%, ${lightness}%)" opacity="0.8"/>
-      <text x="12" y="16" text-anchor="middle" font-size="10" fill="white">G</text>
-    </svg>`;
+    return `<svg width="24" height="24" viewBox="0 0 24, 24">`
+      <circle, cx="12" cy="12" r="10" fill="hsl(${hue}, ${saturation}%, ${lightness}%)" opacity="0.8"/>
+      <text, x="12" y="16" text-anchor="middle" font-size="10" fill="white">G</text>
+    </svg>`;`
   }
   private createDefaultVisualContext(glyphs: GlyphContext[]) {
     return {
-      glyph_constellation_svg: `<svg width="400" height="300"><g>${glyphs
+      glyph_constellation_svg: `<svg, width="400" height="300"><g>${glyphs`
         .slice(0, 10)
-        .map((g, i) => `<circle cx="${40 + i * 36}" cy="150" r="15" fill="hsl(${i * 36}, 70%, 60%)" opacity="0.7"/>`)
-        .join('')}</g></svg>`,
-      semantic_heatmap_svg: '<svg width="200" height="200"><rect width="200" height="200" fill="url(#heatmap)"/></svg>',
-      topology_graph_svg: '<svg width="300" height="300"><g><!-- Topology visualization --></g></svg>',
+        .map((g, i) => `<circle, cx="${40 + i * 36}" cy="150" r="15" fill="hsl(${i * 36}, 70%, 60%)" opacity="0.7"/>`)
+        .join('')}</g></svg>`,`
+      semantic_heatmap_svg: '<svg, width="200" height="200"><rect, width="200" height="200" fill="url(#heatmap)"/></svg>',
+      topology_graph_svg: '<svg, width="300" height="300"><g><!-- Topology, visualization --></g></svg>',
       compression_statistics: {
         original_context_size: glyphs.length * 1000,
         compressed_context_size: glyphs.length * 7,
@@ -664,10 +664,10 @@ class EnhancedRAGGlyphSystem {
   private createErrorVisualContext(errorMessage: string) {
     return {
       glyph_constellation_svg:
-        '<svg width="400" height="300"><text x="200" y="150" text-anchor="middle" fill="red">Error in visualization</text></svg>',
-      semantic_heatmap_svg: '<svg width="200" height="200"><rect width="200" height="200" fill="#ffcccc"/></svg>',
+        '<svg, width="400" height="300"><text, x="200" y="150" text-anchor="middle" fill="red">Error in visualization</text></svg>',
+      semantic_heatmap_svg: '<svg, width="200" height="200"><rect, width="200" height="200" fill="#ffcccc"/></svg>',
       topology_graph_svg:
-        '<svg width="300" height="300"><text x="150" y="150" text-anchor="middle" fill="red">Topology unavailable</text></svg>',
+        '<svg, width="300" height="300"><text, x="150" y="150" text-anchor="middle" fill="red">Topology unavailable</text></svg>',
       compression_statistics: {
         original_context_size: 0,
         compressed_context_size: 0,
@@ -817,7 +817,7 @@ class GlyphVisualGenerator {
   private async generateGlyphConstellation(glyphs: GlyphContext[]): Promise<string> {
     const width = 800;
     const height = 600;
-    const elements = [`<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`];
+    const elements = [`<svg width="${width}" height="${height}" viewBox="0, 0 ${width} ${height}">`];
     glyphs.slice(0, 20).forEach((glyph, index) => {
       const angle = (index / glyphs.length) * 2 * Math.PI;
       const radius = 150 + glyph.contextual_weight * 100;
@@ -825,8 +825,8 @@ class GlyphVisualGenerator {
       const y = height / 2 + Math.sin(angle) * radius;
       const hue = (glyph.compressed_representation[0] / 127) * 360;
       const size = 8 + glyph.contextual_weight * 12;
-      elements.push(`<circle cx="${x}" cy="${y}" r="${size}" fill="hsl(${hue}, 70%, 60%)" opacity="0.8"/>`);
-      elements.push(`<text x="${x}" y="${y + 4}" text-anchor="middle" font-size="8" fill="white">${index + 1}</text>`);
+      elements.push(`<circle, cx="${x}" cy="${y}" r="${size}" fill="hsl(${hue}, 70%, 60%)" opacity="0.8"/>`);
+      elements.push(`<text, x="${x}" y="${y + 4}" text-anchor="middle" font-size="8" fill="white">${index + 1}</text>`);
     });
     elements.push('</svg>');
     return elements.join('');
@@ -834,7 +834,7 @@ class GlyphVisualGenerator {
   private async generateSemanticHeatmap(glyphs: GlyphContext[], synthesizedContext: any): Promise<string> {
     const size = 400;
     const cellSize = size / 20;
-    const elements = [`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`];
+    const elements = [`<svg width="${size}" height="${size}" viewBox="0, 0 ${size} ${size}">`];
     // Create grid-based heatmap
     for (let x = 0; x < 20; x++) {
       for (let y = 0; y < 20; y++) {
@@ -844,8 +844,8 @@ class GlyphVisualGenerator {
           const intensity = glyph.contextual_weight;
           const hue = (glyph.compressed_representation[0] / 127) * 360;
           const opacity = 0.3 + intensity * 0.7;
-          elements.push(`<rect x="${x * cellSize}" y="${y * cellSize}" width="${cellSize}" height="${cellSize}"
-                        fill="hsl(${hue}, 60%, 50%)" opacity="${opacity}"/>`);
+          elements.push(`<rect, x="${x * cellSize}" y="${y * cellSize}" width="${cellSize}" height="${cellSize}"`
+                        fill="hsl(${hue}, 60%, 50%)" opacity="${opacity}"/>`);`
         }
       }
     }
@@ -855,9 +855,9 @@ class GlyphVisualGenerator {
   private async generateTopologyGraph(connections: any[]): Promise<string> {
     const width = 600;
     const height = 400;
-    const elements = [`<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`];
+    const elements = [`<svg width="${width}" height="${height}" viewBox="0, 0 ${width} ${height}">`];
     // Simple force-directed layout simulation
-    const nodePositions = new Map<string, { x: number;, y: number }>();
+    const nodePositions = new Map<string, { x: number; y: number }>();
     const allNodes = new Set<string>();
     connections.forEach(conn => {
       allNodes.add(conn.from_glyph);
@@ -878,14 +878,14 @@ class GlyphVisualGenerator {
       const toPos = nodePositions.get(conn.to_glyph);
       if (fromPos && toPos) {
         const strokeWidth = 1 + conn.strength * 3;
-        elements.push(`<line x1="${fromPos.x}" y1="${fromPos.y}" x2="${toPos.x}" y2="${toPos.y}"
-                      stroke="rgba(100, 100, 100, 0.6)" stroke-width="${strokeWidth}"/>`);
+        elements.push(`<line, x1="${fromPos.x}" y1="${fromPos.y}" x2="${toPos.x}" y2="${toPos.y}"`
+                      stroke="rgba(100, 100, 100, 0.6)" stroke-width="${strokeWidth}"/>`);`
       }
     });
     // Draw nodes
     nodePositions.forEach((pos, nodeId) => {
-      elements.push(`<circle cx="${pos.x}" cy="${pos.y}" r="8" fill="hsl(220, 60%, 50%)" opacity="0.8"/>`);
-      elements.push(`<text x="${pos.x}" y="${pos.y + 3}" text-anchor="middle" font-size="6" fill="white">G</text>`);
+      elements.push(`<circle, cx="${pos.x}" cy="${pos.y}" r="8" fill="hsl(220, 60%, 50%)" opacity="0.8"/>`);
+      elements.push(`<text, x="${pos.x}" y="${pos.y + 3}" text-anchor="middle" font-size="6" fill="white">G</text>`);
     });
     elements.push('</svg>');
     return elements.join('');

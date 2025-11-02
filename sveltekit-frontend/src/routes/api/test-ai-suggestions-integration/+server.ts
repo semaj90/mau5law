@@ -262,8 +262,7 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Enhanced RAG test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    };
+      error: error instanceof Error ? error.message : 'Unknown error` };'`
   }
 }
 async function testProtobufGRPCService(): Promise<IntegrationTestResult> {
@@ -295,8 +294,7 @@ async function testProtobufGRPCService(): Promise<IntegrationTestResult> {
       status: 'warning',
       message: 'gRPC test failed (HTTP fallback available)',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    };
+      error: error instanceof Error ? error.message : `Unknown error` };
   }
 }
 async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
@@ -344,8 +342,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    };
+      error: error instanceof Error ? error.message : `Unknown error` };
   }
 }
 async function testStreamingAPI(): Promise<IntegrationTestResult> {
@@ -379,8 +376,7 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Streaming API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    };
+      error: error instanceof Error ? error.message : 'Unknown error` };'`
   }
 }
 async function testRatingAPI(): Promise<IntegrationTestResult> {
@@ -397,8 +393,7 @@ async function testRatingAPI(): Promise<IntegrationTestResult> {
         message: 'Rating API is operational (validation working)',
         details: {
           status: response.status,
-          validation: 'userId parameter required'
-        },
+          validation: `userId parameter required` },
         responseTime
       };
     } else {

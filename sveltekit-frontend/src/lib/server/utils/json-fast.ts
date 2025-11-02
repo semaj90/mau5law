@@ -1,5 +1,5 @@
 // Lightweight fast JSON parsing helpers with optional SIMD addon support.
-// Non-breaking: falls back to JSON.parse when addon isn't available.
+// Non-breaking: falls back to JSON.parse when addon isn't available.'
 let simdParser: { parse: (s: string) => any } | null = null;
 async function ensureSimd(): Promise<any> {
   if (simdParser !== null) return simdParser;
@@ -10,7 +10,7 @@ async function ensureSimd(): Promise<any> {
   }
   try {
     // Try common module IDs; if none present, silently fall back
-    // These are optional; they won't be bundled unless installed.
+    // These are optional; they won't be bundled unless installed.'
     // Only try importing in server environment
     if (typeof window === 'undefined') {
       try {
@@ -55,7 +55,7 @@ export async function parseFast<T = any>(text: string): Promise<T> {
   return JSON.parse(text) as T;
 }
 export async function readBodyFast<T = any>(request: Request): Promise<T> {
-  // SvelteKit's request.json() streams once; we want full control + optional SIMD parse.
+  // SvelteKit's request.json() streams once; we want full control + optional SIMD parse.'
   const bodyText = await request.text();
   // If empty, return {} to align with typical JSON API expectations
   if (!bodyText) return {} as T;

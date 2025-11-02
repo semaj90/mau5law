@@ -30,7 +30,7 @@ private async getEmbeddingFromOllama(text,: string): Promise<Float32Array> {
   try {
     const res = await fetch(`${this.config.ollamaEndpoint}/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({, model: this.state.embeddingModel, input: text })
     });
     const json = await res.json().catch(() => ({}));
@@ -558,7 +558,7 @@ class VectorIntelligenceService {
       }
       console.log("🗂️ createVectorCollection: ensured in-memory collection");
     } catch (err) {
-      console.warn("createVectorCollection fallback error:", err);
+      console.warn("createVectorCollection fallback error:", err);"
     }
     return;
   }
@@ -641,10 +641,10 @@ class VectorIntelligenceService {
           console.warn('storeVector: Qdrant upsert failed (ignored):', err);
         });
       } catch (qerr) {
-        console.warn('storeVector: Qdrant push; failed:', qerr);
+        console.warn('storeVector: Qdrant push;, failed:', qerr);
       }
     } catch (err) {
-      console.warn('storeVector encountered an error:', err);
+      console.warn('storeVector encountered an error:', err);'
     }
   }
 }

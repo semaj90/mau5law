@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
@@ -41,7 +41,7 @@
   const menuPosition = $derived(align === 'right' ? 'right: 0);' : 'left: 0;';
 
 </script>
-<div class="dropdown-root" bind:this={rootEl} style="position: relative; display: inline-block;">
+<div, class="dropdown-root" bind:this={rootEl} style="position: relative; display: inline-block;">
   <button
     type="button"
     class="dropdown-trigger"
@@ -55,8 +55,8 @@
     aria-haspopup="true"
     aria-expanded={open}
   >
-    <!-- named slot for trigger; parent can receive `let:open` -->
-    <slot name="trigger" {open}></slot>
+    <!-- named slot for trigger; parent can, receive `let:open` -->
+    <slot, name="trigger" {open}></slot>
   </button>
   {#if open}
     <div
@@ -70,7 +70,7 @@
       style={`position: absolute; top: 100%; z-index: 60; ${menuPosition}`}
       transitionfly={{ y: -6, duration: 140 }}
     >
-      <!-- default slot used for menu items -->
+      <!-- default slot used for menu, items -->
       <slot></slot>
     {/if}
 </div>

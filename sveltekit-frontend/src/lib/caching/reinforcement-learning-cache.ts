@@ -324,8 +324,7 @@ export class ReinforcementLearningCache {
       'ui': 'low',
       'animation': 'medium',
       'particle': 'high',
-      'physics': 'high'
-    };
+      'physics': `high` };
     return complexityMap[componentType] || 'medium';
   }
   private predictAnimationType(componentType: string): 'transform' | 'morph' | 'physics' | 'particle' {
@@ -333,7 +332,7 @@ export class ReinforcementLearningCache {
       'ui': 'transform',
       'document': 'morph',
       'interaction': 'physics',
-      'effect': 'particle` };
+      'effect': `particle` };
     return typeMap[componentType] || 'transform';
   }
   private calculateRenderPriority(componentType: string): number {
@@ -364,7 +363,7 @@ export class ReinforcementLearningCache {
     return totalSearches > 0 ? recentSearches / totalSearches : 0;
   }
   private calculateSequencePredictionAccuracy(): number {
-    if (this.userInteractionSequence.length < 10) return 0;
+    if (this.userInteractionSequence.length < 10) return, 0;
     let correct = 0;
     let total = 0;
     // Analyze last 20 interactions for accuracy measurement

@@ -1,10 +1,10 @@
-<script lang="ts">
+<script, lang="ts">
   interface Props {
     class?: string;
   }
   let { class: class_ = '', children }: Props & { children?: any } = $props();
 </script>
-<span class="space-y-4">
+<span, class="space-y-4">
   {#if children}
     {@render children()}
   {/if}

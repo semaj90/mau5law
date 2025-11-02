@@ -28,7 +28,7 @@ export const routeGroups: RouteGroupDefinition[] = [
     description: 'Case management, evidence analysis, and legal research',
     theme: 'matrix',
     routes: [
-      {
+      {,
         id: 'legal-cases',
         label: 'Cases',
         route: '/cases',
@@ -119,7 +119,7 @@ export const routeGroups: RouteGroupDefinition[] = [
     description: 'AI-powered analysis, chat, and GPU acceleration',
     theme: 'cyberpunk',
     routes: [
-      {
+      {,
         id: 'ai-assistant',
         label: 'Assistant',
         route: '/(ai)/assistant',
@@ -201,7 +201,7 @@ export const routeGroups: RouteGroupDefinition[] = [
     description: 'System administration and monitoring',
     theme: 'amber',
     routes: [
-      {
+      {,
         id: 'admin-dashboard',
         label: 'Dashboard',
         route: '/(admin)/dashboard',
@@ -265,7 +265,7 @@ export const routeGroups: RouteGroupDefinition[] = [
     description: 'Authentication, user profile, and system features',
     theme: 'amber',
     routes: [
-      {
+      {,
         id: 'core-auth',
         label: 'Authentication',
         route: '/auth/login',
@@ -320,7 +320,7 @@ export const routeGroups: RouteGroupDefinition[] = [
     description: 'Development tools, testing, and debugging',
     theme: 'retro',
     routes: [
-      {
+      {,
         id: 'dev-tests',
         label: 'Testing Suite',
         route: '/(dev)/tests',
@@ -412,11 +412,11 @@ export const legacyRouteMapping: Record<string, string> = {
   '/ai-chat-simple': '/(ai)/assistant',
   '/gpu-chat': '/(ai)/assistant',
   '/cuda-streaming': '/(ai)/cuda-streaming',
-  // '/cases': Already at correct path (route groups don't affect URLs)
+  // '/cases': Already at correct path (route groups don't affect URLs)'
   // '/evidence': Keep standalone route outside (legal) group: '/evidence-analysis': '/evidence',
   '/evidence-workspace': '/evidence',
   '/documents': '/(legal)/documents',
-  // '/legal': Redirect removed - route groups don't create URL paths: '/detective': '/(legal)/detective',
+  // '/legal': Redirect removed - route groups don't create URL paths: '/detective': '/(legal)/detective','
   '/detectivemode': '/(legal)/detective',
   '/investigation': '/(legal)/detective',
   '/citations': '/(legal)/citations',

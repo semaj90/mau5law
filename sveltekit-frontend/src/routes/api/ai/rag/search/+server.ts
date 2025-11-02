@@ -93,7 +93,7 @@ export const POST: RequestHandler = async event => {
       _testMode: auth.isTestMode
     });
   } catch (error) {
-    console.error('RAG search error:', error);
+    console.error('RAG search error:', error);'
 
     if (error instanceof z.ZodError) {
       return json(
@@ -113,8 +113,7 @@ export const POST: RequestHandler = async event => {
       {
         success: false,
         error: 'RAG search failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
-      },
+        message: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }
@@ -138,7 +137,7 @@ export const GET: RequestHandler = async event => {
       health,
       stats,
       capabilities: {
-        documentTypes: ['contract', 'litigation', 'patent', 'trademark', 'motion', 'brief'],
+       , documentTypes: ['contract', 'litigation', 'patent', 'trademark', 'motion', 'brief'],
         supportedFormats: ['pdf', 'doc', 'docx', 'txt', 'html'],
         features: {
          , semanticSearch: true,
@@ -151,13 +150,13 @@ export const GET: RequestHandler = async event => {
       _testMode: auth.isTestMode
     });
   } catch (error) {
-    console.error('RAG health check error:', error);
+    console.error('RAG health check error:', error);'
 
     return json(
       {
         success: false,
         error: 'Health check failed',
-        message: error instanceof Error ? error.message : 'Unknown error` },
+        message: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

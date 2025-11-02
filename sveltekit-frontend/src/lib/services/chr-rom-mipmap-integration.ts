@@ -10,7 +10,7 @@ import { chrROMCacheReader } from './chr-rom-cache-reader.js';
 import { yorhaMipmapShaders } from '../components/three/yorha-ui/webgpu/YoRHaMipmapShaders.js';
 import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
 import type { CHRROMPattern, PatternType } from './chr-rom-precomputation.js';
-export interface MipmapCHRROMPattern extends CHRROMPattern { mipmapLevel: number;, originalSize: { width: number;, height: number };
+export interface MipmapCHRROMPattern extends CHRROMPattern { mipmapLevel: number;, originalSize: { width: number; height: number };
   compressed: boolean;
   rtxOptimized: boolean;
 }
@@ -218,7 +218,7 @@ export class CHRROMMipmapIntegration {
           this.getThumbnailPattern(docId),
         ]);
       } catch (error) {
-        console.warn(`Prefetch failed for ${docId}: ', error);
+        console.warn(`Prefetch failed for ${docId}: ', error);'`
       }
     });
     await Promise.allSettled(prefetchPromises);
@@ -350,7 +350,7 @@ export class CHRROMMipmapIntegration {
   }
 
   private async compressPattern(pattern: string): Promise<string> {
-    // Simple compression - in practice you'd use more sophisticated compression
+    // Simple compression - in practice you'd use more sophisticated compression'
     return pattern.replace(/\s+/g, ' ').trim();
   }
 
@@ -362,7 +362,7 @@ export class CHRROMMipmapIntegration {
       dimensions: {, width: size, height: size },
       mipmapLevel: level,
       docId,
-      label: `L${level}' });
+      label: 'L${level}' });
     return {
       ...fallbackPattern,
       mipmapLevel: level,
@@ -382,7 +382,7 @@ export class CHRROMMipmapIntegration {
     return {
       type: 'icon',
       size: 'xs',
-      data: '<div style="w:16px;h:16px;bg:#6b7280;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:8px">?</div>',
+      data: '<div, style="w:16px;h:16px;bg:#6b7280;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:8px">?</div>',
       metadata: {
         confidence: 0,
         timestamp: Date.now(),
@@ -396,20 +396,19 @@ export class CHRROMMipmapIntegration {
     return {
       type: 'icon',
       size: 'md',
-      data: '<div style="w:64px;h:64px;bg:#6b7280;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:12px">DOC</div>',
+      data: '<div, style="w:64px;h:64px;bg:#6b7280;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:12px">DOC</div>',
       metadata: {
         confidence: 0,
         timestamp: Date.now(),
         version: '2.0',
-        // removed unknown: 'format' field — keep only known metadata properties; renderingHint: 'auto'
-      }
+        // removed unknown: 'format' field — keep only known metadata properties; renderingHint: `auto` }
     };
   }
 
   /**
    * Test integration with YoRHa mipmap system and CHR-ROM optimizer
    */
-  async testIntegration(): Promise<{ success: boolean;, results: Record<string, unknown> }> {
+  async testIntegration(): Promise<{ success: boolean; results: Record<string, unknown> }> {
     console.log('🧪 Testing CHR-ROM Mipmap Integration...');
     const startTime = (globalThis as unknown as { performance?: Performance }).performance
       ? (globalThis as unknown as { performance: Performance }).performance.now()
@@ -425,7 +424,7 @@ export class CHRROMMipmapIntegration {
       const testPattern = await chrROMPatternOptimizer.generateOptimizedPattern('status_indicator', {
         fallbackMode: true,
         dimensions: {, width: 16, height: 16 },
-        docId: 'test` });
+        docId: `test` });
 
       // Test Redis connection
       const redisTest = await redisWebGPUIntegration
@@ -548,7 +547,7 @@ export class CHRROMMipmapIntegration {
    * Batch generate mipmap patterns for multiple documents
    */
   async batchGenerateMipmaps(
-    documentBatch: Array<{ docId: string; imageData: ArrayBuffer; width: number;, height: number }>,
+    documentBatch: Array<{ docId: string; imageData: ArrayBuffer; width: number; height: number }>,
     options: {
       maxConcurrent?: number;
       rtxOptimized?: boolean;
@@ -562,7 +561,7 @@ export class CHRROMMipmapIntegration {
     const startTime = perf ? perf.now() : Date.now();
     const results = new Map<string, DocumentMipmapCache>();
     // Process in batches to avoid overwhelming GPU
-    const batches: Array<Array<{ docId: string; imageData: ArrayBuffer; width: number;, height: number }>> = [];
+    const batches: Array<Array<{ docId: string; imageData: ArrayBuffer; width: number; height: number }>> = [];
     for (let i = 0; i < documentBatch.length; i += maxConcurrent) {
       batches.push(documentBatch.slice(i, i + maxConcurrent));
     }

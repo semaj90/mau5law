@@ -158,13 +158,13 @@ export class AutonomousEngineeringSystem {
 					'System Diagnostics Crew',
 					'Comprehensive system analysis and problem identification',
 					[
-						{
+						{,
 							id: 'system-analyst',
 							role: 'System Diagnostic Specialist',
 							goal: 'Identify and categorize system problems across all platforms',
 							backstory: 'Expert system analyst with 15 years experience in full-stack diagnostics',
 							tools: ['error_log_analyzer', 'dependency_checker', 'performance_profiler'],
-							llmConfig: { model: 'gemma3-legal', temperature: 0.1, maxTokens: 2048 },
+							llmConfig: {, model: 'gemma3-legal', temperature: 0.1, maxTokens: 2048 },
 							maxExecution: 3,
 							memory: true,
 							verbose: true,
@@ -176,7 +176,7 @@ export class AutonomousEngineeringSystem {
 							goal: 'Deep dive into error logs and stack traces',
 							backstory: 'Senior debugging expert specializing in multi-platform error analysis',
 							tools: ['stack_trace_analyzer', 'log_parser', 'error_correlator'],
-							llmConfig: { model: 'codellama:7b-code', temperature: 0.1, maxTokens: 1536 },
+							llmConfig: {, model: 'codellama:7b-code', temperature: 0.1, maxTokens: 1536 },
 							maxExecution: 3,
 							memory: true,
 							verbose: true,
@@ -196,7 +196,7 @@ export class AutonomousEngineeringSystem {
 						}
 					],
 					[
-						{
+						{,
 							id: 'system-scan',
 							description: 'Perform comprehensive system scan and error detection',
 							expectedOutput: 'Detailed list of identified problems with severity and category',
@@ -274,8 +274,8 @@ export class AutonomousEngineeringSystem {
 
 				// Normalize agent outputs into AutoGenAgent[] with defaults
 				const rawAgents = await Promise.all([
-					Promise.resolve(createFn({ role: 'senior-architect' }, {}, {})),
-					Promise.resolve(createFn({ role: 'devops-engineer' }, {}, {})),
+					Promise.resolve(createFn({ role: `senior-architect` }, {}, {})),
+					Promise.resolve(createFn({ role: `devops-engineer` }, {}, {})),
 					Promise.resolve(createFn({ role: `qa-specialist` }, {}, {}))
 				]);
 
@@ -493,7 +493,7 @@ export class AutonomousEngineeringSystem {
 		try {
 			const response = await fetch(`${this.mcpEndpoint}/api/semantic/best-practices`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json` },'`
 				body: JSON.stringify({ query })
 			});
 			return response.ok ? (await response.json()) as unknown[] : [];
@@ -512,7 +512,7 @@ export class AutonomousEngineeringSystem {
 
 	private async fallbackDiagnostics(prompt: string, errorLogs: string[]): Promise<EngineeringProblem[]> {
 		return [
-			{
+			{,
 				id: crypto.randomUUID(),
 				title: 'General System Issue',
 				description: prompt,
@@ -533,8 +533,7 @@ export class AutonomousEngineeringSystem {
 			estimatedTime: 30,
 			confidence: 0.8,
 			dependencies: [],
-			riskAssessment: 'Medium risk'
-		};
+			riskAssessment: `Medium risk` };
 	}
 
 	private generateFallbackStrategy(problem: EngineeringProblem): SolutionStrategy {
@@ -542,15 +541,14 @@ export class AutonomousEngineeringSystem {
 			problemId: problem.id,
 			approach: 'immediate',
 			steps: [
-				{
+				{,
 					id: crypto.randomUUID(),
 					action: 'investigate',
 					description: 'Investigate the issue manually',
 					targetFiles: problem.affectedFiles,
 					commands: [],
 					validation: 'Manual verification',
-					rollbackPlan: 'Revert changes if needed'
-				}
+					rollbackPlan: `Revert changes if needed` }
 			],
 			estimatedTime: 15,
 			confidence: 0.5,

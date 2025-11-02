@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
             rlRecommendations = [];
           }
         } catch (invokeError) {
-          console.warn('RL optimizer invocation failed, continuing without: `, invokeError);
+          console.warn('RL optimizer invocation failed, continuing without: `, invokeError);'`
           rlRecommendations = [];
         }
 
@@ -410,7 +410,7 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: enhancedMetadata
     });
   } catch (err: any) {
-    console.error('❌ Enhanced Recommendations API error:', err);
+    console.error('❌ Enhanced Recommendations API error:', err);'
     const errorMessage = err instanceof Error ? err.message : String(err ?? 'Unknown error');
     let statusCode = 500;
     if (typeof err === 'object' && err !== null && 'status' in err) {
@@ -449,7 +449,7 @@ export const GET: RequestHandler = async ({ url }) => {
       version: '2.0.0',
       endpoints: {
         'POST /api/vector/recommendations': {
-          description: 'Generate GPU-enhanced personalized recommendations',
+         , description: 'Generate GPU-enhanced personalized recommendations',
           features: [
             'Reinforcement Learning Cache Optimization',
             'GPU-Accelerated RAG Processing',
@@ -484,13 +484,12 @@ export const GET: RequestHandler = async ({ url }) => {
         gpuRAGEnhancement: 'GPU-accelerated retrieval augmented generation',
         neo4jReranking: 'Graph database enhanced result ranking',
         context7Docs: 'Dynamic documentation integration',
-        rlCacheOptimization: 'Reinforcement learning cache optimization'
-      },
+        rlCacheOptimization: `Reinforcement learning cache optimization` },
       performance: {
-        averageLatency: '< 50ms (with cache hit)',
+        averageLatency: '< 50ms (with cache, hit)',
         gpuAcceleration: '10-100x speedup for complex queries',
         cacheHitRatio: '> 85% for repeated queries',
-        qualityImprovement: '+40% relevance with multi-layer enhancement` }
+        qualityImprovement: `+40% relevance with multi-layer enhancement` }
     });
   }
   try {
@@ -510,7 +509,7 @@ export const GET: RequestHandler = async ({ url }) => {
             id: caseId,
             type: 'general',
             priority: 'medium',
-            status: 'active` }
+            status: `active` }
         : undefined,
       preferences: { preferredActions: [] as string[], workflowStyle: 'systematic' as const },
       // Enhanced options for GET endpoint
@@ -611,12 +610,12 @@ export const GET: RequestHandler = async ({ url }) => {
       context,
       recommendations,
       metadata: {
-        totalRecommendations: recommendations.length,
+       , totalRecommendations: recommendations.length,
         processingTime,
         cacheStatus,
         gpuUtilized,
         performance: {
-          latency: `${processingTime}ms`,
+         , latency: `${processingTime}ms`,
           cacheEfficiency: cacheStatus === 'hit' ? 'excellent' : 'generating',
           enhancementLayers: {
            , baseRecommendations: true,
@@ -627,7 +626,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     });
   } catch (err: any) {
-    console.error('❌ Enhanced Recommendations GET error:', err);
+    console.error('❌ Enhanced Recommendations GET error:', err);'
     // Preserve useful error text; safe conversion from unknown
     throw error(500, err instanceof Error ? err.message : String(err ?? 'Enhanced recommendations failed'));
   }
@@ -725,7 +724,7 @@ async function getRecentUserActivity(userId?: string): Promise<RecentActivity[]>
   // Placeholder for recent user activity retrieval
   // In production, this would query the database
   return [
-    {
+    {,
       type: 'search',
       query: 'contract liability analysis',
       timestamp: Date.now() - 3600000,
@@ -753,9 +752,9 @@ async function getCaseRelationships(caseId: string): Promise<CaseRelationship[]>
   // In production, this would query Neo4j graph database
   // Use the incoming caseId to populate returned items so the parameter is actually used
   return [
-    {
+    {,
       relatedCaseId: 'case_456',
-      caseId, // <-- use the provided caseId to avoid unused param lint error
+      caseId, // <-- use the provided caseId to avoid unused param lint, error
       relationship: 'similar_facts',
       strength: 0.82,
       sharedEntities: ['defendant_name', 'contract_type'],
@@ -767,20 +766,19 @@ async function getCaseRelationships(caseId: string): Promise<CaseRelationship[]>
       relationship: 'legal_precedent',
       strength: 0.91,
       citationCount: 15,
-      jurisdiction: 'state'
-    },
+      jurisdiction: `state` },
     {
       relatedCaseId: 'case_101',
       caseId,
       relationship: 'temporal_sequence',
       strength: 0.67,
       timelineConnection: 'subsequent_filing',
-      jurisdiction: 'federal` },
+      jurisdiction: `federal` }
   ];
 }
 
 function enhanceDiversity(recommendations: Recommendation[]): Recommendation[] {
-  if (recommendations.length <= 1) return recommendations;
+  if (recommendations.length <= 1) return, recommendations;
   const diversified = [...recommendations];
   // Calculate content similarity and apply diversity penalty
   for (let i = 0; i < diversified.length; i++) {
@@ -842,7 +840,7 @@ function calculateDiversityScore(recommendations: Recommendation[]): number {
 
 // Add module-scoped helper (moved from inside POST)
 /* new helper moved to module level to avoid block-level function declaration issues */
-function normalizeRLRecommendations(input: any): { recs: string[];, expectedImprovement: number | null } {
+function normalizeRLRecommendations(input: any): { recs: string[]; expectedImprovement: number | null } {
   const mapItemToString = (item: any): string => {
     if (item == null) return '';
     if (typeof item === 'string') return item;

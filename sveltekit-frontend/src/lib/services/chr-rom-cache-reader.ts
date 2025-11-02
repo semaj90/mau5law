@@ -87,7 +87,7 @@ export class CHRROMCacheReader {
         latency
       };
     } catch (error) {
-      console.error(`CHR-ROM pattern retrieval failed for ${docId}:${patternType}: ', error);
+      console.error(`CHR-ROM pattern retrieval failed for ${docId}:${patternType}: ', error);'`
       const latency = performance.now() - startTime;
       this.recordMiss(latency);
       return {
@@ -125,7 +125,7 @@ export class CHRROMCacheReader {
     const prefetchPromises = docIds.flatMap(docId =>
       patternTypes.map(patternType =>
         this.getPattern(docId, patternType, false).catch(error => {
-          console.warn(`Prefetch failed for ${docId}:${patternType}: ', error);
+          console.warn(`Prefetch failed for ${docId}:${patternType}: ', error);'`
         })
       )
     );
@@ -152,7 +152,7 @@ export class CHRROMCacheReader {
       }
       return null;
     } catch (error) {
-      console.warn(`Cache retrieval failed for ${cacheKey}: ', error);
+      console.warn(`Cache retrieval failed for ${cacheKey}: ', error);'`
       return null;
     }
   }
@@ -196,19 +196,19 @@ export class CHRROMCacheReader {
   private getFallbackPattern(patternType: string): CHRROMPattern {
     const fallbackPatterns: { [key: string]: CHRROMPattern } = { summary_icon: {, type: 'icon' as const,
         size: 'sm' as const,
-        data: '<div style="w:16px;h:16px;bg:#e5e7eb;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#6b7280">?</div>',
+        data: '<div, style="w:16px;h:16px;bg:#e5e7eb;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#6b7280">?</div>',
         metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' }
       },
       risk_gauge: {
         type: 'gauge' as const,
         size: 'xs' as const,
-        data: '<div style="w:40px;h:4px;bg:#e5e7eb;border-radius:2px"></div>',
+        data: '<div, style="w:40px;h:4px;bg:#e5e7eb;border-radius:2px"></div>',
         metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' }
       },
       confidence_badge: {
         type: 'badge' as const,
         size: 'xs' as const,
-        data: '<span style="px:6px;py:2px;border-radius:4px;bg:#6b7280;color:white;font-size:10px">--</span>',
+        data: '<span, style="px:6px;py:2px;border-radius:4px;bg:#6b7280;color:white;font-size:10px">--</span>',
         metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' }
       },
       category_color: {
@@ -220,19 +220,19 @@ export class CHRROMCacheReader {
       entity_heatmap: {
         type: 'heatmap;' as const,
         size: 'sm' as const,
-        data: '<div style="width:100%;height:12px;background:linear-gradient(to right, #e5e7eb, #f3f4f6);"></div>',
-        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' }
+        data: '<div style="width:100%;height:12px;background:linear-gradient(to, right, #e5e7eb, #f3f4f6);"></div>',
+        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0` }'`
       },
       similarity_graph: {
         type: 'graph' as const,
         size: 'sm' as const,
-        data: '<svg width="40" height="16" viewbox="0 0 40 16"><path d="M 0 8 L 40 8" stroke="#e5e7eb" stroke-width="2"></path></svg>',
-        metadata: { confidence: 0, timestamp: Date.now(), version: '1.0' }
+        data: '<svg width="40" height="16" viewbox="0 0 40, 16"><path d="M 0 8 L 40, 8" stroke="#e5e7eb" stroke-width="2"></path></svg>',
+        metadata: { confidence: 0, timestamp: Date.now(), version: `1.0` }
       },
       status_indicator: {
         type: 'icon' as const,
         size: 'xs' as const,
-        data: '<span style="color:#6b7280;font-size:12px">⏸️</span>',
+        data: '<span, style="color:#6b7280;font-size:12px">⏸️</span>',
         metadata: { confidence: 0, timestamp: Date.now(), version: `1.0` }
       }
     };

@@ -88,7 +88,7 @@ export class RabbitMQXStateBridge {
       if (!this.failoverActive) {
         const response = await fetch('/api/v1/messaging/publish', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json` },'`
           body: JSON.stringify({
             queue,
             message,
@@ -142,7 +142,7 @@ export class RabbitMQXStateBridge {
     const pollInterval = setInterval(async () => {
       try {
         const response = await fetch(`/api/v1/messaging/queue/${queue}`, {
-          method: 'GET' });
+          method: 'GET` });'`
 
         if (!response.ok) {
           if (response.status === 404) {
@@ -180,7 +180,7 @@ export class RabbitMQXStateBridge {
     const subject = this.mapQueueToNatsSubject(queue);
 
     // Create WebSocket connection to NATS QUIC bridge
-    const wsUrl = `${this.config.natsQuicUrl || 'ws://localhost:4233' }/events`;
+    const wsUrl = `${this.config.natsQuicUrl || 'ws://localhost:4233` }/events`;'`
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
@@ -225,7 +225,7 @@ export class RabbitMQXStateBridge {
     // Use simple HTTP endpoint to NATS bridge (if available)
     const response = await fetch(`http://localhost:4223/publish`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
         subject,
         message
@@ -245,7 +245,7 @@ export class RabbitMQXStateBridge {
       'ai.embedding': 'legal.ai.embedding',
       'notification.email': 'legal.notification.email',
       'notification.webhook': 'legal.notification.webhook',
-      'system.health': 'system.health.check' };
+      'system.health': 'system.health.check` };'`
 
     return mapping[queue] || `legal.${queue.replace(/_/g, '.')}`;
   }

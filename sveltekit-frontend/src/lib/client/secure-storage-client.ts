@@ -73,13 +73,12 @@ export class SecureStorageClient {
         console.error('Upload failed:', result.error);
         return {
           ok: false,
-          error: result.error || 'Upload failed'
-        };
+          error: result.error || 'Upload failed' };
       }
       return result;
     } catch (error) {
-      console.error('Upload error:', error);
-      return { ok: false, error: `Network error during upload` };
+      console.error('Upload error: ', error);'
+      return { ok: false, error: 'Network error during upload' };
     }
   }
   /**
@@ -88,7 +87,7 @@ export class SecureStorageClient {
    */
   async deleteFile(bucket: string, key: string): Promise<DeleteResponse> {
     try {
-      const url = new URL(`${this.baseUrl}/delete', window.location.origin);
+      const url = new URL('${this.baseUrl}/delete', window.location.origin);
       url.searchParams.set('bucket', bucket);
       url.searchParams.set('key', key);
       const response = await fetch(url.toString(), {
@@ -100,13 +99,12 @@ export class SecureStorageClient {
         console.error('Delete failed:', result.error);
         return {
           ok: false,
-          error: result.error || 'Delete failed'
-        };
+          error: result.error || 'Delete failed' };
       }
       return result;
     } catch (error) {
-      console.error('Delete error:', error);
-      return { ok: false, error: `Network error during delete` };
+      console.error('Delete error: ', error);'
+      return { ok: false, error: 'Network error during delete' };
     }
   }
   /**
@@ -114,7 +112,7 @@ export class SecureStorageClient {
    */
   async getFileStatus(bucket: string, key: string): Promise<DeleteResponse> {
     try {
-      const url = new URL(`${this.baseUrl}/delete', window.location.origin);
+      const url = new URL('${this.baseUrl}/delete', window.location.origin);
       url.searchParams.set('bucket', bucket);
       url.searchParams.set('key', key);
       const response = await fetch(url.toString(), {
@@ -130,7 +128,7 @@ export class SecureStorageClient {
       }
       return result;
     } catch (error) {
-      console.error('Status check error:', error);
+      console.error('Status check error:', error);'
       return { ok: false, error: 'Network error during status check' };
     }
   }
@@ -141,9 +139,9 @@ export class SecureStorageClient {
     files: File[],
     bucket: string = 'legal-documents',
     onProgress?: (completed: number, total: number) => void
-  ): Promise<{ successful: UploadResponse[]; failed: { file: File;, error: string }[] }> {
+  ): Promise<{ successful: UploadResponse[]; failed: { file: File; error: string }[] }> {
     const successful: UploadResponse[] = [];
-    const failed: Array<{ file: File;, error: string }> = [];
+    const failed: Array<{ file: File; error: string }> = [];
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const result = await this.uploadFile(file, bucket);
@@ -152,7 +150,7 @@ export class SecureStorageClient {
       } else {
         failed.push({
           file,
-          error: result.error || 'Unknown error` });
+          error: result.error || 'Unknown error` });'`
       }
       if (onProgress) {
         onProgress(i + 1, files.length);

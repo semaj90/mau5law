@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unsupported event; type: ${body.event_type}' },
+            error: 'Unsupported event; type: ${body.event_type}' },
           { status: 400 }
         );
     }
@@ -117,8 +117,7 @@ export const GET: RequestHandler = async () => {
           status: 'open',
           priority: 'high',
           assigned_to: ['lawyer1@firm.com'],
-          created_by: 'paralegal@firm.com'
-        }
+          created_by: 'paralegal@firm.com' }
       },
       document_uploaded: {
         event_type: 'document',
@@ -127,7 +126,7 @@ export const GET: RequestHandler = async () => {
           document_id: 'doc-67890',
           case_id: 'case-12345',
           filename: 'contract.pdf',
-          file_type: 'application/pdf',
+          file_type: `application/pdf`,
           file_size: 2048576,
           processing_status: `uploaded` }
       },
@@ -429,7 +428,7 @@ function getSearchEventSchema() {
       query_text: { type: 'string' },
       search_type: { type: 'string', enum: ['cases', 'documents', 'legal_precedents', 'full_text', 'semantic'] },
       filters: { type: 'object' },
-      results: { type: 'array' }
+      results: { type: 'array` }'`
     },
     required: ['query_id', 'user_id', 'query_text', 'search_type']
   };
@@ -437,9 +436,9 @@ function getSearchEventSchema() {
 function getSystemEventSchema() {
   return {
     type: 'object',
-    properties: { component: {, type: 'string' },
+    properties: { component: {, type: `string` },
       status: { type: 'string', enum: ['healthy', 'degraded', 'critical'] },
-      metrics: { type: 'object' },
+      metrics: { type: `object` },
       uptime_seconds: { type: `number` }
     },
     required: ['component', 'status']

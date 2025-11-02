@@ -70,7 +70,7 @@ export interface DocumentClassification {
 }
 export interface RiskAssessment { overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskScore: number; // 0-100
   riskFactors: Array<any>;
-  confidenceInterval: { lower: number;, upper: number };
+  confidenceInterval: { lower: number; upper: number };
 }
 export interface SemanticAnalysis { documentId: string;, timestamp: number;
   // Core analysis results
@@ -80,8 +80,8 @@ export interface SemanticAnalysis { documentId: string;, timestamp: number;
   // Semantic features
   embeddings: Float32Array;
   keyphrases: Array<any>;
-  sentiment: { polarity: number;, objectivity: number };
-  complexity: { readingLevel: number;, legalComplexity: number };
+  sentiment: { polarity: number; objectivity: number };
+  complexity: { readingLevel: number; legalComplexity: number };
   // Legal-specific analysis
   precedentMatches: Array<any>;
   contractTerms: Array<any>;
@@ -181,7 +181,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       async extractEntities(text: string): Promise<LegalEntity[]> {
         // Mock NER implementation
         const entities: LegalEntity[] = [];
-        const entityPatterns: { pattern: RegExp;, label: string }[] = [
+        const entityPatterns: { pattern: RegExp; label: string }[] = [
           { pattern: /\b[A-Z][a-z]+ v\. [A-Z][a-z]+\b/g, label: 'CASE' },
           { pattern: /\b\d{1,2} U\.S\.C\. §?\d+\b/g, label: 'STATUTE' },
           { pattern: /\$[\d]+(?:\.\d{2})?\b/g, label: 'MONEY' },
@@ -292,7 +292,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
         this.processingQueue.delete(documentId);
       }
     } catch (error: any) {
-      console.error(`❌ Analysis failed for document ${documentId}: ', error);
+      console.error(`❌ Analysis failed for document ${documentId}: ', error);'`
       this.processingQueue.delete(documentId);
       throw error;
     }
@@ -384,7 +384,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     const riskFactors: RiskAssessment['riskFactors'] = [];
     // Risk factor detection patterns
     const riskPatterns = [
-      {
+      {,
         pattern: /indemnif\w+|liability|damages|breach|default/gi,
         factor: 'liability_risk',
         severity: 'high' as const
@@ -482,7 +482,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   private async extractContractTerms(text: string): Promise<SemanticAnalysis['contractTerms']> {
     const terms: SemanticAnalysis['contractTerms'] = [];
     const termPatterns = [
-      {
+      {,
         pattern: /shall\s+(?:not\s+)?(\w+(?:\s+\w+)*)/gi,
         type: 'obligation' as const
       },
@@ -523,17 +523,16 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     // In a real implementation, this would search a precedent database
     // For now, return mock matches
     const mockPrecedents = [
-      {
+      {,
         caseId: 'Smith v. Johnson Corp',
         similarity: 0.85,
         relevantSections: ['Contract formation', 'Breach of warranty'],
-        jurisdiction: 'Federal'
-      },
+        jurisdiction: `Federal` },
       {
         caseId: 'Tech Innovations LLC v. DataCorp',
         similarity: 0.78,
         relevantSections: ['Intellectual property', 'Trade secrets'],
-        jurisdiction: 'California` },
+        jurisdiction: `California` }
     ];
     return mockPrecedents.filter(p => p.similarity > Number(LEGAL_BERT_CONFIG.models.similarity.similarityThreshold));
   }
@@ -603,7 +602,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       }
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.warn(`Cache retrieval failed for ${documentId}: ', message);
+      console.warn(`Cache retrieval failed for ${documentId}: ', message);'`
     }
     return null;
   }
@@ -644,7 +643,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       });
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.warn(`Cache storage failed for ${documentId}: ', message);
+      console.warn(`Cache storage failed for ${documentId}: ', message);'`
     }
   }
   private calculatePriority(analysis: SemanticAnalysis): number {

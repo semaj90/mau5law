@@ -72,7 +72,7 @@ type DocumentEmbeddingItem = typeof documentEmbeddings.$inferSelect;
 type DocumentMetadataItem = typeof documentMetadata.$inferSelect;
 
 // Combined type for document data with embedding and metadata
-interface DocumentData { embedding: DocumentEmbeddingItem;, metadata: DocumentMetadataItem | null; // metadata can be null if leftJoin doesn't find a match
+interface DocumentData { embedding: DocumentEmbeddingItem;, metadata: DocumentMetadataItem | null; // metadata can be null if leftJoin doesn't find a match'
 }
 
 // Type for Qdrant filter payload
@@ -87,7 +87,7 @@ export class PostgreSQLQdrantSyncService {
   // WebAssembly-specific cache for optimized retrieval
   private wasmRetrievalCache: Map<
     string,
-    { embedding: number[]; metadata: WASMVectorSearchResult[];, timestamp: number }
+    { embedding: number[]; metadata: WASMVectorSearchResult[]; timestamp: number }
   > = new Map(); // Changed metadata type
   constructor(config: SyncConfig = {}) {
     this.config = {
@@ -135,7 +135,7 @@ export class PostgreSQLQdrantSyncService {
       const exists = collectionsResponse.collections.some((c: CollectionInfo) => c.name === this.config.collectionName);
       if (!exists) {
         await this.qdrant.createCollection(this.config.collectionName, { vectors: {, size: 768, // nomic-embed-text dimensions (corrected)
-            distance: 'Cosine` },
+            distance: 'Cosine` },'`
           optimizers_config: {
             default_segment_number: 2,
             memmap_threshold: 20000
@@ -275,7 +275,7 @@ export class PostgreSQLQdrantSyncService {
         this.log(`Deleted existing Qdrant collection: ${this.config.collectionName}`);
       }
       await this.qdrant.createCollection(this.config.collectionName, { vectors: {, size: 768, // nomic-embed-text dimensions (corrected)
-          distance: 'Cosine` },
+          distance: 'Cosine` },'`
         optimizers_config: {
           default_segment_number: 2,
           memmap_threshold: 20000
@@ -472,11 +472,11 @@ export class PostgreSQLQdrantSyncService {
       await this.qdrant.upsert(this.config.collectionName, {
         wait: false,
         points: [
-          {
-            id: `evidence_${evidenceItem.id}`,
+          {,
+           , id: `evidence_${evidenceItem.id}`,
             vector: embedding,
             payload: {
-              type: 'evidence',
+             , type: 'evidence',
               evidenceId: evidenceItem.id,
               caseId: evidenceItem.caseId,
               title: evidenceItem.title,
@@ -520,11 +520,11 @@ export class PostgreSQLQdrantSyncService {
       await this.qdrant.upsert(this.config.collectionName, {
         wait: false,
         points: [
-          {
-            id: `document_${embedding.id}`,
+          {,
+           , id: `document_${embedding.id}`,
             vector: embedding.embedding,
             payload: {
-              type: 'document',
+             , type: 'document',
               documentId: embedding.documentId,
               evidenceId: embedding.evidenceId,
               title: metadata?.originalFilename || `Document ${embedding.documentId}`,
@@ -645,7 +645,7 @@ export class PostgreSQLQdrantSyncService {
         limit: limit * 2, // Over-fetch to allow for filtering
         score_threshold: scoreThreshold,
         with_payload: true,
-        with_vector: false, // Don't return vectors to save bandwidth
+        with_vector: false, // Don't return vectors to save bandwidth'
         ...(filters && { filter: this.buildQdrantFilter(filters) })
       });
       // Process and optimize results for WASM inference
@@ -745,8 +745,8 @@ export class PostgreSQLQdrantSyncService {
     inferenceResult,
     metadata
   }: { queryEmbedding: number[];, retrievedDocuments: string[];
-    inferenceResult: string;
-    metadata: { inferenceId: string;, model: string;
+   , inferenceResult: string;
+   , metadata: {, inferenceId: string;, model: string;
      , processingTime: number;
       ragContext?: any; // Changed to unknown
     };
@@ -757,11 +757,11 @@ export class PostgreSQLQdrantSyncService {
       await this.qdrant.upsert(this.config.collectionName, {
         wait: false,
         points: [
-          {
-            id: resultId,
+          {,
+           , id: resultId,
             vector: queryEmbedding,
             payload: {
-              type: 'wasm_inference_result',
+             , type: 'wasm_inference_result',
               inferenceId: metadata.inferenceId,
               content: inferenceResult,
               retrievedDocuments,

@@ -126,8 +126,8 @@ export function getServiceUrls(env: ServiceEnvironment): ServiceUrls {
 		ollama: env.ollamaConfig.baseUrl,
 		ollamaEmbeddings: `${env.ollamaConfig.baseUrl}/api/embeddings`,
 		// Storage & Processing
-		minio: '${env.minioConfig.useSSL ? 'https' : 'http' }://${env.minioConfig.endPoint}:${env.minioConfig.port}`,
-		minioConsole: '${env.minioConfig.useSSL ? 'https' : 'http' }://${env.minioConfig.endPoint}:${env.minioConfig.port + 1}`,
+		minio: '${env.minioConfig.useSSL ? 'https' : 'http` }://${env.minioConfig.endPoint}:${env.minioConfig.port}`,
+		minioConsole: '${env.minioConfig.useSSL ? 'https' : 'http` }://${env.minioConfig.endPoint}:${env.minioConfig.port + 1}`,
 		neo4j: env.neo4jConfig.uri,
 		neo4jBrowser: env.neo4jConfig.uri.replace('bolt://', 'http://').replace(':7687', ':7474'),
 		rabbitmq: env.rabbitmqConfig.url,
@@ -150,7 +150,7 @@ export class OllamaAdapter implements OllamaClient {
 		const url = `${this.config.baseUrl}/api/embeddings`;
 		const response = await fetch(url, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: { 'Content-Type': 'application/json` },'`
 			body: JSON.stringify({ model, prompt: text }),
 			signal: AbortSignal.timeout(this.config.timeout || 60000)
 		});
@@ -165,7 +165,7 @@ export class OllamaAdapter implements OllamaClient {
 		const url = `${this.config.baseUrl}/api/generate`;
 		const response = await fetch(url, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: { 'Content-Type': 'application/json` },'`
 			body: JSON.stringify({
 				model,
 				prompt,
@@ -188,7 +188,7 @@ export class OllamaAdapter implements OllamaClient {
 		const url = `${this.config.baseUrl}/api/chat`;
 		const response = await fetch(url, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: { 'Content-Type': 'application/json` },'`
 			body: JSON.stringify({
 				model,
 				messages,
@@ -297,7 +297,7 @@ export class QdrantAdapter implements QdrantClient {
 	}
 	async createCollection(name: string, vectorSize: number): Promise<void> {
 		await this.ensureClient();
-		await this.client.createCollection(name, { vectors: {, size: vectorSize, distance: 'Cosine' }
+		await this.client.createCollection(name, { vectors: {, size: vectorSize, distance: 'Cosine` }'`
 		});
 	}
 	async indexCollection(name: string, vectors: QdrantVectorPayload[]): Promise<void> {
@@ -366,15 +366,15 @@ export class PgVectorAdapter implements PgVectorClient {
 		collection: string,
 		vector: number[],
 		limit?: number
-	): Promise<Array<{ id: string; similarity: number;, metadata: Record<string, unknown> }>> {
+	): Promise<Array<{ id: string; similarity: number; metadata: Record<string, unknown> }>> {
 		const vectorStr = `[${vector.join(',')}]`;
 		const sql = `
       SELECT id, 1 - (embedding <=> $1::vector) as similarity, metadata
       FROM ${collection}
       ORDER BY embedding <=> $1::vector
       LIMIT $2
-    `;
-		const result = await this.query<{ id: string; similarity: number;, metadata: any }>(sql, [
+    `;`
+		const result = await this.query<{ id: string; similarity: number; metadata: any }>(sql, [
 			vectorStr,
 			limit || 10
 		]);
@@ -400,7 +400,7 @@ export class PgVectorAdapter implements PgVectorClient {
       ON CONFLICT (id) DO UPDATE SET
         embedding = EXCLUDED.embedding,
         metadata = EXCLUDED.metadata
-    `;
+    `;`
 		await this.query(sql, params);
 	}
 	async disconnect(): Promise<void> {
@@ -455,10 +455,10 @@ export class MinIOAdapter implements MinIOClient {
 	async listObjects(
 		bucket: string,
 		prefix?: string
-	): Promise<Array<{ name: string; size: number;, etag: string }>> {
+	): Promise<Array<{ name: string; size: number; etag: string }>> {
 		await this.ensureClient();
 		const stream = this.client.listObjects(bucket, prefix, true);
-		const objects: Array<{ name: string; size: number;, etag: string }> = [];
+		const objects: Array<{ name: string; size: number; etag: string }> = [];
 		return new Promise((resolve, reject) => {
 			stream.on('data', (obj: any) => {
 				objects.push({ name: obj.name, size: obj.size, etag: obj.etag });
@@ -483,7 +483,7 @@ export class Neo4jAdapter implements Neo4jClient {
 				maxConnectionPoolSize: this.config.maxConnectionPoolSize || 50
 			}
 		);
-		this.session = this.driver.session({ database: this.config.database || 'neo4j' });
+		this.session = this.driver.session({ database: this.config.database || 'neo4j` });'`
 	}
 	async run<T = unknown>(
 		cypher: string,
@@ -556,7 +556,7 @@ export class RabbitMQAdapter implements RabbitMQClient {
 				await handler(payload);
 				this.channel.ack(msg);
 			} catch (error) {
-				console.error('RabbitMQ message handler error:', error);
+				console.error('RabbitMQ message handler error:', error);'
 				this.channel.nack(msg, false, true); // Requeue on error
 			}
 		});

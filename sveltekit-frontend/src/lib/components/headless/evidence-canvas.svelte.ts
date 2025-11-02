@@ -5,14 +5,14 @@
 
 export interface EvidenceItem { id: string;, type: 'photo' | 'document' | 'physical' | 'digital';
   name: string;
-  position: { x: number;, y: number };
+  position: { x: number; y: number };
   rotation: number;
   scale: number;
   textureId?: string;
   metadata: Record<string, unknown>;
   connections: string[];
 }
-export interface CanvasState { zoom: number;, pan: { x: number;, y: number };
+export interface CanvasState { zoom: number;, pan: { x: number; y: number };
   selectedItems: string[];
   mode: 'view' | 'edit' | 'present';
   showConnections: boolean;
@@ -37,7 +37,7 @@ export function useEvidenceCanvas() {
   });
   // Interaction state
   let isDragging = $state<boolean>(false);
-  let dragStartPos = $state<{ x: number;, y: number } | null>(null);
+  let dragStartPos = $state<{ x: number; y: number } | null>(null);
   // draggedItems is reassigned in pointer handling, keep let
   let draggedItems = $state<Set<string>>(new Set());
   // Canvas dimensions
@@ -263,7 +263,7 @@ export function useEvidenceCanvas() {
    * Save current state to history
    */
   function saveToHistory() {
-    // Remove future history if we're not at the end
+    // Remove future history if we're not at the end'
     if (historyIndex < history.length - 1) {
       history.splice(historyIndex + 1);
     }
@@ -309,7 +309,7 @@ export function useEvidenceCanvas() {
   type CanvasExport = {
     evidenceItems: Array<[string, EvidenceItem]>;
     canvasState?: Partial<CanvasState>;
-    canvasSize?: { width: number;, height: number };
+    canvasSize?: { width: number; height: number };
     timestamp?: string;
   };
 
@@ -393,10 +393,10 @@ export function useEvidenceCanvas() {
     setHoveredItem: (itemId: string | null) => {
       hoveredItem = itemId;
     },
-    setCanvasSize: (size: {, width: number; height: number }) => {
+    setCanvasSize: (size: {, width: number;, height: number }) => {
       canvasSize = size;
     },
-    setViewport: (size: {, width: number; height: number }) => {
+    setViewport: (size: {, width: number;, height: number }) => {
       viewport = size;
     }
   };

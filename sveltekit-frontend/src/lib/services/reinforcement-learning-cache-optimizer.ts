@@ -230,7 +230,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
       this.emit('dqnTrainingComplete', { batchSize: batch.length, episode: this.trainingEpisodes });
     } catch (error: any) {
       const err = toError(error);
-      console.error('DQN training error:', err);
+      console.error('DQN training error:', err);'
       this.emit('trainingError', err);
     } finally {
       this.isTraining = false;
@@ -314,7 +314,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
    */
   predictOptimalActions(state: CacheState, topK: number = 3): CacheAction[] {
     const stateVector = this.stateToVector(state);
-    const actions: { action: CacheAction;, score: number }[] = [];
+    const actions: { action: CacheAction; score: number }[] = [];
     // Generate possible actions and score them
     const possibleActions = this.generatePossibleActions(state);
     for (const action of possibleActions) {
@@ -362,7 +362,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
           recommendations.push(`Prefetch data pattern: "${action.target}" to improve hit ratio by ${(improvement * 100).toFixed(1)}%`);
           break;
         case 'evict':
-          recommendations.push(`Evict underused entries using ${action.parameters.evictionStrategy ?? 'lru` } strategy`);
+          recommendations.push(`Evict underused entries using ${action.parameters.evictionStrategy ?? 'lru' } strategy`);
           break;
         case 'compress':
           recommendations.push(`Apply compression level ${action.parameters.compressionLevel ?? 1} to save GPU memory`);
@@ -452,7 +452,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
       };
     } catch (error: any) {
       const err = toError(error);
-      console.error('Training episode error:', err);
+      console.error('Training episode error:', err);'
       throw err;
     }
   }
@@ -523,8 +523,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
       parameters: {
         compressionLevel: Math.floor(qValues[idx] * 9) + 1,
         replicationFactor: 2,
-        evictionStrategy: 'lru'
-      }
+        evictionStrategy: `lru` }
     };
   }
   private getMaxQValue(stateVector: Float32Array): number {
@@ -569,7 +568,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
         new Float32Array(32),
         new Float32Array(outputSize)
       ],
-      activationFunction: `relu` };
+      activationFunction: `relu' };'`
     // shallow copy for target network
     this.targetNetwork = JSON.parse(JSON.stringify(this.neuralNetwork)) as NeuralNetwork;
     console.log('🧠 Neural network initialized with architecture:', this.neuralNetwork.layers);
@@ -662,7 +661,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
     }
     if (state.gpuMemoryUsage > 0.8) {
       actions.push({ type: 'compress', target: 'memory_intensive', priority: 0.9, parameters: {, compressionLevel: 8 } });
-      actions.push({ type: 'evict', target: 'memory_heavy', priority: 0.8, parameters: {, evictionStrategy: `lfu` } });
+      actions.push({ type: 'evict', target: 'memory_heavy', priority: 0.8, parameters: {, evictionStrategy: `lfu' } });'`
     }
     return actions;
   }

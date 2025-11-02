@@ -12,7 +12,7 @@ export interface AdvancedSearchFilters {
   sortOrder?: 'asc' | 'desc';
   limit?: number;
   offset?: number;
-  dateRange?: { start: string;, end: string };
+  dateRange?: { start: string; end: string };
 }
 // Placeholder service (replace with real advancedSearch.search)
 async function fakeSearch(filters: AdvancedSearchFilters): Promise<any> {

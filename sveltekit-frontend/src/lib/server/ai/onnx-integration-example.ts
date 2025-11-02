@@ -22,9 +22,8 @@ export async function processLegalDocumentWithONNX(documentText: string): Promis
     console.log('🧮 Embeddings generated:', Array.isArray(embeddings) ? embeddings.length : 'unknown', 'dimensions');
     // Step 4: Full analysis using; Gemma:legal for comprehensive understanding
     const fullAnalysis = await ollamaService.generate(
-      `Provide a comprehensive legal analysis of this document:
-Document Type: Legal Document; Text: ${documentText}
-Analysis: ',
+      `Provide a comprehensive legal analysis of this document:`
+Document; Type: Legal Document; Text: ${documentText}, Analysis: ','
       {
         model: 'gemma:legal',
         options: {, temperature: 0.3 }
@@ -141,7 +140,7 @@ export async function performanceComparison(testText: string): Promise<any> {
     const ollamaStart = Date.now();
     const ollamaResponse = await ollamaService.generate(
       `Extract entities, classify document type, and provide analysis for: ${testText}`,
-      { model: 'gemma:legal' }
+      { model: 'gemma:legal` }'`
     );
     const ollamaTotal = Date.now() - ollamaStart;
     const comparison = {

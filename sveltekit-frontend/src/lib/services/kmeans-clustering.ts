@@ -284,7 +284,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
         centroid,
         documents: clusterIndices.map((i: any) => `doc_${i}`),
         size: clusterIndices.length,
-        label: `Legal Cluster ${k + 1}` });
+        label: `Legal Cluster ${k + 1}' });'`
     }
     return results;
   }

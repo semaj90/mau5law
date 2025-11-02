@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       .then(rows => rows[0]);
 
     if (!user) {
-      // Create demo user if it doesn't exist
+      // Create demo user if it doesn't exist'
       const [newUser] = await db
         .insert(users)
         .values({
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     console.error('[Demo Login] Error:', err);
     return error(500, {
       message: err instanceof Error ? err.message : 'Failed to create demo session',
-      code: 'DEMO_LOGIN_ERROR' });
+      code: 'DEMO_LOGIN_ERROR` });'`
   }
 };
 

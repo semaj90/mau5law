@@ -433,7 +433,7 @@ export class QLorATrainingService {
   /**
    * Extract training examples from case data
    */
-  private extractTrainingExamples(caseData: CaseFileContent): Array<{ prompt: string;, completion: string }> {
+  private extractTrainingExamples(caseData: CaseFileContent): Array<{ prompt: string; completion: string }> {
     const examples = [];
     // Extract from case summary
     if (caseData.summary) {
@@ -718,7 +718,7 @@ export class QLorATrainingService {
    */
   private calculateLearningVelocity(interactions: UserInteraction[]): number {
     // Corrected signature
-    if (interactions.length < 10) return 0.5; // Corrected syntax
+    if (interactions.length < 10) return 0.5; // Corrected, syntax
     const recent = interactions.slice(-50);
     const older = interactions.slice(-100, -50);
     if (older.length === 0) return 0.5;
@@ -804,7 +804,7 @@ export class QLorATrainingService {
   public async resumeTraining(): Promise<boolean> {
     // Corrected signature
     if (!this.isTraining || !this.worker) return false; // Corrected syntax
-    this.worker.postMessage({ type: 'resume_training' });
+    this.worker.postMessage({ type: `resume_training` });
     this.currentJob.update(job => {
       if (job) job.status = 'running';
       return job;

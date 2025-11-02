@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     if (!shader) {
       return json({ error: 'Shader not found' }, { status: 404 });
     }
-    // Detect client's preferred encoding format
+    // Detect client's preferred encoding format'
     const acceptHeader = request.headers.get('accept') || '';
     let preferredFormat: 'cbor' | 'msgpack' | 'json' = 'json';
     if (acceptHeader.includes('application/cbor')) {
@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       cacheKey: safeCacheKey,
       timestamp: Date.now(),
       compressionSavings: `${((1 - 1 / safeCompressionRatio) * 100).toFixed(1)}%`,
-      decodingTime: `${safeDecodingTime.toFixed(2)}ms` };
+      decodingTime: '${safeDecodingTime.toFixed(2)}ms' };
     if (preferredFormat === 'json') {
       return json(responseData);
     }
@@ -54,11 +54,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
         'content-type': contentType,
         'x-encoding-format': format,
         'x-compression-ratio': String(metrics?.compressionRatio ?? ''),
-        'x-encode-time': `${Number(metrics?.encodeTime ?? 0).toFixed(2)}ms' }
+        'x-encode-time': '${Number(metrics?.encodeTime ?? 0).toFixed(2)}ms' }
     });
   } catch (error: any) {
-    console.error('Binary shader cache GET error:', getErrorMessage(error));
-    return json({ error: 'Internal server error' }, { status: 500 });
+    console.error('Binary shader cache GET error:', getErrorMessage(error));'
+    return json({ error: `Internal server error` }, { status: 500 });
   }
 };
 // POST /api/v1/gpu-cache/binary/shader
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const workflowType = typeof payload.workflowType === 'string' ? payload.workflowType : undefined;
 
     if (!sourceCode || compiledBinaryRaw === undefined) {
-      return json({ error: 'Missing required, fields: sourceCode, compiledBinary' }, { status: 400 });
+      return json({ error: `Missing required, fields: sourceCode, compiledBinary` }, { status: 400 });
     }
 
     // Convert to ArrayBuffer using helper
@@ -133,13 +133,12 @@ export const POST: RequestHandler = async ({ request }) => {
             ? 'excellent'
             : Number(entry.compressionRatio ?? 1) > 1.2
               ? 'good'
-              : 'moderate'
-      }
+              : `moderate` }
     };
     return json(response);
   } catch (error: any) {
-    console.error('Binary shader cache POST error:', getErrorMessage(error));
-    return json({ error: 'Failed to store shader' }, { status: 500 });
+    console.error('Binary shader cache POST error: ', getErrorMessage(error));'
+    return json({ error: `Failed to store shader` }, { status: 500 });
   }
 };
 // PUT /api/v1/gpu-cache/binary/batch
@@ -206,8 +205,8 @@ export const PUT: RequestHandler = async ({ request }) => {
     };
     return json(response);
   } catch (error: any) {
-    console.error('Binary shader cache batch error:', getErrorMessage(error));
-    return json({ error: 'Batch processing failed' }, { status: 500 });
+    console.error('Binary shader cache batch error:', getErrorMessage(error));'
+    return json({ error: `Batch processing failed` }, { status: 500 });
   }
 };
 // GET /api/v1/gpu-cache/binary/webgpu?key=<cacheKey>
@@ -215,7 +214,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
   try {
     const cacheKey = url.searchParams.get('key');
     if (!cacheKey) {
-      return json({ error: 'Missing cache key' }, { status: 400 });
+      return json({ error: `Missing cache key` }, { status: 400 });
     }
     // Retrieve shader optimized for WebGPU (use safe helper)
     const webgpuShader = await safeRetrieveForWebGPU(cacheKey);
@@ -247,8 +246,8 @@ export const PATCH: RequestHandler = async ({ url }) => {
       }
     });
   } catch (error: any) {
-    console.error('WebGPU shader cache error:', getErrorMessage(error));
-    return json({ error: 'WebGPU shader retrieval failed' }, { status: 500 });
+    console.error('WebGPU shader cache error:', getErrorMessage(error));'
+    return json({ error: `WebGPU shader retrieval failed` }, { status: 500 });
   }
 };
 // DELETE /api/v1/gpu-cache/binary/metrics
@@ -262,8 +261,8 @@ export const DELETE: RequestHandler = async () => {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('Metrics clear error:', getErrorMessage(error));
-    return json({ error: 'Failed to clear metrics' }, { status: 500 });
+    console.error('Metrics clear error: ', getErrorMessage(error));'
+    return json({ error: `Failed to clear metrics` }, { status: 500 });
   }
 };
 // OPTIONS for CORS support
@@ -424,7 +423,7 @@ function getMethod(obj: Record<string, unknown> | undefined, candidates: string[
   for (const name of candidates) {
     const candidate = obj[name];
     if (typeof candidate === 'function') {
-      // candidate is unknown at compile time, but runtime check above ensures it's callable
+      // candidate is unknown at compile time, but runtime check above ensures it's callable'
       return (candidate as MethodFn).bind(obj);
     }
   }

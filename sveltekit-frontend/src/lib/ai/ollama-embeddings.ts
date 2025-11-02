@@ -69,7 +69,7 @@ export class OllamaEmbeddings {
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify({
           model,
           prompt: text,
@@ -115,7 +115,7 @@ export class OllamaEmbeddings {
   /**
    * List available models
    */
-  async listModels(): Promise<Array<{ name: string;, size: number }>> {
+  async listModels(): Promise<Array<{ name: string; size: number }>> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`);
       const data = await response.json();
@@ -132,7 +132,7 @@ export class OllamaEmbeddings {
   async pullModel(modelName: string): Promise<void> {
     const response = await fetch(`${this.baseUrl}/api/pull`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({, name: modelName })
     });
 
@@ -172,7 +172,7 @@ export class OllamaEmbeddings {
   ): Promise<string> {
     const response = await fetch(`${this.baseUrl}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
         model,
         prompt,
@@ -202,7 +202,7 @@ export class OllamaEmbeddings {
   ): AsyncGenerator<string, void, unknown> {
     const response = await fetch(`${this.baseUrl}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
         model,
         prompt,
@@ -258,7 +258,7 @@ export const ollamaEmbeddings = new OllamaEmbeddings();
  * // Client-side (via API proxy):
  * const response = await fetch('/api/embeddings', {
  *   method: 'POST',
- *   body: JSON.stringify({, text: 'legal document' })
+ *   body: JSON.stringify({, text: 'legal document` })'`
  * });
  * const { embedding } = await response.json();
  */

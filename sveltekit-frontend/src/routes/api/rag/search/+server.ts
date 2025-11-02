@@ -88,7 +88,7 @@ async function generateQueryEmbedding(
       console.log('[GPU RAG] Generated embedding via Ollama GPU');
       return gpuResult.embedding;
     } catch (gpuErr) {
-      console.warn('[GPU RAG] GPU embedding failed, trying HTTP fallback: `, gpuErr);
+      console.warn('[GPU RAG] GPU embedding failed, trying HTTP fallback: `, gpuErr);'`
     }
   }
 
@@ -97,7 +97,7 @@ async function generateQueryEmbedding(
     const endpoint = origin ? `${origin}/api/ai/embeddings` : '/api/ai/embeddings';
     const resp = await fetchFn(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: fastStringify({, text: query, model: model || 'embeddinggemma:latest', save: false }),
       signal: AbortSignal.timeout(30000)
     });
@@ -232,7 +232,7 @@ async function textSearch(
       score: r.rank ?? 0
     }));
   } catch (err: any) {
-    console.error('Text search failed: `, err);
+    console.error('Text search failed: `, err);'`
     try {
       const fallback = await dbC
         .select({
@@ -245,7 +245,7 @@ async function textSearch(
           createdAt: documentsC.createdAt
         })
         .from(documentsC)
-        .where(sql`${documentsC.content} ILIKE ${`%${query}%` }`)
+        .where(sql`${documentsC.content} ILIKE ${`%${query}%' }`)'`
         .orderBy(desc(documentsC.createdAt))
         .limit(limit);
       return (fallback as RawSearchResult[]).map((r: RawSearchResult) => ({
@@ -278,7 +278,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
       includeMetadata = true,
       includeContent = true
     } = await readBodyFastWithMetrics(request);
-    if (!query) return json({ error: `Query is required` }, { status: 400 });
+    if (!query) return json({ error: 'Query is required' }, { status: 400 });
     const filters = { caseId, documentTypes, dateRange, confidenceMin };
     let results: RawSearchResult[] = [];
     // Wrap DB-backed search operations in a defensive try/catch so
@@ -315,7 +315,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
           },
           timestamp: new Date().toISOString(),
           warning:
-            'Database unavailable. Running in degraded mode — search is temporarily disabled. Start Postgres or set DATABASE_URL to enable full search.` },
+            'Database unavailable. Running in degraded mode — search is temporarily disabled. Start Postgres or set DATABASE_URL to enable full search.' },
         { status: 200 }
       );
     }
@@ -377,7 +377,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
     });
   } catch (error: any) {
     const emsg = extractErrorMessage(error);
-    console.error('Enhanced RAG search error:', emsg);
+    console.error('Enhanced RAG search error:', emsg);'
     return json(
       {
         error: 'Search failed',
@@ -404,14 +404,14 @@ export const GET: RequestHandler = async ({ url }) => {
           database: {
            , connected: true,
             documentsCount: dbTest[0]?.count || 0,
-            responseTime: `${processingTime}ms` },
+            responseTime: `${processingTime}ms' },'`
           timestamp: new Date().toISOString()
         });
       }
       case 'stats': {
         const [docStats, embeddingStats] = await Promise.all([
           dbC.select({ count: sql<number>`count(*)` }).from(documentsC),
-          dbC.select({ count: sql<number>`count(*)` }).from(embeddingsC)
+          dbC.select({ count: sql<number>`count(*)' }).from(embeddingsC)'`
         ]);
         return json({
           docCount: docStats[0]?.count || 0,
@@ -422,7 +422,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default: return json({ success: true, action });
     }
   } catch (err: any) {
-    console.error('GET /api/rag/search error:', err);
+    console.error('GET /api/rag/search error:', err);'
     return json({ error: 'Failed', details: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }
 };

@@ -22,7 +22,7 @@ export interface DocumentIngestionResult { documentId: string;, chunksProcessed
 }
 
 // Add explicit types to avoid `any`
-type DocumentToIngest = { id: string;, content: string; metadata?: Record<string, unknown> };
+type DocumentToIngest = { id: string; content: string; metadata?: Record<string, unknown> };
 type VectorMatch = {
   id?: string;
   documentId?: string;
@@ -48,7 +48,7 @@ type EmbeddingResult = {
 
 // --- ADDED: small adapter type to describe the caching service surface we need ---
 type EnhancedCachingServiceAdapter = {
-  getCachedQueryResults?: (
+  getCachedQueryResults?: (;
     query: string,
     filters?: Record<string, unknown>,
     loader?: (queryEmbedding: number[]) => Promise<VectorMatch[]>
@@ -88,7 +88,7 @@ type $QdrantAdapter = { upsertCollection: (, collection: string,
   ) => Promise<unknown[]>;
 };
 
-type $PostgresJSONStore = { upsertDocument: (doc: {, id: string; body: Record<string, unknown> }) => Promise<boolean>;
+type $PostgresJSONStore = { upsertDocument: (doc: {, id: string;, body: Record<string, unknown> }) => Promise<boolean>;
   queryByField: (field: string, value: any) => Promise<Record<string, unknown>[]>;
 };
 
@@ -147,13 +147,13 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
     if (!resp.ok) {
       const bodyText = await resp.text().catch(() => '');
       console.error(`ollamaEmbed error: ${resp.status} ${bodyText}`);
-      // return placeholder shaped results to preserve callers' expectations
+      // return placeholder shaped results to preserve callers' expectations'
       return texts.map(() => ({}) as EmbeddingResult);
     }
 
     const body = await resp.json().catch(() => ({}) as Record<string, unknown>);
 
-    // Ollama may respond as { embedding: [...], model: '...' } for single,
+    // Ollama may respond as { embedding: [...], model: `...` } for single,
     // or { embeddings: [[...], [...]], model: `...` } for batch, or variations.
     const singleEmbedding =
       Array.isArray((body as Record<string, unknown>)['embedding']) &&
@@ -190,7 +190,7 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
         return {} as EmbeddingResult;
       });
       // ensure same length as inputs - if different, pad/truncate conservatively
-      while (mapped.length < texts.length) mapped.push({} as EmbeddingResult);
+      while (mapped.length < texts.length) mapped.push({} as, EmbeddingResult);
       return mapped.slice(0, texts.length);
     }
 
@@ -233,7 +233,7 @@ export async function ollamaGenerate(prompt: string, model = 'gemma3:legal-lates
     }
 
     // last resort: if the body; contains: "response" fields in nested objects, try to find one
-    const nestedResponse = JSON.stringify(result).match(/"response"\s*:\s*"([^"]+)"/);
+    const nestedResponse = JSON.stringify(result).match(/"response"\s*:\s*"([^"]+)"/);"
     if (nestedResponse && nestedResponse[1]) return nestedResponse[1];
 
     return '';
@@ -285,7 +285,7 @@ const $qdrantAdapter: $QdrantAdapter = {
     try {
       const r = await fetch('/api/qdrant/search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ collection, vector, limit, filter })
       });
       if (!r.ok) return [];
@@ -301,7 +301,7 @@ const pgJsonStore: $PostgresJSONStore = {
     try {
       const r = await fetch('/api/postgres/json/upsert', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify(doc)
       });
       return r.ok;
@@ -547,7 +547,7 @@ class CachedRAGService {
       totalEmbeddingsGenerated: results.reduce((sum, r) => sum + r.embeddingsGenerated, 0),
       totalEmbeddingsCached: results.reduce((sum, r) => sum + r.embeddingsCached, 0)
     };
-    console.log(`✅ Batch ingestion completed: ', summary);
+    console.log(`✅ Batch ingestion completed: ', summary);'`
     return results;
   }
 
@@ -597,7 +597,7 @@ class CachedRAGService {
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('❌ Legal response generation failed:', msg);
-      return `I apologize, but I'm unable to generate a response at this time due to a technical issue: ${msg}`;
+      return `I apologize, but I'm unable to generate a response at this time due to a technical issue: ${msg}`;'
     }
   }
 
@@ -606,13 +606,13 @@ class CachedRAGService {
    */
   private buildLegalPrompt(query: string, context: string[]): string {
     const contextText = context.slice(0, 5).join('\n\n');
-    return `You are a legal AI assistant powered by Gemma 3 Legal. Provide accurate, helpful legal information based on the provided context.
+    return `You are a legal AI assistant powered by Gemma 3 Legal. Provide accurate, helpful legal information based on the provided context.`
 LEGAL DISCLAIMER: This response is for informational purposes only and does not constitute legal advice. Always consult with a qualified attorney for specific legal matters.; CONTEXT:
 ${contextText}
 
 QUESTION: ${query}
 
-RESPONSE: Provide a comprehensive, accurate response based on the context above. Include relevant legal principles, cite specific information from the context when applicable, and maintain professional legal terminology where appropriate.`;
+RESPONSE: Provide a comprehensive, accurate response based on the context above. Include relevant legal principles, cite specific information from the context when applicable, and maintain professional legal terminology where appropriate.`;`
   }
 
   /**

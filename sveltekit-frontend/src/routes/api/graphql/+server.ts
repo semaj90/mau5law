@@ -60,13 +60,11 @@ interface RecommendationResult {
 const typeDefs = /* GraphQL */ `
   scalar JSON
 
-  type Recommendation { id: ID!, content: String!; score: Float!
-    intent: String; timeOfDay: String;
+  type Recommendation { id: ID!, content: String!; score: Float!; intent: String; timeOfDay: String;
     position: String
   }
 
-  type LegalDoc { id: ID!, title: String!; summary: String!
-    confidence: Float!
+  type LegalDoc { id: ID!, title: String!; summary: String!; confidence: Float!
   }
 
   type Query {
@@ -74,9 +72,9 @@ const typeDefs = /* GraphQL */ `
     searchLegalDocs(query: String!, topK: Int = 10): [LegalDoc!]!
     ragQuery(question: String!): String!
   }
-`;
+`;`
 
-const resolvers = { Query: {, recommendations: async (; _parent: any, // Changed: 'any'; to: 'unknown'
+const resolvers = { Query: {, recommendations: async (;, _parent: any, // Changed: 'any';, to: 'unknown'
       {
         query,
         userContext,

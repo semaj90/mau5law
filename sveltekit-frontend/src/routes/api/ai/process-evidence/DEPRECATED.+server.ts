@@ -34,7 +34,7 @@ export const POST: RequestHandler = async () => {
     replaceWith: 'POST /api/v2/evidence',
     message: 'File upload with AI processing is now unified in Evidence API v2',
     example: {
-      endpoint: 'POST /api/v2/evidence',
+     , endpoint: 'POST /api/v2/evidence',
       contentType: 'multipart/form-data',
       fields: {
        , file: 'File (required)',

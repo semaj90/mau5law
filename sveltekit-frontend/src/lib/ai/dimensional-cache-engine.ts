@@ -67,7 +67,7 @@ export class DimensionalCacheEngine {
   async cacheDimensionalArray(
     key: string,
     dimensionalArray: DimensionalArray,
-    userContext: { userId: string; sessionId: string;, behaviorPattern: string }
+    userContext: { userId: string; sessionId: string; behaviorPattern: string }
   ): Promise<void> {
     if (this.cache.size >= this.maxCacheSize) {
       this.evictEntry();
@@ -138,7 +138,7 @@ export class DimensionalCacheEngine {
     return embedding;
   }
   /**
-   * Get recommendations based on user's computation history
+   * Get recommendations based on user's computation history'
    */
   async getRecommendations(userId: string, currentContext: string, limit = 5): Promise<RecommendationResult> {
     const history = this.computationHistory.get(userId) || [];

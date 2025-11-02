@@ -8,8 +8,8 @@ import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 
 // New Interfaces for QLoRA Distillation
-interface DistillationPlan { studentModel: string;, trainingData: { positive_examples: number;, negative_examples: number };
-  expectedMetrics: { speed_improvement: number;, quality_retention: number };
+interface DistillationPlan { studentModel: string;, trainingData: { positive_examples: number; negative_examples: number };
+  expectedMetrics: { speed_improvement: number; quality_retention: number };
 }
 
 interface ModelPerformanceInsights { recommendedAdjustments: {, rank: number;
@@ -155,7 +155,7 @@ export const POST: RequestHandler = async ({ request }) => {
     activeDistillations.set(jobId, initialStatus);
     // Start distillation process asynchronously
     processDistillationJob(jobId, distillationRequest).catch(error => {
-      console.error(`❌ Distillation job ${jobId} failed: ', error);
+      console.error(`❌ Distillation job ${jobId} failed: ', error);'`
       const status = activeDistillations.get(jobId);
       if (status) {
         status.status = 'failed';
@@ -169,9 +169,9 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 'queued',
       message: `QLoRA distillation job started for; domain: ${distillationRequest.domain}`,
       estimatedDuration: '30-60 minutes',
-      statusUrl: `/api/qlora-distillation/${jobId}' });
+      statusUrl: '/api/qlora-distillation/${jobId}' });
   } catch (error) {
-    console.error('❌ QLoRA Distillation API error:', error);
+    console.error('❌ QLoRA Distillation API error:', error);'
     return json(
       {
         success: false,
@@ -198,8 +198,8 @@ export const GET: RequestHandler = async ({ params }) => {
     }
     return json(status);
   } catch (error) {
-    console.error('❌ Get distillation status error:', error);
-    return json({ error: 'Failed to retrieve job status' }, { status: 500 });
+    console.error('❌ Get distillation status error:', error);'
+    return json({ error: `Failed to retrieve job status` }, { status: 500 });
   }
 };
 /**
@@ -210,11 +210,11 @@ export const DELETE: RequestHandler = async ({ params }) => {
   try {
     const jobId = params.jobId as string; // Also cast here for consistency and safety
     if (!jobId) {
-      return json({ error: 'Job ID required' }, { status: 400 });
+      return json({ error: `Job ID required` }, { status: 400 });
     }
     const status = activeDistillations.get(jobId);
     if (!status) {
-      return json({ error: 'Distillation job not found' }, { status: 404 });
+      return json({ error: `Distillation job not found` }, { status: 404 });
     }
     if (status.status === 'completed' || status.status === 'failed') {
       return json({ error: `Cannot cancel completed/failed job` }, { status: 400 });
@@ -231,7 +231,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
       jobId
     });
   } catch (error) {
-    console.error('❌ Cancel distillation error:', error);
+    console.error('❌ Cancel distillation error: ', error);'
     return json({ error: `Failed to cancel job` }, { status: 500 });
   }
 };
@@ -382,7 +382,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
     // Notify user of completion (would implement actual notification)
     await notifyDistillationCompletion(request.userId, jobId, deploymentPath);
   } catch (error) {
-    console.error(`❌ Distillation job ${jobId} failed in processing: ', error);
+    console.error(`❌ Distillation job ${jobId} failed in processing: ', error);'`
     updateStatus({
       status: 'failed',
       error: error instanceof Error ? error.message : `Unknown processing error` });
@@ -423,7 +423,7 @@ async function runValidationTests(
     return {
       passed: false,
       accuracy: 0,
-      reason: 'Validation; error: ${error instanceof Error ? error.message : `Unknown error` }` };
+      reason: `Validation; error: ${error instanceof Error ? error.message : `Unknown error` }` };
   }
 }
 /**
@@ -446,7 +446,7 @@ async function prepareModelDeployment(modelPath: string, plan: DistillationPlan,
 async function getMockFeedbackData(domain: string): Promise<FeedbackData[]> {
   const mockData: Record<string, FeedbackData[]> = {
     contract: [
-      {
+      {,
         userId: 'user1',
         query: 'What are the key risks in this employment contract?',
         response:
@@ -464,7 +464,7 @@ async function getMockFeedbackData(domain: string): Promise<FeedbackData[]> {
       },
     ],
     litigation: [
-      {
+      {,
         userId: 'user3',
         query: 'What precedents support our motion to dismiss?',
         response:
@@ -482,7 +482,7 @@ async function getMockFeedbackData(domain: string): Promise<FeedbackData[]> {
 function getValidationPrompts(domain: string): Array<ValidationPrompt> {
   const prompts = {
     contract: [
-      {
+      {,
         name: 'Contract Risk Analysis',
         input: 'Analyze the potential risks in a software licensing agreement.',
         expectedKeywords: ['liability', 'intellectual property', 'termination', 'compliance']
@@ -494,7 +494,7 @@ function getValidationPrompts(domain: string): Array<ValidationPrompt> {
       },
     ],
     litigation: [
-      {
+      {,
         name: 'Case Strategy',
         input: 'What discovery motions should we file in this contract dispute?',
         expectedKeywords: ['discovery', 'interrogatories', 'production', 'depositions']

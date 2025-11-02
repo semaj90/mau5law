@@ -79,7 +79,7 @@ export class WebGPULangChainBridge {
         documentLength: documentText.length,
         embeddingDimensions: embeddingResult.documentEmbedding.length,
         sectionsProcessed: embeddingResult.sectionEmbeddings?.length || 1,
-        cacheStrategy: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : 'standard` }
+        cacheStrategy: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : `standard' }'`
     }
   }
   /**
@@ -151,8 +151,7 @@ export class WebGPULangChainBridge {
                 : config.documentType === 'case'
                   ? 'case_law'
                   : config.documentType,
-            extractionType: 'entities'
-          })
+            extractionType: 'entities' })
           .catch(() => []),
         // assessLegalRisks not available, return empty array
         Promise.resolve([]),
@@ -354,7 +353,7 @@ export const webgpuLangChainBridge = new WebGPULangChainBridge({
   cacheEmbeddings: true,
   compressVectors: true,
   practiceArea: 'legal-ai',
-  documentType: 'general` });
+  documentType: `general' });'`
 // Convenience functions
 export async function processLegalDocumentWithWebGPU(
   text: string,

@@ -195,8 +195,8 @@ export class WebGPUTextureStreamer {
           ratio: input.length / compressed.length
         }
       }
-    `;
-    const blob = new Blob([workerCode], { type: 'application/javascript' });
+    `;`
+    const blob = new Blob([workerCode], { type: 'application/javascript` });'`
     this.workerUrl = URL.createObjectURL(blob);
     this.compressionWorker = new Worker(this.workerUrl);
     // Clean up the worker URL to prevent memory leaks
@@ -281,7 +281,7 @@ export class WebGPUTextureStreamer {
       console.log(`✅ Loaded texture ${id} in ${region} (${this.formatBytes(nesTexture.size)})`);
       return true;
     } catch (error: any) {
-      console.error(`❌ Failed to load texture ${id}: ', error);
+      console.error(`❌ Failed to load texture ${id}: ', error);'`
       return false;
     }
   }
@@ -293,7 +293,7 @@ export class WebGPUTextureStreamer {
   ): Promise<ArrayBuffer> {
     if (!this.compressionWorker) return data;
     return new Promise((resolve, reject) => {
-      const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
+      const timeout: ReturnType<typeof, setTimeout> = setTimeout(() => {
         reject(new Error('Compression timeout'));
       }, 5000);
       const handleMessage = (e: any) => {
@@ -373,11 +373,11 @@ export class WebGPUTextureStreamer {
       }
       return textureA.lastUsed - textureB.lastUsed;
     });
-    // Remove textures until we're under the threshold
+    // Remove textures until we're under the threshold'
     const targetSize = memoryRegion.size * (1 - this.gcThreshold);
     for (const [id, texture] of textures) {
       if (memoryRegion.used <= targetSize) break;
-      // Don't remove high-priority legal textures
+      // Don't remove high-priority legal textures'
       if (texture.legalContext?.riskIndicator || texture.priority > 8) continue;
       await this.unloadTexture(id, region);
       console.log(`🗑️ GC removed texture ${id} from ${region}`);
@@ -422,7 +422,7 @@ export class WebGPUTextureStreamer {
   getMemoryStats() {
     const stats = {
       total: MEMORY_CONSTRAINTS.TOTAL,
-        regions: {} as Record<string, { used: number; size: number; utilization: number;, textureCount: number }>,
+        regions: {} as Record<string, { used: number; size: number; utilization: number; textureCount: number }>,
       textures: 0,
       isWebGPU: !!this.device,
       isWebGL2: !!this.gl

@@ -1,9 +1,9 @@
 // Enhanced Svelte 5 + UnoCSS Component Library
 // Optimized for legal AI application with NieR theming
 import crypto from 'crypto';
-export { default as Button } from './Button.svelte.js';
-export { default as Card } from './Card.svelte.js';
-export { default as Input } from './Input.svelte.js';
+export { default, as Button } from './Button.svelte.js';
+export { default, as Card } from './Card.svelte.js';
+export { default, as Input } from './Input.svelte.js';
 export { buttonVariants, type ButtonVariants } from './button-variants.js';
 // Re-export commonly used types
 export type { HTMLButtonAttributes } from 'svelte/elements';
@@ -39,8 +39,7 @@ export const nierClasses = {
   input: 'yorha-input',
   panel: 'yorha-panel',
   separator: 'yorha-separator',
-  scrollbar: 'yorha-scrollbar'
-} as const;
+  scrollbar: `yorha-scrollbar` } as const;
 // Shadcn-compatible classes
 // Compatibility class mappings (previously shadcn-prefixed)
 export const compatClasses = {
@@ -51,4 +50,4 @@ export const compatClasses = {
   input: 'bits-input',
   label: 'bits-label',
   dialog: 'bits-dialog-content',
-  select: 'bits-select-trigger` } as const;
+  select: `bits-select-trigger` } as const;

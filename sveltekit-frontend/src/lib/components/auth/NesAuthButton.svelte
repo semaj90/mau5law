@@ -2,7 +2,7 @@
   Standalone NES Auth Button Component
   Triggers the NES modal from anywhere in your app
 -->
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { NesAuthModal } from './NesAuthModal.svelte';
   interface Props {
@@ -37,16 +37,16 @@
   }
 </script>
 <svelte:head>
-  <!-- Import nes.css for the button styling -->
-  <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
+  <!-- Import nes.css for the button, styling -->
+  <link, href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+  <link, href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
 </svelte:head>
-<button type="button" class={getButtonClasses()} onclick={openModal} aria-haspopup="dialog" aria-expanded={isModalOpen}>
+<button, type="button" class={getButtonClasses()} onclick={openModal} aria-haspopup="dialog" aria-expanded={isModalOpen}>
   {#if icon}{icon}
   {/if}{text}
 </button>
-<!-- bind the modal's "open" prop and pass onClose handler -->
-<NesAuthModal bind:open={isModalOpen} {form} onClose={closeModal} />
+<!-- bind the modal's "open" prop and pass onClose, handler -->'
+<NesAuthModal, bind:open={isModalOpen} {form} onClose={closeModal} />
 <style>
   /* Custom button size classes */
   :global(.nes-btn-small) {

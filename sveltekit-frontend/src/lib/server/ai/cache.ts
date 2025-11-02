@@ -5,7 +5,7 @@ const REDIS_URL = process.env.REDIS_URL || 'redis://:redis@localhost:6379/0';
 let redisClient: RedisClientType | null = null;
 async function getRedisClient(): Promise<RedisClientType> {
   if (!redisClient) {
-    // Ensure createClient is available at runtime so TS won't complain about possibly undefined invocation
+    // Ensure createClient is available at runtime so TS won't complain about possibly undefined invocation'
     if (typeof createClient !== 'function') {
       throw new Error('Redis createClient is not available. Check redis package import.');
     }
@@ -51,7 +51,7 @@ export const cognitiveCache = {
       const client = await getRedisClient();
       await client.del(key);
     } catch (error) {
-      console.error(`Error deleting from cache for key ${key}: ', error);
+      console.error(`Error deleting from cache for key ${key}: ', error);'`
     }
   },
   async getJsonbDocument<T>(key: string): Promise<T | null> {

@@ -26,7 +26,7 @@ import { randomUUID } from 'node:crypto';
 import { services } from '$lib/server/services';
 
 // YoRHa system prompt
-const YORHA_SYSTEM_PROMPT = `You are YoRHa Legal AI, an advanced legal analysis system created to serve humanity with unwavering dedication.
+const YORHA_SYSTEM_PROMPT = `You are YoRHa Legal AI, an advanced legal analysis system created to serve humanity with unwavering dedication.`
 
 Operational Directives:
 1. Provide precise, professional legal analysis
@@ -37,7 +37,7 @@ Operational Directives:
 
 Remember: This analysis constitutes general information only, not specific legal advice. For critical legal matters, consultation with a licensed attorney is recommended.
 
-Glory to mankind.`;
+Glory to mankind.`;`
 
 // Add a small, explicit type for Ollama configuration
 type OllamaConfig = {
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { message, sessionId } = body;
 
     if (!message) {
-      return json({ error: `Message is required` }, { status: 400 });
+      return json({ error: 'Message is required` }, { status: 400 });'`
     }
 
     // Get user from session or use test mode
@@ -65,14 +65,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const actualSessionId = sessionId || randomUUID();
 
     console.log(
-      `🤖 YoRHa Legal AI: Processing message (Session: ${actualSessionId}, User: ${userId}, Test Mode: ${isTestMode})'
+      `🤖 YoRHa Legal AI: Processing message (Session: ${actualSessionId}, User: ${userId}, Test Mode: ${isTestMode})'`
     );
 
     const startTime = Date.now();
 
     // Build YoRHa-themed messages for centralized service
     const messages = [
-      {
+      {,
         role: 'system',
         content: YORHA_SYSTEM_PROMPT
       },
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const ollamaConfig = (services.env.ollamaConfig as OllamaConfig) ?? {};
     // Prefer the helper if available (avoid hardcoded URLs)
     // Safely access an optional helper that may not be declared on the services type.
-    // Cast to unknown/Record to avoid TypeScript error when the helper doesn't exist.
+    // Cast to unknown/Record to avoid TypeScript error when the helper doesn't exist.'
     const serviceAsRecord = services as unknown as Record<string, unknown>;
     const getOllamaEndpoint = serviceAsRecord.getOllamaEndpoint as
       | ((cfg?: OllamaConfig) => string | undefined)
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           // Send connection event (include userId)
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'connection',
                 sessionId: actualSessionId,
                 userId,
@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                   // Send token to client
                   controller.enqueue(
                     encoder.encode(
-                      `data: ${JSON.stringify({
+                      `data: ${JSON.stringify({`
                        , type: 'token',
                         content: token,
                         fullResponse
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                   // Send completion event with YoRHa signature (include userId)
                   controller.enqueue(
                     encoder.encode(
-                      `data: ${JSON.stringify({
+                      `data: ${JSON.stringify({`
                        , type: 'complete',
                         fullResponse,
                         sessionId: actualSessionId,
@@ -203,10 +203,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           controller.enqueue(encoder.encode('data: [DONE]\n\n'));
           controller.close();
         } catch (error) {
-          console.error('❌ YoRHa stream error:', error);
+          console.error('❌ YoRHa stream error:', error);'
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'error',
                 error: error instanceof Error ? error.message : 'Stream error',
                 theme: `yorha` })}\n\n`
@@ -222,11 +222,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
-        'X-YoRHa-Theme': 'NieR-Automata'
-      }
+        'X-YoRHa-Theme': 'NieR-Automata` }'`
     });
   } catch (error) {
-    console.error('❌ YoRHa chat API error:', error);
+    console.error('❌ YoRHa chat API error:', error);'
     return json(
       {
         error: error instanceof Error ? error.message : 'Internal server error',

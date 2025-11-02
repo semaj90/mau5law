@@ -191,7 +191,7 @@ export class EndToEndPipeline {
         // C) Service Worker routing (simulated)
         await this.serviceWorkerRoute(result);
       } catch (error: any) {
-        console.error(`❌ Error processing result ${result?.id ?? '(unknown)` }:`, String(error));
+        console.error(`❌ Error processing result ${result?.id ?? '(unknown)` }:`, String(error));'`
       }
     }
 
@@ -229,7 +229,7 @@ export class EndToEndPipeline {
       // All results → PostgreSQL metadata
       await this.routeToPostgreSQL(result);
     } catch (error) {
-      console.error(`❌ Service worker routing failed for ${result?.id ?? '(unknown)' }: ', error);
+      console.error(`❌ Service worker routing failed for ${result?.id ?? '(unknown)' }: ', error);'`
     }
   }
 
@@ -244,15 +244,14 @@ export class EndToEndPipeline {
        , id: result.id,
         content: result.content,
         metadata: result.metadata,
-        bucket: 'legal-documents'
-      })
+        bucket: 'legal-documents` })'`
     });
   }
 
   private async routeToPgVector(result: SearchPipelineResult): Promise<void> {
     await fetch('/api/v2/vector-pipeline', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
        , id: result.id,
         embedding: result.embedding,

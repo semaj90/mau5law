@@ -11,7 +11,7 @@ import { browser } from '$app/environment';
 export class LegalAIIntegrationClient {
   private baseUrl: string;
   private healthStatus = writable<Record<string, boolean>>({});
-  private requestCache = new Map<string, { data: any;, timestamp: number }>();
+  private requestCache = new Map<string, { data: any; timestamp: number }>();
   private cacheTimeout = 5 * 60 * 1000; // 5 minutes
   constructor(baseUrl = '') {
     this.baseUrl = baseUrl;
@@ -80,7 +80,7 @@ export class LegalAIIntegrationClient {
       }
       return data;
     } catch (error) {
-      console.error(`API Request failed for ${endpoint}: ', error);
+      console.error(`API Request failed for ${endpoint}: ', error);'`
       throw error;
     }
   }
@@ -223,7 +223,7 @@ export class LegalAIWorkflowOrchestrator {
         method: 'POST',
         body: JSON.stringify({
          , text: request.content,
-          model: 'nomic-embed-text` })
+          model: `nomic-embed-text` })
       });
       // Step 3: AI-powered summarization
       this.updateWorkflowStatus(workflowId, 'processing', 'Creating summary...');
@@ -275,7 +275,7 @@ export class LegalAIWorkflowOrchestrator {
         method: 'POST',
         body: JSON.stringify({
          , context: `New ${request.caseType} case ${request.title}`,
-          suggestionType: 'research` })
+          suggestionType: `research` })
       });
       const result: CaseCreationWorkflowResult = {
         workflowId,
@@ -337,25 +337,24 @@ export class LegalAIWorkflowOrchestrator {
   private generateInitialTimeline(request: CaseCreationWorkflowRequest): TimelineEvent[] {
     const now = new Date();
     return [
-      {
+      {,
         id: '1',
         title: 'Case Created',
         date: now,
         type: 'milestone',
-        description: `${request.caseType} case "${request.title}" created' },
+        description: '${request.caseType} case "${request.title}" created' },
       {
         id: '2',
         title: 'Initial Research',
         date: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
         type: 'task',
-        description: 'Complete initial legal research and case analysis'
-      },
+        description: `Complete initial legal research and case analysis` },
       {
         id: '3',
         title: 'Discovery Phase',
         date: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
         type: 'phase',
-        description: 'Begin discovery and evidence collection` },
+        description: `Begin discovery and evidence collection` }
     ];
   }
 }

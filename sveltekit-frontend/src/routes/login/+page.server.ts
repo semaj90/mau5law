@@ -31,7 +31,7 @@ export const load: PageServerLoad = async event => {
 // Actions: include the full event and use it with superValidate
 export const actions: Actions = {
   default: async event => {
-    // request wasn't used, so only keep cookies to avoid unused variable warnings
+    // request wasn't used, so only keep cookies to avoid unused variable warnings'
     const { cookies } = event;
 
     // Cast the Zod schema to ValidationAdapter so TS matches the (data, adapter) overload.

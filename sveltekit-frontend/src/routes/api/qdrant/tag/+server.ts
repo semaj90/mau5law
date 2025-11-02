@@ -58,7 +58,7 @@ function getErrorMessage(err: any): string {
 
 // Mock Qdrant client for development - return typed shapes
 class MockQdrantClient {
-  private collections = new Map<string, { name: string; config: any;, points: Point[] }>();
+  private collections = new Map<string, { name: string; config: any; points: Point[] }>();
   async createCollection(name: string, config: any) {
     this.collections.set(name, { name, config, points: [] });
     return { status: 'ok' } as const;
@@ -119,11 +119,10 @@ class MockQdrantClient {
     return {
       points_count: coll?.points?.length || 0,
       config: coll?.config || {},
-      status: 'green'
-    };
+      status: 'green` };'`
   }
   async createPayloadIndex(_collection: string, _config?: any) {
-    return { status: 'ok' };
+    return { status: `ok` };
   }
 }
 
@@ -134,8 +133,7 @@ const qdrantClient = new MockQdrantClient();
 const COLLECTIONS = {
   EVIDENCE: 'legal_evidence',
   TAGS: 'evidence_tags',
-  EMBEDDINGS: 'document_embeddings'
-};
+  EMBEDDINGS: `document_embeddings` };
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
@@ -143,11 +141,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!session) {
       return json({ error: `Authentication required` }, { status: 401 });
     }
-    // safer typed session id extraction (avoid `any')
+    // safer typed session id extraction (avoid `any')'`
     const sessionId = typeof session === 'string' ? session : (session as { id?: string } | null | undefined)?.id;
     const body = await request.json();
     const { action = 'tag', ...data } = body as Record<string, unknown>;
-    // Initialize collections if they don't exist
+    // Initialize collections if they don't exist'
     await initializeCollections();
     switch (action) {
       case 'tag':
@@ -167,7 +165,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: any) {
-    console.error('Qdrant API error:', getErrorMessage(error));
+    console.error('Qdrant API error:', getErrorMessage(error));'
     return json(
       {
         error: 'Qdrant operation failed',
@@ -262,13 +260,13 @@ async function tagDocument(data: Record<string, unknown>, userId: string): Promi
     const vector = Array.isArray(data.vector) ? (data.vector as number[]) : undefined;
     const payload = data.payload as Payload | undefined;
     if (!id || !vector || !payload) {
-      return json({ error: 'Missing required, fields: id, vector, payload' }, { status: 400 });
+      return json({ error: 'Missing required, fields: id, vector, payload` }, { status: 400 });'`
     }
     const documentPayload = { ...payload, userId, timestamp: new Date().toISOString() } as Payload;
     const response = (await qdrantClient.upsert(COLLECTIONS.EVIDENCE, {
       wait: true,
       points: [
-        {
+        {,
           id,
           vector,
           payload: documentPayload
@@ -282,10 +280,9 @@ async function tagDocument(data: Record<string, unknown>, userId: string): Promi
       success: true,
       operation_id: response.operation_id,
       status: response.status,
-      message: 'Document tagged successfully'
-    });
+      message: `Document tagged successfully` });
   } catch (error: any) {
-    console.error('tagDocument error:', getErrorMessage(error));
+    console.error('tagDocument error:', getErrorMessage(error));'
     return json({ error: 'Failed to tag document', details: getErrorMessage(error) }, { status: 500 });
   }
 }
@@ -307,7 +304,7 @@ async function createTagEmbeddings(tags: string[], documentId: string, userId: s
               ? (embeddingData.embedding as number[]).slice(0, 384)
               : [];
             return {
-              id: '${documentId}_tag_${tag.replace(/\s+/g, '_').toLowerCase()}`,
+              id: '${documentId}_tag_${tag.replace(/\s+/g, '_').toLowerCase()}`,'`
               vector,
               payload: { tag, documentId, userId, timestamp: new Date().toISOString() }
             } as Point;
@@ -389,7 +386,7 @@ async function searchDocuments(data: Record<string, unknown>, userId: string): P
       }
     });
   } catch (error: any) {
-    console.error('searchDocuments error:', getErrorMessage(error));
+    console.error('searchDocuments error:', getErrorMessage(error));'
     return json({ error: 'Search failed', details: getErrorMessage(error) }, { status: 500 });
   }
 }
@@ -441,7 +438,7 @@ async function batchTagDocuments(data: Record<string, unknown>, userId: string):
       errors
     });
   } catch (error: any) {
-    console.error('batchTagDocuments error:', getErrorMessage(error));
+    console.error('batchTagDocuments error:', getErrorMessage(error));'
     return json({ error: 'Batch tagging failed', details: getErrorMessage(error) }, { status: 500 });
   }
 }
@@ -466,7 +463,7 @@ async function updateDocumentTags(data: Record<string, unknown>, userId: string)
     await qdrantClient.upsert(COLLECTIONS.EVIDENCE, {
       wait: true,
       points: [
-        {
+        {,
          , id: documentId,
           vector: vector ?? existing[0].vector,
           payload: updatedPayload
@@ -477,8 +474,8 @@ async function updateDocumentTags(data: Record<string, unknown>, userId: string)
       await qdrantClient.delete(COLLECTIONS.TAGS, {
         wait: true,
         filter: {
-          must: [
-            { key: 'documentId', match: { value: documentId } },
+         , must: [
+            {, key: 'documentId', match: {, value: documentId } },
             { key: 'userId', match: {, value: userId } }
           ]
         }
@@ -487,7 +484,7 @@ async function updateDocumentTags(data: Record<string, unknown>, userId: string)
     }
     return json({ success: true, message: 'Document tags updated successfully' });
   } catch (error: any) {
-    console.error('updateDocumentTags error:', getErrorMessage(error));
+    console.error('updateDocumentTags error:', getErrorMessage(error));'
     return json({ error: 'Failed to update tags', details: getErrorMessage(error) }, { status: 500 });
   }
 }
@@ -499,21 +496,21 @@ async function deleteDocument(data: Record<string, unknown>, userId: string): Pr
     if (!documentId) return json({ error: 'Document ID required' }, { status: 400 });
     await qdrantClient.delete(COLLECTIONS.EVIDENCE, {
       wait: true,
-      filter: { must: [{, key: 'userId', match: {, value: userId } }] },
+      filter: {, must: [{, key: 'userId', match: {, value: userId } }] },
       points: [documentId]
     });
     await qdrantClient.delete(COLLECTIONS.TAGS, {
       wait: true,
       filter: {
-        must: [
-          { key: 'documentId', match: { value: documentId } },
+       , must: [
+          {, key: 'documentId', match: {, value: documentId } },
           { key: 'userId', match: {, value: userId } }
         ]
       }
     });
     return json({ success: true, message: 'Document deleted successfully' });
   } catch (error: any) {
-    console.error('deleteDocument error:', getErrorMessage(error));
+    console.error('deleteDocument error:', getErrorMessage(error));'
     return json({ error: 'Failed to delete document', details: getErrorMessage(error) }, { status: 500 });
   }
 }
@@ -532,8 +529,8 @@ async function getSimilarDocuments(data: Record<string, unknown>, userId: string
     if (sourceDoc.length === 0) return json({ error: 'Source document not found' }, { status: 404 });
     const similarDocs = (await qdrantClient.search(COLLECTIONS.EVIDENCE, {
       vector: sourceDoc[0].vector,
-      filter: { must: [{, key: 'userId', match: { value: userId } }],
-        must_not: [{ key: 'evidenceId', match: {, value: documentId } }]
+      filter: {, must: [{, key: 'userId', match: {, value: userId } }],
+        must_not: [{, key: 'evidenceId', match: {, value: documentId } }]
       },
       limit,
       score_threshold: 0.5,
@@ -547,7 +544,7 @@ async function getSimilarDocuments(data: Record<string, unknown>, userId: string
       similarDocuments: similarDocs.map((doc) => ({ id: doc.id, score: doc.score, payload: doc.payload }))
     });
   } catch (error: any) {
-    console.error('getSimilarDocuments error:', getErrorMessage(error));
+    console.error('getSimilarDocuments error:', getErrorMessage(error));'
     return json({ error: 'Failed to get similar documents', details: getErrorMessage(error) }, { status: 500 });
   }
 }
@@ -574,7 +571,7 @@ async function getCollectionStats(userId: string): Promise<Response> {
     }
     return json({ success: true, collections: stats, timestamp: new Date().toISOString() });
   } catch (error: any) {
-    console.error('getCollectionStats error:', getErrorMessage(error));
+    console.error('getCollectionStats error:', getErrorMessage(error));'
     return json({ error: 'Failed to get stats', details: getErrorMessage(error) }, { status: 500 });
   }
 }
@@ -608,7 +605,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const limit = parseInt(url.searchParams.get('limit') || '20');
     switch (action) {
       case 'get_document':
-        if (!documentId) return json({ error: 'Document ID required' }, { status: 400 });
+        if (!documentId) return json({ error: 'Document ID required` }, { status: 400 });'`
         // coerce sessionId to string here to satisfy functions that expect string userId
         return await getDocument(documentId, String(sessionId));
       case 'list_documents':
@@ -618,10 +615,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         return await getUserTags(String(sessionId));
       case 'health':
         return await getHealthStatus();
-      default: return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: `Invalid action` }, { status: 400 });
     }
   } catch (error: any) {
-    console.error('Qdrant GET error:', getErrorMessage(error));
+    console.error('Qdrant GET error:', getErrorMessage(error));'
     return json(
       { error: 'Failed to retrieve data', details: getErrorMessage(error) },
       { status: 500 }
@@ -641,7 +638,7 @@ async function getDocument(documentId: string, userId: string): Promise<Response
 	return json({ success: true, document: {, id: document[0].id, payload: document[0].payload } });
 }
 
-async function listDocuments(userId: string, options: { caseId?: string; limit: number }): Promise<Response> {
+async function listDocuments(userId: string, options: { caseId?: string;, limit: number }): Promise<Response> {
 	const filter: { must: any[] } = { must: [{, key: 'userId', match: { value: userId } }] };
 	if (options.caseId) filter.must.push({ key: 'caseId', match: {, value: options.caseId } });
 	const documents = await qdrantClient.scroll(COLLECTIONS.EVIDENCE, {

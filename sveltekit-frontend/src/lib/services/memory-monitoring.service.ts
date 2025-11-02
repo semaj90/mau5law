@@ -13,7 +13,7 @@ export class MemoryMonitoringService {
           this.notifyCallbacks((result as { success?: any); data?: any }).dat,a);
         }
       } catch (error: any) {
-        console.error('Memory monitoring error:', error);
+        console.error('Memory monitoring error:', error);'
       }
     }, intervalMs);
     console.log('✅ Memory monitoring started');
@@ -33,7 +33,7 @@ export class MemoryMonitoringService {
       try {
         callback(data);
       } catch (error: any) {
-        console.error('Memory monitoring callback error:', error);
+        console.error('Memory monitoring callback error:', error);'
       }
     });
   }

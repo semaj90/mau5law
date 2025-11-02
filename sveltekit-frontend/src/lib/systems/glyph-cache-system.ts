@@ -338,7 +338,7 @@ export class GlyphCacheSystem {
         scalingMethod: 'sigmoid',
         targetLength: 64,
         cudaThreads: 32,
-        cacheStrategy: 'aggressive' });
+        cacheStrategy: 'aggressive` });'`
       return quantizationResult.quantizedData as Float32Array;
     } catch (error) {
       console.error(`❌ Glyph quantization failed for: '${char}':`, error);
@@ -371,7 +371,7 @@ export class GlyphCacheSystem {
       });
       console.log(`🎮 Stored glyph: '${glyph.char}' to CHR-ROM bank ${glyph.chrRomBankId}`);
     } catch (error) {
-      console.warn(`⚠️ CHR-ROM storage failed for: '${glyph.char}': ', error);
+      console.warn(`⚠️ CHR-ROM storage failed for: '${glyph.char}': ', error);'`
     }
   }
   private updateMetrics(renderTime: number, _cacheHit: boolean): void {
@@ -410,7 +410,7 @@ export class GlyphCacheSystem {
     // If memory still exceeds threshold, perform aggressive trim (least-accessed)
     if (this.metrics.memoryUsage > this.MAX_CACHE_SIZE) {
       console.log('⚠️ Memory exceeds MAX_CACHE_SIZE, performing aggressive trim');
-      const allGlyphs: { fontKey: string; char: string;, access: number }[] = [];
+      const allGlyphs: { fontKey: string; char: string; access: number }[] = [];
       this.fonts.forEach((font, fontKey) => {
         font.glyphs.forEach((g, c) => allGlyphs.push({ fontKey, char: c, access: g.accessCount }));
       });
@@ -456,7 +456,7 @@ export class GlyphCacheSystem {
   async preloadCommonGlyphs(fontStyle: 'classic' | 'modern' | 'legal' | 'retro' = 'legal'): Promise<void> {
     const commonChars =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' +
-      '.,:!?-()[]{}"\' ' +
+      '.,:!?-()[]{}"\' ' +"
       '§¶©®™'; // Legal symbols
     console.log(`📚 Preloading ${commonChars.length} common glyphs...`);
     const promises: Promise<GlyphTexture>[] = [];
@@ -525,7 +525,7 @@ export class GlyphCacheSystem {
       };
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify(payload)
       });
       if (!response.ok) {
@@ -557,7 +557,7 @@ export class GlyphCacheSystem {
       };
       const response = await fetch(`${this.ollamaUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify(payload)
       });
       if (!response.ok) {

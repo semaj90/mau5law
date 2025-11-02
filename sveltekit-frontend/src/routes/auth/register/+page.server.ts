@@ -90,8 +90,8 @@ export const actions: Actions = {
       if (error.status === 302) {
         throw error;
       }
-      console.error('Registration error:', error);
-      return fail(500, { error: 'An error occurred during registration. Please try again.` });
+      console.error('Registration error: ', error);'
+      return fail(500, { error: 'An error occurred during registration. Please try again.' });
     }
   }
 };

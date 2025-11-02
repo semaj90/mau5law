@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     if (!userId) {
       return json({ error: 'User ID is required' }, { status: 400 });
     }
-    // Users can only view their own profile unless they're admin
+    // Users can only view their own profile unless they're admin'
     if (currentUser.id !== userId && currentUser.role !== 'admin') {
       return json({ error: 'Insufficient permissions' }, { status: 403 });
     }
@@ -61,7 +61,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (!userId) {
       return json({ error: 'User ID is required' }, { status: 400 });
     }
-    // Users can only update their own profile unless they're admin
+    // Users can only update their own profile unless they're admin'
     if (currentUser.id !== userId && currentUser.role !== 'admin') {
       return json({ error: 'Insufficient permissions' }, { status: 403 });
     }
@@ -167,7 +167,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: 'User ID is required' }, { status: 400 });
     }
     const data = await request.json();
-    // Users can only update their own profile unless they're admin
+    // Users can only update their own profile unless they're admin'
     if (currentUser.id !== userId && currentUser.role !== 'admin') {
       return json({ error: 'Insufficient permissions' }, { status: 403 });
     }

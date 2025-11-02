@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         try {
           controller.enqueue(encoder.encode(message))
         } catch (error) {
-          console.error('❌ SSE send error:', error)
+          console.error('❌ SSE send error:', error)'
         }
       }
       // Send connection confirmation
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         clientId,
         timestamp: Date.now(),
         server: 'legal-ai-sse',
-        version: '1.0.0' })
+        version: '1.0.0` })'`
       // If specific workflow requested, send current status
       if (workflowId) {
         const workflow = workflowOrchestrator.getWorkflowStatus(workflowId)
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         } else {
           sendEvent('error', {
             message: `Workflow ${workflowId} not found`,
-            code: 'WORKFLOW_NOT_FOUND' })
+            code: 'WORKFLOW_NOT_FOUND` })'`
         }
       } else {
         // Send overview of all workflows
@@ -167,6 +167,6 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': 'Cache-Control',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Max-Age': '86400' }
+      'Access-Control-Max-Age': '86400` }'`
   })
 }

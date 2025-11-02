@@ -10,7 +10,7 @@ import { auth } from '$lib/server/auth';
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
-import { Client as MinioClient } from 'minio';
+import { Client, as MinioClient } from 'minio';
 
 const minioClient = new MinioClient({
   endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000',
@@ -202,7 +202,7 @@ export const GET: RequestHandler = async (event) => {
     return new Response(dataStream as any, {
       headers: {
         'Content-Type': latestAvatar.etag ? 'image/jpeg' : 'image/png',
-        'Cache-Control': 'public, max-age=31536000` }
+        'Cache-Control': 'public, max-age=31536000' }
     });
   } catch (error) {
     console.error('Error retrieving avatar:', error);

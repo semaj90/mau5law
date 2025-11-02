@@ -157,15 +157,15 @@ export class WebGPULegalDocumentGraph {
       @vertex fn vs_main(@builtin(vertex_index) v_idx : u32) -> @builtin(position) vec4<f32> {
         // point-list vertices generated from GPU buffers via vertex inputs in pipeline
         return vec4<f32>(0.0, 0.0, 0.0, 1.0);
-      }`;
+      }`;`
     const fs = `
       @fragment fn fs_main() -> @location(0) vec4<f32> {
         return vec4<f32>(0.9, 0.9, 0.9, 1.0);
-      }`;
+      }`;`
     // Tiled compute shader using workgroup memory to scale better than naive N^2
     const cs = `
       struct Node { pos : vec3<f32>; vel : vec3<f32>; mass : f32; };
-      struct Params { nodeCount: u32; pad0: u32; pad1: u32;, pad2: u32; };
+      struct Params { nodeCount: u32; pad0: u32; pad1: u32; pad2: u32; };
 
       @group(0) @binding(0) var<storage, read_write> nodes : array<Node>;
       @group(0) @binding(1) var<uniform> params : Params;
@@ -219,14 +219,14 @@ export class WebGPULegalDocumentGraph {
         // integrate
         me.pos = me.pos + me.vel * 0.016;
         nodes[idx] = me;
-      }`;
+      }`;`
     this.vertexShaderModule = this.device.createShaderModule({ code: vs });
     this.fragmentShaderModule = this.device.createShaderModule({ code: fs });
     // compute pipeline (optional; keep simple)
     const computeModule = this.device.createShaderModule({ code: cs });
     this.computePipeline = this.device.createComputePipeline({
       layout: 'auto',
-      compute: {, module: computeModule, entryPoint: 'cs_main' }
+      compute: {, module: computeModule, entryPoint: 'cs_main` }'`
     });
   }
 
@@ -237,7 +237,7 @@ export class WebGPULegalDocumentGraph {
     this.computeBindGroup = this.device.createBindGroup({
       layout: computeLayout,
       entries: [
-        { binding: 0, resource: { buffer: this.tensorStore.nodeBuffer } },
+        {, binding: 0, resource: {, buffer: this.tensorStore.nodeBuffer } },
         { binding: 1, resource: {, buffer: this.uniformBuffer! } }
       ]
     });
@@ -308,7 +308,7 @@ export class WebGPULegalDocumentGraph {
   // rough GPU memory estimate (bytes)
   estimateGPUMemory(): number {
     if (!this.tensorStore) return 0;
-    // We'll approximate by buffer sizes + texture dimensions
+    // We'll approximate by buffer sizes + texture dimensions'
     const nodeSize = Math.max(4, this.config.maxNodes) * 32 * 4;
     const edgeSize = Math.max(4, this.config.maxEdges) * 8 * 4;
     const metadataSize = Math.max(4, this.config.maxNodes) * 64;
@@ -324,7 +324,7 @@ export class WebGPULegalDocumentGraph {
     this.renderPipeline = this.device.createRenderPipeline({
       layout: 'auto',
       vertex: {
-        module: this.vertexShaderModule,
+       , module: this.vertexShaderModule,
         entryPoint: 'vs_main',
         // No vertex buffers declared here - actual data binding is left for future extension
       },
@@ -334,7 +334,7 @@ export class WebGPULegalDocumentGraph {
         // reuse the preferred format determined during initialize(), fallback if missing
         targets: [{ format: this.preferredFormat ?? ('bgra8unorm' as GPUTextureFormat) }]
       },
-      primitive: { topology: 'point-list' },
+      primitive: { topology: `point-list` },
       depthStencil: { format: 'depth24plus', depthWriteEnabled: false, depthCompare: `less` }
     });
   }
@@ -447,7 +447,7 @@ export class WebGPULegalDocumentGraph {
   startRenderLoop(): void {
     if (this.animationId !== null) return;
     const frame = (t: number) => {
-      // compute delta robustly so first frame doesn't produce a huge delta
+      // compute delta robustly so first frame doesn't produce a huge delta'
       const delta = this.lastFrameTime ? t - this.lastFrameTime : 0;
       this.frameTime = delta;
       this.lastFrameTime = t;
@@ -470,7 +470,7 @@ export class WebGPULegalDocumentGraph {
   }
 
   stopRenderLoop(): void {
-    // If there's no running loop, nothing to do
+    // If there's no running loop, nothing to do'
     if (this.animationId === null) return;
     cancelAnimationFrame(this.animationId);
     this.animationId = null;
@@ -574,12 +574,11 @@ export class WebGPULegalDocumentGraph {
     const view = this.context.getCurrentTexture().createView();
     const rpass = encoder.beginRenderPass({
       colorAttachments: [
-        {
+        {,
           view,
           clearValue: {, r: 0.06, g: 0.06, b: 0.1, a: 1.0 },
           loadOp: 'clear',
-          storeOp: 'store'
-        },
+          storeOp: `store` }
       ]
     });
     rpass.setPipeline(this.renderPipeline);
@@ -603,7 +602,7 @@ export class WebGPULegalDocumentGraph {
         try {
           h(stats);
         } catch (err) {
-          // Don't let a user hook crash the renderer; log for diagnostics
+          // Don't let a user hook crash the renderer; log for diagnostics'
           console.warn('[WebGPU Legal Graph] frame hook error', err);
         }
       });
@@ -655,7 +654,7 @@ export class WebGPULegalDocumentGraph {
     } catch (err) {
       // Non-blocking diagnostic to avoid silent failures
       // This is intentionally non-throwing (best-effort cleanup)
-      console.warn(`[WebGPU Legal Graph] failed to destroy ${name ?? 'resource` }`, err);
+      console.warn(`[WebGPU Legal Graph] failed to destroy ${name ?? 'resource` }`, err);'`
     }
   }
 
@@ -676,8 +675,7 @@ export class WebGPULegalDocumentGraph {
       document: 'document',
       case 'case',
       entity: 'entity',
-      precedent: 'precedent'
-    };
+      precedent: `precedent` };
     return (typeString && m[typeString]) || 'document';
   }
   private parseEdgeType(typeString?: string): GraphEdge['type'] {

@@ -1,9 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, token;
 https: //svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { dndzone } from 'svelte-dnd-action';
@@ -135,7 +135,7 @@ https://svelte.dev/e/js_parse_error -->
   style="--column-width: {columnWidth}px; --gutter: {gutter}px;"
 >
   {#each items as item, index (item?.id ?? index)}
-    <div class="masonry-item space-y-4">
+    <div class="masonry-item, space-y-4">
       {#snippet children({item} {index} /)}
     </div>
   {/each}

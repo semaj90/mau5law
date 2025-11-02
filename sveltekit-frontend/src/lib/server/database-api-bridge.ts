@@ -88,12 +88,12 @@ export class LegalDatabaseBridge {
       updated_at: now,
       case_id: _document.case_id,
       client_id: _document.client_id,
-      status: _document.status || 'draft` };
+      status: _document.status || 'draft` };'`
     try {
       // Use the existing SSR helper for JSONB operations
       await this.executeQuery(
-        `INSERT INTO legal_documents (id, title, content, document_type, jurisdiction, metadata, case_id, client_id, status, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        `INSERT INTO legal_documents (id, title, content, document_type, jurisdiction, metadata, case_id, client_id, status, created_at, updated_at)`
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,`
         [
           newDocument.id,
           newDocument.title,
@@ -205,11 +205,11 @@ export class LegalDatabaseBridge {
       created_at: now,
       updated_at: now,
       metadata: caseData.metadata || {},
-      priority: caseData.priority || 'medium` };
+      priority: caseData.priority || 'medium` };'`
     try {
       await this.executeQuery(
-        `INSERT INTO legal_cases (id, title, description, case_type, jurisdiction, status, client_id, metadata, priority, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        `INSERT INTO legal_cases (id, title, description, case_type, jurisdiction, status, client_id, metadata, priority, created_at, updated_at)`
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,`
         [
           newCase.id,
           newCase.title,
@@ -264,8 +264,8 @@ export class LegalDatabaseBridge {
     };
     try {
       await this.executeQuery(
-        `INSERT INTO evidence_items (id, title, description, evidence_type, file_path, metadata, case_id, relevance_score, admissibility_status, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        `INSERT INTO evidence_items (id, title, description, evidence_type, file_path, metadata, case_id, relevance_score, admissibility_status, created_at, updated_at)`
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,`
         [
           newEvidence.id,
           newEvidence.title,
@@ -315,8 +315,8 @@ export class LegalDatabaseBridge {
     };
     try {
       await this.executeQuery(
-        `INSERT INTO conversations (id, user_id, title, case_id, context, created_at, updated_at, message_count, last_activity)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        `INSERT INTO conversations (id, user_id, title, case_id, context, created_at, updated_at, message_count, last_activity)`
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,`
         [
           newConversation.id,
           newConversation.user_id,
@@ -352,8 +352,8 @@ export class LegalDatabaseBridge {
     try {
       // Insert message
       await this.executeQuery(
-        `INSERT INTO messages (id, conversation_id, role, content, model, token_count, processing_time, metadata, created_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        `INSERT INTO messages (id, conversation_id, role, content, model, token_count, processing_time, metadata, created_at)`
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,`
         [
           newMessage.id,
           newMessage.conversation_id,
@@ -368,11 +368,11 @@ export class LegalDatabaseBridge {
       );
       // Update conversation message count and last activity
       await this.executeQuery(
-        `UPDATE conversations SET
+        `UPDATE conversations SET`
          message_count = message_count + 1,
          last_activity = $1,
          updated_at = $1
-         WHERE id = $2`,
+         WHERE id = $2`,`
         [now, newMessage.conversation_id]
       );
       return newMessage;
@@ -558,8 +558,7 @@ export async function apiSearchDocuments(searchQuery: any, options: any = {}): P
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api'
-      }
+        source: `api` }
     };
   } catch (error) {
     return {
@@ -568,8 +567,7 @@ export async function apiSearchDocuments(searchQuery: any, options: any = {}): P
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api'
-      },
-      error: error instanceof Error ? error.message : 'Document search failed` };
+        source: `api` },
+      error: error instanceof Error ? error.message : `Document search failed` };
   }
 }

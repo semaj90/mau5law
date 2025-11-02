@@ -2,9 +2,9 @@
  * Modern UI Components - SvelteKit 2 + Svelte 5 + Bits-UI + Melt-UI
  * Golden ratio spacing, CSS Grid/Flexbox, no prop drilling
  */
-export { default as ModernCard } from './ModernCard.svelte.js';
-export { default as ModernButton } from './ModernButton.svelte.js';
-export { default as ModernDialog } from './ModernDialog.svelte.js';
+export { default, as ModernCard } from './ModernCard.svelte.js';
+export { default, as ModernButton } from './ModernButton.svelte.js';
+export { default, as ModernDialog } from './ModernDialog.svelte.js';
 // Type exports for better TypeScript support (Svelte 5 compatible)
 // Explicit prop interfaces (align with component internal Props declarations)
 export interface ModernCardProps {
@@ -93,4 +93,4 @@ export const cssVars = {
   accentGreen: 'var(--yorha-accent-green)',
   borderPrimary: 'var(--yorha-border-primary)',
   borderSecondary: 'var(--yorha-border-secondary)',
-  borderAccent: 'var(--yorha-border-accent)` } as const;
+  borderAccent: 'var(--yorha-border-accent)' } as const;

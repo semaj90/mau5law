@@ -194,7 +194,7 @@ export interface SystemGraphData { nodes: GraphNode[];, edges: GraphEdge[];
 }
 export interface GraphNode { id: string;, type: 'database' | 'service' | 'component';
   label: string;
-  position: { x: number; y: number;, z: number };
+  position: { x: number; y: number; z: number };
   metrics: Record<string, unknown>;
   status: 'healthy' | 'degraded' | 'unhealthy';
 }

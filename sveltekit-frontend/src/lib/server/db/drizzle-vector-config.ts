@@ -48,7 +48,7 @@ const vector = customType({
     } catch {
       /* ignore */
     }
-    throw new Error('Invalid vector value: expected number[] or vector string; like: "[1,2,...]"');
+    throw new Error('Invalid vector value: expected number[] or vector string;, like: "[1,2,...]"');
   },
   fromDriver(value: any): any {
     if (value == null) return [];
@@ -90,7 +90,7 @@ export const caseMemories = pgTable('case_memories', {
 // Database connection
 const connectionString =
   import.meta.env.DATABASE_URL ||
-  `postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${import.meta.env.DB_PORT || 5434}/${import.meta.env.DB_NAME || 'legal_ai_db` }`;
+  `postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${import.meta.env.DB_PORT || 5434}/${import.meta.env.DB_NAME || 'legal_ai_db` }`;'`
 const sql_client = postgres(connectionString, {
   max: 20,
   idle_timeout: 30,
@@ -282,7 +282,7 @@ export class VectorSearchService {
         ) < ${threshold}
       ORDER BY min_distance ASC
       LIMIT ${limit}
-    `);
+    `);`
     return results;
   }
   /**
@@ -315,7 +315,7 @@ export class VectorSearchService {
         ${caseFilter}
       ORDER BY min_distance ASC
       LIMIT ${limit}
-    `);
+    `);`
     return results;
   }
   /**
@@ -357,7 +357,7 @@ export class VectorSearchService {
         ${typeFilter}
       ORDER BY min_distance ASC
       LIMIT ${limit}
-    `);
+    `);`
     return results;
   }
   /**
@@ -400,7 +400,7 @@ export class VectorSearchService {
       similarityThreshold: Math.round(similarityThreshold * 100),
       metadata: {
         timestamp: new Date().toISOString(),
-        version: '1.0.0` }
+        version: `1.0.0` }
     });
   }
 }
@@ -434,6 +434,6 @@ export async function healthCheck(): Promise<HealthStatus> {
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
       connection: 'failed',
-      error: error instanceof Error ? error.message : 'Unknown error` };
+      error: error instanceof Error ? error.message : `Unknown error` };
   }
 }

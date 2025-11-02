@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': `application/json` },
       body: JSON.stringify(body)
     });
     if (!response.ok) {
@@ -45,9 +45,9 @@ export const POST: RequestHandler = async ({ request }) => {
         performance_tier: getPerformanceTier(body.errors.length)
       }
     };
-    const stats = result as Partial<{ fixes_applied: number;, remaining_errors: number }>;
+    const stats = result as Partial<{ fixes_applied: number; remaining_errors: number }>;
     console.log(
-      `✅ TypeScript Optimizer: ${stats.fixes_applied ?? 'unknown'} fixes applied, ${stats.remaining_errors ?? 'unknown` } remaining`
+      `✅ TypeScript Optimizer: ${stats.fixes_applied ?? 'unknown'} fixes applied, ${stats.remaining_errors ?? 'unknown` } remaining`'`
     );
     return json(enhancedResult);
   } catch (error: any) {
@@ -97,7 +97,7 @@ export const GET: RequestHandler = async () => {
         auto_solve: '/api/v1/typescript-optimizer',
         batch_fix: '/api/v1/typescript-optimizer/batch',
         gpu_accelerated: '/api/v1/typescript-optimizer/gpu',
-        benchmark: '/api/v1/typescript-optimizer/benchmark` }
+        benchmark: `/api/v1/typescript-optimizer/benchmark` }
     });
   } catch (error: any) {
     const details = error instanceof Error ? error.message : String(error);

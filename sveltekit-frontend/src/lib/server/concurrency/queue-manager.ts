@@ -36,7 +36,7 @@ export const QueueJobSchema = z.object({
   dependencies: z.array(cuidSchema).default([]),
   metadata: z.record(z.any()).default({})
 });
-export type QueueJob = z.infer<typeof QueueJobSchema>;
+export type QueueJob = z.infer<typeof, QueueJobSchema>;
 export const QueueStatsSchema = z.object({
   pending: z.number(),
   processing: z.number(),
@@ -46,7 +46,7 @@ export const QueueStatsSchema = z.object({
   avgProcessingTime: z.number(),
   lastUpdated: z.date()
 });
-export type QueueStats = z.infer<typeof QueueStatsSchema>;
+export type QueueStats = z.infer<typeof, QueueStatsSchema>;
 interface JobProcessor {
   (job: QueueJob): Promise<any>;
 }
@@ -54,8 +54,8 @@ export class QueueManager {
   private processors = new Map<QueueJob['type'], JobProcessor>();
   private pendingJobs = new Map<string, QueueJob>();
   private processingJobs = new Map<string, QueueJob>();
-  private completedJobs = new Map<string, { job: QueueJob; result: any;, completedAt: Date }>();
-  private failedJobs = new Map<string, { job: QueueJob; error: Error;, failedAt: Date }>();
+  private completedJobs = new Map<string, { job: QueueJob; result: any; completedAt: Date }>();
+  private failedJobs = new Map<string, { job: QueueJob; error: Error; failedAt: Date }>();
   private isRunning = $state(false);
   private processingInterval: NodeJS.Timeout | null = null;
   private maxConcurrentJobs = 5;
@@ -211,7 +211,7 @@ export class QueueManager {
    * Evidence Analysis Processor (with AI integration)
    */
   private async processEvidenceAnalysis(job: QueueJob): Promise<any> {
-    const { evidenceId, analysisType = 'comprehensive' } = job.payload;
+    const { evidenceId, analysisType = 'comprehensive` } = job.payload;'`
     console.log(`🔍 Analyzing evidence ${evidenceId} (type: ${analysisType})`);
     // Simulate AI analysis (replace with actual Ollama/LLM calls)
     await new Promise(resolve => setTimeout(resolve, 2000);
@@ -282,7 +282,7 @@ export class QueueManager {
       indexName,
       vectorCount,
       rebuildTime: Date.now(),
-      performance: 'optimized' }
+      performance: 'optimized` }'`
   }
   /**
    * Get queue statistics (Zod validated)

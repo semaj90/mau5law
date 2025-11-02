@@ -36,15 +36,15 @@ export interface DocumentContext {
   processedAt?: Date;
 }
 export type DocumentEvent =
-  | { type: 'UPLOAD';, document: _FallbackLegalDocument }
+  | { type: 'UPLOAD'; document: _FallbackLegalDocument }
   | { type: 'START_PROCESSING' }
-  | { type: 'EXTRACT_TEXT';, text: string }
-  | { type: 'ANALYZE_AI';, analysis: _FallbackAIAnalysis }
-  | { type: 'GENERATE_EMBEDDING';, embedding: number[] }
-  | { type: 'EXTRACT_ENTITIES';, entities: any[] }
-  | { type: 'CALCULATE_RISK'; riskScore: number;, confidence: number }
+  | { type: 'EXTRACT_TEXT'; text: string }
+  | { type: 'ANALYZE_AI'; analysis: _FallbackAIAnalysis }
+  | { type: 'GENERATE_EMBEDDING'; embedding: number[] }
+  | { type: 'EXTRACT_ENTITIES'; entities: any[] }
+  | { type: 'CALCULATE_RISK'; riskScore: number; confidence: number }
   | { type: 'PROCESSING_COMPLETE' }
-  | { type: 'ERROR';, error: string }
+  | { type: 'ERROR'; error: string }
   | { type: 'RETRY' }
   | { type: 'CANCEL' }
   | { type: 'RESET' };
@@ -54,11 +54,11 @@ export const documentMachine = createMachine<DocumentContext, DocumentEvent>(
     id: 'documentProcessor',
     initial: 'idle',
     context: {
-      processingProgress: 0,
+     , processingProgress: 0,
       errors: [],
       processingSteps: []
     },
-    states: { idle: {, on: { UPLOAD: {, target: 'uploaded',
+    states: {, idle: {, on: {, UPLOAD: {, target: 'uploaded',
             actions: assign({
              , document: (_ctx, event) => (event as any).document,
               documentId: (_ctx, event) => (event as any).document?.id,

@@ -22,7 +22,7 @@ export function isLegalDocument(value: any): value is LegalDocumentUnified {
   const v = value as Record<string, unknown>;
   return typeof v.id === 'string' && typeof v.title === 'string';
 }
-export function mergeLegalDocuments<T extends Partial<LegalDocumentUnified>>(
+export function mergeLegalDocuments<T extends, Partial<LegalDocumentUnified>>(
   base: LegalDocumentUnified,
   patch: T
 ): LegalDocumentUnified {

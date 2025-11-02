@@ -38,7 +38,7 @@ export class WebGPUSIMDAccelerator {
       ...config
     };
     if (browser) {
-      // don't await in constructor; kick off init
+      // don't await in constructor; kick off init'
       void this.initialize();
     }
   }
@@ -141,7 +141,7 @@ export class WebGPUSIMDAccelerator {
     const batches = this.categorizeBatches(jsonStrings);
     // Process each batch with optimal method
     const batchPromises = [
-      batches.webgpu.length > 0
+      batches.webgpu.length > 0,
         ? this.webgpuBatchProcess(batches.webgpu, mode)
         : Promise.resolve([] as AccelerationResult[]),
       batches.simd.length > 0 ? this.simdBatchProcess(batches.simd, mode) : Promise.resolve([] as AccelerationResult[]),
@@ -185,7 +185,7 @@ export class WebGPUSIMDAccelerator {
         layout: 'auto',
         compute: {
          , module: computeShader,
-          entryPoint: 'main` }
+          entryPoint: 'main' }
       });
 
       // Bind group is illustrative; real binding layout depends on shader
@@ -193,7 +193,7 @@ export class WebGPUSIMDAccelerator {
       const bindGroup = this.device.createBindGroup({
         layout: bindGroupLayout,
         entries: [
-          { binding: 0, resource: { buffer: inputBuffer } },
+          {, binding: 0, resource: {, buffer: inputBuffer } },
           { binding: 1, resource: {, buffer: outputBuffer } }
         ]
       });
@@ -270,7 +270,7 @@ export class WebGPUSIMDAccelerator {
           output[idx] = input[idx];
         }
       }
-    `;
+    `;`
   }
   /**
    * Determine if input should use WebGPU acceleration
@@ -292,7 +292,7 @@ export class WebGPUSIMDAccelerator {
   /**
    * Categorize batch inputs by optimal processing method
    */
-  private categorizeBatches(jsonStrings: string[]): { webgpu: string[]; simd: string[];, standard: string[] } {
+  private categorizeBatches(jsonStrings: string[]): { webgpu: string[]; simd: string[]; standard: string[] } {
     const batches = { webgpu: [] as string[], simd: [] as string[], standard: [] as string[] };
     for (const json of jsonStrings) {
       if (this.shouldUseWebGPU(json)) batches.webgpu.push(json);
@@ -426,7 +426,7 @@ export class WebGPUSIMDAccelerator {
    * Cleanup GPU resources
    */
   public async cleanup(): Promise<void> {
-    // GPUDevice currently doesn't define a standard destroy() in all runtimes; just dereference.
+    // GPUDevice currently doesn't define a standard destroy() in all runtimes; just dereference.'
     this.device = null;
     this.queue = null;
     this.isInitialized = $state(false);
@@ -441,4 +441,4 @@ export const webgpuSIMDAccelerator = new WebGPUSIMDAccelerator({
   maxBatchSize: 32,
   gpuMemoryLimit: 2048, // Optimized for RTX 3060 Ti
   workgroupSize: 64,
-  preferredDevice: 'discrete` });
+  preferredDevice: 'discrete' });

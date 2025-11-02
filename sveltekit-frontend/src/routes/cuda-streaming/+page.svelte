@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { Input } from '$lib/components/ui/input';
   import { Button } from '$lib/components/ui/button';
   // Svelte 5 runes are auto-imported
@@ -203,41 +203,41 @@
 <svelte:head>
   <title>CUDA Streaming - GPU-Accelerated Legal AI Processing</title>
 </svelte:head>
-<div class="container mx-auto p-6 space-y-8">
+<div class="container mx-auto p-6, space-y-8">
   <!-- Header -->
-  <div class="text-center mb-8">
-    <h1 class="text-4xl font-bold text-primary mb-4 flex items-center justify-center gap-3">
-      <Cpu class="w-10 h-10 text-primary" />
+  <div class="text-center, mb-8">
+    <h1 class="text-4xl font-bold text-primary mb-4 flex items-center justify-center, gap-3">
+      <Cpu class="w-10 h-10, text-primary" />
       CUDA Streaming
     </h1>
-    <p class="text-lg nes-text is-disabled max-w-3xl mx-auto">
+    <p class="text-lg nes-text is-disabled max-w-3xl, mx-auto">
       GPU-accelerated real-time legal document processing with NVIDIA CUDA and streaming analytics
     </p>
-    <div class="flex justify-center gap-2 mt-6">
+    <div class="flex justify-center gap-2, mt-6">
       <Badge
         variant={(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable ? 'default' : 'destructive'}
         class="gap-1"
       >
-        <Zap class="w-3 h-3" />
+        <Zap class="w-3, h-3" />
         GPU {(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable ? 'Available' : 'Unavailable'}
       </Badge>
-      <Badge variant="secondary" class="gap-1">
-        <Memory class="w-3 h-3" />
+      <Badge, variant="secondary" class="gap-1">
+        <Memory class="w-3, h-3" />
         {(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.totalMemory} VRAM
       </Badge>
-      <Badge variant="secondary" class="gap-1">
-        <Activity class="w-3 h-3" />
+      <Badge, variant="secondary" class="gap-1">
+        <Activity class="w-3, h-3" />
         CUDA {(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.cudaVersion}
       </Badge>
-      <Badge variant="secondary" class="gap-1">
-        <TrendingUp class="w-3 h-3" />
+      <Badge, variant="secondary" class="gap-1">
+        <TrendingUp class="w-3, h-3" />
         {formatThroughput(liveMetrics.throughputCurrent)} Throughput
       </Badge>
     </div>
   </div>
-  <!-- Tab Navigation -->
-  <div class="flex justify-center mb-8">
-    <div class="flex space-x-1 bg-muted p-1 rounded-lg">
+  <!-- Tab, Navigation -->
+  <div class="flex justify-center, mb-8">
+    <div class="flex space-x-1 bg-muted p-1, rounded-lg">
       {#each [
         { id: 'streaming', label: 'Real-Time Streaming', icon Play },
         { id: 'monitoring', label: 'GPU Monitoring', icon Activity },
@@ -255,50 +255,50 @@
       {/each}
     </div>
   </div>
-  <!-- Real-Time Streaming Tab -->
+  <!-- Real-Time Streaming, Tab -->
   {#if selectedTab === 'streaming'}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <!-- Streaming Controls -->
+    <div class="grid grid-cols-1 lg:grid-cols-2, gap-8">
+      <!-- Streaming, Controls -->
       <OrchestratedCard.Analysis>
-        <div.Header class="nes-container">
-          <div.Title class="flex items-center gap-2 nes-container">
-            <Play class="w-5 h-5" />
+        <div.Header, class="nes-container">
+          <div.Title class="flex items-center gap-2, nes-container">
+            <Play class="w-5, h-5" />
             Streaming Configuration
           </div.Title>
-          <div.Description class="nes-container">
+          <div.Description, class="nes-container">
             Configure and start GPU-accelerated document processing streams
           </div.Description>
         </div.Header>
-        <div.Content class="space-y-6 nes-container">
-          <!-- Operation Selection -->
-          <div class="space-y-3">
-            <label class="text-sm font-medium" for="processing-operation">Processing Operation</label>
-            <select id="processing-operation" ;
+        <div.Content class="space-y-6, nes-container">
+          <!-- Operation, Selection -->
+          <div, class="space-y-3">
+            <label class="text-sm, font-medium" for="processing-operation">Processing Operation</label>
+            <select, id="processing-operation" ;
               bind:value={selectedOperation}
               class="w-full p-2 border rounded-md"
               disabled={isStreaming}
             >
               {#each (data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).supportedOperations as operation}
-                <option value={operation}>
+                <option, value={operation}>
                   {operation.replace.replace(/\b\w/g, l => l.toUpperCase())}
                 </option>
               {/each}
             </select>
           </div>
-          <!-- Input Data -->
-          <div class="space-y-3">
-            <label class="text-sm font-medium" for="input-data">Input Data</label>
-            <textarea id="input-data"
+          <!-- Input, Data -->
+          <div, class="space-y-3">
+            <label class="text-sm, font-medium" for="input-data">Input Data</label>
+            <textarea, id="input-data"
               bind:value={inputText}
               placeholder="Enter legal document text for processing..."
               class="w-full h-32 p-3 border rounded-md"
               disabled={isStreaming}
             ></textarea>
           </div>
-          <!-- Configuration Options -->
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="text-sm font-medium">Batch Size</label>
+          <!-- Configuration, Options -->
+          <div class="grid grid-cols-2, gap-4">
+            <div, class="space-y-2">
+              <label class="text-sm, font-medium">Batch Size</label>
               <Input
                 type="number";
                 bind:value={batchSize}
@@ -307,36 +307,36 @@
                 disabled={isStreaming}
               />
             </div>
-            <div class="space-y-2">
-              <label class="flex items-center space-x-2">
+            <div, class="space-y-2">
+              <label class="flex items-center, space-x-2">
                 <input
                   type="checkbox";
                   bind:checked={useGpu}
                   disabled={isStreaming || !(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable}
                   class="rounded"
                 />
-                <span class="text-sm font-medium">Use GPU Acceleration</span>
+                <span class="text-sm, font-medium">Use GPU Acceleration</span>
               </label>
             </div>
           </div>
-          <!-- Control Buttons -->
-          <div class="flex gap-3">
-            <div class="flex-1 gap-2">
+          <!-- Control, Buttons -->
+          <div class="flex, gap-3">
+            <div class="flex-1, gap-2">
   <OrchestratedButton .ProcessDocument
               onclick={startCudaStream}
               disabled={!canStream}>
               {#if isStreaming}
-                <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent, rounded-full"></div>
                 Streaming...
               {:else}
-                <Play class="w-4 h-4" />
+                <Play class="w-4, h-4" />
                 Start Stream
               {/if}
             </OrchestratedButton.ProcessDocument>
             {#if isStreaming}
-              <button class="nes-btn is-error gap-2"
+              <button class="nes-btn is-error, gap-2"
               >
-                <Square class="w-4 h-4" />
+                <Square class="w-4, h-4" />
                 Stop
               </button>
             {:else}
@@ -346,26 +346,26 @@
                 disabled={!inputText.trim()}
                 class="gap-2"
               >
-<Zap class="w-4 h-4" />
+<Zap class="w-4, h-4" />
                 Single Process
               </Button.Root>
             {/if}
           </div>
-          <!-- Processing Progress -->
+          <!-- Processing, Progress -->
           {#if isStreaming}
-            <div class="space-y-2">
-              <div class="flex items-center justify-between text-sm">
+            <div, class="space-y-2">
+              <div class="flex items-center justify-between, text-sm">
                 <span>Processing Progress</span>
                 <span>{processingProgress.toFixed(1)}%</span>
               </div>
-              <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="w-full bg-gray-200 rounded-full, h-2">
                 <div
                   class="bg-primary h-2 rounded-full transition-all duration-300"
                   style="width: {processingProgress}%"
                 ></div>
               </div>
               {#if currentSession}
-                <p class="text-xs nes-text is-disabled">
+                <p class="text-xs nes-text, is-disabled">
                   Session {currentSession}
                 </p>
               {/if}
@@ -373,31 +373,31 @@
           {/if}
         </div.Content>
       </OrchestratedCard.Analysis>
-      <!-- Live Stream Results -->
+      <!-- Live Stream, Results -->
       <OrchestratedCard.Evidence>
-        <div.Header class="nes-container">
-          <div.Title class="flex items-center gap-2 nes-container">
-            <Activity class="w-5 h-5" />
+        <div.Header, class="nes-container">
+          <div.Title class="flex items-center gap-2, nes-container">
+            <Activity class="w-5, h-5" />
             Live Stream Results
           </div.Title>
-          <div.Description class="nes-container">
+          <div.Description, class="nes-container">
             Real-time processing results and performance metrics
           </div.Description>
         </div.Header>
-        <div.Content class="nes-container">
-          <div class="space-y-3 max-h-96 overflow-y-auto">
+        <div.Content, class="nes-container">
+          <div class="space-y-3 max-h-96, overflow-y-auto">
             {#if streamResults.length === 0}
-              <div class="text-center py-8 nes-text is-disabled">
-                <Activity class="w-8 h-8 mx-auto mb-2 opacity-50" />
+              <div class="text-center py-8 nes-text, is-disabled">
+                <Activity class="w-8 h-8 mx-auto mb-2, opacity-50" />
                 <p>No active streams. Start processing to see results.</p>
               </div>
             {:else}
               {#each Array.isArray(streamResults) ? streamResults : [] as result}
-                <div class="border rounded-lg p-3">
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
+                <div class="border rounded-lg, p-3">
+                  <div class="flex items-center justify-between, mb-2">
+                    <div class="flex items-center, gap-2">
                       {@render getOperationIcon((result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).operation)({ class: "w-4 h-4" })}
-                      <span class="font-medium text-sm">{(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).operation.replace('_', ' ')}</span>
+                      <span class="font-medium, text-sm">{(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).operation.replace('_', ' ')}</span>
                     </div>
                     <Badge
                       variant={(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).status === 'completed' ? 'default' : 'secondary'}
@@ -407,21 +407,21 @@
                     </Badge>
                   </div>
                   {#if (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).input}
-                    <p class="text-xs nes-text is-disabled mb-2">{(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).input}</p>
+                    <p class="text-xs nes-text is-disabled, mb-2">{(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).input}</p>
                   {/if}
                   {#if (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).processingTime}
-                    <div class="flex items-center gap-4 text-xs nes-text is-disabled">
+                    <div class="flex items-center gap-4 text-xs nes-text, is-disabled">
                       <span>{(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).processingTime}ms</span>
                       <span>{(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).gpuAccelerated ? 'GPU' : 'CPU'}</span>
                       {#if (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).results?.confidence}
-                        <span class={getConfidenceClass((result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).results.confidence)}>
+                        <span class={getConfidenceClass((result, as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).results.confidence)}>
                           {Math.round.results.confidence * 100)}% confidence
                         </span>
                       {/if}
                     </div>
                   {/if}
                   {#if (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).progress !== undefined}
-                    <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                    <div class="w-full bg-gray-200 rounded-full h-1, mt-2">
                       <div
                         class="bg-primary h-1 rounded-full"
                         style="width: {(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).progress}%"
@@ -436,104 +436,104 @@
       </OrchestratedCard.Evidence>
     </div>
   {/if}
-  <!-- GPU Monitoring Tab -->
+  <!-- GPU Monitoring, Tab -->
   {#if selectedTab === 'monitoring'}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- GPU Status -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4, gap-6">
+      <!-- GPU, Status -->
       <OrchestratedCard.Analysis>
-        <div.Content class="p-6 nes-container">
-          <div class="flex items-center justify-between mb-4">
-            <Cpu class="w-8 h-8 text-primary/60" />
-            <Badge variant={(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable ? 'default' : 'destructive'}>
+        <div.Content class="p-6, nes-container">
+          <div class="flex items-center justify-between, mb-4">
+            <Cpu class="w-8 h-8, text-primary/60" />
+            <Badge variant={(data, as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable ? 'default' : 'destructive'}>
               {gpuStatus}
             </Badge>
           </div>
-          <p class="text-sm nes-text is-disabled mb-1">GPU Status</p>
-          <p class="text-lg font-medium">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuName}</p>
-          <p class="text-xs nes-text is-disabled">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.computeCapability}</p>
+          <p class="text-sm nes-text is-disabled, mb-1">GPU Status</p>
+          <p class="text-lg, font-medium">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuName}</p>
+          <p class="text-xs nes-text, is-disabled">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.computeCapability}</p>
         </div.Content>
       </OrchestratedCard.Analysis>
-      <!-- Memory Usage -->
+      <!-- Memory, Usage -->
       <OrchestratedCard.Analysis>
-        <div.Content class="p-6 nes-container">
-          <div class="flex items-center justify-between mb-4">
-            <Memory class="w-8 h-8 text-primary/60" />
-            <Badge variant="ghost">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.utilization?.memory}%</Badge>
+        <div.Content class="p-6, nes-container">
+          <div class="flex items-center justify-between, mb-4">
+            <Memory class="w-8 h-8, text-primary/60" />
+            <Badge, variant="ghost">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.utilization?.memory}%</Badge>
           </div>
-          <p class="text-sm nes-text is-disabled mb-1">Memory Usage</p>
-          <p class="text-lg font-medium">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.availableMemory}</p>
-          <p class="text-xs nes-text is-disabled">of {(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.totalMemory}</p>
+          <p class="text-sm nes-text is-disabled, mb-1">Memory Usage</p>
+          <p class="text-lg, font-medium">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.availableMemory}</p>
+          <p class="text-xs nes-text, is-disabled">of {(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.totalMemory}</p>
         </div.Content>
       </OrchestratedCard.Analysis>
       <!-- Temperature -->
       <OrchestratedCard.Analysis>
-        <div.Content class="p-6 nes-container">
-          <div class="flex items-center justify-between mb-4">
-            <Thermometer class="w-8 h-8 text-primary/60" />
-            <Badge variant="ghost">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.temperatureCurrent}°C</Badge>
+        <div.Content class="p-6, nes-container">
+          <div class="flex items-center justify-between, mb-4">
+            <Thermometer class="w-8 h-8, text-primary/60" />
+            <Badge, variant="ghost">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.temperatureCurrent}°C</Badge>
           </div>
-          <p class="text-sm nes-text is-disabled mb-1">Temperature</p>
-          <p class="text-lg font-medium">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.temperatureCurrent}°C</p>
-          <p class="text-xs nes-text is-disabled">Normal operating range</p>
+          <p class="text-sm nes-text is-disabled, mb-1">Temperature</p>
+          <p class="text-lg, font-medium">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.temperatureCurrent}°C</p>
+          <p class="text-xs nes-text, is-disabled">Normal operating range</p>
         </div.Content>
       </OrchestratedCard.Analysis>
-      <!-- Power Draw -->
+      <!-- Power, Draw -->
       <OrchestratedCard.Analysis>
-        <div.Content class="p-6 nes-container">
-          <div class="flex items-center justify-between mb-4">
-            <Power class="w-8 h-8 text-primary/60" />
-            <Badge variant="ghost">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.powerDraw}W</Badge>
+        <div.Content class="p-6, nes-container">
+          <div class="flex items-center justify-between, mb-4">
+            <Power class="w-8 h-8, text-primary/60" />
+            <Badge, variant="ghost">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.powerDraw}W</Badge>
           </div>
-          <p class="text-sm nes-text is-disabled mb-1">Power Draw</p>
-          <p class="text-lg font-medium">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.powerDraw}W</p>
-          <p class="text-xs nes-text is-disabled">Current consumption</p>
+          <p class="text-sm nes-text is-disabled, mb-1">Power Draw</p>
+          <p class="text-lg, font-medium">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.powerDraw}W</p>
+          <p class="text-xs nes-text, is-disabled">Current consumption</p>
         </div.Content>
       </OrchestratedCard.Analysis>
     </div>
-    <!-- Performance Metrics -->
+    <!-- Performance, Metrics -->
     <OrchestratedCard.Analysis>
-      <div.Header class="nes-container">
-        <div.Title class="flex items-center gap-2 nes-container">
-          <TrendingUp class="w-5 h-5" />
+      <div.Header, class="nes-container">
+        <div.Title class="flex items-center gap-2, nes-container">
+          <TrendingUp class="w-5, h-5" />
           Real-Time Performance Metrics
         </div.Title>
       </div.Header>
-      <div.Content class="nes-container">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="text-center p-4 bg-muted/50 rounded-lg">
-            <p class="text-2xl font-bold text-primary">{formatThroughput(liveMetrics.throughputCurrent)}</p>
-            <p class="text-sm nes-text is-disabled">Current Throughput</p>
+      <div.Content, class="nes-container">
+        <div class="grid grid-cols-1 md:grid-cols-3, gap-6">
+          <div class="text-center p-4 bg-muted/50, rounded-lg">
+            <p class="text-2xl font-bold, text-primary">{formatThroughput(liveMetrics.throughputCurrent)}</p>
+            <p class="text-sm nes-text, is-disabled">Current Throughput</p>
           </div>
-          <div class="text-center p-4 bg-muted/50 rounded-lg">
-            <p class="text-2xl font-bold text-primary">{liveMetrics.avgProcessingTime}ms</p>
-            <p class="text-sm nes-text is-disabled">Avg Processing Time</p>
+          <div class="text-center p-4 bg-muted/50, rounded-lg">
+            <p class="text-2xl font-bold, text-primary">{liveMetrics.avgProcessingTime}ms</p>
+            <p class="text-sm nes-text, is-disabled">Avg Processing Time</p>
           </div>
-          <div class="text-center p-4 bg-muted/50 rounded-lg">
-            <p class="text-2xl font-bold text-primary">{liveMetrics.queueSize}</p>
-            <p class="text-sm nes-text is-disabled">Queue Size</p>
+          <div class="text-center p-4 bg-muted/50, rounded-lg">
+            <p class="text-2xl font-bold, text-primary">{liveMetrics.queueSize}</p>
+            <p class="text-sm nes-text, is-disabled">Queue Size</p>
           </div>
         </div>
       </div.Content>
     </OrchestratedCard.Analysis>
   {/if}
-  <!-- Recent Processing Results -->
+  <!-- Recent Processing, Results -->
   <OrchestratedCard.Analysis>
-    <div.Header class="nes-container">
-      <div.Title class="flex items-center gap-2 nes-container">
-        <Clock class="w-5 h-5" />
+    <div.Header, class="nes-container">
+      <div.Title class="flex items-center gap-2, nes-container">
+        <Clock class="w-5, h-5" />
         Recent Processing Sessions
       </div.Title>
-      <div.Description class="nes-container">
+      <div.Description, class="nes-container">
         Historical GPU processing performance and results
       </div.Description>
     </div.Header>
-    <div.Content class="nes-container">
-      <div class="space-y-3">
+    <div.Content, class="nes-container">
+      <div, class="space-y-3">
         {#each (data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).recentProcessing as session}
-          <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
-            <div class="flex-1">
-              <div class="flex items-center gap-2 mb-1">
-                <Badge variant="ghost" class="text-xs">{session.operation.replace('_', ' ')}</Badge>
+          <div class="flex items-center justify-between p-3 border rounded-lg, hover:bg-muted/50">
+            <div, class="flex-1">
+              <div class="flex items-center gap-2, mb-1">
+                <Badge, variant="ghost" class="text-xs">{session.operation.replace('_', ' ')}</Badge>
                 <Badge
                   variant={session.gpuAccelerated ? 'default' : 'secondary'}
                   class="text-xs"
@@ -547,17 +547,17 @@
                   {session.status}
                 </Badge>
               </div>
-              <div class="text-sm nes-text is-disabled">
+              <div class="text-sm nes-text, is-disabled">
                 {session.documentsProcessed} documents •
                 {session.processingTime}ms •
                 {formatThroughput(session.throughput)} throughput
               </div>
-              <div class="text-xs nes-text is-disabled">
+              <div class="text-xs nes-text, is-disabled">
                 {formatAnalysisDate(new Date(session.timestamp))}
               </div>
             </div>
-            <button class="nes-btn" variant="ghost" size="sm">
-              <Eye class="w-3 h-3" />
+            <button, class="nes-btn" variant="ghost" size="sm">
+              <Eye class="w-3, h-3" />
           </div>
         {/each}
       </div>

@@ -9,7 +9,7 @@ import { getOllamaEndpoint } from '$lib/server/ai/gemma-embedding-service'; // I
 // Helper for structured logging
 function logError(context: string, error: unknown, details?: Record<string, unknown>) {
   console.error(
-    `[ERROR] ${new Date().toISOString()} - ${context}: ',
+    `[ERROR] ${new Date().toISOString()} - ${context}: ','`
     error instanceof Error ? error.message : String(error),
     details ? JSON.stringify(details) : ''
   );
@@ -77,7 +77,7 @@ const DEFAULT_MODEL = 'gemma3:latest'; // Added: Define DEFAULT_MODEL
  * This is extracted from the original agenticFunctions.summarize_text.handler
  * to resolve the: 'Cannot find name summarizeWithGemma' error.
  */
-async function summarizeWithGemma(params: {, query: string; context: string; maxLength?: number }): Promise<string> {
+async function summarizeWithGemma(params: {, query: string;, context: string; maxLength?: number }): Promise<string> {
   const cacheKey = `summary:${params.query}`;
   const cached = await cognitiveCache.getJsonbDocument<string>(cacheKey);
   if (cached) return cached;
@@ -87,8 +87,8 @@ async function summarizeWithGemma(params: {, query: string; context: string; max
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: SUMMARIZATION_MODEL,
-        prompt: `Context:\n${params.context}\n\nQuestion: ${params.query}\n\nProvide a concise legal summary:`,
+       , model: SUMMARIZATION_MODEL,
+        prompt: `Context:\n${params.context}\n\nQuestion: ${params.query}\n\nProvide a concise legal, summary:`,
         stream: false,
         options: {
          , temperature: 0.3,
@@ -228,7 +228,7 @@ export const agenticFunctions = {
       },
       required: ['sessionId', 'userId']
     },
-    handler: async (params: {, sessionId: string; userId: string }): Promise<ContextualState> => {
+    handler: async (params: {, sessionId: string;, userId: string }): Promise<ContextualState> => {
       return await contextualUnderstanding.getContextualState(params.sessionId, params.userId);
     }
   },
@@ -250,7 +250,7 @@ export const agenticFunctions = {
       },
       required: ['sessionId', 'userId']
     },
-    handler: async (params: {, sessionId: string; userId: string }): Promise<NextStepPrediction[]> => {
+    handler: async (params: {, sessionId: string;, userId: string }): Promise<NextStepPrediction[]> => {
       return await contextualUnderstanding.getNextStepPredictions(params.sessionId, params.userId);
     }
   },
@@ -294,7 +294,7 @@ export const agenticFunctions = {
       },
       required: ['sessionId', 'userId']
     },
-    handler: async (params: {, sessionId: string; userId: string; maxTurns?: number }): Promise<string> => {
+    handler: async (params: {, sessionId: string;, userId: string; maxTurns?: number }): Promise<string> => {
       return await contextualUnderstanding.getConversationSummary(params.sessionId, params.userId, params.maxTurns);
     }
   },
@@ -311,12 +311,11 @@ export const agenticFunctions = {
         },
         userId: {
           type: 'string',
-          description: 'Current user ID'
-        }
+          description: 'Current user ID` }'`
       },
       required: ['sessionId', 'userId']
     },
-    handler: async (params: {, sessionId: string; userId: string }) => {
+    handler: async (params: {, sessionId: string;, userId: string }) => {
       return await contextualUnderstanding.getSessionStats(params.sessionId, params.userId);
     }
   },
@@ -329,8 +328,7 @@ export const agenticFunctions = {
     parameters: {
       type: 'object',
       properties: { audioPath: {, type: 'string',
-          description: 'Path to audio file'
-        },
+          description: `Path to audio file` },
         sessionId: {
           type: 'string',
           description: `Session ID for caching` }
@@ -441,12 +439,10 @@ export const agenticFunctions = {
     parameters: {
       type: 'object',
       properties: { query: {, type: 'string',
-          description: 'Original search query'
-        },
+          description: 'Original search query` },'`
         documents: {
           type: 'array',
-          description: 'Documents to rerank'
-        },
+          description: `Documents to rerank` },
         lambda: {
           type: 'number',
           description: `MMR lambda parameter (0-1, default: 0.7)` }
@@ -488,12 +484,11 @@ export const agenticFunctions = {
         },
         maxLength: {
           type: 'number',
-          description: 'Max summary length (default: 500)'
-        }
+          description: 'Max summary length (default: 500)` }'`
       },
       required: ['query', 'context']
     },
-    handler: async (params: {, query: string; context: string; maxLength?: number }): Promise<string> => {
+    handler: async (params: {, query: string;, context: string; maxLength?: number }): Promise<string> => {
       // Now calls the new top-level summarizeWithGemma helper
       return await summarizeWithGemma(params);
     }
@@ -507,8 +502,7 @@ export const agenticFunctions = {
     parameters: {
       type: 'object',
       properties: { text: {, type: 'string',
-          description: 'Text to speak'
-        },
+          description: `Text to speak` },
         voice: {
           type: 'string',
           description: `Voice model (default: en_US-lessac-medium)` }
@@ -522,7 +516,7 @@ export const agenticFunctions = {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
            , text: params.text,
-            voice: params.voice || 'en_US-lessac-medium` })
+            voice: params.voice || 'en_US-lessac-medium` })'`
         });
 
         if (!response.ok) {
@@ -555,8 +549,8 @@ export const agenticFunctions = {
         parties: { type: 'array', items: { type: 'string' }, description: 'Parties involved in the case' },
         filedDate: { type: 'string', description: 'Date the case was filed (YYYY-MM-DD)' },
         evidenceCount: { type: 'number', description: 'Number of pieces of evidence' },
-        userId: { type: 'string', description: 'User ID associated with the case' },
-        title: { type: 'string', description: 'Title of the case' },
+        userId: { type: 'string', description: 'User ID associated with the case` },'`
+        title: { type: 'string', description: `Title of the case` },
         description: { type: 'string', description: `Description of the case` }
       },
       required: ['caseId', 'userId', 'title', 'description'], // Ensure required fields from BaseCaseScoringRequest are here
@@ -776,7 +770,7 @@ export class AgenticGemma3Client {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: request.model || this.model,
+         , model: request.model || this.model,
           prompt: request.prompt,
           stream: false,
           options: {
@@ -829,7 +823,7 @@ export class AgenticGemma3Client {
           const [key, value] = pair.split('=').map((s: string) => s.trim()); // Explicitly type s
           if (key && value) {
             // Remove quotes and parse value
-            params[key] = value.replace(/['"]/g, '');
+            params[key] = value.replace(/['"]/g, '');'"
           }
         }
       }
@@ -886,7 +880,7 @@ export class AgenticGemma3Client {
       4: 'Risk Assessment',
       5: 'Recommendation',
       6: 'Follow-up',
-      7: `Conclusion` }; // <-- fixed: close object literal
+      7: `Conclusion` }; // <-- fixed: close object, literal
 
     const current = typeof state?.hmmState?.currentState === 'number' ? state.hmmState.currentState : NaN;
 

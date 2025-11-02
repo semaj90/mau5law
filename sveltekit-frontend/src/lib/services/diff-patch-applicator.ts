@@ -79,7 +79,7 @@ export class DiffPatchApplicator {
         patchId,
         filePath: '',
         message: `Patch ${patchId} not found`,
-        error: 'PATCH_NOT_FOUND` };
+        error: `PATCH_NOT_FOUND` };
     }
 
     try {
@@ -91,14 +91,14 @@ export class DiffPatchApplicator {
           patchId,
           filePath: patch.filePath,
           message: `File does not; exist: ${patch.filePath}`,
-          error: 'FILE_NOT_FOUND` };
+          error: `FILE_NOT_FOUND` };
       }
 
       // Read current content
       const currentContent = readFileSync(patch.filePath, 'utf8');
       const currentHash = this.hashContent(currentContent);
 
-      // Verify file hasn't changed since patch creation
+      // Verify file hasn't changed since patch creation'
       if (currentHash !== patch.originalHash) {
         patch.status = 'failed';
         return {
@@ -106,8 +106,7 @@ export class DiffPatchApplicator {
           patchId,
           filePath: patch.filePath,
           message: `File has been modified since patch creation. Expected; hash: ${patch.originalHash}, actual: ${currentHash}`,
-          error: 'FILE_MODIFIED'
-        };
+          error: `FILE_MODIFIED` };
       }
 
       // Create backup
@@ -123,7 +122,7 @@ export class DiffPatchApplicator {
           patchId,
           filePath: patch.filePath,
           message: 'Failed to apply unified diff',
-          error: 'PATCH_APPLICATION_FAILED` };
+          error: `PATCH_APPLICATION_FAILED` };
       }
 
       // Verify target hash if provided
@@ -136,7 +135,7 @@ export class DiffPatchApplicator {
             patchId,
             filePath: patch.filePath,
             message: `Patch result hash mismatch.; Expected: ${patch.targetHash}, actual: ${resultHash}`,
-            error: 'HASH_MISMATCH` };
+            error: `HASH_MISMATCH` };
         }
       }
 
@@ -178,8 +177,7 @@ export class DiffPatchApplicator {
         patchId,
         filePath: patch?.filePath || '',
         message: 'Cannot; rollback: patch not applied or not found',
-        error: 'ROLLBACK_INVALID'
-      };
+        error: `ROLLBACK_INVALID` };
     }
 
     try {
@@ -190,7 +188,7 @@ export class DiffPatchApplicator {
           patchId,
           filePath: patch.filePath,
           message: 'Backup file not found for rollback',
-          error: 'BACKUP_NOT_FOUND` };
+          error: `BACKUP_NOT_FOUND` };
       }
 
       // Restore from backup
@@ -211,7 +209,7 @@ export class DiffPatchApplicator {
         patchId,
         filePath: patch.filePath,
         message: `Error during; rollback: ${error.message}`,
-        error: 'ROLLBACK_ERROR` };
+        error: `ROLLBACK_ERROR` };
     }
   }
 
@@ -295,7 +293,7 @@ export class DiffPatchApplicator {
             break;
           case '-': // Deletion
             currentLineIndex++;
-            // Skip this line (don't add to result)
+            // Skip this line (don't add to result)'
             break;
           default:
             // Handle lines without prefixes as context

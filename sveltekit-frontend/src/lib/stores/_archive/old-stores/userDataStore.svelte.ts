@@ -158,7 +158,7 @@ const createUserDataStore = () => {
           userDataState.lastSyncAt = Date.now();
         }
       } catch (error) {
-        console.error('Failed to sync cases: `, error);
+        console.error('Failed to sync cases: `, error);'`
       }
     },
     syncEvidence: async (userId: string, caseId?: string) => {
@@ -381,7 +381,7 @@ const createUserDataStore = () => {
 export const userDataStore = createUserDataStore();
 // Auto-sync initialization function (call this from a component with $effect)
 // Note: This function is deprecated. Use userDataStore.init(userId) directly
-// with user data from SvelteKit's data prop instead of global session store
+// with user data from SvelteKit's data prop instead of global session store'
 export const initUserDataSync = (user?: { id: string } | null) => {
   if (user?.id) {
     userDataStore.init(user.id);

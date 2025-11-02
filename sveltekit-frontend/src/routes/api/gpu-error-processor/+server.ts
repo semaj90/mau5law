@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('GPU Error Processor API error:', error);
+    console.error('GPU Error Processor API error:', error);'
     return json(
       {
         error: 'Internal server error',
@@ -336,8 +336,7 @@ function getFixStrategy(code: string): string {
     TS2307: 'Fix module path',
     TS2457: 'Rename type alias',
     TS1005: 'Add punctuation',
-    TS1128: 'Add declaration'
-  };
+    TS1128: 'Add declaration' };
   return strategies[code] || 'Manual fix required';
 }
 export const GET: RequestHandler = async ({ url }) => {
@@ -354,5 +353,5 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString()
     });
   }
-  return json({ error: `Invalid action` }, { status: 400 });
+  return json({ error: 'Invalid action` }, { status: 400 });'`
 };

@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     });
   } catch (error) {
-    console.error('❌ Citations API error:', error);
+    console.error('❌ Citations API error:', error);'
     return json(
       {
         error: 'Failed to fetch citations',
@@ -93,8 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!citationType || !quotedText) {
       return json(
         {
-          error: 'citationType and quotedText are required'
-        },
+          error: 'citationType and quotedText are required' },
         { status: 400 }
       );
     }
@@ -117,10 +116,10 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true
     });
   } catch (error) {
-    console.error('❌ Create citation error:', error);
+    console.error('❌ Create citation error: ', error);'
     return json(
       {
-        error: 'Failed to create citation` },
+        error: 'Failed to create citation' },
       { status: 500 }
     );
   }

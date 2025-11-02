@@ -203,7 +203,7 @@ export class CUDAVectorService {
 
     while (attempt < MAX_RETRY_ATTEMPTS) {
       try {
-        const headers: Record<string, string> = { 'Content-Type': `application/json` };
+        const headers: Record<string, string> = { 'Content-Type': `application/json' };'`
         const userAgent = event?.request?.headers?.get('user-agent');
         if (userAgent) headers['User-Agent'] = userAgent;
 
@@ -220,7 +220,7 @@ export class CUDAVectorService {
           try {
             result.legal_insights = await this.generateLegalInsights(result.results, cudaRequest.legal_context);
           } catch (insErr) {
-            // don't fail entire search if insight generation fails
+            // don't fail entire search if insight generation fails'
             console.warn('Legal insights generation failed:', insErr);
           }
           // Add neural sprite visualization data
@@ -233,7 +233,7 @@ export class CUDAVectorService {
           return result;
         }
 
-        const errorData = await response.json().catch(() => ({ error: `Unknown error` }));
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
         throw new Error(`CUDA service error: ${errorData.error || response.statusText}`);
       } catch (err) {
         lastError = err instanceof Error ? err : new Error(String(err));
@@ -241,7 +241,7 @@ export class CUDAVectorService {
         if (attempt < MAX_RETRY_ATTEMPTS) {
           const delay = Math.pow(2, attempt) * 1000;
           await new Promise(resolve => setTimeout(resolve, delay));
-          console.warn(`CUDA vector search attempt ${attempt} failed, retrying in ${delay}ms');
+          console.warn('CUDA vector search attempt ${attempt} failed, retrying in ${delay}ms');
         }
       }
     }
@@ -258,7 +258,7 @@ export class CUDAVectorService {
     try {
       const response = await fetch(`${this.serviceUrl}/api/gpu/normalize-embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({ embeddings }),
         signal: AbortSignal.timeout(REQUEST_TIMEOUT)
       });
@@ -382,7 +382,7 @@ export class CUDAVectorService {
         factor: 'Low similarity matches',
         impact: 0.8,
         probability: 0.9,
-        description: `Search results have low semantic similarity to query` });
+        description: `Search results have low semantic similarity to query' });'`
       overallRisk = 'high';
     }
     return {

@@ -21,8 +21,8 @@ type ExportResult = {
   analytics?: {
     totalCases?: Array<{ count: number }>;
     totalEvidence?: Array<{ count: number }>;
-    casesByStatus?: Array<{ status: string;, count: number }>;
-    evidenceByType?: Array<{ type: string;, count: number }>;
+    casesByStatus?: Array<{ status: string; count: number }>;
+    evidenceByType?: Array<{ type: string; count: number }>;
   };
 };
 
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     // Check authentication
     const sessionId = cookies.get('session_id');
     if (!sessionId) {
-      return json({ success: false, error: `Authentication required` }, { status: 401 });
+      return json({ success: false, error: 'Authentication required' }, { status: 401 });
     }
     const body = await request.json();
     const validatedData = ExportRequestSchema.parse(body);
@@ -146,11 +146,11 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     });
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    console.error('Export error:', msg);
+    console.error('Export error:', msg);'
     return json(
       {
         success: false,
-        error: msg || 'Export failed` },
+        error: msg || 'Export failed' },
       { status: 500 }
     );
   }
@@ -166,7 +166,7 @@ function convertToCSV(data: ExportResult): string {
     csv += caseHeaders + '\n';
     for (const caseItem of data.cases) {
       const values = Object.values(caseItem).map(value =>
-        typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : (value ?? '')
+        typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : (value ?? '')"
       );
       csv += values.join(',') + '\n';
     }
@@ -179,7 +179,7 @@ function convertToCSV(data: ExportResult): string {
     csv += evidenceHeaders + '\n';
     for (const evidenceItem of data.evidence) {
       const values = Object.values(evidenceItem).map(value =>
-        typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : (value ?? '')
+        typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : (value ?? '')"
       );
       csv += values.join(',') + '\n';
     }
@@ -196,7 +196,7 @@ function convertToXML(data: ExportResult): string {
     includeCases: true,
     includeAnalytics: false
   };
-  let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<legal_data_export>\n';
+  let xml = '<?xml, version="1.0" encoding="UTF-8"?>\n<legal_data_export>\n';
   xml += `  <metadata>\n`;
   xml += `    <exported_at>${escapeXml(metadata.exportedAt)}</exported_at>\n`;
   xml += `    <format>${escapeXml(metadata.format)}</format>\n`;
@@ -234,7 +234,7 @@ function convertToXML(data: ExportResult): string {
 }
 
 function escapeXml(unsafe: string): string {
-  return unsafe.replace(/[<>&'"]/g, function (c) {
+  return unsafe.replace(/[<>&'"]/g, function (c) {'"
     switch (c) {
       case '<':
         return '&lt;';
@@ -242,9 +242,9 @@ function escapeXml(unsafe: string): string {
         return '&gt;';
       case '&':
         return '&amp;';
-      case "'":
+      case "'":'
         return '&apos;';
-      case '"':
+      case '"':"
         return '&quot;';
       default: return c;
     }

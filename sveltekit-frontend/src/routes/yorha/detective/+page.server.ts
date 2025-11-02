@@ -4,7 +4,7 @@ export const load: PageServerLoad = async () => {
   try {
     const user = { id: 'mock-user-id', firstName: 'Detective', lastName: 'Smith', role: 'detective' };
     const recentCases = [
-      {
+      {,
         id: 'case-1',
         title: 'Corporate Espionage Investigation',
         status: 'active',
@@ -20,7 +20,7 @@ export const load: PageServerLoad = async () => {
       },
     ];
     const recentEvidence = [
-      {
+      {,
         id: 'evidence-1',
         title: 'Security Camera Footage',
         evidenceType: 'video',

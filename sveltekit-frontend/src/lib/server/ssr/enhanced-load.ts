@@ -15,7 +15,7 @@ export interface SSRMetrics { loadTime: number;, dbQueries: number;
 }
 // Enhanced cache with TTL
 class SSRCache {
-  private static cache = new Map<string, { data: any;, expires: number }>();
+  private static cache = new Map<string, { data: any; expires: number }>();
   private static readonly DEFAULT_TTL = 5 * 60 * 1000; // 5 minutes
   static set(_key: string, data: any, ttl = SSRCache.DEFAULT_TTL): void {
     this.cache.set(_key, {
@@ -35,7 +35,7 @@ class SSRCache {
   static clear(): void {
     this.cache.clear();
   }
-  static getStats(): { size: number;, entries: number } {
+  static getStats(): { size: number; entries: number } {
     return {
       size: this.cache.size,
       entries: Array.from(this.cache.values()).filter(entry => Date.now() <= entry.expires).length
@@ -120,7 +120,7 @@ export const createEnhancedLayoutLoad = () => {
       // Load user-specific data if authenticated
       if (user) {
         try {
-          // Get user's recent cases
+          // Get user's recent cases'
           const { cases: userCases } = await DbCaseOperations.search({
             assignedTo: user.id,
             limit: 10,
@@ -164,7 +164,7 @@ export const createEnhancedLayoutLoad = () => {
         _metrics: metrics
       };
     } catch (error: any) {
-      console.error('Layout load error:', error);
+      console.error('Layout load error:', error);'
       metrics.errors.push(error instanceof Error ? error.message : 'Layout load failed');
       metrics.loadTime = Date.now() - startTime;
       // Return minimal safe data on error
@@ -183,7 +183,7 @@ export const createEnhancedLayoutLoad = () => {
         systemStatus: { apiHealthy: false, pgvectorEnabled: false, aiServicesOnline: false },
         hydrationContext: createHydrationContext(url, request, locals.user),
         _metrics: metrics,
-        _error: error instanceof Error ? error.message : 'Unknown error` };
+        _error: error instanceof Error ? error.message : 'Unknown error' };
     }
   };
 };
@@ -243,7 +243,7 @@ export const createEnhancedCasePageLoad = () => {
         _metrics: metrics
       };
     } catch (error: any) {
-      console.error('Case page load error:', error);
+      console.error('Case page load error:', error);'
       metrics.errors.push(error instanceof Error ? error.message : 'Case load failed');
       metrics.loadTime = Date.now() - startTime;
       throw error; // Re-throw to trigger SvelteKit error handling

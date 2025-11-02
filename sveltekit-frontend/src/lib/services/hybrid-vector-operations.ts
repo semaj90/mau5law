@@ -2,7 +2,7 @@
 // Best practices implementation with fallback and performance optimization
 // Database type not available, use any for now
 import type { SQL } from 'drizzle-orm';
-// Replace these imports with your project's actual DB/sql instances if different
+// Replace these imports with your project's actual DB/sql instances if different'
 import { db } from '$lib/server/db'; // assume an exported db object
 import { sql } from 'drizzle-orm';
 
@@ -148,7 +148,7 @@ export class HybridVectorService {
       }
     } catch (err) {
       // non-fatal initialization error
-      console.error('Failed to initialize Qdrant collections: `, err);
+      console.error('Failed to initialize Qdrant collections: `, err);'`
     }
   }
 
@@ -220,13 +220,13 @@ export class HybridVectorService {
       // use sql.raw to safely inject the vector literal and cast to Postgres vector
       const vectorRaw = sql.raw(`${vectorStr}::vector`);
 
-      // Replace with your project's pgvector SQL usage if different
-      const q = sql`SELECT id, title, content, 1 - (embedding <=> ${vectorRaw}) AS similarity, keywords, topics, metadata
+      // Replace with your project's pgvector SQL usage if different'
+      const q = sql`SELECT id, title, content, 1 - (embedding <=> ${vectorRaw}) AS similarity, keywords, topics, metadata`
                     FROM legal_documents
                     WHERE embedding IS NOT NULL
                       AND 1 - (embedding <=> ${vectorRaw}) > ${options.threshold ?? 0}
                     ORDER BY embedding <=> ${vectorRaw}
-                    LIMIT ${Math.ceil((options.limit ?? 10) * 1.5)}`;
+                    LIMIT ${Math.ceil((options.limit ?? 10) * 1.5)}`;`
       const dbClient = db as unknown as DBClient;
       const rows = await (dbClient.execute ? dbClient.execute(q) : (dbClient.query ? dbClient.query(q) : Promise.resolve([])));
       const safeRows = Array.isArray(rows) ? rows : [];
@@ -329,10 +329,10 @@ export class HybridVectorService {
 
   async syncFromPgVector(): Promise<void> {
     try {
-      const q = sql`SELECT id, title, content, embedding, keywords, topics, metadata
+      const q = sql`SELECT id, title, content, embedding, keywords, topics, metadata`
                     FROM legal_documents
                     WHERE embedding IS NOT NULL
-                    LIMIT 1000`;
+                    LIMIT 1000`;`
       const dbClient = db as unknown as DBClient;
       const rows: Record<string, unknown>[] = await (dbClient.execute ? dbClient.execute(q) : (dbClient.query ? dbClient.query(q) : Promise.resolve([])));
 

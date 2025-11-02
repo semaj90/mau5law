@@ -6,7 +6,7 @@ let redisClient: any | null = null;
 async function getRedisClient(): Promise<any | null> {
 	// If already initialized, return it.
 	if (redisClient) return redisClient;
-	// If running in the browser, don't attempt to load ioredis.
+	// If running in the browser, don't attempt to load ioredis.'
 	if (typeof window !== 'undefined') return null;
 	try {
 		const mod = await import('ioredis');
@@ -115,7 +115,7 @@ export class OllamaService {
         `Unknown embedding response format. Payload keys: ${Object.keys(payload).join(', ')}`
       );
     } catch (error) {
-      console.error("Ollama embedding error:", {
+      console.error("Ollama embedding error:", {"
         error,
         inputPreview: text.slice(0, 200),
         model: this.embedModel,
@@ -209,7 +209,7 @@ export class OllamaService {
       if (typeof (data as any)?.output === 'string') return (data as any).output;
       return JSON.stringify(data);
     } catch (error) {
-      console.error("Ollama generation error:", error);
+      console.error("Ollama generation error:", error);"
       throw error;
     }
   }
@@ -279,7 +279,7 @@ export class OllamaService {
               try {
                 onChunk(decoded);
               } catch (cbErr) {
-                console.warn('OllamaService: onChunk callback; error:', cbErr);
+                console.warn('OllamaService: onChunk callback;, error:', cbErr);'
               }
             }
             if (cacheKey) {
@@ -327,7 +327,7 @@ export class OllamaService {
                   try {
                     onChunk(decoded);
                   } catch (cbErr) {
-                    console.warn('OllamaService: onChunk callback; error:', cbErr);
+                    console.warn('OllamaService: onChunk callback;, error:', cbErr);'
                   }
                 }
                 if (cacheKey) {
@@ -497,7 +497,7 @@ export class OllamaService {
       userId?: string;
       timestamp?: Date;
     }
-  ): Promise<{ embedding: number[];, metadata: Record<string, unknown> }> {
+  ): Promise<{ embedding: number[]; metadata: Record<string, unknown> }> {
     // Enhance text with context for better embeddings
     const contextualText = context.documentType
       ? `[${context.documentType}] ${text}`
@@ -615,7 +615,7 @@ export class OllamaService {
    * Parse JSON using worker threads (Node) or synchronous fallback.
    * Returns parsed object and an entropy estimate. Designed for large payloads to avoid blocking main thread in Node.
    */
-  async parseJsonWithEntropy(payload: string): Promise<{ parsed: any;, entropy: number }> {
+  async parseJsonWithEntropy(payload: string): Promise<{ parsed: any; entropy: number }> {
     // If running in Node and worker_threads is available, offload parsing.
     if (isNode) {
       try {
@@ -632,7 +632,7 @@ export class OllamaService {
               parentPort.postMessage({ ok: false, error: String(err) });
             }
           });
-        `;
+        `;`
         const w = new Worker(workerCode, { eval: true });
         const result = await new Promise<any>((resolve, reject) => {
           w.once('message', (m: any) => resolve(m));
@@ -792,7 +792,7 @@ export class OllamaService {
    * MatrixRange: lightweight bucketed routing and frequency structures.
    * Build an index which buckets vectors by centroid and tracks frequency.
    */
-  static MatrixRange = class { centroids: number[][] = [];, buckets: Map<number, { ids: Array<string | number>;, freq: Map<string | number, number>; vectors: number[][] }> = new Map();
+  static MatrixRange = class { centroids: number[][] = [];, buckets: Map<number, { ids: Array<string | number>; freq: Map<string | number, number>; vectors: number[][] }> = new Map();
 
     constructor() {}
 
@@ -800,7 +800,7 @@ export class OllamaService {
       if (!vectors || !vectors.length) return this;
       this.centroids = OllamaService.MatrixUtils.computeCentroids(vectors, k);
       // init buckets
-      for (let i = 0; i < this.centroids.length; i++) this.buckets.set(i, { ids: [], freq: new Map(), vectors: [] });
+      for (let i = 0; i < this.centroids.length; i++) this.buckets.set(i, { ids: [], freq: new, Map(), vectors: [] });
       for (let idx = 0; idx < vectors.length; idx++) {
         const v = vectors[idx];
         const bucket = OllamaService.MatrixUtils.routeToClosestCentroid(v, this.centroids);
@@ -836,7 +836,7 @@ export class OllamaService {
       const centroidIdx = OllamaService.MatrixUtils.routeToClosestCentroid(embedding, this.centroids);
       const bucket = this.buckets.get(centroidIdx);
       if (!bucket) return [];
-      const results: Array<{ id: string | number;, dist: number }> = [];
+      const results: Array<{ id: string | number; dist: number }> = [];
       for (let i = 0; i < bucket.vectors.length; i++) {
         const v = bucket.vectors[i];
         const d = OllamaService.MatrixUtils.euclidean(embedding, v);
@@ -933,7 +933,7 @@ export class OllamaService {
               parentPort.postMessage({ ok: false, error: String(err) });
             }
           });
-        `;
+        `;`
         const w = new Worker(workerCode, { eval: true });
         const result = await new Promise<any>((resolve, reject) => {
           w.once('message', (m: any) => resolve(m));
@@ -960,7 +960,7 @@ export const ollamaService = new OllamaService();
 
 // Helper: safe append to Redis key.
 // Prefer native append if available on the runtime Redis client; otherwise fall back to GET/SET.
-// Casting is used only to satisfy the TypeScript type system when the .append signature isn't present.
+// Casting is used only to satisfy the TypeScript type system when the .append signature isn't present.'
 async function safeAppend(cacheKey: string, value: string): Promise<number | null> {
 	// Ensure we have a server-side Redis client; otherwise behave as no-op.
 	const client = await getRedisClient();
@@ -969,7 +969,7 @@ async function safeAppend(cacheKey: string, value: string): Promise<number | nul
 		return null;
 	}
 
-	// Narrowed: "append" candidate to avoid TS error when typings don't expose it
+	// Narrowed: "append" candidate to avoid TS error when typings don't expose it'
 	const appendable = (client as unknown) as { append?: (k: string, v: string) => Promise<number> };
 	try {
 		if (typeof appendable.append === 'function') {

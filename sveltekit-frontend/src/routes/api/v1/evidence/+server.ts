@@ -1,7 +1,7 @@
 import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Evidence API Routes with Lucia v3 Authentication
- * GET /api/v1/evidence - List user's evidence (with pagination)
+ * GET /api/v1/evidence - List user's evidence (with pagination)'
  * POST /api/v1/evidence - Create new evidence
  */
 import { json, error, type RequestHandler } from '@sveltejs/kit';
@@ -22,7 +22,7 @@ const EvidenceQuerySchema = z.object({
 });
 /*
  * GET /api/v1/evidence
- * List user's evidence with pagination and filtering
+ * List user's evidence with pagination and filtering'
  */
 export const GET: RequestHandler = async ({ request, locals }) => {
   try {
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       console.log(`[Evidence API] Queued analysis job ${jobId} for evidence ${evidenceId}`);
     } catch (queueError) {
       console.error('Failed to queue evidence analysis:', queueError);
-      // Don't fail the request, just log the error
+      // Don't fail the request, just log the error'
     }
     return json(
       {
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({ message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors }, { status: 400 });
     }
     if (err?.message?.includes('not found') || err?.message?.includes('access denied')) {
-      return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 });
+      return json({ message: err.message, code: 'ACCESS_DENIED` }, { status: 403 });'`
     }
     return json(
       { message: 'Failed to create evidence', code: 'CREATE_FAILED', details: err?.message },

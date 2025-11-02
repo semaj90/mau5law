@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('❌ Queue status error:', error);
+    console.error('❌ Queue status error:', error);'
     return json(
       {
         success: false,
@@ -55,7 +55,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
         return json(
           {
             success: false,
-            error: `Job ${jobId} not found or could not be cancelled` },
+            error: `Job ${jobId} not found or could not be cancelled' },'`
           { status: 404 }
         );
       }
@@ -73,17 +73,16 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: 'No valid action specified. Use job_id to cancel job or action=clear_completed'
-      },
+        error: 'No valid action specified. Use job_id to cancel job or action=clear_completed' },
       { status: 400 }
     );
   } catch (error: any) {
-    console.error('❌ Queue delete operation error:', error);
+    console.error('❌ Queue delete operation error:', error);'
     return json(
       {
         success: false,
         error: 'Delete operation failed',
-        details: error instanceof Error ? error.message : 'Unknown error` },
+        details: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }

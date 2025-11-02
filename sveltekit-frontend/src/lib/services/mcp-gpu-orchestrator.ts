@@ -355,10 +355,10 @@ class MCPGPUOrchestrator {
   }
 
   private buildRemediationPrompt(error: string, context7Docs: any): string {
-    return `You are a TypeScript/SvelteKit expert. Fix this error using best practices:; Error: ${error}
+    return `You are a TypeScript/SvelteKit expert. Fix this error using best practices:; Error: ${error}`
 Available documentation:
 ${context7Docs}
-Provide a complete, working fix with explanation.`;
+Provide a complete, working fix with explanation.`;`
   }
 
   // --- Helpers: safe extraction and protocol normalization ---
@@ -420,11 +420,11 @@ Provide a complete, working fix with explanation.`;
       // Attempt lightweight AI augmentation if model configured
       let aiAnalysis: any = null;
       if (this.modelConfigs.has('gemma3-legal')) {
-        const prompt = `Analyze the following authentication attempt for security risks:; Email: ${email}
+        const prompt = `Analyze the following authentication attempt for security risks:; Email: ${email}`
 User Agent: ${userAgent}
 Timestamp: ${timestamp}
 Context: ${JSON.stringify(task.context)}
-Respond with JSON: {"riskScore": 0.0, "reasoning": "explanation", "recommendations": ["list"]}`;
+Respond with JSON: {"riskScore": 0.0, "reasoning": "explanation", "recommendations": ["list"]}`;`
         try {
           const aiResponse = await productionServiceClient.callService(
             '/api/ollama/generate',
@@ -523,18 +523,18 @@ Respond with JSON: {"riskScore": 0.0, "reasoning": "explanation", "recommendatio
       );
 
       // Explicitly typed to allow optional details field
-      let legalVerification: { verified: boolean;, confidence: number; details?: any } = {
+      let legalVerification: { verified: boolean; confidence: number; details?: any } = {
         verified: false,
         confidence: 0
       };
       if (this.modelConfigs.has('gemma3-legal')) {
-        const verificationPrompt = `Validate the following legal professional registration:; Name: ${firstName} ${lastName}
+        const verificationPrompt = `Validate the following legal professional registration:; Name: ${firstName} ${lastName}`
 Email: ${email}
 Role: ${role}
 Department: ${department}
 Jurisdiction: ${jurisdiction}
-Badge Number: ${badgeNumber ?? 'Not provided` }
-Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recommendations": []}`;
+Badge Number: ${badgeNumber ?? 'Not provided` }'`
+Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recommendations": []}`;`
         try {
           const aiResponse = await productionServiceClient.callService(
             '/api/ollama/generate',
@@ -607,7 +607,7 @@ Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recomm
       const response = await productionServiceClient.callService('/api/context7', {
         query: errorContext,
         libraries: ['svelte5', 'sveltekit', 'typescript', 'drizzle'],
-        format: 'typescript` });
+        format: 'typescript` });'`
       return response?.success ? (response.data?.content ?? '') : '';
     } catch {
       return '';
@@ -677,7 +677,7 @@ Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recomm
         useGPU: true,
         useRAG: options.includeRAG !== false,
         model: 'gemma3-legal',
-        protocol: 'grpc` }
+        protocol: 'grpc` }'`
     };
     return this.dispatchGPUTask(task);
   }
@@ -704,7 +704,7 @@ Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recomm
       config: {
         useGPU: false,
         useContext7: true,
-        protocol: 'http` }
+        protocol: 'http` }'`
     };
     return this.dispatchGPUTask(task);
   }
@@ -735,7 +735,7 @@ Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recomm
       config: {
         useGPU: true,
         useRAG: true,
-        protocol: 'quic` }
+        protocol: 'quic` }'`
     };
     return this.dispatchGPUTask(task);
   }

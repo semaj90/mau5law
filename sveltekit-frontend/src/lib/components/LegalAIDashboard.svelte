@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 	// add imports and use Svelte 5 props/runic API
 	import { browser } from '$app/environment';
 	import { websocketStore } from '$lib/stores/websocketStore'; // adjust path if your store is located elsewhere
@@ -19,7 +19,7 @@
 				return next;
 			});
 		} else if (typeof (websocketStore as any)?.set === 'function') {
-			// if it's a writable but user expects full set
+			// if it's a writable but user expects full set'
 			(websocketStore as any).set({ ...( (websocketStore as any).get?.() || {} ), dashboardData: { cases: mappedCases } });
 		} else {
 			// last-resort: attach directly (non-reactive fallback)

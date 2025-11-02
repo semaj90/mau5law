@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
@@ -23,7 +23,7 @@ import type { Document } from '$lib/types';
     return '?';
   }
 
-  // add this helper so we don't access a property that may not exist on PageData.user
+  // add this helper so we don't access a property that may not exist on PageData.user'
   function getUserRole(user: any): string {
     if (!user) return '';
     return (user as any).role ?? '';
@@ -70,7 +70,7 @@ import type { Document } from '$lib/types';
   };
 
   const aiServices = [
-    {
+    {,
       name: 'AI Chat',
       icon: '💬',
       href: '/ai/chat',
@@ -137,7 +137,7 @@ import type { Document } from '$lib/types';
   ];
 
   const recentActivities = $state([
-    {
+    {,
       type: 'chat',
       title: 'Contract Review Session',
       time: '2 minutes ago',
@@ -204,29 +204,29 @@ import type { Document } from '$lib/types';
   <title>AI Dashboard - YoRHa Legal AI Platform</title>
 </svelte:head>
 
-<div class="ai-dashboard">
-  <div class="dashboard-header">
-    <div class="header-top">
+<div, class="ai-dashboard">
+  <div, class="dashboard-header">
+    <div, class="header-top">
       <h1>🤖 AI Dashboard</h1>
       {#if getUserName(data.user)}
-        <div class="user-greeting">
-          <span class="user-name">{getUserName(data.user)}</span>
-          <span class="user-role">{getUserRole(data.user)}</span>
+        <div, class="user-greeting">
+          <span, class="user-name">{getUserName(data.user)}</span>
+          <span, class="user-role">{getUserRole(data.user)}</span>
         </div>
       {/if}
     </div>
-    <p class="subtitle">Comprehensive AI-powered legal intelligence platform.</p>
+    <p, class="subtitle">Comprehensive AI-powered legal intelligence platform.</p>
   </div>
 
-  <!-- User Profile Card -->
-  <section class="user-profile-section">
-    <Card.Root class="user-card">
-      <CardContent class="user-card-content">
-        <div class="user-avatar">
-          <div class="avatar-circle">{getUserInitial(data.user)}</div>
+  <!-- User Profile, Card -->
+  <section, class="user-profile-section">
+    <Card.Root, class="user-card">
+      <CardContent, class="user-card-content">
+        <div, class="user-avatar">
+          <div, class="avatar-circle">{getUserInitial(data.user)}</div>
         </div>
-        <div class="user-info">
-          <p class="user-status">Welcome back,</p>
+        <div, class="user-info">
+          <p, class="user-status">Welcome back,</p>
           <h2 class="user-display-name">{getUserName(data.user) || data.user?.email}</h2>
           <p class="user-role-info">{getUserRole(data.user) || 'User'} • {data.user?.email}</p>
         </div>
@@ -234,34 +234,34 @@ import type { Document } from '$lib/types';
     </Card.Root>
   </section>
 
-  <section class="status-section">
-    <Card.Root class="status-card">
+  <section, class="status-section">
+    <Card.Root, class="status-card">
       <CardHeader>
         <CardTitle>System Health</CardTitle>
       </CardHeader>
       <CardContent>
-        <div class="status-grid">
-          <div class="status-item">
+        <div, class="status-grid">
+          <div, class="status-item">
             <span>AI Models</span>
-            <Badge class={badgeClass(systemHealth.aiModels === 'online', 'status-online', 'status-offline')}>
+            <Badge, class={badgeClass(systemHealth.aiModels === 'online', 'status-online', 'status-offline')}>
               {systemHealth.aiModels}
             </Badge>
           </div>
-          <div class="status-item">
+          <div, class="status-item">
             <span>Vector DB</span>
-            <Badge class={badgeClass(systemHealth.vectorDB === 'online', 'status-online', 'status-offline')}>
+            <Badge, class={badgeClass(systemHealth.vectorDB === 'online', 'status-online', 'status-offline')}>
               {systemHealth.vectorDB}
             </Badge>
           </div>
-          <div class="status-item">
+          <div, class="status-item">
             <span>GPU Acceleration</span>
-            <Badge class={badgeClass(systemHealth.gpuAcceleration === 'active', 'status-active', 'status-inactive')}>
+            <Badge, class={badgeClass(systemHealth.gpuAcceleration === 'active', 'status-active', 'status-inactive')}>
               {systemHealth.gpuAcceleration}
             </Badge>
           </div>
-          <div class="status-item">
+          <div, class="status-item">
             <span>RAG Pipeline</span>
-            <Badge class={badgeClass(systemHealth.ragPipeline === 'healthy', 'status-healthy', 'status-degraded')}>
+            <Badge, class={badgeClass(systemHealth.ragPipeline === 'healthy', 'status-healthy', 'status-degraded')}>
               {systemHealth.ragPipeline}
             </Badge>
           </div>
@@ -270,74 +270,74 @@ import type { Document } from '$lib/types';
     </Card.Root>
   </section>
 
-  <section class="stats-section">
-    <div class="stats-grid">
-      <Card.Root class="stat-card">
+  <section, class="stats-section">
+    <div, class="stats-grid">
+      <Card.Root, class="stat-card">
         <CardContent>
           <div class="stat-value">{stats.activeCases || 0}</div>
-          <div class="stat-label">Active Cases</div>
+          <div, class="stat-label">Active Cases</div>
         </CardContent>
       </Card.Root>
-      <Card.Root class="stat-card">
+      <Card.Root, class="stat-card">
         <CardContent>
-          <div class="stat-value">{aiStats.activeChats}</div>
-          <div class="stat-label">Active Chats</div>
+          <div, class="stat-value">{aiStats.activeChats}</div>
+          <div, class="stat-label">Active Chats</div>
         </CardContent>
       </Card.Root>
-      <Card.Root class="stat-card">
+      <Card.Root, class="stat-card">
         <CardContent>
-          <div class="stat-value">{aiStats.ragQueries}</div>
-          <div class="stat-label">RAG Queries</div>
+          <div, class="stat-value">{aiStats.ragQueries}</div>
+          <div, class="stat-label">RAG Queries</div>
         </CardContent>
       </Card.Root>
-      <Card.Root class="stat-card">
+      <Card.Root, class="stat-card">
         <CardContent>
-          <div class="stat-value">{aiStats.documentsAnalyzed}</div>
-          <div class="stat-label">Documents Analyzed</div>
+          <div, class="stat-value">{aiStats.documentsAnalyzed}</div>
+          <div, class="stat-label">Documents Analyzed</div>
         </CardContent>
       </Card.Root>
     </div>
   </section>
 
-  <!-- Recent Cases Section -->
+  <!-- Recent Cases, Section -->
   {#if recentCases.length > 0}
-    <section class="cases-section">
-      <div class="cases-header-container">
+    <section, class="cases-section">
+      <div, class="cases-header-container">
         <div>
-          <h2 class="cases-section-title">Recent Cases</h2>
-          <p class="cases-section-subtitle">Active cases with latest updates.</p>
+          <h2, class="cases-section-title">Recent Cases</h2>
+          <p, class="cases-section-subtitle">Active cases with latest updates.</p>
         </div>
-        <a href="/cases" class="nes-btn is-primary view-all-cases-btn">View All Cases →</a>
+        <a href="/cases" class="nes-btn is-primary, view-all-cases-btn">View All Cases →</a>
       </div>
 
-      <div class="cases-grid-container">
+      <div, class="cases-grid-container">
         {#each recentCases as caseItem (caseItem.id)}
-          <a href="/cases/{caseItem.id}" class="nes-container is-dark case-card-wrapper">
-            <div class="case-card-inner">
-              <!-- Case Status Badge -->
-              <div class="case-status-badge" style="background-color: {statusColors[caseItem.status]?.bg}">
-                <span style="color: {statusColors[caseItem.status]?.text}" class="status-label">
+          <a href="/cases/{caseItem.id}" class="nes-container is-dark, case-card-wrapper">
+            <div, class="case-card-inner">
+              <!-- Case Status, Badge -->
+              <div, class="case-status-badge" style="background-color: {statusColors[caseItem.status]?.bg}">
+                <span, style="color: {statusColors[caseItem.status]?.text}" class="status-label">
                   {statusColors[caseItem.status]?.label || caseItem.status}
                 </span>
               </div>
 
-              <!-- Priority Badge -->
-              <div class="case-priority-badge" style="background-color: {priorityColors[caseItem.priority]}">
-                <span class="priority-label">{caseItem.priority}</span>
+              <!-- Priority, Badge -->
+              <div, class="case-priority-badge" style="background-color: {priorityColors[caseItem.priority]}">
+                <span, class="priority-label">{caseItem.priority}</span>
               </div>
 
-              <!-- Case Title -->
+              <!-- Case, Title -->
               <h3 class="case-card-title">{caseItem.title || 'Untitled Case'}</h3>
 
-              <!-- Case Type -->
+              <!-- Case, Type -->
               <p class="case-card-type">⚖️ {caseItem.caseType || 'Legal Matter'}</p>
 
-              <!-- Last Updated -->
+              <!-- Last, Updated -->
               <p class="case-card-updated">🕒 {caseItem.lastUpdated || 'Recently updated'}</p>
 
-              <!-- Hover Indicator -->
-              <div class="case-card-hover-indicator">
-                <span class="arrow-icon">→</span>
+              <!-- Hover, Indicator -->
+              <div, class="case-card-hover-indicator">
+                <span, class="arrow-icon">→</span>
               </div>
             </div>
           </a>
@@ -346,28 +346,28 @@ import type { Document } from '$lib/types';
     </section>
   {/if}
 
-  <section class="services-section">
-    <header class="section-header">
+  <section, class="services-section">
+    <header, class="section-header">
       <h2>Available Services</h2>
       <p>Launch tools and workflows across the AI platform.</p>
     </header>
 
-    <div class="services-grid">
+    <div, class="services-grid">
       {#each Array.isArray(aiServices) ? aiServices : [] as service}
-        <Card.Root class="service-card">
+        <Card.Root, class="service-card">
           <CardHeader>
             <CardTitle>
-              <span class="service-icon">{service.icon}</span>
+              <span, class="service-icon">{service.icon}</span>
               {service.name}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p class="service-description">{service.description}</p>
-            <div class="service-meta">
-              <Badge class="service-status">{service.status}</Badge>
-              <span class="service-stats">{service.stats()}</span>
+            <p, class="service-description">{service.description}</p>
+            <div, class="service-meta">
+              <Badge, class="service-status">{service.status}</Badge>
+              <span, class="service-stats">{service.stats()}</span>
             </div>
-            <Button href={service.href} variant="outline" {...umamiAttrs(service.name)}>
+            <Button, href={service.href} variant="outline" {...umamiAttrs(service.name)}>
               Open {service.name}
             </Button>
           </CardContent>
@@ -376,20 +376,20 @@ import type { Document } from '$lib/types';
     </div>
   </section>
 
-  <section class="activity-section">
-    <header class="section-header">
+  <section, class="activity-section">
+    <header, class="section-header">
       <h2>Recent Activity</h2>
       <p>Latest interactions tracked across AI systems.</p>
     </header>
-    <div class="activity-list">
+    <div, class="activity-list">
       {#each Array.isArray(recentActivities) ? recentActivities : [] as activity}
-        <div class="activity-item">
-          <div class="activity-icon">{activityIcon(activity.type)}</div>
-          <div class="activity-content">
+        <div, class="activity-item">
+          <div, class="activity-icon">{activityIcon(activity.type)}</div>
+          <div, class="activity-content">
             <h3>{activity.title}</h3>
             <p>{activity.user} • {activity.time}</p>
           </div>
-          <Badge class="activity-status">{activity.status}</Badge>
+          <Badge, class="activity-status">{activity.status}</Badge>
         </div>
       {/each}
     </div>

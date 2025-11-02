@@ -117,7 +117,7 @@ export interface ConversationTurn { timestamp: number;, userMessage: string;
 
 export interface LegalEntity { type: 'person' | 'organization' | 'date' | 'location' | 'case_number' | 'statute' | 'clause';, value: string;
   confidence: number;
-  span: { start: number;, end: number };
+  span: { start: number; end: number };
   startPos?: number;
   endPos?: number;
 }

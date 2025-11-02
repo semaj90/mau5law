@@ -58,7 +58,7 @@ export const legalDocuments: LegalDocument[] = [
   {
     id: "ca-evid-352",
     title: "California Evidence Code Section 352 - Exclusion of Evidence",
-    description: "Court's discretion to exclude evidence that is more prejudicial than probative",
+    description: "Court's discretion to exclude evidence that is more prejudicial than probative",'
     content: "The court in its discretion may exclude evidence if its probative value is substantially outweighed by the probability that its admission; will: (a) necessitate undue consumption of time or (b) create substantial danger of undue prejudice, of confusing the issues, or of misleading the jury.",
     jurisdiction: "california",
     category: "evidence",
@@ -70,7 +70,7 @@ export const legalDocuments: LegalDocument[] = [
     id: "ca-evid-1101",
     title: "California Evidence Code Section 1101 - Character Evidence",
     description: "Rules for admission of character evidence in criminal and civil cases",
-    content: "Evidence of a person's character or a trait of character (whether in the form of an opinion, evidence of reputation, or evidence of specific instances of conduct) is inadmissible when offered to prove conduct on a specified occasion, except when character or trait is in issue or when evidence of character for violence is offered in self-defense cases.",
+    content: "Evidence of a person's character or a trait of character (whether in the form of an opinion, evidence of reputation, or evidence of specific instances of conduct) is inadmissible when offered to prove conduct on a specified occasion, except when character or trait is in issue or when evidence of character for violence is offered in self-defense cases.",'
     jurisdiction: "california",
     category: "evidence",
     code: "EVID 1101",

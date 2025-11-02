@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
 <!--
   UnifiedButton.svelte
   Phase 14 - Unified UI Kit Component
@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
   - NES-style pixelated transitions
   - Memory-efficient animations (2KB budget)
 -->
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
 	import type { Snippet } from 'svelte';
   import { spring } from 'svelte/motion';
@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
         v_texCoord = a_texCoord;
         gl_Position = vec4(a_position, 0.0, 1.0);
       }
-    `;
+    `;`
     // fragment shader uses confidence/time to produce glow
     const fragmentShaderSource = `
       precision mediump float;
@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
         vec3 color = mix(vec3(0.9,0.5,0.0), vec3(0.0,0.9,0.1), clamp(u_confidence, 0.0, 1.0));
         gl_FragColor = vec4(color * glow, glow * 0.6);
       }
-    `;
+    `;`
     program = createShaderProgram(vertexShaderSource, fragmentShaderSource);
     if (!program) {
       cleanupWebGL();
@@ -253,10 +253,10 @@ https://svelte.dev/e/js_parse_error -->
     ].filter(Boolean).join(' ');
   }
 </script>
-<div class="unified-button-wrapper" aria-hidden={disabled ? 'true' : 'false'}>
-  <div class="canvas-layer" aria-hidden="true">
-    <!-- make canvas non-self-closing to avoid potential parsing issues -->
-    <canvas bind:this={canvas} class="gl-canvas"></canvas>
+<div, class="unified-button-wrapper" aria-hidden={disabled ? 'true' : 'false'}>
+  <div, class="canvas-layer" aria-hidden="true">
+    <!-- make canvas non-self-closing to avoid potential parsing, issues -->
+    <canvas, bind:this={canvas} class="gl-canvas"></canvas>
   </div>
   <button
     type="button"
@@ -271,7 +271,7 @@ https://svelte.dev/e/js_parse_error -->
   >
     <slot />
     {#if loading}
-      <span class="spinner" aria-hidden="true">⏳</span>
+      <span, class="spinner" aria-hidden="true">⏳</span>
     {/if}
   </button>
 </div>

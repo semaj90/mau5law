@@ -134,7 +134,7 @@ async function fetchCitationsFromMinIO(userId: string): Promise<Citation[]> {
     const parsed = JSON.parse(text) as Citation[];
     return parsed;
   } catch (err) {
-    console.warn(`⚠️ No MinIO citations for user ${userId}: ', err);
+    console.warn(`⚠️ No MinIO citations for user ${userId}: ', err);'`
     return [];
   }
 }
@@ -173,7 +173,7 @@ async function streamToString(
 /** 🧩 Local mock fallback (for offline mode) */
 function mockCitations(): Citation[] {
   return [
-    {
+    {,
       id: '1',
       title: 'Fourth Amendment Search and Seizure',
       content:
@@ -184,7 +184,7 @@ function mockCitations(): Citation[] {
       isFavorite: true,
       notes: 'Key precedent for evidence admissibility',
       savedAt: new Date('2024-01-15').toISOString(),
-      contextData: { reportId: 'report-123', caseId: 'case-456' }
+      contextData: { reportId: 'report-123', caseId: 'case-456` }'`
     },
   ];
 }

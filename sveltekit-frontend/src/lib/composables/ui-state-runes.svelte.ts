@@ -98,14 +98,14 @@ export function useToast() {
   };
 }
 // Form state management
-export function useForm<T extends Record<string, any>>(initialValues: T) {
+export function useForm<T extends, Record<string, any>>(initialValues: T) {
   let values = $state<T>({ ...initialValues });
-  let errors = $state<Partial<Record<keyof T, string>>>({});
-  let touched = $state<Partial<Record<keyof T, boolean>>>({});
+  let errors = $state<Partial<Record<keyof, T, string>>>({});
+  let touched = $state<Partial<Record<keyof, T, boolean>>>({});
   let isSubmitting = $state<boolean>(false);
   let isValid = $derived(() => Object.keys(errors).length === 0);
   let isDirty = $derived(() => Object.keys(values).some(key => (values as any)[key] !== (initialValues as any)[key]));
-  function setValue<K extends keyof T>(field: K, value: T[K]): void {
+  function setValue<K extends keyof, T>(field: K, value: T[K]): void {
     values[field] = value;
     touched[field] = true;
     // Clear error when user starts typing
@@ -124,19 +124,19 @@ export function useForm<T extends Record<string, any>>(initialValues: T) {
     errors = newErrors;
   }
   function clearAllErrors(): void {
-    errors = {} as Partial<Record<keyof T, string>>;
+    errors = {} as Partial<Record<keyof, T, string>>;
   }
   function setTouched(field: keyof T, isTouched = true): void {
     touched = { ...touched, [field]: isTouched };
   }
   function reset(newValues?: Partial<T>): void {
     values = { ...initialValues, ...newValues } as T;
-    errors = {} as Partial<Record<keyof T, string>>;
-    touched = {} as Partial<Record<keyof T, boolean>>;
+    errors = {} as Partial<Record<keyof, T, string>>;
+    touched = {} as Partial<Record<keyof, T, boolean>>;
     isSubmitting = false;
   }
   function validate(validators: Partial<Record<keyof T, (_value: any) => string | null>>): boolean {
-    const newErrors: Partial<Record<keyof T, string>> = {};
+    const newErrors: Partial<Record<keyof, T, string>> = {};
     let hasErrors = $state<boolean>(false);
     Object.keys(validators).forEach(field => {
       const key = field as keyof T;

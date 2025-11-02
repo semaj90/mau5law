@@ -83,7 +83,7 @@ export interface EvidenceFilter {
   type?: string[];
   confidentiality_level?: string[];
   priority?: string[];
-  date_range?: { start: string;, end: string };
+  date_range?: { start: string; end: string };
   collected_by?: string[];
   tags?: string[];
   search_text?: string;
@@ -312,7 +312,7 @@ const createEvidenceStore = () => {
           person: newEvidenceData.collected_by,
           location: newEvidenceData.location_collected,
           purpose: 'Evidence collection for case investigation',
-          notes: `Evidence "${newEvidenceData.title}" added to case system' };
+          notes: `Evidence "${newEvidenceData.title}" added to case system` };
         const evidencePayload = {
           ...newEvidenceData,
           caseId: currentCaseId,
@@ -581,8 +581,7 @@ const createEvidenceStore = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Legal-Request': 'true'
-          },
+            'X-Legal-Request': 'true` },'`
           body: JSON.stringify(entry)
         });
         if (!response.ok) {
@@ -679,7 +678,7 @@ const createEvidenceStore = () => {
       if (!currentCaseId) return;
       try {
         const response = await fetch(`/api/evidence/stats?caseId=${currentCaseId}`, {
-          headers: { 'X-Legal-Request': 'true' }
+          headers: { 'X-Legal-Request': 'true` }'`
         });
         if (response.ok) {
           const stats = await response.json();
@@ -851,7 +850,7 @@ export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
   stats.average_relevance_score = relevanceScoreCount > 0 ? totalRelevanceScore / relevanceScoreCount : 0;
   return stats;
 }
-export function validateChainOfCustody(evidence: Evidence): { valid: boolean;, issues: string[] } {
+export function validateChainOfCustody(evidence: Evidence): { valid: boolean; issues: string[] } {
   const issues: string[] = [];
   const chain = evidence.chain_of_custody;
   if (chain.length === 0) {
@@ -861,7 +860,7 @@ export function validateChainOfCustody(evidence: Evidence): { valid: boolean;, i
   for (let i = 1; i < chain.length; i++) {
     const prev = new Date(chain[i - 1].timestamp);
     const curr = new Date(chain[i].timestamp);
-    if (curr < prev) issues.push(`Chain of custody timestamp out of order at entry ${i + 1}`);
+    if (curr < prev) issues.push(`Chain of custody timestamp out of order at, entry ${i + 1}`);
   }
   for (let i = 0; i < chain.length; i++) {
     const entry = chain[i];

@@ -25,7 +25,7 @@ const meta: Meta<any> = {
   tags: ['autodocs']
 };
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof, meta>;
 export const Default: Story = { args: {, model: 'gemma3-legal',
     provider: 'ollama',
     temperature: 0.7,

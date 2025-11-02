@@ -63,7 +63,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
         // Send initial connection message
         controller.enqueue(
           encoder.encode(
-            `data: ${JSON.stringify({
+            `data: ${JSON.stringify({`
              , type: 'connection',
               message: 'Streaming AI suggestions started',
               timestamp: new Date().toISOString()
@@ -90,11 +90,11 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
                     const suggestion = toSuggestionPayload(rawSuggestion); // Normalize suggestion
                     controller.enqueue(
                       encoder.encode(
-                        `data: ${JSON.stringify({
-                          type: 'suggestion',
+                        `data: ${JSON.stringify({`
+                         , type: 'suggestion',
                           source: 'ollama',
                           suggestion: {
-                            id: `ollama-stream-${suggestionCount}`,
+                           , id: `ollama-stream-${suggestionCount}`,
                             content: suggestion.content,
                             type: suggestion.type,
                             confidence: suggestion.confidence,
@@ -115,7 +115,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
                 } catch (error: any) {
                   controller.enqueue(
                     encoder.encode(
-                      `data: ${JSON.stringify({
+                      `data: ${JSON.stringify({`
                        , type: 'error',
                         source: 'ollama',
                         message: 'Ollama streaming failed',
@@ -143,11 +143,11 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
                     const suggestion = toSuggestionPayload(rawSuggestion); // Normalize suggestion
                     controller.enqueue(
                       encoder.encode(
-                        `data: ${JSON.stringify({
-                          type: 'suggestion',
+                        `data: ${JSON.stringify({`
+                         , type: 'suggestion',
                           source: 'enhanced-rag',
                           suggestion: {
-                            id: `rag-stream-${suggestionCount}`,
+                           , id: `rag-stream-${suggestionCount}`,
                             content: suggestion.content,
                             type: suggestion.type,
                             confidence: suggestion.confidence,
@@ -168,7 +168,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
                 } catch (error: any) {
                   controller.enqueue(
                     encoder.encode(
-                      `data: ${JSON.stringify({
+                      `data: ${JSON.stringify({`
                        , type: 'error',
                         source: 'enhanced-rag',
                         message: 'Enhanced RAG streaming failed',
@@ -185,7 +185,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
           // Send completion message
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'complete',
                 message: 'All AI suggestion streams completed',
                 totalSuggestions: suggestionCount,
@@ -197,7 +197,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
           // Send error message
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'error',
                 message: 'Streaming failed',
                 error: error instanceof Error ? error.message : String(error ?? 'Unknown error'),
@@ -215,7 +215,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
     const msg = error instanceof Error ? error.message : String(error ?? 'Unknown error');
-    console.error('Streaming endpoint error:', msg);
+    console.error('Streaming endpoint error:', msg);'
     return new Response(
       JSON.stringify({
         error: 'Failed to start streaming',
@@ -223,7 +223,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json` }'`
       }
     );
   }

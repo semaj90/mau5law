@@ -14,25 +14,25 @@ type PoolLike = {
   close?: () => Promise<void> | void;
 };
 // Derive concrete postgres-js client type
-type PostgresJsClient = ReturnType<typeof postgres>;
+type PostgresJsClient = ReturnType<typeof, postgres>;
 interface Migration { id: string;, filename: string;
   // DB drivers commonly return timestamps as strings; accept both and allow null
   applied_at?: string | Date | null;
 }
 async function runSqlMigrations(db: PostgresJsDatabase<any>, pool: PoolLike): Promise<any> {
   console.log('🚀 Running SQL migrations from migrations folder...');
-  // Create migrations table if it doesn't exist
+  // Create migrations table if it doesn't exist'
   await db.execute(sql`
     CREATE TABLE IF NOT EXISTS migrations (
       id VARCHAR(255) PRIMARY KEY,
       filename VARCHAR(255) NOT NULL,
       applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
-  `);
+  `);`
   // Get applied migrations (handle multiple possible return shapes)
   const result = await db.execute(sql`
     SELECT id, filename, applied_at FROM migrations ORDER BY applied_at ASC
-  `);
+  `);`
   // drizzle/postgres-js clients sometimes return { rows: [...] } or an array directly
   const rows = (result && (result as any).rows) ?? (Array.isArray(result) ? result : ((result as any)[0] ?? []));
   const appliedMigrations = (Array.isArray(rows) ? rows : []) as Migration[];
@@ -87,10 +87,10 @@ async function runSqlMigrations(db: PostgresJsDatabase<any>, pool: PoolLike): Pr
         ON CONFLICT (id) DO UPDATE SET
           filename = EXCLUDED.filename,
           applied_at = CURRENT_TIMESTAMP
-      `);
+      `);`
       console.log(`✅ SQL Migration ${migration} completed successfully`);
     } catch (error) {
-      console.error(`❌ SQL Migration ${migration} failed: ', error);
+      console.error(`❌ SQL Migration ${migration} failed: ', error);'`
       throw error;
     }
   }
@@ -109,7 +109,7 @@ async function runMigrations(): Promise<any> {
     await runSqlMigrations(db, pool);
     // Then run Drizzle migrations if they exist
     try {
-      await migrate(db, { migrationsFolder: './drizzle' });
+      await migrate(db, { migrationsFolder: './drizzle` });'`
       console.log('✅ Drizzle migrations completed successfully.');
     } catch (error) {
       console.log('ℹ️ No Drizzle migrations found or already applied.');

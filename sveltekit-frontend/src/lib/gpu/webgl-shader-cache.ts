@@ -10,7 +10,7 @@ export function compileShader(gl: GL, source: string, type: number): WebGLShader
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
     const log = gl.getShaderInfoLog(shader);
     gl.deleteShader(shader);
-    throw new Error('Shader compile error: ' + log);
+    throw new Error('Shader compile error: ' + log);'
   }
   return shader;
 }
@@ -25,7 +25,7 @@ export function createProgram(gl: GL, vertSrc: string, fragSrc: string): WebGLPr
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
     const log = gl.getProgramInfoLog(program);
     gl.deleteProgram(program);
-    throw new Error('Program link error: ' + log);
+    throw new Error('Program link error: ' + log);'
   }
   // shaders can be deleted after linking
   gl.deleteShader(vert);
@@ -51,7 +51,7 @@ export function createEmbeddingTexture(gl: GL, width: number, height: number, da
   gl.bindTexture(gl.TEXTURE_2D, null);
   return tex;
 }
-// CPU fallback similarity helpers (useful if you don't have GPU compute shaders)
+// CPU fallback similarity helpers (useful if you don't have GPU compute shaders)'
 export function dotProduct(a: Float32Array, b: Float32Array): number {
   let s = 0;
   for (let i = 0; i < a.length; i++) s += a[i] * b[i];
@@ -75,8 +75,8 @@ export function normalizeInPlace(v: Float32Array) {
   return v;
 }
 // Top-K search over an array of embeddings (Embeddings stored as Float32Array concatenated or as array)
-export function topKSimilar(embeddings: Float32Array[] | Float32Array, query: Float32Array, k = 5): Array<{ index: number;, score: number }> {
-  const results: Array<{ index: number;, score: number }> = [];
+export function topKSimilar(embeddings: Float32Array[] | Float32Array, query: Float32Array, k = 5): Array<{ index: number; score: number }> {
+  const results: Array<{ index: number; score: number }> = [];
   if (Array.isArray(embeddings)) {
     for (let i = 0; i < embeddings.length; i++) {
       const score = computeCosineSimilarity(query, embeddings[i]);

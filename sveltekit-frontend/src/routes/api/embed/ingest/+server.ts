@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     })
   } catch (err) {
-    console.error('Embedding ingestion error:', err)
+    console.error('Embedding ingestion error:', err)'
     return error(500, `Ingestion failed: ${err.message}`)
   }
 }

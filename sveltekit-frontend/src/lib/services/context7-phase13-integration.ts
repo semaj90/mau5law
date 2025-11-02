@@ -164,7 +164,7 @@ export class Context7Phase13Integration {
      memoryGraph: 'IDLE',
      agentOrchestration: 'IDLE',
      bestPractices: 'IDLE',
-     overall: 'HEALTHY` });
+     overall: 'HEALTHY' });
    public performanceStats = writable({
      averageSemanticSearchTime: 0,
      averageMemoryGraphTime: 0,
@@ -305,7 +305,7 @@ export class Context7Phase13Integration {
         }
       }
     } catch (err: any) {
-      console.warn('semanticSearchSafe error:', String(err));
+      console.warn('semanticSearchSafe error:', String(err));'
     }
     return [];
   }
@@ -444,7 +444,7 @@ export class Context7Phase13Integration {
       // lightweight warm-up: call semanticSearchSafe with an empty query to let adapters initialize
       await this.semanticSearchSafe('');
     } catch (e) {
-      // intentionally swallow: warm-up failure shouldn't break initialization flow
+      // intentionally swallow: warm-up failure shouldn't break initialization flow'
       console.warn('Semantic search warm-up failed (non-fatal):', String(e));
     }
   }

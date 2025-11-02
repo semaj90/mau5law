@@ -52,11 +52,11 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'texts array is required for batch embedding jobs` },
+              error: 'texts array is required for batch embedding jobs' },
             { status: 400 }
           );
         }
-        const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2)}';'`
         const jobIds: string[] = [];
         // Enqueue all texts as separate jobs with shared batch ID
         for (let i = 0; i < texts.length; i++) {
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
           jobIds,
           jobType: 'batch-embedding',
           batchSize: texts.length,
-          statusEndpoint: '/api/jobs/stream?jobIds=${jobIds.join(',')}`,
+          statusEndpoint: '/api/jobs/stream?jobIds=${jobIds.join(',')}`,'`
           estimatedDuration:
             Math.ceil((texts.reduce((sum: number, text: string) => sum + text.length, 0) * 0.1) / 10) + 2000
         });
@@ -88,17 +88,16 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown job; type: ${jobType}' },
+            error: `Unknown job; type: ${jobType}' },'`
           { status: 400 }
         );
     }
   } catch (error) {
-    console.error('Job enqueueing error:', error);
+    console.error('Job enqueueing error: ', error);'
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      },
+        error: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }
@@ -113,7 +112,7 @@ export const GET: RequestHandler = async () => {
       queueStatus,
       workerStats,
       availableJobTypes: [
-        {
+        {,
          , type: 'embedding',
           description: 'Generate embedding for a single text',
           requiredFields: ['text'],
@@ -128,11 +127,11 @@ export const GET: RequestHandler = async () => {
       ]
     });
   } catch (error) {
-    console.error('Queue status error:', error);
+    console.error('Queue status error: ', error);'
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error` },
+        error: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }

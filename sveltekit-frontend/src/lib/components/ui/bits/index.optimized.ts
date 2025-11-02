@@ -6,16 +6,16 @@
 // CORE COMPONENTS (Always Tree-Shakable)
 // ======================================
 // Essential UI primitives - most commonly used
-export { default as Button } from './Button.svelte';
-export { default as Input } from './Input.svelte';
-export { default as Label } from './Label.svelte';
+export { default, as Button } from './Button.svelte';
+export { default, as Input } from './Input.svelte';
+export { default, as Label } from './Label.svelte';
 // Card system - grouped for optimal chunking
-export { default as Card } from './Card.svelte';
-export { default as CardContent } from './CardContent.svelte';
-export { default as CardDescription } from './CardDescription.svelte';
-export { default as CardFooter } from './CardFooter.svelte';
-export { default as CardHeader } from './CardHeader.svelte';
-export { default as CardTitle } from './CardTitle.svelte';
+export { default, as Card } from './Card.svelte';
+export { default, as CardContent } from './CardContent.svelte';
+export { default, as CardDescription } from './CardDescription.svelte';
+export { default, as CardFooter } from './CardFooter.svelte';
+export { default, as CardHeader } from './CardHeader.svelte';
+export { default, as CardTitle } from './CardTitle.svelte';
 // ======================================
 // CATEGORY-BASED EXPORTS (Lazy Loadable)
 // ======================================
@@ -232,7 +232,7 @@ export function getComponentBundleInfo() {
       legal: '~45KB',
       ai: '~38KB',
       gaming: '~22KB',
-      advanced: '~31KB' },
+      advanced: '~31KB` },'`
     totalEstimatedSize: '~151KB',
     treShakeableCore: true
   }
@@ -243,5 +243,5 @@ export function getComponentBundleInfo() {
 // Re-export bits-ui for existing code compatibility
 export * from 'bits-ui';
 // Legacy exports - will be deprecated in next major version
-export { default as Select } from '../Select.svelte';
-export { default as DialogWrapper } from '../DialogWrapper.svelte';
+export { default, as Select } from '../Select.svelte';
+export { default, as DialogWrapper } from '../DialogWrapper.svelte';

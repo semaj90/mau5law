@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ request }) => {
       protocol: 'websocket',
       status: 'ready',
       description: 'Precedent WebSocket endpoint for streaming precedent metadata and search results.',
-      example: { subscribe: {, action: 'subscribe', channel: 'precedents:case-123' },
+      example: {, subscribe: {, action: 'subscribe', channel: 'precedents:case-123' },
         search: {, action: 'search', query: 'contract breach', topK: 5 }
       }
     }),

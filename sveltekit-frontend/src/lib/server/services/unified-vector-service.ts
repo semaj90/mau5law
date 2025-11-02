@@ -114,7 +114,7 @@ function getRedisClient(): Redis {
     });
 
     redisClient.on('error', (err) => {
-      console.error('[Vector Service] Redis error:', err.message);
+      console.error('[Vector Service] Redis error:', err.message);'
     });
   }
   return redisClient;
@@ -145,7 +145,7 @@ async function generateEmbedding(text: string, model: string = 'gemma'): Promise
 
     const response = await fetch(`${config.ollamaUrl}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , model: embeddingModel,
         prompt: text
@@ -193,7 +193,7 @@ async function searchPgVector(
         1 - (embedding <=> ${sql.raw(`'[${embedding.join(',')}]'`)}) as similarity_score
       FROM documents
       WHERE 1 - (embedding <=> ${sql.raw(`'[${embedding.join(',')}]'`)}) > ${threshold}
-    `;
+    `;`
 
     // Apply metadata filters if provided
     if (metadataFilter && Object.keys(metadataFilter).length > 0) {

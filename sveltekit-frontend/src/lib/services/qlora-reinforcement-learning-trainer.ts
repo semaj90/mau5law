@@ -111,8 +111,7 @@ export class QLoRAReinforcementTrainer {
    * This is the core: "data flywheel" function that collects training examples
    */
   async recordUserFeedback()
-    input: string; modelOutput: string
-    userFeedback: UserFeedback;
+    input: string; modelOutput: string; userFeedback: UserFeedback;
     context: LegalContext;
   ): Promise<void> {
     const exampl,e: TrainingExample = {

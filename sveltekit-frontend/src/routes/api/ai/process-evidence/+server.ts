@@ -120,7 +120,7 @@ const originalPOSTHandler: RequestHandler = async event => {
     const userRes = await getUser(event);
     const user = (userRes as { user?: User }).user || null;
     if (!user) {
-      return json({ error: 'Authentication required' }, { status: 401 });
+      return json({ error: 'Authentication required` }, { status: 401 });'`
     }
     // Parse request body
     const body: ProcessEvidenceRequest = await request.json();
@@ -137,8 +137,7 @@ const originalPOSTHandler: RequestHandler = async event => {
     // Validate required fields
     if (!caseId || !evidence || !userId) {
       return json(
-        { error: 'Missing required, fields: caseId, evidence, userId'
-        },
+        { error: `Missing required, fields: caseId, evidence, userId` },
         { status: 400 }
       );
     }
@@ -235,7 +234,7 @@ const originalPOSTHandler: RequestHandler = async event => {
     return json(enhancedResult);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error('Evidence processing error:', message);
+    console.error('Evidence processing error:', message);'
     return json(
       {
         error: 'Failed to process evidence',
@@ -275,29 +274,29 @@ async function checkOllamaModel(model: string): Promise<ModelCheck> {
     return { available: availableModels.includes(model), models: availableModels };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error('Ollama availability check failed: `, message);
+    console.error('Ollama availability check failed: `, message);'`
     return { available: false, models: [] };
   }
 }
 
 // Get specialized system prompt for legal analysis
 function getLegalSystemPrompt(analysisType: string): string {
-  const basePrompt = `You are a specialized legal AI assistant trained on legal documents, case law, and statutory materials.
+  const basePrompt = `You are a specialized legal AI assistant trained on legal documents, case law, and statutory materials.`
 Provide accurate, precise analysis following legal standards and best practices.
-Always cite relevant sources and indicate confidence levels.`;
+Always cite relevant sources and indicate confidence levels.`;`
   const typeSpecificPrompts = {
-    summary: `${basePrompt}
+    summary: `${basePrompt}`
 Focus on: Key legal issues, relevant facts, applicable law, and case conclusions.
-Format: Clear, structured summary suitable for legal professionals.`,
-    risk_analysis: `${basePrompt}
+Format: Clear, structured summary suitable for legal professionals.`,`
+    risk_analysis: `${basePrompt}`
 Focus on: Legal risks, potential liabilities, compliance issues, and mitigation strategies.
-Format: Risk assessment with severity levels and actionable recommendations.`,
-    legal_research: `${basePrompt}
+Format: Risk assessment with severity levels and actionable recommendations.`,`
+    legal_research: `${basePrompt}`
 Focus on: Applicable statutes, case precedents, legal principles, and jurisdictional considerations.
-Format: Comprehensive research memo with citations and legal analysis.`,
-    case_comparison: `${basePrompt}
+Format: Comprehensive research memo with citations and legal analysis.`,`
+    case_comparison: `${basePrompt}`
 Focus on: Similarities/differences in facts, legal issues, holdings, and reasoning.
-Format: Comparative analysis highlighting relevant patterns and distinctions.` };
+Format: Comparative analysis highlighting relevant patterns and distinctions.` };`
   return typeSpecificPrompts[analysisType] || typeSpecificPrompts.summary;
 }
 
@@ -313,7 +312,7 @@ async function processWithDirectOllama(context: EnhancedContext, startTime: numb
       headers: { 'Content-Type': `application/json` },
       signal: controller.signal,
       body: JSON.stringify({
-        model: context?.model || 'unknown',
+       , model: context?.model || 'unknown',
         prompt,
         system: context.systemPrompt,
         options: {
@@ -355,12 +354,12 @@ function createLegalPrompt(context: EnhancedContext): string {
   const evidenceText = (context.evidence || [])
     .map((item, index) => `Evidence ${index + 1}: ${JSON.stringify(item)}`)
     .join('\n\n');
-  return `Case ID: ${context.caseId}
+  return `Case ID: ${context.caseId}`
 Analysis Type: ${context.analysisType}
 Evidence to Analyze:
 ${evidenceText}
 Please provide a comprehensive ${context.analysisType.replace('_', ' ')} of this evidence.
-Include relevant legal principles, potential issues, and actionable insights.`;
+Include relevant legal principles, potential issues, and actionable insights.`;`
 }
 
 // Extract legal concepts from analysis text

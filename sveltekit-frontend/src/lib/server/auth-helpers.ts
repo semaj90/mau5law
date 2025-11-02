@@ -90,7 +90,7 @@ export async function requireRole(
 }
 
 /**
- * Get optional user (doesn't throw error if not authenticated)
+ * Get optional user (doesn't throw error if not authenticated)'
  */
 export async function getOptionalUser(event: RequestEvent): Promise<AuthResult | null> {
   try {

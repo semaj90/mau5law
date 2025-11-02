@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
       })
     }
   } catch (err) {
-    console.error('Auth endpoint error:', err)
+    console.error('Auth endpoint error:', err)'
     return error(500, 'Authentication failed')
   }
 }

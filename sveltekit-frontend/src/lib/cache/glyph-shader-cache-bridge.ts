@@ -110,11 +110,11 @@ class GlyphShaderCacheBridge {
         tier: 'l2',
         ttl: 30 * 60 * 1000, // 30 minutes
         priority: 'normal',
-        type: `glyph_shader` });
+        type: `glyph_shader' });'`
       // Step 9: Cache shader with embedding for future search
       await shaderCacheManager.cacheShaderWithEmbedding(
         compiledShader,
-        `Legal glyph rendering: ${request.legalContext?.documentType || 'document` }`,
+        `Legal glyph rendering: ${request.legalContext?.documentType || 'document' }`,
         'glyph_rendering',
         ['glyph', 'legal', 'quantized', request.legalContext?.documentType || 'document']
       );
@@ -182,7 +182,7 @@ fn renderGlyphs(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let watermark_pattern = sin(f32(pixel_coord.x * 13u + pixel_coord.y * 7u)) * watermark_intensity;
   pixel_color.rgb += vec3<f32>(watermark_pattern);
   `
-      : `` }
+      : `' }'`
   // Quantize final output
   let quantization_factor = f32(1u << render_params.quantization_bits) - 1.0;
   pixel_color = round(pixel_color * quantization_factor) / quantization_factor;
@@ -228,7 +228,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
   let intensity = quantization_table[sample_index % arrayLength(&quantization_table)];
   return vec4<f32>(intensity, intensity, intensity, 1.0);
 }
-`;
+`;`
   }
   /**
    * Create GPU textures for glyph atlas
@@ -299,8 +299,8 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
    */
   async renderGlyphs(
     cachedShader: CachedGlyphShader,
-    renderingData: { glyphBuffer: GPUBuffer;, quantizationBuffer: GPUBuffer;
-      outputTexture: GPUTexture;
+    renderingData: {, glyphBuffer: GPUBuffer;, quantizationBuffer: GPUBuffer;
+     , outputTexture: GPUTexture;
      , renderParams: GPUBuffer;
     }
   ): Promise<any> {
@@ -313,7 +313,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
       const bindGroup = this.device.createBindGroup({
         layout: cachedShader.compiledShader.bindGroupLayout,
         entries: [
-          { binding: 0, resource: { buffer: renderingData.glyphBuffer } },
+          {, binding: 0, resource: {, buffer: renderingData.glyphBuffer } },
           { binding: 1, resource: {, buffer: renderingData.quantizationBuffer } },
           { binding: 2, resource: renderingData.outputTexture.createView() },
           { binding: 3, resource: { buffer: renderingData.renderParams } }

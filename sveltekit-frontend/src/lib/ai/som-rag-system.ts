@@ -3,7 +3,7 @@ import type { Driver } from 'neo4j-driver-core';
 // Self-Organizing Map (SOM) Enhanced RAG System
 // Implements dimensionality reduction, k-means clustering, and boolean storage for legal AI
 export interface SOMNode { id: string;, weights: number[];
-  position: { x: number;, y: number };
+  position: { x: number; y: number };
   cluster: number;
   activation: number;
   documents: string[];
@@ -314,7 +314,7 @@ export class SelfOrganizingMapRAG {
   async semanticSearch(query: string, queryEmbedding: number[], limit: number = 10): Promise<DocumentEmbedding[]> {
     console.log(`🔍 Performing SOM-enhanced semantic search...`);
     // Find best matching SOM nodes
-    const candidateNodes: Array<{ node: SOMNode;, distance: number }> = [];
+    const candidateNodes: Array<{ node: SOMNode; distance: number }> = [];
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {
         const node = this.som[x][y];
@@ -331,7 +331,7 @@ export class SelfOrganizingMapRAG {
       node.documents.forEach(docId => candidateDocuments.add(docId));
     });
     // Score documents using boolean patterns and legal context
-    const scoredDocuments: Array<{ doc: DocumentEmbedding;, score: number }> = [];
+    const scoredDocuments: Array<{ doc: DocumentEmbedding; score: number }> = [];
     candidateDocuments.forEach(docId => {
       const doc = this.documentEmbeddings.get(docId);
       if (!doc) return;
@@ -379,7 +379,7 @@ export class SelfOrganizingMapRAG {
               c.dominant_legal_type = $dominantType,
               c.cluster_size = $clusterSize,
               c.creation_timestamp = $timestamp
-          `,
+          `,`
           {
             clusterId: cluster.id,
             centroid: cluster.centroid,
@@ -397,7 +397,7 @@ export class SelfOrganizingMapRAG {
             MATCH (c:Cluster {id: $clusterId})
             MERGE (d:Document {id: $docId})
             MERGE (d)-[:BELONGS_TO]->(c)
-            `,
+            `,`
             { clusterId: cluster.id, docId }
           );
         }
@@ -413,7 +413,7 @@ export class SelfOrganizingMapRAG {
   private euclideanDistance(a: number[], b: number[]): number {
     return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0));
   }
-  private manhattanDistance(a: { x: number;, y: number }, b: {, x: number; y: number }): number {
+  private manhattanDistance(a: { x: number;, y: number }, b: {, x: number;, y: number }): number {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
   }
   private cosineSimilarity(a: number[], b: number[]): number {
@@ -492,13 +492,13 @@ export class SelfOrganizingMapRAG {
   /**
    * Get cluster visualization data for UI
    */
-  getVisualizationData(): Array<{ id: string;, position: { x: number;, y: number };
+  getVisualizationData(): Array<{ id: string;, position: { x: number; y: number };
     cluster: number;
     confidence: number;
     documents: number;
     evidenceType: string;
   }> {
-    const vizData: Array<{ id: string;, position: { x: number;, y: number };
+    const vizData: Array<{ id: string;, position: { x: number; y: number };
       cluster: number;
       confidence: number;
       documents: number;
@@ -513,7 +513,7 @@ export class SelfOrganizingMapRAG {
           cluster: node.cluster,
           confidence: node.legalContext.confidence,
           documents: node.documents.length,
-          evidenceType: node.legalContext.evidenceType || 'unknown` });
+          evidenceType: node.legalContext.evidenceType || 'unknown' });
       }
     }
     return vizData;

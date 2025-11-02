@@ -2,7 +2,7 @@ import { evidence, db } from '$lib/server/db';
 import path from 'path';
 import { json } from '@sveltejs/kit';
 import { randomUUID } from 'crypto';
-import { promises as fs } from 'fs';
+import { promises, as fs } from 'fs';
 import type { RequestHandler } from './$types.js';
 export const POST: RequestHandler = async ({ request, locals }) => {
   const user = locals.user;

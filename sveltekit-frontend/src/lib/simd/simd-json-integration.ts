@@ -209,7 +209,7 @@ export async function enhanceRabbitMQMessage(message: any): Promise<any> {
         }
       } catch (error) {
         // Keep original value if parsing fails
-        console.warn(`Failed to parse JSON field ${field}: ', error);
+        console.warn(`Failed to parse JSON field ${field}: ', error);'`
       }
     }
   }
@@ -317,5 +317,5 @@ export async function benchmarkJSONParsing(iterations: number = 1000): Promise<a
       totalTime: standardTime
     },
     speedup: simdTime > 0 ? standardTime / simdTime : 0,
-    testData: `${Math.round(testData.length / 1024)}KB test payload' };
+    testData: `${Math.round(testData.length / 1024)}KB test payload` };
 }

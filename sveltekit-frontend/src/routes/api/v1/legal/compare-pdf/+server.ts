@@ -20,7 +20,7 @@ async function tryExtractPdfText(file: File): Promise<string> {
   return '';
 }
 
-async function embed(text: string): Promise<{ vector: number[];, ms: number }> {
+async function embed(text: string): Promise<{ vector: number[]; ms: number }> {
   const baseUrl = OLLAMA_CONFIG?.baseUrl || 'http://localhost:11434';
   const started = Date.now();
   const res = await fetch(`${baseUrl}/api/embeddings`, {
@@ -35,12 +35,12 @@ async function embed(text: string): Promise<{ vector: number[];, ms: number }> {
   return { vector: vec, ms };
 }
 
-async function analyzeLLM(text: string, similar: any[]): Promise<{ analysis: any;, ms: number }> {
+async function analyzeLLM(text: string, similar: any[]): Promise<{ analysis: any; ms: number }> {
   const baseUrl = OLLAMA_CONFIG?.baseUrl || 'http://localhost:11434';
-  const prompt = `Analyze the provided legal document and produce STRICT JSON only with fields:
+  const prompt = `Analyze the provided legal document and produce STRICT JSON only with fields:`
 who, what, why, how, evidence, poi, verdict, sentencing, legalIssues, recommendations, confidence.
 Keep arrays concise. confidence is 0..1.
-Document:\n"""${text.slice(0, 6000)}"""\nSimilar:\n${JSON.stringify(similar.slice(0, 5))}`;
+Document:\n"""${text.slice(0, 6000)}"""\nSimilar:\n${JSON.stringify(similar.slice(0, 5))}`;`
   const started = Date.now();
   const res = await fetch(`${baseUrl}/api/generate`, {
     method: 'POST',
@@ -55,7 +55,7 @@ Document:\n"""${text.slice(0, 6000)}"""\nSimilar:\n${JSON.stringify(similar.slic
   try { parsed = JSON.parse(raw); } catch {}
   if (!parsed) {
     const i = raw.indexOf('{');
-    const j = raw.lastIndexOf('}');
+    const j = raw.lastIndexOf(' }');
     if (i >= 0 && j > i) {
       try { parsed = JSON.parse(raw.slice(i, j + 1)); } catch {}
     }
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     if (!file && !fileUrl && (!text || text.length < 10)) {
-      return json({ success: false, error: `Provide a PDF file, a fileUrl, or at least 10 characters of text.` }, { status: 400 });
+      return json({ success: false, error: 'Provide a PDF file, a fileUrl, or at least 10 characters of text.` }, { status: 400 });'`
     }
 
     // 1) Extract

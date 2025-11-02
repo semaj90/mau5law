@@ -168,7 +168,7 @@ export class FocusManager {
    * Check if element should be dimmed in focus mode
    */
   private shouldDimElement(element: HTMLElement): boolean {
-    // Don't dim if zen mode is enabled and element should be hidden
+    // Don't dim if zen mode is enabled and element should be hidden'
     if (this.settings.enableZenMode && this.shouldHideElement(element)) {
       return false;
     }
@@ -266,7 +266,7 @@ export function focusModeAction(node: HTMLElement, enabled: boolean = false) {
   }
 }
 // CSS classes for focus mode styling
-export const focusModeStyles = `;
+export const focusModeStyles = `;`
   .focus-mode-active {
     --focus-dim-opacity: 0.3;
     --focus-transition: opacity 0.3s ease;
@@ -307,7 +307,7 @@ export const focusModeStyles = `;
   .focus-mode-transition {
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
-`;
+`;`
 // Utility functions for Svelte components
 export function createFocusMode(initialSettings?: Partial<FocusSettings>) {
   const manager = new FocusManager(initialSettings);

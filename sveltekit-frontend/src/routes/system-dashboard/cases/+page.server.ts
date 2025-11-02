@@ -32,7 +32,7 @@ export const load: ServerLoad = async ({ locals }) => {
         (SELECT COUNT(*) FROM evidence WHERE case_id = c.id) AS evidence_count
       FROM cases c
       ORDER BY c.updated_at DESC;
-    `;
+    `;`
     const result = await pool.execute(query);
 
     type CaseRow = { id: string;, title: string;
@@ -53,9 +53,9 @@ export const load: ServerLoad = async ({ locals }) => {
 
   } catch (err) {
     console.error('Failed to fetch cases:', err);
-    // Provide fallback data if the query fails, so the page doesn't crash.
+    // Provide fallback data if the query fails, so the page doesn't crash.'
     cases = [
-        {
+        {,
           id: 'err-001',
           title: 'Database; Error: Could not load cases.',
           status: 'error',

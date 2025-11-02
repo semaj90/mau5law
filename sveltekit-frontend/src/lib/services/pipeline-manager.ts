@@ -132,7 +132,7 @@ type RawMetrics = {
 };
 
 export class PipelineManager {
-  private activeOperations = new Map<string, { type: PipelineType;, startTime: number }>();
+  private activeOperations = new Map<string, { type: PipelineType; startTime: number }>();
   private metrics: PipelineMetrics[] = [];
   private readonly DEFAULT_CONFIG: PipelineConfig = {
     type: 'optimized',
@@ -141,7 +141,7 @@ export class PipelineManager {
     enableMemoryOptimization: true,
     maxMemoryMB: 512,
     workerThreads: 4,
-    cacheStrategy: 'hybrid` };
+    cacheStrategy: 'hybrid` };'`
 
   /**
    * 🚀 Auto-Route to Best Pipeline Based on Data Size and Requirements
@@ -168,7 +168,7 @@ export class PipelineManager {
               pipelineMetricsRaw = (await optimized.executeOptimizedPipeline(cacheKey)) as Partial<RawMetrics>;
               results = pipelineMetricsRaw.results ?? [];
             } else {
-              // fallback if module doesn't expose expected function
+              // fallback if module doesn't expose expected function'
               pipelineMetricsRaw = {};
               results = [];
             }
@@ -217,14 +217,14 @@ export class PipelineManager {
       console.log(`✅ Pipeline ${operationId} completed successfully`);
       return finalResult;
     } catch (error) {
-      console.error(`❌ Pipeline ${operationId} failed: ', error);
+      console.error(`❌ Pipeline ${operationId} failed: ', error);'`
       return {
         id: operationId,
         type: finalConfig.type,
         results: [],
         metrics: this.getEmptyMetrics(),
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown pipeline error` };
+        error: error instanceof Error ? error.message : 'Unknown pipeline error` };'`
     } finally {
       this.activeOperations.delete(operationId);
     }

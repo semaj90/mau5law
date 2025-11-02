@@ -13,7 +13,7 @@ export const sidebarStore = writable({
 export const toolbarStore = writable({
   selectedTool: "select",
   formatting: {
-    bold: false,
+   , bold: false,
     italic: false,
     underline: false,
     strikethrough: false,

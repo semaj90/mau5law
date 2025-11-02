@@ -33,7 +33,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   let cos = dot / (sqrt(normQ) * sqrt(normC) + 1e-6);
   scores.data[candidateIndex] = cos;
 }
-`;
+`;`
 const FALLBACK_EMBED_DIM = 256;
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 // Local feature flags/constants for WebGPU to avoid depending on lib.dom types in this build
@@ -50,14 +50,14 @@ const GPU_BUFFER_USAGE = {
 const GPU_MAP_MODE = { READ: 1 } as const;
 // Minimal local WebGPU interface shapes to satisfy TS without pulling lib.dom types
 type GPUAdapterLike = { requestDevice?: () => Promise<GPUDeviceLike | undefined> };
-type GPUDeviceLike = { createBuffer: (desc: any) => unknown;, queue: { writeBuffer: (b: any, o: number; data: any, off?: number, len?: number) => void; submit: (cmds: any[]) => void };
+type GPUDeviceLike = { createBuffer: (desc: any) => unknown;, queue: { writeBuffer: (b: any; o: number;, data: any, off?: number, len?: number) => void; submit: (cmds: any[]) => void };
   createShaderModule: (opts: any) => unknown;
   createComputePipeline: (opts: any) => unknown;
   getBindGroupLayout?: (idx: number) => unknown;
   createBindGroup: (opts: any) => unknown;
   createCommandEncoder: () => unknown;
 };
-type ComputePassLike = { setPipeline: (p: any) => void;, setBindGroup: (i: number; g: any) => void;
+type ComputePassLike = { setPipeline: (p: any) => void;, setBindGroup: (i: number;, g: any) => void;
   dispatchWorkgroups: (n: number) => void;
   end: () => void;
 };
@@ -117,14 +117,14 @@ async function fetchEmbeddings(
     if (!arrays || !Array.isArray(arrays[0])) return null;
     return arrays.map((arr: number[]) => Float32Array.from(arr));
   } catch (err) {
-    // don't leak raw error objects to UI from worker
+    // don't leak raw error objects to UI from worker'
     console.warn('Failed to fetch embeddings from server, using local fallback:', String(err));
     return null;
   }
 }
 type RerankOptions = { model?: string; headers?: Record<string, string> } | undefined;
 self.addEventListener('message', async (event: MessageEvent) => {
-  const { query, suggestions, options } = event.data as { query: string;, suggestions: Suggestion[]; options?: RerankOptions };
+  const { query, suggestions, options } = event.data as { query: string; suggestions: Suggestion[]; options?: RerankOptions };
   const labels = suggestions.map((s) => s.label ?? s.text ?? '');
   const combinedInputs = [query, ...labels];
   let queryVec: Float32Array | null = null;
@@ -191,7 +191,7 @@ self.addEventListener('message', async (event: MessageEvent) => {
     device.queue.writeBuffer(candidatesBuffer, 0, flattened.buffer, flattened.byteOffset, flattened.byteLength);
     device.queue.writeBuffer(metaBuffer, 0, new Uint32Array([dim]));
     const module = device.createShaderModule({ code: RERANKER_WGSL });
-    const pipeline = device.createComputePipeline({ layout: 'auto', compute: { module, entryPoint: 'main' } });
+    const pipeline = device.createComputePipeline({ layout: 'auto', compute: { module, entryPoint: 'main` } });'`
     // some runtimes/types are not present in TS build; cast pipeline to any for these calls
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     const bindGroup = device.createBindGroup({ layout: (pipeline as unknown as {, getBindGroupLayout: (n: number) => unknown }).getBindGroupLayout(0),

@@ -33,7 +33,7 @@ const WorkerTriggerSchema = z.object({
   correlationId: z.string().optional(),
   retry: z.boolean().default(false)
 });
-type WorkerTriggerData = z.infer<typeof WorkerTriggerSchema>;
+type WorkerTriggerData = z.infer<typeof, WorkerTriggerSchema>;
 /*
  * POST /api/worker/autotag/trigger
  * Triggers PostgreSQL-first auto-tagging worker
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       try {
         // Send PostgreSQL NOTIFY for real-time processing
         await db.execute(`
-          NOTIFY case_created, '${JSON.stringify({
+          NOTIFY case_created, '${JSON.stringify({'
             case_id: triggerData.caseId,
             priority: triggerData.metadata?.priority || 'medium',
             case_type: triggerData.metadata?.caseType || 'civil',
@@ -97,11 +97,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             correlation_id: triggerData.correlationId,
             timestamp: new Date().toISOString()
           })}'
-        `);
+        `);`
         console.log(`📡 PostgreSQL NOTIFY sent for case ${triggerData.caseId}`);
       } catch (pgError) {
         console.warn('⚠️ PostgreSQL NOTIFY failed:', pgError);
-        // Don't fail the request if PG notification fails
+        // Don't fail the request if PG notification fails'
       }
     }
     return json({
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   } catch (validationError) {
     console.error('❌ Worker trigger validation failed:', validationError);
     if (validationError instanceof z.ZodError) {
-      return error(400, `Invalid trigger data: ${validationError.errors[0]?.message || 'Validation failed` }`);
+      return error(400, `Invalid trigger data: ${validationError.errors[0]?.message || 'Validation failed` }`);'`
     }
     return error(
       500,
@@ -133,8 +133,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 // Based on node-redis types and usage in this file.
 interface RedisStreamInfo {
   length: number;
-  'first-entry': { id: string;, message: Record<string, string> } | null;
-  'last-entry': { id: string;, message: Record<string, string> } | null;
+  'first-entry': { id: string; message: Record<string, string> } | null;
+  'last-entry': { id: string; message: Record<string, string> } | null;
 }
 
 interface RedisStreamEvent { id: string;, message: { timestamp: string;, type: string;
@@ -172,8 +172,7 @@ export const GET: RequestHandler = async () => {
       evidenceId: event.message.evidenceId || null,
       documentId: event.message.documentId || null,
       metadata: JSON.parse(event.message.metadata || '{}'),
-      retry: event.message.retry === '1'
-    }));
+      retry: event.message.retry === '1` }));'`
     return json({
       success: true,
       data: {
@@ -190,8 +189,7 @@ export const GET: RequestHandler = async () => {
       metadata: {
        , timestamp: new Date().toISOString(),
         worker: 'postgresql-first-autotag',
-        version: '2.0'
-      }
+        version: `2.0` }
     });
   } catch (e) {
     const error = ensureError(e);
@@ -237,8 +235,7 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
       metadata: {
         timestamp: new Date().toISOString(),
         operation: 'stream-clear',
-        version: '2.0'
-      }
+        version: `2.0` }
     });
   } catch (e) {
     const error = ensureError(e);

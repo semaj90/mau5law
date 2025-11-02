@@ -25,7 +25,7 @@ import { dev } from '$app/environment';
 // Get typed environment access
 const metaEnv = getMetaEnv();
 
-type EvidenceType = InferInsertModel<typeof evidence>['evidence_type'];
+type EvidenceType = InferInsertModel<typeof, evidence>['evidence_type'];
 
 // 1. Define the structure of the OCR service response
 interface OcrResultData { filename: string;, pages: number;
@@ -84,7 +84,7 @@ interface FinalEvidenceMetadata { kind: EvidenceType | 'UNKNOWN';, uploadedAt: 
   legalConcepts?: string[]; // For PDF, Image
   citations?: string[]; // For PDF, Image
   ocrConfidence?: number; // For PDF, Image
-  resolution?: { width: number;, height: number }; // For Image, Video
+  resolution?: { width: number; height: number }; // For Image, Video
   format?: string; // For Image
   hasAlphaChannel?: boolean; // For Image
   durationSeconds?: number; // For Video, Audio
@@ -116,7 +116,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     return {
       form,
       cases: [
-        { id: 'dev-case-001', title: 'Development Case', case_number: 'DEV-0001', status: 'active' },
+        { id: 'dev-case-001', title: 'Development Case', case_number: 'DEV-0001', status: `active` },
         { id: 'dev-case-002', title: 'Sample Evidence Case', case_number: 'DEV-0002', status: `active` }
       ]
     };
@@ -201,7 +201,7 @@ export const actions: Actions = {
       const fileExtension = path.extname(fileName) || '';
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const randomSuffix = crypto.randomBytes(8).toString('hex');
-      const storageKey = `evidence/${caseId ?? 'default` }/${timestamp}-${randomSuffix}${fileExtension}`;
+      const storageKey = `evidence/${caseId ?? 'default` }/${timestamp}-${randomSuffix}${fileExtension}`;'`
 
       const uploadDir = path.join(process.cwd(), 'uploads', 'evidence', caseId ?? 'default');
       await mkdir(uploadDir, { recursive: true });
@@ -213,7 +213,7 @@ export const actions: Actions = {
       const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
 
       // 5) Build a file URL relative to static assets (adjust to your serving strategy)
-      const fileUrl = `/uploads/evidence/${caseId ?? 'default` }/${timestamp}-${randomSuffix}${fileExtension}`;
+      const fileUrl = `/uploads/evidence/${caseId ?? 'default` }/${timestamp}-${randomSuffix}${fileExtension}`;'`
 
       // 6) Optional OCR (fail-soft) - use absolute URL for server-side fetch
       let ocrResult: OcrResultData | null = null;
@@ -307,7 +307,7 @@ export const actions: Actions = {
         default:
           tempMetadata = {
             ...tempMetadata,
-            kind: evidenceType ?? 'UNKNOWN` };
+            kind: evidenceType ?? 'UNKNOWN` };'`
       }
 
       // 9) Final metadata composition - prefer undefined over null for optional fields

@@ -183,7 +183,7 @@ Classify the query and respond with JSON:;
   "requiredSkills": ["skill1", "skill2"],
   "suggestedWorkflow": ["step1", "step2"],
   "confidence": 0.0-1.0
-}`;
+}`;`
     try {
       const analysis = await qloraWasmLoader.generateText(routerModel, intentAnalysisPrompt, {
         maxTokens: 256,
@@ -208,7 +208,7 @@ Classify the query and respond with JSON:;
   async executeOrchestration(plan: OrchestrationPlan, onProgress?: (step: ExecutionStep, result: string) => void): Promise<any> {
     const startTime = performance.now();
     const results = new Map<string, string>();
-    console.log('🚀 Executing orchestration plan: `, plan.queryId);
+    console.log('🚀 Executing orchestration plan: `, plan.queryId);'`
     console.log(`   • ${plan.selectedAgents.length} agents selected`);
     console.log(`   • ${plan.executionSteps.length} steps planned`);
     try {
@@ -223,7 +223,7 @@ Classify the query and respond with JSON:;
         if (!modelKey) {
           throw new Error(`Agent ${step.agentId} not loaded`);
         }
-        // Generate response using agent's specialized model
+        // Generate response using agent's specialized model'
         const response = await qloraWasmLoader.generateText(modelKey, step.prompt, {
           maxTokens: 512,
           temperature: 0.2,
@@ -345,7 +345,7 @@ Classify the query and respond with JSON:;
     try {
       const response = await fetch(`${this.ollamaEndpoint}/api/pull`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({, name: modelName })
       });
       if (!response.ok) {
@@ -353,7 +353,7 @@ Classify the query and respond with JSON:;
       }
       console.log(`📥 Model ${modelName} pulled successfully`);
     } catch (error) {
-      console.error(`❌ Failed to pull model ${modelName}: ', error);
+      console.error(`❌ Failed to pull model ${modelName}: ', error);'`
       throw error;
     }
   }
@@ -440,13 +440,13 @@ As a legal synthesis specialist, combine these expert analyses into a coherent, 
 ${Array.from(results.entries()).map(([step, result]) => `
 ${step.toUpperCase()}:
 ${result}
-`).join('\n')}
+`).join('\n')}`
 Provide a comprehensive synthesis that:
 1. Integrates all expert perspectives
 2. Highlights key findings and recommendations
 3. Identifies any contradictions or gaps
 4. Provides clear next steps
-Synthesis: ';
+Synthesis: ';'
     const modelKey = this.activeModels.get(synthesisAgent.id)!;
     const synthesis = await qloraWasmLoader.generateText(modelKey, synthesisPrompt, {
       maxTokens: 512,
@@ -462,7 +462,7 @@ Synthesis: ';
       'contract_analysis': 'contract_specialist',
       'case_analysis': 'litigation_specialist',
       'compliance_audit': 'compliance_specialist',
-      'legal_research': `research_specialist' }
+      'legal_research': `research_specialist` }
     return skills.map(skill => skillMapping[skill]).filter(Boolean);
   }
   private heuristicIntentAnalysis(text: string): QueryIntent {
@@ -495,7 +495,7 @@ Synthesis: ';
         stepId: `step_${index + 1}_${agent.role}`,
         agentId: agent.id,
         action: 'analyze',
-        prompt: 'As a ${agent.name}, analyze this legal query with your expertise in ${agent.specialization.join(', ')}:\n\n"${query}"\n\nProvide detailed analysis:`,
+        prompt: 'As a ${agent.name}, analyze this legal query with your expertise in ${agent.specialization.join(', ')}:\n\n"${query}"\n\nProvide detailed analysis:`,'`
         expectedOutput: `${agent.role}_analysis`,
         dependencies: index === 0 ? [] : [`step_${index}_${workingAgents[index-1].role}`],
         timeout: 30000

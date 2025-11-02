@@ -130,7 +130,7 @@ declare class AudioContext {
   resume(): Promise<void>;
   suspend(): Promise<void>;
 }
-// Simple NodeJS global typing when @types/node isn't loaded in the frontend
+// Simple NodeJS global typing when @types/node isn't loaded in the frontend'
 declare namespace NodeJS {
   interface Global {
     fetch?: FetchLike;

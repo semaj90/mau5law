@@ -27,7 +27,7 @@ export interface LegalCaseContext {
   lastEmbedding: number[] | null;
   filters: {
     evidenceType?: string;
-    dateRange?: { start: Date;, end: Date }
+    dateRange?: { start: Date; end: Date }
     tags?: string[];
     isAdmissible?: boolean;
   }
@@ -52,33 +52,33 @@ export interface LegalCaseContext {
 }
 // Event types
 export type LegalCaseEvents =
-  | { type: 'LOAD_CASE';, caseId: string }
-  | { type: 'CREATE_CASE';, caseData: NewCase }
-  | { type: 'UPDATE_CASE';, updates: Partial<Case> }
+  | { type: 'LOAD_CASE'; caseId: string }
+  | { type: 'CREATE_CASE'; caseData: NewCase }
+  | { type: 'UPDATE_CASE'; updates: Partial<Case> }
   | { type: 'DELETE_CASE' }
   // Evidence events
-  | { type: 'ADD_EVIDENCE';, files: File[] }
-  | { type: 'SELECT_EVIDENCE';, evidence: Evidence }
-  | { type: 'DELETE_EVIDENCE';, evidenceId: string }
-  | { type: 'PROCESS_EVIDENCE';, evidenceId: string }
-  | { type: 'GENERATE_EMBEDDING';, text: string }
+  | { type: 'ADD_EVIDENCE'; files: File[] }
+  | { type: 'SELECT_EVIDENCE'; evidence: Evidence }
+  | { type: 'DELETE_EVIDENCE'; evidenceId: string }
+  | { type: 'PROCESS_EVIDENCE'; evidenceId: string }
+  | { type: 'GENERATE_EMBEDDING'; text: string }
   | { type: 'SEARCH_RELATED_EVIDENCE'; embedding?: number[] }
   // AI events
   | { type: 'START_AI_ANALYSIS' }
-  | { type: 'AI_ANALYSIS_PROGRESS';, progress: number }
-  | { type: 'AI_ANALYSIS_COMPLETE';, summary: string }
+  | { type: 'AI_ANALYSIS_PROGRESS'; progress: number }
+  | { type: 'AI_ANALYSIS_COMPLETE'; summary: string }
   | { type: 'FIND_SIMILAR_CASES' }
   | { type: 'GENERATE_RECOMMENDATIONS' }
   // Search events
-  | { type: 'SEARCH';, query: string }
-  | { type: 'APPLY_FILTERS';, filters: LegalCaseContext['filters'] }
+  | { type: 'SEARCH'; query: string }
+  | { type: 'APPLY_FILTERS'; filters: LegalCaseContext['filters'] }
   | { type: 'CLEAR_SEARCH' }
   // Navigation events
-  | { type: 'SWITCH_TAB';, tab: LegalCaseContext['activeTab'] }
-  | { type: 'SET_WORKFLOW_STAGE';, stage: LegalCaseContext['workflowStage'] }
+  | { type: 'SWITCH_TAB'; tab: LegalCaseContext['activeTab'] }
+  | { type: 'SET_WORKFLOW_STAGE'; stage: LegalCaseContext['workflowStage'] }
   // Form events
-  | { type: 'UPDATE_CASE_FORM';, data: Partial<NewCase> }
-  | { type: 'UPDATE_EVIDENCE_FORM';, data: Partial<NewEvidence> }
+  | { type: 'UPDATE_CASE_FORM'; data: Partial<NewCase> }
+  | { type: 'UPDATE_EVIDENCE_FORM'; data: Partial<NewEvidence> }
   | { type: 'SUBMIT_CASE_FORM' }
   | { type: 'SUBMIT_EVIDENCE_FORM' }
   | { type: 'RESET_FORMS' }
@@ -316,17 +316,17 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
     loadingCase: { invoke: {, id: 'loadCase',
         src: loadCaseService
         // onDone gets event.data
-        onDone: {
-          target: 'caseLoaded',
+       , onDone: {
+         , target: 'caseLoaded',
           actions: 'assignCaseData'
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions: 'assignError'
         }
       }
     },
-    creatingCase: { invoke: {, id: 'createCase',
+    creatingCase: {, invoke: {, id: 'createCase',
         src: createCaseService,
         onDone: {
          , target: 'caseLoaded',
@@ -473,8 +473,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
                   actions,: 'assignError'
                 }
               },
-              on: { AI_ANALYSIS_PROGRESS: {, actions: 'assignAIProgress'
-                }
+              on: { AI_ANALYSIS_PROGRESS: {, actions: 'assignAIProgress` }'`
               }
             },
             complete: {
@@ -493,8 +492,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               ],
               after,: {
                 1000,: {
-                  target: '#legalCase.caseLoaded.ready'
-                }
+                  target: `#legalCase.caseLoaded.ready` }
               }
             }
           }
@@ -519,7 +517,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               if (!caseId) throw new Error('Missing caseId for update');
               const response = await fetch(`/api/cases/${caseId}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': `application/json` },
                 body: JSON.stringify(event.updates)
               });
               if (!response.ok) throw new Error('Update failed');
@@ -560,17 +558,15 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
             },
             onError: {
               target: 'ready',
-              actions,: 'assignError'
-            }
+              actions,: 'assignError` }'`
           }
         },
         generatingEmbedding: { invoke: {, id: 'generateEmbedding',
             src,: generateEmbeddingService
             onDone: [
-              {
+              {,
                 target: 'searchingRelatedEvidence',
-                actions: 'assignEmbedding'
-              }
+                actions: `assignEmbedding` }
             ],
             onError,: {
               target: 'ready',
@@ -617,8 +613,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
           })
         },
         REFRESH: {
-          target: '.loadingEvidence'
-        }
+          target: '.loadingEvidence` }'`
       }
     },
     searching: { invoke: {, id: 'search',
@@ -632,14 +627,12 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
         },
         onError: {
           target: 'error',
-          actions,: 'assignError'
-        }
+          actions,: `assignError` }
       }
     },
     error: { entry: assign({, isLoading: () => false }),
       on,: { RETRY: {, target: 'idle',
-          actions,: 'clearError'
-        },
+          actions,: `clearError` },
         DISMISS_ERROR: {
           actions: `clearError` }
       }
@@ -662,7 +655,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
         isLoading: false,
         error: null,
         formData: {
-          caseForm: { [key,: strin,g]: any },
+         , caseForm: { [key,: strin,g]: any },
           evidenceForm: { [key,: strin,g]: any }
         },
         workflowStage: 'investigation',

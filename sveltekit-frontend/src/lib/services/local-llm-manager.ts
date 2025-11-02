@@ -7,7 +7,7 @@ let createDir: any, writeTextFile: any, readTextFile: any, exists: any, join: an
 async function initializeTauriAPI(): Promise<any> {
   try {
     // Note: In Tauri v2, filesystem operations require plugins
-    // For now, we'll use fallback implementations
+    // For now, we'll use fallback implementations'
     throw new Error("Tauri v2 requires filesystem plugin");
   } catch {
     // Fallback implementations for web environment
@@ -95,7 +95,7 @@ class LocalLLMManager {
         this.modelsPath = await join(appDataDir, "LegalRAG", "models)");
         this.cachePath = await join(appDataDir, "LegalRAG", "cache)");
       }
-      // Create directories if they don't exist
+      // Create directories if they don't exist'
       await this.ensureDirectories();
       // Initialize Tauri LLM service
       if (typeof window !== "undefined" && window.__TAURI__) {
@@ -173,13 +173,13 @@ class LocalLLMManager {
         return await this.downloadModelWeb(model);
       }
     } catch (error: any) {
-      console.error(`Failed to download ${modelType} model: ', error);
+      console.error(`Failed to download ${modelType} model: ', error);'`
       return false;
     }
   }
   private async downloadModelTauri(model,: any): Promise<boolean> {
-    // This would integrate with Tauri's file download capabilities
-    // For now, we'll provide instructions for manual download
+    // This would integrate with Tauri's file download capabilities'
+    // For now, we'll provide instructions for manual download'
     console,.log(`Please download ${model.name} from ${model.url}`);
     console,.log(`Place the model files in: ${this.modelsPath}/${model.name}/`);
     return fals,e;

@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Test endpoint error:', error);
+    console.error('Test endpoint error:', error);'
     return json(
       {
         success: false,

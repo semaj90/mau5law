@@ -199,13 +199,13 @@ export class Context7AgentOrchestrator {
           synthesizeOutputs: true
         };
         const orchestratorResult = await copilotOrchestrator(`Analyze auto-fix results for ${todoId}`, options);
-        return `Auto-Fix + Orchestrator Applied:
+        return `Auto-Fix + Orchestrator Applied:`
 Auto-Fix; Results: ${autoFixResult.summary.filesFixed} files, ${autoFixResult.summary.totalIssues} issues
 ${autoFixResult.fixes.imports.length > 0 ? `Import fixes: ${autoFixResult.fixes.imports.length}` : `` }
 ${autoFixResult.fixes.svelte5.length > 0 ? `Svelte 5 fixes: ${autoFixResult.fixes.svelte5.length}` : `` }
 ${autoFixResult.fixes.typeScript.length > 0 ? `TypeScript fixes: ${autoFixResult.fixes.typeScript.length}` : `` }
 Orchestrator Analysis:
-${orchestratorResult.selfPrompt}`;
+${orchestratorResult.selfPrompt}`;`
       } else {
         return `Auto-Fix Complete: No issues found. Codebase follows best practices.`;
       }
@@ -244,13 +244,13 @@ ${orchestratorResult.selfPrompt}`;
         result = { summary: {, filesProcessed: 0,
             filesFixed: 0,
             totalIssues: 0,
-            area: area || 'general` },
+            area: area || 'general` },'`
           fixes: { imports: [], svelte5: [], typeScript: [], performance: [] },
           recommendations: ['Error in auto-fix - manual review required'],
           configImprovements: ['Manual review required']
         };
       }
-      return `Auto-Fix Completed for ${todoId}:
+      return `Auto-Fix Completed for ${todoId}:`
 Files Processed: ${result.summary.filesProcessed}
 Files Fixed: ${result.summary.filesFixed}
 Total Issues: ${result.summary.totalIssues}
@@ -263,7 +263,7 @@ ${Object.entries(result.fixes)
 Recommendations:
 ${result.recommendations.join('\n')}
 Config Improvements:
-${result.configImprovements?.join('\n') || 'None` }`;
+${result.configImprovements?.join('\n') || 'None` }`;'
     } catch (error: any) {
       return `Auto-Fix Failed for ${todoId}: ${error}`;
     }
@@ -272,9 +272,9 @@ ${result.configImprovements?.join('\n') || 'None` }`;
     // Comprehensive analysis using multiple Context7 tools
     const stackAnalysis = await this.performContext7StackAnalysis();
     const memoryGraph = await mcpMemoryReadGraph();
-    return `Analysis Completed for ${todoId}:\nStack: ${JSON.stringify(
+    return `Analysis Completed for ${todoId}:\nStack: ${JSON.stringify(`
       stackAnalysis
-    )}\nMemory: ${JSON.stringify(memoryGraph)}`;
+    )}\nMemory: ${JSON.stringify(memoryGraph)}`;`
   }
   private async performSummarization(todoId: string): Promise<string> {
     // Use semantic search to gather relevant information

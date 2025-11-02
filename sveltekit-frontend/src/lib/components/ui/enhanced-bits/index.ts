@@ -8,8 +8,8 @@ import Input from './Input.svelte';
 export { Button, Card, Modal, Input };
 
 // Export other components
-export { default as Dialog } from '../dialog/Dialog.svelte';
-export { default as DialogCompound } from '../dialog/Dialog.svelte';
-export { default as Tabs } from '../tabs/Tabs.svelte';
+export { default, as Dialog } from '../dialog/Dialog.svelte';
+export { default, as DialogCompound } from '../dialog/Dialog.svelte';
+export { default, as Tabs } from '../tabs/Tabs.svelte';
 export { Textarea } from '../textarea/index.js';
 export { Badge } from '../badge/index.js';

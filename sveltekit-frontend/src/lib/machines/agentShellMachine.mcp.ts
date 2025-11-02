@@ -32,39 +32,39 @@ export interface AgentShellContext { input: string;, response: string;
 
 // Enhanced event types with MCP operations
 type AgentShellEvent =
-  | { type: "PROMPT";, input: string; userId?: string; caseId?: string }
-  | { type: "xstate.done.actor.callAgent";, data: string }
-  | { type: "ACCEPT_PATCH"; jobId: string; userId: string;, patchContent: string }
-  | { type: "RATE_SUGGESTION"; jobId: string; rating: number;, userId: string; feedback?: string }
-  | { type: "SEMANTIC_SEARCH";, query: string; userId?: string; caseId?: string }
-  | { type: "FILE_UPLOAD"; file: File;, userId: string; caseId?: string }
+  | { type: "PROMPT"; input: string; userId?: string; caseId?: string }
+  | { type: "xstate.done.actor.callAgent"; data: string }
+  | { type: "ACCEPT_PATCH"; jobId: string; userId: string; patchContent: string }
+  | { type: "RATE_SUGGESTION"; jobId: string; rating: number; userId: string; feedback?: string }
+  | { type: "SEMANTIC_SEARCH"; query: string; userId?: string; caseId?: string }
+  | { type: "FILE_UPLOAD"; file: File; userId: string; caseId?: string }
   | { type: "CHECK_HEALTH" }
   // MCP operations - tightened types (avoid `any`)
-  | { type: "MCP_LOAD_CASE";, caseId: string }
-  | { type: "MCP_LOAD_CASES";, userId: string; filters?: Record<string, unknown> }
-  | { type: "MCP_CREATE_CASE"; caseData: Partial<Case>;, userId: string }
-  | { type: "MCP_LOAD_EVIDENCE";, caseId: string }
-  | { type: "MCP_CREATE_EVIDENCE"; evidenceData: Partial<Evidence>;, caseId: string }
-  | { type: "MCP_FIND_SIMILAR_CASES";, embedding: number[]; caseId?: string }
-  | { type: "MCP_FIND_SIMILAR_EVIDENCE";, embedding: number[]; caseId?: string }
+  | { type: "MCP_LOAD_CASE"; caseId: string }
+  | { type: "MCP_LOAD_CASES"; userId: string; filters?: Record<string, unknown> }
+  | { type: "MCP_CREATE_CASE"; caseData: Partial<Case>; userId: string }
+  | { type: "MCP_LOAD_EVIDENCE"; caseId: string }
+  | { type: "MCP_CREATE_EVIDENCE"; evidenceData: Partial<Evidence>; caseId: string }
+  | { type: "MCP_FIND_SIMILAR_CASES"; embedding: number[]; caseId?: string }
+  | { type: "MCP_FIND_SIMILAR_EVIDENCE"; embedding: number[]; caseId?: string }
   | { type: "MCP_GET_ANALYTICS"; userId?: string; caseId?: string }
 
 export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellEvent>({
   id: 'agentShellMCP',
   initial: 'idle',
   context: {
-    input: '',
+   , input: '',
     response: '',
     // use undefined or an empty object consistent with AgentShellContext optional fields
     mcpResults: undefined,
     serviceHealth: {
-      enhancedRAG: false,
+     , enhancedRAG: false,
       uploadService: false,
       kratosServer: false,
       mcpDatabase: false
     }
   },
-  states: { idle: {, on: { PROMPT: {, target: 'processing',
+  states: {, idle: {, on: {, PROMPT: {, target: 'processing',
           actions: assign({
             // narrowed event type
            , input: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'PROMPT' }>) => event.input || '',
@@ -132,21 +132,21 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         MCP_FIND_SIMILAR_CASES: {
           target: 'mcpFindingSimilarCases',
           actions: assign({
-            caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_FIND_SIMILAR_CASES' }>) =>
+            caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_FIND_SIMILAR_CASES` }>) =>'`
               event.caseId
           })
         },
         MCP_FIND_SIMILAR_EVIDENCE: {
           target: 'mcpFindingSimilarEvidence',
           actions: assign({
-            caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_FIND_SIMILAR_EVIDENCE' }>) =>
+            caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: `MCP_FIND_SIMILAR_EVIDENCE` }>) =>
               event.caseId
           })
         },
         MCP_GET_ANALYTICS: {
           target: 'mcpGettingAnalytics',
           actions: assign({
-            userId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_GET_ANALYTICS' }>) =>
+            userId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: `MCP_GET_ANALYTICS` }>) =>
               event.userId,
             caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: `MCP_GET_ANALYTICS` }>) =>
               event.caseId
@@ -174,11 +174,9 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
           })
         }
       },
-      on: { ACCEPT_PATCH: {, actions: 'acceptPatchAction'
-        },
+      on: { ACCEPT_PATCH: {, actions: 'acceptPatchAction` },'`
         RATE_SUGGESTION: {
-          actions: 'rateSuggestionAction'
-        }
+          actions: `rateSuggestionAction` }
       }
     },
     searching: { invoke: {, src: 'performSemanticSearchWithMCP',
@@ -190,7 +188,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onDone: {
           target: 'idle',
           actions: assign({
-            // fixed: explicitly expect RAGResponse (don't use typeof e); searchResults: (_: AgentShellContext, e: any) => extractData<RAGResponse>(e) ?? null
+            // fixed: explicitly expect RAGResponse (don't use typeof e); searchResults: (_: AgentShellContext, e: any) => extractData<RAGResponse>(e) ?? null'
           })
         },
         onError: {
@@ -607,7 +605,7 @@ export const agentShellServicesMCP = {
   mcpCreateEvidence: async ({ evidenceData, caseId }: { evidenceData: Partial<Evidence>; caseId?: string }) => {
     const result = await mcpTools.evidence.createEvidence({
       ...(evidenceData as object),
-      caseId: caseId ?? '` });
+      caseId: caseId ?? '` });'`
     return result;
   },
   // mark unused caseId with leading underscore to silence unused-arg lint if not needed
@@ -619,7 +617,7 @@ export const agentShellServicesMCP = {
     // If caller provided a caseId, attempt a best-effort filter on returned items.
     // This avoids passing `string | undefined` into an API that expects a string or a different signature.
     if (rawResult?.data && Array.isArray(rawResult.data) && _caseId) {
-      // Ensure TypeScript doesn't infer `any` — use a well-typed record and runtime guards
+      // Ensure TypeScript doesn't infer `any` — use a well-typed record and runtime guards'
       type PossibleItem = Record<string, unknown>;
       const caseIdStr = _caseId; // narrowed to string because of the `_caseId` truthy check above
       const filteredData = (rawResult.data as PossibleItem[]).filter((c: PossibleItem) => {
@@ -671,7 +669,7 @@ export const agentShellServicesMCP = {
 export const agentShellActionsMCP = { acceptPatchAction: ({, context: _context, event }: { context: AgentShellContext;, event: { jobId?: string; patchContent?: string } }) => {
     console.log("Accepting patch:", event.patchContent, "for job:", event.jobId);
   },
-  rateSuggestionAction: ({ context: _context, event }: { context: AgentShellContext;, event: { jobId?: string; rating?: number; feedback?: string } }) => {
+  rateSuggestionAction: ({, context: _context, event }: { context: AgentShellContext;, event: { jobId?: string; rating?: number; feedback?: string } }) => {
     console.log("Rating suggestion:", event.rating, "for job:", event.jobId, "feedback:", event.feedback);
   }
 };

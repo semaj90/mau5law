@@ -1,7 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<script, lang="ts">
 import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Integrated System Demo - All XState Machines Working Together
@@ -45,7 +45,7 @@ import type { User } from '$lib/types';
   // Component state using Svelte 5 runes
   let showAuthDialog = $state<boolean>(false);
   let systemStatus = $state({
-    authentication: false
+    authentication: false,
     sessionManagement: false
     aiAssistant: false
     productionServices: false
@@ -150,7 +150,7 @@ import type { User } from '$lib/types';
         console.error(error);
       }
     } catch (error) {
-      console.error('Demo login error:', error);
+      console.error('Demo login error:', error);'
     }
   }
   // Demo logout
@@ -160,7 +160,7 @@ import type { User } from '$lib/types';
       console.log('Demo logout successful');
       demoMode = 'overview';
     } catch (error) {
-      console.error('Demo logout error:', error);
+      console.error('Demo logout error:', error);'
     }
   }
   // Demo AI interaction
@@ -172,7 +172,7 @@ import type { User } from '$lib/types';
       );
       demoMode = 'ai';
     } catch (error) {
-      console.error('Demo AI interaction error:', error);
+      console.error('Demo AI interaction error:', error);'
     }
   }
   // Format uptime
@@ -201,43 +201,43 @@ import type { User } from '$lib/types';
     demoMode = 'session';
   }
 </script>
-<div class="w-full max-w-6xl mx-auto p-6 space-y-6">
-  <!-- System Overview Header -->
-  <div class="nes-container">
-    <div class="yorha-panel-header">
-      <div class="flex items-center justify-between">
+<div class="w-full max-w-6xl mx-auto p-6, space-y-6">
+  <!-- System Overview, Header -->
+  <div, class="nes-container">
+    <div, class="yorha-panel-header">
+      <div class="flex items-center, justify-between">
         <div>
-          <h3 class="nes-text is-primary text-2xl font-bold">Integrated Legal AI System</h3>
-          <p class="text-gray-600 mt-1">
+          <h3 class="nes-text is-primary text-2xl, font-bold">Integrated Legal AI System</h3>
+          <p class="text-gray-600, mt-1">
             Complete demonstration of XState machines, authentication, AI assistant, and production services
           </p>
         </div>
-        <div class="flex items-center gap-3">
-          <div class="flex items-center gap-2">
-            <div class={`w-3 h-3 rounded-full ${getStatusColor(systemStatus.overallHealth)}`}></div>
-            <span class="text-sm font-medium capitalize">{systemStatus.overallHealth}</span>
+        <div class="flex items-center, gap-3">
+          <div class="flex items-center, gap-2">
+            <div class={`w-3 h-3, rounded-full ${getStatusColor(systemStatus.overallHealth)}`}></div>
+            <span class="text-sm font-medium, capitalize">{systemStatus.overallHealth}</span>
           </div>
-          <Badge variant={isSystemHealthy ? 'default' : 'destructive'}>
+          <Badge, variant={isSystemHealthy ? 'default' : 'destructive'}>
             {isSystemHealthy ? 'All Systems Operational' : 'Some Issues Detected'}
           </Badge>
         </div>
       </div>
     </div>
   </div>
-  <!-- System Status Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-    <!-- Authentication Status -->
-    <div class="nes-container">
-      <div class="yorha-panel-content p-4">
-        <div class="flex items-center justify-between">
+  <!-- System Status, Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4, gap-4">
+    <!-- Authentication, Status -->
+    <div, class="nes-container">
+      <div class="yorha-panel-content, p-4">
+        <div class="flex items-center, justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Authentication</p>
-            <p class="text-2xl font-bold">{authenticatedUser ? 'Active' : 'Inactive'}</p>
+            <p class="text-sm font-medium, text-gray-600">Authentication</p>
+            <p class="text-2xl, font-bold">{authenticatedUser ? 'Active' : 'Inactive'}</p>
           </div>
-          <div class={`w-4 h-4 rounded-full ${getStatusColor(systemStatus.authentication)}`}></div>
+          <div class={`w-4 h-4, rounded-full ${getStatusColor(systemStatus.authentication)}`}></div>
         </div>
         {#if authenticatedUser}
-          <div class="mt-2 text-sm text-gray-500">
+          <div class="mt-2 text-sm, text-gray-500">
             User: {authenticatedUser.email}<br>
             Role: {authenticatedUser.role}<br>
             Uptime: {formatUptime(serviceMetrics.authUptime)}
@@ -245,18 +245,18 @@ import type { User } from '$lib/types';
         {/if}
       </div>
     </div>
-    <!-- Session Management Status -->
-    <div class="nes-container">
-      <div class="yorha-panel-content p-4">
-        <div class="flex items-center justify-between">
+    <!-- Session Management, Status -->
+    <div, class="nes-container">
+      <div class="yorha-panel-content, p-4">
+        <div class="flex items-center, justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Session Management</p>
-            <p class="text-2xl font-bold">{activeSession ? 'Active' : 'Inactive'}</p>
+            <p class="text-sm font-medium, text-gray-600">Session Management</p>
+            <p class="text-2xl, font-bold">{activeSession ? 'Active' : 'Inactive'}</p>
           </div>
-          <div class={`w-4 h-4 rounded-full ${getStatusColor(systemStatus.sessionManagement)}`}></div>
+          <div class={`w-4 h-4, rounded-full ${getStatusColor(systemStatus.sessionManagement)}`}></div>
         </div>
         {#if activeSession}
-          <div class="mt-2 text-sm text-gray-500">
+          <div class="mt-2 text-sm, text-gray-500">
             Security: {securityLevel()}<br>
             Activities: {sessionAnalytics().activityCount}<br>
             Health: {sessionHealth().warningCount} warnings
@@ -264,18 +264,18 @@ import type { User } from '$lib/types';
         {/if}
       </div>
     </div>
-    <!-- AI Assistant Status -->
-    <div class="nes-container">
-      <div class="yorha-panel-content p-4">
-        <div class="flex items-center justify-between">
+    <!-- AI Assistant, Status -->
+    <div, class="nes-container">
+      <div class="yorha-panel-content, p-4">
+        <div class="flex items-center, justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">AI Assistant</p>
-            <p class="text-2xl font-bold">{aiClusterReady ? 'Ready' : 'Offline'}</p>
+            <p class="text-sm font-medium, text-gray-600">AI Assistant</p>
+            <p class="text-2xl, font-bold">{aiClusterReady ? 'Ready' : 'Offline'}</p>
           </div>
-          <div class={`w-4 h-4 rounded-full ${getStatusColor(systemStatus.aiAssistant)}`}></div>
+          <div class={`w-4 h-4, rounded-full ${getStatusColor(systemStatus.aiAssistant)}`}></div>
         </div>
         {#if aiClusterReady}
-          <div class="mt-2 text-sm text-gray-500">
+          <div class="mt-2 text-sm, text-gray-500">
             Queries: {aiUsage().totalQueries}<br>
             Avg Response: {Math.round(serviceMetrics.aiResponseTime)}ms<br>
             Conversations: {conversationHistory().length}
@@ -283,17 +283,17 @@ import type { User } from '$lib/types';
         {/if}
       </div>
     </div>
-    <!-- Production Services Status -->
-    <div class="nes-container">
-      <div class="yorha-panel-content p-4">
-        <div class="flex items-center justify-between">
+    <!-- Production Services, Status -->
+    <div, class="nes-container">
+      <div class="yorha-panel-content, p-4">
+        <div class="flex items-center, justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Production Services</p>
-            <p class="text-2xl font-bold">{systemStatus.productionServices ? 'Online' : 'Offline'}</p>
+            <p class="text-sm font-medium, text-gray-600">Production Services</p>
+            <p class="text-2xl, font-bold">{systemStatus.productionServices ? 'Online' : 'Offline'}</p>
           </div>
-          <div class={`w-4 h-4 rounded-full ${getStatusColor(systemStatus.productionServices)}`}></div>
+          <div class={`w-4 h-4, rounded-full ${getStatusColor(systemStatus.productionServices)}`}></div>
         </div>
-        <div class="mt-2 text-sm text-gray-500">
+        <div class="mt-2 text-sm, text-gray-500">
           Enhanced RAG: {systemStatus.productionServices ? 'Running' : 'Stopped'}<br>
           Upload Service: {systemStatus.productionServices ? 'Running' : 'Stopped'}<br>
           Total Interactions: {serviceMetrics.totalInteractions}
@@ -301,29 +301,29 @@ import type { User } from '$lib/types';
       </div>
     </div>
   </div>
-  <!-- Demo Tabs -->
-  <Tabs bind:value={demoMode} class="w-full">
-    <TabsList class="grid w-full grid-cols-5">
-      <TabsTrigger value="overview">Overview</TabsTrigger>
-      <TabsTrigger value="auth">Authentication</TabsTrigger>
-      <TabsTrigger value="session">Session</TabsTrigger>
-      <TabsTrigger value="ai">AI Assistant</TabsTrigger>
-      <TabsTrigger value="services">Services</TabsTrigger>
+  <!-- Demo, Tabs -->
+  <Tabs, bind:value={demoMode} class="w-full">
+    <TabsList class="grid w-full, grid-cols-5">
+      <TabsTrigger, value="overview">Overview</TabsTrigger>
+      <TabsTrigger, value="auth">Authentication</TabsTrigger>
+      <TabsTrigger, value="session">Session</TabsTrigger>
+      <TabsTrigger, value="ai">AI Assistant</TabsTrigger>
+      <TabsTrigger, value="services">Services</TabsTrigger>
     </TabsList>
-    <!-- Overview Tab -->
-    <TabsContent value="overview" class="space-y-4">
-      <div class="nes-container">
-        <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary">System Integration Demo</h3>
+    <!-- Overview, Tab -->
+    <TabsContent, value="overview" class="space-y-4">
+      <div, class="nes-container">
+        <div, class="yorha-panel-header">
+          <h3 class="nes-text, is-primary">System Integration Demo</h3>
         </div>
-        <div class="yorha-panel-content space-y-4">
-          <p class="text-gray-600">
+        <div class="yorha-panel-content, space-y-4">
+          <p, class="text-gray-600">
             This demonstration showcases the complete integration of all system components:
           </p>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <h4 class="font-semibold">✅ Completed Integrations:</h4>
-              <ul class="text-sm space-y-1 text-gray-600">
+          <div class="grid grid-cols-1 md:grid-cols-2, gap-4">
+            <div, class="space-y-2">
+              <h4, class="font-semibold">✅ Completed Integrations:</h4>
+              <ul class="text-sm space-y-1, text-gray-600">
                 <li>• Modern authentication with Svelte 5 runes</li>
                 <li>• XState session management</li>
                 <li>• AI assistant with Ollama cluster</li>
@@ -333,14 +333,14 @@ import type { User } from '$lib/types';
                 <li>• PostgreSQL + Drizzle ORM</li>
               </ul>
             </div>
-            <div class="space-y-2">
-              <h4 class="font-semibold">🎯 Demo Actions:</h4>
-              <div class="space-y-2">
-                <Button.Root class="bits-btn" onclick={demoLogin} disabled={authenticatedUser !== null}>
+            <div, class="space-y-2">
+              <h4, class="font-semibold">🎯 Demo Actions:</h4>
+              <div, class="space-y-2">
+                <Button.Root, class="bits-btn" onclick={demoLogin} disabled={authenticatedUser !== null}>
 Demo Login
-                <Button.Root class="bits-btn" onclick={demoAIInteraction} disabled={!authenticatedUser}>
+                <Button.Root, class="bits-btn" onclick={demoAIInteraction} disabled={!authenticatedUser}>
 Test AI Assistant
-                <Button.Root class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="ghost">
+                <Button.Root, class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="ghost">
 Demo Logout
               </div>
             </div>
@@ -348,52 +348,52 @@ Demo Logout
         </div>
       </div>
     </TabsContent>
-    <!-- Authentication Tab -->
-    <TabsContent value="auth" class="space-y-4">
-      <div class="nes-container">
-        <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary">Authentication System</h3>
+    <!-- Authentication, Tab -->
+    <TabsContent, value="auth" class="space-y-4">
+      <div, class="nes-container">
+        <div, class="yorha-panel-header">
+          <h3 class="nes-text, is-primary">Authentication System</h3>
         </div>
-        <div class="yorha-panel-content">
+        <div, class="yorha-panel-content">
           {#if !authenticatedUser}
-            <div class="space-y-4">
-              <p class="text-gray-600">
+            <div, class="space-y-4">
+              <p, class="text-gray-600">
                 Demonstrate the modern authentication system with Svelte 5 runes and XState integration.
               </p>
-              <Button.Root class="bits-btn" onclick={() =>
+              <Button.Root, class="bits-btn" onclick={() =>
 showAuthDialog = true}>
                 Open Authentication Dialog
             </div>
           {:else}
-            <div class="space-y-4">
-              <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <h4 class="font-semibold text-green-800">✅ Authentication Successful</h4>
-                <div class="mt-2 text-sm text-green-700">
+            <div, class="space-y-4">
+              <div class="p-4 bg-green-50 border border-green-200, rounded-lg">
+                <h4 class="font-semibold, text-green-800">✅ Authentication Successful</h4>
+                <div class="mt-2 text-sm, text-green-700">
                   <p><strong>User:</strong> {authenticatedUser.email}</p>
                   <p><strong>Role:</strong> {authenticatedUser.role}</p>
                   <p><strong>Status:</strong> {authenticatedUser.isActive ? 'Active' : 'Inactive'}</p>
                 </div>
               </div>
-              <Button.Root class="bits-btn" onclick={demoLogout} variant="ghost">
+              <Button.Root, class="bits-btn" onclick={demoLogout} variant="ghost">
 Logout
             </div>
           {/if}
         </div>
       </div>
     </TabsContent>
-    <!-- Session Tab -->
-    <TabsContent value="session" class="space-y-4">
-      <div class="nes-container">
-        <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary">Session Management</h3>
+    <!-- Session, Tab -->
+    <TabsContent, value="session" class="space-y-4">
+      <div, class="nes-container">
+        <div, class="yorha-panel-header">
+          <h3 class="nes-text, is-primary">Session Management</h3>
         </div>
-        <div class="yorha-panel-content">
+        <div, class="yorha-panel-content">
           {#if activeSession}
-            <div class="space-y-4">
-              <div class="grid grid-cols-2 gap-4">
+            <div, class="space-y-4">
+              <div class="grid grid-cols-2, gap-4">
                 <div>
-                  <h4 class="font-semibold mb-2">Session Info</h4>
-                  <div class="text-sm space-y-1">
+                  <h4 class="font-semibold, mb-2">Session Info</h4>
+                  <div class="text-sm, space-y-1">
                     <p><strong>User:</strong> {currentUser()?.email}</p>
                     <p><strong>Security Level:</strong> {securityLevel()}</p>
                     <p><strong>Session Health:</strong> {sessionHealth().isValid ? 'Valid' : 'Invalid'}</p>
@@ -401,22 +401,22 @@ Logout
                   </div>
                 </div>
                 <div>
-                  <h4 class="font-semibold mb-2">Activity Analytics</h4>
-                  <div class="text-sm space-y-1">
+                  <h4 class="font-semibold, mb-2">Activity Analytics</h4>
+                  <div class="text-sm, space-y-1">
                     <p><strong>Activity Count:</strong> {sessionAnalytics().activityCount}</p>
                     <p><strong>Features Used:</strong> {sessionAnalytics().featuresUsed.length}</p>
                     <p><strong>Session Duration:</strong> {formatUptime(serviceMetrics.sessionUptime)}</p>
                   </div>
                 </div>
               </div>
-              <div class="flex gap-2">
-                <Button.Root class="bits-btn"
+              <div class="flex, gap-2">
+                <Button.Root, class="bits-btn"
                   onclick={() =>
 sessionManager.performSecurityCheck()}
                   size="sm"
                 >
                   Security Check
-                <Button.Root class="bits-btn"
+                <Button.Root, class="bits-btn"
                   onclick={() =>
 sessionManager.refreshSession()}
                   size="sm"
@@ -426,13 +426,13 @@ sessionManager.refreshSession()}
               </div>
             </div>
           {:else}
-            <p class="text-gray-600">Please authenticate to view session management features.</p>
+            <p, class="text-gray-600">Please authenticate to view session management features.</p>
           {/if}
         </div>
       </div>
     </TabsContent>
-    <!-- AI Assistant Tab -->
-    <TabsContent value="ai" class="space-y-4">
+    <!-- AI Assistant, Tab -->
+    <TabsContent, value="ai" class="space-y-4">
       <AIAssistantChat
         height="500px"
         showSettings={true}
@@ -440,39 +440,39 @@ sessionManager.refreshSession()}
         autoFocus={false}
       />
     </TabsContent>
-    <!-- Services Tab -->
-    <TabsContent value="services" class="space-y-4">
-      <div class="nes-container">
-        <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary">Production Services Status</h3>
+    <!-- Services, Tab -->
+    <TabsContent, value="services" class="space-y-4">
+      <div, class="nes-container">
+        <div, class="yorha-panel-header">
+          <h3 class="nes-text, is-primary">Production Services Status</h3>
         </div>
-        <div class="yorha-panel-content">
-          <div class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
+        <div, class="yorha-panel-content">
+          <div, class="space-y-4">
+            <div class="grid grid-cols-2, gap-4">
               <div>
-                <h4 class="font-semibold mb-2">Service Health</h4>
-                <div class="space-y-2">
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm">Authentication Service</span>
-                    <div class={`w-3 h-3 rounded-full ${getStatusColor(systemStatus.authentication)}`}></div>
+                <h4 class="font-semibold, mb-2">Service Health</h4>
+                <div, class="space-y-2">
+                  <div class="flex items-center, justify-between">
+                    <span, class="text-sm">Authentication Service</span>
+                    <div class={`w-3 h-3, rounded-full ${getStatusColor(systemStatus.authentication)}`}></div>
                   </div>
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm">Session Management</span>
-                    <div class={`w-3 h-3 rounded-full ${getStatusColor(systemStatus.sessionManagement)}`}></div>
+                  <div class="flex items-center, justify-between">
+                    <span, class="text-sm">Session Management</span>
+                    <div class={`w-3 h-3, rounded-full ${getStatusColor(systemStatus.sessionManagement)}`}></div>
                   </div>
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm">AI Assistant</span>
-                    <div class={`w-3 h-3 rounded-full ${getStatusColor(systemStatus.aiAssistant)}`}></div>
+                  <div class="flex items-center, justify-between">
+                    <span, class="text-sm">AI Assistant</span>
+                    <div class={`w-3 h-3, rounded-full ${getStatusColor(systemStatus.aiAssistant)}`}></div>
                   </div>
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm">Production Services</span>
-                    <div class={`w-3 h-3 rounded-full ${getStatusColor(systemStatus.productionServices)}`}></div>
+                  <div class="flex items-center, justify-between">
+                    <span, class="text-sm">Production Services</span>
+                    <div class={`w-3 h-3, rounded-full ${getStatusColor(systemStatus.productionServices)}`}></div>
                   </div>
                 </div>
               </div>
               <div>
-                <h4 class="font-semibold mb-2">System Metrics</h4>
-                <div class="text-sm space-y-1">
+                <h4 class="font-semibold, mb-2">System Metrics</h4>
+                <div class="text-sm, space-y-1">
                   <p><strong>Last Update:</strong> {serviceMetrics.lastUpdate.toLocaleTimeString()}</p>
                   <p><strong>Total Interactions:</strong> {serviceMetrics.totalInteractions}</p>
                   <p><strong>System Uptime:</strong> {formatUptime(serviceMetrics.sessionUptime)}</p>
@@ -480,7 +480,7 @@ sessionManager.refreshSession()}
                 </div>
               </div>
             </div>
-            <Button.Root class="bits-btn" onclick={checkSystemHealth}>
+            <Button.Root, class="bits-btn" onclick={checkSystemHealth}>
 Refresh System Health
           </div>
         </div>
@@ -488,7 +488,7 @@ Refresh System Health
     </TabsContent>
   </Tabs>
 </div>
-<!-- Authentication Dialog -->
+<!-- Authentication, Dialog -->
 <ModernAuthForm
   open={showAuthDialog} openchange={(open) => showAuthDialog = open}
   mode="login"

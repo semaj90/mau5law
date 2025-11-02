@@ -93,7 +93,7 @@ export async function getRabbitMQChannel(): Promise<amqp.Channel | null> {
     }
 
     connection.on('error', (err: Error) => {
-      console.error('RabbitMQ connection error:', err);
+      console.error('RabbitMQ connection error:', err);'
 
       // Attempt automatic reconnection
       void (async () => {

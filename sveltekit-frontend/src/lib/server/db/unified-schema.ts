@@ -52,10 +52,10 @@ export const CaseMetadataSchema = z.object({
   dueDate: z.string().datetime().optional()
 });
 // Type definitions from Zod schemas
-export type UserSettingsExtType = z.infer<typeof UserSettingsExtSchema>;
-export type DocumentMetadataType = z.infer<typeof DocumentMetadataSchema>;
-export type EvidenceMetadataType = z.infer<typeof EvidenceMetadataSchema>;
-export type CaseMetadataType = z.infer<typeof CaseMetadataSchema>;
+export type UserSettingsExtType = z.infer<typeof, UserSettingsExtSchema>;
+export type DocumentMetadataType = z.infer<typeof, DocumentMetadataSchema>;
+export type EvidenceMetadataType = z.infer<typeof, EvidenceMetadataSchema>;
+export type CaseMetadataType = z.infer<typeof, CaseMetadataSchema>;
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(), // Let Lucia handle ID generation in app code
   email: varchar('email', { length: 255 }).notNull().unique(),
@@ -131,12 +131,12 @@ export const userSettingsSchema = z.object({
   dateFormat: z.string().default('US')
 });
 // Type exports for use in components (avoiding duplicates)
-export type Citation = z.infer<typeof citationSchema>;
-export type DocumentMetadataExt = z.infer<typeof documentMetadataSchema>;
-export type AutoSaveData = z.infer<typeof autoSaveDataSchema>;
-export type Collaborator = z.infer<typeof collaboratorSchema>;
-export type ThemeConfig = z.infer<typeof themeConfigSchema>;
-export type UserSettingsExt = z.infer<typeof userSettingsSchema>;
+export type Citation = z.infer<typeof, citationSchema>;
+export type DocumentMetadataExt = z.infer<typeof, documentMetadataSchema>;
+export type AutoSaveData = z.infer<typeof, autoSaveDataSchema>;
+export type Collaborator = z.infer<typeof, collaboratorSchema>;
+export type ThemeConfig = z.infer<typeof, themeConfigSchema>;
+export type UserSettingsExt = z.infer<typeof, userSettingsSchema>;
 // === LUCIA v3 SESSION MANAGEMENT ===
 export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),

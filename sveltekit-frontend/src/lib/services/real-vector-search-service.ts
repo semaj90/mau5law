@@ -45,7 +45,7 @@ export class RealVectorSearchService {
     try {
       const response = await fetch(`${this.ollamaBaseUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , model: this.embeddingModel,
           prompt: text
@@ -62,7 +62,7 @@ export class RealVectorSearchService {
       return emb as number[];
     } catch (error: any) {
       console.error('Embedding generation failed:', error);
-      throw new Error(`Failed to generate embedding: ${error instanceof Error ? error.message : `Unknown error` }`);
+      throw new Error(`Failed to generate embedding: ${error instanceof Error ? error.message : `Unknown error' }`);'`
     }
   }
 
@@ -137,7 +137,7 @@ export class RealVectorSearchService {
       await this.qdrantClient.upsert(collection, {
         wait: true,
         points: [
-          {
+          {,
             id,
             vector: embedding,
             payload: {
@@ -157,7 +157,7 @@ export class RealVectorSearchService {
   }
 
   /**
-   * Create collection if it doesn't exist
+   * Create collection if it doesn't exist'
    */
   async ensureCollection(
     collectionName: string,
@@ -170,7 +170,7 @@ export class RealVectorSearchService {
 
       if (!exists) {
         await this.qdrantClient.createCollection(collectionName, { vectors: {, size: vectorSize,
-            distance: `Cosine` },
+            distance: `Cosine' },'`
           optimizers_config: {
            , default_segment_number: 2
           }

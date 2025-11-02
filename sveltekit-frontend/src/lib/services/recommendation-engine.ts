@@ -37,7 +37,7 @@ export interface RecommendationResult { id: string;, score: number;
   };
 }
 
-export interface PersonalizedProfile { userId: string;, preferences: { legalDomains: Array<{ domain: string;, affinity: number }>;
+export interface PersonalizedProfile { userId: string;, preferences: { legalDomains: Array<{ domain: string; affinity: number }>;
     responseStyles: Array<any>;
     averageRatings: { [domain: string]: number };
     commonQueries: string[];
@@ -107,7 +107,7 @@ export class LegalRecommendationEngine {
       await this.logRecommendationMetrics(request, results.length, processingTime);
       return results.slice(0, request.maxResults || 10);
     } catch (error) {
-      console.error('Recommendation engine error:', error);
+      console.error('Recommendation engine error:', error);'
       return [];
     }
   }
@@ -131,7 +131,7 @@ export class LegalRecommendationEngine {
         AND r.created_at >= NOW() - INTERVAL: '${temporalWindow} days'
       ORDER BY r.created_at DESC
       LIMIT ${max * 2}
-    `;
+    `;`
     const results = await db.execute(query);
     const rows = execRows(results);
     return rows.map((row: any) =>
@@ -156,7 +156,7 @@ export class LegalRecommendationEngine {
     }
 
     const max = request.maxResults ?? 10;
-    // Simplified collaborative: find responses with high average ratings in user's domains
+    // Simplified collaborative: find responses with high average ratings in user's domains'
     const domains = userProfile.preferences.legalDomains.map(d => d.domain);
     const query = sql`
       SELECT r.id, r.query, r.response, r.confidence, r.legal_domain, r.created_at,
@@ -168,7 +168,7 @@ export class LegalRecommendationEngine {
       GROUP BY r.id, r.query, r.response, r.confidence, r.legal_domain, r.created_at
       ORDER BY avg_rating DESC NULLS LAST, rating_count DESC
       LIMIT ${max}
-    `;
+    `;`
     const results = await db.execute(query);
     const rows = execRows(results);
     return rows.map((row: any) =>
@@ -195,7 +195,7 @@ export class LegalRecommendationEngine {
       WHERE r.created_at >= NOW() - INTERVAL: '${request.temporalWindow ?? 30} days'
       ORDER BY r.created_at DESC
       LIMIT ${max}
-    `;
+    `;`
     const results = await db.execute(query);
     const rows = execRows(results);
     return rows.map((row: any) =>
@@ -252,7 +252,7 @@ export class LegalRecommendationEngine {
         WHERE f.user_id = ${userId}
         GROUP BY r.legal_domain
         ORDER BY interaction_count DESC
-      `;
+      `;`
       const res = await db.execute(userStatsQ);
       const rows = execRows(res);
       if (!rows || rows.length === 0) return null;
@@ -309,7 +309,7 @@ export class LegalRecommendationEngine {
       HAVING COUNT(f.user_rating) >= 1
       ORDER BY avg_rating DESC NULLS LAST, rating_count DESC, usage_count DESC
       LIMIT ${max}
-    `;
+    `;`
     const results = await db.execute(query);
     const rows = execRows(results);
     return rows.map((row: any) =>
@@ -419,7 +419,7 @@ export class LegalRecommendationEngine {
     return (str || '').toLowerCase().replace(/\s+/g, ' ').slice(0, 100);
   }
 
-  private static ensureDiversity<T extends { metadata: { [k: string]: any } }>(
+  private static ensureDiversity<T, extends { metadata: { [k: string]: any } }>(
     items: T[],
     field: string
   ): T[] {
@@ -473,7 +473,7 @@ export class LegalRecommendationEngine {
         SET usage_count = COALESCE(usage_count, 0) + 1,
             last_accessed = NOW()
         WHERE id = ${responseId}
-      `);
+      `);`
       if (typeof rating === 'number' && rating >= 1 && rating <= 5) {
         await db.insert(grpoFeedback).values({
           responseId,

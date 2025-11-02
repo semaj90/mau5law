@@ -44,7 +44,7 @@ export interface CacheManagementRequest {
   cacheType?: 'vector' | 'search' | 'query_history' | 'all';
 }
 
-// Define a specific type for Qdrant's internal cache memory metrics
+// Define a specific type for Qdrant's internal cache memory metrics'
 interface QdrantCacheMemoryMetrics { vectorCache: number;, searchCache: number;
   queryHistory: number;
   total: number;
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     // Enhanced rate limiting for GET requests based on user role
     const isAuthenticated = !!locals.user;
     const rateLimitResult = await redisRateLimit({
-      key: 'qdrant_optimized_get:${clientIP}:${getUserId(locals) || 'anonymous' }`,
+      key: 'qdrant_optimized_get:${clientIP}:${getUserId(locals) || 'anonymous' }`,'`
       limit: isAuthenticated ? 200 : 100, // Higher limit for authenticated users
       windowSec: 60
     });
@@ -277,7 +277,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         const performanceMetrics = qdrantOptimized.getPerformanceMetrics();
         return json({
           success: true,
-          data: { cacheStats: {, memory: memoryUsage,
+          data: {, cacheStats: {, memory: memoryUsage,
               performance: performanceMetrics,
               efficiency: {
                , hitRatio:
@@ -374,8 +374,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           return json(
             {
               success: false,
-              error: 'Admin privileges required for batch operations'
-            },
+              error: `Admin privileges required for batch operations` },
             { status: 403 }
           );
         }
@@ -388,7 +387,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           return json(
             {
               success: false,
-              error: 'Collection and points array required` },
+              error: `Collection and points array required` },
             { status: 400 }
           );
         }
@@ -413,7 +412,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             if (Array.isArray(point.vector)) {
               vector = point.vector;
             } else if (typeof point.vector === 'object' && point.vector !== null) {
-              // If it's a named vector, extract the first vector found.
+              // If it's a named vector, extract the first vector found.'
               // This assumes the upsertBatch expects a single vector array, not named vectors.
               const vectorKeys = Object.keys(point.vector);
               if (vectorKeys.length > 0 && Array.isArray(point.vector[vectorKeys[0]])) {
@@ -447,7 +446,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           return json({
             success: true,
             data: {
-              message: 'Batch upsert completed successfully',
+             , message: 'Batch upsert completed successfully',
               collection,
               pointsUpserted: points.length,
               processingTime,
@@ -496,7 +495,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         return json({
           success: true,
           data: {
-            message: 'Cache cleared successfully',
+           , message: 'Cache cleared successfully',
             cacheType,
             memoryFreed: {
              , before: beforeMemory,
@@ -536,7 +535,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         return json({
           success: true,
           data: {
-            message: 'Memory optimization completed',
+           , message: 'Memory optimization completed',
             optimization: {
              , before: beforeMemory,
               after: afterMemory,
@@ -562,7 +561,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     // Changed from any to unknown
     logger.error('Optimized Qdrant POST operation failed', error instanceof Error ? error : undefined, {
       clientIP,
-      action: body?.action || 'unknown` } as ExtendedLogContext);
+      action: body?.action || 'unknown` } as ExtendedLogContext);'`
     return json(
       {
         success: false,

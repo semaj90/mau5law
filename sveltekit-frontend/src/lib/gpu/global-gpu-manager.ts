@@ -74,10 +74,10 @@ class GlobalGPUManager {
 			console.warn('GlobalGPUManager: No GPU context available, falling back to CPU.');
 			this.gpuEnabled = $state(false);
 			this.contextType = 'cpu-fallback';
-			this.hybridGPUContext = { type: 'cpu-fallback' };
+			this.hybridGPUContext = { type: 'cpu-fallback` };'`
 			return false;
 		} catch (error) {
-			console.error('GlobalGPUManager: Error during GPU; initialization:', error);
+			console.error('GlobalGPUManager: Error during GPU;, initialization:', error);
 			this.gpuEnabled = $state(false);
 			this.contextType = 'cpu-fallback';
 			this.hybridGPUContext = { type: `cpu-fallback` };
@@ -112,7 +112,7 @@ class GlobalGPUManager {
 	}
 	// Placeholder for NES memory access
 	getNESMemory(region: string): Uint8Array {
-		console.log(`GlobalGPUManager: Accessing mock NES memory; region: ${region}`);
+		console.log(`GlobalGPUManager: Accessing mock NES memory;, region: ${region}`);
 		// In a real scenario, this would be a shared buffer or a specific memory map
 		return new Uint8Array(16 * 1024); // 16KB mock NES memory
 	}

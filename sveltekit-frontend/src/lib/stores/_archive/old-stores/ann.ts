@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 export interface QdrantPoint {
   id: number | string;
   payload?: { text?: string; metadata?: Record<string, unknown> };
@@ -24,7 +24,7 @@ export async function queryQdrant(
   const body = { vector: vec, limit, with_payload: true, with_vector: true, score_threshold };
   const r = await fetch(`${import.meta.env.QDRANT}/collections/chunks/points/search`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json` },'`
     body: JSON.stringify(body)
   });
   if (!r.ok) throw new Error(`Qdrant search failed: ${r.status} ${await r.text()}`);

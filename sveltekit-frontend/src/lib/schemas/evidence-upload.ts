@@ -4,7 +4,7 @@
  */
 import { z } from 'zod';
 // import type { EvidenceMetadata } from '$lib/server/db/schema-unified-postgres.js'
-// Define EvidenceMetadata type locally since schema-unified-postgres doesn't exist
+// Define EvidenceMetadata type locally since schema-unified-postgres doesn't exist'
 export type EvidenceMetadata = {
   source?: string;
   type?: string;
@@ -20,7 +20,7 @@ export type EvidenceMetadata = {
   // Additional optional properties for different file types
   pageCount?: number;
   isEncrypted?: boolean;
-  resolution?: { width: number;, height: number };
+  resolution?: { width: number; height: number };
   format?: 'jpeg' | 'png' | 'gif' | 'webp' | 'unknown'; // Changed from 'any'
   hasAlphaChannel?: boolean;
   durationSeconds?: number;
@@ -352,13 +352,13 @@ export const validationMessages = {
   evidence_type: 'Please select the type of evidence',
   file: 'Please select a file to upload',
   file_size: `File size must be less than ${MAX_FILE_SIZE / 1024 / 1024}MB`,
-  file_type: 'File type is not supported for the selected evidence type` };
+  file_type: 'File type is not supported for the selected evidence type' };
 // Export types for use in components
-export type EvidenceUploadData = z.infer<typeof evidenceUploadSchema>;
-export type EnhancedEvidenceUploadData = z.infer<typeof enhancedEvidenceUploadSchema>;
-export type PdfMetadata = z.infer<typeof pdfMetadataSchema>;
-export type ImageMetadata = z.infer<typeof imageMetadataSchema>;
-export type VideoMetadata = z.infer<typeof videoMetadataSchema>;
-export type AudioMetadata = z.infer<typeof audioMetadataSchema>;
-export type TextMetadata = z.infer<typeof textMetadataSchema>;
-export type LinkMetadata = z.infer<typeof linkMetadataSchema>;
+export type EvidenceUploadData = z.infer<typeof, evidenceUploadSchema>;
+export type EnhancedEvidenceUploadData = z.infer<typeof, enhancedEvidenceUploadSchema>;
+export type PdfMetadata = z.infer<typeof, pdfMetadataSchema>;
+export type ImageMetadata = z.infer<typeof, imageMetadataSchema>;
+export type VideoMetadata = z.infer<typeof, videoMetadataSchema>;
+export type AudioMetadata = z.infer<typeof, audioMetadataSchema>;
+export type TextMetadata = z.infer<typeof, textMetadataSchema>;
+export type LinkMetadata = z.infer<typeof, linkMetadataSchema>;

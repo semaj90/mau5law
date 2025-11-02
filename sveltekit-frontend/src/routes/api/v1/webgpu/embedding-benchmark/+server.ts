@@ -42,7 +42,7 @@ const SAMPLE_LEGAL_DOCUMENTS = {
   cases: [
     'Plaintiff v. Defendant, Case No. 2024-CV-001. Motion for summary judgment filed regarding breach of contract claims. Court finds material facts in dispute precluding summary judgment. Discovery period extended to allow additional depositions and document production.',
     'In re: Corporate Merger Litigation, Consolidated Case No. 2024-BUS-045. Shareholders challenge merger terms as inadequate. Delaware Chancery Court applies enhanced scrutiny due to potential conflicts of interest among board members during negotiation process.',
-    "Criminal Appeal Case No. 2024-CRIM-123. Defendant appeals conviction for securities fraud. Fourth Amendment violation claimed regarding search and seizure of electronic devices. Appellate court reviews trial court's denial of motion to suppress evidence.",
+    "Criminal Appeal Case No. 2024-CRIM-123. Defendant appeals conviction for securities fraud. Fourth Amendment violation claimed regarding search and seizure of electronic devices. Appellate court reviews trial court's denial of motion to suppress evidence.",'
   ],
   statutes: [
     'Section 1983 Civil Rights Act provides cause of action against state actors who deprive citizens of constitutional rights under color of state law. Plaintiff must demonstrate defendant acted under color of state law and violated clearly established constitutional right.',
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async () => {
       success: true,
       service: 'legal-embedding-benchmark',
       systemStatus: {
-        embeddingCache: cacheStats,
+       , embeddingCache: cacheStats,
         webgpuOptimizer: optimizerStats,
         sampleDocuments: {
          , contracts: SAMPLE_LEGAL_DOCUMENTS.contracts.length,
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       }
     });
   } catch (error) {
-    console.error('Legal embedding benchmark error:', error);
+    console.error('Legal embedding benchmark error:', error);'
     return json(
       {
         success: false,
@@ -291,14 +291,14 @@ async function runStressTestBenchmark(config: BenchmarkConfig): Promise<Benchmar
           const legalQuery = {
             text: doc.text,
             documentType: doc.type,
-            practiceArea: config.practiceAreas?.[workerId % (config.practiceAreas?.length || 1)] || 'general` };
+            practiceArea: config.practiceAreas?.[workerId % (config.practiceAreas?.length || 1)] || 'general` };'`
           await getLegalEmbedding(legalQuery);
           completedDocs++;
           // Small random delay to prevent overwhelming
           await new Promise(resolve => setTimeout(resolve, Math.random() * 50));
         } catch (error) {
           errors++;
-          console.warn(`Worker ${workerId} error: ', error);
+          console.warn(`Worker ${workerId} error: ', error);'`
         }
       }
     })();
@@ -319,7 +319,7 @@ async function runStressTestBenchmark(config: BenchmarkConfig): Promise<Benchmar
       peak: process.memoryUsage().heapUsed,
       average: process.memoryUsage().heapUsed * 0.8
     },
-    // return the error count so it's considered used
+    // return the error count so it's considered used'
     errors
   };
 }
@@ -334,7 +334,7 @@ async function runComparisonBenchmark(config: BenchmarkConfig): Promise<Benchmar
     const legalQuery = {
       text: doc.text,
       documentType: doc.type,
-      practiceArea: 'comparison-webgpu` };
+      practiceArea: `comparison-webgpu` };
     await getLegalEmbedding(legalQuery);
   }
   const webgpuTime = Date.now() - webgpuStartTime;
@@ -365,7 +365,7 @@ async function runComparisonBenchmark(config: BenchmarkConfig): Promise<Benchmar
  * Get all sample documents with metadata
  */
 function getAllSampleDocuments() {
-  const allDocs: Array<{ text: string;, type: DocumentType }> = [];
+  const allDocs: Array<{ text: string; type: DocumentType }> = [];
   function mapCategoryToType(category: string): DocumentType {
     switch (category) {
       case 'contracts':

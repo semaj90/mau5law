@@ -53,15 +53,15 @@ export async function vectorSearch(
       SELECT
         id,
         ${includeContent ? sql`content` : sql`NULL as content`},
-        ${includeMetadata ? sql`metadata` : sql`NULL as metadata`},
+        ${includeMetadata ? sql`metadata` : sql`NULL as metadata` },
         embedding,
         1 - (embedding <=> ${embeddingVector}::vector) as similarity
       FROM legal_documents
       ${whereClause}
-      ${conditions.length === 0 ? sql`` : sql`AND' } 1 - (embedding <=> ${embeddingVector}::vector) >= ${threshold}
+      ${conditions.length === 0 ? sql`` : sql`AND` } 1 - (embedding <=> ${embeddingVector}::vector) >= ${threshold}
       ORDER BY embedding <=> ${embeddingVector}::vector
       LIMIT ${limit}
-    `;
+    `;`
     const results = await db.execute(searchQuery);
     const queryTime = performance.now() - startTime;
     // Transform results to expected format
@@ -82,11 +82,11 @@ export async function vectorSearch(
       embedding: {
         dimensions: queryEmbedding.length,
         model: 'gemma',
-        format: 'float32' }
+        format: 'float32` }'`
     }
   } catch (error) {
-    console.error('Vector search error:', error);
-    throw new Error(`Vector search failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
+    console.error('Vector search error:', error);'
+    throw new Error(`Vector search failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
   }
 }
 /**
@@ -100,7 +100,7 @@ export async function getVectorSearchStats(): Promise<any> {
         AVG(array_length(embedding, 1)) as avg_embedding_dimensions,
         COUNT(CASE WHEN embedding IS NOT NULL THEN 1 END) as documents_with_embeddings
       FROM legal_documents
-    `;
+    `;`
     const result = await db.execute(statsQuery);
     const stats = result.rows[0];
     return {
@@ -112,8 +112,8 @@ export async function getVectorSearchStats(): Promise<any> {
       vectorType: 'vector(768)' // Gemma embedding dimension
     }
   } catch (error) {
-    console.error('Vector stats error:', error);
-    throw new Error(`Failed to get vector statistics: ${error instanceof Error ? error.message : 'Unknown error' }`);
+    console.error('Vector stats error:', error);'
+    throw new Error(`Failed to get vector statistics: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
   }
 }
 /**
@@ -131,14 +131,14 @@ export async function batchInsertEmbeddings(
     const insertQuery = sql`
       INSERT INTO legal_documents (id, content, embedding, metadata, created_at, updated_at)
       VALUES ${sql.join(
-        documents.map(doc => sql`(
+        documents.map(doc => sql`(`
           ${doc.id},
           ${doc.content},
-          ${`[${doc.embedding.join(',')}]' }:: vector
+          ${`[${doc.embedding.join(',')}]` }:: vector
           ${JSON.stringify(doc.metadata || {})},
           NOW(),
           NOW()
-        )`),
+        )`),`
         sql`, `
       )}
       ON CONFLICT (id) DO UPDATE SET
@@ -146,12 +146,12 @@ export async function batchInsertEmbeddings(
         embedding = EXCLUDED.embedding,
         metadata = EXCLUDED.metadata,
         updated_at = NOW()
-    `;
+    `;`
     await db.execute(insertQuery);
     return { success: true, inserted: documents.length }
   } catch (error) {
-    console.error('Batch insert error:', error);
-    throw new Error(`Batch insert failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
+    console.error('Batch insert error:', error);'
+    throw new Error(`Batch insert failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
   }
 }
 /**
@@ -162,23 +162,23 @@ export async function optimizeVectorIndex(): Promise<any> {
     // Create or recreate IVFFLAT index for optimal search performance
     await db.execute(sql`
       DROP INDEX IF EXISTS ivfflat_embedding_idx
-    `);
+    `);`
     await db.execute(sql`
       CREATE INDEX CONCURRENTLY ivfflat_embedding_idx
       ON legal_documents
       USING ivfflat (embedding vector_cosine_ops)
       WITH (lists = 100)
-    `);
+    `);`
     // Analyze table for query optimization
     await db.execute(sql`ANALYZE legal_documents`);
     return {
       success: true,
       indexType: 'ivfflat',
       lists: 100,
-      operation: 'cosine_similarity' }
+      operation: 'cosine_similarity` }'`
   } catch (error) {
-    console.error('Index optimization error:', error);
-    throw new Error(`Index optimization failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
+    console.error('Index optimization error:', error);'
+    throw new Error(`Index optimization failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
   }
 }
 /**
@@ -191,7 +191,7 @@ export async function vectorSearchHealthCheck(): Promise<any> {
       SELECT 1 as test,
              pg_extension_version('vector') as vector_version,
              current_setting('shared_preload_libraries') as preload_libs
-    `;
+    `;`
     const result = await db.execute(testQuery);
     const info = result.rows[0];
     // Check if vector extension is loaded

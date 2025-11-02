@@ -6,7 +6,7 @@ import { z } from 'zod';
 // Minimal, single-file unified evidence analysis route (clean replacement).
 // This file intentionally small to avoid cascading type/lint issues during edits.
 
-type EvidenceItem = { id: string;, filename: string };
+type EvidenceItem = { id: string; filename: string };
 
 const ReqSchema = z.object({
   evidenceIds: z.array(cuidSchema).min(1),
@@ -32,7 +32,7 @@ function makeErrorBody(err: any) {
 }
 
 async function withTimeout<T>(p: Promise<T>, ms: number) {
-  let timer: ReturnType<typeof setTimeout>;
+  let timer: ReturnType<typeof, setTimeout>;
   const to = new Promise<never>((_, rej) => {
     timer = setTimeout(() => rej(new Error('timeout')), ms);
   });
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
       unifiedInsights: { keyFindings: [] }
     };
 
-    // Vector similarity: dynamic import so build/typecheck won't fail if module missing
+    // Vector similarity: dynamic import so build/typecheck won't fail if module missing'
     if (req.analysisScope.vectorSimilarity) {
       const mod = await import('../vector/similarity-engine.js').catch(() => null);
       if (mod?.AdvancedSimilarityEngine) {
@@ -87,5 +87,5 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 export const GET: RequestHandler = async () => {
-  return json({ capabilities: {, vectorSimilarity: true }, status: {, systemHealth: 'operational' } });
+  return json({ capabilities: {, vectorSimilarity: true }, status: {, systemHealth: 'operational` } });'`
 };

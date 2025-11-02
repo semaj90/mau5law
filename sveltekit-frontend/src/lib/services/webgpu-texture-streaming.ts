@@ -104,7 +104,7 @@ export class WebGPUTextureStreamingService {
       // Set up error handling
       this.device.addEventListener('uncapturederror', (_event: GPUUncapturedErrorEvent) => {
         const error = event.error;
-        console.error('🚨 WebGPU uncaptured error:', error.message);
+        console.error('🚨 WebGPU uncaptured error:', error.message);'
       });
       this.isInitialized = true;
       console.log('✅ WebGPU texture streaming initialized');
@@ -158,8 +158,7 @@ export class WebGPUTextureStreamingService {
         mipLevelCount: config.mipLevelCount || 1,
         sampleCount: config.sampleCount || 1,
         viewFormats: config.viewFormats,
-        label: config.label || `StreamingTexture_${id}`
-      });
+        label: config.label || `StreamingTexture_${id}` });
       // Create texture view
       const textureView = texture.createView();
       // Create staging buffer if initial data provided
@@ -168,13 +167,13 @@ export class WebGPUTextureStreamingService {
         buffer = this.device.createBuffer({
           size: initialData.byteLength,
           usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
-          label: `StagingBuffer_${id}` });
+          label: `StagingBuffer_${id}' });'`
         // Upload initial data with proper type conversion
         let bufferData: ArrayBuffer;
         if (initialData instanceof ArrayBuffer) {
           bufferData = initialData;
         } else {
-          const ta = initialData as { buffer: ArrayBuffer; byteOffset: number;, byteLength: number }
+          const ta = initialData as { buffer: ArrayBuffer; byteOffset: number; byteLength: number }
           bufferData = ta.buffer.slice(ta.byteOffset, ta.byteOffset + ta.byteLength);
         }
         this.device.queue.writeBuffer(buffer, 0, bufferData);
@@ -209,7 +208,7 @@ export class WebGPUTextureStreamingService {
       await gpuCacheOrchestrator.store(`texture_${id}`, entry {
         tags: ['webgpu-texture', 'streaming', entry.cacheRegion],
         vertexBuffers: initialData ? [new Float32Array(initialData)] : undefined,
-        userId: `texture-streaming-service` });
+        userId: `texture-streaming-service' });'`
       // Update metrics
       this.metrics.texturesStreamed++;
       this.metrics.totalMemoryUsed += textureSize;
@@ -217,7 +216,7 @@ export class WebGPUTextureStreamingService {
       console.log(`🎨 Texture created: ${id} (${textureSize} bytes, ${entry.cacheRegion})`);
       return entry;
     } catch (error: any) {
-      console.error(`❌ Failed to create texture ${id}: ', error);
+      console.error(`❌ Failed to create texture ${id}: ', error);'`
       throw error;
     }
   }
@@ -226,8 +225,8 @@ export class WebGPUTextureStreamingService {
     textureId: string,
     data: ArrayBuffer | Float32Array,
     options: {
-      region?: { x: number;, y: number;
-        width: number;
+      region?: {, x: number;, y: number;
+       , width: number;
        , height: number;
       }
       mipLevel?: number;
@@ -253,20 +252,19 @@ export class WebGPUTextureStreamingService {
       const stagingBuffer = this.device.createBuffer({
         size: processedData.byteLength,
         usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
-        label: `StreamStaging_${textureId}`
-      });
+        label: `StreamStaging_${textureId}` });
       // Upload data to staging buffer with proper type conversion
       let stagingData: ArrayBuffer;
       if (processedData instanceof ArrayBuffer) {
         stagingData = processedData;
       } else {
-        const ta = processedData as { buffer: ArrayBuffer; byteOffset: number;, byteLength: number }
+        const ta = processedData as { buffer: ArrayBuffer; byteOffset: number; byteLength: number }
         stagingData = ta.buffer.slice(ta.byteOffset, ta.byteOffset + ta.byteLength);
       }
       this.device.queue.writeBuffer(stagingBuffer, 0, stagingData);
       // Create command encoder
       const commandEncoder = this.device.createCommandEncoder({
-        label: `TextureStream_${textureId}` });
+        label: `TextureStream_${textureId}' });'`
       // Copy from staging buffer to texture
       const region = options.region || {
         x: 0,
@@ -300,11 +298,11 @@ export class WebGPUTextureStreamingService {
       // Update GPU cache
       await gpuCacheOrchestrator.store(`texture_${textureId}`, entry {
         tags: ['webgpu-texture', 'streaming', 'updated', entry.cacheRegion],
-        userId: `texture-streaming-service` });
+        userId: `texture-streaming-service' });'`
       const streamTime = performance.now() - startTime;
       console.log(`📤 Texture streamed: ${textureId} (${streamTime.toFixed(2)}ms)`);
     } catch (error: any) {
-      console.error(`❌ Failed to stream texture data for ${textureId}: ', error);
+      console.error(`❌ Failed to stream texture data for ${textureId}: ', error);'`
       throw error;
     }
   }
@@ -376,7 +374,7 @@ export class WebGPUTextureStreamingService {
       return 'CHR_ROM';
     } else if (textureSize > 256 * 1024) { // 256KB-1MB: Small textures
       return 'CHR_RAM';
-    } else { // < 256KB: Tiny textures
+    } else { // < 256KB: Tiny, textures
       return 'PRG_RAM';
     }
   }
@@ -424,7 +422,7 @@ export class WebGPUTextureStreamingService {
       cacheHitRatio: (this.metrics.cacheHitRatio * 100).toFixed(1) + '%',
       activeTextures: this.texturePool.size,
       streamingQueueSize: this.streamingQueue.size,
-      memoryUtilization: ((this.metrics.totalMemoryUsed / (RTX_3060_TI_CONFIG.memoryBudgetMB * 1024 * 1024)) * 100).toFixed(1) + '%` }
+      memoryUtilization: ((this.metrics.totalMemoryUsed / (RTX_3060_TI_CONFIG.memoryBudgetMB * 1024 * 1024)) * 100).toFixed(1) + '%' }
   }
   // === Shutdown ===
   async shutdown(): Promise<void> {
@@ -444,4 +442,4 @@ export class WebGPUTextureStreamingService {
 // === Export singleton instance ===
 export const webgpuTextureStreaming = new WebGPUTextureStreamingService();
 // Export alias for compatibility
-export { WebGPUTextureStreamingService as WebGPUTextureStreaming }
+export { WebGPUTextureStreamingService, as WebGPUTextureStreaming }

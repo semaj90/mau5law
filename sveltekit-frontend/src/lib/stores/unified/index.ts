@@ -64,41 +64,41 @@ export { aiAssistantStore } from './ai-assistant-store'; // ✅ COMPLETE
  */
 
 // AI Features (aiGlobal, aiAssistant, aiHistory, recommendations)
-export { aiAssistantStore as aiAssistant } from './ai-assistant-store';
-export { aiAssistantStore as aiGlobalStore } from './ai-assistant-store';
-export { aiAssistantStore as aiHistory } from './ai-assistant-store';
-export { aiAssistantStore as recommendations } from './ai-assistant-store';
+export { aiAssistantStore, as aiAssistant } from './ai-assistant-store';
+export { aiAssistantStore, as aiGlobalStore } from './ai-assistant-store';
+export { aiAssistantStore, as aiHistory } from './ai-assistant-store';
+export { aiAssistantStore, as recommendations } from './ai-assistant-store';
 
 // User Management (user, avatarStore, userData)
-export { userStore as user } from './user-store';
-export { userStore as avatarStore } from './user-store';
-export { userStore as userData } from './user-store';
+export { userStore, as user } from './user-store';
+export { userStore, as avatarStore } from './user-store';
+export { userStore, as userData } from './user-store';
 
 // Notifications & Alerts (notifications, alerts)
-export { notificationStore as notifications } from './notification-store';
-export { notificationStore as alerts } from './notification-store';
+export { notificationStore, as notifications } from './notification-store';
+export { notificationStore, as alerts } from './notification-store';
 
 // Evidence Management (evidence, evidenceStore, evidenceWorkflow, evidenceHierarchy)
-export { evidenceStore as evidence } from './evidence-store';
-export { evidenceStore as evidenceWorkflow } from './evidence-store';
-export { evidenceStore as evidenceHierarchy } from './evidence-store';
+export { evidenceStore, as evidence } from './evidence-store';
+export { evidenceStore, as evidenceWorkflow } from './evidence-store';
+export { evidenceStore, as evidenceHierarchy } from './evidence-store';
 
 // Cases (cases, legalCase)
-export { caseStore as cases } from './case-store';
-export { caseStore as legalCase } from './case-store';
+export { caseStore, as cases } from './case-store';
+export { caseStore, as legalCase } from './case-store';
 
 // Reports & Citations (report, citations)
-export { reportStore as report } from './report-store';
-export { citationStore as citations } from './citation-store';
+export { reportStore, as report } from './report-store';
+export { citationStore, as citations } from './citation-store';
 
 // Canvas & Collaboration (canvas, websocket, collaboration)
-export { canvasStore as canvas } from './canvas-store';
+export { canvasStore, as canvas } from './canvas-store';
 
 // Search & Analytics (search, analytics, userAnalytics)
-export { searchStore as search } from './search-store';
+export { searchStore, as search } from './search-store';
 
 // POI & Network Analysis (poi, network)
-export { poiStore as poi } from './poi-store';
+export { poiStore, as poi } from './poi-store';
 
 /**
  * MIGRATION GUIDE:

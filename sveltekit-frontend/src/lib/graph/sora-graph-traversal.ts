@@ -7,8 +7,8 @@ import type { Document } from '$lib/types';
  */
 // Production-compatible simplified imports
 type NESGPUIntegration = { computeBatchSimilarities?: (data: any) => Promise<number[]> }
-type NESMemoryArchitecture = { allocateCHR_ROM?: (size: number) => any; writeCHR_ROM?: (region: any; data: any) => void }
-type SemanticAnalysisPipeline = { processDocument: (content: string) => Promise<any>;, extractEntities: (content: string) => Promise<string[]>; generateEmbedding?: (text: string) => Promise<Float32Array> }
+type NESMemoryArchitecture = { allocateCHR_ROM?: (size: number) => any; writeCHR_ROM?: (region: any;, data: any) => void }
+type SemanticAnalysisPipeline = { processDocument: (content: string) => Promise<any>; extractEntities: (content: string) => Promise<string[]>; generateEmbedding?: (text: string) => Promise<Float32Array> }
 type DimensionalTensorStore = { storeTensorSlice?: (slice: any) => Promise<void>; getStats?: () => any }
 type LegalAIReranker = { rerank: (results: any[];, context: any) => Promise<any[]> }
 type TensorSlice = { data: Float32Array;, dimensions: number[];
@@ -32,14 +32,14 @@ type UserContext = {
   recentActions?: any[];
   currentCase?: any;
 }
-type RerankResult = { id: string; score: number;, metadata: any }
-type GraphNode = { id: string;, properties: any }
-type GraphEdge = { id: string; source: string; target: string;, weight: number }
+type RerankResult = { id: string; score: number; metadata: any }
+type GraphNode = { id: string; properties: any }
+type GraphEdge = { id: string; source: string; target: string; weight: number }
 
 export interface SoraGraphNode { id: string;, type: 'document' | 'entity' | 'concept' | 'relationship' | 'case' | 'evidence';
   properties: { [key: string]: any }
   embedding?: Float32Array;
-  coordinates?: { x: number; y: number;, z: number }
+  coordinates?: { x: number; y: number; z: number }
   score?: number;
   depth?: number;
 }
@@ -520,7 +520,7 @@ export class SoraGraphTraversal {
           RETURN m, r, labels(m) as target_labels, type(r) as rel_type
           ORDER BY r.weight DESC
           LIMIT 20
-        `, { nodeId: parseInt(nodeId) });
+        `, { nodeId: parseInt(nodeId) });`
         const neighbors: Array<any> = [];
         for (const record of (result as { records?: any; id?: any; rerankScore?: any }).records) {
           const targetNode = record.get('m');
@@ -581,7 +581,7 @@ export class SoraGraphTraversal {
     path: SoraTraversalPath,
     queryEmbedding: Float32Array
   ): Promise<number> {
-    if (path.nodes.length < 2) return 0;
+    if (path.nodes.length < 2) return, 0;
     let totalCoherence = 0;
     let comparisons = 0;
     // Calculate pairwise similarities between consecutive nodes
@@ -666,7 +666,7 @@ export class SoraGraphTraversal {
       'RELATED_TO': 'related',
       'SIMILAR_TO': 'similar',
       'REFERENCES': 'references',
-      'CONTRADICTS': 'contradicts' }
+      'CONTRADICTS': 'contradicts` }'`
     return mapping[relType] || 'related';
   }
   /**
@@ -932,7 +932,7 @@ export class SoraGraphTraversal {
   /**
    * Get reinforcement learning statistics
    */
-  public getReinforcementStats(): { totalNodes: number; avgVisitCount: number;, topNodes: Array<any> } {
+  public getReinforcementStats(): { totalNodes: number; avgVisitCount: number; topNodes: Array<any> } {
     const entries = Array.from(this.reinforcementModel.entries());
     const totalVisits = entries.reduce((sum, [_, visits]) => sum + visits, 0);
     return {

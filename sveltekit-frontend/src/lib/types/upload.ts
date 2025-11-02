@@ -85,7 +85,7 @@ export interface ProcessingStep { id: string;, name: string;
 export interface FileMetadata {
   mimeType: string;
   encoding?: string;
-  dimensions?: { width: number;, height: number };
+  dimensions?: { width: number; height: number };
   pageCount?: number;
   language?: string;
   documentType?: 'contract' | 'deed' | 'evidence' | 'report' | 'correspondence' | 'unknown';
@@ -105,7 +105,7 @@ export interface UploadProcessingResult { contentExtracted: boolean;, textLengt
   processingSteps: CompletedStep[];
 }
 export interface DetectedObject { type: 'table' | 'signature' | 'seal' | 'text-block' | 'image' | 'diagram';, confidence: number;
-  boundingBox: { x: number; y: number; width: number;, height: number };
+  boundingBox: { x: number; y: number; width: number; height: number };
   page?: number;
   extractedText?: string;
 }
@@ -116,7 +116,7 @@ export interface OCRResult { engine: string;, page: number;
   processingTime: number;
 }
 export interface OCRWord { text: string;, confidence: number;
-  boundingBox: { x: number; y: number; width: number;, height: number };
+  boundingBox: { x: number; y: number; width: number; height: number };
 }
 export interface UploadAnalysisResult { documentType: string;, parties: string[];
   keyDates: Date[];
@@ -149,14 +149,14 @@ export interface UploadMachineContext { files: FileUploadState[];, pipeline: Pr
   caseId?: string;
 }
 export type UploadMachineEvent =
-  | { type: 'UPLOAD_START';, files: File[] }
-  | { type: 'UPLOAD_PROGRESS'; fileId: string;, progress: number }
-  | { type: 'UPLOAD_COMPLETE';, fileId: string }
-  | { type: 'PROCESSING_START';, fileId: string }
-  | { type: 'PROCESSING_STEP'; fileId: string; step: string;, progress: number }
-  | { type: 'PROCESSING_COMPLETE'; fileId: string;, result: UploadAnalysisResult }
-  | { type: 'ERROR'; fileId?: string;, error: string }
-  | { type: 'RETRY';, fileId: string }
+  | { type: 'UPLOAD_START'; files: File[] }
+  | { type: 'UPLOAD_PROGRESS'; fileId: string; progress: number }
+  | { type: 'UPLOAD_COMPLETE'; fileId: string }
+  | { type: 'PROCESSING_START'; fileId: string }
+  | { type: 'PROCESSING_STEP'; fileId: string; step: string; progress: number }
+  | { type: 'PROCESSING_COMPLETE'; fileId: string; result: UploadAnalysisResult }
+  | { type: 'ERROR'; fileId?: string; error: string }
+  | { type: 'RETRY'; fileId: string }
   | { type: 'CANCEL'; fileId?: string }
   | { type: 'RESET' };
 // Cache Strategy for Upload Components

@@ -153,7 +153,7 @@ class FrontendServiceClient {
   }
 
   private async get<T>(endpoint: string): Promise<ServiceResponse<T>> {
-    return this.request<T>(endpoint, { method: 'GET' });
+    return this.request<T>(endpoint, { method: 'GET` });'`
   }
 
   private async post<T>(endpoint: string, body?: RequestBody): Promise<ServiceResponse<T>> {

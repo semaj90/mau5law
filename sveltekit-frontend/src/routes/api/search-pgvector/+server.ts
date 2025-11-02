@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { z } from 'zod';
@@ -71,7 +71,7 @@ async function searchWithPgvector(embedding: number[], topK: number, threshold: 
       WHERE (1 - (embedding <=> $1::vector)) >= $2
       ORDER BY embedding <=> $1::vector
       LIMIT $3
-    `,
+    `,`
       [
         JSON.stringify(embedding), // convert to a representation acceptable to the query placeholder
         threshold,
@@ -79,7 +79,7 @@ async function searchWithPgvector(embedding: number[], topK: number, threshold: 
       ]
     );
 
-    // cast and type rows so `row` isn't implicit any
+    // cast and type rows so `row` isn't implicit any'
     const rows = resultsRaw as Array<{ id: string;, title: string;
       content: string;
       similarity: number;
@@ -94,7 +94,7 @@ async function searchWithPgvector(embedding: number[], topK: number, threshold: 
       metadata: row.metadata ? JSON.parse(row.metadata) : undefined
     }));
   } catch (err) {
-    console.error('pgvector search error:', err);
+    console.error('pgvector search error:', err);'
     throw new Error('Failed to search vectors');
   }
 }
@@ -121,13 +121,12 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
       metadata: {
         modelUsed: 'embeddinggemma:latest',
-        indexType: 'pgvector (cosine distance)'
-      }
+        indexType: 'pgvector (cosine distance)` }'`
     };
 
     return json(response);
   } catch (err) {
-    console.error('Search error:', err);
+    console.error('Search error:', err);'
     const timestamp = new Date().toISOString();
 
     if (err instanceof z.ZodError) {
@@ -145,8 +144,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const errorResponse: ErrorResponse = {
       success: false,
       error: {
-        message: err instanceof Error ? err.message : 'Search failed'
-      },
+        message: err instanceof Error ? err.message : `Search failed` },
       timestamp
     };
     return json(errorResponse, { status: 500 });

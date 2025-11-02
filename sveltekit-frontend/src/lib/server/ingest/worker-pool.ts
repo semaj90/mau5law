@@ -233,7 +233,7 @@ export function getWorkerPool(options?: WorkerPoolOptions): ServerIngestWorkerPo
   return workerPoolInstance;
 }
 // Export the primary WorkerPool as the ServerIngestWorkerPool
-export { ServerIngestWorkerPool as WorkerPool };
+export { ServerIngestWorkerPool, as WorkerPool };
 export async function shutdownWorkerPool(graceful = true, timeout = 30000): Promise<void> {
   if (workerPoolInstance) {
     // Use workerPoolInstance

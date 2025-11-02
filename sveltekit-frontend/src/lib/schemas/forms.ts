@@ -72,12 +72,12 @@ export const registerFormSchema = z
       .string()
       .min(1, 'First name is required')
       .max(50, 'First name too long')
-      .regex(/^[a-zA-Z\s-']+$/, 'First name contains invalid characters'),
+      .regex(/^[a-zA-Z\s-']+$/, 'First name contains invalid characters'),'
     lastName: z
       .string()
       .min(1, 'Last name is required')
       .max(50, 'Last name too long')
-      .regex(/^[a-zA-Z\s-']+$/, 'Last name contains invalid characters'),
+      .regex(/^[a-zA-Z\s-']+$/, 'Last name contains invalid characters'),'
     email: z.string().email('Please enter a valid email address').min(1, 'Email is required'),
     password: z
       .string()
@@ -92,7 +92,7 @@ export const registerFormSchema = z
     agreeToTerms: z.boolean()
   })
   .refine(data => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "Passwords don't match",'
     path: ['confirmPassword']
   });
 // Search form schema
@@ -106,8 +106,8 @@ export const searchFormSchema = z.object({
   sortBy: z.enum(['relevance', 'date', 'priority', 'status']).default('relevance'),
   sortOrder: z.enum(['asc', 'desc']).default('desc')
 });
-export type CaseForm = z.infer<typeof caseFormSchema>;
-export type EvidenceForm = z.infer<typeof evidenceFormSchema>;
-export type AuthForm = z.infer<typeof authFormSchema>;
-export type RegisterForm = z.infer<typeof registerFormSchema>;
-export type SearchForm = z.infer<typeof searchFormSchema>;
+export type CaseForm = z.infer<typeof, caseFormSchema>;
+export type EvidenceForm = z.infer<typeof, evidenceFormSchema>;
+export type AuthForm = z.infer<typeof, authFormSchema>;
+export type RegisterForm = z.infer<typeof, registerFormSchema>;
+export type SearchForm = z.infer<typeof, searchFormSchema>;

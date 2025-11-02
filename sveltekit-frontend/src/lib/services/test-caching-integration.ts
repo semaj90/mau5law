@@ -146,7 +146,7 @@ export class CachingIntegrationTester {
       const mockVectorSearchFn = async (embedding: number[]) => {
         // Mock vector search results
         return [
-          {
+          {,
             id: "doc1",
             documentId: "legal-doc-1",
             score: 0.95,

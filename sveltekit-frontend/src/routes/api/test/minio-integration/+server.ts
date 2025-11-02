@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         test: 'health-check',
         status: healthResponse.ok ? 'passed' : 'failed',
         response: healthData,
-        timing: `${Date.now() - startTime}ms' });
+        timing: '${Date.now() - startTime}ms' });
     } catch (error) {
       testResults.push({
         test: 'health-check',
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
     try {
       const initResponse = await fetch('/api/v1/minio/health', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({, action: `initialize` })
       });
       const initData = await initResponse.json();
@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         test: 'initialization',
         status: initResponse.ok ? 'passed' : 'failed',
         response: initData,
-        timing: `${Date.now() - startTime}ms' });
+        timing: `${Date.now() - startTime}ms` });
     } catch (error) {
       testResults.push({
         test: 'initialization',
@@ -55,11 +55,11 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         test: 'bucket-listing',
         status: bucketsResponse.ok ? 'passed' : 'failed',
         response: bucketsData,
-        timing: `${Date.now() - startTime}ms' });
+        timing: `${Date.now() - startTime}ms` });
       // Ensure all buckets exist
       const ensureBucketsResponse = await fetch('/api/v1/minio/buckets', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({, action: `ensure-all` })
       });
       const ensureBucketsData = await ensureBucketsResponse.json();
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         test: 'bucket-creation',
         status: ensureBucketsResponse.ok ? 'passed' : 'failed',
         response: ensureBucketsData,
-        timing: `${Date.now() - startTime}ms' });
+        timing: `${Date.now() - startTime}ms` });
     } catch (error) {
       testResults.push({
         test: 'bucket-management',
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
     // Test 4: Create test file and upload
     console.log('📄 Testing file upload...');
     try {
-      const testFileContent = `Legal Document Test
+      const testFileContent = `Legal Document Test`
 This is a test legal document for Phase 1 functionality testing.
 Content includes:
 - Contract terms and conditions
@@ -86,7 +86,7 @@ Content includes:
 - Witness testimony summary
 Generated at: ${new Date().toISOString()}
 Test ID: ${Math.random().toString(36).substring(7)}
-      `;
+      `;`
       const testFile = new File([testFileContent], 'test-legal-document.txt', {
         type: `text/plain` });
       const formData = new FormData();
@@ -127,7 +127,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
             headers: Object.fromEntries(downloadResponse.headers.entries()),
             contentLength: downloadResponse.headers.get('content-length')
           },
-          timing: `${Date.now() - startTime}ms' });
+          timing: `${Date.now() - startTime}ms` });
       }
     } catch (error) {
       testResults.push({
@@ -148,14 +148,13 @@ Test ID: ${Math.random().toString(36).substring(7)}
           failed: failedTests,
           errors: errorTests,
           successRate: `${Math.round((passedTests / testResults.length) * 100)}%`,
-          totalTime: `${totalTime}ms' },
+          totalTime: '${totalTime}ms' },
         results: testResults,
         timestamp: new Date().toISOString(),
-        phase: 'Phase; 1: Basic upload, AI analysis, storage functionality'
-      }),
+        phase: 'Phase; 1: Basic upload, AI analysis, storage functionality` }),'`
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': `application/json` }
       }
     );
   } catch (error) {

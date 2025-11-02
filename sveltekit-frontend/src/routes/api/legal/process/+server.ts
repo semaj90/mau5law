@@ -38,21 +38,21 @@ export const POST: RequestHandler = async ({ request }) => {
     for (const [jobId, store] of (result as { statusStores?: any; jobIds?: any; processingMetrics?: any })
       .statusStores) {
       jobStatuses[jobId] = {
-        subscriptionEndpoint: `/api/legal/status/${jobId}` };
+        subscriptionEndpoint: `/api/legal/status/${jobId}' };'`
     }
     return json({
       success: true,
       jobIds: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds,
       jobStatuses,
-      aggregateStatusEndpoint: '/api/legal/status/aggregate/${(result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds.join(',')}`,
+      aggregateStatusEndpoint: '/api/legal/status/aggregate/${(result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds.join(',')}`,'`
       processingMetrics: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).processingMetrics
     });
   } catch (error) {
-    console.error('Legal processing error:', error);
+    console.error('Legal processing error:', error);'
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error` },
+        error: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

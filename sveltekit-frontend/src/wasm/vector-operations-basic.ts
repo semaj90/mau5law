@@ -2,7 +2,7 @@
 // Compiles to WebAssembly for client-side acceleration
 // Vector similarity calculation
 export function cosineSimilarity(aPtr: usize, bPtr: usize, length: i32): f32 {
-  if (length <= 0) return 0.0;
+  if (length <= 0) return, 0.0;
   let dotProduct: f32 = 0.0;
   let normA: f32 = 0.0;
   let normB: f32 = 0.0;
@@ -30,7 +30,7 @@ export function euclideanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
 }
 // Dot product calculation
 export function dotProduct(aPtr: usize, bPtr: usize, length: i32): f32 {
-  if (length <= 0) return 0.0;
+  if (length <= 0) return, 0.0;
   let result: f32 = 0.0;
   for (let i = 0; i < length; i++) {
     const aVal = load<f32>(aPtr + (i << 2));

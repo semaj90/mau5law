@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Case } from '$lib/types';
   import { page } from '$app/stores';
 
@@ -24,19 +24,19 @@ import type { Case } from '$lib/types';
   <title>Evidence Manager - YoRHa Legal AI</title>
 </svelte:head>
 
-<div class="home-page">
-  <div class="hero-section">
+<div, class="home-page">
+  <div, class="hero-section">
     <h1>📁 Evidence Manager</h1>
-    <p class="subtitle">Upload and manage legal evidence files</p>
+    <p, class="subtitle">Upload and manage legal evidence files</p>
     {#if caseId}
-      <p class="status">Case ID: <span class="text-green-400">{caseId}</span></p>
+      <p, class="status">Case ID: <span, class="text-green-400">{caseId}</span></p>
     {:else}
-      <p class="status">Status: <span class="text-green-400">All Evidence ✅</span></p>
+      <p, class="status">Status: <span, class="text-green-400">All Evidence ✅</span></p>
     {/if}
   </div>
 
-  <div class="action-grid">
-    <div class="action-card">
+  <div, class="action-grid">
+    <div, class="action-card">
       <h3>📤 Upload Evidence</h3>
       <input
         type="file"
@@ -46,28 +46,28 @@ import type { Case } from '$lib/types';
       />
       {#if uploadFile}
         <p>Selected: {uploadFile.name}</p>
-        <button onclick={submitEvidence} class="upload-btn">Submit Evidence</button>
+        <button, onclick={submitEvidence} class="upload-btn">Submit Evidence</button>
       {/if}
     </div>
 
-    <div class="action-card">
+    <div, class="action-card">
       <h3>📊 Evidence Statistics</h3>
-      <p>Total Files: <span class="stat-value">0</span></p>
-      <p>Verified: <span class="stat-value">0</span></p>
-      <p>Pending: <span class="stat-value">0</span></p>
+      <p>Total Files: <span, class="stat-value">0</span></p>
+      <p>Verified: <span, class="stat-value">0</span></p>
+      <p>Pending: <span, class="stat-value">0</span></p>
     </div>
 
-    <div class="action-card">
+    <div, class="action-card">
       <h3>🔍 Search Evidence</h3>
-      <input type="text" placeholder="Search by filename, case, or tags..." class="search-input" />
-      <button class="search-btn">Search</button>
+      <input type="text" placeholder="Search by filename, case, or, tags..." class="search-input" />
+      <button, class="search-btn">Search</button>
     </div>
   </div>
 
-  <div class="quick-actions">
-    <a href="/" class="action-link">← Back to Home</a>
-    <a href="/cases" class="action-link">View Cases</a>
-    <a href="/all-routes" class="action-link">All Routes</a>
+  <div, class="quick-actions">
+    <a, href="/" class="action-link">← Back to Home</a>
+    <a, href="/cases" class="action-link">View Cases</a>
+    <a, href="/all-routes" class="action-link">All Routes</a>
   </div>
 </div>
 

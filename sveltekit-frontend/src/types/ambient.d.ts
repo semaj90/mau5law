@@ -81,7 +81,7 @@ declare module 'redis' {
   const Redis: { createClient?: (...args: any[]) => SimpleRedis } & unknown;
   export = Redis;
 }
-// Stubs for local server/db modules (export what's referenced in errors)
+// Stubs for local server/db modules (export what's referenced in errors)'
 declare module '$lib/server/db/client.js' {
   /** Minimal typed exports for common query usage in the codebase */
   export const query: <T = unknown>(sql: string, params?: any[]) => Promise<DBQueryResult<T>>;

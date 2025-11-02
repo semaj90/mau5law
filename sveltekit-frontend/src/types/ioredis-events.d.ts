@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Redis as IORedis } from 'ioredis';
+import { Redis, as IORedis } from 'ioredis';
 
 declare module 'ioredis' {
   /**

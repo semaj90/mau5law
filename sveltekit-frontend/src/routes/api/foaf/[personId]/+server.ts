@@ -72,10 +72,9 @@ export const GET: RequestHandler = async ({ params, url, fetch }) => {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-         , text: 'FOAF recommendations for ${personId}: ${foafData.people.map(p => p.name).join(', ')}`,
+         , text: 'FOAF recommendations for ${personId}: ${foafData.people.map(p => p.name).join(', ')}`,'`
           context: 'professional network analysis',
-          style: 'brief'
-        })
+          style: 'brief` })'`
       });
       if (summaryResponse.ok) {
         const summaryData = await summaryResponse.json();
@@ -87,7 +86,7 @@ export const GET: RequestHandler = async ({ params, url, fetch }) => {
     foafData.processingTimeMs = Date.now() - startTime;
     return json(foafData);
   } catch (err: any) {
-    console.error('FOAF API error:', err);
+    console.error('FOAF API error:', err);'
     throw error(500, 'Failed to fetch FOAF recommendations');
   }
 };
@@ -111,13 +110,13 @@ export const POST: RequestHandler = async ({ params, request }) => {
         confidence: rec.connectionStrength,
         relationshipPath: rec.relationshipPath
       })),
-      summary: 'Enhanced analysis found ${foafRecommendations.length} professionals with ${body.caseContext ? 'case-specific' : `general` } relevance`,
+      summary: 'Enhanced analysis found ${foafRecommendations.length} professionals with ${body.caseContext ? 'case-specific' : `general` } relevance`,'`
       totalFound: foafRecommendations.length,
       processingTimeMs: Date.now() - startTime
     };
     return json(enhancedResponse);
   } catch (err: any) {
-    console.error('Enhanced FOAF POST error:', err);
+    console.error('Enhanced FOAF POST error:', err);'
     throw error(500, 'Failed to generate enhanced FOAF recommendations');
   }
 };
@@ -146,7 +145,7 @@ async function generateDatabaseFOAFRecommendations(
 ): Promise<DatabaseFOAFRecommendation[]> {
   const { limit = 5, includeEmbedding = false, minConnectionStrength = 0.3 } = options;
   try {
-    // Get the target person's information
+    // Get the target person's information'
     const targetPerson = await db
       .select({
         id: users.id,
@@ -177,7 +176,7 @@ async function generateDatabaseFOAFRecommendations(
       .where(
         and(
           ne(users.id, personId),
-          sql`${cases.id} IN (
+          sql`${cases.id} IN (`
             SELECT DISTINCT case_id FROM evidence
             WHERE user_id = ${personId} OR case_id IN (
               SELECT id FROM cases WHERE user_id = ${personId}
@@ -201,7 +200,7 @@ async function generateDatabaseFOAFRecommendations(
       .where(
         and(
           ne(users.id, personId),
-          sql`${evidence.caseId} IN (
+          sql`${evidence.caseId} IN (`
             SELECT DISTINCT case_id FROM evidence WHERE user_id = ${personId}
             UNION
             SELECT DISTINCT id FROM cases WHERE user_id = ${personId}
@@ -240,7 +239,7 @@ async function generateDatabaseFOAFRecommendations(
           connectionStrength,
           relationshipPath: `Legal Network → Shared Cases → ${conn.role}`,
           sharedCases: conn.sharedCases || 0,
-          reasoning: 'Collaborated on ${conn.sharedCases} shared case${(conn.sharedCases || 0) > 1 ? 's' : `` }`,
+          reasoning: 'Collaborated on ${conn.sharedCases} shared case${(conn.sharedCases || 0) > 1 ? 's' : `` }`,'`
           metadata: { connectionType: `case_collaboration` }
         });
       }
@@ -268,7 +267,7 @@ async function generateDatabaseFOAFRecommendations(
           connectionStrength: evidenceScore,
           relationshipPath: `Legal Network → Evidence Collaboration → ${conn.role}`,
           sharedEvidence: conn.sharedEvidence || 0,
-          reasoning: 'Worked with ${conn.sharedEvidence} shared evidence item${(conn.sharedEvidence || 0) > 1 ? 's' : `` }`,
+          reasoning: 'Worked with ${conn.sharedEvidence} shared evidence item${(conn.sharedEvidence || 0) > 1 ? 's' : `` }`,'`
           metadata: { connectionType: `evidence_collaboration` }
         });
       }
@@ -311,7 +310,7 @@ async function enhanceRecommendationsWithEmbeddings(
   recommendations: DatabaseFOAFRecommendation[]
 ): Promise<void> {
   try {
-    // Get the target person's case content for embedding
+    // Get the target person's case content for embedding'
     const targetActivity = await db
       .select({
         content: cases.description
@@ -359,7 +358,7 @@ async function enhanceRecommendationsWithEmbeddings(
           }
         }
       } catch (error: any) {
-        console.warn(`Failed to enhance recommendation ${rec.id} with embedding: ', error);
+        console.warn(`Failed to enhance recommendation ${rec.id} with embedding: ', error);'`
       }
     }
   } catch (error: any) {

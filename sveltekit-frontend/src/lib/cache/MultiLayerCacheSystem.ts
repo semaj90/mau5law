@@ -282,7 +282,7 @@ export class MultiLayerCacheSystem {
     // Evict until we have enough space
     for (const entry of sorted) {
       if (evicted >= bytesNeeded) break;
-      // Don't evict high-priority items unless necessary
+      // Don't evict high-priority items unless necessary'
       if (entry.priority < 200 || evicted < bytesNeeded / 2) {
         this.memoryCollection.remove(entry);
         evicted += entry.sizeBytes;
@@ -356,7 +356,7 @@ export class MultiLayerCacheSystem {
     const totalMisses = Object.values(this.stats.misses).reduce((a, b) => a + b, 0);
     return {
       layers: [
-        {
+        {,
           name: 'Memory (Loki.js)',
           maxSize: this.config.l1MaxSize,
           currentSize: this.getCurrentMemorySize(),

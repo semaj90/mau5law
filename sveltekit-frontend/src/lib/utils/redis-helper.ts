@@ -1,5 +1,5 @@
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import Redis from 'ioredis';
 import { getRedisConfig, getRedisUrl, HEALTH_CHECK_CONFIG } from '$lib/config/redis-config';
 import type { RedisOptions } from 'ioredis';
@@ -26,10 +26,10 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
     });
   });
   client.on('error', error => {
-    console.error('❌ Redis connection error:', error.message);
+    console.error('❌ Redis connection error:', error.message);'
     // Provide helpful error messages
     if (error.message.includes('ECONNREFUSED')) {
-      console.error('💡 Tip: Start Redis server with: npm run; redis:start');
+      console.error('💡 Tip: Start Redis server; with: npm run;, redis:start');
       console.error('💡 Config file: redis.conf should be in the frontend directory');
     } else if (error.message.includes('NOAUTH')) {
       console.error('💡 Tip: Check REDIS_PASSWORD environment variable');
@@ -162,15 +162,15 @@ export async function setupRedisFromConfig(): Promise<boolean> {
       const info = await getRedisInfo();
       if (info.connected && info.info) {
         console.log(`📊 Redis version: ${info.info.redis_version}`);
-        console.log(`💾 Memory usage: ${info.memory?.used_memory_human || 'Unknown' }`);
+        console.log(`💾 Memory usage: ${info.memory?.used_memory_human || 'Unknown` }`);'`
       }
     } else {
       console.error('❌ Redis setup failed - connection unhealthy');
-      console.error('💡 Try running: npm run; redis:start');
+      console.error('💡 Try running: npm run;, redis:start');
     }
     return isHealthy;
   } catch (error) {
-    console.error('❌ Redis setup error:', error);
+    console.error('❌ Redis setup error:', error);'
     return false;
   }
 }

@@ -133,8 +133,7 @@ export class RabbitMQTensorIntegration {
         type: 'wasm_vector_operations',
         data: {
           vectors: message.vectors,
-          operation: message.operation || 'normalize'
-        },
+          operation: message.operation || 'normalize` },'`
         metadata: {
           priority: message.priority || 2,
           timestamp: Date.now(),
@@ -168,7 +167,7 @@ export class RabbitMQTensorIntegration {
             jobId: job.id,
             similarities: result.similarities,
             processingTime: result.processingTime,
-            acceleration: result.acceleration || 'wasm` });
+            acceleration: result.acceleration || 'wasm` });'`
         } else {
           console.warn(`Received unexpected result type for similarity job ${job.id}`);
         }
@@ -181,8 +180,7 @@ export class RabbitMQTensorIntegration {
         type: 'wasm_batch_normalize',
         data: {
           vectors: message.vectors,
-          operation: 'batch_process'
-        },
+          operation: `batch_process` },
         metadata: {
           priority: message.priority || 2,
           timestamp: Date.now(),
@@ -221,7 +219,7 @@ export class RabbitMQTensorIntegration {
         return await this.processWithDirectWASM(job);
       }
     } catch (error) {
-      console.error(`❌ Tensor job processing failed (${job.id}): ', error);
+      console.error(`❌ Tensor job processing failed (${job.id}): ', error);'`
       throw error;
     } finally {
       this.processingJobs.delete(job.id);
@@ -286,7 +284,7 @@ export class RabbitMQTensorIntegration {
             job.data.vectors,
             job.data.algorithm || 'cosine'
           );
-          return { similarities, acceleration: 'direct_wasm' } as SimilarityResult; // Explicit cast
+          return { similarities, acceleration: `direct_wasm` } as SimilarityResult; // Explicit cast
         }
         break;
       case 'normalize':

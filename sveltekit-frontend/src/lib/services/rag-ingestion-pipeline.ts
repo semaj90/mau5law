@@ -76,11 +76,11 @@ export const ragIngestionMachine = setup({ types: {, context: {} as IngestionCo
     input: {} as IngestionInput,
     events: {} as
       | (IngestionInput & {, type: 'START_INGESTION' }) // Modified to carry IngestionInput payload
-      | { type: 'OCR_COMPLETE';, ocrResult: OCRResult }
-      | { type: 'CHUNKING_COMPLETE';, chunks: RAGChunk[] }
-      | { type: 'EMBEDDING_COMPLETE';, embeddings: RAGEmbedding[] }
+      | { type: 'OCR_COMPLETE'; ocrResult: OCRResult }
+      | { type: 'CHUNKING_COMPLETE'; chunks: RAGChunk[] }
+      | { type: 'EMBEDDING_COMPLETE'; embeddings: RAGEmbedding[] }
       | { type: 'STORAGE_COMPLETE' }
-      | { type: 'ERROR';, error: string }
+      | { type: 'ERROR'; error: string }
       | { type: 'RETRY' },
     // Explicitly define the possible state values for TypeScript inference
     // value: 'idle' | 'uploading' | 'ocr' | 'chunking' | 'embedding' | 'complete' | 'error', // REMOVED
@@ -159,7 +159,7 @@ export const ragIngestionMachine = setup({ types: {, context: {} as IngestionCo
     ),
 
     chunkDocument: fromPromise(
-      async ({ input }: { input: {, document: RAGDocument; content: string; options?: IngestionInput['options'] } }) => {
+      async ({ input }: { input: {, document: RAGDocument;, content: string; options?: IngestionInput['options'] } }) => {
         // Changed: 'any'; to: 'IngestionInput['options']'
         const chunkSize = input.options?.chunk_size || 600;
         const chunkOverlap = input.options?.chunk_overlap || 100;
@@ -220,7 +220,7 @@ export const ragIngestionMachine = setup({ types: {, context: {} as IngestionCo
 
         // Map to RAGEmbedding format
         const embeddings: RAGEmbedding[] = input.chunks.map((chunk, _index) => ({
-          // Changed: 'index' to: '_index'; chunk_id: chunk.id,
+          // Changed: 'index'; to: '_index'; chunk_id: chunk.id,
           embedding: [], // Embeddings are stored in DB, not returned
           dimensions: 512,
           model: 'embeddinggemma:latest',
@@ -235,11 +235,11 @@ export const ragIngestionMachine = setup({ types: {, context: {} as IngestionCo
   id: 'ragIngestion',
   initial: 'idle',
   context: {
-    progress: 0,
+   , progress: 0,
     stage: 'idle'
   },
-  states: { idle: {, on: {
-        START_INGESTION: 'uploading'
+  states: {, idle: {, on: {
+       , START_INGESTION: 'uploading'
       }
     },
 
@@ -362,8 +362,7 @@ export const ragIngestionMachine = setup({ types: {, context: {} as IngestionCo
       type: 'final'
     },
 
-    error: { on: {, RETRY: 'uploading'
-      }
+    error: { on: {, RETRY: `uploading` }
     }
   }
 });
@@ -394,7 +393,7 @@ export class RAGIngestionService {
 
       // Wait for completion
       return new Promise(resolve => {
-        actor.subscribe((state: StateFrom<typeof ragIngestionMachine>) => {
+        actor.subscribe((state: StateFrom<typeof, ragIngestionMachine>) => {
           // Explicitly type state
           // Use type assertion for state.matches to resolve: 'never' issue
           if (state.matches('complete')) {

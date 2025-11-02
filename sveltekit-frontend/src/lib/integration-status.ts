@@ -122,7 +122,7 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
         // endpoint not reachable from client; leave defaults (false)
       }
     } catch (e) {
-      // ignore: client can't reach health endpoint
+      // ignore: client can't reach health endpoint'
     }
   } catch (error) {
     console.error('Integration status check failed:', error);
@@ -134,33 +134,33 @@ export function formatStatusReport(status: IntegrationStatus): string {
     '🔧 WebAssembly Client Integration Status',
     '='.repeat(50),
     '',
-    '📦 WebAssembly: `,
+    '📦 WebAssembly: `,'`
     `  ✅ Available: ${status.webassembly.available}`,
     `  ⚡ SIMD Support: ${status.webassembly.simdSupport}`,
     `  🔗 Runtime Connected: ${status.webassembly.runtimeConnected}`,
     '',
-    '🚀 SvelteKit & Svelte 5: `,
+    '🚀 SvelteKit & Svelte 5: `,'`
     `  ✅ Version: ${status.sveltekit.version}`,
     `  🎯 Svelte 5 Patterns: ${status.sveltekit.svelte5Patterns}`,
     `  🌐 SSR Ready: ${status.sveltekit.ssrReady}`,
     '',
-    '🗄️ Database Stack: `,
+    '🗄️ Database Stack: `,'`
     `  ✅ Drizzle ORM: ${status.database.drizzleOrm}`,
     `  📊 pgvector Support: ${status.database.pgvectorSupport}`,
     `  🐘 PostgreSQL Ready: ${status.database.postgresqlReady}`,
     '',
-    '🎨 UI & Theming: `,
+    '🎨 UI & Theming: `,'`
     `  ✅ Enhanced-Bits Components: ${status.ui.enhancedBitsComponents}`,
     `  🎪 UnoCSS: ${status.ui.unoCSS}`,
     `  🎮 NES.css: ${status.ui.nesCSS}`,
     `  🎯 Gaming Theme: ${status.ui.gamingTheme}`,
     '',
-    '🚀 WebGPU: `,
+    '🚀 WebGPU: `,'`
     `  ✅ Available: ${status.webgpu.available}`,
     `  🌅 Dawn Backend: ${status.webgpu.dawnBackend}`,
     `  🔧 Unified Runtime: ${status.webgpu.unifiedRuntime}`,
     '',
-    '💾 Caching: `,
+    '💾 Caching: `,'`
     `  ✅ CHR-ROM Cache: ${status.cache.chrRomCache}`,
     `  🔴 Redis Connected: ${status.cache.redisConnected}`,
     `  📦 WASM Cache: ${status.cache.wasmCache}`

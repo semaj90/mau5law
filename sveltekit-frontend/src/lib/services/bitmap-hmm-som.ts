@@ -16,7 +16,7 @@ export interface BitmapHMMConfig { stateCount: number;, bitmapWidth: number;
 }
 
 export interface HMMState { id: number;, name: string;
-  somPosition?: { x: number;, y: number };
+  somPosition?: { x: number; y: number };
   bitmap: Uint8Array; // Bitmap representation of state
   legalContext: string[];
 }
@@ -614,7 +614,7 @@ export class BitmapHiddenMarkovSOM {
         legalContext: state.legalContext,
         somPosition: state.somPosition,
         compressionRatio: 0.6, // 40% compression
-        renderableHTML: `<div class="hmm-state" data-state="${state.id}">${state.name}</div>` });
+        renderableHTML: `<div, class="hmm-state" data-state="${state.id}">${state.name}</div>' });'`
     }
 
     console.log(`📦 Cached ${this.states.length} bitmap patterns`);

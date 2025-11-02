@@ -39,7 +39,7 @@ export interface SearchDocumentsResult {
   total: number;
 }
 
-export interface ProcessingAnalytics { totalDocuments: number;, processingStats: { completed: number; processing: number;, failed: number };
+export interface ProcessingAnalytics { totalDocuments: number;, processingStats: { completed: number; processing: number; failed: number };
   averageProcessingTime: number;
   documentTypes: Record<string, number>;
 }
@@ -110,7 +110,7 @@ export class DocumentApiService {
     try {
       const response = await fetch(`${this.baseUrl}/documents/${encodeURIComponent(documentId)}/process`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(options)
       });
 
@@ -208,7 +208,7 @@ export class DocumentApiService {
   async deleteDocument(documentId: string): Promise<{ success: boolean; error?: string }> {
     try {
       const response = await fetch(`${this.baseUrl}/documents/${encodeURIComponent(documentId)}`, {
-        method: `DELETE` });
+        method: `DELETE' });'`
 
       if (!response.ok) {
         throw new Error(`Delete failed: ${response.status} ${response.statusText}`);
@@ -235,7 +235,7 @@ export class DocumentApiService {
     try {
       const response = await fetch(`${this.baseUrl}/documents/search`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({ query, ...options })
       });
 
@@ -291,7 +291,7 @@ export class DocumentApiService {
         documents: Record<string, unknown>[]; // replaced any[] -> Record<string, unknown>[]
         error?: string;
       }
-    | { success: false;, error: string }
+    | { success: false; error: string }
   > {
     try {
       const formData = new FormData();
@@ -316,7 +316,7 @@ export class DocumentApiService {
             documents: Record<string, unknown>[];
             error?: string;
           }
-        | { success: false;, error: string };
+        | { success: false; error: string };
     } catch (error: any) {
       const message = this.formatError(error);
       console.error('Legal document processing failed:', message);

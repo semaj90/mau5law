@@ -16,7 +16,7 @@ interface AgentInput {
 }
 
 interface AgentExecutionResult { output: string;, score: number;
-  metadata: { agent: string;, timestamp: string };
+  metadata: { agent: string; timestamp: string };
 }
 
 interface RAGQuery {
@@ -25,7 +25,7 @@ interface RAGQuery {
   topK?: number;
 }
 
-interface RAGQueryResult { success: boolean;, results: Array<{ id: string; text: string;, score: number }>; // Example structure for RAG results
+interface RAGQueryResult { success: boolean;, results: Array<{ id: string; text: string; score: number }>; // Example structure for RAG results
 }
 
 export const context7Service = {

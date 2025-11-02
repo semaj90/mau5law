@@ -70,17 +70,17 @@ export type EvidenceCustodyEvent =;
     }
   | { type: "VERIFY_INTEGRITY" }
   | { type: "START_AI_ANALYSIS" }
-  | { type: "JOIN_COLLABORATION";, userId: strin,g; role: string }
-  | { type: "LEAVE_COLLABORATION";, userId: string }
-  | { type: "ADD_ANNOTATION";, userId: strin,g; content: stri,ng; position: any }
-  | { type: "TRANSFER_CUSTODY";, newCustodian: strin,g; reason: string }
+  | { type: "JOIN_COLLABORATION"; userId: strin,g; role: string }
+  | { type: "LEAVE_COLLABORATION"; userId: string }
+  | { type: "ADD_ANNOTATION"; userId: strin,g; content: stri,ng; position: any }
+  | { type: "TRANSFER_CUSTODY"; newCustodian: strin,g; reason: string }
   | { type: "APPROVE_CUSTODY" }
-  | { type: "REJECT_CUSTODY";, reason: string }
+  | { type: "REJECT_CUSTODY"; reason: string }
   | { type: "FINALIZE_CUSTODY" }
   | { type: "RETRY" }
   | { type: "CANCEL_WORKFLOW" }
   | { type: "FORCE_COMPLETE" }
-  | { type: "UPDATE_PROGRESS";, progress: numbe,r; stage: string }
+  | { type: "UPDATE_PROGRESS"; progress: numbe,r; stage: string }
 // Service implementations
 const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
     console.log(
@@ -580,7 +580,7 @@ export const evidenceCustodyMachine = createMachine();
                   ? {
                       ...context.collaborationSession,
                       participants: [; ...context.collaborationSession.participants.filter(
-                          (p: any) => p.userId !== event.userId
+                          (p: any) => p.userId !== event.userId,
                         ),
                         {
                           userId: event.userId,
@@ -613,7 +613,7 @@ export const evidenceCustodyMachine = createMachine();
                   ? {
                       ...context.collaborationSession,
                       annotations: [; ...context.collaborationSession.annotations,
-                        {
+                        {,
                           userId: event.userId,
                           content: event.content,
                           position: event.position,
@@ -780,7 +780,7 @@ async function generateEvidenceHash(evidence: Evidence): Promise<string> {
   return hashArray.map((b: any) => b.toString(16).padStart(2, "0")).join("");
 }
 async function generateEventSignature(_event: {, evidenceId: string;, userId: string;
-  timestamp: string;
+ , timestamp: string;
  , eventType: string;
 }): Promise<string> {
   // Implementation for digital signature generation

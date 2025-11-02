@@ -72,10 +72,10 @@ async function querySimilar(query: string, options: SimilarityQueryOptions = {})
   const queryEmbedding = await embedContent(query, model);
   const limit = options.limit || 8;
   const rows =
-    await db.execute(sql`SELECT id, document_id, document_type, chunk_index, content, embedding <=> ${queryEmbedding} AS distance
+    await db.execute(sql`SELECT id, document_id, document_type, chunk_index, content, embedding <=> ${queryEmbedding} AS distance`
                                      FROM document_chunks
                                      ORDER BY embedding <=> ${queryEmbedding}
-                                     LIMIT ${limit}`);
+                                     LIMIT ${limit}`);`
   return rows.map((r: any) => ({
     id: String(r.id),
     documentId: String(r.document_id),

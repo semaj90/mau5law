@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   type Theme = 'light' | 'dark' | 'system';
   const THEME_KEY = 'theme';
   let theme: Theme = $state('system');
@@ -55,7 +55,7 @@
     return;
   });
 </script>
-<div class="theme-selector" role="group" aria-label="Theme selector">
+<div class="theme-selector" role="group" aria-label="Theme, selector">
   <button
     type="button"
     class="btn"
@@ -65,7 +65,7 @@
   >
     ☀️ Light
   </button>
-  <button type="button" class="btn" aria-pressed={theme === 'dark'} onclick={() => setTheme('dark')} title="Dark theme">
+  <button, type="button" class="btn" aria-pressed={theme === 'dark'} onclick={() => setTheme('dark')} title="Dark theme">
     🌙 Dark
   </button>
   <button

@@ -96,7 +96,7 @@ class EvidenceAIService {
           const resp = await fetch('http://localhost:8094/api/evidence/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ evidence: {, title: context.title,
+            body: JSON.stringify({, evidence: {, title: context.title,
                 description: context.description,
                 evidenceType: context.evidenceType,
                 tags: context.tags
@@ -125,7 +125,7 @@ class EvidenceAIService {
         try {
           const completion = await ollamaService.generateCompletion({
             model: 'gemma3-legal',
-            prompt: `${context.title}\n\n${context.description}' });
+            prompt: '${context.title}\n\n${context.description}' });
           const respText = typeof completion?.response === 'string' ? completion.response : JSON.stringify(completion);
           try {
             analysisResult = JSON.parse(respText);
@@ -137,13 +137,12 @@ class EvidenceAIService {
               entities: [],
               keywords: context.tags,
               relationships: [],
-              classification: 'evidence_analysis'
-            };
+              classification: `evidence_analysis` };
           }
         } catch (err: any) {
           console.warn('Fallback completion failed:', err);
           analysisResult = {
-            summary: '${context.title}${context.description ? ' — ' + context.description : `` }`.slice(0, 2000),
+            summary: '${context.title}${context.description ? ' — ' + context.description : `` }`.slice(0, 2000),'`
             confidence: 0.5,
             entities: [],
             keywords: context.tags,
@@ -233,8 +232,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json(
         {
           success: false,
-          error: 'caseId parameter is required'
-        },
+          error: `caseId parameter is required` },
         { status: 400 }
       );
     }
@@ -260,13 +258,13 @@ export const GET: RequestHandler = async ({ url }) => {
       filters: { caseId, evidenceType, analyzed, search }
     });
   } catch (error: any) {
-    console.error('Evidence fetch error:', error);
+    console.error('Evidence fetch error:', error);'
     return json(
       {
         success: false,
         error: 'failure default to mock',
         evidence: [
-          {
+          {,
            , id: 'mock-evidence-1',
             caseId: caseId,
             title: 'Contract Agreement - Smith v. Jones',
@@ -330,8 +328,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'caseId, title, and evidenceType are required'
-        },
+          error: `caseId, title, and evidenceType are required` },
         { status: 400 }
       );
     }
@@ -456,7 +453,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
           // Generate embedding for enhanced search
           const [evidenceDetails] = await caseManagementService.getEvidence(evidenceId, { limit: 1 });
           if (evidenceDetails) {
-            const textToEmbed = `${evidenceDetails.title} ${evidenceDetails.description || ''} ${evidenceDetails.ocrText || '` }`;
+            const textToEmbed = `${evidenceDetails.title} ${evidenceDetails.description || ''} ${evidenceDetails.ocrText || '` }`;'`
             if (textToEmbed.trim()) {
               await enhancedEmbeddingWorker.enqueueJob({
                 text: textToEmbed,
@@ -481,8 +478,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Analysis failed'
-            },
+              error: `Analysis failed` },
             { status: 500 }
           );
         }
@@ -494,8 +490,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
             return json(
               {
                 success: false,
-                error: 'Update data is required'
-              },
+                error: `Update data is required` },
               { status: 400 }
             );
           }
@@ -506,11 +501,11 @@ export const PATCH: RequestHandler = async ({ request }) => {
             evidence: updatedEvidence
           });
         } catch (err: any) {
-          console.error('Update action failed:', err);
+          console.error('Update action failed: ', err);
           return json(
             {
               success: false,
-              error: `Update failed` },
+              error: 'Update failed' },
             { status: 500 }
           );
         }
@@ -518,18 +513,18 @@ export const PATCH: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown; action: ${action}' },
+            error: `Unknown; action: ${action}` },
           { status: 400 }
         );
     }
   } catch (error: any) {
-    console.error('Evidence processing error:', error);
+    console.error('Evidence processing error:', error);'
     return json(
       {
         success: false,
         error: 'failure default to mock',
         analysis: {
-          id: 'mock-analysis-result',
+         , id: 'mock-analysis-result',
           status: 'completed',
           confidence: 0.75,
           entities: [
@@ -564,8 +559,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Evidence ID is required'
-        },
+          error: `Evidence ID is required` },
         { status: 400 }
       );
     }
@@ -576,7 +570,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       evidence
     });
   } catch (error: any) {
-    console.error('Evidence update error:', error);
+    console.error('Evidence update error:', error);'
     return json(
       {
         success: false,
@@ -605,7 +599,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Evidence ID is required'
+          error: `Evidence ID is required`
         },
         { status: 400 }
       );
@@ -616,7 +610,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       success: true,
       message: `Evidence deleted successfully` });
   } catch (error: any) {
-    console.error('Evidence deletion error:', error);
+    console.error('Evidence deletion error:', error);'
     return json(
       {
         success: false,

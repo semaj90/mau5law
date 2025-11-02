@@ -7,7 +7,7 @@ import { json } from '@sveltejs/kit';
 import * as cluster from 'node:cluster';
 import type { Worker } from 'node:cluster'; // Explicitly import Worker type for better typing
 
-// Define a local type alias to augment the: 'cluster' module's type.
+// Define a local type alias to augment the: 'cluster' module's type.'
 // This addresses potential missing properties like: 'isPrimary'; and: 'workers'
 // if the @types/node package is not fully up-to-date or has specific configurations.
 // Using a type alias with intersection (&) can be more robust for module augmentation
@@ -33,7 +33,7 @@ interface ClusterManager {
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    // Verify we're in primary process
+    // Verify we're in primary process'
     // Use type assertion to AugmentedCluster to resolve: 'isPrimary' error
     if (!(cluster as AugmentedCluster).isPrimary) {
       return json(
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
       force,
       timeout
     });
-    // Don't await the full restart - return immediately
+    // Don't await the full restart - return immediately'
     restartPromise
       .then(() => {
         console.log('✅ Rolling restart completed successfully');
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
       healthyWorkers: preRestartHealth.healthyWorkers,
       force,
       timeout,
-      initiator: 'admin_api` };
+      initiator: `admin_api` };
     console.log('📝 Restart audit log:', auditLog);
     return json({
       success: true,
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     // Changed to unknown
-    console.error('Cluster restart error:', error);
+    console.error('Cluster restart error:', error);'
     globalThis.clusterRestarting = $state(false);
     return json(
       {
@@ -127,8 +127,7 @@ export const GET: RequestHandler = async () => {
     if (!clusterManager) {
       return json(
         {
-          error: 'Cluster manager not available'
-        },
+          error: `Cluster manager not available` },
         { status: 503 }
       );
     }
@@ -145,11 +144,11 @@ export const GET: RequestHandler = async () => {
     });
   } catch (error: any) {
     // Changed to unknown
-    console.error('Cluster restart status error:', error);
+    console.error('Cluster restart status error:', error);'
     return json(
       {
         error: 'Failed to get restart status',
-        message: error instanceof Error ? error.message : 'Unknown error` },
+        message: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

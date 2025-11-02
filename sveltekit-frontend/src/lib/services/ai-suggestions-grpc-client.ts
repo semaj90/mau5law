@@ -255,7 +255,7 @@ export class AISuggestionsGRPCClient {
       const params = new URLSearchParams({
         content: request.content,
         report_type: String(request.report_type),
-        model: request.model ?? 'unknown` });
+        model: request.model ?? 'unknown' });
       const eventSource = new EventSource(`/api/ai/suggestions/stream?${params.toString()}`);
       yield* this.handleStreamingResponse(eventSource);
     } catch (error: any) {
@@ -270,7 +270,7 @@ export class AISuggestionsGRPCClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Client-Type': 'grpc-fallback` },
+          'X-Client-Type': 'grpc-fallback' },
         body: JSON.stringify(data)
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
@@ -302,7 +302,7 @@ export class AISuggestionsGRPCClient {
         eventSource.close();
       } catch (closeErr: any) {
         console.warn(
-          'Failed to close EventSource on error:',
+          'Failed to close EventSource on error:','
           closeErr instanceof Error ? closeErr.message : String(closeErr)
         );
       }
@@ -365,7 +365,7 @@ export class AISuggestionsGRPCClient {
     }
   }
 
-  getConnectionStatus(): { connected: boolean;, serviceUrl: string } {
+  getConnectionStatus(): { connected: boolean; serviceUrl: string } {
     return { connected: this.isConnected, serviceUrl: this.serviceUrl };
   }
 }

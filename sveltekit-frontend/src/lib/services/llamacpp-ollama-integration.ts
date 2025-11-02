@@ -263,7 +263,7 @@ export class LlamaCppOllamaService {
       // Check if our model exists
       const hasModel = models.models?.some(m => m.name === this.ollamaConfig?.model) || false;
       if (!hasModel) {
-        console.warn(`⚠️ Model ${this.ollamaConfig?.model || 'unknown` } not found, will attempt to pull`);
+        console.warn(`⚠️ Model ${this.ollamaConfig?.model || 'unknown` } not found, will attempt to pull`);'`
         await this.pullModel();
       }
     } catch (error: any) {
@@ -277,11 +277,11 @@ export class LlamaCppOllamaService {
    */
   private async pullModel(): Promise<void> {
     try {
-      console.log(`📥 Pulling model ${this.ollamaConfig?.model || 'unknown` }...`);
+      console.log(`📥 Pulling model ${this.ollamaConfig?.model || 'unknown` }...`);'`
       const response = await fetch(`${this.ollamaConfig.endpoint}/api/pull`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({, name: this.ollamaConfig?.model || 'unknown` })
+        body: JSON.stringify({, name: this.ollamaConfig?.model || 'unknown` })'`
       });
       if (!response.ok) {
         throw new Error(`Failed to pull model: ${response.statusText}`);
@@ -332,7 +332,7 @@ export class LlamaCppOllamaService {
         };
         this.serviceStatus.update(s => ({ ...s, flashAttentionEnabled: true }));
       } else {
-        console.warn(`⚠️ GPU compute capability ${gpuInfo.computeCapability} < 8.0 - FlashAttention2 disabled`);
+        console.warn(`⚠️ GPU compute capability ${gpuInfo.computeCapability} < 8.0 - FlashAttention2, disabled`);
         this.flashAttentionConfig.enabled = $state(false);
       }
     } catch (error: any) {
@@ -344,7 +344,7 @@ export class LlamaCppOllamaService {
   /**
    * Detect GPU capabilities
    */
-  private async detectGPUCapabilities(): Promise<{ computeCapability: number; memory: number;, name: string }> {
+  private async detectGPUCapabilities(): Promise<{ computeCapability: number; memory: number; name: string }> {
     // Added explicit return type
     try {
       // Try WebGPU first
@@ -354,19 +354,17 @@ export class LlamaCppOllamaService {
           return {
             computeCapability: 8.6, // RTX 3060
             memory: 8192, // 8GB
-            name: 'NVIDIA GeForce RTX 3060 Ti'
-          };
+            name: `NVIDIA GeForce RTX 3060 Ti` };
         }
       }
       // Fallback detection
       return {
         computeCapability: 8.6,
         memory: 8192,
-        name: 'RTX 3060 (Detected)'
-      };
+        name: `RTX 3060 (Detected)` };
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.warn('GPU detection failed:', error);
+      console.warn('GPU detection failed: `, error);'`
       return {
         computeCapability: 0,
         memory: 0,
@@ -378,13 +376,13 @@ export class LlamaCppOllamaService {
    */
   private async loadModel(): Promise<void> {
     try {
-      console.log(`📦 Loading model ${this.ollamaConfig.model || 'unknown` }...`);
+      console.log(`📦 Loading model ${this.ollamaConfig.model || 'unknown` }...`);'`
       // Send a test request to ensure model is loaded
       const testResponse = await fetch(`${this.ollamaConfig.endpoint}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: this.ollamaConfig.model || 'unknown',
+         , model: this.ollamaConfig.model || 'unknown',
           prompt: 'Test',
           stream: false,
           options: {
@@ -404,7 +402,7 @@ export class LlamaCppOllamaService {
       }
       this.serviceStatus.update(s => ({
         ...s,
-        modelLoaded: this.ollamaConfig.model || 'unknown` }));
+        modelLoaded: this.ollamaConfig.model || 'unknown` }));'`
       console.log('✅ Model loaded successfully');
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
@@ -478,11 +476,10 @@ export class LlamaCppOllamaService {
         totalTokens,
         flashAttentionUsed: this.flashAttentionConfig.enabled && this.flashAttentionService.derived.isReady,
         llamaCppVersion: 'b3600', // Latest version
-        ollamaVersion: '0.3.12'
-      };
+        ollamaVersion: `0.3.12` };
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Generation failed:', error);
+      console.error('❌ Generation failed: `, error);'`
       throw error;
     }
   }
@@ -524,7 +521,7 @@ export class LlamaCppOllamaService {
   /**
    * Get service status
    */
-  public getStatus(): { initialized: boolean; ready: boolean;, modelLoaded: string } {
+  public getStatus(): { initialized: boolean; ready: boolean; modelLoaded: string } {
     let currentStatus = { initialized: false, ready: false, modelLoaded: `` };
     this.serviceStatus.subscribe(
       s =>
@@ -602,7 +599,7 @@ export function createLlamaCppOllamaService(
 // Helper functions for legal AI tasks
 export const LlamaLegalHelpers = {
   // Legal document analysis
-  analyzeLegalDocument: (text: string): LlamaInferenceRequest => ({ prompt: 'Analyze the following legal document and provide key, insights:\n\n${text}\n\nAnalysis: ',
+  analyzeLegalDocument: (text: string): LlamaInferenceRequest => ({ prompt: `Analyze the following legal document and provide key, insights:\n\n${text}\n\nAnalysis: `,
     maxTokens: 1024,
     temperature: 0.3,
     topP: 0.9,
@@ -610,7 +607,7 @@ export const LlamaLegalHelpers = {
     repeatPenalty: 1.1,
     systemPrompt: `You are a legal AI assistant specialized in document analysis. Provide clear, accurate, and detailed legal insights.` }),
   // Contract review
-  reviewContract: (contractText: string): LlamaInferenceRequest => ({ prompt: 'Review this contract for potential issues and, recommendations:\n\n${contractText}\n\nContract, Review: ',
+  reviewContract: (contractText: string): LlamaInferenceRequest => ({ prompt: `Review this contract for potential issues and, recommendations:\n\n${contractText}\n\nContract, Review: `,
     maxTokens: 1536,
     temperature: 0.2,
     topP: 0.8,
@@ -618,7 +615,7 @@ export const LlamaLegalHelpers = {
     repeatPenalty: 1.1,
     systemPrompt: `You are a contract review specialist. Identify risks, obligations, and provide actionable recommendations.` }),
   // Legal research
-  legalResearch: (query: string): LlamaInferenceRequest => ({ prompt: 'Provide comprehensive legal research, on: ${query}\n\nResearch: ',
+  legalResearch: (query: string): LlamaInferenceRequest => ({ prompt: `Provide comprehensive legal research, on: ${query}\n\nResearch: `,
     maxTokens: 2048,
     temperature: 0.4,
     topP: 0.9,
@@ -626,7 +623,7 @@ export const LlamaLegalHelpers = {
     repeatPenalty: 1.05,
     systemPrompt: `You are a legal research assistant. Provide thorough, well-sourced legal analysis and precedents.` }),
   // Case brief generation
-  generateCaseBrief: (caseDetails: string): LlamaInferenceRequest => ({ prompt: 'Generate a professional case, brief:\n\n${caseDetails}\n\nCase, Brief: ',
+  generateCaseBrief: (caseDetails: string): LlamaInferenceRequest => ({ prompt: `Generate a professional case, brief:\n\n${caseDetails}\n\nCase, Brief: `,
     maxTokens: 1024,
     temperature: 0.1,
     topP: 0.7,

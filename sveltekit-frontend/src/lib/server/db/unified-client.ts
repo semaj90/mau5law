@@ -87,7 +87,7 @@ const config: DatabaseConfig = { runtime: {, url: process.env.DATABASE_URL || '
         apiKey: process.env.QDRANT_API_KEY
       }
     : undefined,
-  environment: isDev ? 'development' : 'production` };
+  environment: isDev ? 'development' : `production' };'`
 // ============================================================================
 // SINGLETON CONNECTION MANAGEMENT
 // ============================================================================
@@ -96,8 +96,8 @@ class DatabaseManager {
   private runtimeConnection?: postgres.Sql;
   private adminConnection?: postgres.Sql;
   private qdrantClient?: QdrantClient;
-  private runtimeDb?: ReturnType<typeof drizzle>;
-  private adminDb?: ReturnType<typeof drizzle>;
+  private runtimeDb?: ReturnType<typeof, drizzle>;
+  private adminDb?: ReturnType<typeof, drizzle>;
   private initialized = $state(false);
   private constructor() {}
   static getInstance(): DatabaseManager {
@@ -115,10 +115,10 @@ class DatabaseManager {
         max_lifetime: 60 * 30, // 30 minutes
         prepare: !isDev, // Disable in dev for better DX
         ssl: false,
-        transform: { undefined: null },
+        transform: {, undefined: null },
         types: {
           // Custom pgvector type support
-          vector: {
+         , vector: {
            , to: 1184,
             from [1184],
             serialize: (x: number[]) => {
@@ -153,7 +153,7 @@ class DatabaseManager {
         max: config.admin.poolSize,
         idle_timeout: 10,
         max_lifetime: 60 * 10, // 10 minutes
-        prepare: false, // Admin operations don't need prepared statements
+        prepare: false, // Admin operations don't need prepared statements'
         ssl: false,
         transform: {, undefined: null },
         debug: isDev
@@ -274,7 +274,7 @@ class DatabaseManager {
             distance
           },
           optimizers_config: {
-            default_segment_number: 2,
+           , default_segment_number: 2,
             memmap_threshold: 20000,
             indexing_threshold: 20000
           },
@@ -287,7 +287,7 @@ class DatabaseManager {
         console.log(`✅ Created Qdrant collection: ${collectionName}`);
       }
     } catch (error) {
-      console.error(`❌ Failed to ensure Qdrant collection ${collectionName}: ', this.extractErrorMessage(error));
+      console.error(`❌ Failed to ensure Qdrant collection ${collectionName}: ', this.extractErrorMessage(error));'`
       throw error;
     }
   }
@@ -318,17 +318,17 @@ class DatabaseManager {
             AND processing_status = 'completed'
           ORDER BY content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector
           LIMIT ${limit}
-        `);
+        `);`
         postgresqlTime = Date.now() - pgStart;
         for (const row of pgResults) {
           results.push({
             id: String(row.id),
             score: Number(row.similarity) ?? 0,
             document: row as DocumentMetadata,
-            source: 'postgresql` });
+            source: `postgresql' });'`
         }
       } catch (error) {
-        console.error('PostgreSQL vector search error:', error);
+        console.error('PostgreSQL vector search error:', error);'
       }
     }
     // Qdrant vector search (best-effort)
@@ -366,8 +366,7 @@ class DatabaseManager {
                   id: idStr,
                   score: r.score ?? 0,
                   document: doc,
-                  source: 'qdrant'
-                } as SearchResultEntry);
+                  source: `qdrant` } as SearchResultEntry);
               }
             } catch (err) {
               // Fallback: push qdrant results without PG docs
@@ -376,12 +375,12 @@ class DatabaseManager {
                   id: String(r.id),
                   score: r.score ?? 0,
                   document: r.payload ?? null,
-                  source: 'qdrant` } as SearchResultEntry);
+                  source: `qdrant' } as SearchResultEntry);'`
               }
             }
           }
         } catch (error) {
-          console.error('Qdrant vector search error:', error);
+          console.error('Qdrant vector search error:', error);'
         }
       }
     }
@@ -437,7 +436,7 @@ class DatabaseManager {
           console.warn('Qdrant not available:', this.extractErrorMessage(err));
         }
       } else {
-        // If Qdrant is not configured, treat as healthy for deployments that don't require it
+        // If Qdrant is not configured, treat as healthy for deployments that don't require it'
         health.qdrant = true;
       }
       health.overallHealth = Boolean(health.postgresql && health.pgvector && health.qdrant);

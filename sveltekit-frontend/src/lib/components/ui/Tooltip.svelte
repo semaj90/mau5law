@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import type { Snippet } from 'svelte';
   interface Props {
@@ -21,10 +21,10 @@
     showTooltip = false;
   }
 </script>
-<div class="tooltip-wrapper" role="tooltip" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>
+<div, class="tooltip-wrapper" role="tooltip" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>
   <slot />
   {#if showTooltip && content}
-    <div class={"tooltip tooltip-" + placement} role="tooltip">
+    <div class={"tooltip, tooltip-" + placement} role="tooltip">
       {content}
     {/if}
 </div>

@@ -39,14 +39,14 @@ export type HealthOrchestratorEvent =
   | { type: 'START_MONITORING' }
   | { type: 'STOP_MONITORING' }
   | { type: 'HEALTH_CHECK' }
-  | { type: 'SERVICE_UP';, service: string }
-  | { type: 'SERVICE_DOWN';, service: string; error?: string }
-  | { type: 'METRICS_UPDATE';, metrics: VectorServiceMetrics }
-  | { type: 'ERROR_OCCURRED';, error: VectorProcessingError }
-  | { type: 'RECOVERY_ATTEMPT';, service: string }
-  | { type: 'ALERT_THRESHOLD_EXCEEDED'; threshold: string;, value: number }
+  | { type: 'SERVICE_UP'; service: string }
+  | { type: 'SERVICE_DOWN'; service: string; error?: string }
+  | { type: 'METRICS_UPDATE'; metrics: VectorServiceMetrics }
+  | { type: 'ERROR_OCCURRED'; error: VectorProcessingError }
+  | { type: 'RECOVERY_ATTEMPT'; service: string }
+  | { type: 'ALERT_THRESHOLD_EXCEEDED'; threshold: string; value: number }
   | { type: 'RESET_ERRORS' }
-  | { type: 'UPDATE_THRESHOLDS';, thresholds: AlertThresholds }; // Use specific type
+  | { type: 'UPDATE_THRESHOLDS'; thresholds: AlertThresholds }; // Use specific type
 export interface CollectedMetricsOutput { metrics: VectorServiceMetrics;, jobQueue: HealthOrchestratorContext['jobQueue'];
 }
 
@@ -168,8 +168,7 @@ export const healthOrchestratorMachine = createMachine({
       cuda: 'unavailable',
       webgpu: 'unavailable',
       wasmLLM: 'unloaded',
-      vectorService: 'unhealthy'
-    },
+      vectorService: `unhealthy` },
     metrics: null,
     healthStatus: null,
     jobQueue: {
@@ -179,7 +178,7 @@ export const healthOrchestratorMachine = createMachine({
       failed: 0
     },
     performance: {
-      totalThroughput: 0,
+     , totalThroughput: 0,
       averageLatency: 0,
       errorRate: 0,
       uptime: 0
@@ -190,13 +189,13 @@ export const healthOrchestratorMachine = createMachine({
     autoRecovery: true,
     alertThresholds: {
       // Use the new interface
-      errorRate: 0.1, // 10%
+     , errorRate: 0.1, // 10%
       latency: 5000, // 5 seconds
       queueDepth: 1000
     }
   },
-  states: { idle: {, on: {
-        START_MONITORING: `initializing` }
+  states: {, idle: {, on: {
+       , START_MONITORING: `initializing` }
     },
     initializing: {, invoke: {, id: 'initializeServices',
         src: healthOrchestratorServices.checkServiceHealth,
@@ -331,7 +330,7 @@ export const healthOrchestratorMachine = createMachine({
         onDone: {
           target: 'monitoring',
           actions: [
-            assign(({ event }) => ({
+            assign(({ event }) => ({,
               metrics: event.output.metrics,
               jobQueue: event.output.jobQueue
             })),
@@ -404,7 +403,7 @@ export const healthOrchestratorMachine = createMachine({
         input: ({ context }) => {
           // Find first degraded service to recover
           const degradedService = Object.entries(context.services).find(([_, status]) => status === 'error')?.[0];
-          return { service: degradedService || 'webgpu' };
+          return { service: degradedService || 'webgpu` };'`
         },
         onDone: {
           target: 'monitoring',
@@ -590,7 +589,7 @@ export class UnifiedHealthOrchestrator {
     this.actor.start();
   }
   start(): void {
-    this.actor?.send({ type: 'START_MONITORING' });
+    this.actor?.send({ type: `START_MONITORING` });
   }
   stop(): void {
     this.actor?.send({ type: `STOP_MONITORING` });
@@ -615,7 +614,7 @@ export class UnifiedHealthOrchestrator {
   }
   private formatQueueInfo(
     metrics: VectorServiceMetrics | null
-  ): Record<string, { depth: number; consumers: number;, processingRate: number }> {
+  ): Record<string, { depth: number; consumers: number; processingRate: number }> {
     // Updated return type
     if (!metrics) {
       return { embeddings: {, depth: 0, consumers: 0, processingRate: 0 },

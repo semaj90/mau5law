@@ -47,7 +47,7 @@ type AIServiceType = {
   generateResponse: (query: string, opts?: Record<string, unknown>) => Promise<string>;
 };
 
-type CacheClient = { get: (key: string) => Promise<unknown>;, set: (key: string; value: any, opts?: { ex?: number }) => Promise<void>;
+type CacheClient = { get: (key: string) => Promise<unknown>;, set: (key: string;, value: any, opts?: { ex?: number }) => Promise<void>;
 };
 
 type TauriLLMType = {
@@ -111,7 +111,7 @@ try {
     vectorSearch = async () => ({ results: [] });
   }
 } catch (error: any) {
-  console.warn('Vector search not available: `, error);
+  console.warn('Vector search not available: `, error);'`
   vectorSearch = async () => ({ results: [] });
 }
 
@@ -174,7 +174,7 @@ try {
 } catch (error: any) {
   console.warn('AI service not available:', error);
   aiService = {
-    generateResponse: async () => 'AI service not available` };
+    generateResponse: async () => 'AI service not available` };'`
 }
 
 try {
@@ -397,12 +397,12 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Query is required` },
+          error: `Query is required` },
         { status: 400 }
       );
     }
     // Check cache for identical queries
-    const cacheKey = `ai_response:${JSON.stringify({ query, context, includeHistory })}`;
+    const cacheKey = `ai_response:${JSON.stringify({ query, context, includeHistory })}';'`
     if (useCache) {
       const cached = (await cache.get(cacheKey)) as AIResponse;
       if (cached) {
@@ -425,17 +425,17 @@ export const POST: RequestHandler = async ({ request }) => {
           threshold: searchThreshold,
           useCache: true,
           fallbackToQdrant: true,
-          searchType: 'hybrid` });
+          searchType: `hybrid` });
       } else {
         // Fallback: create mock results for testing Gemma3
         searchResults = {
           results: [
-            {
+            {,
               id: 'mock-result-1',
               title: 'Mock Legal Document',
               content: `Mock legal document content related; to: ${query}. This is a placeholder result for testing Gemma3 integration.`,
               score: 0.85,
-              type: 'document` },
+              type: `document` }
           ]
         };
       }
@@ -448,7 +448,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         data: {
          , answer:
-            "I couldn't find any relevant information to answer your question. Please try rephrasing your query or check if the relevant documents have been uploaded.",
+            "I couldn't find any relevant information to answer your question. Please try rephrasing your query or check if the relevant documents have been uploaded.",'
           sources: [],
           query,
           executionTime: Date.now() - startTime,
@@ -469,7 +469,7 @@ export const POST: RequestHandler = async ({ request }) => {
     try {
       // Try Ollama Gemma3 first (web environment)
       console.log('Using Ollama Gemma3 for inference');
-      const systemPrompt = `You are a specialized legal AI assistant. Based on the provided context documents, answer the user's question accurately and professionally.
+      const systemPrompt = `You are a specialized legal AI assistant. Based on the provided context documents, answer the user's question accurately and professionally.'`
 Context Documents:
 ${contextText}
 Instructions:
@@ -477,7 +477,7 @@ Instructions:
 - Cite specific information from the context
 - If information is insufficient, state this clearly
 - Use appropriate legal terminology
-- Be concise but thorough`;
+- Be concise but thorough`;`
       const response = await ollamaService.generate(query, {
         system: systemPrompt,
         temperature: 0.7,
@@ -498,7 +498,7 @@ Instructions:
             await tauriLLM.initialize();
           }
           console.log('Using Tauri Gemma3 local LLM for inference');
-          const systemPrompt = `You are a specialized legal AI assistant. Based on the provided context documents, answer the user's question accurately and professionally.
+          const systemPrompt = `You are a specialized legal AI assistant. Based on the provided context documents, answer the user's question accurately and professionally.'`
 Context Documents:
 ${contextText}
 Instructions:
@@ -506,7 +506,7 @@ Instructions:
 - Cite specific information from the context
 - If information is insufficient, state this clearly
 - Use appropriate legal terminology
-- Be concise but thorough`;
+- Be concise but thorough`;`
           // Require runInference to be present, otherwise trigger fallback
           if (typeof tauriLLM.runInference !== 'function') {
             throw new Error('tauriLLM.runInference not available');
@@ -611,11 +611,11 @@ Instructions:
       data: response
     });
   } catch (error: any) {
-    console.error('Error processing request:', error);
+    console.error('Error processing request: `, error);'`
     return json(
       {
         success: false,
-        error: 'Internal server error` },
+        error: `Internal server error` },
       { status: 500 }
     );
   }
@@ -625,7 +625,7 @@ Instructions:
 // no LLM / cloud service is available. Keeps types and is safe for tests.
 function generateFallbackResponse(query: string, sources: SearchResultItem[]): string {
   if (!sources || sources.length === 0) {
-    return `I couldn't locate any documents relevant to your question: "${query}". Please try rephrasing or upload the relevant documents so I can analyze them.`;
+    return 'I couldn't locate any documents relevant to your question: "${query}". Please try rephrasing or upload the relevant documents so I can analyze them.`;`
   }
 
   // Use top 3 sources to build a concise, human-readable template.
@@ -643,13 +643,13 @@ function generateFallbackResponse(query: string, sources: SearchResultItem[]): s
     .join('\n');
 
   return [
-    `I couldn't run a full LLM response for your question: "${query}".`,
+    `I couldn't run a full LLM response for your question: "${query}".`,'
     `However, here are the most relevant documents I could find:`,
     `${citations}`,
     '',
     `Short excerpts:`,
     `${excerpt}`,
     '',
-    `If you'd like a full analysis, please ensure a local model or cloud AI is available, or try rephrasing the query.`,
+    `If you'd like a full analysis, please ensure a local model or cloud AI is available, or try rephrasing the query.`,'
   ].join('\n');
 }

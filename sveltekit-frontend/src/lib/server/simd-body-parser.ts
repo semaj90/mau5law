@@ -5,7 +5,7 @@
 import { nodeSIMDJSON, fastParse } from '$lib/services/node-simd-json.js';
 import { dev } from '$app/environment';
 
-// Lightweight structural alias to avoid using SvelteKit's RequestEvent namespace/type directly
+// Lightweight structural alias to avoid using SvelteKit's RequestEvent namespace/type directly'
 // We only need the: 'request'; and: 'url' properties in this module.
 type LightRequestEvent = {
 	readonly request: Request;
@@ -172,7 +172,7 @@ class SIMDBodyParser {
             currentDoc += char;
             continue;
           }
-          if (char === '"' && !escapeNext) {
+          if (char === '"' && !escapeNext) {"
             inString = !inString;
             currentDoc += char;
             continue;
@@ -184,7 +184,7 @@ class SIMDBodyParser {
           if (char === '{') {
             braceCount++;
             currentDoc += char;
-          } else if (char === ' }') {
+          } else if (char === ` }') {'`
             braceCount--;
             currentDoc += char;
             if (braceCount === 0 && currentDoc.trim()) {
@@ -213,7 +213,7 @@ class SIMDBodyParser {
         try {
           const parsed = useSIMD ? fastParse<T>(currentDoc.trim()) : JSON.parse(currentDoc.trim());
           // yield final parsed value
-          // Note: if it's an array of objects, consumer should handle accordingly
+          // Note: if it's an array of objects, consumer should handle accordingly'
           yield parsed as unknown as T;
         } catch {
           // ignore final partial parse errors
@@ -254,8 +254,8 @@ class SIMDBodyParser {
   /**
    * Extract legal entities with optimized regex
    */
-  private extractLegalEntities(content: string): Array<{ type: string; text: string;, confidence: number }> {
-    const entities: Array<{ type: string; text: string;, confidence: number }> = [];
+  private extractLegalEntities(content: string): Array<{ type: string; text: string; confidence: number }> {
+    const entities: Array<{ type: string; text: string; confidence: number }> = [];
     const patterns = [
       { pattern: /\b\d+\s+U\.S\.C\.\s*§?\s*\d+/g, type: 'statute', confidence: 0.95 },
       { pattern: /\b\d+\s+C\.F\.R\.\s*§?\s*\d+/g, type: 'regulation', confidence: 0.9 },
@@ -284,8 +284,8 @@ class SIMDBodyParser {
   /**
    * Extract legal citations with court identification
    */
-  private extractCitations(content: string): Array<{ citation: string;, court: string }> {
-    const citations: Array<{ citation: string;, court: string }> = [];
+  private extractCitations(content: string): Array<{ citation: string; court: string }> {
+    const citations: Array<{ citation: string; court: string }> = [];
     const citationPattern = /(\d+)\s+(U\.S\.|F\.\d+d|S\.Ct\.)\s+(\d+)/g;
     let match: RegExpExecArray | null;
     while ((match = citationPattern.exec(content)) !== null) {
@@ -330,14 +330,14 @@ class SIMDBodyParser {
    */
   private extractJSONStrings(body: string): string[] {
     if (body.trim().startsWith('[')) {
-      const parsed = JSON.parse(body);
+      const parsed = JSON.parse(body);,
       return Array.isArray(parsed) ? parsed.map(item => JSON.stringify(item)) : [body];
     }
     return body
       .split('\n')
       .map(line => line.trim())
       .filter(line => line.length > 0 && (line.startsWith('{') || line.startsWith('[')));
-  }
+  },
   /**
    * Record performance metrics
    */
@@ -384,7 +384,7 @@ class SIMDBodyParser {
   toggleSIMD(enabled: boolean): void {
     this.simdEnabled = enabled;
     if (dev) {
-      console.log(`🔄 SIMD Body Parser ${enabled ? 'enabled' : 'disabled' }`);
+      console.log(`🔄 SIMD Body Parser ${enabled ? 'enabled' : 'disabled` }`);'`
     }
   }
   /**
@@ -397,7 +397,7 @@ class SIMDBodyParser {
       this.hotEndpoints.delete(endpoint);
     }
     if (dev) {
-      console.log(`🎯 Endpoint ${endpoint} ${isHot ? 'added to' : 'removed from' } hot list`);
+      console.log(`🎯 Endpoint ${endpoint} ${isHot ? 'added to' : 'removed from` } hot list`);'`
     }
   }
 }

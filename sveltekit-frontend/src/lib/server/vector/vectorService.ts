@@ -16,16 +16,16 @@ export interface EmbeddingResult { id: string;, score: number;
   content?: string;
 }
 
-type QdrantPoint = { id: string;, vector: number[]; payload?: Record<string, any> };
+type QdrantPoint = { id: string; vector: number[]; payload?: Record<string, any> };
 
 interface QdrantClientLike {
-  upsert(collection: string, payload: { wait?: boolean; points: QdrantPoint[] }): Promise<void>;
+  upsert(collection: string, payload: { wait?: boolean;, points: QdrantPoint[] }): Promise<void>;
   search(
     collection: string,
     args: {, vector: number[]; limit?: number; score_threshold?: number; filter?: any; with_payload?: boolean }
-  ): Promise<Array<{ id: string;, score: number; payload?: any }>>;
-  delete(collection: string, args: { wait?: boolean; points: string[] }): Promise<void>;
-  getCollections(): Promise<{ collections: Array<{ name: string;, points_count: number }> }>;
+  ): Promise<Array<{ id: string; score: number; payload?: any }>>;
+  delete(collection: string, args: { wait?: boolean;, points: string[] }): Promise<void>;
+  getCollections(): Promise<{ collections: Array<{ name: string; points_count: number }> }>;
   getCollection(collection: string): Promise<{ points_count?: number; name?: string } | null>;
 }
 
@@ -50,7 +50,7 @@ interface RedisClientLike {
 class QdrantStub implements QdrantClientLike {
   private collections = new Map<string, QdrantPoint[]>();
 
-  async upsert(collection: string, payload: { wait?: boolean; points: QdrantPoint[] }) {
+  async upsert(collection: string, payload: { wait?: boolean;, points: QdrantPoint[] }) {
     const existing = this.collections.get(collection) ?? [];
     const byId = new Map(existing.map((p) => [p.id, p]));
     for (const p of payload.points) {
@@ -96,7 +96,7 @@ class QdrantStub implements QdrantClientLike {
     return limited.map((r) => ({ id: r.id, score: r.score, payload: args.with_payload ? r.payload : undefined }));
   }
 
-  async delete(collection: string, args: { wait?: boolean; points: string[] }) {
+  async delete(collection: string, args: { wait?: boolean;, points: string[] }) {
     const pts = this.collections.get(collection) ?? [];
     const remaining = pts.filter((p) => !args.points.includes(p.id));
     this.collections.set(collection, remaining);
@@ -228,7 +228,7 @@ export class VectorService {
       });
       // store metadata in DB (stubbed)
       await this.db.insertVectorMetadata([
-        {
+        {,
           id: `${id}-meta`,
           documentId: id,
           collectionName: this.collectionName,
@@ -309,7 +309,7 @@ export class VectorService {
             id: e.id,
             score: 0.6,
             metadata: {, type: 'evidence', title: e.title, case_id: e.caseId },
-            content: '${e.title} ${e.description || ''} ${e.summary || ''}` }))
+            content: '${e.title} ${e.description || ''} ${e.summary || ''}' }))
         );
       }
       // Criminals
@@ -319,8 +319,8 @@ export class VectorService {
           ...cr.map((c: any) => ({
             id: c.id,
             score: 0.6,
-            metadata: {, type: 'criminal', title: `${c.firstName} ${c.lastName}' },
-            content: '${c.firstName} ${c.lastName} ${c.notes || ''}` }))
+            metadata: {, type: 'criminal', title: '${c.firstName} ${c.lastName}' },
+            content: '${c.firstName} ${c.lastName} ${c.notes || ''}` }))'`
         );
       }
       return results;
@@ -373,7 +373,7 @@ export class VectorService {
     }
   }
 
-  async bulkIndex(documents: Array<{, id: string; content: string; metadata?: Record<string, any> }>): Promise<void> {
+  async bulkIndex(documents: Array<{, id: string;, content: string; metadata?: Record<string, any> }>): Promise<void> {
     try {
       const batchSize = 50;
       for (let i = 0; i < documents.length; i += batchSize) {
@@ -407,7 +407,7 @@ export class VectorService {
     }
   }
 
-  async healthCheck(): Promise<{ qdrant: boolean; redis: boolean;, collection: boolean }> {
+  async healthCheck(): Promise<{ qdrant: boolean; redis: boolean; collection: boolean }> {
     const status = { qdrant: false, redis: false, collection: false };
     try {
       const collections = await this.qdrant.getCollections();
@@ -425,7 +425,7 @@ export class VectorService {
     return status;
   }
 
-  async getStats(): Promise<{ documentCount: number;, collectionInfo: any | null }> {
+  async getStats(): Promise<{ documentCount: number; collectionInfo: any | null }> {
     try {
       const info = await this.qdrant.getCollection(this.collectionName);
       return { documentCount: info?.points_count ?? 0, collectionInfo: info ?? null };

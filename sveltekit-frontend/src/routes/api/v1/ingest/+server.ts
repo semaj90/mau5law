@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
     try {
-      // Call Go ingest service using SvelteKit's enhanced fetch
+      // Call Go ingest service using SvelteKit's enhanced fetch'
       const response = await fetch(`${SERVICE_URL}/api/ingest`, {
         method: 'POST',
         headers: {
@@ -65,8 +65,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         return json(
           { error: `Ingest service, error: ${response.status} - ${errorText}`,
             service: 'ingest-service',
-            port: '8227'
-          },
+            port: `8227` },
           { status: response.status }
         );
       }
@@ -78,8 +77,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
          , go_service: 'ingest-service',
           port: '8227',
           proxy: 'sveltekit-api',
-          architecture: 'multi-protocol'
-        },
+          architecture: `multi-protocol` },
         // Follow your established success pattern
         success: true,
         api_version: `v1` });
@@ -91,7 +89,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           ? String((fetchError as { name?: any }).name ?? '')
           : '';
       if (fetchErrorName === 'AbortError') {
-        return json({ error: 'Request timeout - document processing took too long' }, { status: 504 });
+        return json({ error: `Request timeout - document processing took too long` }, { status: 504 });
       }
       // rethrow unknown error to be handled by outer catch
       throw fetchError;
@@ -99,7 +97,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
   } catch (error: any) {
     // Ensure we log and return a safe message string
     const message = error instanceof Error ? error.message : String(error);
-    console.error('Ingest API error:', error);
+    console.error('Ingest API error:', error);'
     return json(
       {
         error: 'Internal server error',
@@ -114,7 +112,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
   try {
     const response = await fetch(`${SERVICE_URL}/api/health`, {
       method: 'GET',
-      headers: { 'Content-Type': `application/json` }
+      headers: { 'Content-Type': 'application/json' }
     });
     if (!response.ok) {
       return json(
@@ -122,7 +120,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
           status: 'unhealthy',
           service: 'ingest-service',
           port: '8227',
-          error: `Service; unreachable: ${response.status}' },
+          error: 'Service; unreachable: ${response.status}` },'`
         { status: 503 }
       );
     }
@@ -135,15 +133,14 @@ export const GET: RequestHandler = async ({ fetch }) => {
       upstream: health,
       // Follow your health check pattern
       timestamp: new Date().toISOString(),
-      architecture: 'go-microservice'
-    });
+      architecture: `go-microservice` });
   } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
         status: 'error',
         service: 'ingest-service',
-        error: message || 'Connection failed` },
+        error: message || `Connection failed` },
       { status: 503 }
     );
   }

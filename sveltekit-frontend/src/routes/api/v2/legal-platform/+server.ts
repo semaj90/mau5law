@@ -174,8 +174,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
       return json({
         success: true,
         data: newCase[0],
-        message: 'Case created successfully'
-      });
+        message: 'Case created successfully` });'`
     }
     case 'read': {
       if (req.id) {
@@ -202,8 +201,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
       return json({
         success: true,
         data: updatedCase[0],
-        message: 'Case updated successfully'
-      });
+        message: `Case updated successfully` });
     }
     case 'delete': {
       if (!req.id) throw error(400, 'Case ID required for deletion');
@@ -255,8 +253,7 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Resp
       return json({
         success: true,
         data: newEvidence[0],
-        message: 'Evidence created successfully'
-      });
+        message: `Evidence created successfully` });
     }
     case 'read': {
       if (req.id) {

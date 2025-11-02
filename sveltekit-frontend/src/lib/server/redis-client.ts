@@ -90,7 +90,7 @@ export function createRedisClient(options?: RedisClientOptions): IORedis {
 
 const globalForRedis = globalThis as unknown as { sharedRedis?: IORedis };
 
-// Create or reuse a single shared Redis instance and ensure it's connected
+// Create or reuse a single shared Redis instance and ensure it's connected'
 export const redis: IORedis = globalForRedis.sharedRedis ?? createRedisClient();
 globalForRedis.sharedRedis = redis;
 
@@ -142,15 +142,15 @@ function waitForEvent(obj: RedisLike, event: string, timeoutMs = 5000): Promise<
       clearTimeout(to);
       // prefer off/removeListener if available
       try {
-        (obj as RedisLike).off?.(event, onEvent);       // <--- use RedisLike instead of any
-        (obj as RedisLike).off?.('error', onError);     // <--- use RedisLike instead of any
+        (obj as RedisLike).off?.(event, onEvent);       // <--- use RedisLike instead of, any
+        (obj as RedisLike).off?.('error', onError);     // <--- use RedisLike instead of, any
       } catch {
         // ignore cleanup errors
       }
     }
 
-    (obj as RedisLike).on?.(event, onEvent);           // <--- use RedisLike instead of any
-    (obj as RedisLike).on?.('error', onError);         // <--- use RedisLike instead of any
+    (obj as RedisLike).on?.(event, onEvent);           // <--- use RedisLike instead of, any
+    (obj as RedisLike).on?.('error', onError);         // <--- use RedisLike instead of, any
   });
 }
 
@@ -159,7 +159,7 @@ export async function ensureRedisReady(timeoutMs = 5000): Promise<void> {
     const status = redisLike.status;
     if (status === 'ready') return;
 
-    // If it's currently connecting, just wait for ready (avoids calling connect twice)
+    // If it's currently connecting, just wait for ready (avoids calling connect twice)'
     if (status === 'connecting' || status === 'connect' || status === 'reconnecting') {
       try {
         await waitForEvent(redisLike, 'ready', timeoutMs);

@@ -78,12 +78,12 @@ export const GET: RequestHandler = async ({ url }) => {
     const safeCaseId = caseId ?? 'mock-case-1';
     const safeEvidenceType = evidenceType ?? 'document';
     const safeSearchMode = searchMode ?? 'hybrid';
-    console.error('Evidence search error:', error);
+    console.error('Evidence search error:', error);'
     const errorMessage = error instanceof Error ? error.message : String(error);
     return json(
       { error: `failure default to, mock: ${errorMessage}`,
         results: [
-          {
+          {,
             id: 'mock-evidence-search-1',
             caseId: safeCaseId,
             title: 'Mock Contract Document - Search Result',
@@ -149,7 +149,7 @@ type EvidenceResult = EvidenceRecord & { similarity: number;, searchType: 'text
   mockData?: boolean;
 };
 
-type QdrantHit = { payload: {;, evidence_id: string;
+type QdrantHit = { payload: {; evidence_id: string;
     content_snippet?: string | null;
     // other payload fields...
   };
@@ -165,7 +165,7 @@ async function searchEvidenceText(query: string, options: SearchOptions): Promis
     ilike(evidence.title, `%${query}%`),
     ilike(evidence.description, `%${query}%`),
     ilike(evidence.fileName, `%${query}%`),
-    sql`${evidence.tags}::text ILIKE ${`%${query}%` }`
+    sql`${evidence.tags}::text ILIKE ${`%${query}%' }`'`
   );
   whereConditions.push(textSearch);
   // Apply filters
@@ -184,7 +184,7 @@ async function searchEvidenceText(query: string, options: SearchOptions): Promis
       summary: evidence.summary,
       uploadedAt: evidence.uploadedAt,
       similarity: sql<number>`1.0`,
-      searchType: sql<string>`'text'` })
+      searchType: sql<string>`'text'' })'`
     .from(evidence)
     .where(and(...whereConditions))
     .orderBy(desc(evidence.uploadedAt))
@@ -199,8 +199,8 @@ async function searchEvidenceContent(query: string, options: SearchOptions): Pro
     const qdrantResults = await searchEvidence(query, {
       limit,
       filter: {
-        must: [
-          ...(caseId ? [{ key: 'case_id', match: {, value: caseId } }] : []),
+       , must: [
+          ...(caseId ? [{, key: 'case_id', match: {, value: caseId } }] : []),
           ...(evidenceType ? [{ key: 'evidence_type', match: {, value: evidenceType } }] : [])
         ]
       }
@@ -262,7 +262,7 @@ async function searchEvidenceSemantic(query: string, options: SearchOptions): Pr
       summary: evidence.summary,
       uploadedAt: evidence.uploadedAt,
       similarity: sql<number>`0.5`, // Placeholder similarity score
-      searchType: sql<string>`'semantic'` })
+      searchType: sql<string>`'semantic'' })'`
     .from(evidence)
     .where(and(...whereConditions))
     .orderBy(desc(evidence.uploadedAt))

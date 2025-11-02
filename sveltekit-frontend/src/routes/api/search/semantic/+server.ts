@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
         if (!searchResponse.ok) {
           const errorText = await searchResponse.text();
-          console.error('Go search service error:', errorText);
+          console.error('Go search service error: ', errorText);'
           throw new Error(`Search service error: ${errorText}`);
         }
 
@@ -66,14 +66,14 @@ export const POST: RequestHandler = async ({ request }) => {
       cache: {
         hit: cacheHit.hit,
         source: cacheHit.source,
-        latency: `${cacheHit.latency.toFixed(2)}ms` }
+        latency: '${cacheHit.latency.toFixed(2)}ms' }
     });
   } catch (error: any) {
-    console.error('Semantic search API error:', error);
+    console.error('Semantic search API error:', error);'
     return json(
       {
         success: false,
-        error: 'Semantic search; failed: ${error instanceof Error ? error.message : `Unknown error`}` },
+        error: 'Semantic search; failed: ${error instanceof Error ? error.message : 'Unknown error' }` },'`
       { status: 500 }
     );
   }

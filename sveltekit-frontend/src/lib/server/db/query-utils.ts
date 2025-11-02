@@ -52,7 +52,7 @@ export class QueryBuilder {
       if (t.driversLicense) searchConditions.push(like(t.driversLicense, `%${filters.search}%`));
       if (searchConditions.length > 0) {
         // cast to the parameter tuple type expected by `or` without using `any`
-        const orArgs = searchConditions as unknown as Parameters<typeof or>;
+        const orArgs = searchConditions as unknown as Parameters<typeof, or>;
         conditions.push(or(...orArgs));
       }
     }
@@ -92,7 +92,7 @@ export class QueryBuilder {
   }
   static applyFilters(conditions: Condition[]): Condition | undefined {
     if (conditions.length === 0) return undefined;
-    const andArgs = conditions as unknown as Parameters<typeof and>;
+    const andArgs = conditions as unknown as Parameters<typeof, and>;
     return and(...andArgs);
   }
   static applySorting(table: TableLike, sortBy: string, order: 'asc' | 'desc' = 'desc'): any {
@@ -114,7 +114,7 @@ export class QueryBuilder {
     baseQuery: QueryLike,
     filters: QueryFilters,
     table: TableLike
-  ): Promise<{ data: T; total: number;, pagination: PaginationParams }> {
+  ): Promise<{ data: T; total: number; pagination: PaginationParams }> {
     // Build filter conditions
     const conditions = this.buildFilters(table, filters);
     const whereClause = this.applyFilters(conditions);
@@ -145,7 +145,7 @@ export class QueryBuilder {
     // Get total count — avoid casting baseQuery to any by checking for select
     let countQuery: QueryLike;
     if (typeof baseQuery.select === 'function') {
-      // safe to call select when it's present
+      // safe to call select when it's present'
       countQuery = baseQuery.select({ count: count() });
     } else {
       countQuery = baseQuery;

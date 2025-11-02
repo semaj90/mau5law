@@ -58,8 +58,8 @@ class SemanticSearchService {
         suggestions: options.semanticExpansion ? this.generateSuggestions(query) : undefined
       }
     } catch (error) {
-      console.error('Semantic search error:', error);
-      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
+      console.error('Semantic search error:', error);'
+      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
     }
   }
   /**

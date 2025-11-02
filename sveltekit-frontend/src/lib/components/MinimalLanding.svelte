@@ -1,9 +1,9 @@
 <svelte:head>
 	<title>Minimal Landing · Deeds Web App</title>
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<meta, name="viewport" content="width=device-width,initial-scale=1" />
 </svelte:head>
-<main class="minimal-landing" aria-labelledby="minimal-heading">
-	<h1 id="minimal-heading">Hello SvelteKit! 🚀</h1>
+<main, class="minimal-landing" aria-labelledby="minimal-heading">
+	<h1, id="minimal-heading">Hello SvelteKit! 🚀</h1>
 	<p>If you can see this, the minimal setup component is available (former +page.minimal.svelte).</p>
 </main>
 <style>

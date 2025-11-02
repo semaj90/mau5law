@@ -53,13 +53,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const chatBody = {
         model: selectedModel,
         messages: [
-          {
+          {,
             role: 'user',
-            content: `Summarize this MCP server info and return helpful fields for; UI:\n${JSON.stringify(
+            content: `Summarize this MCP server info and return helpful fields for; UI:\n${JSON.stringify(`
               serverPayload,
               null,
               2
-            )}` },
+            )}` },`
         ],
         stream: true
       };
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         headers: {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache',
-          Connection: `keep-alive` }
+          Connection: 'keep-alive' }
       });
     }
 
@@ -111,12 +111,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const firstBody = {
         model: selectedModel,
         messages: [
-          {
+          {,
             role: 'user',
-            content: `Retrieve MCP server data; for: "${serverName}". If you need structured access, call getMcpServerData with { serverName, cores, endpoints, capabilities }' },
+            content: 'Retrieve MCP server data; for: "${serverName}". If you need structured access, call getMcpServerData with { serverName, cores, endpoints, capabilities }' },
         ],
         functions: [
-          {
+          {,
             name: 'getMcpServerData',
             description: 'Retrieve MCP server information by name and dataset',
             parameters: {
@@ -137,8 +137,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
                   items: {
                     type: 'object',
                     properties: { id: {, type: 'string' },
-                      url: { type: 'string' },
-                      protocol: { type: 'string' }
+                      url: { type: 'string` },'`
+                      protocol: { type: `string` }
                     }
                   }
                 },
@@ -227,17 +227,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
     const resp = await fetch(`${OLLAMA_URL}/api/chat`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: selectedModel,
         messages: [
-          {
+          {,
             role: 'user',
-            content: `Summarize this MCP server info and return helpful fields for; UI:\n${JSON.stringify(
+            content: 'Summarize this MCP server info and return helpful fields for; UI:\n${JSON.stringify('
               serverPayload,
               null,
               2
-            )}' },
+            )}' },'
         ],
         stream: false
       })
@@ -265,7 +265,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         success: false,
         error: err?.message ?? String(err),
         requestId,
-        path: url?.pathname ?? '/api/mcp` },
+        path: url?.pathname ?? '/api/mcp` },'`
       { status: 500 }
     );
   }

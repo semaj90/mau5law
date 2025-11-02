@@ -1,7 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<script, lang="ts">
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Button } from 'bits-ui';
@@ -158,7 +158,7 @@ import type { Document } from '$lib/types';
   }
   async function findRelevantPrecedents(): Promise<any[]> {
     const mockPrecedents = [
-      {
+      {,
         case_name: 'Smith v. Jones Contract Dispute',
         relevance: 0.92,
         summary: 'Landmark case establishing principles for contract interpretation in commercial disputes.'
@@ -210,18 +210,18 @@ import type { Document } from '$lib/types';
     ondispatch?.({ step: 'evidence', data: formData });
   }
 </script>
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transition:fade>
-  <div class="mb-8">
-    <h2 class="text-2xl font-bold text-gray-900 mb-2">Evidence Analysis</h2>
-    <p class="text-gray-600">Extract entities, identify key facts, and analyze legal issues from uploaded documents</p>
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg, shadow-lg" transition:fade>
+  <div, class="mb-8">
+    <h2 class="text-2xl font-bold text-gray-900, mb-2">Evidence Analysis</h2>
+    <p, class="text-gray-600">Extract entities, identify key facts, and analyze legal issues from uploaded documents</p>
   </div>
-  <!-- Automated Analysis Button -->
+  <!-- Automated Analysis, Button -->
   {#if ocrResults.length > 0 && !isAnalyzing}
-    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
-      <div class="flex items-center justify-between">
+    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg, p-4">
+      <div class="flex items-center, justify-between">
         <div>
-          <h3 class="text-lg font-medium text-blue-900">AI-Powered Analysis</h3>
-          <p class="text-sm text-blue-700">
+          <h3 class="text-lg font-medium, text-blue-900">AI-Powered Analysis</h3>
+          <p class="text-sm, text-blue-700">
             Automatically extract entities, facts, and legal issues from {ocrResults.length} uploaded document{ocrResults.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -233,37 +233,37 @@ import type { Document } from '$lib/types';
         </Button.Root>
       </div>
     {/if}
-  <!-- Analysis Progress -->
+  <!-- Analysis, Progress -->
   {#if isAnalyzing}
-    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4" transition:slide>
-      <div class="space-y-3">
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg font-medium text-blue-900">Analyzing Documents...</h3>
-          <span class="text-sm text-blue-700">{$analysisProgress}%</span>
+    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg, p-4" transition:slide>
+      <div, class="space-y-3">
+        <div class="flex items-center, justify-between">
+          <h3 class="text-lg font-medium, text-blue-900">Analyzing Documents...</h3>
+          <span class="text-sm, text-blue-700">{$analysisProgress}%</span>
         </div>
-        <div class="bg-blue-200 rounded-full h-2">
+        <div class="bg-blue-200 rounded-full, h-2">
           <div
             class="bg-blue-600 h-2 rounded-full transition-all duration-500"
             style="width: {$analysisProgress}%"
           ></div>
         </div>
-        <p class="text-sm text-blue-700">{$currentAnalysisStep}</p>
+        <p class="text-sm, text-blue-700">{$currentAnalysisStep}</p>
       </div>
     {/if}
-  <!-- Extracted Entities -->
-  <div class="mb-8">
-    <h3 class="text-lg font-medium text-gray-900 mb-4">Extracted Entities</h3>
+  <!-- Extracted, Entities -->
+  <div, class="mb-8">
+    <h3 class="text-lg font-medium text-gray-900, mb-4">Extracted Entities</h3>
     {#if formData.extracted_entities.length > 0}
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3, gap-3">
         {#each formData.extracted_entities as entity, index}
-          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3" transition:fade>
-            <div class="flex items-center justify-between">
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 truncate">{entity.value}</p>
-                <p class="text-xs text-gray-500">{entity.type}</p>
+          <div class="bg-gray-50 border border-gray-200 rounded-lg, p-3" transition:fade>
+            <div class="flex items-center, justify-between">
+              <div class="flex-1, min-w-0">
+                <p class="text-sm font-medium text-gray-900, truncate">{entity.value}</p>
+                <p class="text-xs, text-gray-500">{entity.type}</p>
               </div>
-              <div class="flex items-center space-x-2">
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getConfidenceColor(entity.confidence)}">
+              <div class="flex items-center, space-x-2">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs, font-medium {getConfidenceColor(entity.confidence)}">
                   {Math.round(entity.confidence * 100)}%
                 </span>
                 <Button
@@ -279,13 +279,13 @@ import type { Document } from '$lib/types';
         {/each}
       </div>
     {:else}
-      <p class="text-sm text-gray-500 italic">No entities extracted yet. Run automated analysis or upload documents.</p>
+      <p class="text-sm text-gray-500, italic">No entities extracted yet. Run automated analysis or upload documents.</p>
     {/if}
   </div>
-  <!-- Key Facts -->
-  <div class="mb-8">
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg font-medium text-gray-900">Key Facts</h3>
+  <!-- Key, Facts -->
+  <div, class="mb-8">
+    <div class="flex items-center justify-between, mb-4">
+      <h3 class="text-lg font-medium, text-gray-900">Key Facts</h3>
       <Button.Root
         onclick={addKeyFact}
         class="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 bits-btn"
@@ -294,10 +294,10 @@ import type { Document } from '$lib/types';
       </Button.Root>
     </div>
     {#if formData.key_facts.length > 0}
-      <div class="space-y-3">
+      <div, class="space-y-3">
         {#each formData.key_facts as fact, index}
-          <div class="flex gap-3" transition:fade>
-            <div class="flex-1">
+          <div class="flex, gap-3" transition:fade>
+            <div, class="flex-1">
               <textarea
                 bind:value={formData.key_facts[index]}
                 rows="2"
@@ -315,13 +315,13 @@ import type { Document } from '$lib/types';
         {/each}
       </div>
     {:else}
-      <p class="text-sm text-gray-500 italic">No key facts identified yet. Click: "Add Fact" or run automated analysis.</p>
+      <p class="text-sm text-gray-500, italic">No key facts identified yet. Click: "Add Fact" or run automated analysis.</p>
     {/if}
   </div>
-  <!-- Legal Issues -->
-  <div class="mb-8">
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg font-medium text-gray-900">Legal Issues</h3>
+  <!-- Legal, Issues -->
+  <div, class="mb-8">
+    <div class="flex items-center justify-between, mb-4">
+      <h3 class="text-lg font-medium, text-gray-900">Legal Issues</h3>
       <Button.Root
         onclick={addLegalIssue}
         class="px-3 py-1 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 bits-btn"
@@ -330,16 +330,16 @@ import type { Document } from '$lib/types';
       </Button.Root>
     </div>
     {#if formData.legal_issues.length > 0}
-      <div class="space-y-3">
+      <div, class="space-y-3">
         {#each formData.legal_issues as issue, index}
-          <div class="flex gap-3" transition:fade>
+          <div class="flex, gap-3" transition:fade>
             <select
               bind:value={formData.legal_issues[index]}
               class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="">Select legal issue category</option>
+              <option, value="">Select legal issue category</option>
               {#each Array.isArray(legalIssueCategories) ? legalIssueCategories : [] as category}
-                <option value={category}>{category}</option>
+                <option, value={category}>{category}</option>
               {/each}
             </select>
             <Button
@@ -352,22 +352,22 @@ import type { Document } from '$lib/types';
         {/each}
       </div>
     {:else}
-      <p class="text-sm text-gray-500 italic">No legal issues identified yet. Click: "Add Issue" or run automated analysis.</p>
+      <p class="text-sm text-gray-500, italic">No legal issues identified yet. Click: "Add Issue" or run automated analysis.</p>
     {/if}
   </div>
-  <!-- Relevant Precedents -->
+  <!-- Relevant, Precedents -->
   {#if formData.precedents.length > 0}
-    <div class="mb-8">
-      <h3 class="text-lg font-medium text-gray-900 mb-4">Relevant Precedents</h3>
-      <div class="space-y-3">
+    <div, class="mb-8">
+      <h3 class="text-lg font-medium text-gray-900, mb-4">Relevant Precedents</h3>
+      <div, class="space-y-3">
         {#each Array.isArray(formData.precedents) ? formData.precedents : [] as precedent}
-          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4" transition:fade>
-            <div class="flex items-start justify-between">
-              <div class="flex-1">
-                <h4 class="text-sm font-medium text-yellow-900">{precedent.case_name}</h4>
-                <p class="text-sm text-yellow-700 mt-1">{precedent.summary}</p>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-lg, p-4" transition:fade>
+            <div class="flex items-start, justify-between">
+              <div, class="flex-1">
+                <h4 class="text-sm font-medium, text-yellow-900">{precedent.case_name}</h4>
+                <p class="text-sm text-yellow-700, mt-1">{precedent.summary}</p>
               </div>
-              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100, text-yellow-800">
                 {Math.round(precedent.relevance * 100)}% relevant
               </span>
             </div>
@@ -375,15 +375,15 @@ import type { Document } from '$lib/types';
         {/each}
       </div>
     {/if}
-  <!-- Form Actions -->
-  <div class="flex justify-between pt-6 border-t border-gray-200">
+  <!-- Form, Actions -->
+  <div class="flex justify-between pt-6 border-t, border-gray-200">
     <Button.Root
       onclick={handlePrevious}
       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
     >
       ← Previous
     </Button>
-    <div class="flex space-x-3">
+    <div class="flex, space-x-3">
       <Button.Root
         onclick={handleSaveDraft}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
@@ -400,4 +400,4 @@ import type { Document } from '$lib/types';
     </div>
   </div>
 </div>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+<!-- TODO: migrate export lets to $props(); CommonProps, assumed. -->

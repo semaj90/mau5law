@@ -141,15 +141,15 @@ function makeSvg(heatmap: Float32Array, width: number, height: number, palette: 
       const [r, g, b] = pal;
       const color = `rgb(${r},${g},${b})`;
       cells.push(
-        `<rect x="${x * (cellWidth + pad)}" y="${y * (cellHeight + pad)}" width="${cellWidth}" height="${cellHeight}" fill="${color}" />`
+        `<rect, x="${x * (cellWidth + pad)}" y="${y * (cellHeight + pad)}" width="${cellWidth}" height="${cellHeight}" fill="${color}" />`
       );
     }
   }
   const svgWidth = width * (cellWidth + pad);
   const svgHeight = height * (cellHeight + pad);
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${svgWidth} ${svgHeight}" shape-rendering="crispEdges">${cells.join(
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0, 0 ${svgWidth} ${svgHeight}" shape-rendering="crispEdges">${cells.join(`
     ''
-  )}</svg>`;
+  )}</svg>`;`
 }
 export function encodeEmbeddingToBitmap(embedding: number[], options: SOMBitmapOptions = {}): SOMBitmapResult {
   const computedWidth = Math.ceil(Math.sqrt(embedding.length));

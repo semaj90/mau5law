@@ -272,7 +272,7 @@ class OptimizedQdrantService {
         score_threshold: options.threshold ?? 0.7
       };
 
-      // Qdrant client's search API can differ by version; this is a typical call shape
+      // Qdrant client's search API can differ by version; this is a typical call shape'
       const results = await this.client.search(collection, searchParams as any);
 
       const formattedResults = (results || []).map((hit: any) => ({
@@ -346,7 +346,7 @@ class OptimizedQdrantService {
       }
 
       const batchSize = this.config.performance.batchSize;
-      const batches: Array<Array<{ id: string;, vector: number[]; payload?: Record<string, unknown> }>> = [];
+      const batches: Array<Array<{ id: string; vector: number[]; payload?: Record<string, unknown> }>> = [];
       for (let i = 0; i < points.length; i += batchSize) {
         batches.push(points.slice(i, i + batchSize));
       }
@@ -362,7 +362,7 @@ class OptimizedQdrantService {
         // Use a typed assertion via unknown instead of `any` to satisfy differing client typings
         const upsertPayload = {
           wait: true,
-          points: optimizedBatch as Array<{ id: string;, vector: Float32Array; payload?: Record<string, unknown> }>
+          points: optimizedBatch as Array<{ id: string; vector: Float32Array; payload?: Record<string, unknown> }>
         };
 
         // Different Qdrant client versions expose different method signatures; assert safely
@@ -611,7 +611,7 @@ class OptimizedQdrantService {
   private estimateResultMemory(results: any[]): number {
     try {
       const json = JSON.stringify(results);
-      // Prefer Node's Buffer.byteLength when available, otherwise use TextEncoder (browser)
+      // Prefer Node's Buffer.byteLength when available, otherwise use TextEncoder (browser)'
       const nodeBuffer = (globalThis as unknown as { Buffer?: { byteLength?: (s: string, enc?: string) => number } })
         .Buffer;
       if (typeof nodeBuffer !== 'undefined' && typeof nodeBuffer.byteLength === 'function') {
@@ -725,7 +725,7 @@ class OptimizedQdrantService {
     const client = this.client as unknown as QdrantClientShapes;
 
     const tryChecks: Array<() => Promise<unknown>> = [
-      // qdrant-js typical helper
+      // qdrant-js typical helper,
       () => (client.getCollections ? client.getCollections() : Promise.reject('no-getCollections')),
       // alternative: collectionsApi / collections.get
       () =>
@@ -754,7 +754,7 @@ class OptimizedQdrantService {
   }
 
   // Expose internal memory usage as a safe shallow copy
-  public getMemoryUsage(): { vectorCache: number; searchCache: number; queryHistory: number;, total: number } {
+  public getMemoryUsage(): { vectorCache: number; searchCache: number; queryHistory: number; total: number } {
     return {
       vectorCache: this.memoryUsage.vectorCache,
       searchCache: this.memoryUsage.searchCache,
@@ -805,7 +805,7 @@ class OptimizedQdrantService {
 
     logger.info('All caches cleared', {
       component: 'QdrantOptimized',
-      service: 'qdrant` });
+      service: 'qdrant' });
   }
 }
 

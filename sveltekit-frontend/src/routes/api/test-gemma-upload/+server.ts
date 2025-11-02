@@ -13,7 +13,7 @@ const MCP_SERVER_URL = ENV_CONFIG.mcpServerUrl;
 interface MCPMetadata { filename: string;, source: string;
   timestamp: string;
   // Add any other known properties that MCP might return in its metadata
-  // For now, we'll include the ones we send.
+  // For now, we'll include the ones we send.'
   [key: string]: any; // Allow for additional unknown properties if MCP returns more
 }
 
@@ -54,17 +54,17 @@ async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
     const pages = pdfDoc.getPages();
     let fullText = '';
     // For demo purposes, just get basic PDF structure
-    // In production, you'd use more sophisticated text extraction
+    // In production, you'd use more sophisticated text extraction'
     for (let i = 0; i < pages.length; i++) {
       const page = pages[i];
       const { width, height } = page.getSize();
       fullText += `\n[Page ${i + 1}] (${width}x${height})\n`;
       // Basic page content extraction would go here
-      // For now, we'll simulate with page metadata
+      // For now, we'll simulate with page metadata'
     }
     return fullText || 'PDF text extraction requires additional PDF parsing library';
   } catch (error) {
-    console.error('PDF extraction error:', error);
+    console.error('PDF extraction error:', error);'
     return 'Error extracting PDF text';
   }
 }
@@ -79,8 +79,8 @@ async function uploadToMinIO(
   try {
     const timestamp = new Date().toISOString().slice(0, 10);
     const objectPath = `legal-docs/${timestamp}/${file.name}`;
-    // For this demo, we'll simulate MinIO upload
-    // In production, you'd use the MinIO JavaScript client
+    // For this demo, we'll simulate MinIO upload'
+    // In production, you'd use the MinIO JavaScript client'
     const formData = new FormData();
     formData.append('file', file);
     formData.append('path', objectPath);
@@ -89,11 +89,11 @@ async function uploadToMinIO(
     return {
       success: true,
       objectPath,
-      url: '${MINIO_ENDPOINT}/${MINIO_BUCKET}/${objectPath}' };
+      url: `${MINIO_ENDPOINT}/${MINIO_BUCKET}/${objectPath}` };
   } catch (error: any) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : `Unknown error during MinIO upload` };
+      error: error instanceof Error ? error.message : `Unknown error during MinIO upload' };'`
   }
 }
 /**
@@ -104,7 +104,7 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
     const response = await fetch(`${MCP_SERVER_URL}/mcp/process`, {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify({
         text,
         metadata: {
@@ -127,10 +127,10 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
     const result = (await response.json()) as MCPProcessingResult['data']; // Cast to specific data type
     return { success: true, data: result };
   } catch (error: any) {
-    console.error('MCP processing error:', error);
+    console.error('MCP processing error: ', error);'
     return {
       success: false,
-      error: error instanceof Error ? error.message : `Unknown error during MCP processing` };
+      error: error instanceof Error ? error.message : `Unknown error during MCP processing' };'`
   }
 }
 /**
@@ -140,10 +140,10 @@ async function generateGemmaEmbeddings(chunks: string[]): Promise<number[][]> {
   try {
     const embeddings: number[][] = [];
     for (const chunk of chunks) {
-      const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/embeddings`, {
+      const response = await fetch('${ollamaConfig.getBaseUrl()}/api/embeddings', {
         method: 'POST',
         headers: {
-          'Content-Type': `application/json` },
+          'Content-Type': `application/json' },'`
         body: JSON.stringify({
           model: 'embeddinggemma:latest',
           prompt: chunk
@@ -162,7 +162,7 @@ async function generateGemmaEmbeddings(chunks: string[]): Promise<number[][]> {
     }
     return embeddings;
   } catch (error) {
-    console.error('Gemma embedding error:', error);
+    console.error('Gemma embedding error:', error);'
     return [];
   }
 }
@@ -174,11 +174,11 @@ async function storeInDatabase(data: CombinedDocumentData, minioPath: string): P
     console.log(`[Database] MinIO path: ${minioPath}`);
     console.log(`[Database] Chunks: ${data.chunks?.length || 0}`); // Access directly
     console.log(`[Database] Embeddings: ${data.embeddings?.length || 0}`); // Access directly
-    // In production, you'd use Drizzle ORM or raw SQL here
+    // In production, you'd use Drizzle ORM or raw SQL here'
     // to store in PostgreSQL with pgvector
     return true;
   } catch (error) {
-    console.error('Database storage error:', error);
+    console.error('Database storage error:', error);'
     return false;
   }
 }
@@ -187,9 +187,9 @@ export const POST: RequestHandler = async ({ request }) => {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     if (!file) {
-      return json({ success: false, error: `No file provided` }, { status: 400 });
+      return json({ success: false, error: 'No file provided' }, { status: 400 });
     }
-    console.log(`[API] Processing file: ${file.name} (${file.size} bytes, ${file.type})');
+    console.log(`[API] Processing file: ${file.name} (${file.size} bytes, ${file.type})');'`
     // Step 1: Extract text from PDF
     const arrayBuffer = await file.arrayBuffer();
     let extractedText = '';
@@ -204,25 +204,25 @@ export const POST: RequestHandler = async ({ request }) => {
     // Pass MINIO_ACCESS_KEY and MINIO_SECRET_KEY to the function
     const minioResult = await uploadToMinIO(file, MINIO_ACCESS_KEY, MINIO_SECRET_KEY);
     if (!minioResult.success) {
-      return json({ success: false, error: `MinIO upload; failed: ${minioResult.error}` }, { status: 500 });
+      return json({ success: false, error: `MinIO upload;, failed: ${minioResult.error}` }, { status: 500 });
     }
     console.log(`[API] MinIO upload successful: ${minioResult.objectPath}`);
     // Step 3: Process with MCP multi-core SIMD
     const mcpResult = await processWithMCP(extractedText, file.name);
     if (!mcpResult.success) {
-      return json({ success: false, error: `MCP processing; failed: ${mcpResult.error}` }, { status: 500 });
+      return json({ success: false, error: `MCP processing;, failed: ${mcpResult.error}` }, { status: 500 });
     }
 
     // Ensure mcpResult.data is defined before proceeding, as its properties are required by CombinedDocumentData
     if (!mcpResult.data) {
-      return json({ success: false, error: `MCP processing succeeded but returned no data.` }, { status: 500 });
+      return json({ success: false, error: 'MCP processing succeeded but returned no data.' }, { status: 500 });
     }
 
     console.log(`[API] MCP processing successful, chunks: ${mcpResult.data.chunks?.length}`);
     // Step 4: Generate Gemma embeddings
     const chunks = mcpResult.data.chunks || [extractedText];
     const embeddings = await generateGemmaEmbeddings(chunks);
-    console.log(`[API] Generated ${embeddings.length} Gemma embeddings');
+    console.log(`[API] Generated ${embeddings.length} Gemma embeddings');'`
     // Step 5: Store in PostgreSQL
     const stored = await storeInDatabase(
       {
@@ -234,7 +234,7 @@ export const POST: RequestHandler = async ({ request }) => {
       minioResult.objectPath!
     );
     if (!stored) {
-      return json({ success: false, error: `Database storage failed` }, { status: 500 });
+      return json({ success: false, error: 'Database storage failed' }, { status: 500 });
     }
     // Return comprehensive result
     return json({
@@ -259,13 +259,13 @@ export const POST: RequestHandler = async ({ request }) => {
         searchable: true,
         ragReady: true
       },
-      message: 'Successfully processed ${file.name} with Gemma embeddings pipeline' });
+      message: `Successfully processed ${file.name} with Gemma embeddings pipeline' });'`
   } catch (error: any) {
-    console.error('[API] Processing error:', error);
+    console.error('[API] Processing error: ', error);'
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : `Internal server error` },
+        error: error instanceof Error ? error.message : `Internal server error' },'`
       { status: 500 }
     );
   }

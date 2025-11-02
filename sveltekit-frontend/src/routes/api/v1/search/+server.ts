@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     // Process through orchestrator
     const response = await orchestrator.processRequest(orchestrationRequest);
-    // If hybrid search wasn't used by orchestrator, do it manually
+    // If hybrid search wasn't used by orchestrator, do it manually'
     let finalResults = response;
     if (type === 'hybrid' && (response as OrchestratorResponse)._metadata?.execution_path !== 'hybrid') {
       finalResults = await performHybridSearch(query, queryEmbedding, filters, limit, threshold, collections);
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error: any) {
-    console.error('Search API error:', error);
+    console.error('Search API error:', error);'
     return json(
       {
         error: 'Search processing failed',
@@ -149,7 +149,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: any) {
-    console.error('Search GET error:', error);
+    console.error('Search GET error:', error);'
     return json(
       {
         error: 'Search request failed',
@@ -172,7 +172,7 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
 }
 async function estimateDatasetSize(collections: string[], filters: any): Promise<number> {
   try {
-    // Quick estimate of how much data we'll be searching
+    // Quick estimate of how much data we'll be searching'
     let totalSize = 0;
     for (const collection of collections) {
       const info = await qdrant.getCollectionInfo(collection as any);
@@ -222,7 +222,7 @@ async function performHybridSearch(
     // Combine and rank results
     return combineSearchResults(results, query);
   } catch (error: any) {
-    console.error('Hybrid search error:', error);
+    console.error('Hybrid search error:', error);'
     throw error;
   }
 }
@@ -250,10 +250,10 @@ async function performTextSearch(query: string, filters: any, limit: number): Pr
         title: doc.title,
         content_preview: doc.content?.substring(0, 200),
         score: 0.5, // Default score for text search
-        source: 'text_search` }))
+        source: 'text_search' }))
     };
   } catch (error) {
-    console.error('Text search error:', error);
+    console.error('Text search error:', error);'
     return { results: [] };
   }
 }
@@ -273,7 +273,7 @@ function combineSearchResults(results: PromiseSettledResult<any>[], query: strin
           combinedResults.push({
             ...item,
             _hybrid_sources: [
-              (result as { status?: any; value?: any; title?: any; content_preview?: any }).value.metadata?.source ||
+              (result as { status?: any; value?: any; title?: any; content_preview?: any }).value.metadata?.source ||,
                 'unknown',
             ]
           });

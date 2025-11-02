@@ -80,7 +80,7 @@ export class MemoryPalaceEngine {
     gl.enable(gl.CULL_FACE);
     gl.cullFace(gl.BACK);
     // N64-style vertex colors and lighting
-    const vertexShaderSource = `#version 300 es
+    const vertexShaderSource = `#version 300 es`
       precision mediump float;
       in vec3 position;
       in vec3 normal;
@@ -106,8 +106,8 @@ export class MemoryPalaceEngine {
         vTexCoord = texCoord;
         vDistance = length(viewPosition.xyz);
       }
-    `;
-    const fragmentShaderSource = `#version 300 es
+    `;`
+    const fragmentShaderSource = `#version 300 es`
       precision mediump float;
       in vec3 vColor;
       in vec2 vTexCoord;
@@ -141,7 +141,7 @@ export class MemoryPalaceEngine {
         vec3 finalColor = mix(quantized, fogColor, fogFactor);
         fragColor = vec4(finalColor, 1.0);
       }
-    `;
+    `;`
     this.shaderProgram = this.createShaderProgram(vertexShaderSource, fragmentShaderSource);
     if (!this.shaderProgram) {
       throw new Error('Failed to create shader program');
@@ -290,9 +290,9 @@ export class MemoryPalaceEngine {
   }
   private calculateLOD(distance: number): number {
     // N64-style LOD: closer = higher detail
-    if (distance < 10) return 0; // High detail
-    if (distance < 25) return 1; // Medium detail
-    if (distance < 50) return 2; // Low detail
+    if (distance < 10) return 0; // High, detail
+    if (distance < 25) return 1; // Medium, detail
+    if (distance < 50) return 2; // Low, detail
     return 3; // Minimal detail
   }
   private renderRoomGeometry(_room: MemoryRoom, lodLevel: number): void {
@@ -359,7 +359,7 @@ export class MemoryPalaceEngine {
     }
     return false;
   }
-  getMemoryUsage(): { used: number; total: number;, utilization: number } {
+  getMemoryUsage(): { used: number; total: number; utilization: number } {
     return {
       used: this.currentMemoryUsage,
       total: this.TEXTURE_CACHE_SIZE,

@@ -91,7 +91,7 @@ export const wasmInferenceMachine = createMachine(
     id: 'wasmInferenceRAG',
     initial: 'initializing',
     context: {
-      isInitialized: false,
+     , isInitialized: false,
       config: {
        , modelPath: '/models/gemma3-legal-q4.wasm',
         threads: 8,
@@ -156,7 +156,7 @@ export const wasmInferenceMachine = createMachine(
               onDone: {
                 target: 'idle',
                 actions: [
-                  assign({
+                  assign({,
                     results: ({ results }, event: any) => {
                       const out = event.data as WASMInferenceResult;
                       const newMap = new Map(results);
@@ -191,7 +191,7 @@ export const wasmInferenceMachine = createMachine(
               onError: {
                 target: 'idle',
                 actions: [
-                  assign({
+                  assign({,
                     error: (_, event: any) => (event.data as Error)?.message || 'Processing failed',
                     activeRequests: ({ activeRequests }) => {
                       const newMap = new Map(activeRequests);
@@ -411,12 +411,12 @@ export class WASMInferenceRAGService {
       console.log(`📚 Retrieved ${results.length} relevant documents for WASM inference`);
       return results as RAGDocument[];
     } catch (error: any) {
-      console.warn('⚠️ WASM RAG retrieval error:', error);
+      console.warn('⚠️ WASM RAG retrieval error:', error);'
       // Fallback to an HTTP-based RAG service if available
       try {
         const response = await fetch('http://localhost:8094/api/rag/search', {
           method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify({
             query,
             limit,
@@ -430,7 +430,7 @@ export class WASMInferenceRAGService {
           return json.documents || [];
         }
       } catch (fallbackError) {
-        console.warn('⚠️ Fallback RAG search also failed: `, fallbackError);
+        console.warn('⚠️ Fallback RAG search also failed: `, fallbackError);'`
       }
       return [];
     }
@@ -472,7 +472,7 @@ export class WASMInferenceRAGService {
     maxTokens: number,
     temperature: number,
     stopSequences?: string[]
-  ): Promise<{ text: string;, tokens: number }> {
+  ): Promise<{ text: string; tokens: number }> {
     if (!this._wasmInstance) {
       // fallback: return mock generation for dev
       const text = `Mock response for prompt: ${prompt.slice(0, 200)}`;
@@ -514,7 +514,7 @@ export class WASMInferenceRAGService {
 
       return { text: resultText, tokens };
     } catch (error: any) {
-      console.error('WASM inference execution error:', error);
+      console.error('WASM inference execution error:', error);'
       throw error;
     }
   }
@@ -530,7 +530,7 @@ export class WASMInferenceRAGService {
           inferenceId,
           generatedText,
           requiresTagging: true,
-          source: 'wasm_inference` },
+          source: 'wasm_inference' },
         priority: priority === 'critical' ? 10 : priority === 'high' ? 8 : 5,
         correlationId: inferenceId
       });

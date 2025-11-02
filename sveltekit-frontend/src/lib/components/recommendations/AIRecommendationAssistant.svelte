@@ -1,5 +1,5 @@
-<!-- 🤖 AI Recommendation Assistant with Gemma3 Integration -->
-<script lang="ts">
+<!-- 🤖 AI Recommendation Assistant with Gemma3, Integration -->
+<script, lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
@@ -54,7 +54,7 @@ import type { Document } from '$lib/types';
   let thinkingMessage = $state<string>('Analyzing your legal context...');
   let processingSteps = $state<string[]>([]);
   const AI_ANALYSIS_TYPES = [
-    {
+    {,
       value: 'case-analysis',
       label: '⚖️ Case Analysis',
       description: 'Deep analysis of current case strategy and opportunities'
@@ -116,7 +116,7 @@ import type { Document } from '$lib/types';
       usingMockData = true;
       // Fallback to mock AI recommendations (valid JS object syntax)
       recommendations = [
-        {
+        {,
           id: 'mock-ai-001',
           type: 'case',
           title: 'Employment Dispute Analysis',
@@ -138,7 +138,7 @@ import type { Document } from '$lib/types';
         }
       ];
       suggestedActions = [
-        {
+        {,
           action: 'Document Discovery Request',
           description: 'Subpoena HR files including contract amendments',
           priority: 'high',
@@ -258,12 +258,12 @@ import type { Document } from '$lib/types';
     }
   }
 </script>
-<DiamondModal bind:open title="🤖 AI Legal Assistant" size="large">
-  <div class="ai-assistant-modal">
-    <!-- Header Controls -->
-    <div class="modal-header">
-      <!-- Analysis Type Selector -->
-      <div class="analysis-types">
+<DiamondModal bind:open title="🤖 AI Legal, Assistant" size="large">
+  <div, class="ai-assistant-modal">
+    <!-- Header, Controls -->
+    <div, class="modal-header">
+      <!-- Analysis Type, Selector -->
+      <div, class="analysis-types">
         {#each Array.isArray(AI_ANALYSIS_TYPES) ? AI_ANALYSIS_TYPES : [] as analysisType}
           <button
             class="type-btn"
@@ -275,8 +275,8 @@ import type { Document } from '$lib/types';
           </button>
         {/each}
       </div>
-      <!-- Custom Query Input -->
-      <div class="query-section">
+      <!-- Custom Query, Input -->
+      <div, class="query-section">
         <input
           type="text"
           placeholder="Optional: Specific question or context for AI analysis..."
@@ -288,29 +288,29 @@ import type { Document } from '$lib/types';
         </button>
       </div>
     </div>
-    <!-- AI Thinking Process -->
+    <!-- AI Thinking, Process -->
     {#if isThinking}
-      <div class="ai-thinking" transitionslide={{ duration: 300 }}>
-        <div class="thinking-header">
-          <div class="thinking-icon">🧠</div>
+      <div, class="ai-thinking" transitionslide={{ duration: 300 }}>
+        <div, class="thinking-header">
+          <div, class="thinking-icon">🧠</div>
           <h3>Gemma3:legal-latest Processing</h3>
-          <div class="thinking-spinner"></div>
+          <div, class="thinking-spinner"></div>
         </div>
-        <div class="thinking-message">{thinkingMessage}</div>
-        <div class="processing-steps">
+        <div, class="thinking-message">{thinkingMessage}</div>
+        <div, class="processing-steps">
           {#each processingSteps as step, i}
-            <div class="processing-step" transitionslide={{ duration: 200, delay: i * 100 }}>
+            <div, class="processing-step" transitionslide={{ duration: 200, delay: i * 100 }}>
               ✓ {step}
             </div>
           {/each}
         </div>
       {/if}
-    <!-- AI Analysis Results -->
+    <!-- AI Analysis, Results -->
     {#if !isThinking && recommendations.length > 0}
-      <div class="ai-results" transitionfade={{ duration: 400 }}>
-        <!-- AI Reasoning -->
-        <div class="ai-reasoning">
-          <div class="reasoning-header">
+      <div, class="ai-results" transitionfade={{ duration: 400 }}>
+        <!-- AI, Reasoning -->
+        <div, class="ai-reasoning">
+          <div, class="reasoning-header">
             <h3>🧠 AI Analysis</h3>
             <div
               class="confidence-badge"
@@ -319,24 +319,24 @@ import type { Document } from '$lib/types';
               {Math.round(confidence * 100)}% Confidence
             </div>
           </div>
-          <p class="reasoning-text">{aiReasoning}</p>
+          <p, class="reasoning-text">{aiReasoning}</p>
         </div>
         <!-- Recommendations -->
-        <div class="recommendations-section">
+        <div, class="recommendations-section">
           <h4>📋 AI Recommendations ({recommendations.length})</h4>
-          <div class="recommendations-grid">
+          <div, class="recommendations-grid">
             {#each recommendations as recommendation, i (recommendation.id)}
               <div
                 class="recommendation-card"
                 transitionfly={{ y: 20, delay: i * 100, duration: 300, easing: elasticOut }}
               >
-                <div class="rec-header">
-                  <span class="rec-icon">{getTypeIcon(recommendation.type)}</span>
-                  <div class="rec-info">
-                    <h5 class="rec-title">{recommendation.title}</h5>
-                    <p class="rec-description">{recommendation.description}</p>
+                <div, class="rec-header">
+                  <span, class="rec-icon">{getTypeIcon(recommendation.type)}</span>
+                  <div, class="rec-info">
+                    <h5, class="rec-title">{recommendation.title}</h5>
+                    <p, class="rec-description">{recommendation.description}</p>
                   </div>
-                  <div class="rec-stats">
+                  <div, class="rec-stats">
                     <div
                       class="confidence-meter"
                       style="background-color: {getConfidenceColor(recommendation.confidence)}20; border-color: {getConfidenceColor(recommendation.confidence)}"
@@ -351,18 +351,18 @@ import type { Document } from '$lib/types';
                     </div>
                   </div>
                 </div>
-                <div class="ai-insight">
-                  <div class="insight-label">🤖 AI Insight:</div>
-                  <div class="insight-text">{recommendation.aiInsight}</div>
+                <div, class="ai-insight">
+                  <div, class="insight-label">🤖 AI Insight:</div>
+                  <div, class="insight-text">{recommendation.aiInsight}</div>
                 </div>
                 {#if recommendation.metadata && Object.keys(recommendation.metadata).length > 0}
-                  <details class="metadata-details">
+                  <details, class="metadata-details">
                     <summary>📊 Additional Data</summary>
-                    <div class="metadata-content">
+                    <div, class="metadata-content">
                       {#each Object.entries(recommendation.metadata) as [key, value]}
-                        <div class="metadata-item">
-                          <span class="metadata-key">{key}:</span>
-                          <span class="metadata-value">
+                        <div, class="metadata-item">
+                          <span, class="metadata-key">{key}:</span>
+                          <span, class="metadata-value">
                             {typeof value === 'object' ? JSON.stringify(value) : value}
                           </span>
                         </div>
@@ -374,49 +374,49 @@ import type { Document } from '$lib/types';
             {/each}
           </div>
         </div>
-        <!-- Suggested Actions -->
+        <!-- Suggested, Actions -->
         {#if suggestedActions.length > 0}
-          <div class="actions-section">
+          <div, class="actions-section">
             <h4>⚡ Suggested Actions ({suggestedActions.length})</h4>
-            <div class="actions-list">
+            <div, class="actions-list">
               {#each suggestedActions as action, i (action.action)}
-                <div class="action-card" transitionslide={{ duration: 200, delay: i * 50 }}>
-                  <div class="action-header">
-                    <div class="action-info">
-                      <h5 class="action-title">{action.action}</h5>
-                      <p class="action-description">{action.description}</p>
+                <div, class="action-card" transitionslide={{ duration: 200, delay: i * 50 }}>
+                  <div, class="action-header">
+                    <div, class="action-info">
+                      <h5, class="action-title">{action.action}</h5>
+                      <p, class="action-description">{action.description}</p>
                     </div>
-                    <div class="action-meta">
+                    <div, class="action-meta">
                       <span
                         class="action-priority"
                         style="background-color: {getActionPriorityColor(action.priority)}20; border-color: {getActionPriorityColor(action.priority)}"
                       >
                         {action.priority}
                       </span>
-                      <span class="action-time">{action.estimatedTime}</span>
+                      <span, class="action-time">{action.estimatedTime}</span>
                     </div>
                   </div>
                   {#if action.tools && action.tools.length > 0}
-                    <div class="action-tools">
-                      <span class="tools-label">Tools:</span>
+                    <div, class="action-tools">
+                      <span, class="tools-label">Tools:</span>
                       {#each Array.isArray(action.tools) ? action.tools : [] as tool}
-                        <span class="tool-chip">{tool}</span>
+                        <span, class="tool-chip">{tool}</span>
                       {/each}
                     {/if}
-                  <button class="execute-btn" onclick={() => executeAction(action)} disabled={isProcessing}>
+                  <button, class="execute-btn" onclick={() => executeAction(action)} disabled={isProcessing}>
                     {isProcessing ? '⏳ Processing...' : '🚀 Execute'}
                   </button>
                 </div>
               {/each}
             </div>
           {/if}
-        <!-- Related Topics -->
+        <!-- Related, Topics -->
         {#if relatedTopics.length > 0}
-          <div class="topics-section">
+          <div, class="topics-section">
             <h4>🔗 Related Topics</h4>
-            <div class="topics-tags">
+            <div, class="topics-tags">
               {#each Array.isArray(relatedTopics) ? relatedTopics : [] as topic}
-                <button class="topic-tag" onclick={() => (customQuery = topic)}>
+                <button, class="topic-tag" onclick={() => (customQuery = topic)}>
                   {topic}
                 </button>
               {/each}
@@ -424,10 +424,10 @@ import type { Document } from '$lib/types';
           </div>
         {/if>
       {/if}
-    <!-- Empty State -->
+    <!-- Empty, State -->
     {#if !isThinking && !isLoading && recommendations.length === 0}
-      <div class="empty-state">
-        <div class="empty-icon">🤖</div>
+      <div, class="empty-state">
+        <div, class="empty-icon">🤖</div>
         <h3>AI Assistant Ready</h3>
         <p>Select an analysis type and click: "Analyze" to get AI-powered legal recommendations</p>
       {/if}

@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: Date.now()
     });
   } catch (error) {
-    console.error('Predictor recording error:', error);
+    console.error('Predictor recording error:', error);'
     return json({ error: 'Failed to record action' }, { status: 500 });
   }
 };
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
       enhancedMode,
       topK,
       stats: {
-        totalTransitions: stats.totalTransitions,
+       , totalTransitions: stats.totalTransitions,
         uniqueActions: stats.uniqueActions,
         cacheEnabled: stats.cacheEnabled,
         redisConnected: stats.redisConnected,
@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: Date.now()
     });
   } catch (error) {
-    console.error('Predictor prediction error:', error);
+    console.error('Predictor prediction error:', error);'
     return json({ error: 'Failed to generate predictions' }, { status: 500 });
   }
 };
@@ -130,7 +130,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       timestamp: Date.now()
     });
   } catch (error) {
-    console.error('Bulk prediction error:', error);
+    console.error('Bulk prediction error:', error);'
     return json({ error: 'Failed to process bulk predictions' }, { status: 500 });
   }
 };

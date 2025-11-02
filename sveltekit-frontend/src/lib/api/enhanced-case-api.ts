@@ -73,7 +73,7 @@ export class EnhancedCaseAPI {
           await this.triggerWorkerProcessing(createdCase.id, data);
         } catch (workerError) {
           console.warn('⚠️ Worker trigger failed (non-blocking):', workerError);
-          // Don't fail the whole operation if worker trigger fails
+          // Don't fail the whole operation if worker trigger fails'
         }
       }
       return caseResponse;
@@ -101,7 +101,7 @@ export class EnhancedCaseAPI {
         action: 'process',
         metadata: {
          , priority: formData.priority,
-          caseType: 'civil', // Static value since it's not in CaseForm schema
+          caseType: 'civil', // Static value since it's not in CaseForm schema'
           tags: formData.tags || [],
           trigger: 'yorha-case-form',
           userId: formData.metadata?.userId,

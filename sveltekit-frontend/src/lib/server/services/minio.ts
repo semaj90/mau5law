@@ -89,7 +89,7 @@ export async function streamToBuffer(stream: Readable): Promise<Buffer> {
 /**
  * Parse MinIO URL format: minio://bucket/key
  */
-export function parseMinioUrl(url: string): { bucket: string;, key: string } {
+export function parseMinioUrl(url: string): { bucket: string; key: string } {
   const match = url.match(/^minio:\/\/([^\/]+)\/(.+)$/);
   if (!match) {
     throw new Error(`Invalid MinIO URL: ${url}`);

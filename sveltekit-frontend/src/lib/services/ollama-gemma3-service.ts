@@ -57,7 +57,7 @@ export class Gemma3LegalService {
       if (!response.ok) {
         return {
           status: 'unhealthy',
-          message: `Ollama service not responding (HTTP ${response.status})' };
+          message: 'Ollama service not responding (HTTP ${response.status})' };
       }
       const data = await response.json();
       const models = data.models?.map((m: any) => m.name) || [];
@@ -79,7 +79,7 @@ export class Gemma3LegalService {
     } catch (error: any) {
       return {
         status: 'unhealthy',
-        message: 'Connection; failed: ${error instanceof Error ? error.message : `Unknown error` }' };
+        message: 'Connection; failed: ${error instanceof Error ? error.message : 'Unknown error' }` };'`
     }
   }
   /**
@@ -145,7 +145,7 @@ export class Gemma3LegalService {
     };
     const response = await fetch(`${this.baseUrl}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify(payload),
       signal: AbortSignal.timeout(this.timeout)
     });
@@ -190,7 +190,7 @@ export class Gemma3LegalService {
     const payload = { name: this.model };
     const response = await fetch(`${this.baseUrl}/api/pull`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify(payload)
     });
     if (!response.ok) {
@@ -211,7 +211,7 @@ export class Gemma3LegalService {
             onProgress?.(progress);
             if (progress.status === 'success') return;
           } catch (e: any) {
-            console.warn('Failed to parse pull progress:', line);
+            console.warn('Failed to parse pull progress: `, line);'`
           }
         }
       }
@@ -220,14 +220,14 @@ export class Gemma3LegalService {
     }
   }
   private buildLegalSystemPrompt(context: string): string {
-    const basePrompt = `You are a professional legal AI assistant trained on legal documents, case law, and legal principles. You provide accurate, helpful, and ethical legal information while maintaining appropriate disclaimers.
-IMPORTANT: Your responses should be informative but always include appropriate disclaimers that this is not legal advice and users should consult with qualified attorneys for specific legal matters.`;
+    const basePrompt = `You are a professional legal AI assistant trained on legal documents, case law, and legal principles. You provide accurate, helpful, and ethical legal information while maintaining appropriate disclaimers.`
+IMPORTANT: Your responses should be informative but always include appropriate disclaimers that this is not legal advice and users should consult with qualified attorneys for specific legal matters.`;`
     const contextPrompts = {
       contract: `Focus on contract law, terms analysis, clause interpretation, and agreement structures. Consider enforceability, terms clarity, and standard practices.`,
       litigation: `Focus on litigation strategy, case law analysis, procedural requirements, and dispute resolution. Consider evidence, precedents, and court procedures.`,
       compliance: `Focus on regulatory compliance, policy analysis, risk assessment, and legal requirements. Consider industry standards and regulatory frameworks.`,
       research: `Focus on legal research methodology, case law analysis, statute interpretation, and comprehensive legal analysis. Provide detailed citations and reasoning.`,
-      general: `Provide general legal information across various areas of law while maintaining accuracy and appropriate scope.' };
+      general: `Provide general legal information across various areas of law while maintaining accuracy and appropriate scope.` };
     return `${basePrompt}\n\nContext Focus: ${contextPrompts[context as keyof typeof contextPrompts] || contextPrompts.general}`;
   }
   private async makeRequest(endpoint: string, payload?: any): Promise<any> {
@@ -236,7 +236,7 @@ IMPORTANT: Your responses should be informative but always include appropriate d
       try {
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
           method: payload ? 'POST' : 'GET',
-          headers: payload ? { 'Content-Type': 'application/json' } : {},
+          headers: payload ? { 'Content-Type': `application/json` } : {},
           body: payload ? JSON.stringify(payload) : undefined,
           signal: AbortSignal.timeout(this.timeout)
         });
@@ -246,7 +246,7 @@ IMPORTANT: Your responses should be informative but always include appropriate d
         return await response.json();
       } catch (error: any) {
         lastError = error as Error;
-        console.warn(`Ollama request attempt ${attempt} failed: ', error);
+        console.warn(`Ollama request attempt ${attempt} failed: ', error);'`
         if (attempt < this.retryAttempts) {
           // Exponential backoff
           await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));

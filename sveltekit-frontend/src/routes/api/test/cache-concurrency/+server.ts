@@ -29,10 +29,10 @@ export const GET: RequestHandler = async () => {
     const testDocuments = Array.from({ length: 10 }, (_, i) => ({
       id: `test_doc_${i}`,
       content: {
-        title: `Test Document ${i}`,
+       , title: `Test Document ${i}`,
         body: `This is test document ${i} with complex nested data`,
         metadata: {
-          type: 'legal-brief',
+         , type: 'legal-brief',
           priority: i % 3 === 0 ? 'high' : 'medium',
           tags: [`tag_${i}`, `category_${i % 3}`],
           timestamps: {
@@ -43,10 +43,10 @@ export const GET: RequestHandler = async () => {
           complexData: Array.from({ length: 100 }, (_, j) => ({
             field: `value_${i}_${j}`,
             nested: {, deep: {, data: 'nested_${i}_${j}' } }
-          })), // <-- closed Array.from callback and the outer call
+          })), // <-- closed Array.from callback and the outer, call
         }
       }
-    })); // <-- closed outer Array.from
+    })); // <-- closed outer, Array.from
     // Concurrent storage operations
     console.log('⚡ Testing concurrent document storage...');
     const storagePromises = testDocuments.map(doc => cognitiveCache.storeJsonbDocument(doc.id, doc.content));
@@ -89,7 +89,7 @@ export const GET: RequestHandler = async () => {
           results: queryResults.map((result, i) => ({
             query_index: i,
             results_count: result?.length || 0
-          })), // <-- closed map
+          })), // <-- closed, map
         },
         gpu_acceleration: {
           enabled: cacheStats.threadSafe,
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async () => {
       thread_safety: {
         mutex_protected: true,
         concurrent_access: 'tested',
-        race_conditions: 'prevented` },
+        race_conditions: `prevented' },'`
       performance: {
         total_operations: testDocuments.length * 2 + queryPromises.length,
         operations_per_second: Math.round((testDocuments.length * 2 + queryPromises.length) / 2)
@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Stress test failed',
-        message: error instanceof Error ? error.message : 'Unknown error` },
+        message: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }

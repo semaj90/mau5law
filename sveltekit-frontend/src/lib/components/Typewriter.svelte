@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
 https: //svelte.dev/e/js_parse_error -->
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
     text: string;
@@ -31,7 +31,7 @@ https: //svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-<div class="space-y-4">
+<div, class="space-y-4">
   {output}
 </div>
 <style>

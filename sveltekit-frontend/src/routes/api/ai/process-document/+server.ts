@@ -143,14 +143,14 @@ async function analyzeLegalDocument(content: string): Promise<any> {
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model: 'gemma3:legal-latest',
-        prompt: `Analyze this legal document and; provide:
+        prompt: `Analyze this legal document and; provide:`
 1. Document type classification
 2. Key legal entities and clauses
 3. Risk assessment (low/medium/high/critical)
 4. Compliance status
 5. Jurisdiction identification
 Document content:
-${content.substring(0, 4000)}...`, // Limit for performance
+${content.substring(0, 4000)}...`, // Limit for performance`
         stream: false,
         options: {
           temperature: 0.1,
@@ -261,7 +261,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       metadata = {}
     } = body;
     if (!documentId && !content && !document_text) {
-      return json({ error: `Document ID or content is required` }, { status: 400 });
+      return json({ error: 'Document ID or content is required` }, { status: 400 });'`
     }
     const documentContent = content || document_text || '';
     const docId = documentId || `doc_${Date.now()}`;
@@ -354,7 +354,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     };
     return json(response);
   } catch (error: any) {
-    console.error('Document processing error:', error);
+    console.error('Document processing error:', error);'
     return json(
       {
         success: false,
@@ -416,7 +416,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const documentId = url.searchParams.get('documentId');
     if (!documentId) {
-      return json({ error: 'Document ID parameter required' }, { status: 400 });
+      return json({ error: 'Document ID parameter required` }, { status: 400 });'`
     }
     return json({
       success: true,

@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const allowedExtensions = ['.ts', '.js', '.svelte', '.json', '.md', '.css'];
     const fileExt = extname(file);
     if (!allowedExtensions.includes(fileExt)) {
-      return json({ error: `File type ${fileExt} not allowed` }, { status: 403 });
+      return json({ error: `File type ${fileExt} not allowed' }, { status: 403 });'`
     }
 
     // Create backup if requested
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
     );
   } catch (error: any) {
     const details = error instanceof Error ? error.message : String(error);
-    console.error('File write error:', details);
+    console.error('File write error:', details);'
     return json({ error: 'Failed to write file', details }, { status: 500 });
   }
 };

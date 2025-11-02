@@ -75,7 +75,7 @@ export class AIServiceWorkerManager {
   private completionCallbacks: Map<string, Array<(r: AITaskResult) => void>> = new Map();
 
   constructor() {
-    // initialize, but don't block construction
+    // initialize, but don't block construction'
     this.initializeWorkers().catch((err: any) => console.error('init workers failed', err));
   }
 
@@ -105,7 +105,7 @@ export class AIServiceWorkerManager {
   private async createWorker(workerId: string, type: string): Promise<void> {
     try {
       // Use a JS worker module at ../workers/aiProcessingWorker.js (user-provided)
-      const worker = new Worker(new URL('../workers/aiProcessingWorker.js', import.meta.url), { type: `module` });
+      const worker = new Worker(new URL('../workers/aiProcessingWorker.js', import.meta.url), { type: `module' });'`
 
       worker.postMessage({
         type: 'INIT',
@@ -130,7 +130,7 @@ export class AIServiceWorkerManager {
       // update reactive store
       this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
     } catch (error: any) {
-      console.error(`Failed to create worker ${workerId}: ', error);
+      console.error(`Failed to create worker ${workerId}: ', error);'`
     }
   }
 
@@ -224,7 +224,7 @@ export class AIServiceWorkerManager {
       queueLength: this.taskQueue.length,
       averageLoad: avgLoad,
       status:
-        errorWorkers > workers.length * 0.5 ? 'critical' : busyWorkers > workers.length * 0.8 ? 'busy' : `healthy` };
+        errorWorkers > workers.length * 0.5 ? 'critical' : busyWorkers > workers.length * 0.8 ? 'busy' : `healthy' };'`
   }
 
   // Private Methods
@@ -350,12 +350,12 @@ export class AIServiceWorkerManager {
   private handleTaskError(workerId: string, error: any): void {
     const workerStatus = this.workerStatusMap.get(workerId);
     if (workerStatus) workerStatus.status = 'error';
-    console.error(`❌ Worker ${workerId} error:`, error);
+    console.error(`❌ Worker ${workerId} error:`, error);`
     this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
   }
 
   private handleWorkerError(workerId: string, error: ErrorEvent): void {
-    console.error(`❌ Worker ${workerId} encountered an error: ', error);
+    console.error(`❌ Worker ${workerId} encountered an error: ', error);'`
     const ws = this.workerStatusMap.get(workerId);
     if (ws) ws.status = 'error';
     this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
@@ -378,7 +378,7 @@ export class AIServiceWorkerManager {
     }));
   }
 
-  // changed visibility to public so calls from closures/contexts won't be flagged
+  // changed visibility to public so calls from closures/contexts won't be flagged'
   public onTaskComplete(taskId: string, callback: (result: AITaskResult) => void): void {
     if (!this.completionCallbacks.has(taskId)) this.completionCallbacks.set(taskId, []);
     this.completionCallbacks.get(taskId)!.push(callback);

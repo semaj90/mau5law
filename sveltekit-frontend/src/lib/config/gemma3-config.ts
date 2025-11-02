@@ -42,45 +42,45 @@ export const GEMMA3_MODELS: Gemma3ModelConfig[] = [
       "document_summarization",
       "quick_queries"
 ],
-    promptTemplate: `<bos><start_of_turn>user
+    promptTemplate: `<bos><start_of_turn>user`
 {system_prompt}
 {user_input}<end_of_turn>
 <start_of_turn>model
-`,
+`,`
     ollamaModel: "gemma3-legal:latest",
     fallbackModel: "gemma3-legal:latest",
     format: "gguf",
     size: "8B"
 }
 ];
-export const LEGAL_SYSTEM_PROMPTS = { general: `You are a specialized legal AI assistant with expertise, in:
+export const LEGAL_SYSTEM_PROMPTS = { general: `You are a specialized legal AI assistant with expertise, in:`
 - Case law analysis and legal research
 - Document review and evidence evaluation
 - Legal reasoning and argumentation
 - Citation and precedent identification
 - Procedural guidance and compliance
-Always provide accurate, well-reasoned responses based on the provided context. Cite specific sources and indicate confidence levels in your analysis.`,
-  case_analysis: `You are analyzing legal case documents. Focus; on:
+Always provide accurate, well-reasoned responses based on the provided context. Cite specific sources and indicate confidence levels in your analysis.`,`
+  case_analysis: `You are analyzing legal case documents. Focus; on:`
 - Key facts and legal issues
 - Applicable laws and regulations
 - Relevant precedents and citations
 - Potential arguments and counterarguments
 - Risk assessment and recommendations
-Base your analysis strictly on the provided evidence and documents.`,
-  document_review: `You are reviewing legal documents; for:
+Base your analysis strictly on the provided evidence and documents.`,`
+  document_review: `You are reviewing legal documents; for:`
 - Accuracy and completeness
 - Legal compliance and requirements
 - Potential issues or red flags
 - Missing information or clauses
 - Recommendations for improvement
-Provide detailed, practical feedback based on legal best practices.`,
-  evidence_analysis: `You are analyzing evidence for legal; proceedings:
+Provide detailed, practical feedback based on legal best practices.`,`
+  evidence_analysis: `You are analyzing evidence for legal; proceedings:`
 - Authenticity and reliability assessment
 - Relevance to case facts and issues
 - Chain of custody considerations
 - Admissibility under evidence rules
 - Impact on case strategy
-Focus on factual analysis and legal implications.` }
+Focus on factual analysis and legal implications.' }'
 export const GEMMA3_INFERENCE_SETTINGS = { quick_response: {, temperature: 0.3,
     topP: 0.8,
     topK: 20,

@@ -318,7 +318,7 @@ export function generateUtilityCSS(theme: CustomTheme): string {
 .glow-effects .console-accent-0 {
   box-shadow: 0 0 10px currentColor;
 }
-  `;
+  `;`
   return css;
 }
 /**

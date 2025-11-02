@@ -37,7 +37,7 @@ function getRedisConfig() {
     // Parse URL to check if it has auth
     try {
       const url = new URL(redisUrl);
-      // If URL has auth but Redis server doesn't require it, remove it
+      // If URL has auth but Redis server doesn't require it, remove it'
       if (url.password) {
         console.log('⚠️ REDIS_URL contains password, but Redis may not require auth. Trying both methods...');
       }
@@ -52,10 +52,10 @@ function getRedisConfig() {
   const password = process.env.REDIS_PASSWORD;
   // Only include password if explicitly set and not empty
   if (password && password !== 'redis' && password !== '') {
-    return { url: `redis://:${password}@${host}:${port}` };
+    return { url: 'redis://:${password}@${host}:${port}' };
   } else {
     // Connect without authentication for local development
-    return { url: `redis://${host}:${port}' };
+    return { url: 'redis://${host}:${port}' };
   }
 }
 const redisConfig = getRedisConfig();
@@ -85,10 +85,10 @@ if (IS_SERVER) {
         const errMsg = formatError(err);
         // Suppress password auth errors for local development
         if (!errMsg.includes('AUTH') && !errMsg.includes('password')) {
-          console.warn('Redis error:', errMsg);
+          console.warn('Redis error:', errMsg);'
         }
       });
-      // attempt connection, but don't crash if it fails — fall back to in-memory cache
+      // attempt connection, but don't crash if it fails — fall back to in-memory cache'
       void rawRedisClient.connect().catch((err) => {
         const errMsg = formatError(err);
         if (errMsg.includes('AUTH') || errMsg.includes('password')) {
@@ -220,7 +220,7 @@ export class CacheService {
         return;
       }
     } catch (err: any) {
-      console.warn('Cache.set error:', formatError(err));
+      console.warn('Cache.set error:', formatError(err));'
     }
     this.setInMemory(key, value, ttlMs);
   }
@@ -228,7 +228,7 @@ export class CacheService {
     try {
       if (this.isRedisReady()) await (this.client as RedisLike).del?.(key);
     } catch (err) {
-      console.warn('Cache.del error:', formatError(err));
+      console.warn('Cache.del error:', formatError(err));'
     } finally {
       memoryCache.delete(key);
     }
@@ -247,7 +247,7 @@ export class CacheService {
       if (this.isRedisReady()) return (this.client as RedisLike).hget?.(key, field) ?? null;
       return this.getFromMemory<string>(`${key}:${field}`);
     } catch (err) {
-      console.warn('Cache.hget error:', formatError(err));
+      console.warn('Cache.hget error:', formatError(err));'
       return null;
     }
   }
@@ -259,7 +259,7 @@ export class CacheService {
         return;
       }
     } catch (err) {
-      console.warn('Cache.hset error:', formatError(err));
+      console.warn('Cache.hset error:', formatError(err));'
     }
     this.setInMemory(`${key}:${field}`, value, DEFAULT_TTL_MS);
   }
@@ -270,7 +270,7 @@ export class CacheService {
         return (res ?? []).map(r => (r == null ? null : this.decode(r)));
       }
     } catch (err) {
-      console.warn('Cache.mget error:', formatError(err));
+      console.warn('Cache.mget error:', formatError(err));'
     }
     return keys.map(k => this.getFromMemory(k));
   }

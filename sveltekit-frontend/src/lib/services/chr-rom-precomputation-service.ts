@@ -92,7 +92,7 @@ export const redisAdapter = {
 
 // Qdrant adapter (calls backend api)
 export const qdrantAdapter = {
-  async upsertCollection(collection: string, vectors: Array<{, id: string; values: number[]; payload?: Record<string, unknown> }>) {
+  async upsertCollection(collection: string, vectors: Array<{, id: string;, values: number[]; payload?: Record<string, unknown> }>) {
     try {
       const r = await fetch('/api/qdrant/upsert', {
         method: 'POST',
@@ -121,11 +121,11 @@ export const qdrantAdapter = {
 
 // Postgres JSONB store adapter (server endpoints)
 export const pgJsonStore = {
-  async upsertDocument(doc: {, id: string; body: Record<string, unknown> }) {
+  async upsertDocument(doc: {, id: string;, body: Record<string, unknown> }) {
     try {
       const r = await fetch('/api/postgres/json/upsert', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify(doc)
       });
       return r.ok;
@@ -137,7 +137,7 @@ export const pgJsonStore = {
     try {
       const r = await fetch('/api/postgres/json/query', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({ field, value })
       });
       if (!r.ok) return [];
@@ -200,7 +200,7 @@ export interface PrecomputationConfig { enableBackgroundProcessing: boolean;, m
   predictionAccuracy: number;
   backgroundProcessingInterval: number;
   maxConcurrentComputations: number;
-  priorityThresholds: { high: number; medium: number;, low: number };
+  priorityThresholds: { high: number; medium: number; low: number };
 }
 
 export class CHRROMPrecomputationService {
@@ -208,7 +208,7 @@ export class CHRROMPrecomputationService {
   private patternCache = new Map<string, CHRROMPattern>();
   private _userActivityHistory = new Map<string, UserActivityPattern[]>(); // renamed to indicate intentionally unused
   private backgroundWorker: Worker | null = null;
-  private precomputationQueue: Array<{ pattern: string;, priority: number }> = [];
+  private precomputationQueue: Array<{ pattern: string; priority: number }> = [];
   private isProcessing = $state(false);
 
   public cacheStatus = writable({
@@ -216,13 +216,13 @@ export class CHRROMPrecomputationService {
     cacheSize: 0,
     hitRate: 0,
     missRate: 0,
-    topPatterns: [] as Array<{ id: string; useCount: number;, type: string }>,
+    topPatterns: [] as Array<{ id: string; useCount: number; type: string }>,
     backgroundTasksActive: 0
   });
 
   public userPredictions = writable({
     currentUser: '',
-    predictedActions: [] as Array<{ action: string; probability: number; timeUntilAction?: number;, preparationStatus: string }>, // explicit shape instead of any
+    predictedActions: [] as Array<{ action: string; probability: number; timeUntilAction?: number; preparationStatus: string }>, // explicit shape instead of any
     confidenceScore: 0
   });
 
@@ -268,7 +268,7 @@ export class CHRROMPrecomputationService {
       this.backgroundWorker.onmessage = (event: MessageEvent) => {
         const { type, data } = event.data || {};
         if (type === 'pattern_generated') this.handleGeneratedPattern(data);
-        else if (type === 'computation_error') console.warn('Background computation error:', data);
+        else if (type === 'computation_error') console.warn('Background computation error:', data);'
         else if (type === 'status_update') this.updateBackgroundTaskStatus(data);
       };
       console.log('🔧 Background worker initialized for pattern generation');
@@ -301,7 +301,7 @@ export class CHRROMPrecomputationService {
           const confidence = this.calculateConfidence(summary);
           return {
             type: 'summary_card',
-            renderableHTML: \`<div class="chr-rom-summary-card"><h4>Quick Summary</h4><p>\${summary}</p><div class="confidence">\${Math.round(confidence*100)}%</div></div>\`,
+            renderableHTML: \`<div, class="chr-rom-summary-card"><h4>Quick Summary</h4><p>\${summary}</p><div, class="confidence">\${Math.round(confidence*100)}%</div></div>\`,
             metadata: { confidence, wordCount: summary.split(/\\s+/).filter(Boolean).length, keyTopics: this.extractTopics(text) }
           };
         }
@@ -310,16 +310,16 @@ export class CHRROMPrecomputationService {
           const entityHTML = entities.map(e => \`<span class="chr-entity \${e.type}">\${e.text}<small>\${Math.round((e.confidence||0)*100)}%</small></span>\`).join('');
           return {
             type: 'entity_list',
-            renderableHTML: \`<div class="chr-rom-entity-list"><h5>Entities (\${entities.length})</h5><div>\${entityHTML}</div></div>\`,
+            renderableHTML: \`<div, class="chr-rom-entity-list"><h5>Entities (\${entities.length})</h5><div>\${entityHTML}</div></div>\`,
             metadata: { entityCount: entities.length, entityTypes: [...new Set(entities.map(e=>e.type))], avgConfidence: entities.length ? entities.reduce((s,e)=>s+(e.confidence||0),0)/entities.length : 0 }
           };
         }
         generateCitationPattern(citations) {
           citations = citations || [];
-          const citationHTML = citations.map(c => \`<div class="chr-citation"><strong>\${c.citation}</strong> <em>\${c.court||'` }</em></div>\`).join('');
+          const citationHTML = citations.map(c => \`<div class="chr-citation"><strong>\${c.citation}</strong> <em>\${c.court||'` }</em></div>\`).join('');'`
           return {
             type: 'citation_block',
-            renderableHTML: \`<div class="chr-rom-citation-block"><h5>Citations (\${citations.length})</h5>\${citationHTML}</div>\`,
+            renderableHTML: \`<div, class="chr-rom-citation-block"><h5>Citations (\${citations.length})</h5>\${citationHTML}</div>\`,
             metadata: { citationCount: citations.length, courts: [...new Set(citations.map(c=>c.court))] }
           };
         }
@@ -338,7 +338,7 @@ export class CHRROMPrecomputationService {
           self.postMessage({ type: 'computation_error', data: {, error: err && err.message } });
         }
       };
-    `;
+    `;`
   }
 
   /**
@@ -463,7 +463,7 @@ export class CHRROMPrecomputationService {
       const pattern = await this.generatePattern(task.pattern, task.priority);
       if (pattern) await this.storePatternInCHRROM(pattern);
     } catch (error) {
-      console.warn(`Failed to generate pattern ${task.pattern}: ', error);
+      console.warn(`Failed to generate pattern ${task.pattern}: ', error);'`
     } finally {
       this.isProcessing = false;
       this.updateCacheStatus();
@@ -546,7 +546,7 @@ export class CHRROMPrecomputationService {
         lastAccessed: Date.now(),
         userContext: 'current_user',
         documentContext: contextId ? [contextId] : [],
-        actionTrigger: (generatedData && (generatedData.originalType as string)) || 'unknown` }
+        actionTrigger: (generatedData && (generatedData.originalType as string)) || 'unknown` }'`
     };
   }
 
@@ -686,7 +686,7 @@ export class CHRROMPrecomputationService {
   /**
    * Get performance metrics
    */
-  getPerformanceMetrics(): { totalPatterns: number; cacheHitRate: number; averageResponseTime: number; memoryUsage: number;, backgroundEfficiency: number } {
+  getPerformanceMetrics(): { totalPatterns: number; cacheHitRate: number; averageResponseTime: number; memoryUsage: number; backgroundEfficiency: number } {
     const cacheData = get(this.cacheStatus);
     return { totalPatterns: cacheData.totalPatterns, cacheHitRate: cacheData.hitRate, averageResponseTime: 0, memoryUsage: cacheData.cacheSize, backgroundEfficiency: cacheData.backgroundTasksActive > 0 ? (cacheData.totalPatterns / cacheData.backgroundTasksActive) * 100 : 100 };
   }

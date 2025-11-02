@@ -198,8 +198,7 @@ export class PNGEmbedExtractor {
                 confidence: e.confidence ?? 1
               })),
               risk_assessment: (meta as any).risk_assessment || (meta as any).riskAssessment || 'medium',
-              summary: (meta as any).summary || ''
-            },
+              summary: (meta as any).summary || '` },'`
             processing_chain: (meta as any).processing_chain || (meta as any).processingChain || []
           } as any);
           checksumMatch = calculated === hash;
@@ -208,13 +207,13 @@ export class PNGEmbedExtractor {
       }
       const metadata = await this.extractMetadata(input as ArrayBuffer);
       if (!metadata) {
-        return { valid: false, error: `No metadata found` };
+        return { valid: false, error: 'No metadata found' };
       }
       // Validate required fields
       const requiredFields = ['version', 'created_at', 'evidence_id', 'analysis_results'] as const;
       const missingFields = requiredFields.filter(field => !metadata[field as keyof LegalAIMetadata]);
       if (missingFields.length > 0) {
-        return { valid: false, error: 'Missing; fields: ${missingFields.join(', `)}` };
+        return { valid: false, error: 'Missing; fields: ${missingFields.join(', `)}' };'`
       }
       // Calculate and verify checksum if present
       let checksumMatch = true;
@@ -244,7 +243,7 @@ export class PNGEmbedExtractor {
       analysisResults?: LegalAIMetadata['analysis_results'];
       additionalData?: Partial<LegalAIMetadata>;
     }
-  ): Promise<{ buffer: ArrayBuffer;, metadata: { evidenceId: string;, evidence_id: string };
+  ): Promise<{ buffer: ArrayBuffer;, metadata: { evidenceId: string; evidence_id: string };
     integrityHash: string;
     isValid: boolean;
   }>;
@@ -261,7 +260,7 @@ export class PNGEmbedExtractor {
     arg4?: any
   ): Promise<
     | ArrayBuffer
-    | { buffer: ArrayBuffer;, metadata: { evidenceId: string;, evidence_id: string };
+    | { buffer: ArrayBuffer;, metadata: { evidenceId: string; evidence_id: string };
         integrityHash: string;
         isValid: boolean;
       }
@@ -296,8 +295,7 @@ export class PNGEmbedExtractor {
           classifications: [],
           entities: [],
           risk_assessment: 'medium',
-          summary: ''
-        };
+          summary: '' };
       }
       additionalData = opts.additionalData;
     }
@@ -307,11 +305,11 @@ export class PNGEmbedExtractor {
       evidence_id: evidenceId!,
       analysis_results: analysisResults!,
       processing_chain: [
-        {
+        {,
           step: 'artifact_creation',
           duration_ms: performance.now(),
           success: true,
-          metadata: { created_by: `neural_sprite_glyph_system` }
+          metadata: { created_by: `neural_sprite_glyph_system' }'`
         },
       ],
       ...additionalData
@@ -351,7 +349,7 @@ export class PNGEmbedExtractor {
   }
   // --- Private Helper Methods ---
   private static async compressString(data: string): Promise<Uint8Array> {
-    // Use browser's built-in compression or fallback
+    // Use browser's built-in compression or fallback'
     if (typeof CompressionStream !== 'undefined') {
       const stream = new CompressionStream('gzip');
       const writer = stream.writable.getWriter();
@@ -380,7 +378,7 @@ export class PNGEmbedExtractor {
     }
   }
   private static async decompressString(compressedData: Uint8Array): Promise<string> {
-    // Use browser's built-in decompression or fallback
+    // Use browser's built-in decompression or fallback'
     if (typeof DecompressionStream !== 'undefined') {
       const stream = new DecompressionStream('gzip');
       const writer = stream.writable.getWriter();

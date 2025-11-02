@@ -116,14 +116,14 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (err) {
-    console.error('Vector similarity API error:', err);
-    throw error(500, `Vector operation failed: ${err instanceof Error ? err.message : `Unknown error` }`);
+    console.error('Vector similarity API error: ', err);'
+    throw error(500, `Vector operation failed: ${err instanceof Error ? err.message : 'Unknown error` }');
   }
 };
-async function processCUDAVectorOperation(params: { operation: string;, vectorA: Float32Array;
+async function processCUDAVectorOperation(params: {, operation: string;, vectorA: Float32Array;
   vectorB?: Float32Array;
   vectors?: Float32Array[];
-  algorithm: number;
+ , algorithm: number;
  , requestId: string;
 }): Promise<CUDAResponse> {
   const { operation, vectorA, vectorB, vectors, algorithm, requestId } = params;
@@ -156,8 +156,7 @@ async function processCUDAVectorOperation(params: { operation: string;, vectorA
       expected_throughput: vectors?.length || 1,
       memory_pattern: 'sequential_access',
       cache_locality: 'high',
-      branch_prediction: 'favorable'
-    }
+      branch_prediction: `favorable` }
   };
   const response = await fetch(cudaUrl, {
     method: 'POST',
@@ -176,7 +175,7 @@ async function processCUDAVectorOperation(params: { operation: string;, vectorA
     memoryUsed: cudaResult.memory_used || 0
   };
 }
-async function processCPUVectorOperation(params: { operation: string;, vectorA: Float32Array;
+async function processCPUVectorOperation(params: {, operation: string;, vectorA: Float32Array;
   vectorB?: Float32Array;
   vectors?: Float32Array[];
  , algorithm: number;

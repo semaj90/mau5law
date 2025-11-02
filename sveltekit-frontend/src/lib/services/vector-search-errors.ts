@@ -104,7 +104,7 @@ export interface ClusteringParams {
  * clustering error groups, and pattern detection.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const searcher = new VectorSearchErrors();
  * await searcher.initialize();
  *
@@ -304,14 +304,13 @@ export class VectorSearchErrors {
             error,
             similarity,
             distance: 1 - similarity,
-            matchReason: 'pgvector-similarity'
-          });
+            matchReason: `pgvector-similarity` });
         }
       }
 
       return results;
     } catch (error) {
-      console.error('❌ pgvector search failed:', error);
+      console.error('❌ pgvector search failed: `, error);'`
       return [];
     }
   }
@@ -604,7 +603,7 @@ export class VectorSearchErrors {
 
       console.log(`✅ Precomputed ${pairCount} similarity pairs`);
     } catch (error) {
-      console.error('❌ Similarity precomputation failed:', error);
+      console.error('❌ Similarity precomputation failed: `, error);'`
     }
   }
 

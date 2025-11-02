@@ -108,7 +108,7 @@ export async function searchVectors(query: VectorSearchQuery): Promise<VectorSea
     console.log(`Vector search completed: ${data.results.length} results in ${data.processingTime}ms`);
     return data;
   } catch (error: any) {
-    console.error('Vector search error:', error);
+    console.error('Vector search error:', error);'
     throw new Error(`Vector search failed: ${error.message}`);
   }
 }
@@ -156,7 +156,7 @@ export async function upsertVectors(request: VectorUpsertRequest): Promise<Vecto
     console.log(`Vector upsert completed: ${data.inserted} inserted, ${data.updated} updated`);
     return data;
   } catch (error: any) {
-    console.error('Vector upsert error:', error);
+    console.error('Vector upsert error:', error);'
     throw new Error(`Vector upsert failed: ${error.message}`);
   }
 }
@@ -179,7 +179,7 @@ export async function deleteVectors(request: VectorDeleteRequest): Promise<any> 
     console.log(`Vector deletion completed: ${data.deleted} vectors deleted`);
     return data;
   } catch (error: any) {
-    console.error('Vector deletion error:', error);
+    console.error('Vector deletion error:', error);'
     throw new Error(`Vector deletion failed: ${error.message}`);
   }
 }
@@ -203,7 +203,7 @@ export async function getVectorById(id: string): Promise<VectorDocument | null> 
     console.log(`Fetched vector document: ${id}`);
     return document;
   } catch (error: any) {
-    console.error('Vector fetch error:', error);
+    console.error('Vector fetch error:', error);'
     throw new Error(`Failed to fetch vector document: ${error.message}`);
   }
 }
@@ -291,7 +291,7 @@ export async function getVectorStats(): Promise<VectorStatsResponse> {
     console.log(`Vector database stats: ${stats.totalDocuments} documents, ${stats.totalVectors} vectors`);
     return stats;
   } catch (error: any) {
-    console.error('Vector stats error:', error);
+    console.error('Vector stats error:', error);'
     throw new Error(`Failed to fetch vector stats: ${error.message}`);
   }
 }
@@ -321,7 +321,7 @@ export async function reindexVectors(
     console.log(`Vector reindexing completed: ${data.reindexed} reindexed, ${data.failed} failed`);
     return data;
   } catch (error: any) {
-    console.error('Vector reindexing error:', error);
+    console.error('Vector reindexing error:', error);'
     throw new Error(`Vector reindexing failed: ${error.message}`);
   }
 }
@@ -343,7 +343,7 @@ export async function getQuerySuggestions(partialQuery: string): Promise<string[
     const data = await response.json();
     return data.suggestions || [];
   } catch (error: any) {
-    console.error('Query suggestions error:', error);
+    console.error('Query suggestions error:', error);'
     // Return empty array on error rather than throwing
     return [];
   }
@@ -369,7 +369,7 @@ export async function explainVectorSearch(
     console.log(`Generated explanation for search result: ${resultId}`);
     return explanation;
   } catch (error: any) {
-    console.error('Search explanation error:', error);
+    console.error('Search explanation error:', error);'
     throw new Error(`Failed to explain search result: ${error.message}`);
   }
 }
@@ -405,7 +405,7 @@ export async function processBatchDocuments(
     console.log(`Batch processing completed: ${data.inserted} documents processed`);
     return data;
   } catch (error: any) {
-    console.error('Batch processing error:', error);
+    console.error('Batch processing error:', error);'
     throw new Error(`Batch processing failed: ${error.message}`);
   }
 }

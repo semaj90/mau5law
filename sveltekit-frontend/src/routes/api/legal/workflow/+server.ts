@@ -59,12 +59,12 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Failed to queue document for processing` },
+          error: `Failed to queue document for processing` },
         { status: 500 }
       );
     }
     const responseTime = Date.now() - startTime;
-    logger.info(`[Legal Workflow API] Document ${documentMessage.id} queued for processing (${responseTime}ms)`);
+    logger.info(`[Legal Workflow API] Document ${documentMessage.id} queued for processing (${responseTime}ms)');'`
     return json({
       success: true,
       documentId: documentMessage.id,
@@ -79,8 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Internal server error'
-      },
+        error: error instanceof Error ? error.message : `Internal server error` },
       { status: 500 }
     );
   }
@@ -97,19 +96,19 @@ export const GET: RequestHandler = async () => {
     }, 0);
     return json({
       status: 'operational',
-      services: { rabbitmq: {, connected: rabbitmqService.connected,
+      services: {, rabbitmq: {, connected: rabbitmqService.connected,
           queues: queueStats,
           totalMessages
         },
         xstate: {
-          status: 'ready',
+         , status: 'ready',
           machineTypes: ['legalDocumentWorkflow', 'contractAnalysis', 'evidenceProcessing']
         }
       },
       endpoints: {
        , submit: 'POST /api/legal/workflow',
         status: 'GET /api/legal/workflow',
-        managementUI: 'http://localhost:15672 (legal_admin:123456)` },
+        managementUI: `http://localhost:15672 (legal_admin:123456)` },
       usage: { submitDocument: {, method: 'POST',
           url: '/api/legal/workflow',
           body: {

@@ -7,7 +7,7 @@ import type { Document } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
-import { reinforcementLearningCache as serverCache } from '$lib/caching/reinforcement-learning-cache.server';
+import { reinforcementLearningCache, as serverCache } from '$lib/caching/reinforcement-learning-cache.server';
 // 3D Asset Categories for Legal AI Platform
 interface Asset3DSearchRequest { query: string;, context: {
     documentType?: 'contract' | 'evidence' | 'brief' | 'citation';
@@ -51,7 +51,7 @@ const assetGraphTopology = {
 };
 // Legal 3D Asset Database (would be replaced with actual asset management system)
 const legalAssetDatabase = [
-  {
+  {,
     assetId: 'contract_stack_3d',
     assetType: '3d_model' as const,
     name: '3D Contract Document Stack',
@@ -212,7 +212,7 @@ async function performSemanticAssetSearch(request: Asset3DSearchRequest): Promis
         optimizationHints: {
           enableWebGPU: asset.complexity === 'high',
           enableCHRROM: score > 5,
-          cacheStrategy: score > 7 ? 'immediate' : score > 3 ? 'predictive' : 'lazy` }
+          cacheStrategy: score > 7 ? 'immediate' : score > 3 ? 'predictive' : 'lazy' }
       };
       results.push(result);
     }
@@ -272,7 +272,7 @@ async function prepareCHRROMPatterns(assets: Asset3DSearchResult[]): Promise<str
     const patternId = `chr_rom_3d_${asset.assetId}`;
     // Store in both client and server RL caches
     await reinforcementLearningCache.set(patternId, {
-      renderableHTML: `<div class="3d-asset-preview" data-asset="${asset.assetId}">${asset.name}</div>`,
+      renderableHTML: `<div, class="3d-asset-preview" data-asset="${asset.assetId}">${asset.name}</div>`,
       assetMetadata: asset,
       compressionRatio: asset.precomputedData?.compressionRatio || 1.0
     });

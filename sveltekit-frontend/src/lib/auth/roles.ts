@@ -325,7 +325,7 @@ export class AccessControl {
     // For certain permissions, check if user has higher authority
     const restrictedPermissions: Permission[] = ['delete_case', 'delete_evidence', 'delete_report'];
     if (restrictedPermissions.includes(permission)) {
-      // Only admin or lead prosecutors can delete others' resources
+      // Only admin or lead prosecutors can delete others' resources'
       return userRole === 'admin' || userRole === 'lead_prosecutor';
     }
     return true;

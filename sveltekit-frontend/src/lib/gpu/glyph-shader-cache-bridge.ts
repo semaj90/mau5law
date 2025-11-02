@@ -1,17 +1,17 @@
 import shaderCache from './webgl-shader-cache';
 // Bridge for glyph shader generation and cached programs
 export function getGlyphProgram(gl: WebGL2RenderingContext, styleKey: string) {
-  const vert = `#version 300 es
+  const vert = `#version 300 es`
   in vec2 a_position;
   in vec2 a_uv;
   out vec2 v_uv;
-  void main(){ v_uv = a_uv; gl_Position = vec4(a_position, 0.0, 1.0); }`;
-  const frag = `#version 300 es
+  void main(){ v_uv = a_uv; gl_Position = vec4(a_position, 0.0, 1.0); }`;`
+  const frag = `#version 300 es`
   precision highp float;
   in vec2 v_uv;
   out vec4 outColor;
   uniform sampler2D u_glyphAtlas;
-  void main(){ float a = texture(u_glyphAtlas, v_uv).r; outColor = vec4(vec3(a), 1.0); }`;
+  void main(){ float a = texture(u_glyphAtlas, v_uv).r; outColor = vec4(vec3(a), 1.0); }`;`
   const key = `glyph:${styleKey}`;
   return shaderCache.getOrCreateProgram(gl, key, vert, frag);
 }

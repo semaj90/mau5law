@@ -140,12 +140,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
     }
     // Parse query parameters
     const caseId = url.searchParams.get('caseId');
     if (!caseId) {
-      return error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));
+      return error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: `MISSING_CASE_ID` }));
     }
     // Validate case ID format
     const validatedCaseId = cuidSchema.parse(caseId);
@@ -292,7 +292,7 @@ async function performDetectiveAnalysis(
 
     return analysis;
   } catch (err) {
-    console.error('Detective analysis error:', err);
+    console.error('Detective analysis error:', err);'
     return {
       ...analysis,
       error: 'Analysis failed',
@@ -319,7 +319,7 @@ function analyzeTimeline(evidence: EvidenceItem[]): TimelineAnalysis {
       timestamp,
       type,
       significance: Math.random() * 0.5 + 0.5, // Mock significance score
-      description: 'Evidence; item: ${title ?? id ?? 'unknown` }' };
+      description: 'Evidence; item: ${title ?? id ?? 'unknown' }' };
   });
 
   const patterns: TimelinePattern[] = [
@@ -432,7 +432,7 @@ function detectPatterns(evidence: EvidenceItem[], focusAreas: string[] = []): Pa
       confidence: 0.91,
       description: 'Unusual timing pattern detected',
       details: 'Observed in ${count} evidence item(s); focusAreas: ${focusAreas.join(', ') || 'none` }`,
-      severity: count > 5 ? 'high' : `medium` },
+      severity: count > 5 ? 'high' : `medium` }
   ];
 
   return { patterns, anomalies };

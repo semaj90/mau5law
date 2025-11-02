@@ -92,8 +92,8 @@ export class ToolRegistry {
       name: 'ocr_extract',
       description: 'Extract text from images or PDF documents using OCR',
       parameters: {
-        type: 'object',
-        properties: { documentId: {, type: 'string',
+       , type: 'object',
+        properties: {, documentId: {, type: 'string',
             description: 'ID of the document to extract text from'
           },
           imageData: {
@@ -113,8 +113,8 @@ export class ToolRegistry {
       name: 'rag_search',
       description: 'Search the RAG knowledge base with synthesis ranking',
       parameters: {
-        type: 'object',
-        properties: { query: {, type: 'string',
+       , type: 'object',
+        properties: {, query: {, type: 'string',
             description: 'Search query'
           },
           limit: {
@@ -142,12 +142,12 @@ export class ToolRegistry {
       name: 'code_analyze',
       description: 'Analyze source code semantically to find patterns, functions, or components',
       parameters: {
-        type: 'object',
-        properties: { query: {, type: 'string',
+       , type: 'object',
+        properties: {, query: {, type: 'string',
             description: 'What to search for in the codebase'
           },
           fileTypes: {
-            type: 'array',
+           , type: 'array',
             items: {, type: 'string' },
             description: 'File extensions to search (e.g., [".svelte", ".ts"])'
           }
@@ -186,8 +186,8 @@ export class ToolRegistry {
       name: 'gpu_rank',
       description: 'Rank documents using GPU-accelerated SIMD pipeline',
       parameters: {
-        type: 'object',
-        properties: { cacheKey: {, type: 'string',
+       , type: 'object',
+        properties: {, cacheKey: {, type: 'string',
             description: 'Redis cache key containing documents'
           },
           query: {
@@ -207,7 +207,7 @@ export class ToolRegistry {
       name: 'cache_query',
       description: 'Query Redis cache for stored data',
       parameters: {
-        type: 'object',
+       , type: 'object',
         properties: {, key: {, type: 'string',
             description: 'Cache key to retrieve'
           }
@@ -368,10 +368,10 @@ export class ToolRegistry {
     // For now, return mock data
     return {
       results: [
-        {
+        {,
           id: 'doc1',
           score: 0.95,
-          metadata: { title: 'Similar Document 1' }
+          metadata: { title: `Similar Document 1` }
         },
         {
           id: 'doc2',
@@ -544,11 +544,11 @@ export class AgenticRAGOrchestrator {
     try {
       const response = await fetch(`${this.config.ollamaUrl}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: this.config.model,
+         , model: this.config.model,
           messages: [
-            {
+            {,
              , role: 'system',
               content: `You are a legal AI assistant with access to tools. Use tools when needed to answer user queries accurately.` },
             {
@@ -581,7 +581,7 @@ export class AgenticRAGOrchestrator {
 
       return { content: data.message?.content };
     } catch (error: any) {
-      console.error('❌ LLM call failed:', error);
+      console.error('❌ LLM call failed: `, error);'`
       return { content: `Error: LLM unavailable` };
     }
   }
@@ -598,7 +598,7 @@ export class AgenticRAGOrchestrator {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: this.config.model,
+         , model: this.config.model,
           messages: messages.map(m => ({
            , role: m.role === 'tool' ? 'assistant' : m.role,
             content: m.content
@@ -658,7 +658,7 @@ export const agenticOrchestrator = new AgenticRAGOrchestrator();
  * agenticOrchestrator.registerTool({
  *   name: 'custom_analyzer',
  *   description: 'Custom legal document analyzer',
- *   parameters: { type: 'object', properties: {, text: {, type: 'string' } } },
+ *   parameters: {, type: 'object', properties: {, text: {, type: `string` } } },
  *   execute: async (args) => {
  *     // Custom logic
  *     return { analysis: `Custom analysis result` };

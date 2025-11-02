@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { User } from '$lib/types';
   import { onMount } from 'svelte';
 
@@ -84,24 +84,24 @@ import type { User } from '$lib/types';
   });
 </script>
 
-<div class="container">
+<div, class="container">
   <header>
     <h1>WebGPU Diagnostic</h1>
     <p>Quick check for WebGPU / WebGL availability and recommendations.</p>
   </header>
 
   <section>
-    <div class="controls">
-      <button onclick={runDiagnostics} disabled={checking}>
+    <div, class="controls">
+      <button, onclick={runDiagnostics} disabled={checking}>
         {#if checking}Checking...{:else}Run diagnostics{/if}
       </button>
     </div>
 
-    <div class="status-card {isSuccess ? 'success' : 'error'}">
-      <div class="status-icon">{isSuccess ? '✓' : '✕'}</div>
+    <div, class="status-card {isSuccess ? 'success' : 'error'}">
+      <div, class="status-icon">{isSuccess ? '✓' : '✕'}</div>
       <div>
         <strong>{statusMessage}</strong>
-        <div class="details">
+        <div, class="details">
           <h3>Environment</h3>
           <ul>
             <li>User Agent: {performanceStats.userAgent}</li>
@@ -111,7 +111,7 @@ import type { User } from '$lib/types';
 
           {#if errors.length}
             <h3>Errors</h3>
-            <ul class="error-list">
+            <ul, class="error-list">
               {#each Array.isArray(errors) ? errors : [] as err}
                 <li>{err}</li>
               {/each}
@@ -120,7 +120,7 @@ import type { User } from '$lib/types';
 
           {#if recommendations.length}
             <h3>Recommendations</h3>
-            <ul class="recommendation-list">
+            <ul, class="recommendation-list">
               {#each Array.isArray(recommendations) ? recommendations : [] as rec}
                 <li>{rec}</li>
               {/each}

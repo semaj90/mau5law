@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
     replaceWith: '/api/v2/evidence?action=search',
     message: 'Evidence search is now unified in /api/v2/evidence',
     yourQuery: query,
-    useInstead: '/api/v2/evidence?action=search&q=${encodeURIComponent(query || '')}&vector=true`,
+    useInstead: '/api/v2/evidence?action=search&q=${encodeURIComponent(query || '')}&vector=true`,'`
     benefits: [
       'Semantic vector search with Ollama embeddings',
       'AI-generated search suggestions',
@@ -38,13 +38,12 @@ export const GET: RequestHandler = async ({ url }) => {
     status: 410,
     headers: {
       'X-Deprecated': 'true',
-      'X-Migrate-To': '/api/v2/evidence?action=search'
-    }
+      'X-Migrate-To': `/api/v2/evidence?action=search` }
   });
 };
 
 export const POST: RequestHandler = async () => {
   return json({
     deprecated: true,
-    message: 'Use GET /api/v2/evidence?action=search instead` }, { status: 410 });
+    message: `Use GET /api/v2/evidence?action=search instead' }, { status: 410 });'`
 };

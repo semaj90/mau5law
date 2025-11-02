@@ -299,7 +299,7 @@ export class WebASMGPUBridge {
     const outputTensor: GPUTensor = {
       shape: [1, 1],
       data: new Float32Array(1),
-      format: 'f32` };
+      format: 'f32' };
     const operation: WebASMGPUOperation = {
       id: `similarity-${Date.now()}`,
       type: 'similarity',
@@ -409,7 +409,7 @@ export class WebASMGPUBridge {
         }
         output[index] = sum / f32(${inputDim});
       }
-    `;
+    `;`
   }
 
   /**
@@ -444,7 +444,7 @@ export class WebASMGPUBridge {
           result[0] = dot / sqrt(max(n1 * n2, 1e-12));
         }
       }
-    `;
+    `;`
   }
 
   /**
@@ -467,7 +467,7 @@ export class WebASMGPUBridge {
       layout: 'auto',
       compute: {
        , module: shaderModule,
-        entryPoint: 'main` }
+        entryPoint: 'main' }
     });
     this.computePipelines.set(pipelineKey, pipeline);
     return pipeline;

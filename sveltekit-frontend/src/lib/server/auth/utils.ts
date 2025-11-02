@@ -34,7 +34,7 @@ export type User = {
 export const DEV_STUB_USER: User = {
   id: '1',
   email: 'dev@local',
-  name: 'Developer` };
+  name: 'Developer' };
 // --- end added types ---
 // Define a small local type for SvelteKit locals.
 // SvelteKit does not export a concrete `Locals` type here, so use an extendable record.
@@ -68,7 +68,7 @@ export function isDevBypassEnabled(): boolean {
  * @returns User object if authenticated, stub user if dev bypass enabled, or null
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const user = resolveUser(locals);
  * if (!user) {
  *   throw error(401, 'Unauthorized');
@@ -98,7 +98,7 @@ export function resolveUser(locals: LocalsWithUser): User | null {
  * @throws Error if user not authenticated
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const user = requireUser(locals);
  * // user is guaranteed to be non-null here
  * ```

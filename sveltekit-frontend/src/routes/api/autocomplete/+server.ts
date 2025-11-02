@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import type { RequestHandler } from './$types';
 import { json, error } from '@sveltekit/kit';
 import { poolShim } from '$lib/server/db-shim';
@@ -46,7 +46,7 @@ interface Suggestion {
 }
 
 // Initialize connections
-type RedisClient = Awaited<ReturnType<typeof createRedisInstance>>;
+type RedisClient = Awaited<ReturnType<typeof, createRedisInstance>>;
 let redis: RedisClient | null = null;
 
 async function getRedis(): Promise<RedisClient> {
@@ -59,7 +59,7 @@ async function getRedis(): Promise<RedisClient> {
   return redis!;
 }
 
-// The db-shim's poolShim can be used directly, simplifying connection management.
+// The db-shim's poolShim can be used directly, simplifying connection management.'
 const db = poolShim;
 
 // Add a small helper to safely extract messages from unknown errors
@@ -209,7 +209,7 @@ async function getCachedSuggestions(query: string): Promise<Suggestion[]> {
       }
     } catch (error: any) {
       const f = formatError(error);
-      console.warn(`Cache lookup failed for prefix: "${prefix}": ', f.message, f.details ?? '');
+      console.warn(`Cache lookup failed for prefix: "${prefix}": ', f.message, f.details ?? '');'`
     }
   }
   return suggestions;
@@ -234,7 +234,7 @@ async function getDatabaseSuggestions(
             spr.frequency DESC,
             spr.correlation_strength DESC
         LIMIT $3
-    `;
+    `;`
   const params = [`%${query}%`, context, maxResults];
   // Add jurisdiction filter if specified
   if (jurisdiction) {
@@ -253,7 +253,7 @@ async function getDatabaseSuggestions(
                 spr.frequency DESC,
                 spr.correlation_strength DESC
             LIMIT $3
-        `;
+        `;`
     params.push(jurisdiction);
   }
   const result = await db.query(sql, params);
@@ -275,7 +275,7 @@ async function getSemanticSuggestions(query: string, maxResults: number): Promis
             WHERE text_chunk ILIKE $1
             ORDER BY prosecution_strength_score DESC, confidence_score DESC
             LIMIT $2
-        `,
+        `,`
       [`%${query}%`, maxResults]
     );
     return (result.rows as Suggestion[]) ?? [];
@@ -368,8 +368,8 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'healthy',
       services: {
-        redis: 'connected',
-        database: 'connected` },
+       , redis: 'connected',
+        database: 'connected' },
       stats: {
        , semantic_phrases: parseInt(phraseCount.rows[0].count),
         legal_documents: parseInt(documentCount.rows[0].count)

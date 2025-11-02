@@ -10,15 +10,17 @@ import createIOIORedisInstance from '$lib/server/redis.js'; // Changed to defaul
 import type { LegalMetadata } from '$lib/services/simd-json-acceleration'; // Imported LegalMetadata
 
 // Define specific types for 'any' usages
-interface ClusterPositionResult { x: number;, y: number;
+interface ClusterPositionResult { x: number;
+, y: number;
   confidence: number;
 }
 
-interface SOMVisualizationData { width: number;, height: number;
+interface SOMVisualizationData { width: number;
+, height: number;
   neurons: number[];
 }
 
-interface LegalClusterAnalysis { position: { x: number;, y: number };
+interface LegalClusterAnalysis { position: { x: number; y: number };
   documents: string[];
   legalTopics: string[];
   coherence: number;
@@ -103,7 +105,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
   /**
    * Find Best Matching Unit for an embedding
    */
-  private findBMU(embedding: number[]): { x: number; y: number;, distance: number } {
+  private findBMU(embedding: number[]): { x: number; y: number; distance: number } {
     let minDistance = Infinity;
     let bmu = { x: 0, y: 0, distance: Infinity };
     for (let x = 0; x < this.config.width; x++) {
@@ -205,10 +207,10 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
    * Analyze legal document clusters on the SOM
    */
   async analyzeLegalClusters(
-    documents: Array<{ id: string; embedding: number[];, metadata: LegalMetadata }>
+    documents: Array<{ id: string; embedding: number[]; metadata: LegalMetadata }>
   ): Promise<LegalClusterAnalysisResult> {
     // Changed input and return types
-    const clusterMap = new Map<string, Array<{ id: string;, metadata: LegalMetadata }>>(); // Explicitly typed
+    const clusterMap = new Map<string, Array<{ id: string; metadata: LegalMetadata }>>(); // Explicitly typed
     // Map documents to SOM positions
     for (const doc of documents) {
       const position = await this.cluster(doc.embedding);
@@ -295,7 +297,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
         centroid,
         documents: documentIndices.map(i => `doc_${i}`),
         size: documentIndices.length,
-        label: `SOM Cluster ${clusterId + 1} (${x},${y})' } as DocumentCluster);
+        label: `SOM Cluster ${clusterId + 1} (${x},${y})` } as DocumentCluster);
       clusterId++;
     }
     return clusters;

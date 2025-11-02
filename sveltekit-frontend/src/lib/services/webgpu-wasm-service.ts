@@ -51,7 +51,7 @@ export const webgpuCapabilities = writable<WebGPUCapabilities>({
   webgpuSupported: false,
   webglSupported: false,
   wasmSupported: false,
-  deviceType: 'none` });
+  deviceType: `none` });
 
 // Add typed progress shape (previously implicit)
 interface ModelLoadingProgress { isLoading: boolean;, progress: number;
@@ -108,8 +108,7 @@ export class WebGPUWASMService {
       webgpuSupported: false,
       webglSupported: false,
       wasmSupported: false,
-      deviceType: 'none'
-    };
+      deviceType: `none` };
     if (browser) {
       this.detectCapabilities();
     }
@@ -122,7 +121,7 @@ export class WebGPUWASMService {
       webgpuSupported: false,
       webglSupported: false,
       wasmSupported: false,
-      deviceType: 'none` };
+      deviceType: `none` };
     try {
       // Check WebGPU support
       const navGPU = (navigator as unknown as NavigatorGPULike).gpu;
@@ -130,8 +129,7 @@ export class WebGPUWASMService {
         try {
           // cast to AdapterLike to avoid `any` usage
           this.adapter = (await navGPU.requestAdapter({
-            powerPreference: 'high-performance'
-          })) as AdapterLike | null;
+            powerPreference: `high-performance` })) as AdapterLike | null;
           if (this.adapter) {
             try {
               // requestDevice may not be present or may fail
@@ -209,7 +207,7 @@ export class WebGPUWASMService {
         }
       }
     } catch (error) {
-      console.error('❌ Capability detection error:', error);
+      console.error('❌ Capability detection error: ', error);'
     }
     this.capabilities = capabilities;
     webgpuCapabilities.set(capabilities);
@@ -222,20 +220,19 @@ export class WebGPUWASMService {
     modelLoadingProgress.set({
       isLoading: true,
       progress: 0,
-      stage: 'initializing` });
+      stage: `initializing` });
     try {
       console.log(`🚀 Loading model: ${modelConfig.name}`);
       // Stage 1: Download model weights (0-60%)
       modelLoadingProgress.set({
         isLoading: true,
         progress: 10,
-        stage: 'downloading weights'
-      });
+        stage: `downloading weights` });
       const modelResponse = await this.downloadWithProgress(modelConfig.wasmUrl, progress => {
         modelLoadingProgress.set({
           isLoading: true,
           progress: 10 + Math.floor(progress * 0.5), // 10-60%
-          stage: 'downloading weights` });
+          stage: `downloading weights` });
       });
       if (!modelResponse.ok) {
         throw new Error(`Failed to download model: ${modelResponse.statusText}`);
@@ -245,10 +242,10 @@ export class WebGPUWASMService {
       modelLoadingProgress.set({
         isLoading: true,
         progress: 60,
-        stage: 'downloading tokenizer` });
+        stage: `downloading tokenizer` });
       const tokenizerResponse = await fetch(modelConfig.tokenizerUrl);
       if (!tokenizerResponse.ok) {
-        throw new Error(`Failed to download tokenizer: ${tokenizerResponse.statusText}`);
+        throw new Error(`Failed to download tokenizer: ${tokenizerResponse.statusText}');'`
       }
       const tokenizerData = await tokenizerResponse.json();
       // Stage 3: Initialize WASM module (70-90%)
@@ -262,25 +259,23 @@ export class WebGPUWASMService {
       modelLoadingProgress.set({
         isLoading: true,
         progress: 90,
-        stage: 'setting up gpu buffers'
-      });
+        stage: `setting up gpu buffers` });
       await this.setupGPUBuffers();
 
-      // <-- FIX: assign currentModel before warmup so generateText() can run during warmup
+      // <-- FIX: assign currentModel before warmup so generateText() can run during, warmup
       this.currentModel = modelConfig;
 
       // Stage 5: Warm-up inference (95-100%)
       modelLoadingProgress.set({
         isLoading: true,
         progress: 95,
-        stage: 'warming up model'
-      });
+        stage: `warming up model` });
       await this.warmupModel();
 
       modelLoadingProgress.set({
         isLoading: false,
         progress: 100,
-        stage: 'ready` });
+        stage: `ready` });
       console.log(`✅ Model loaded successfully: ${modelConfig.name}`);
       return true;
     } catch (error: any) {
@@ -398,14 +393,14 @@ export class WebGPUWASMService {
             }
             output[index] = result;
           }
-        ' });
+        ` });`
       // Create compute pipeline (descriptor typing left flexible)
       const computePipeline = device.createComputePipeline({
         label: 'Gemma3 Legal Pipeline',
         layout: 'auto',
         compute: {
          , module: computeShader,
-          entryPoint: 'main` }
+          entryPoint: `main` }
       });
       // store pipeline locally instead of mutating the device object
       this._gemma3Pipeline = computePipeline as unknown as GPUComputePipeline;
@@ -442,7 +437,7 @@ export class WebGPUWASMService {
       temperature?: number;
       topP?: number;
     } = {}
-  ): Promise<{ text: string; tokens: number; processingTimeMs: number;, device: string }> {
+  ): Promise<{ text: string; tokens: number; processingTimeMs: number; device: string }> {
     if (!this.currentModel || !this.wasmModule) {
       throw new Error('Model not loaded');
     }
@@ -481,7 +476,7 @@ export class WebGPUWASMService {
    */
   async generateEmbedding(
     text: string
-  ): Promise<{ embedding: number[]; dimensions: number; processingTimeMs: number;, device: string }> {
+  ): Promise<{ embedding: number[]; dimensions: number; processingTimeMs: number; device: string }> {
     if (!this.currentModel || !this.wasmModule) {
       throw new Error('Model not loaded');
     }

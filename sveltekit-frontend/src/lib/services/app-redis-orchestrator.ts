@@ -47,13 +47,13 @@ const LLMCache = Redis.RedisLLMCache;
 const Orchestrator = Redis.RedisLegalOrchestrator;
 const TaskQueue = Redis.RedisTaskQueue;
 
-type ComponentTextureRegistryShape = { getMemoryUsage: () => unknown;, register: (id: string; opts: Record<string, unknown>) => void;
+type ComponentTextureRegistryShape = { getMemoryUsage: () => unknown;, register: (id: string;, opts: Record<string, unknown>) => void;
   unregister: (id: string) => void;
 };
 const textureRegistry = componentTextureRegistry as unknown as ComponentTextureRegistryShape;
 
 type ChrRomReaderShape = {
-  getPattern?: (key: string; slot: string) => Promise<{ data?: string } | undefined>;
+  getPattern?: (key: string;, slot: string) => Promise<{ data?: string } | undefined>;
   cachePattern?: (key: string, slot: string, data: string, opts?: { ttl?: number }) => Promise<void>;
 };
 const chrReader = chrROMCacheReader as unknown as ChrRomReaderShape;
@@ -102,7 +102,7 @@ export class AppRedisOrchestrator {
     const startTime = this.now();
     try {
       if (!context.requiresFresh) {
-        const cacheKey = `ai_query:${context.endpoint}:${LLMCache?.generateCacheKey?.(query, context) ?? '` }`;
+        const cacheKey = `ai_query:${context.endpoint}:${LLMCache?.generateCacheKey?.(query, context) ?? '' }`;
         const chrRomPattern = await chrReader.getPattern?.(cacheKey, 'ui_response');
         if (chrRomPattern?.data) {
           return {
@@ -181,9 +181,9 @@ export class AppRedisOrchestrator {
           context.priority || 150
         );
         return {
-          response: `Complex ${context.endpoint} analysis queued. Task ID: ${taskId}. Estimated completion: ${this.estimateCompletionTime(
+          response: `Complex ${context.endpoint} analysis queued. Task ID: ${taskId}. Estimated completion: ${this.estimateCompletionTime(`
             taskType
-          )}`,
+          )}`,`
           source: 'queued',
           processing_time: this.now() - startTime,
           task_id: taskId,
@@ -246,7 +246,7 @@ export class AppRedisOrchestrator {
         }
       };
 
-      const cacheKey = `ai_query:${context.endpoint}:${LLMCache?.generateCacheKey?.(query, context) ?? '` }`;
+      const cacheKey = `ai_query:${context.endpoint}:${LLMCache?.generateCacheKey?.(query, context) ?? '' }`;
 
       // Call cachePattern only if it exists to avoid awaiting undefined
       const cacheFn = chrReader.cachePattern;
@@ -270,7 +270,7 @@ export class AppRedisOrchestrator {
   private static generateConfidenceBar(confidence: number): string {
     const width = Math.floor(Math.max(0, Math.min(1, confidence)) * 48);
     const color = confidence > 0.9 ? '#00d800' : confidence > 0.7 ? '#fc9838' : '#f83800';
-    return `<div style="width: 48px; height: 4px; background: #333; border: 1px solid #000;"><div style="width: ${width}px; height: 100%; background: ${color}"></div></div>`;
+    return `<div style="width: 48px; height: 4px; background: #333; border: 1px, solid #000;"><div, style="width: ${width}px; height: 100%; background: ${color}"></div></div>`;
   }
 
   private static generateSourceIndicators(sources: Array<Record<string, unknown>>): string {
@@ -278,16 +278,16 @@ export class AppRedisOrchestrator {
       .slice(0, 3)
       .map(
         source =>
-          `<span style="background: #3cbcfc; color: white; padding: 1px 4px; font-size: 8px; margin: 1px;">${
-            typeof (source as { type?: string })?.type === 'string' ? (source as { type?: string }).type : `DOC` }</span>`
+          `<span style="background: #3cbcfc; color: white; padding: 1px, 4px; font-size: 8px; margin: 1px;">${`
+            typeof (source as { type?: string })?.type === 'string' ? (source as { type?: string }).type : `DOC' }</span>`'
       )
       .join('');
   }
 
   private static generateProcessingBadge(source: string): string {
-    const colors: Record<string, string> = { cache: '#00d800', fresh: '#fc9838', queued: `#7c7c7c` };
+    const colors: Record<string, string> = { cache: '#00d800', fresh: '#fc9838', queued: `#7c7c7c' };'`
     const color = colors[source] || '#000';
-    return `<span style="background: ${color}; color: white; padding: 1px 3px; font-size: 7px; font-family: monospace; text-transform: uppercase;">${source}</span>`;
+    return `<span style="background: ${color}; color: white; padding: 1px, 3px; font-size: 7px; font-family: monospace; text-transform: uppercase;">${source}</span>`;
   }
 
   private static determineTaskType(
@@ -304,15 +304,15 @@ export class AppRedisOrchestrator {
       complex_legal: '30-45 seconds',
       document_analysis: '15-30 seconds',
       case_synthesis: '45-60 seconds',
-      risk_assessment: `20-30 seconds` };
+      risk_assessment: `20-30 seconds' };'`
     return estimates[taskType] || '30-45 seconds';
   }
 
   static async initializeForComponent(
     componentName: string,
-    config: { enableCaching: boolean;, enableAgentMemory: boolean;
-      enableTaskQueue: boolean;
-      cacheStrategy: 'aggressive' | 'conservative' | 'minimal';
+    config: {, enableCaching: boolean;, enableAgentMemory: boolean;
+     , enableTaskQueue: boolean;
+     , cacheStrategy: 'aggressive' | 'conservative' | 'minimal';
      , memoryBank: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
     }
   ): Promise<{ processQuery: (, query: string,

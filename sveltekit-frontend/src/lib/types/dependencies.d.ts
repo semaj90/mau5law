@@ -12,14 +12,14 @@ declare module 'svelte/store' {
 }
 
 // Reference per-library vendor declarations. These files live in ./vendor
-/// <reference path="./vendor/qdrant.d.ts" />
-/// <reference path="./vendor/langchain.d.ts" />
-/// <reference path="./vendor/ollama.d.ts" />
-/// <reference path="./vendor/pgvector.d.ts" />
-/// <reference path="./vendor/bits-ui.d.ts" />
-/// <reference path="./vendor/fabric.d.ts" />
-/// <reference path="./vendor/lokijs.d.ts" />
-/// <reference path="./vendor/transformers.d.ts" />
+/// <reference, path="./vendor/qdrant.d.ts" />
+/// <reference, path="./vendor/langchain.d.ts" />
+/// <reference, path="./vendor/ollama.d.ts" />
+/// <reference, path="./vendor/pgvector.d.ts" />
+/// <reference, path="./vendor/bits-ui.d.ts" />
+/// <reference, path="./vendor/fabric.d.ts" />
+/// <reference, path="./vendor/lokijs.d.ts" />
+/// <reference, path="./vendor/transformers.d.ts" />
 
 // Small global shims used by various runtime helpers
 declare global {

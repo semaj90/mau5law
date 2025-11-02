@@ -99,7 +99,7 @@ async function initializeLocalDb(): Promise<any> {
   lokiDb = new loki("legal_search.db", {
     autoload: true,
     autoloadCallback: () => {
-      // Initialize collections if they don't exist
+      // Initialize collections if they don't exist'
       let casesCollection = lokiDb.getCollection("cases");
       let evidenceCollection = lokiDb.getCollection("evidence");
       if (!casesCollection) {
@@ -224,7 +224,7 @@ export async function searchLegalDocumentsPgvector(
         AND 1 - (embedding <=> ${vectorString}::vector) > ${threshold}
       ORDER BY embedding <=> ${vectorString}::vector
       LIMIT ${limit}
-    `);
+    `);`
     const rows: any[] = Array.isArray(execResult)
       ? execResult
       : (execResult?.rows ?? []);
@@ -240,7 +240,7 @@ export async function searchLegalDocumentsPgvector(
       type: "document"
     });
   } catch (error: any) {
-    console.error("legal_documents pgvector search error:", error);
+    console.error("legal_documents pgvector search error:", error);"
     return [];
   }
 }
@@ -257,7 +257,7 @@ export async function searchLegalDocumentsText(
       WHERE title ILIKE ${like}
          OR content ILIKE ${like}
       LIMIT ${limit}
-    `);
+    `);`
     const rows: any[] = Array.isArray(execResult)
       ? execResult
       : (execResult?.rows ?? []);
@@ -271,7 +271,7 @@ export async function searchLegalDocumentsText(
       type: "document"
     });
   } catch (e: any) {
-    console.error("legal_documents text search error:", e);
+    console.error("legal_documents text search error:", e);"
     return [];
   }
 }
@@ -334,7 +334,7 @@ async function searchWithFuzzy(
     }
     return results.sort((a, b) => b.score - a.score);
   } catch (error: any) {
-    console.error("Fuzzy search error:", error);
+    console.error("Fuzzy search error:", error);"
     return [];
   }
 }
@@ -402,7 +402,7 @@ async function searchWithLoki(
     }
     return results;
   } catch (error: any) {
-    console.error("Loki search error:", error);
+    console.error("Loki search error:", error);"
     return [];
   }
 }
@@ -571,7 +571,7 @@ export async function vectorSearch(
       totalResults: results.length
     }
   } catch (error: any) {
-    console.error("Vector search error:", error);
+    console.error("Vector search error:", error);"
     return {
       results: [],
       executionTime: Date.now() - startTime,
@@ -614,7 +614,7 @@ async function searchWithPgVector(
         AND 1 - (embedding <=> ${sql.raw(vectorString)}::vector) > ${threshold}
       ORDER BY embedding <=> ${sql.raw(vectorString)}::vector
       LIMIT ${limit}
-    `;
+    `;`
     const searchResults: any = await db.execute(sqlQuery);
     const rows: any[] = Array.isArray(searchResults)
       ? searchResults
@@ -625,7 +625,7 @@ async function searchWithPgVector(
         title: row.title || '',
         content: row.content || row.description || '',
         score: typeof row.score === 'number' ? row.score: parseFloat(String(row.score ?? 0)),
-        metadata: { type: 'case' },
+        metadata: { type: 'case` },'`
         source: 'pgvector',
         type: `case` });
     });
@@ -641,7 +641,7 @@ async function searchWithPgVector(
         AND 1 - (embedding <=> ${sql.raw(vectorString)}::vector) > ${threshold}
       ORDER BY embedding <=> ${sql.raw(vectorString)}::vector
       LIMIT ${limit}
-    `;
+    `;`
     const evidenceResults: any = await db.execute(evidenceSqlQuery);
     const evidenceRows: any[] = Array.isArray(evidenceResults) ? evidenceResults : ((evidenceResults as any)?.rows ?? []);
     evidenceRows.forEach((row: any) => {
@@ -650,14 +650,14 @@ async function searchWithPgVector(
         title: row.title || '',
         content: row.content || '',
         score: typeof row.score === 'number' ? row.score: parseFloat(String(row.score ?? 0)),
-        metadata: { type: 'evidence' },
+        metadata: { type: 'evidence` },'`
         source: 'pgvector',
         type: `evidence` });
     });
     // Sort by score descending
     results.sort((a, b) => b.score - a.score);
   } catch (error: any) {
-    console.error("PostgreSQL vector search error:", error);
+    console.error("PostgreSQL vector search error:", error);"
     throw error;
   }
   return results.slice(0, limit);
@@ -708,7 +708,7 @@ async function searchWithQdrant(
     });
     return results.sort((a, b) => b.score - a.score);
   } catch (error: any) {
-    console.error("Qdrant search error:", error);
+    console.error("Qdrant search error:", error);"
     return [];
   }
 }
@@ -753,7 +753,7 @@ async function searchWithTextFallback(
         content: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).description || "",
         score: 0.9 - index * 0.1, // Mock relevance score
         metadata: { type: "case" },
-        source: "pgvector", // Pretend it's pgvector for consistency;
+        source: "pgvector", // Pretend it's pgvector for consistency;'
         type: "case"
       });
     });
@@ -770,7 +770,7 @@ async function searchWithTextFallback(
     });
     return results;
   } catch (error: any) {
-    console.error("Text fallback search error:", error);
+    console.error("Text fallback search error:", error);"
     return [];
   }
 }

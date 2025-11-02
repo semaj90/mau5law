@@ -36,12 +36,12 @@ export type VectorJobEvent =
       data?: any;
       priority?: VectorJobContext['priority'];
     }
-  | { type: 'JOB_QUEUED';, jobId: string }
+  | { type: 'JOB_QUEUED'; jobId: string }
   | { type: 'PROCESSING_STARTED' }
   | { type: 'CUDA_PROCESSING'; progress?: number }
   | { type: 'WEBGPU_FALLBACK' }
-  | { type: 'PROCESSING_COMPLETED';, result: VectorJobResult }
-  | { type: 'PROCESSING_FAILED';, error: string }
+  | { type: 'PROCESSING_COMPLETED'; result: VectorJobResult }
+  | { type: 'PROCESSING_FAILED'; error: string }
   | { type: 'RETRY' }
   | { type: 'CANCEL' }
   | { type: 'RESET' };
@@ -160,7 +160,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
     id: 'vectorJob',
     initial: 'idle',
     context: {
-      jobId: null,
+     , jobId: null,
       ownerType: null,
       ownerId: null,
       operation: null,
@@ -179,7 +179,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
       useWebGPU: false,
       webGPUAvailable: false
     },
-    states: { idle: {, on: {, SUBMIT_JOB: {, target: 'submitting',
+    states: {, idle: {, on: {, SUBMIT_JOB: {, target: 'submitting',
             actions: assign((context, event: any) => {
               const ev = event as Extract<VectorJobEvent, { type: `SUBMIT_JOB` }>;
               return {
@@ -237,7 +237,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
             }))
           },
           onError: [
-            {
+            {,
               target: 'webgpuFallback',
               cond: (ctx: VectorJobContext) => ctx.webGPUAvailable && !ctx.useWebGPU,
               actions: assign(() => ({ useWebGPU: true }))
@@ -261,8 +261,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
         },
         on: {
           PROCESSING_STARTED: 'processing',
-          CANCEL: 'cancelled'
-        }
+          CANCEL: 'cancelled' }
       },
       processing: { on: {, CUDA_PROCESSING: {
             actions: assign((_, event: { progress?: number }) => ({
@@ -286,8 +285,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
               error: event.error
             }))
           },
-          CANCEL: 'cancelled'
-        }
+          CANCEL: 'cancelled' }
       },
       webgpuFallback: { entry: assign(() => ({, useWebGPU: true })),
         invoke: {
@@ -304,14 +302,13 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
           },
           onError: {
             target: 'failed',
-            actions: assign((_, ev: { data?: any }) => ({ error: 'WebGPU fallback, failed: ${ev.data ? getErrorMessage(ev.data) : `unknown` }`,
+            actions: assign((_, ev: { data?: any }) => ({ error: 'WebGPU fallback, failed: ${ev.data ? getErrorMessage(ev.data) : `unknown` }',
               endTime: new Date()
             }))
           }
         },
         on: {
-          CANCEL: 'cancelled'
-        }
+          CANCEL: `cancelled` }
       },
       retrying: {
         after: {
@@ -329,7 +326,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
       completed: {
         type: 'final',
         entry: [
-          ({ context }: { context: VectorJobContext }) => {
+          ({ context }: { context: VectorJobContext }) => {,
             console.log(`✅ Vector job ${context.jobId} completed in ${context.processingTimeMs}ms`);
             if (typeof window !== 'undefined') {
               window.dispatchEvent(
@@ -350,7 +347,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
       },
       failed: {
         entry: [
-          ({ context }: { context: VectorJobContext }) => {
+          ({ context }: { context: VectorJobContext }) => {,
             console.error(`❌ Vector job ${context.jobId} failed: ${context.error}`);
             if (typeof window !== 'undefined') {
               window.dispatchEvent(
@@ -394,7 +391,7 @@ export function createVectorJob(
   operation: VectorJobContext['operation'],
   data?: any,
   priority: VectorJobContext['priority'] = 'medium'
-): ReturnType<typeof interpret> {
+): ReturnType<typeof, interpret> {
   const service = interpret(vectorJobMachine);
   service.start();
   const jobId = `${ownerType}_${ownerId}_${operation}_${Date.now()}`;
@@ -412,12 +409,12 @@ export function createVectorJob(
 
 // Utility for batch vector job processing
 export function processBatchVectorJobs(
-  jobs: Array<{ ownerType: VectorJobContext['ownerType'];, ownerId: string;
+  jobs: Array<{, ownerType: VectorJobContext['ownerType'];, ownerId: string;
    , operation: VectorJobContext['operation'];
     data?: any;
     priority?: VectorJobContext['priority'];
   }>
-): ReturnType<typeof interpret>[] {
+): ReturnType<typeof, interpret>[] {
   const actors = jobs.map(job =>
     createVectorJob(job.ownerType, job.ownerId, job.operation, job.data, job.priority ?? 'medium')
   );

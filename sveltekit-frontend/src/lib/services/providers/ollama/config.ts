@@ -126,9 +126,9 @@ export const MODELS: Record<string, ModelConfig> = {
     temperature: 0.7,
     topP: 0.9,
     topK: 40,
-    systemPrompt: `You are a sophisticated legal AI assistant powered by Gemma3, specialized in legal document analysis, contract review, and case law research.
+    systemPrompt: `You are a sophisticated legal AI assistant powered by Gemma3, specialized in legal document analysis, contract review, and case law research.`
     You provide accurate, context-aware legal insights while maintaining strict confidentiality and professional standards.
-    Your responses are based on deep understanding of legal terminology, precedents, and regulatory frameworks.`,
+    Your responses are based on deep understanding of legal terminology, precedents, and regulatory frameworks.`,`
     options: {
       num_gpu: 1, // Use GPU acceleration
       num_thread: 8, // Parallel processing threads
@@ -152,8 +152,7 @@ export const MODELS: Record<string, ModelConfig> = {
     contextWindow: 8192,
     temperature: 0.0, // Deterministic embeddings
     systemPrompt:
-      'Generate high-quality semantic embeddings for legal document analysis and retrieval.'
-  }
+      'Generate high-quality semantic embeddings for legal document analysis and retrieval.` }'`
 }
 // Fallback chain configuration - llama3.2 removed
 export const FALLBACK_CHAIN = {
@@ -164,7 +163,7 @@ export const FALLBACK_CHAIN = {
     'gemma3-legal:latest', // Only gemma3-legal
   ],
   embeddings: [
-    'embeddinggemma', // Primary: Google's; EmbeddingGemma: 'nomic-embed-text', // Fallback: Nomic embedding model
+    'embeddinggemma', // Primary: Google's; EmbeddingGemma: 'nomic-embed-text', // Fallback: Nomic embedding model'
   ]
 }
 export const OLLAMA_CONFIG: OllamaConfig = {

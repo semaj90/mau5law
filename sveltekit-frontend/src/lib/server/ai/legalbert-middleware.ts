@@ -55,7 +55,7 @@ type ModelConfig = { embedding: string;, analysis: string;
   apiKey?: string | undefined;
 };
 export type LegalSimilarityResult = { similarity: number;, confidence: number;
-  factors: { semantic: number; structural: number;, legal_concepts: number };
+  factors: { semantic: number; structural: number; legal_concepts: number };
 };
 // Metrics stub (replace with proper metrics service later)
 const metrics = {
@@ -103,8 +103,7 @@ const LEGALBERT_MODELS: Record<'local' | 'huggingface' | 'openai', ModelConfig> 
     embedding: 'nlpaueb/legal-bert-base-uncased',
     analysis: 'nlpaueb/legal-bert-small-uncased',
     apiKey: process.env.HUGGINGFACE_API_KEY,
-    baseUrl: 'https://api-inference.huggingface.co/models'
-  },
+    baseUrl: `https://api-inference.huggingface.co/models` },
   openai: {
     embedding: 'text-embedding-3-small',
     analysis: 'gpt-4',
@@ -264,7 +263,7 @@ export class LegalBERTMiddleware {
       };
     } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
-      logger.error('[LegalBERT] Similarity calculation failed:', err);
+      logger.error('[LegalBERT] Similarity calculation failed: `, err);'`
       return {
         similarity: 0.5,
         confidence: 0.3,
@@ -285,9 +284,9 @@ export class LegalBERTMiddleware {
       const response = await fetch(`${this.modelConfig.baseUrl}/${this.modelConfig.embedding}`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${this.modelConfig.apiKey}`,
+         , Authorization: `Bearer ${this.modelConfig.apiKey}`,
           'Content-Type': `application/json` },
-        body: JSON.stringify({ inputs: text, options: {, wait_for_model: true } })
+        body: JSON.stringify({, inputs: text, options: {, wait_for_model: true } })
       });
       if (!response.ok) {
         throw new Error(`HuggingFace API error: ${response.statusText}`);
@@ -330,7 +329,7 @@ export class LegalBERTMiddleware {
       const response = await fetch(`${this.modelConfig.baseUrl}/embeddings`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${this.modelConfig.apiKey}`,
+         , Authorization: `Bearer ${this.modelConfig.apiKey}`,
           'Content-Type': `application/json` },
         body: JSON.stringify({, model: this.modelConfig.embedding, input: text })
       });
@@ -692,8 +691,8 @@ export class LegalBERTMiddleware {
   private generateFallbackAnalysis(text: string): LegalBertAnalysisResult {
     return {
       entities: [],
-      concepts: [{ concept: 'general', relevance: 0.5, category: 'unknown' }],
-      sentiment: { polarity: 0, confidence: 0.3, classification: 'neutral' },
+      concepts: [{ concept: 'general', relevance: 0.5, category: `unknown` }],
+      sentiment: { polarity: 0, confidence: 0.3, classification: `neutral` },
       complexity: { readabilityScore: 50, legalComplexity: 0.5, technicalTerms: 0 },
       keyPhrases: [{ phrase: 'legal document', importance: 0.5, category: `general` }],
       summary: {
@@ -717,7 +716,7 @@ export class LegalBERTMiddleware {
   // === PUBLIC API METHODS ===
   /**
    * Get middleware statistics
-   */ getStatistics(): { requestCount: number; cacheSize: number;, model: ModelConfig } {
+   */ getStatistics(): { requestCount: number; cacheSize: number; model: ModelConfig } {
     return {
       requestCount: this.requestCount,
       cacheSize: this.cache.size,
@@ -732,7 +731,7 @@ export class LegalBERTMiddleware {
   }
   /**
    * Health check
-   */ async healthCheck(): Promise<{ status: string;, details: Record<string, unknown> }> {
+   */ async healthCheck(): Promise<{ status: string; details: Record<string, unknown> }> {
     try {
       const testResult = await this.generateLegalEmbedding('health check');
       return {

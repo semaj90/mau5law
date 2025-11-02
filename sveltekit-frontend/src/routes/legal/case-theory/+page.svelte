@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -73,7 +73,7 @@ import type { Case } from '$lib/types';
     type: 'prosecution' | 'defense' | 'civil' | 'alternative';
     strategy: 'evidence-based' | 'precedent-based' | 'narrative-based' | 'technical-based';
     description: string;
-    errors: Partial<Record<keyof Omit<NewTheoryForm, 'errors'>, string[]>>;
+    errors: Partial<Record<keyof, Omit<NewTheoryForm, 'errors'>, string[]>>;
   }
 
   // Svelte 5 runes
@@ -188,7 +188,7 @@ import type { Case } from '$lib/types';
       console.error('Failed to load theories:', error);
       // Mock theories for demo
       theories = [
-        {
+        {,
           id: '1',
           name: 'Self-Defense Theory',
           type: 'defense',
@@ -361,7 +361,7 @@ import type { Case } from '$lib/types';
   }
   function generateMockEvidence() {
     return [
-      {
+      {,
         id: '1',
         title: 'Security Camera Footage',
         type: 'video',
@@ -378,7 +378,7 @@ import type { Case } from '$lib/types';
       {
         id: '3',
         title: 'Medical Examiner Report',
-       <script lang="ts">
+       <script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
@@ -452,7 +452,7 @@ import type { Case } from '$lib/types';
     type: 'prosecution' | 'defense' | 'civil' | 'alternative';
     strategy: 'evidence-based' | 'precedent-based' | 'narrative-based' | 'technical-based';
     description: string;
-    errors: Partial<Record<keyof Omit<NewTheoryForm, 'errors'>, string[]>>;
+    errors: Partial<Record<keyof, Omit<NewTheoryForm, 'errors'>, string[]>>;
   }
 
   // Svelte 5 runes
@@ -567,7 +567,7 @@ import type { Case } from '$lib/types';
       console.error('Failed to load theories:', error);
       // Mock theories for demo
       theories = [
-        {
+        {,
           id: '1',
           name: 'Self-Defense Theory',
           type: 'defense',
@@ -740,7 +740,7 @@ import type { Case } from '$lib/types';
   }
   function generateMockEvidence() {
     return [
-      {
+      {,
         id: '1',
         title: 'Security Camera Footage',
         type: 'video',

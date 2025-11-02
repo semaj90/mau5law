@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
     children?: Snippet;
@@ -9,7 +9,7 @@
 {#if asChild}
   <slot />
 {:else}
-  <button type="button" class="drawer-trigger">
+  <button, type="button" class="drawer-trigger">
     <slot />
   </button>
 {/if}

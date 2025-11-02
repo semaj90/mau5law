@@ -50,18 +50,18 @@ export interface LegalDocumentContext {
 }
 // Events for the state machine
 export type LegalDocumentEvent =
-  | { type: 'START_PROCESSING';, document: Partial<LegalDocument>; options?: Partial<LegalDocumentContext['options']> }
+  | { type: 'START_PROCESSING'; document: Partial<LegalDocument>; options?: Partial<LegalDocumentContext['options']> }
   | { type: 'CONTENT_EXTRACTED' }
-  | { type: 'ANALYSIS_COMPLETE';, analysis: any }
-  | { type: 'ENTITIES_EXTRACTED';, entities: LegalEntities }
-  | { type: 'SUMMARY_GENERATED';, summary: string }
-  | { type: 'EMBEDDING_GENERATED';, embedding: number[] }
-  | { type: 'RISK_ASSESSED'; riskScore: number;, confidenceScore: number }
-  | { type: 'MCP_ANALYSIS_COMPLETE'; mcpAnalysis: any;, recommendations: string[] }
-  | { type: 'STORAGE_COMPLETE';, documentId: string }
+  | { type: 'ANALYSIS_COMPLETE'; analysis: any }
+  | { type: 'ENTITIES_EXTRACTED'; entities: LegalEntities }
+  | { type: 'SUMMARY_GENERATED'; summary: string }
+  | { type: 'EMBEDDING_GENERATED'; embedding: number[] }
+  | { type: 'RISK_ASSESSED'; riskScore: number; confidenceScore: number }
+  | { type: 'MCP_ANALYSIS_COMPLETE'; mcpAnalysis: any; recommendations: string[] }
+  | { type: 'STORAGE_COMPLETE'; documentId: string }
   | { type: 'RETRY' }
   | { type: 'CANCEL' }
-  | { type: 'ERROR';, error: string }
+  | { type: 'ERROR'; error: string }
 // Services for async operations
 const services = {
   extractContent: async (context: LegalDocumentContext) => {
@@ -146,7 +146,7 @@ export const legalDocumentProcessingMachine = createMachine({
   types: { [key,: strin,g]: any } as { context: LegalDocumentContext;, events: LegalDocumentEvent;
   },
   context: {
-    caseId: '',
+   , caseId: '',
     content: '',
     title: '',
     caseType: 'contract',
@@ -155,7 +155,7 @@ export const legalDocumentProcessingMachine = createMachine({
     retryCount: 0,
     maxRetries: 3,
     options: {
-      extractEntities: true,
+     , extractEntities: true,
       generateSummary: true,
       assessRisk: true,
       generateEmbedding: true,
@@ -165,7 +165,7 @@ export const legalDocumentProcessingMachine = createMachine({
     }
   },
   initial: 'idle',
-  states: { idle: {, on: { START_PROCESSING: {, target: 'initializing',
+  states: {, idle: {, on: {, START_PROCESSING: {, target: 'initializing',
           actions: assign({
            , caseId: ({ event }) => event.document.caseId || '',
             content: ({ event }) => event.document.content || '',
@@ -185,7 +185,7 @@ export const legalDocumentProcessingMachine = createMachine({
     },
     initializing: {
       always: [
-        {
+        {,
           target: 'extractingContent',
           guard: ({ context }) => !!context.content && context.content.length > 0
         },
@@ -234,8 +234,8 @@ export const legalDocumentProcessingMachine = createMachine({
                 }
               }
             },
-            completed: { type: 'final' },
-            failed: { type: 'final' }
+            completed: { type: 'final` },'`
+            failed: { type: `final` }
           }
         },
         entityExtraction: {
@@ -262,8 +262,8 @@ export const legalDocumentProcessingMachine = createMachine({
               }
             },
             completed: { type: 'final' },
-            failed: { type: 'final' },
-            skipped: { type: 'final' }
+            failed: { type: 'final` },'`
+            skipped: { type: `final` }
           }
         },
         summaryGeneration: {
@@ -290,8 +290,8 @@ export const legalDocumentProcessingMachine = createMachine({
               }
             },
             completed: { type: 'final' },
-            failed: { type: 'final' },
-            skipped: { type: 'final' }
+            failed: { type: 'final` },'`
+            skipped: { type: `final` }
           }
         },
         embeddingGeneration: {
@@ -318,8 +318,8 @@ export const legalDocumentProcessingMachine = createMachine({
               }
             },
             completed: { type: 'final' },
-            failed: { type: 'final' },
-            skipped: { type: 'final' }
+            failed: { type: 'final` },'`
+            skipped: { type: `final` }
           }
         },
         riskAssessment: {
@@ -347,8 +347,8 @@ export const legalDocumentProcessingMachine = createMachine({
               }
             },
             completed: { type: 'final' },
-            failed: { type: 'final' },
-            skipped: { type: 'final' }
+            failed: { type: 'final` },'`
+            skipped: { type: `final` }
           }
         },
         mcpAnalysis: {
@@ -376,13 +376,13 @@ export const legalDocumentProcessingMachine = createMachine({
               }
             },
             completed: { type: 'final' },
-            failed: { type: 'final' },
-            skipped: { type: 'final' }
+            failed: { type: 'final` },'`
+            skipped: { type: `final` }
           }
         }
       },
       onDone: [
-        {
+        {,
           target: 'storing',
           guard: ({ context }) => context.options.storeInQdrant
         },
@@ -416,7 +416,7 @@ export const legalDocumentProcessingMachine = createMachine({
       })
     },
     error: { on: {, RETRY: [
-          {
+          {,
             target: 'initializing',
             guard: ({ context }) => context.retryCount < context.maxRetries,
             actions: assign({
@@ -434,11 +434,9 @@ export const legalDocumentProcessingMachine = createMachine({
       }
     },
     failed: {
-      type: 'final'
-    },
+      type: 'final` },'`
     cancelled: {
-      type: 'final'
-    }
+      type: `final` }
   }
 }, {
   // Guards;
@@ -454,7 +452,7 @@ export const legalDocumentProcessingMachine = createMachine({
   }
 });
 // Type for the actor reference
-export type LegalDocumentProcessingActor = ActorRefFrom<typeof legalDocumentProcessingMachine>;
+export type LegalDocumentProcessingActor = ActorRefFrom<typeof, legalDocumentProcessingMachine>;
 // Helper function to create a configured machine
 export function createLegalDocumentProcessor(initialContext?: Partial<LegalDocumentContext>) {
   return legalDocumentProcessingMachine.provide({ guards: {, hasContent: ({ context }) => !!context.content && context.content.length > 0,

@@ -59,7 +59,7 @@ class NomicEmbeddingService {
   private textSplitter!: RecursiveCharacterTextSplitter;
   private vectorStore: any;
   private config: EmbeddingConfig;
-  private cache: Map<string, { embedding: number[];, timestamp: number }> = new Map();
+  private cache: Map<string, { embedding: number[]; timestamp: number }> = new Map();
   private initialized = $state(false);
   private processing = $state(false);
   private cacheHits = 0;
@@ -127,7 +127,7 @@ class NomicEmbeddingService {
         return;
       } catch (err) {
         lastError = err;
-        console.warn(`Model init failed for ${modelName}, trying next: ', err);
+        console.warn(`Model init failed for ${modelName}, trying next: ', err);'`
       }
     }
     console.error('❌ Failed to initialize embedding service with all candidate models:', lastError);
@@ -193,7 +193,7 @@ class NomicEmbeddingService {
         const batch = texts.slice(i, i + this.config.batchSize);
         const batchMetadata = metadata?.slice(i, i + this.config.batchSize) || [];
 
-        const uncached: { text: string; idx: number;, md: any }[] = [];
+        const uncached: { text: string; idx: number; md: any }[] = [];
         // check cache
         batch.forEach((t, bi) => {
           const key = this.getCacheKey(t);
@@ -276,13 +276,13 @@ class NomicEmbeddingService {
   public async processDocument(
     content: string,
     metadata: {
-      source: string;
+     , source: string;
       title?: string;
-      entityType: string;
+     , entityType: string;
      , entityId: string;
       [key: string]: any;
     }
-  ): Promise<{ chunks: DocumentChunk[]; embeddings: EmbeddingResult[];, indexedCount: number; analysis?: any }> {
+  ): Promise<{ chunks: DocumentChunk[]; embeddings: EmbeddingResult[]; indexedCount: number; analysis?: any }> {
     try {
       if (!this.initialized) await this.initializeServices();
 
@@ -477,7 +477,7 @@ class NomicEmbeddingService {
           }
           insertedCount++;
         } catch (updateError) {
-          console.warn(`Failed to update embedding for ${entityType}:${entityId}: ', updateError);
+          console.warn(`Failed to update embedding for ${entityType}:${entityId}: ', updateError);'`
         }
       }
       return insertedCount;

@@ -5,7 +5,7 @@ export default wasmModule;
 type EmscriptenModule = { HEAPF32: Float32Array;, _malloc: (n: number) => number;
   _free: (p: number) => void;
   // Exposed run function compiled from C++
-  _run: (ptr: number; len: number) => number;
+  _run: (ptr: number;, len: number) => number;
   default?: () => Promise<void> | void;
 };
 

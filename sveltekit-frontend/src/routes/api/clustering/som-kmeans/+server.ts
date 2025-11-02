@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(result);
   } catch (err: any) {
     const msg = getErrorMessage(err);
-    console.error('Clustering analysis error:', msg);
+    console.error('Clustering analysis error:', msg);'
     throw error(500, `Clustering analysis failed: ${msg}`);
   }
 };
@@ -157,7 +157,7 @@ function normalizeRagToDocument(ragData: any): Document {
 
 function extractFeaturesForClustering(ragData: any): { vectors: number[][];, dimensions: number;
   labels: string[];
-  metadata: { documentId: string; processingTime: number;, confidence: number };
+  metadata: { documentId: string; processingTime: number; confidence: number };
 } {
   const document = normalizeRagToDocument(ragData);
   const textFeatures = extractTextFeatures(document);
@@ -277,7 +277,7 @@ type InternalCluster = { centroid: number[];, points: number[][];
 };
 
 async function performKMeansClustering(
-  features: { vectors: number[][]; dimensions: number;, labels: string[] },
+  features: { vectors: number[][]; dimensions: number; labels: string[] },
   k: number
 ): Promise<Cluster[]> {
   const vectors = features.vectors;
@@ -309,7 +309,7 @@ async function performKMeansClustering(
 
 // Adjusted to return SOMResult instead of any and make trainingEpochs const
 async function performSOMAnalysis(
-  features: { vectors: number[][];, dimensions: number },
+  features: { vectors: number[][]; dimensions: number },
   config: {, width: number; height: number }
 ): Promise<SOMResult> {
   const { width, height } = config;

@@ -147,7 +147,7 @@ class QdrantVectorService {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          vector: queryVector,
+         , vector: queryVector,
           limit,
           with_payload: true,
           with_vector: false,

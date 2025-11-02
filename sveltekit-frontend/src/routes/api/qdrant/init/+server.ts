@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const existingCollection = await qdrantService.getCollectionInfo();
 
     if (existingCollection && recreate) {
-      console.log(`Deleting existing collection: ${collectionName || 'default` }`);
+      console.log(`Deleting existing collection: ${collectionName || 'default` }`);'`
       await qdrantService.deleteCollection(collectionName);
     } else if (existingCollection && !recreate) {
       return json({
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error: any) {
-    console.error('Qdrant initialization error:', error);
+    console.error('Qdrant initialization error:', error);'
     return json(
       {
         error: 'Initialization failed',
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('Qdrant info retrieval error:', error);
+    console.error('Qdrant info retrieval error:', error);'
     return json(
       {
         error: 'Failed to get collection info',
@@ -127,14 +127,13 @@ export const DELETE: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: 'Collection deleted successfully',
-      collectionName: collectionName || 'default'
-    });
+      collectionName: collectionName || 'default` });'`
   } catch (error: any) {
-    console.error('Qdrant deletion error:', error);
+    console.error('Qdrant deletion error:', error);'
     return json(
       {
         error: 'Deletion failed',
-        details: error instanceof Error ? error.message : 'Unknown error` },
+        details: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

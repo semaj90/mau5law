@@ -12,10 +12,10 @@ type SynthResult = {
   confidence?: number;
   metadata?: Record<string, unknown>;
 };
-type StreamStage = { type: 'stage';, stage: string; detail?: string };
-type StreamChunk = { type: 'chunk';, chunk: string };
-type StreamComplete = { type: 'complete';, result: SynthResult };
-type StreamError = { type: 'error';, error: string; detail?: string };
+type StreamStage = { type: 'stage'; stage: string; detail?: string };
+type StreamChunk = { type: 'chunk'; chunk: string };
+type StreamComplete = { type: 'complete'; result: SynthResult };
+type StreamError = { type: 'error'; error: string; detail?: string };
 type StreamUpdate = StreamStage | StreamChunk | StreamComplete | StreamError;
 
 export const GET: RequestHandler = async ({ params, request }) => {
@@ -136,6 +136,6 @@ export const GET: RequestHandler = async ({ params, request }) => {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
-      'X-Accel-Buffering': 'no` })
+      'X-Accel-Buffering': 'no' })
   });
 };

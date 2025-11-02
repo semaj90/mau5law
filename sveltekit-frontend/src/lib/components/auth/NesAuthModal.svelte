@@ -1,11 +1,11 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   // NES Auth Modal - Svelte 5 compatible
   interface Props {
     open?: boolean;
     title?: string;
     onClose?: () => void;
-    onSubmit?: (payload: { email: string; password: string }) => void;
+    onSubmit?: (payload: { email: string;, password: string }) => void;
     form?: any;
   }
   // Svelte 5 runes - props via $props()
@@ -48,14 +48,14 @@
   }
 </script>
 {#if open}
-  <div class="fixed inset-0 z-50 grid place-items-center" role="dialog" aria-modal="true" aria-label={title}>
-  <div class="fixed inset-0 bg-black/50" onclick={close}></div>
-    <form class="relative z-10 w-full max-w-md rounded bg-neutral-900 p-6 text-neutral-100" onsubmit={submit}>
-      <div class="mb-3 text-lg font-semibold">{title}</div>
+  <div class="fixed inset-0 z-50 grid, place-items-center" role="dialog" aria-modal="true" aria-label={title}>
+  <div class="fixed inset-0, bg-black/50" onclick={close}></div>
+    <form class="relative z-10 w-full max-w-md rounded bg-neutral-900 p-6, text-neutral-100" onsubmit={submit}>
+      <div class="mb-3 text-lg, font-semibold">{title}</div>
       {#if error}
-        <div class="mb-3 text-sm text-red-400">{error}{/if}
-      <div class="space-y-3">
-        <label class="block text-sm">Email
+        <div class="mb-3 text-sm, text-red-400">{error}{/if}
+      <div, class="space-y-3">
+        <label class="block, text-sm">Email
           <input
             type="email"
             required
@@ -65,7 +65,7 @@
             autofocus
           />
         </label>
-        <label class="block text-sm">Password
+        <label class="block, text-sm">Password
           <input
             type="password"
             required
@@ -75,9 +75,9 @@
           />
         </label>
       </div>
-      <div class="mt-4 flex justify-end gap-2">
-        <button type="button" class="rounded bg-neutral-700 px-3 py-1" onclick={close}>Cancel</button>
-        <button type="submit" class="rounded bg-emerald-600 px-3 py-1" disabled={submitting}>
+      <div class="mt-4 flex justify-end, gap-2">
+        <button type="button" class="rounded bg-neutral-700 px-3, py-1" onclick={close}>Cancel</button>
+        <button type="submit" class="rounded bg-emerald-600 px-3, py-1" disabled={submitting}>
           {#if submitting}Signing in...{:else}Sign in{/if}
         </button>
       </div>

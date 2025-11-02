@@ -138,10 +138,10 @@ export class CudaCacheMemoryOptimizer {
     const latentVector = this.encodeIntent(featureVector);
     // 3. Find the Best Matching Unit (BMU) on the Self-Organizing Map
     const bmu = this.findBestMatchingUnit(latentVector);
-    // Update the winning neuron's stats
+    // Update the winning neuron's stats'
     bmu.neuron.activationCount++;
     bmu.neuron.lastActivation = Date.now();
-    // 4. Determine intent based on the BMU's learned association
+    // 4. Determine intent based on the BMU's learned association'
     const intentCategory = this.getIntentCategoryForNeuron(bmu.neuron);
     // Build the intent object with neural network-derived insights
     const intent: UserIntent = {
@@ -183,7 +183,7 @@ export class CudaCacheMemoryOptimizer {
   /**
    * Finds the most similar neuron (BMU) on the SOM for a given vector.
    */
-  private findBestMatchingUnit(vector: Float32Array): { neuron: SOMNeuron;, distance: number } {
+  private findBestMatchingUnit(vector: Float32Array): { neuron: SOMNeuron; distance: number } {
     let bestNeuron: SOMNeuron = this.somNeurons[0][0];
     let minDistance = Infinity;
     for (const row of this.somNeurons) {
@@ -232,7 +232,7 @@ export class CudaCacheMemoryOptimizer {
     return 'unknown';
   }
   /**
-   * Determines domain specificity from a neuron's learned associations.
+   * Determines domain specificity from a neuron's learned associations.'
    */
   private getDomainSpecificityForNeuron(neuron: SOMNeuron): number {
     const category = this.getIntentCategoryForNeuron(neuron);

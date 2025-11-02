@@ -1,10 +1,10 @@
-<script lang="ts">
+<script, lang="ts">
 	// Updated props: do NOT use $state for incoming props defaults.
 	type Item = { id: string; label: string };
 
 	let {
 		value = $bindable(''),
-		items = [] as Item[], // <-- plain default, not $state
+		items = [] as Item[], // <-- plain, default, not $state
 		placeholder = 'Select...',
 		disabled = false,
 		onChange
@@ -92,7 +92,7 @@
 	});
 </script>
 
-<div class="ai-dropdown" bind:this={rootEl}>
+<div, class="ai-dropdown" bind:this={rootEl}>
 	<button
 		type="button"
 		class="ai-dropdown-trigger"
@@ -102,18 +102,18 @@
 		onclick={toggle}
 		onkeydown={onTriggerKeydown}
 	>
-		<span class="ai-dropdown-label">
+		<span, class="ai-dropdown-label">
 			{#if items && items.length}
 				{items.find((i) => i.id === value)?.label ?? placeholder}
 			{:else}
 				{placeholder}
 			{/if}
 		</span>
-		<span class="ai-dropdown-caret" aria-hidden="true">▾</span>
+		<span, class="ai-dropdown-caret" aria-hidden="true">▾</span>
 	</button>
 
 	{#if isOpen}
-		<ul role="listbox" class="ai-dropdown-list" tabindex="-1">
+		<ul, role="listbox" class="ai-dropdown-list" tabindex="-1">
 			{#each items as item, idx}
 				<li
 					role="option"
@@ -127,7 +127,7 @@
 				</li>
 			{/each}
 			{#if items.length === 0}
-				<li class="ai-dropdown-empty" aria-disabled="true">No options</li>
+				<li, class="ai-dropdown-empty" aria-disabled="true">No options</li>
 			{/if}
 		</ul>
 	{/if}

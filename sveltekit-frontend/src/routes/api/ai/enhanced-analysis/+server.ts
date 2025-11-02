@@ -309,7 +309,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const healthStatus =
       typeof orchestratorObj.healthCheck === 'function'
         ? await (
-            orchestratorObj.healthCheck as (..._args: any[]) => Promise<{ healthy: boolean;, services: string[] }>
+            orchestratorObj.healthCheck as (..._args: any[]) => Promise<{ healthy: boolean; services: string[] }>
           )()
         : { healthy: false, services: [] };
     const orchestratorMetrics =
@@ -401,7 +401,7 @@ export const GET: RequestHandler = async () => {
       healthy: healthStatus.healthy,
       services: healthStatus.services,
       capabilities: {
-        semanticAnalysis: true,
+       , semanticAnalysis: true,
         entityExtraction: true,
         legalReasoning: true,
         batchProcessing: true,
@@ -415,7 +415,7 @@ export const GET: RequestHandler = async () => {
         successRate: Math.round(metrics.successRate * 100) / 100
       },
       supportedAnalysisTypes: ['full', 'semantic', 'entities', 'reasoning', 'batch'],
-      version: '2.0.0-phase2` });
+      version: '2.0.0-phase2' });
   } catch (err) {
     console.error('❌ Health check failed:', err);
     return json(

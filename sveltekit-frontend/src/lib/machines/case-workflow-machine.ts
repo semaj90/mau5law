@@ -53,13 +53,13 @@ export interface CaseWorkflowContext {
 }
 // Explicit event union used by the machine
 export type CaseWorkflowEvent =
-  | { type: 'CREATE_CASE';, case_data: CaseData }
-  | { type: 'UPLOAD_DOCUMENT';, file: File; metadata?: Metadata }
+  | { type: 'CREATE_CASE'; case_data: CaseData }
+  | { type: 'UPLOAD_DOCUMENT'; file: File; metadata?: Metadata }
   | { type: 'START_ANALYSIS' }
-  | { type: 'ACCEPT_RECOMMENDATION';, recommendation_id: string }
-  | { type: 'REJECT_RECOMMENDATION';, recommendation_id: string }
-  | { type: 'REQUEST_AI_ASSISTANCE';, query: string }
-  | { type: 'UPDATE_SETTINGS';, settings: Partial<CaseWorkflowContext['settings']> }
+  | { type: 'ACCEPT_RECOMMENDATION'; recommendation_id: string }
+  | { type: 'REJECT_RECOMMENDATION'; recommendation_id: string }
+  | { type: 'REQUEST_AI_ASSISTANCE'; query: string }
+  | { type: 'UPDATE_SETTINGS'; settings: Partial<CaseWorkflowContext['settings']> }
   | { type: 'RETRY' }
   | { type: 'RESET' }
   | { type: 'NEXT_STEP' }
@@ -74,18 +74,18 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
     analysis_results: [],
     recommendations: [],
     progress: {
-      total_steps: 6,
+     , total_steps: 6,
       completed_steps: 0,
       current_action: 'Ready to start'
     },
     settings: {
-      auto_analyze: true,
+     , auto_analyze: true,
       notification_level: 'normal',
       ai_assistance_level: 'enhanced'
     }
   },
   initial: 'idle',
-  states: { idle: {, on: { CREATE_CASE: {, target: 'creatingCase',
+  states: {, idle: {, on: {, CREATE_CASE: {, target: 'creatingCase',
           actions: assign({
            , case_data: (_: CaseWorkflowContext, event: CaseWorkflowEvent) => {
               if (event.type === 'CREATE_CASE') return event.case_data;
@@ -244,7 +244,7 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
           return { processed: true, auto_analysis: false } as const;
         },
         onDone: [
-          {
+          {,
             target: 'caseReady',
             guard: (_ctx: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => {
               const out = (evt as any).data as Record<string, unknown>;
@@ -369,10 +369,10 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
     },
     executingRecommendation: { invoke: {, input: ({ context, event }) => ({
           context,
-          recommendation_id: (event as {, type: 'ACCEPT_RECOMMENDATION'; recommendation_id: string }).recommendation_id
+          recommendation_id: (event as {, type: 'ACCEPT_RECOMMENDATION';, recommendation_id: string }).recommendation_id
         }),
         src: async ({ input }) => {
-          const { context, recommendation_id } = input as { context: CaseWorkflowContext;, recommendation_id: string };
+          const { context, recommendation_id } = input as { context: CaseWorkflowContext; recommendation_id: string };
           const { case_id, user_id } = context;
           if (!case_id) throw new Error('Case ID not found for executing recommendation');
           const result = await orchestrator.handle({
@@ -412,7 +412,7 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
     },
     providingAssistance: { invoke: {, input: ({ context, event }) => ({
           context,
-          query: (event as {, type: 'REQUEST_AI_ASSISTANCE'; query: string }).query
+          query: (event as {, type: 'REQUEST_AI_ASSISTANCE';, query: string }).query
         }),
         src: async (context: CaseWorkflowContext, event: CaseWorkflowEvent) => {
           if (event.type !== 'REQUEST_AI_ASSISTANCE') throw new Error('Invalid event for providingAssistance');
@@ -456,8 +456,7 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
         progress: context => ({
           ...context.progress,
           completed_steps: context.progress.total_steps,
-          current_action: 'Workflow completed successfully'
-        })
+          current_action: `Workflow completed successfully` })
       })
     },
     error: { on: {, RETRY: {
@@ -479,7 +478,7 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
             progress: () => ({
               total_steps: 6,
               completed_steps: 0,
-              current_action: 'Ready to start` })
+              current_action: `Ready to start` })
           })
         }
       }
@@ -499,4 +498,4 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
 export type CaseWorkflowMachine = typeof caseWorkflowMachine;
 export type CaseWorkflowState = ReturnType<CaseWorkflowMachine['transition']>;
 export type CaseWorkflowEventType = CaseWorkflowEvent;
-export type CaseWorkflowActor = ActorRefFrom<typeof caseWorkflowMachine>;
+export type CaseWorkflowActor = ActorRefFrom<typeof, caseWorkflowMachine>;

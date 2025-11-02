@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     });
   } catch (error) {
-    console.error('Get predictions error:', error);
+    console.error('Get predictions error:', error);'
 
     return json(
       {

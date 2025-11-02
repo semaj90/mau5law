@@ -46,16 +46,16 @@ export interface PgVectorSearchResult { id: string;, content: string;
 // ============================================================================
 
 /** Document processing workflow actor */
-export type DocumentProcessingActor = Actor<typeof documentProcessingMachine>;
+export type DocumentProcessingActor = Actor<typeof, documentProcessingMachine>;
 
 /** Legal case management workflow actor */
-export type LegalCaseActor = Actor<typeof legalCaseManagementMachine>;
+export type LegalCaseActor = Actor<typeof, legalCaseManagementMachine>;
 
 /** Document processing workflow snapshot */
-export type DocumentProcessingSnapshot = SnapshotFrom<typeof documentProcessingMachine>;
+export type DocumentProcessingSnapshot = SnapshotFrom<typeof, documentProcessingMachine>;
 
 /** Legal case workflow snapshot */
-export type LegalCaseSnapshot = SnapshotFrom<typeof legalCaseManagementMachine>;
+export type LegalCaseSnapshot = SnapshotFrom<typeof, legalCaseManagementMachine>;
 
 /** Union of all workflow actor types */
 export type WorkflowActor = DocumentProcessingActor | LegalCaseActor;
@@ -196,6 +196,6 @@ export type DeepPartial<T> = {
 export type RequireKeys<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
 /** Async function type */
-export type AsyncFunction<T = unknown, Args extends unknown[] = unknown[]> = (
+export type AsyncFunction<T = unknown, Args extends, unknown[] = unknown[]> = (
   ...args: Args
 ) => Promise<T>;

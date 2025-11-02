@@ -2,9 +2,9 @@ import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 // Fixed database query utilities with proper field mappings
 import { sql, asc, desc, eq, and, or, like } from '$lib/server/db/utils';
-// Removed invalid type imports from '$lib/server/db/utils' which doesn't export `SQL` or `PgColumn`.
+// Removed invalid type imports from '$lib/server/db/utils' which doesn't export `SQL` or `PgColumn`.'
 // Provide local type aliases instead so this file compiles without pulling in other modules.
-type SQL = ReturnType<typeof sql>;
+type SQL = ReturnType<typeof, sql>;
 // { changed code }
 type PgColumn = SQL | string | Record<string, unknown>;
 // Database field mapping utilities
@@ -36,8 +36,7 @@ export const fieldMap = {
     createdBy: 'created_by',
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    closedAt: 'closed_at'
-  },
+    closedAt: `closed_at` },
   // Evidence fields;
   evidence: {
     caseId: 'case_id',
@@ -69,7 +68,7 @@ export const fieldMap = {
     summaryEmbedding: 'summary_embedding',
     uploadedBy: 'uploaded_by',
     uploadedAt: 'uploaded_at',
-    updatedAt: 'updated_at` }
+    updatedAt: `updated_at` }
 } as const;
 // Query builder helpers with proper type safety
 export function buildFilters(filters: SQL[]): SQL | undefined {

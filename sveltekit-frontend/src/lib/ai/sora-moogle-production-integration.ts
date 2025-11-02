@@ -9,7 +9,7 @@ import { writable, type Writable } from 'svelte/store';
 export interface SoraGraphNode { id: string;, type: 'document' | 'entity' | 'concept' | 'relationship' | 'case' | 'evidence';
   properties: { [key: string]: any };
   embedding?: Float32Array;
-  coordinates?: { x: number;, y: number; z?: number };
+  coordinates?: { x: number; y: number; z?: number };
   score?: number;
   depth?: number;
 }
@@ -29,7 +29,7 @@ export interface MoogleVisualizationOutput {
   imageData?: ImageData;
   base64?: string;
   svg?: string;
-  metadata: { nodePositions: Array<any>;, bounds: { minX: number; maxX: number; minY: number;, maxY: number };
+  metadata: { nodePositions: Array<any>;, bounds: { minX: number; maxX: number; minY: number; maxY: number };
     renderTime: number;
     nodeCount: number;
     edgeCount: number;
@@ -47,8 +47,8 @@ export interface SoraTraversalOptions { maxDepth: number;, maxNodes: number;
 }
 export interface MoogleVisualizationConfig { width: number;, height: number;
   backgroundColor: string;
-  nodeSize: { min: number;, max: number };
-  edgeThickness: { min: number;, max: number };
+  nodeSize: { min: number; max: number };
+  edgeThickness: { min: number; max: number };
   colorScheme: 'semantic' | 'type' | 'score' | 'legal' | 'evidence' | 'rainbow';
   layout: 'force-directed' | 'hierarchical' | 'circular' | 'grid' | 'legal-context';
   useWebGL: boolean;
@@ -138,7 +138,7 @@ export class ProductionSoraService {
   public clearCache(): void {
     this.cache.clear();
   }
-  public getCacheStats(): { size: number;, keys: string[] } {
+  public getCacheStats(): { size: number; keys: string[] } {
     return {
       size: this.cache.size,
       keys: Array.from(this.cache.keys())
@@ -249,8 +249,8 @@ export class ProductionMoogleService {
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
     config: MoogleVisualizationConfig
-  ): Map<string, { x: number;, y: number }> {
-    const positions = new Map<string, { x: number;, y: number }>();
+  ): Map<string, { x: number; y: number }> {
+    const positions = new Map<string, { x: number; y: number }>();
     // Simple circular layout for production
     const centerX = config.width / 2;
     const centerY = config.height / 2;
@@ -267,7 +267,7 @@ export class ProductionMoogleService {
   }
   private renderEdges(
     edges: Map<string, SoraGraphEdge>,
-    positions: Map<string, { x: number;, y: number }>,
+    positions: Map<string, { x: number; y: number }>,
     config: MoogleVisualizationConfig
   ): void {
     if (!this.context) return;
@@ -288,7 +288,7 @@ export class ProductionMoogleService {
   }
   private renderNodes(
     nodes: Map<string, SoraGraphNode>,
-    positions: Map<string, { x: number;, y: number }>,
+    positions: Map<string, { x: number; y: number }>,
     config: MoogleVisualizationConfig
   ): void {
     if (!this.context) return;
@@ -298,7 +298,7 @@ export class ProductionMoogleService {
       'evidence': '#FF5722',
       'entity': '#9C27B0',
       'concept': '#FFC107',
-      'relationship': '#607D8B` };
+      'relationship': '#607D8B' };
     nodes.forEach(node => {
       const pos = positions.get(node.id);
       if (!pos) return;
@@ -313,7 +313,7 @@ export class ProductionMoogleService {
       this.context!.stroke();
     });
   }
-  private calculateBounds(positions: Array<any>): { minX: number; maxX: number; minY: number;, maxY: number } {
+  private calculateBounds(positions: Array<any>): { minX: number; maxX: number; minY: number; maxY: number } {
     if (positions.length === 0) {
       return { minX: 0, maxX: 0, minY: 0, maxY: 0 };
     }
@@ -326,17 +326,17 @@ export class ProductionMoogleService {
   }
   private generateSVG(
     nodes: Map<string, SoraGraphNode>,
-    positions: Map<string, { x: number;, y: number }>,
+    positions: Map<string, { x: number; y: number }>,
     config: MoogleVisualizationConfig
   ): string {
-    let svg = `<svg width="${config.width}" height="${config.height}" xmlns="http://www.w3.org/2000/svg">`;
-    svg += `<rect width="100%" height="100%" fill="${config.backgroundColor}"/>`;
+    let svg = `<svg, width="${config.width}" height="${config.height}" xmlns="http://www.w3.org/2000/svg">`;
+    svg += `<rect, width="100%" height="100%" fill="${config.backgroundColor}"/>`;
     // Add nodes as circles
     nodes.forEach(node => {
       const pos = positions.get(node.id);
       if (pos) {
         const size = config.nodeSize.min + (node.score || 0.5) * (config.nodeSize.max - config.nodeSize.min);
-        svg += `<circle cx="${pos.x}" cy="${pos.y}" r="${size / 2}" fill="#4CAF50" stroke="#ffffff"/>`;
+        svg += `<circle, cx="${pos.x}" cy="${pos.y}" r="${size / 2}" fill="#4CAF50" stroke="#ffffff"/>`;
       }
     });
     svg += '</svg>';
@@ -354,7 +354,7 @@ export class ProductionMoogleService {
   public clearCache(): void {
     this.cache.clear();
   }
-  public getCacheStats(): { size: number;, memoryUsage: number } {
+  public getCacheStats(): { size: number; memoryUsage: number } {
     return {
       size: this.cache.size,
       memoryUsage: this.cache.size * 1024, // Estimated

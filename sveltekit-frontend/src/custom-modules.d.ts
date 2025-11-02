@@ -1,5 +1,5 @@
 // Auto-declarations to reduce noise while iteratively fixing the codebase.
-// Keep these minimal and temporary — they'll be tightened later.
+// Keep these minimal and temporary — they'll be tightened later.'
 
 declare module 'lucide-svelte' {
   const icons: any;

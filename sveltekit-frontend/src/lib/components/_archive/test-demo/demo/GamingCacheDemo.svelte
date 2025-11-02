@@ -3,7 +3,7 @@ Gaming Components Cache Demo
 Comprehensive demo showcasing GPU texture caching, shader optimization,
 and performance monitoring across N64 and YoRHa gaming components
 -->
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, tick } from 'svelte';
   import type {
@@ -34,7 +34,7 @@ and performance monitoring across N64 and YoRHa gaming components
   // Demo scenarios
   let currentScenario = $state<number>(0);
   let scenarios = $state([
-    {
+    {,
       name: 'N64 Texture Filtering Showcase',
       description: 'Demonstrate high-performance N64-style texture filtering with cache optimization',
       component: 'n64',
@@ -159,7 +159,7 @@ and performance monitoring across N64 and YoRHa gaming components
    */
   async function generateTestShaders(): Promise<Array> {
     return [
-      {
+      {,
         id: 'n64-vertex-shader',
         type: 'vertex',
         source: `
@@ -393,7 +393,7 @@ and performance monitoring across N64 and YoRHa gaming components
     for (const texture of textureTestData) {
       for (const filterType of scenario.filters) {
         const renderingOptions: N64RenderingOptions = {
-          filtering: filterType as any
+          filtering: filterType as any,
           mipmapLevel: Math.floor(Math.random() * 4),
           anisotropyLevel: filterType === 'anisotropic' ? 8 : 1,
           dimensions: {
@@ -567,39 +567,39 @@ and performance monitoring across N64 and YoRHa gaming components
     console.log('[Gaming Cache Demo] All caches cleared');
   }
 </script>
-<!-- Gaming Cache Demo Interface -->
-<div class="gaming-cache-demo min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+<!-- Gaming Cache Demo, Interface -->
+<div class="gaming-cache-demo min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900, text-white">
   <!-- Header -->
-  <header class="border-b border-purple-500/30 bg-black/20 backdrop-blur-sm">
-    <div class="max-w-7xl mx-auto px-6 py-4">
-      <div class="flex items-center justify-between">
+  <header class="border-b border-purple-500/30 bg-black/20, backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto px-6, py-4">
+      <div class="flex items-center, justify-between">
         <div>
-          <h1 class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text, text-transparent">
             Gaming Cache Demo
           </h1>
-          <p class="text-slate-300 mt-1">
+          <p class="text-slate-300, mt-1">
             GPU Texture & Shader Caching with WASM Acceleration
           </p>
         </div>
-        <div class="flex items-center gap-4">
-          <div class="px-3 py-1 bg-green-500/20 border border-green-500/50 rounded-lg">
-            <span class="text-green-300 text-sm">
+        <div class="flex items-center, gap-4">
+          <div class="px-3 py-1 bg-green-500/20 border border-green-500/50, rounded-lg">
+            <span class="text-green-300, text-sm">
               {demoStarted ? 'Demo Active' : 'Demo Stopped'}
             </span>
           </div>
           {#if stressTestMode}
-            <div class="px-3 py-1 bg-red-500/20 border border-red-500/50 rounded-lg animate-pulse">
-              <span class="text-red-300 text-sm">Stress Testing</span>
+            <div class="px-3 py-1 bg-red-500/20 border border-red-500/50 rounded-lg, animate-pulse">
+              <span class="text-red-300, text-sm">Stress Testing</span>
             </div>
           {/if}
         </div>
       </div>
     </div>
   </header>
-  <!-- Navigation Tabs -->
-  <nav class="border-b border-purple-500/20 bg-black/10">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="flex space-x-8 overflow-x-auto">
+  <!-- Navigation, Tabs -->
+  <nav class="border-b border-purple-500/20, bg-black/10">
+    <div class="max-w-7xl mx-auto, px-6">
+      <div class="flex space-x-8, overflow-x-auto">
         {#each Array.isArray(['overview', 'n64', 'yorha', 'performance', 'wasm', 'analytics']) ? ['overview', 'n64', 'yorha', 'performance', 'wasm', 'analytics'] : [] as tab}
           <button
             class="py-4 px-2 border-b-2" transition-colors whitespace-nowrap {
@@ -615,17 +615,17 @@ and performance monitoring across N64 and YoRHa gaming components
       </div>
     </div>
   </nav>
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-6 py-8">
+  <!-- Main, Content -->
+  <main class="max-w-7xl mx-auto px-6, py-8">
     {#if activeDemo === 'overview'}
-      <!-- Overview Dashboard -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Demo Controls -->
-        <div class="lg:col-span-1 space-y-6">
-          <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6 backdrop-blur-sm">
-            <h3 class="text-xl font-semibold mb-4 text-cyan-300">Demo Controls</h3>
-            <div class="space-y-4">
-              <div class="flex gap-3">
+      <!-- Overview, Dashboard -->
+      <div class="grid grid-cols-1 lg:grid-cols-3, gap-8">
+        <!-- Demo, Controls -->
+        <div class="lg:col-span-1, space-y-6">
+          <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6, backdrop-blur-sm">
+            <h3 class="text-xl font-semibold mb-4, text-cyan-300">Demo Controls</h3>
+            <div, class="space-y-4">
+              <div class="flex, gap-3">
                 {#if !demoStarted}
                   <button
                     onclick={startDemo}
@@ -648,31 +648,31 @@ and performance monitoring across N64 and YoRHa gaming components
                   Clear Cache
                 </button>
               </div>
-              <div class="flex items-center justify-between">
-                <label class="text-sm text-slate-300" for="autorun-scenarios">Auto-run Scenarios</label><input id="autorun-scenarios"
+              <div class="flex items-center, justify-between">
+                <label class="text-sm, text-slate-300" for="autorun-scenarios">Auto-run Scenarios</label><input, id="autorun-scenarios"
                   type="checkbox";
                   bind:checked={autoRunScenarios}
                   class="w-4 h-4 text-cyan-600 rounded focus:ring-cyan-500"
                 />
               </div>
-              <div class="flex items-center justify-between">
-                <label class="text-sm text-slate-300" for="wasm-acceleration">WASM Acceleration</label><input id="wasm-acceleration"
+              <div class="flex items-center, justify-between">
+                <label class="text-sm, text-slate-300" for="wasm-acceleration">WASM Acceleration</label><input, id="wasm-acceleration"
                   type="checkbox";
                   bind:checked={enableWasmAcceleration}
                   class="w-4 h-4 text-cyan-600 rounded focus:ring-cyan-500"
                 />
               </div>
-              <div class="flex items-center justify-between">
-                <label class="text-sm text-slate-300" for="realtime-metrics">Real-time Metrics</label><input id="realtime-metrics"
+              <div class="flex items-center, justify-between">
+                <label class="text-sm, text-slate-300" for="realtime-metrics">Real-time Metrics</label><input, id="realtime-metrics"
                   type="checkbox";
                   bind:checked={enableRealTimeMetrics}
                   class="w-4 h-4 text-cyan-600 rounded focus:ring-cyan-500"
                 />
               </div>
               <div>
-                <label class="block text-sm text-slate-300 mb-2" for="-scenario-interval-s">
+                <label class="block text-sm text-slate-300, mb-2" for="-scenario-interval-s">
                   Scenario Interval: {scenarioInterval}ms
-                </label><input id="-scenario-interval-s"
+                </label><input, id="-scenario-interval-s"
                   type="range"
                   bind:value={scenarioInterval}
                   min="1000"
@@ -690,19 +690,19 @@ and performance monitoring across N64 and YoRHa gaming components
               </button>
             </div>
           </div>
-          <!-- Current Scenario -->
-          <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6 backdrop-blur-sm">
-            <h3 class="text-xl font-semibold mb-4 text-cyan-300">Current Scenario</h3>
-            <div class="space-y-3">
+          <!-- Current, Scenario -->
+          <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6, backdrop-blur-sm">
+            <h3 class="text-xl font-semibold mb-4, text-cyan-300">Current Scenario</h3>
+            <div, class="space-y-3">
               <div>
-                <p class="font-medium text-slate-200">{scenarios[currentScenario]?.name}</p>
-                <p class="text-sm text-slate-400 mt-1">{scenarios[currentScenario]?.description}</p>
+                <p class="font-medium, text-slate-200">{scenarios[currentScenario]?.name}</p>
+                <p class="text-sm text-slate-400, mt-1">{scenarios[currentScenario]?.description}</p>
               </div>
-              <div class="flex justify-between text-sm">
-                <span class="text-slate-300">Progress:</span>
-                <span class="text-cyan-300">{currentScenario + 1} / {scenarios.length}</span>
+              <div class="flex justify-between, text-sm">
+                <span, class="text-slate-300">Progress:</span>
+                <span, class="text-cyan-300">{currentScenario + 1} / {scenarios.length}</span>
               </div>
-              <div class="w-full bg-slate-700 rounded-full h-2">
+              <div class="w-full bg-slate-700 rounded-full, h-2">
                 <div
                   class="bg-gradient-to-r from-cyan-500 to-purple-500 h-2 rounded-full transition-all duration-500"
                   style="width: {((currentScenario + 1) / scenarios.length) * 100}%"
@@ -711,59 +711,59 @@ and performance monitoring across N64 and YoRHa gaming components
             </div>
           </div>
         </div>
-        <!-- Real-time Statistics -->
-        <div class="lg:col-span-2 space-y-6">
-          <!-- Performance Metrics -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-slate-800/50 border border-cyan-500/30 rounded-lg p-4 backdrop-blur-sm">
-              <div class="text-2xl font-bold text-cyan-300">{demoStats.totalOperations}</div>
-              <div class="text-sm text-slate-400">Total Operations</div>
+        <!-- Real-time, Statistics -->
+        <div class="lg:col-span-2, space-y-6">
+          <!-- Performance, Metrics -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4, gap-4">
+            <div class="bg-slate-800/50 border border-cyan-500/30 rounded-lg p-4, backdrop-blur-sm">
+              <div class="text-2xl font-bold, text-cyan-300">{demoStats.totalOperations}</div>
+              <div class="text-sm, text-slate-400">Total Operations</div>
             </div>
-            <div class="bg-slate-800/50 border border-green-500/30 rounded-lg p-4 backdrop-blur-sm">
-              <div class="text-2xl font-bold text-green-300">{cacheMetrics.cacheEfficiency.toFixed(1)}%</div>
-              <div class="text-sm text-slate-400">Cache Efficiency</div>
+            <div class="bg-slate-800/50 border border-green-500/30 rounded-lg p-4, backdrop-blur-sm">
+              <div class="text-2xl font-bold, text-green-300">{cacheMetrics.cacheEfficiency.toFixed(1)}%</div>
+              <div class="text-sm, text-slate-400">Cache Efficiency</div>
             </div>
-            <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-4 backdrop-blur-sm">
-              <div class="text-2xl font-bold text-purple-300">{cacheMetrics.wasmAccelerationGain.toFixed(1)}%</div>
-              <div class="text-sm text-slate-400">WASM Acceleration</div>
+            <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-4, backdrop-blur-sm">
+              <div class="text-2xl font-bold, text-purple-300">{cacheMetrics.wasmAccelerationGain.toFixed(1)}%</div>
+              <div class="text-sm, text-slate-400">WASM Acceleration</div>
             </div>
-            <div class="bg-slate-800/50 border border-orange-500/30 rounded-lg p-4 backdrop-blur-sm">
-              <div class="text-2xl font-bold text-orange-300">{demoStats.memoryUsedMB.toFixed(1)}MB</div>
-              <div class="text-sm text-slate-400">Memory Used</div>
+            <div class="bg-slate-800/50 border border-orange-500/30 rounded-lg p-4, backdrop-blur-sm">
+              <div class="text-2xl font-bold, text-orange-300">{demoStats.memoryUsedMB.toFixed(1)}MB</div>
+              <div class="text-sm, text-slate-400">Memory Used</div>
             </div>
           </div>
-          <!-- Detailed Stats -->
-          <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6 backdrop-blur-sm">
-            <h3 class="text-xl font-semibold mb-4 text-cyan-300">Detailed Statistics</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="space-y-3">
-                <div class="flex justify-between">
-                  <span class="text-slate-300">Cache Hits:</span>
-                  <span class="text-green-300 font-mono">{demoStats.cacheHits}</span>
+          <!-- Detailed, Stats -->
+          <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6, backdrop-blur-sm">
+            <h3 class="text-xl font-semibold mb-4, text-cyan-300">Detailed Statistics</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2, gap-6">
+              <div, class="space-y-3">
+                <div class="flex, justify-between">
+                  <span, class="text-slate-300">Cache Hits:</span>
+                  <span class="text-green-300, font-mono">{demoStats.cacheHits}</span>
                 </div>
-                <div class="flex justify-between">
-                  <span class="text-slate-300">Cache Misses:</span>
-                  <span class="text-red-300 font-mono">{demoStats.cacheMisses}</span>
+                <div class="flex, justify-between">
+                  <span, class="text-slate-300">Cache Misses:</span>
+                  <span class="text-red-300, font-mono">{demoStats.cacheMisses}</span>
                 </div>
-                <div class="flex justify-between">
-                  <span class="text-slate-300">Success Rate:</span>
-                  <span class="text-cyan-300 font-mono">
+                <div class="flex, justify-between">
+                  <span, class="text-slate-300">Success Rate:</span>
+                  <span class="text-cyan-300, font-mono">
                     {demoStats.totalOperations > 0 ? ((demoStats.successfulOperations / demoStats.totalOperations) * 100).toFixed(1) : 0}%
                   </span>
                 </div>
               </div>
-              <div class="space-y-3">
-                <div class="flex justify-between">
-                  <span class="text-slate-300">Avg Processing Time:</span>
-                  <span class="text-purple-300 font-mono">{demoStats.averageProcessingTime.toFixed(2)}ms</span>
+              <div, class="space-y-3">
+                <div class="flex, justify-between">
+                  <span, class="text-slate-300">Avg Processing Time:</span>
+                  <span class="text-purple-300, font-mono">{demoStats.averageProcessingTime.toFixed(2)}ms</span>
                 </div>
-                <div class="flex justify-between">
-                  <span class="text-slate-300">WASM Accelerated:</span>
-                  <span class="text-yellow-300 font-mono">{demoStats.wasmAcceleratedOps}</span>
+                <div class="flex, justify-between">
+                  <span, class="text-slate-300">WASM Accelerated:</span>
+                  <span class="text-yellow-300, font-mono">{demoStats.wasmAcceleratedOps}</span>
                 </div>
-                <div class="flex justify-between">
-                  <span class="text-slate-300">Memory Utilization:</span>
-                  <span class="text-orange-300 font-mono">{cacheMetrics.memoryUtilization.toFixed(1)}%</span>
+                <div class="flex, justify-between">
+                  <span, class="text-slate-300">Memory Utilization:</span>
+                  <span class="text-orange-300, font-mono">{cacheMetrics.memoryUtilization.toFixed(1)}%</span>
                 </div>
               </div>
             </div>
@@ -771,80 +771,80 @@ and performance monitoring across N64 and YoRHa gaming components
         </div>
       </div>
     {:else if activeDemo === 'n64'}
-      <!-- N64 Demo -->
-      <div class="space-y-6">
-        <h2 class="text-2xl font-bold text-cyan-300">N64 Texture Filtering Cache</h2>
+      <!-- N64, Demo -->
+      <div, class="space-y-6">
+        <h2 class="text-2xl font-bold, text-cyan-300">N64 Texture Filtering Cache</h2>
         <N64TextureFilteringCache />
       </div>
     {:else if activeDemo === 'yorha'}
-      <!-- YoRHa Demo -->
-      <div class="space-y-6">
-        <h2 class="text-2xl font-bold text-cyan-300">YoRHa Anti-Aliasing Shader Cache</h2>
+      <!-- YoRHa, Demo -->
+      <div, class="space-y-6">
+        <h2 class="text-2xl font-bold, text-cyan-300">YoRHa Anti-Aliasing Shader Cache</h2>
         <YoRHaAAShaderCache />
       </div>
     {:else if activeDemo === 'performance'}
-      <!-- Performance Monitor -->
-      <div class="space-y-6">
-        <h2 class="text-2xl font-bold text-cyan-300">Cache Performance Monitor</h2>
+      <!-- Performance, Monitor -->
+      <div, class="space-y-6">
+        <h2 class="text-2xl font-bold, text-cyan-300">Cache Performance Monitor</h2>
         <CachePerformanceMonitor />
       </div>
     {:else if activeDemo === 'wasm'}
-      <!-- WASM Analytics -->
-      <div class="space-y-6">
-        <h2 class="text-2xl font-bold text-cyan-300">WASM Acceleration Analytics</h2>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6 backdrop-blur-sm">
-            <h3 class="text-lg font-semibold mb-4 text-purple-300">WASM Performance</h3>
-            <div class="space-y-4">
+      <!-- WASM, Analytics -->
+      <div, class="space-y-6">
+        <h2 class="text-2xl font-bold, text-cyan-300">WASM Acceleration Analytics</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2, gap-6">
+          <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6, backdrop-blur-sm">
+            <h3 class="text-lg font-semibold mb-4, text-purple-300">WASM Performance</h3>
+            <div, class="space-y-4">
               {#each Array.isArray(['texture-compression', 'shader-optimization', 'memory-defragmentation']) ? ['texture-compression', 'shader-optimization', 'memory-defragmentation'] : [] as operation}
-                <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
-                  <span class="text-slate-300 capitalize">{operation.replace('-', ' ')}</span>
-                  <div class="flex items-center gap-2">
-                    <div class="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span class="text-green-300 text-sm">Active</span>
+                <div class="flex items-center justify-between p-3 bg-slate-700/30, rounded-lg">
+                  <span class="text-slate-300, capitalize">{operation.replace('-', ' ')}</span>
+                  <div class="flex items-center, gap-2">
+                    <div class="w-2 h-2 bg-green-400, rounded-full"></div>
+                    <span class="text-green-300, text-sm">Active</span>
                   </div>
                 </div>
               {/each}
             </div>
           </div>
-          <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6 backdrop-blur-sm">
-            <h3 class="text-lg font-semibold mb-4 text-purple-300">Acceleration Gains</h3>
-            <div class="space-y-4">
-              <div class="flex justify-between items-center">
-                <span class="text-slate-300">Texture Processing:</span>
-                <span class="text-green-300 font-mono">+{(cacheMetrics.wasmAccelerationGain * 0.8).toFixed(1)}%</span>
+          <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6, backdrop-blur-sm">
+            <h3 class="text-lg font-semibold mb-4, text-purple-300">Acceleration Gains</h3>
+            <div, class="space-y-4">
+              <div class="flex justify-between, items-center">
+                <span, class="text-slate-300">Texture Processing:</span>
+                <span class="text-green-300, font-mono">+{(cacheMetrics.wasmAccelerationGain * 0.8).toFixed(1)}%</span>
               </div>
-              <div class="flex justify-between items-center">
-                <span class="text-slate-300">Shader Optimization:</span>
-                <span class="text-green-300 font-mono">+{(cacheMetrics.wasmAccelerationGain * 1.2).toFixed(1)}%</span>
+              <div class="flex justify-between, items-center">
+                <span, class="text-slate-300">Shader Optimization:</span>
+                <span class="text-green-300, font-mono">+{(cacheMetrics.wasmAccelerationGain * 1.2).toFixed(1)}%</span>
               </div>
-              <div class="flex justify-between items-center">
-                <span class="text-slate-300">Memory Operations:</span>
-                <span class="text-green-300 font-mono">+{(cacheMetrics.wasmAccelerationGain * 0.6).toFixed(1)}%</span>
+              <div class="flex justify-between, items-center">
+                <span, class="text-slate-300">Memory Operations:</span>
+                <span class="text-green-300, font-mono">+{(cacheMetrics.wasmAccelerationGain * 0.6).toFixed(1)}%</span>
               </div>
-              <div class="flex justify-between items-center">
-                <span class="text-slate-300">Overall Gain:</span>
-                <span class="text-cyan-300 font-mono font-bold">+{cacheMetrics.wasmAccelerationGain.toFixed(1)}%</span>
+              <div class="flex justify-between, items-center">
+                <span, class="text-slate-300">Overall Gain:</span>
+                <span class="text-cyan-300 font-mono, font-bold">+{cacheMetrics.wasmAccelerationGain.toFixed(1)}%</span>
               </div>
             </div>
           </div>
         </div>
       </div>
     {:else if activeDemo === 'analytics'}
-      <!-- Cache Analytics -->
-      <div class="space-y-6">
-        <h2 class="text-2xl font-bold text-cyan-300">Cache Analytics Dashboard</h2>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Hit Rate Chart -->
-          <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6 backdrop-blur-sm">
-            <h3 class="text-lg font-semibold mb-4 text-purple-300">Cache Hit Rates</h3>
-            <div class="space-y-4">
+      <!-- Cache, Analytics -->
+      <div, class="space-y-6">
+        <h2 class="text-2xl font-bold, text-cyan-300">Cache Analytics Dashboard</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3, gap-6">
+          <!-- Hit Rate, Chart -->
+          <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6, backdrop-blur-sm">
+            <h3 class="text-lg font-semibold mb-4, text-purple-300">Cache Hit Rates</h3>
+            <div, class="space-y-4">
               <div>
-                <div class="flex justify-between mb-2">
-                  <span class="text-slate-300">Texture Cache</span>
-                  <span class="text-cyan-300">{cacheMetrics.textureHitRate.toFixed(1)}%</span>
+                <div class="flex justify-between, mb-2">
+                  <span, class="text-slate-300">Texture Cache</span>
+                  <span, class="text-cyan-300">{cacheMetrics.textureHitRate.toFixed(1)}%</span>
                 </div>
-                <div class="w-full bg-slate-700 rounded-full h-2">
+                <div class="w-full bg-slate-700 rounded-full, h-2">
                   <div
                     class="bg-cyan-500 h-2 rounded-full transition-all duration-500"
                     style="width: {cacheMetrics.textureHitRate}%"
@@ -852,11 +852,11 @@ and performance monitoring across N64 and YoRHa gaming components
                 </div>
               </div>
               <div>
-                <div class="flex justify-between mb-2">
-                  <span class="text-slate-300">Shader Cache</span>
-                  <span class="text-purple-300">{cacheMetrics.shaderHitRate.toFixed(1)}%</span>
+                <div class="flex justify-between, mb-2">
+                  <span, class="text-slate-300">Shader Cache</span>
+                  <span, class="text-purple-300">{cacheMetrics.shaderHitRate.toFixed(1)}%</span>
                 </div>
-                <div class="w-full bg-slate-700 rounded-full h-2">
+                <div class="w-full bg-slate-700 rounded-full, h-2">
                   <div
                     class="bg-purple-500 h-2 rounded-full transition-all duration-500"
                     style="width: {cacheMetrics.shaderHitRate}%"
@@ -865,19 +865,19 @@ and performance monitoring across N64 and YoRHa gaming components
               </div>
             </div>
           </div>
-          <!-- Performance History -->
-          <div class="lg:col-span-2 bg-slate-800/50 border border-purple-500/30 rounded-lg p-6 backdrop-blur-sm">
-            <h3 class="text-lg font-semibold mb-4 text-purple-300">Performance History</h3>
+          <!-- Performance, History -->
+          <div class="lg:col-span-2 bg-slate-800/50 border border-purple-500/30 rounded-lg p-6, backdrop-blur-sm">
+            <h3 class="text-lg font-semibold mb-4, text-purple-300">Performance History</h3>
             {#if performanceHistory.length > 0}
-              <div class="h-48 bg-slate-900/50 rounded-lg flex items-end justify-center p-4">
-                <p class="text-slate-400">Performance chart visualization would go here</p>
-                <p class="text-xs text-slate-500 mt-2">
+              <div class="h-48 bg-slate-900/50 rounded-lg flex items-end justify-center, p-4">
+                <p, class="text-slate-400">Performance chart visualization would go here</p>
+                <p class="text-xs text-slate-500, mt-2">
                   {performanceHistory.length} data points collected
                 </p>
               </div>
             {:else}
-              <div class="h-48 bg-slate-900/50 rounded-lg flex items-center justify-center">
-                <p class="text-slate-400">No performance data yet - start the demo to collect metrics</p>
+              <div class="h-48 bg-slate-900/50 rounded-lg flex items-center, justify-center">
+                <p, class="text-slate-400">No performance data yet - start the demo to collect metrics</p>
               </div>
             {/if}
           </div>

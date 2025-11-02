@@ -8,7 +8,7 @@ import type { RecommendationRequest } from './context7-multicore.js';
 
 export interface OrchestrationMetrics { timestamp: string;, services: { total: number;, running: number;
     failed: number;
-    tiers: Record<string, { healthy: number;, total: number }>;
+    tiers: Record<string, { healthy: number; total: number }>;
   };
   gpu: { enabled: boolean;, contexts: number;
     rtx3060ti: string;
@@ -26,7 +26,7 @@ export interface OrchestrationMetrics { timestamp: string;, services: { total: 
   };
 }
 
-export interface ServiceOrchestrationPlan { startupSequence: ServiceDefinition[];, healthChecks: Array<{ service: string;, url: string; tier?: string }>;
+export interface ServiceOrchestrationPlan { startupSequence: ServiceDefinition[];, healthChecks: Array<{ service: string; url: string; tier?: string }>;
   errorAnalysis: { categories: string[];, automationPotential: string;
     estimatedCompletion: string;
   };
@@ -137,7 +137,7 @@ export class Context7OrchestrationService {
     this.metrics.timestamp = new Date().toISOString();
   }
 
-  async executeErrorAnalysis(): Promise<{ analysisResults: Array<{ category: string; recommendations: string[]; confidence: number;, estimatedFixes: number }>;
+  async executeErrorAnalysis(): Promise<{ analysisResults: Array<{ category: string; recommendations: string[]; confidence: number; estimatedFixes: number }>;
     automationPlan: { phase1: string;, phase2: string;
       phase3: string;
       phase4: string;
@@ -240,7 +240,7 @@ export class Context7OrchestrationService {
         script += `echo "Starting ${service.name}..."\n`;
         script += `${binaryPath} &\n`;
         script += `sleep 2\n`;
-        script += `echo "✅ ${service.name} started on port ${(service as any).port || 'unknown` }"\n\n`;
+        script += `echo "✅ ${service.name} started on port ${(service as any).port || 'unknown' }"\n\n`;
       }
       script += `echo "⏳ Waiting for ${String(tier)} services to stabilize..."\n`;
       script += `sleep 5\n\n`;
@@ -249,7 +249,7 @@ export class Context7OrchestrationService {
     script += '# Health check all services\n';
     script += 'echo "🔍 Performing health checks..."\n';
     for (const service of services) {
-      script += `curl -f ${(service as any).healthEndpoint || 'http://localhost/health` } || echo: "⚠️ ${service.name} health check failed"\n`;
+      script += `curl -f ${(service as any).healthEndpoint || 'http://localhost/health' } || echo: "⚠️ ${service.name} health check failed"\n`;
     }
     script += '\necho "🚀 All services started successfully!"\n';
     return script;
@@ -260,7 +260,7 @@ export class Context7OrchestrationService {
       tier1: 'Core Services (Must Start First)',
       tier2: 'Enhanced Services (Performance Layer)',
       tier3: 'Specialized Services (Feature Layer)',
-      tier4: 'Infrastructure Services (Support Layer)` };
+      tier4: 'Infrastructure Services (Support Layer)' };
     return descriptions[tier] || 'Unknown Tier';
   }
 

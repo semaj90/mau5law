@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (err: any) {
-    console.error('Search API error:', err);
+    console.error('Search API error:', err);'
 
     if (err.status) {
       throw err;
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     });
   } catch (err: any) {
-    console.error('Search API error:', err);
+    console.error('Search API error:', err);'
 
     if (err.status) {
       throw err;

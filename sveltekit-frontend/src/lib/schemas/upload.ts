@@ -25,7 +25,7 @@ export const fileUploadSchema = z.object({
   file: z
     .instanceof(File, { message: 'Please upload a file' })
     .refine((file) => file.size > 0, 'File is empty')
-    .refine((file) => file.size <= MAX_FILE_SIZE, 'File size must be less than 50MB')
+    .refine((file) => file.size <= MAX_FILE_SIZE, 'File size must be less than, 50MB')
     .refine(
       (file) => ALLOWED_MIME_TYPES.includes(file.type as any),
       'File type not supported'
@@ -85,8 +85,8 @@ export function validateFileUpload(file: File) {
   }
 }
 // Export types
-export type FileUploadInput = z.input<typeof fileUploadSchema>;
-export type FileUploadData = z.output<typeof fileUploadSchema>;
-export type DocumentProcessingOptions = z.output<typeof documentProcessingSchema>;
-export type BatchUploadData = z.output<typeof batchUploadSchema>;
-export type SearchUploadData = z.output<typeof searchUploadSchema>;
+export type FileUploadInput = z.input<typeof, fileUploadSchema>;
+export type FileUploadData = z.output<typeof, fileUploadSchema>;
+export type DocumentProcessingOptions = z.output<typeof, documentProcessingSchema>;
+export type BatchUploadData = z.output<typeof, batchUploadSchema>;
+export type SearchUploadData = z.output<typeof, searchUploadSchema>;

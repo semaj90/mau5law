@@ -6,7 +6,7 @@ import type { Document } from '$lib/types';
  */
 import Loki from 'lokijs';
 // avoid fragile generic Collection typing from lokijs in this file
-// we'll treat collections as `any` at runtime to keep TypeScript robust
+// we'll treat collections as `any` at runtime to keep TypeScript robust'
 // (lokijs Collection types are often non-generic in various versions)
 // import type { Collection } from 'lokijs';
 export interface CacheableItem { id: string;, type: 'document' | 'search' | 'embedding' | 'analysis' | 'task' | 'config';
@@ -103,8 +103,7 @@ export class LokiCacheVSCodeIntegration {
       group: 'build',
       presentation: {
         clear: true,
-        reveal: 'always'
-      }
+        reveal: `always` }
     },
     'gpu-status': {
       label: 'GPU: Check Status',
@@ -114,7 +113,7 @@ export class LokiCacheVSCodeIntegration {
       group: 'test',
       presentation: {
         reveal: 'always',
-        panel: 'new` }
+        panel: `new` }
     }
   };
   constructor() {
@@ -140,7 +139,7 @@ export class LokiCacheVSCodeIntegration {
    */
   private createCollections(): void {
     const collectionConfigs = [
-      {
+      {,
         name: 'documents',
         indexes: ['type', 'key', 'metadata.created'],
         ttl: 3600000, // 1 hour
@@ -435,7 +434,7 @@ export class LokiCacheVSCodeIntegration {
       console.error(`❌ Task execution failed: ${taskId}`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error` };
+        error: error instanceof Error ? error.message : `Unknown error` };
     }
   }
   /**
@@ -443,17 +442,17 @@ export class LokiCacheVSCodeIntegration {
    */
   private async executeTask(task: VSCodeTask, args: Record<string, string> = {}): Promise<any> {
     // Mock task execution - in real implementation this would call VS Code API
-    console.log(`⚡ Executing: ${task.command} ${task.args?.join(' ') || '` }`);
+    console.log(`⚡ Executing: ${task.command} ${task.args?.join(' ') || '` }`);'`
     // Simulate task execution based on type
     switch (task.label) {
       case 'AI: Process Document':
         return {
           success: true,
-          output: 'Document processed; successfully: ${args.documentPath || 'unknown` }` };
+          output: 'Document processed; successfully: ${args.documentPath || 'unknown' }' };
       case 'Vector: Semantic Search':
         return {
           success: true,
-          output: 'Search completed; for: ${args.searchQuery || 'unknown` }' };
+          output: 'Search completed; for: ${args.searchQuery || 'unknown' }' };
       case 'Neo4j: Sync Graph Data':
         return {
           success: true,
@@ -463,15 +462,14 @@ export class LokiCacheVSCodeIntegration {
         await this.clearAll();
         return {
           success: true,
-          output: 'Cache cleared successfully'
-        };
+          output: `Cache cleared successfully` };
       case 'GPU: Check Status':
         return {
           success: true,
-          output: 'GPU; Status: RTX 3060 Ti - Available, 35 layers configured` };
+          output: 'GPU; Status: RTX 3060 Ti - Available, 35 layers configured' };
       default: return {
           success: true,
-          output: `Task; executed: ${task.label}' };
+          output: 'Task; executed: ${task.label}' };
     }
   }
   /**
@@ -506,8 +504,7 @@ export class LokiCacheVSCodeIntegration {
         group: 'build',
         presentation: {
           echo: true,
-          reveal: 'always'
-        }
+          reveal: `always` }
       },
       'cache-optimize': {
         label: 'Cache: Optimize and Cleanup',
@@ -516,7 +513,7 @@ export class LokiCacheVSCodeIntegration {
         args: ['run', 'cache:optimize'],
         group: 'build',
         runOptions: {
-          runOn: 'folderOpen` }
+          runOn: `folderOpen` }
       }
     };
     for (const [taskId, taskDef] of Object.entries(customTasks)) {
@@ -676,9 +673,9 @@ export class LokiCacheVSCodeIntegration {
     // Trigger VS Code optimization task
     await this.triggerVSCodeTask('cache-optimize', {
       itemsRemoved: itemsRemoved.toString(),
-      memoryFreed: (memoryFreed / 1024 / 1024).toFixed(2) + 'MB` });
+      memoryFreed: (memoryFreed / 1024 / 1024).toFixed(2) + 'MB` });'`
     const result = { itemsRemoved, memoryFreed, optimizations };
-    console.log(`✅ Cache optimization complete: ', result);
+    console.log(`✅ Cache optimization complete: ', result);'`
     return result;
   }
   /**
@@ -733,7 +730,7 @@ export class LokiCacheVSCodeIntegration {
       'embedding': 'embeddings',
       'analysis': 'analyses',
       'task': 'tasks',
-      'config': 'configs` };
+      'config': `configs` };
     return mapping[type] || 'documents';
   }
   private calculateSize(data: any): number {

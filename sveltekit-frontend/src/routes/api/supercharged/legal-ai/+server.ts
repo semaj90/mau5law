@@ -80,17 +80,17 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: {
             title: '🚀 Supercharged Legal AI System Status',
-            systems: { redis: {, enabled: systemStatus.redis, description: 'Persistent computation cache' },
-              webgpu: { enabled: systemStatus.webgpu, description: 'GPU compute shaders' },
-              simd: { enabled: systemStatus.simd, description: `SIMD JSON parsing` },
-              som: { enabled: systemStatus.som, description: `Self-Organizing Map intelligence` }
+            systems: {, redis: {, enabled: systemStatus.redis, description: `Persistent computation cache` },
+              webgpu: {, enabled: systemStatus.webgpu, description: `GPU compute shaders` },
+              simd: {, enabled: systemStatus.simd, description: `SIMD JSON parsing` },
+              som: {, enabled: systemStatus.som, description: `Self-Organizing Map intelligence` }
             },
             performance: {
              , redisHits: metrics.redisHits,
               webgpuComputations: metrics.webgpuComputations,
               simdOperations: metrics.simdParsing,
               cacheEfficiency: `${(metrics.efficiency * 100).toFixed(1)}%`,
-              avgProcessingTime: `${metrics.totalProcessingTime.toFixed(2)}ms' },
+              avgProcessingTime: '${metrics.totalProcessingTime.toFixed(2)}ms' },
             capabilities: [
               '🔥 3x faster JSON parsing with SIMD',
               '⚡ 10-100x faster repeated operations (Redis cache)',
@@ -114,14 +114,14 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
       case 'showcase': {
-        // Show what's possible with the integrated system
+        // Show what's possible with the integrated system'
         return json({
           success: true,
           data: {
-            title: '🎯 What You Can Do With Redis + WebGPU + SIMD',
+           , title: '🎯 What You Can Do With Redis + WebGPU + SIMD',
             use_cases: [
-              {
-                scenario: 'Large Legal Document Analysis',
+              {,
+               , scenario: 'Large Legal Document Analysis',
                 traditional: '30-60 seconds processing time',
                 optimized: '0.5-2 seconds with cache, 5-8 seconds first time',
                 improvement: '15-120x faster',
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url }) => {
               {
                 scenario: 'Real-time Legal Search',
                 traditional: 'Database queries, 1-3 seconds response',
-                optimized: 'Memory + GPU cache, <50ms response',
+                optimized: 'Memory + GPU cache, <50ms, response',
                 improvement: '20-60x faster',
                 technologies: ['Multi-tier caching', 'Semantic similarity', 'WebGPU indexing']
               },
@@ -163,10 +163,10 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: {
-            title: '🚀 Supercharged Legal AI System',
+           , title: '🚀 Supercharged Legal AI System',
             description: 'Redis + WebGPU + SIMD JSON integrated for maximum performance',
             endpoints: {
-              status: '/api/supercharged/legal-ai?demo=status',
+             , status: '/api/supercharged/legal-ai?demo=status',
               benchmark: '/api/supercharged/legal-ai?demo=benchmark',
               showcase: '/api/supercharged/legal-ai?demo=showcase'
             },
@@ -222,8 +222,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'queryVector and candidateVectors must be arrays'
-            },
+              error: 'queryVector and candidateVectors must be arrays` },'`
             { status: 400 }
           );
         }
@@ -245,8 +244,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'npmOutput must be a string'
-            },
+              error: `npmOutput must be a string` },
             { status: 400 }
           );
         }
@@ -416,8 +414,7 @@ async function runPerformanceBenchmark(): Promise<PerformanceBenchmarkResults> {
       average_improvement: '25-100x faster across operations',
       memory_usage: '60% reduction',
       server_resources: '70% less CPU usage',
-      user_experience: 'Sub-second responses'
-    }
+      user_experience: `Sub-second responses` }
   };
 }
 /**

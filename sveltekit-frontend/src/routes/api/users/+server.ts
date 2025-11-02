@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
     // Get total count for pagination
     const totalCountResult = await db
-      .select({ count: sql<number>`count(*)' })
+      .select({ count: sql<number>`count(*)' })'`
       .from(users)
       .where(whereClause);
     const totalCount = totalCountResult[0]?.count || 0;
@@ -116,13 +116,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const data = await request.json();
     // Validate required fields
     if (!data.email || !data.password) {
-      return json({ error: 'Email and password are required' }, { status: 400 });
+      return json({ error: `Email and password are required` }, { status: 400 });
     }
     // Check if email already exists
     const existingUser = await db.select().from(users).where(eq(users.email, data.email)).limit(1);
 
     if (existingUser.length > 0) {
-      return json({ error: 'Email already exists' }, { status: 409 });
+      return json({ error: `Email already exists` }, { status: 409 });
     }
 
     // Hash password (you should use proper password hashing)
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     return json(newUser, { status: 201 });
   } catch (err: any) {
-    console.error('Error creating user:', extractErrorMessage(err));
+    console.error('Error creating user: `, extractErrorMessage(err));'`
     return json({ error: `Failed to create user` }, { status: 500 });
   }
 };

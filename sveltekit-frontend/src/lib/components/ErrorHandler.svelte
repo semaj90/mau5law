@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import { toasts, removeToast } from '$lib/stores/errorStore';
   // Using store directly in template via $toasts
 </script>
@@ -25,16 +25,16 @@
   .title { font-weight: 600; }
   .msg { font-size: 0.95rem; margin-top: 0.25rem; }
 </style>
-<div class="toast-container">
+<div, class="toast-container">
   {#each $toasts as t (t.id)}
-    <div class="toast {t.level}">
-      <div style="display:flex;justify-content: space-between;align-items:center;">
+    <div, class="toast {t.level}">
+      <div, style="display:flex;justify-content: space-between;align-items:center;">
         <div>
-          {#if t.title}<div class="title">{t.title}{/if}
-          <div class="msg">{t.message}</div>
+          {#if t.title}<div, class="title">{t.title}{/if}
+          <div, class="msg">{t.message}</div>
         </div>
-        <div style="margin-left:1rem;">
-          <button onclick={() => removeToast(t.id)} aria-label="Dismiss toast" style="background:transparent;border:none;color:rgba(255,255,255,0.9);">✖</button>
+        <div, style="margin-left:1rem;">
+          <button, onclick={() => removeToast(t.id)} aria-label="Dismiss toast" style="background:transparent;border:none;color:rgba(255,255,255,0.9);">✖</button>
         </div>
       </div>
     </div>

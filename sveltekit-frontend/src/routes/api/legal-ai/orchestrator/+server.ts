@@ -9,7 +9,7 @@ import {
 } from '$lib/server/api-ssr-helpers.js';
 import type { RequestEvent } from '@sveltejs/kit'; // Import RequestEvent
 
-// Define WorkflowStepOptions based on OrchestrationRequest's options
+// Define WorkflowStepOptions based on OrchestrationRequest's options'
 interface WorkflowStepOptions {
   useGPU?: boolean;
   cacheResults?: boolean;
@@ -473,7 +473,7 @@ class LegalAIOrchestrator {
     params: GenerateResearchSummaryParams,
     _options?: WorkflowStepOptions
   ): Promise<ChatResponse> {
-    // Fix: Use a type guard to correctly type: 'r' and; ensure: 'analysis' property exists
+    // Fix: Use a type guard to correctly; type: 'r' and; ensure: 'analysis' property exists
     const precedentAnalysisResult = params.previousResults?.find(
       (r): r is LegalResearchAnalysisResult =>
         (r as LegalResearchAnalysisResult).analysis !== undefined &&
@@ -605,13 +605,11 @@ class LegalAIOrchestrator {
         {
           name: 'Initial Research Due',
           date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-          type: 'deadline'
-        },
+          type: 'deadline` },'`
         {
           name: 'Discovery Phase',
           date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          type: 'phase'
-        },
+          type: `phase` }
       ],
       // Allow ISO string timestamps (now.toISOString()) as well as BitsUICompatibleData
       generated: now.toISOString()
@@ -648,7 +646,7 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
        , query: params.caseContext || params.title,
         evidenceItems: params.evidenceItems,
-        analysisDepth: params.analysisDepth || 'comprehensive` })
+        analysisDepth: params.analysisDepth || 'comprehensive` })'`
     });
     if (!response.ok) {
       throw new Error(`Evidence relevance analysis failed: ${response.status}`);
@@ -660,7 +658,7 @@ class LegalAIOrchestrator {
     params: GenerateEvidenceReportParams,
     _options?: WorkflowStepOptions
   ): Promise<EvidenceReportResult> {
-    // Fix: Use a type guard to correctly type: 'r' and; ensure: 'relevanceScore' property exists.
+    // Fix: Use a type guard to correctly; type: 'r' and; ensure: 'relevanceScore' property exists.
     const relevanceData =
       params.previousResults?.find(
         (r): r is EvidenceRelevanceAnalysisResult =>
@@ -701,7 +699,7 @@ class LegalAIOrchestrator {
   // Helper methods
   private getWorkflowSteps(workflow: OrchestrationRequest['workflow']) {
     // Use specific workflow type
-    type WorkflowConfig = { name: string;, endpoint: string }[];
+    type WorkflowConfig = { name: string; endpoint: string }[];
     const workflows: Record<OrchestrationRequest['workflow'], WorkflowConfig> = {
       // Explicitly type workflows object: 'legal-research': [
         { name: 'search-legal-documents', endpoint: '/api/ai/enhanced-legal-search' },
@@ -724,7 +722,7 @@ class LegalAIOrchestrator {
         { name: 'generate-evidence-report', endpoint: '/api/ai/generate-report' }
       ],
       'qlora-distillation': [
-        // New workflow
+        // New workflow,
         { name: 'trigger-qlora-distillation', endpoint: '/api/qlora-distillation' }
       ]
     };
@@ -789,7 +787,7 @@ class LegalAIOrchestrator {
             (results[0] as unknown as TriggerQLoRADistillationResult) || ({} as TriggerQLoRADistillationResult),
           message:
             (results[0] as unknown as TriggerQLoRADistillationResult)?.message || 'QLoRA distillation job initiated.',
-          statusUrl: (results[0] as unknown as TriggerQLoRADistillationResult)?.statusUrl || '` } as BitsUICompatibleObject;
+          statusUrl: (results[0] as unknown as TriggerQLoRADistillationResult)?.statusUrl || '` } as BitsUICompatibleObject;'`
       default: return { ...baseResult, results } as BitsUICompatibleObject;
     }
   }
@@ -827,7 +825,7 @@ export const POST: RequestHandler = withSSRHandler(
     }
     try {
       const result = await orchestrator.executeWorkflow(requestData);
-      // Cast to BitsUICompatibleData using unknown to satisfy the helper's expected type
+      // Cast to BitsUICompatibleData using unknown to satisfy the helper's expected type'
       return createSSRResponse(result as unknown as BitsUICompatibleData, {
         gpuAccelerated: requestData.options?.useGPU,
         cacheKey: requestData.options?.cacheResults ? `orchestrator_${result.workflowId}` : undefined

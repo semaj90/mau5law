@@ -95,7 +95,7 @@ type LangChainRagModule = {
 // removed static import of getVectorStore because the module may export different shapes
 // add a tolerant runtime loader to handle various export shapes (getVectorStore | default | createVectorStore | vectorStore)
 async function loadVectorStore(): Promise<VectorStore> {
-  // widen the cast to allow property access regardless of the module's actual export shape
+  // widen the cast to allow property access regardless of the module's actual export shape'
   const mod = (await import('$lib/ai/langchain-rag')) as unknown as LangChainRagModule & Record<string, unknown>;
 
   // helper to normalize candidate factories (handles sync or async return)
@@ -106,7 +106,7 @@ async function loadVectorStore(): Promise<VectorStore> {
       const store = maybe instanceof Promise ? await maybe : maybe;
       if (store && typeof (store as VectorStore).similaritySearch === 'function') return store as VectorStore;
     } catch {
-      // swallow here; we'll try other candidates or throw later
+      // swallow here; we'll try other candidates or throw later'
     }
     return null;
   }
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     if (!useGemmaEmbeddings && !includePgVector) {
       const searchStart = Date.now();
       const store = await loadVectorStore();
-      // strongly-typed langchain results (avoid `any')
+      // strongly-typed langchain results (avoid `any')'`
       const langchainResults = (await store.similaritySearch(query, k)) as unknown as LangchainSearchResult[];
       searchTime = Date.now() - searchStart;
 
@@ -167,8 +167,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
               semantic_score: typeof scoreNum === 'number' ? 1 - scoreNum : undefined,
               relevance_level: relevance,
               doc: docs[0],
-              source: 'langchain'
-            });
+              source: 'langchain` });'`
             continue;
           }
         }
@@ -179,8 +178,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           score: scoreNum,
           semantic_score: typeof scoreNum === 'number' ? 1 - scoreNum : undefined,
           relevance_level: relevance,
-          source: 'langchain'
-        });
+          source: `langchain` });
       }
     }
 
@@ -216,19 +214,18 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
               // This avoids assigning a value with optional `id` to DocumentRow.id (required).
               const docRow: DocumentRow | null = resultData.id ? (resultData as unknown as DocumentRow) : null;
               results.push({
-                chunk: resultData.content || `Document: ${resultData.title || 'unknown` }`,
+                chunk: resultData.content || `Document: ${resultData.title || 'unknown` }`,'`
                 distance: resultData.distance,
                 semantic_score: resultData.semantic_score,
                 relevance_level: resultData.relevance_level,
                 doc: docRow,
                 metadata: resultData.metadata,
-                source: includePgVector && !useGemmaEmbeddings ? 'pgvector' : 'hybrid'
-              });
+                source: includePgVector && !useGemmaEmbeddings ? 'pgvector' : `hybrid` });
             }
           }
         }
       } catch (error) {
-        console.error('Enhanced search fallback error:', error);
+        console.error('Enhanced search fallback error:', error);'
         // Fallback to LangChain if Gemma/pgvector fails
         if (results.length === 0) {
           const store = await loadVectorStore();
@@ -278,7 +275,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     return json(response);
   } catch (err: any) {
     // Normalize unknown error into a safe string message to avoid `any`
-    console.error('Enhanced RAG API error:', err);
+    console.error('Enhanced RAG API error:', err);'
     const message =
       err instanceof Error
         ? err.message

@@ -67,7 +67,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       return json({ error: 'Content is required' }, { status: 400 });
     }
     // Enhanced prompt for better auto-form fill capabilities
-    const enhancedPrompt = `You are an advanced legal AI assistant specializing in evidence analysis and metadata extraction. Extract comprehensive structured metadata from the following content for use in a legal case management system.
+    const enhancedPrompt = `You are an advanced legal AI assistant specializing in evidence analysis and metadata extraction. Extract comprehensive structured metadata from the following content for use in a legal case management system.`
 CRITICAL: Return ONLY a valid JSON object with NO additional text, markdown, or formatting.
 Required JSON structure:
 {
@@ -113,12 +113,12 @@ Analysis Guidelines:
 8. Identify potential red flags or concerns
 File Details:
 -; Name: ${fileName || 'Unknown'}
-- Type: ${fileType || 'Unknown'}
+- Type: ${fileType || 'Unknown` }'`
 - Enhanced Analysis: ${enhanced ? 'Yes' : `No` }
 Content to analyze:
 ${content.slice(0, enhanced ? 5000 : 2000)}
-Return ONLY the JSON object. No markdown, no explanations, no additional text.`;
-    const basicPrompt = `Extract structured legal metadata from this content. Return ONLY valid JSON:
+Return ONLY the JSON object. No markdown, no explanations, no additional text.`;`
+    const basicPrompt = `Extract structured legal metadata from this content. Return ONLY valid JSON:`
 {
   "tags": ["tag1", "tag2"],
   "title": "Brief title",
@@ -131,8 +131,8 @@ Return ONLY the JSON object. No markdown, no explanations, no additional text.`;
   "summary": "Brief summary",
   "keyFacts": ["fact1", "fact2"]
 }
-File: ${fileName || 'Unknown` }
-Content: ${content.slice(0, 2000)}`;
+File: ${fileName || 'Unknown` }'`
+Content: ${content.slice(0, 2000)}`;`
     const prompt = enhanced ? enhancedPrompt : basicPrompt;
     // Try legal Gemma3 model first, with fallbacks
     const models = ['gemma3:legal', 'gemma3', 'gemma3-legal:latest'];
@@ -167,7 +167,7 @@ Content: ${content.slice(0, 2000)}`;
       }
     }
     if (!result) {
-      return json({ error: 'No AI models available' }, { status: 503 });
+      return json({ error: `No AI models available` }, { status: 503 });
     }
     const parsedResult: LegalMetadata = await parseAndReturnTags(
       // Changed type from any
@@ -190,7 +190,7 @@ Content: ${content.slice(0, 2000)}`;
     return parsedResult;
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('AI Tagging error:', error);
+    console.error('AI Tagging error:', error);'
     return json(
       {
         error: 'Failed to process content for tagging',
@@ -252,16 +252,16 @@ async function parseAndReturnTags(
     // Remove common AI response prefixes/suffixes
     const prefixesToRemove = [
       'Here is the JSON:',
-      "Here's the extracted data:",
+      "Here's the extracted data:",'
       'Based on the content, here is the structured data:',
       'The extracted metadata is:',
-      '```json',
-      '```',
+      '```json',`
+      '```',`
     ];
     const suffixesToRemove = [
       'Please let me know if you need any clarification.',
       'This analysis is based on the provided content.',
-      '```',
+      '```',`
       'Let me know if you need anything else.',
     ];
     prefixesToRemove.forEach(prefix => {
@@ -276,7 +276,7 @@ async function parseAndReturnTags(
     });
     // Find JSON boundaries more robustly
     const jsonStart = cleanResponse.indexOf('{');
-    const jsonEnd = cleanResponse.lastIndexOf(` }');
+    const jsonEnd = cleanResponse.lastIndexOf(` }');'`
     if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
       const jsonStr = cleanResponse.substring(jsonStart, jsonEnd + 1);
       try {
@@ -325,7 +325,7 @@ async function parseAndReturnTags(
   if (enhanced) {
     tagsResult = enhanceWithFileMetadata(tagsResult, fileName, fileType);
   }
-  return tagsResult; // <-- return the data object, not json(Response)
+  return tagsResult; // <-- return the data object, not, json(Response)
 }
 function validateAndCleanParsedData(parsed: Partial<LegalMetadata>, _enhanced: boolean): Partial<LegalMetadata> {
   // Changed types
@@ -475,12 +475,12 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
 
   const lower = response.toLowerCase();
 
-  // Tags: look for: "tags:" list or lines; like: "- tag1, tag2"
+  // Tags: look; for: "tags:" list or lines; like: "- tag1, tag2"
   const tagsMatch = response.match(/"tags"\s*:\s*\[([^\]]+)\]/i) || response.match(/tags[:\-]\s*([^\n\r]+)/i);
   if (tagsMatch) {
     const raw = tagsMatch[1];
     const items = raw
-      .replace(/["'\[\]]/g, '')
+      .replace(/["'\[\]]/g, '')'"
       .split(/[,;|]/)
       .map(s => s.trim())
       .filter(Boolean);

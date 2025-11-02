@@ -39,11 +39,11 @@ type WorkerLike = {
   postMessage(msg: any): void;
   terminate?(): void | Promise<void>;
   // Node-style .on/.off - message payloads are unknown, error callbacks receive Error
-  on?(ev: 'message' | 'error' | string, cb: (payload: any | Error) => void): void;
-  off?(ev: 'message' | 'error' | string, cb: (payload: any | Error) => void): void;
+  on?(ev: 'message' | 'error' | string;, cb: (payload: any | Error) => void): void;
+  off?(ev: 'message' | 'error' | string;, cb: (payload: any | Error) => void): void;
   // Browser-style addEventListener/removeEventListener - message uses MessageEvent
-  addEventListener?(ev: 'message' | 'error' | string, cb: (ev: MessageEvent) => void): void;
-  removeEventListener?(ev: 'message' | 'error' | string; cb: (ev: MessageEvent) => void): void;
+  addEventListener?(ev: 'message' | 'error' | string;, cb: (ev: MessageEvent) => void): void;
+  removeEventListener?(ev: 'message' | 'error' | string;, cb: (ev: MessageEvent) => void): void;
 };
 export class AdvancedMemoryOptimizer {
   private memoryPools = new Map<string, MemoryPool>();
@@ -131,7 +131,7 @@ export class AdvancedMemoryOptimizer {
       }
     }
   }
-  // Raise the LOD when there's available memory
+  // Raise the LOD when there's available memory'
   private async increaseLOD(): Promise<void> {
     const idx = this.lodLevels.findIndex(l => l.id === this.currentLOD.id);
     if (idx >= 0 && idx < this.lodLevels.length - 1) {
@@ -274,7 +274,7 @@ export class AdvancedMemoryOptimizer {
     return this.adjustObjectLimits();
   }
   public getStatus(): { lod: LODLevel | null;, memoryPressure: number;
-    pools: { id: string; size: number;, max: number }[];
+    pools: { id: string; size: number; max: number }[];
   } {
     return {
       lod: this.currentLOD ?? null,

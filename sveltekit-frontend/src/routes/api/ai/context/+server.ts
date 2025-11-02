@@ -112,7 +112,7 @@ export async function GET({ url }): Promise<any> {
       version: "1.0.0"
     })
   } catch (error: any) {
-    console.error("Context API error:", error)
+    console.error("Context API error:", error)"
     return json({
         success: false,
         error: "Failed to retrieve AI context",
@@ -139,7 +139,7 @@ export async function POST({ request }): Promise<any> {
       message: "Context updated successfully"
     })
   } catch (error: any) {
-    console.error("Context update error:", error)
+    console.error("Context update error:", error)"
     return json({
         success: false,
         error: "Failed to update context"

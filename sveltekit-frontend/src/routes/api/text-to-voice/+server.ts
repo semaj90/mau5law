@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       try {
         const resp = await fetch(`${TTS_SERVICE_URL}/synthesize`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json` },'`
           body: JSON.stringify({ text }),
           signal: controller.signal
         }).catch(() => null);
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const audioUrl = `data:audio/wav;base64,${base64}`;
     return json({ success: true, audioUrl, length: String(text).length }, { status: 200 });
   } catch (err) {
-    console.error('Text-to-voice error:', err);
+    console.error('Text-to-voice error:', err);'
     return json({ success: false, error: String(err) }, { status: 500 });
   }
 };

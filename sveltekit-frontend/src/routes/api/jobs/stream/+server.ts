@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       const subscribers = new Map<string, () => void>();
       // Send initial connection message
       controller.enqueue(
-        `data: ${JSON.stringify({
+        `data: ${JSON.stringify({`
          , type: 'connection',
           message: 'Connected to job status stream',
           timestamp: new Date().toISOString()
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
             // Send all jobs
             const allJobs = globalLoki.getAllJobs();
             controller.enqueue(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'jobs_snapshot',
                 jobs: allJobs,
                 timestamp: new Date().toISOString()
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
             // Send specific jobs
             const jobs = jobIds.map((id: string) => globalLoki.getJob(id)).filter(Boolean);
             controller.enqueue(
-              `data: ${JSON.stringify({
+              `data: ${JSON.stringify({`
                , type: 'jobs_snapshot',
                 jobs,
                 timestamp: new Date().toISOString()
@@ -64,7 +64,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
           // Send stats
           const stats = globalLoki.getStats();
           controller.enqueue(
-            `data: ${JSON.stringify({
+            `data: ${JSON.stringify({`
              , type: 'stats',
               stats,
               timestamp: new Date().toISOString()
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
           return;
         }
         controller.enqueue(
-          `data: ${JSON.stringify({
+          `data: ${JSON.stringify({`
            , type: 'heartbeat',
             timestamp: new Date().toISOString()
           })}\n\n`
@@ -131,6 +131,6 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control` }
+      'Access-Control-Allow-Headers': 'Cache-Control' }
   });
 };

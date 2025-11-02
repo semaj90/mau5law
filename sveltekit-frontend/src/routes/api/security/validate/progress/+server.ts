@@ -33,8 +33,7 @@ export const GET: RequestHandler = async ({ request }) => {
  */
 export interface ValidationProgressMessage {
   type: 'progress' | 'complete' | 'error',
-  message: string; percentage: number
-  timestamp: string;
+  message: string; percentage: number; timestamp: string;
   stage?: string
   details?: any
 }

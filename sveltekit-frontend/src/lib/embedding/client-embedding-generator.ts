@@ -10,8 +10,8 @@ type MemoryStats = {
 
 type WorkerToMain =
   | { type: 'initialized' }
-  | { type: 'memory_stats';, stats: MemoryStats }
-  | { type: 'response';, success: boolean; embedding?: number[]; embeddings?: number[][]; error?: string }
+  | { type: 'memory_stats'; stats: MemoryStats }
+  | { type: 'response'; success: boolean; embedding?: number[]; embeddings?: number[][]; error?: string }
   | { type: 'optimize_done' };
 
 /**
@@ -349,7 +349,7 @@ export class ClientEmbeddingGenerator {
   /**
    * Get embedding model information
    */
-  getModelInfo(): { model: string; dimensions: number;, initialized: boolean } {
+  getModelInfo(): { model: string; dimensions: number; initialized: boolean } {
     const dimensions = this.embedModel === 'nomic-embed' ? 384 : this.embedModel === 'ollama-embedding' ? 1536 : 512;
     return {
       model: this.embedModel,
@@ -374,7 +374,7 @@ export class ClientEmbeddingGenerator {
       const payload = { model: 'embeddinggemma:latest', input: text };
       const res = await fetch(`${this.ollamaUrl}/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(payload)
       });
       if (!res.ok) {
@@ -404,7 +404,7 @@ export class ClientEmbeddingGenerator {
       const payload = { model: 'embeddinggemma:latest', input: texts };
       const res = await fetch(`${this.ollamaUrl}/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(payload)
       });
       if (!res.ok) {
@@ -432,7 +432,7 @@ export class ClientEmbeddingGenerator {
     try {
       const resp = await this.postWorkerRequest(
         (data: any) => data?.type === 'memory_stats',
-        { type: 'get_memory_stats' },
+        { type: `get_memory_stats` },
         5000
       );
       return resp?.stats ?? null;
@@ -445,7 +445,7 @@ export class ClientEmbeddingGenerator {
    */
   async optimizeMemory(): Promise<void> {
     if (this.worker) {
-      this.worker.postMessage({ type: `optimize_memory` });
+      this.worker.postMessage({ type: `optimize_memory' });'`
     }
     // Trigger garbage collection if available
     if (typeof (globalThis as unknown as { gc?: () => void }).gc === 'function') {
@@ -467,7 +467,7 @@ export class ClientEmbeddingGenerator {
 export const clientEmbeddingGenerator = new ClientEmbeddingGenerator('ollama-embedding', getOllamaEndpoint());
 // Utility functions for embedding management
 export class EmbeddingCache {
-  private cache = new Map<string, { embedding: Float32Array;, timestamp: number }>();
+  private cache = new Map<string, { embedding: Float32Array; timestamp: number }>();
   private maxCacheSize = 1000;
   private maxAge = 24 * 60 * 60 * 1000; // 24 hours
   /**

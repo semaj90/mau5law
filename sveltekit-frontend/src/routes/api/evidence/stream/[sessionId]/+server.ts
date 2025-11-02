@@ -58,7 +58,7 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
 			}
 		});
 	} catch (error: any) { // Changed from any to unknown
-		console.error('❌ WebSocket upgrade error:', error);
+		console.error('❌ WebSocket upgrade error:', error);'
 		return new Response('WebSocket upgrade failed', { status: 500 });
 	}
 };
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 			if (!type || !payload) {
 				return new Response(JSON.stringify({ error: 'Type and payload required for publish action', code: 400 }), {
 					status: 400,
-					headers: { 'Content-Type': 'application/json' }
+					headers: { 'Content-Type': 'application/json` }'`
 				});
 			}
 			const message: StoredMessage = {
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 			await broadcastMessage(sessionId, message);
 			return new Response(JSON.stringify({ status: 'published', messageId: message.id }), {
 				status: 200,
-				headers: { 'Content-Type': 'application/json' }
+				headers: { 'Content-Type': `application/json` }
 			});
 		} else {
 			return new Response(

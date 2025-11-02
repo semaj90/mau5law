@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
           ? (b['prompt'] as string)
           : 'topology optimization';
 
-    // Conditional fallback for user analytics when there's no active user session
+    // Conditional fallback for user analytics when there's no active user session'
     const userAnalytics =
       typeof b['user'] === 'object' &&
       b['user'] !== null &&
@@ -110,11 +110,11 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       prediction: topologyPrediction,
       webgpu: {
-        initialized: webgpuInit,
+       , initialized: webgpuInit,
         result: webgpuResult
       },
       hmm: {
-        accuracy: hmmMetrics.overallAccuracy,
+       , accuracy: hmmMetrics.overallAccuracy,
         confidence: hmmMetrics.modelConfidence,
         totalPredictions: hmmMetrics.totalPredictions,
         cacheHitRate: hmmMetrics.cacheHitRate
@@ -147,9 +147,9 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'operational',
       services: {
-        qloraTopology: 'ready',
+       , qloraTopology: 'ready',
         hmmPredictor: 'ready',
-        webgpuRag: webgpuInit.adapter ? 'ready' : 'fallback` },
+        webgpuRag: webgpuInit.adapter ? 'ready' : 'fallback' },
       metrics: {
        , hmmAccuracy: hmmMetrics.overallAccuracy,
         hmmConfidence: hmmMetrics.modelConfidence,

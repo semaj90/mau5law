@@ -36,7 +36,7 @@ export type FormFieldType =
 export interface FormField { id: string;, label: string;
   type: string; // Changed from FormFieldType | (string & {})
   required?: boolean;
-  options?: { value: string;, label: string }[];
+  options?: { value: string; label: string }[];
 }
 export interface ModalProps {
   isOpen: boolean;
@@ -63,15 +63,15 @@ export type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown';
 export interface APIResponse<T> {
   success: boolean;
   data?: T;
-  error?: { code: string;, message: string };
-  metadata?: { timestamp: string;, processingTimeMs: number };
+  error?: { code: string; message: string };
+  metadata?: { timestamp: string; processingTimeMs: number };
 }
 export interface FormSubmissionResult<T = unknown> {
   // Changed from T = any
   success: boolean;
   data?: T;
   errors?: Record<string, string[]>;
-  metadata?: { requestId: string; timestamp: string;, processingTimeMs: number };
+  metadata?: { requestId: string; timestamp: string; processingTimeMs: number };
 }
 // AI / Worker
 export type AITaskType =
@@ -103,12 +103,12 @@ export interface AITask { taskId: string;, type: AITaskType;
 }
 export interface WorkerStatus { status: 'idle' | 'processing' | 'error';, activeRequests: number;
   queueLength: number;
-  providers: { id: string;, status: ServiceStatus }[];
+  providers: { id: string; status: ServiceStatus }[];
   maxConcurrent: number;
   uptime: number;
   totalProcessed: number;
   errors: number;
-  performance: { avgTaskTime: number;, tasksPerMinute: number };
+  performance: { avgTaskTime: number; tasksPerMinute: number };
   lastActivity: Date;
 }
 export interface WorkerMessage {
@@ -178,15 +178,15 @@ export interface GPUTaskRequest { taskId: string;, type: GPUTaskType;
 export interface VertexBuffer { name: string;, data: Float32Array;
 }
 // Global app state machine
-export interface GlobalAppContext { user: { id: string;, email: string } | null;
+export interface GlobalAppContext { user: { id: string; email: string } | null;
   activeCaseId: string | null;
   theme: 'light' | 'dark';
 }
 export type GlobalAppEvent =
-  | { type: 'LOGIN'; user: { id: string;, email: string } }
+  | { type: 'LOGIN'; user: { id: string; email: string } }
   | { type: 'LOGOUT' }
-  | { type: 'SET_CASE';, caseId: string }
-  | { type: 'SET_THEME';, theme: 'light' | 'dark' };
+  | { type: 'SET_CASE'; caseId: string }
+  | { type: 'SET_THEME'; theme: 'light' | 'dark' };
 
 // New types for Rerank functionality
 export interface Candidate { id: string;, text: string;

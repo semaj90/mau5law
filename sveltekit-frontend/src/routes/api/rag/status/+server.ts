@@ -15,12 +15,12 @@ function formatError(err: any): string {
 }
 
 // Helper to run exec with a timeout (ms)
-async function execWithTimeout(cmd: string, timeout = 6000): Promise<{ stdout: string;, stderr: string }> {
+async function execWithTimeout(cmd: string, timeout = 6000): Promise<{ stdout: string; stderr: string }> {
   const race = Promise.race([
     execAsync(cmd),
     new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Command timed out')), timeout)),
   ]);
-  return (await race) as { stdout: string;, stderr: string };
+  return (await race) as { stdout: string; stderr: string };
 }
 
 // Helper to run a simple HTTP health check with a timeout (ms).
@@ -56,7 +56,7 @@ async function checkDockerContainer(
   try {
     const { stdout } = await execWithTimeout(`docker ps --filter "name=${containerName}" --format "{{.Status}}"`, 4000);
     const status = String(stdout || '').trim();
-    return { running: status.toLowerCase().includes('up'), status: status || 'Not found` };
+    return { running: status.toLowerCase().includes('up'), status: status || 'Not found` };'`
   } catch (error) {
     return { running: false, error: formatError(error) };
   }
@@ -158,8 +158,8 @@ export const GET: RequestHandler = async () => {
         redis: { healthy: redisHealthy, url: 'localhost:6379', type: 'docker-container' },
         qdrant: { healthy: qdrantHealthy, url: 'http://localhost:6333', type: 'docker-container' },
         embeddings: { healthy: embeddingsHealthy, url: 'http://localhost:11434', type: 'native-service' },
-        ocr: { healthy: ocrHealthy, url: 'native-processing', type: 'native' },
-        storage: { healthy: storageHealthy, url: 'file-system', type: 'native' },
+        ocr: { healthy: ocrHealthy, url: 'native-processing', type: 'native` },'`
+        storage: { healthy: storageHealthy, url: 'file-system', type: `native` },
         search: { healthy: searchHealthy, url: 'built-in', type: `native` }
       },
       healthSummary: {

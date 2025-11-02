@@ -42,7 +42,7 @@ class MultidimensionalRoutingMatrix {
     await new Promise(resolve => setTimeout(resolve, 100));
     // Legal Document Analysis Routes
     this.matrix.set('analyze_legal_document', [
-      {
+      {,
         tool: 'legal-document-analyzer-grpc',
         cost: 0.05,
         latency: 500,
@@ -69,7 +69,7 @@ class MultidimensionalRoutingMatrix {
     ]);
     // Vector Search Routes
     this.matrix.set('vector_search', [
-      {
+      {,
         tool: 'postgresql-pgvector',
         cost: 0.01,
         latency: 100,
@@ -96,7 +96,7 @@ class MultidimensionalRoutingMatrix {
     ]);
     // Evidence Processing Routes
     this.matrix.set('process_evidence', [
-      {
+      {,
         tool: 'tesseract-ocr-wasm',
         cost: 0.001, // Client-side processing
         latency: 2000,
@@ -123,7 +123,7 @@ class MultidimensionalRoutingMatrix {
     ]);
     // Case Management Routes
     this.matrix.set('case_management', [
-      {
+      {,
         tool: 'postgresql-direct',
         cost: 0.005,
         latency: 50,
@@ -284,7 +284,7 @@ class MultidimensionalRoutingMatrix {
     const issues: string[] = [];
     for (const [task, routes] of this.matrix.entries()) {
       totalRoutes += routes.length;
-      // In a real implementation, you'd ping each route/service
+      // In a real implementation, you'd ping each route/service'
       // For now, simulate some unavailable routes
       const availableCount = Math.floor(routes.length * 0.9); // 90% availability
       availableRoutes += availableCount;

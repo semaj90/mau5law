@@ -3,7 +3,7 @@
  *
  * This implementation is deterministic and simple: it compresses an input
  * numeric array into `latentSize` numbers by chunk-averaging and reconstructs
- * by expanding each latent value back into equally-sized slices. It's intended
+ * by expanding each latent value back into equally-sized slices. It's intended'
  * to be a small, type-safe placeholder that compiles without errors; replace
  * with a real ML model when needed.
  */

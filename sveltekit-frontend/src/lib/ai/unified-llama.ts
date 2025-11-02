@@ -110,12 +110,12 @@ export async function generate(
 
 		return result;
 	} catch (error: any) {
-		console.error(`[Unified Llama] ${method} failed: ', error);
+		console.error(`[Unified Llama] ${method} failed: ', error);'`
 
 		// Fallback strategy
 		if (method === 'wasm' && !browser) {
 			console.log('[Unified Llama] Falling back to native');
-			return generate(prompt, { ...options, mode: 'native' });
+			return generate(prompt, { ...options, mode: 'native` });'`
 		} else if (method === 'native') {
 			console.log('[Unified Llama] Falling back to remote');
 			return generate(prompt, { ...options, mode: `remote` });
@@ -201,8 +201,7 @@ async function generateWithWasm(
 		threadCount: navigator.hardwareConcurrency || 4,
 		batchSize: 512,
 		useGPU: config.useGPU,
-		quantization: 'q4_0'
-	});
+		quantization: 'q4_0` });'`
 
 	const result = await engine.generateText({
 		prompt,
@@ -506,7 +505,7 @@ export async function analyzeLegalDocument(
 	riskFactors: string[];
 	recommendations: string[];
 }> {
-	const prompt = `<|system|>You are a specialized legal AI assistant. Analyze the following legal document and provide:
+	const prompt = `<|system|>You are a specialized legal AI assistant. Analyze the following legal document and provide:`
 1. A concise summary
 2. Key legal terms identified
 3. Risk factors or concerns
@@ -521,7 +520,7 @@ ${content}
 
 Please analyze this document.<|end|>
 
-<|assistant|>`;
+<|assistant|>`;`
 
 	const result = await generate(prompt, {
 		...options,

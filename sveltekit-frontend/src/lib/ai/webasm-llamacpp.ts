@@ -121,7 +121,7 @@ class WebAssemblyLlamaService {
       console.log('[WebLlama] WebGPU initialized successfully');
       // Set up error handling
       (this.webgpuDevice as any).onuncapturederror = (_event: any) => {
-        console.error('[WebLlama] WebGPU error:', event.error);
+        console.error('[WebLlama] WebGPU error:', event.error);'
       };
     } catch (error: any) {
       console.error('[WebLlama] WebGPU initialization failed:', error);
@@ -131,7 +131,7 @@ class WebAssemblyLlamaService {
    * Initialize WebAssembly Ranking Cache with service worker support
    */ private async initializeRankingCache(): Promise<void> {
     if (!this.config.enableRankingCache) return;
-    // Check if we're in a browser environment
+    // Check if we're in a browser environment'
     if (typeof window === 'undefined') {
       console.log('[WebLlama] Browser environment not available, skipping ranking cache initialization');
       return;
@@ -139,7 +139,7 @@ class WebAssemblyLlamaService {
     try {
       // Import the ranking cache module dynamically
       const { WebASMRankingCache } = await import('../webgpu/webasm-ranking-cache');
-      // Map our config to the cache's API
+      // Map our config to the cache's API'
       this.rankingCache = new WebASMRankingCache({
         maxEntries: this.config.maxCacheSize,
         ttlSeconds: 300,
@@ -398,8 +398,7 @@ class WebAssemblyLlamaService {
           text?: any;
         }
       ).processingTime,
-      method: 'WebAssembly llama.cpp + Gemma 3 Legal'
-    };
+      method: `WebAssembly llama.cpp + Gemma 3 Legal` };
   }
   /**
    * Generate embedding for semantic similarity
@@ -458,7 +457,7 @@ class WebAssemblyLlamaService {
    * Store result in enhanced ranking cache
    */
   private async storeInRankingCache(prompt: string, result: WebLlamaResponse, options: any): Promise<void> {
-    // Deferred: the ranking cache API doesn't expose direct set/get; storage not supported in this build
+    // Deferred: the ranking cache API doesn't expose direct set/get; storage not supported in this build'
     void prompt;
     void result;
     void options;
@@ -521,9 +520,9 @@ class WebAssemblyLlamaService {
   }
   /**
    * Get detailed cache analytics
-   */ getCacheAnalytics(): { legacy: { size: number;, maxSize: number };
+   */ getCacheAnalytics(): { legacy: { size: number; maxSize: number };
     ranking: RankingCacheMetrics | null;
-    serviceWorker: { registered: boolean;, active: boolean };
+    serviceWorker: { registered: boolean; active: boolean };
   } {
     return { legacy: {, size: this.cache.size,
         maxSize: this.maxCacheSize
@@ -616,7 +615,7 @@ class WebAssemblyLlamaService {
         reject(new Error('Worker not available'));
         return;
       }
-      const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
+      const timeout: ReturnType<typeof, setTimeout> = setTimeout(() => {
         reject(new Error('Worker generation timeout'));
       }, 30000);
       const messageHandler = (e: MessageEvent) => {
@@ -651,9 +650,9 @@ class WebAssemblyLlamaService {
       const response = await fetch('/api/ai/generate', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },
+          'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: this.currentModel,
+         , model: this.currentModel,
           prompt: prompt,
           options: {
            , num_predict: maxTokens,
@@ -676,8 +675,7 @@ class WebAssemblyLlamaService {
         confidence: 0.85,
         fromCache: false,
         cacheHit: false,
-        processingPath: 'ollama'
-      };
+        processingPath: `ollama` };
     } catch (error: any) {
       console.error('[WebLlama] Ollama API call failed:', error);
       throw error;
@@ -687,8 +685,8 @@ class WebAssemblyLlamaService {
     const instructions = {
       comprehensive: 'Provide detailed analysis of all legal aspects',
       quick: 'Provide concise summary of key legal points',
-      'risk-focused': 'Focus on identifying legal risks and compliance issues` };
-    return `<|system|>You are a specialized legal AI assistant. Analyze the following legal document.
+      'risk-focused': `Focus on identifying legal risks and compliance issues` };
+    return `<|system|>You are a specialized legal AI assistant. Analyze the following legal document.`
 Instructions: ${instructions[analysisType as keyof typeof instructions]}
 Document Title: ${title}
 Document Content:
@@ -702,7 +700,7 @@ Provide analysis in structured format:
 <recommendations>[One per line]</recommendations>
 <confidence>[0.0 to 1.0]</confidence>
 </analysis>
-<|assistant|>`;
+<|assistant|>`;`
   }
   private parseLegalAnalysisResponse(response: string): any {
     // Similar parsing logic as in the server-side version
@@ -758,7 +756,7 @@ Provide analysis in structured format:
             return {
               type: type?.trim() || 'general',
               severity: severity?.trim() || 'medium',
-              description: description?.trim() || '` };
+              description: description?.trim() || '` };'`
           })
           .filter(r => r.description);
       }

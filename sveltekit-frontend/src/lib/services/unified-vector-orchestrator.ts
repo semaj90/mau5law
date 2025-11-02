@@ -11,7 +11,7 @@ import { vectorService } from '$lib/server/vector/vectorService';
 import { webgpuSOMCache } from './webgpu-som-enhanced-cache.js';
 import { glyphDiffusionService } from './glyph-diffusion-service.js';
 import { createEnhancedRAGEngine, type RAGResult } from './enhanced-rag-pagerank.js';
-import { LegalRecommendationEngine as RecommendationEngine } from './recommendation-engine.js';
+import { LegalRecommendationEngine, as RecommendationEngine } from './recommendation-engine.js';
 import * as neo4jServiceImport from './neo4jGraphService.js';
 import { db } from '$lib/server/db';
 import { redis } from '$lib/server/redis';
@@ -123,7 +123,7 @@ interface NESBridgeLike {
 interface OllamaEmbeddingsService {
   embed?: (text: string | string[]) => Promise<number[][]>;
   generateCompletion?: (opts: {, prompt: string; maxTokens?: number; temperature?: number }) => Promise<unknown>;
-  getStatus?: () => { initialized: boolean;, ready: boolean };
+  getStatus?: () => { initialized: boolean; ready: boolean };
   shutdown?: () => Promise<void>;
 }
 
@@ -362,7 +362,7 @@ export class UnifiedVectorOrchestrator {
         return response;
       }
     } catch (error: any) {
-      console.error('❌ Unified Vector Orchestrator processing error:', error);
+      console.error('❌ Unified Vector Orchestrator processing error:', error);'
       const errMsg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
@@ -893,7 +893,7 @@ export class UnifiedVectorOrchestrator {
       .where((doc: any) => {
         const d = doc as Record<string, unknown>;
         const searchText =
-          `${(d.content as string) || ''} ${(d.filename as string) || '` } ${JSON.stringify(d.metadata || {})}`.toLowerCase();
+          `${(d.content as string) || ''} ${(d.filename as string) || '` } ${JSON.stringify(d.metadata || {})}`.toLowerCase();'`
         return searchText.includes(query.toLowerCase());
       })
       .limit(options.limit || 10)
@@ -1020,11 +1020,11 @@ export class UnifiedVectorOrchestrator {
    */
   public getPerformanceAnalytics(): Record<
     string,
-    { count: number; average: number; median: number; p95: number; min: number;, max: number }
+    { count: number; average: number; median: number; p95: number; min: number; max: number }
   > {
     const analytics: Record<
       string,
-      { count: number; average: number; median: number; p95: number; min: number;, max: number }
+      { count: number; average: number; median: number; p95: number; min: number; max: number }
     > = {};
     for (const [operation, times] of this.performanceMetrics.entries()) {
       if (times.length > 0) {
@@ -1214,7 +1214,7 @@ export class UnifiedVectorOrchestrator {
       const res = await fn(...args);
       return res as T;
     } catch (e) {
-      console.warn('[UnifiedVectorOrchestrator] safeInvokeAsync failed: `, e);
+      console.warn('[UnifiedVectorOrchestrator] safeInvokeAsync failed: `, e);'`
       return undefined;
     }
   }

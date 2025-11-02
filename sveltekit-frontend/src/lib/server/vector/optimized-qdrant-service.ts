@@ -72,7 +72,7 @@ async function callEmbeddingService(text: string, model?: string): Promise<Vecto
 			}
 		}
 
-		// 3. Fallback: if there's a `generate` or similar
+		// 3. Fallback: if there's a `generate` or similar'
 		if (typeof svc['generate'] === 'function') {
 			const generateFn = svc['generate'] as EmbeddingFn;
 			const maybe = await generateFn(text, model);
@@ -84,7 +84,7 @@ async function callEmbeddingService(text: string, model?: string): Promise<Vecto
 
 		throw new Error('Unsupported embeddingGemma shape');
 	} catch (err) {
-		console.error('callEmbeddingService error:', formatError(err));
+		console.error('callEmbeddingService error:', formatError(err));'
 		return [];
 	}
 }
@@ -120,7 +120,7 @@ async function embedText(text: string, model?: string): Promise<number[]> {
 
 		return emb;
 	} catch (err) {
-		console.error('embedText error:', formatError(err));
+		console.error('embedText error:', formatError(err));'
 		return [];
 	}
 }
@@ -138,11 +138,11 @@ export async function ensureCollection(dim: number): Promise<void> {
     if (!exists) {
       console.log(`[Qdrant] Creating collection ${COLLECTION_NAME} (${dim} dims)`);
       await qdrant.createCollection(COLLECTION_NAME, { vectors: {, size: dim,
-          distance: 'Cosine` }
+          distance: 'Cosine' }
       });
     }
   } catch (err) {
-    console.error('ensureCollection error:', formatError(err));
+    console.error('ensureCollection error:', formatError(err));'
   }
 }
 
@@ -162,7 +162,7 @@ export async function upsertVector(
     await ensureCollection(vector.length);
     await qdrant.upsert(COLLECTION_NAME, {
       points: [
-        {
+        {,
           id,
           vector,
           payload: { id, ...payload }
@@ -171,7 +171,7 @@ export async function upsertVector(
     });
     return true;
   } catch (err) {
-    console.error('upsertVector error:', formatError(err));
+    console.error('upsertVector error:', formatError(err));'
     return false;
   }
 }
@@ -193,7 +193,7 @@ export async function getVectorById(id: string): Promise<QdrantPoint | null> {
     if (Array.isArray(arr) && arr.length) return arr[0];
     return null;
   } catch (err) {
-    console.error('getVectorById error:', formatError(err));
+    console.error('getVectorById error:', formatError(err));'
     return null;
   }
 }
@@ -243,7 +243,7 @@ export async function semanticSearch(
 
 		return points;
 	} catch (err) {
-		console.error('semanticSearch error:', formatError(err));
+		console.error('semanticSearch error:', formatError(err));'
 		return [];
 	}
 }
@@ -269,7 +269,7 @@ export async function deleteVector(id: string): Promise<boolean> {
     await qdrant.delete(COLLECTION_NAME, { points: [id] });
     return true;
   } catch (err) {
-    console.error('deleteVector error:', formatError(err));
+    console.error('deleteVector error:', formatError(err));'
     return false;
   }
 }
@@ -311,7 +311,7 @@ export async function embedAndUpsertText(
 
 		return embedding;
 	} catch (err) {
-		console.error('embedAndUpsertText error:', formatError(err));
+		console.error('embedAndUpsertText error:', formatError(err));'
 		return [];
 	}
 }

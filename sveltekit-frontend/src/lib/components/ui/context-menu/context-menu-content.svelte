@@ -1,5 +1,5 @@
-<!-- Context menu content component -->
-<script lang="ts">
+<!-- Context menu content, component -->
+<script, lang="ts">
   import { getContext, onMount, onDestroy } from 'svelte';
   import type { Writable } from 'svelte/store';
   import type { Snippet } from 'svelte';

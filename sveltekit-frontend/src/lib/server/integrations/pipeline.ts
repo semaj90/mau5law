@@ -29,14 +29,11 @@ interface DocumentMetadata {
   tags?: string[];
   [key: string]: any;
 }
-interface ProcessedDocument { id: string; content: string;, embedding: Float32Array;
-  metadata: DocumentMetadata;
-  cached: boolean;
+interface ProcessedDocument { id: string; content: string; embedding: Float32Array; metadata: DocumentMetadata; cached: boolean;
 }
-interface SearchResult { id: string; score: number;, content: string;
-  metadata: DocumentMetadata;
+interface SearchResult { id: string; score: number; content: string; metadata: DocumentMetadata;
 }
-interface RAGResponse { answer: string; sources: SearchResult[];, model: string;
+interface RAGResponse { answer: string; sources: SearchResult[]; model: string;
   tokensUsed?: number;
   cacheHit: boolean;
   processingTimeMs: number;
@@ -297,7 +294,7 @@ export class LegalAIPipeline {
       temperature?: number;
       maxTokens?: number;
     }
-  ): AsyncIterable<{ type: 'sources' | 'token' | 'done';, data: any }> {
+  ): AsyncIterable<{ type: 'sources' | 'token' | 'done'; data: any }> {
     const topK = options?.topK || 5;
     // 1. Search for sources
     const sources = await this.searchDocuments(query, topK, options?.filter);
@@ -346,14 +343,13 @@ export class LegalAIPipeline {
   /**
    * Health check for all services
    */
-  async healthCheck(): Promise<{ overall: 'healthy' | 'degraded' | 'unavailable'; services: { ollama: any; redis: any;, qdrant: any;
-      minio: any;
+  async healthCheck(): Promise<{ overall: 'healthy' | 'degraded' | 'unavailable'; services: { ollama: any; redis: any; qdrant: any; minio: any;
     };
   }> {
     const [ollama, redis, qdrant, minio] = await Promise.all([
-      this.ollama.health().catch(() => ({ status: 'unavailable' })),
-      this.redis.health().catch(() => ({ status: 'unavailable' })),
-      this.qdrant.health().catch(() => ({ status: 'unavailable' })),
+      this.ollama.health().catch(() => ({ status: 'unavailable` })),'`
+      this.redis.health().catch(() => ({ status: `unavailable` })),
+      this.qdrant.health().catch(() => ({ status: `unavailable` })),
       this.minio.health().catch(() => ({ status: `unavailable` }))
     ]);
     const services = { ollama, redis, qdrant, minio };

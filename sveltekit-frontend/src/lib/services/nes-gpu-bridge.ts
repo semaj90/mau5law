@@ -72,7 +72,7 @@ export interface NESGPUMemoryHierarchy {
 export interface BitDepthProfile {
   standard: number; // 24-bit RGB (16.7M colors) - 99.9% browser support,
   modern: number; // 30-bit HDR (1.07B colors) - 85% modern browser support
-  premium: number; // 48-bit ProPhoto RGB - <5% professional displays>,
+  premium: number; // 48-bit ProPhoto RGB - <5% professional, displays>,
   target: number; // 32-bit RGBA (our optimization target)
   compressed: number; // 16-bit (65k colors) for cache efficiency,
   minimal: number; // 8-bit palette (256 colors) NES-style fallback
@@ -109,7 +109,7 @@ export class NESStyleGPUBridge {
         if (type === 'INITIALIZED') {
           console.log('🎮 NES-style GPU Bridge initialized:', data);
         } else if (type === 'ERROR') {
-          console.error('🚨 GPU Worker error:', e.data.error);
+          console.error('🚨 GPU Worker error:', e.data.error);'
         }
       };
     } catch (error: any) {
@@ -120,7 +120,7 @@ export class NESStyleGPUBridge {
     return {
       alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', // 26 chars = 5 bits;
       numbers: '0123456789', // 10 chars = 4 bits
-      specialChars: ' .,!?-()[]{}:;"\'', // 16 chars = 4 bits
+      specialChars: ' .,!?-()[]{}:;"\'', // 16 chars = 4 bits"
       legalTerms: [
         'plaintiff',
         'defendant',
@@ -266,9 +266,9 @@ export class NESStyleGPUBridge {
   }
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
-    if (dataSize <= 64) return 'ppu'; // Small data → Registers
-    if (dataSize <= 2048) return 'ram'; // Medium data → Working memory
-    if (dataSize <= 8192) return 'chrRom'; // Large data → L2 Cache
+    if (dataSize <= 64) return 'ppu'; // Small, data → Registers
+    if (dataSize <= 2048) return 'ram'; // Medium data → Working, memory
+    if (dataSize <= 8192) return 'chrRom'; // Large data → L2, Cache
     return 'prgRom'; // Huge data → Global memory
   }
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
@@ -323,7 +323,7 @@ export class NESStyleGPUBridge {
     return {
       ...tensor,
       data: quantizedData,
-      layout: `nes_quantized_${bitDepth}bit' };
+      layout: `nes_quantized_${bitDepth}bit' };'`
   }
   // Calculate optimal tensor shape for GPU processing
   private calculateOptimalShape(objects: FabricObject[]): number[] {
@@ -488,7 +488,7 @@ export class NESStyleGPUBridge {
       const timeout = setTimeout(() => {
         reject(new Error('GPU processing timeout'));
       }, 30000); // 30 second timeout
-      const messageHandler = (e: MessageEvent<{, type: string; id: string; data?: MultiDimArray; error?: string }>) => {
+      const messageHandler = (e: MessageEvent<{, type: string;, id: string; data?: MultiDimArray; error?: string }>) => {
         const { type, id, data, error } = e.data;
         if (id === requestId) {
           clearTimeout(timeout);
@@ -541,9 +541,9 @@ export class NESStyleGPUBridge {
     return `nes_${stateId}_${shape.join('x')}_${Date.now()}`;
   }
   private determineLODLevel(objectCount: number): number {
-    if (objectCount <= 10) return 0; // Ultra quality
-    if (objectCount <= 25) return 1; // High quality
-    if (objectCount <= 50) return 2; // Medium quality
+    if (objectCount <= 10) return 0; // Ultra, quality
+    if (objectCount <= 25) return 1; // High, quality
+    if (objectCount <= 50) return 2; // Medium, quality
     return 3; // Low quality
   }
   private calculateCompressionRatio(original: MultiDimArray, compressed: MultiDimArray): number {
@@ -591,7 +591,7 @@ export class NESStyleGPUBridge {
   getStats(): BridgeStats {
     return { ...this.stats };
   }
-  getCacheStats(): { size: number;, hitRate: number } {
+  getCacheStats(): { size: number; hitRate: number } {
     const totalHits = this.stats.nesStyleCacheHits;
     const totalRequests = this.stats.totalConversions;
     return {

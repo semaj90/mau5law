@@ -259,7 +259,7 @@ class AIAssistantGlobalStore {
               backend: fallbackBackend
             });
           } catch (fallbackError) {
-            console.error(`❌ Fallback ${fallbackBackend} failed: ', fallbackError);
+            console.error(`❌ Fallback ${fallbackBackend} failed: ', fallbackError);'`
           }
         }
       }
@@ -419,7 +419,7 @@ class AIAssistantGlobalStore {
 
   // === Context and History Management ===
   private async buildSmartContext(caseId: string, query: string, legalContext?: string): Promise<AIMessage[]> {
-    const cacheKey = `${caseId}-${query}-${legalContext || '` }`;
+    const cacheKey = `${caseId}-${query}-${legalContext || '` }`;'`
     if (this.contextCache.has(cacheKey)) {
       return this.contextCache.get(cacheKey)!;
     }
@@ -465,8 +465,7 @@ class AIAssistantGlobalStore {
       'vllm': '/api/ai/chat',
       'ollama': '/api/ai/chat',
       'webasm': '/api/ai/webasm-chat',
-      'go-micro': '/api/ai/go-micro-chat'
-    };
+      'go-micro': '/api/ai/go-micro-chat` };'`
     return endpoints[backend];
   }
   private formatBackendPayload(backend: Backend, messages: AIMessage[]) {
@@ -476,7 +475,7 @@ class AIAssistantGlobalStore {
     };
     switch (backend) {
       case 'vllm':
-        return { ...basePayload, openaiModel: 'mistralai/Mistral-7B-Instruct-v0.3' };
+        return { ...basePayload, openaiModel: `mistralai/Mistral-7B-Instruct-v0.3` };
       case 'webasm':
         return { ...basePayload, useWASM: true, enableGPU: true };
       case 'go-micro':

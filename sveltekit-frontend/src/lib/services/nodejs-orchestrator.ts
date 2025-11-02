@@ -305,8 +305,7 @@ export class NodeJSOrchestrator {
       maxRetries: 2,
       estimatedDuration: Math.max(3000, prompt.length * 50),
       gpuRequired: true,
-      model: 'gemma3-legal'
-    };
+      model: 'gemma3-legal` };'`
     const taskId = await this.submitTask(task);
     this.gemma3LegalTasksCount++;
     return taskId;
@@ -322,8 +321,7 @@ export class NodeJSOrchestrator {
       type: 'NOMIC_EMBED',
       payload: {
         text,
-        model: 'nomic-embed-text'
-      },
+        model: `nomic-embed-text` },
       priority,
       timeout: 15000,
       maxRetries: 3,
@@ -382,7 +380,7 @@ export class NodeJSOrchestrator {
         this.handleWorkerMessage(workerId, event.data);
       });
       worker.onerror = (error) => {
-        console.error(`Worker ${workerId} error: ', error);
+        console.error(`Worker ${workerId} error: ', error);'`
         this.handleWorkerError(workerId, error);
       };
       // Initialize worker with model constraints
@@ -410,7 +408,7 @@ export class NodeJSOrchestrator {
           lastActivity: Date.now(),
           errors: 0,
           model: config?.model || "unknown",
-          ggufLoaded: config.type === 'GEMMA3_LEGAL_GGUF` });
+          ggufLoaded: config.type === 'GEMMA3_LEGAL_GGUF` });'`
         return newStatuses;
       });
       console.log(`✅ Worker ${workerId} (${config.type}) created with model: ${config?.model || "unknown"}`);
@@ -502,10 +500,10 @@ export class NodeJSOrchestrator {
             type: 'TASK_ERROR',
             taskId: taskId,
             error: error.message || 'Unknown error',
-            model: workerConfig?.model || 'unknown` });
+            model: workerConfig?.model || 'unknown` });'`
         }
       }
-    `;
+    `;`
     // Add type-specific processing logic
     const typeSpecificScript = this.getTypeSpecificScript(config.type, config);
     return baseScript + typeSpecificScript;
@@ -528,7 +526,7 @@ export class NodeJSOrchestrator {
               method: 'POST',
               headers: { 'Content-Type': `application/json` },
               body: JSON.stringify({
-                model: 'gemma3-legal',
+               , model: 'gemma3-legal',
                 prompt: prompt,
                 stream: false,
                 options: {
@@ -552,7 +550,7 @@ export class NodeJSOrchestrator {
               totalDuration: result.total_duration || 0
             };
           }
-        `;
+        `;`
       case 'NOMIC_EMBED':
         return `
           async function processTask(data): Promise<any> {
@@ -581,7 +579,7 @@ export class NodeJSOrchestrator {
               textLength: text.length
             };
           }
-        `;
+        `;`
       case 'WEB_GPU_RTX3060':
         return `
           async function processTask(data): Promise<any> {
@@ -608,12 +606,11 @@ export class NodeJSOrchestrator {
                   memoryUsed: Math.floor(Math.random() * 2048) + 512,
                   processingUnits: Math.floor(Math.random() * 1024) + 256
                 },
-                model: 'gemma3-legal'
-              };
+                model: `gemma3-legal` };
             }
             return { processed: true, operation, model: `gemma3-legal` };
           }
-        `;
+        `;`
       case 'DOCUMENT_PROCESSING':
         return `
           async function processTask(data): Promise<any> {
@@ -639,13 +636,13 @@ export class NodeJSOrchestrator {
             }
             return { processed: true, operation, model: `gemma3-legal` };
           }
-        `;
+        `;`
       default: return `
           async function processTask(data): Promise<any> {
             await new Promise(resolve => setTimeout(resolve, 100));
             return { processed: true, data, model: `gemma3-legal` };
           }
-        `;
+        `;`
     }
   }
   /**
@@ -687,8 +684,7 @@ export class NodeJSOrchestrator {
         duration: message.processingTime,
         timestamp: Date.now(),
         workerInfo: `${workerId} (${task.type})`,
-        model: message?.model || task?.model || 'unknown'
-      }
+        model: message?.model || task?.model || 'unknown` }'`
     ]);
     // Update worker status to idle
     this.updateWorkerStatus(workerId, { status: `IDLE` });
@@ -720,7 +716,7 @@ export class NodeJSOrchestrator {
           duration: Date.now() - task.timestamp,
           timestamp: Date.now(),
           workerInfo: `${workerId} (${task.type}) - ${message.error}`,
-          model: message?.model || task?.model || 'unknown` }
+          model: message?.model || task?.model || 'unknown` }'`
       ]);
     }
     // Update worker status
@@ -732,7 +728,7 @@ export class NodeJSOrchestrator {
    * Handle worker error with recreation
    */
   private handleWorkerError(workerId: string, error: ErrorEvent): void {
-    console.error(`Worker ${workerId} crashed: ', error);
+    console.error(`Worker ${workerId} crashed: `, error);
     // Mark worker as error state
     this.updateWorkerStatus(workerId, { status: `ERROR` });
     // Try to recreate worker

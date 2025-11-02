@@ -8,9 +8,9 @@ interface ServiceHealth { service: string, status: 'healthy' | 'degraded' | 'do
 }
 interface HealthResponse {
   overall_status: 'healthy' | 'degraded' | 'critical',
-  services: ServiceHealth[]; nintendo_memory_banks: { L1_GPU_VRAM: { used_mb: number; total_mb: number;, utilization: number }
-    L2_SYSTEM_RAM: { used_mb: number; total_mb: number;, utilization: number }
-    L3_REDIS_CACHE: { used_mb: number; total_mb: number;, utilization: number }
+  services: ServiceHealth[]; nintendo_memory_banks: { L1_GPU_VRAM: { used_mb: number; total_mb: number; utilization: number }
+    L2_SYSTEM_RAM: { used_mb: number; total_mb: number; utilization: number }
+    L3_REDIS_CACHE: { used_mb: number; total_mb: number; utilization: number }
   }
   timestamp: string
 }
@@ -59,7 +59,7 @@ async function checkRedisHealth(): Promise<ServiceHealth> {
   }
 }
 async function getMemoryBankStatus(): Promise<any> {
-  // Simulate memory bank readings - in production, you'd get actual metrics
+  // Simulate memory bank readings - in production, you'd get actual metrics'
   return { L1_GPU_VRAM: {, used_mb: Math.floor(Math.random() * 6000 + 2000), // 2-8GB used
       total_mb: 8192, // 8GB RTX 3060
       utilization: 0
@@ -79,7 +79,7 @@ async function getMemoryBankStatus(): Promise<any> {
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const services = [
-      {
+      {,
         name: 'Legal Expert (vLLM)',
         url: 'http://localhost:8000/health',
         key: 'legal_expert'
@@ -151,8 +151,8 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       overall_status: 'critical',
       services: [],
-      nintendo_memory_banks: { L1_GPU_VRAM: {, used_mb: 0, total_mb: 0, utilization: 0 },
-        L2_SYSTEM_RAM: { used_mb: 0, total_mb: 0, utilization: 0 },
+      nintendo_memory_banks: {, L1_GPU_VRAM: {, used_mb: 0, total_mb: 0, utilization: 0 },
+        L2_SYSTEM_RAM: {, used_mb: 0, total_mb: 0, utilization: 0 },
         L3_REDIS_CACHE: {, used_mb: 0, total_mb: 0, utilization: 0 }
       },
       timestamp: new Date().toISOString(),

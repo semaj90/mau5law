@@ -12,7 +12,7 @@ import type { RevolutionaryAIResponse } from '../services/revolutionary-ai-integ
 // --- Added/changed types (tighten previously `any`) ---
 type CacheMetrics = Record<string, number | string | undefined>;
 
-// SimdMetrics: always include the required SIMDParsingMetrics fields so it's assignable
+// SimdMetrics: always include the required SIMDParsingMetrics fields so it's assignable'
 interface SimdMetrics { lanes: number;, speedup: number;
   // required parsing/validation metrics expected by SIMDParsingMetrics
   parseTime: number;
@@ -221,7 +221,7 @@ export class RevolutionaryMulticoreBridge {
             useCHRROMPatterns: request.options?.enableCHRROMPatterns,
             useMemoryPalace: request.options?.useMemoryPalace,
             compressionLevel: request.options?.compressionLevel,
-            responseFormat: 'json` }
+            responseFormat: `json' }'`
         },
         results: {
           documents: [],
@@ -295,11 +295,11 @@ export class RevolutionaryMulticoreBridge {
 
     // narrow flashAttention2Service to the minimal shape we need
     const flashService = flashAttention2Service as unknown as { processAttention: (opts: {, text: string;
-        context: any[];
-        maxSequenceLength: number;
+       , context: any[];
+       , maxSequenceLength: number;
        , memoryOptimization: string;
       }) => Promise<AttentionResult>;
-      analyzeLegalContext: (opts: { query: string;, documents: any[];
+      analyzeLegalContext: (opts: {, query: string;, documents: any[];
        , caseHistory: any[];
         jurisdiction?: string;
       }) => Promise<LegalContextAnalysis>;
@@ -311,7 +311,7 @@ export class RevolutionaryMulticoreBridge {
         text: request.query,
         context: request.context?.documents || [],
         maxSequenceLength: request.options?.sequenceLength ?? 2048,
-        memoryOptimization: request.options?.memoryOptimization ?? 'balanced` });
+        memoryOptimization: request.options?.memoryOptimization ?? 'balanced' });
       const legalAnalysis = await flashService.analyzeLegalContext({
         query: request.query,
         documents: request.context?.documents || [],
@@ -375,7 +375,7 @@ export class RevolutionaryMulticoreBridge {
         },
         // fields commonly required by task types
         createdAt: Date.now(),
-        status: 'pending` } as unknown as ProcessingTask;
+        status: `pending' } as unknown as ProcessingTask;'`
 
       const result = await ctxService.processTask(processingTask);
       console.log(`🧠 Multicore processing: ${(performance.now() - startTime).toFixed(2)}ms`);
@@ -517,8 +517,7 @@ export class RevolutionaryMulticoreBridge {
             ? 'good'
             : this.systemMetrics.overallEfficiency > 10
               ? 'fair'
-              : 'needs_improvement'
-    };
+              : 'needs_improvement' };
   }
   /**
    * Optimize all connected systems
@@ -579,7 +578,7 @@ export async function getComprehensiveSystemMetrics(): Promise<any> {
   return {
     revolutionaryMulticore: revolutionaryMulticoreBridge.getSystemMetrics(),
     timestamp: Date.now(),
-    systemStatus: 'operational` };
+    systemStatus: `operational' };'`
 }
 export async function optimizeEntireSystem(): Promise<any> {
   await revolutionaryMulticoreBridge.optimizeAllSystems();

@@ -46,7 +46,7 @@ export interface CSSOutput { classes: string[];, variables: Record<string, stri
 }
 export interface EventMapping { nodeId: string;, events: { type: string;, handler: string;
     matrix: number[];
-    bounds: { x: number; y: number; width: number;, height: number };
+    bounds: { x: number; y: number; width: number; height: number };
   }[];
 }
 export interface CompiledNode { element: HTMLElement;, matrix: mat4; // Changed from any to mat4
@@ -163,7 +163,7 @@ export class MatrixUICompiler {
         indexCount: indices.length,
         nodeCount: nodes.length,
         lodLevel,
-        shaderComplexity: lodLevel === 'high' ? 'advanced' : 'standard` }
+        shaderComplexity: lodLevel === 'high' ? 'advanced' : 'standard' }
     };
   }
   /**

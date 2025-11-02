@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const vectorResponse = await fetch('/api/pgvector/test?action=search', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': 'application/json' },
       body: JSON.stringify(searchPayload)
     });
     if (!vectorResponse.ok) {
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     };
     return json(response);
   } catch (error) {
-    console.error('Semantic search error:', error);
+    console.error('Semantic search error:', error);'
     return json(
       {
         success: false,

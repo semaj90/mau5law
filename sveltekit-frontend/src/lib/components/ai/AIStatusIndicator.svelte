@@ -1,5 +1,5 @@
-<!-- AI Status Indicator Component -->
-<script lang="ts">
+<!-- AI Status Indicator, Component -->
+<script, lang="ts">
   interface Props {
     isReady?: boolean;
     isLoading?: boolean;
@@ -39,66 +39,66 @@
   role="status"
   aria-live="polite"
 >
-  <!-- Status Icon -->
-  <div class="status-icon" aria-hidden={currentStatus !== 'error'}>
+  <!-- Status, Icon -->
+  <div, class="status-icon" aria-hidden={currentStatus !== 'error'}>
     {#if currentStatus === 'loading'}
-      <svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <circle cx="12" cy="12" r="9" stroke-opacity="0.25" />
-        <path d="M21 12a9 9 0 0 1-9 9" stroke-linecap="round" />
+      <svg class="spinner" width="16" height="16" viewBox="0 0 24, 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle, cx="12" cy="12" r="9" stroke-opacity="0.25" />
+        <path d="M21 12a9 9 0 0 1-9, 9" stroke-linecap="round" />
       </svg>
     {:else if currentStatus === 'ready'}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ready" aria-hidden="true">
-        <path d="M9 12l2 2 4-4" />
-        <circle cx="12" cy="12" r="9" />
+      <svg width="16" height="16" viewBox="0 0 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ready" aria-hidden="true">
+        <path d="M9 12l2 2, 4-4" />
+        <circle, cx="12" cy="12" r="9" />
       </svg>
     {:else if currentStatus === 'error'}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-error" aria-hidden="true">
-        <circle cx="12" cy="12" r="9" />
-        <line x1="15" y1="9" x2="9" y2="15" />
-        <line x1="9" y1="9" x2="15" y2="15" />
+      <svg width="16" height="16" viewBox="0 0 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-error" aria-hidden="true">
+        <circle, cx="12" cy="12" r="9" />
+        <line, x1="15" y1="9" x2="9" y2="15" />
+        <line, x1="9" y1="9" x2="15" y2="15" />
       </svg>
     {:else}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-muted" aria-hidden="true">
-        <circle cx="12" cy="12" r="9" />
+      <svg width="16" height="16" viewBox="0 0 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-muted" aria-hidden="true">
+        <circle, cx="12" cy="12" r="9" />
       </svg>
     {/if}
   </div>
-  <!-- Status Text -->
-  <div class="status-details">
-    <div class="status-text" style="color: {statusColor}">{statusText}</div>
+  <!-- Status, Text -->
+  <div, class="status-details">
+    <div, class="status-text" style="color: {statusColor}">{statusText}</div>
     {#if isReady && provider && model}
-      <div class="provider-info">
-        <span class="provider" class:local={provider === 'local'}>{providerText}</span>
-        <span class="separator">•</span>
-        <span class="model" title={"Current AI model: " + (model ?? '')}>{modelText}</span>
+      <div, class="provider-info">
+        <span, class="provider" class:local={provider === 'local'}>{providerText}</span>
+        <span, class="separator">•</span>
+        <span class="model" title={"Current AI, model: " + (model ?? '')}>{modelText}</span>
       </div>
     {:else if error}
-      <div class="error-text" title={error}>
+      <div, class="error-text" title={error}>
         {error.length > 50 ? error.substring(0, 50) + '...' : error}
       {/if}
   </div>
-  <!-- Detailed Tooltip -->
-  <div class="status-tooltip" aria-hidden="true">
-    <div class="tooltip-content">
-      <div class="tooltip-section">
+  <!-- Detailed, Tooltip -->
+  <div, class="status-tooltip" aria-hidden="true">
+    <div, class="tooltip-content">
+      <div, class="tooltip-section">
         <strong>Status:</strong>
         <span>{statusText}</span>
       </div>
       {#if provider && model}
-        <div class="tooltip-section">
+        <div, class="tooltip-section">
           <strong>Provider:</strong>
           <span>{providerText}</span>
         </div>
-        <div class="tooltip-section">
+        <div, class="tooltip-section">
           <strong>Model:</strong>
-          <span class="model">{model}</span>
+          <span, class="model">{model}</span>
         {/if}
       {#if error}
-        <div class="tooltip-section error">
+        <div class="tooltip-section, error">
           <strong>Error:</strong>
           <small>{error}</small>
         {/if}
-      <div class="tooltip-section">
+      <div, class="tooltip-section">
         <small>
           {#if currentStatus === 'ready'}
             AI system is ready to process requests

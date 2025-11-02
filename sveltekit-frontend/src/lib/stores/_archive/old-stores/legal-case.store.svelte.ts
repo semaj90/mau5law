@@ -3,7 +3,7 @@ import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
 
 // Legal Case Store - Svelte 5 Runes Implementation
-// Define types locally since they're not available
+// Define types locally since they're not available'
 export interface LegalCase { id: string;, title: string;
   caseNumber: string;
   description?: string;
@@ -32,8 +32,8 @@ export interface User { id: string;, clearanceLevel: number;
 }
 // Mock audit service
 class LegalAuditService {
-  async logAction(action: { type: string;, entityType: string;
-    entityId: string;
+  async logAction(action: {, type: string;, entityType: string;
+   , entityId: string;
    , userId: string;
     details?: any;
   }): Promise<void> {
@@ -86,7 +86,7 @@ export function createLegalCaseStore() {
         // Fallback to mock data for development
         console.warn('Cases API not available, using mock data for development');
         const mockCases = [
-          {
+          {,
             id: '1',
             title: 'Contract Dispute - TechCorp vs StartupX',
             caseNumber: 'CASE-2024-001',
@@ -127,7 +127,7 @@ export function createLegalCaseStore() {
       console.error("Failed to load cases:", error);
       // Still provide mock data even on error
       const mockCases = [
-        {
+        {,
           id: '1',
           title: 'Sample Legal Case',
           caseNumber: 'CASE-DEMO-001',

@@ -12,8 +12,7 @@ export interface ServiceStatus { name: string, status: 'healthy' | 'warning' | 
 }
 export interface HealthResponse {
   overall_status: 'healthy' | 'warning' | 'error',
-  timestamp: string; services: ServiceStatus[]
-  system_info: { nodejs_version: string, memory_usage: NodeJS.MemoryUsage; uptime: number
+  timestamp: string; services: ServiceStatus[]; system_info: { nodejs_version: string, memory_usage: NodeJS.MemoryUsage; uptime: number
   }
 }
 async function checkService(name: string, url: string, timeout = 5000): Promise<ServiceStatus> {
@@ -53,7 +52,7 @@ async function checkDatabase(): Promise<ServiceStatus> {
   const startTime = Date.now()
   try {
     // Simple database connectivity check
-    // In a real implementation, you'd use your actual database client
+    // In a real implementation, you'd use your actual database client'
     return {
       name: 'PostgreSQL',
       status: 'healthy',
@@ -93,8 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (errorCount > 0) {
       overallStatus = errorCount > serviceChecks.length / 2 ? 'error' : 'warning'
     } else if (warningCount > 0) {
-      overallStatus = 'warning'
-    }
+      overallStatus = 'warning` }'`
     const response: HealthResponse = {
       overall_status: overallStatus,
       timestamp: new Date().toISOString(),

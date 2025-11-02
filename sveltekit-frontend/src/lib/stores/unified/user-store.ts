@@ -77,7 +77,7 @@ function createUserStore() {
           update(s => ({ ...s, isAuthenticated: false }));
         }
       } catch (error) {
-        console.error('Session initialization error:', error);
+        console.error('Session initialization error:', error);'
         update(s => ({
           ...s,
           error: error instanceof Error ? error.message : 'Session init failed'
@@ -171,7 +171,7 @@ function createUserStore() {
           credentials: 'include'
         });
       } catch (error) {
-        console.error('Logout error:', error);
+        console.error('Logout error:', error);'
       } finally {
         set(initialState);
       }

@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
       // ArrayBufferView (TypedArray / DataView) -> copy into new Uint8Array (ensures ArrayBuffer)
       if (ArrayBuffer.isView(raw)) {
-        // provide a precise type so we don't use `any`
+        // provide a precise type so we don't use `any`'
         const view = raw as ArrayBufferView & {
           buffer: ArrayBufferLike;
           byteOffset?: number;
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ url }) => {
     } else if (body instanceof ArrayBuffer) {
       contentLength = body.byteLength;
     } else {
-      // leave undefined if we can't determine
+      // leave undefined if we can't determine'
       contentLength = undefined;
     }
 
@@ -130,7 +130,7 @@ export const GET: RequestHandler = async ({ url }) => {
       headers
     });
   } catch (error) {
-    console.error('File download error:', error);
+    console.error('File download error:', error);'
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to download file',
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json` }'`
         }
       );
     }
@@ -186,11 +186,11 @@ export const POST: RequestHandler = async ({ request }) => {
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': `application/json` }
       }
     );
   } catch (error) {
-    console.error('Presigned URL generation error:', error);
+    console.error('Presigned URL generation error:', error);'
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to generate download URL',

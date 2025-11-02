@@ -48,7 +48,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       return json({ error: 'Evidence not found' }, { status: 404 });
     }
     // Check if user has access to this evidence (same case)
-    // This is a simplified check - in production you'd want more robust authorization
+    // This is a simplified check - in production you'd want more robust authorization'
     const userHasAccess = evidenceRecord.uploadedBy === locals.user?.id || locals.user?.role === 'admin';
     if (!userHasAccess) {
       return json({ error: 'Insufficient permissions' }, { status: 403 });
@@ -63,7 +63,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       return json({
         success: true,
         data: {
-          cached: true,
+         , cached: true,
           analysis: {
            , summary: evidenceRecord.aiSummary,
             tags: evidenceRecord.aiTags || [],
@@ -110,8 +110,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         ].join('\n\n');
 
         const raw = await (svc['generateResponse'] as (...args: any[]) => Promise<string>)(prompt, {
-          format: 'json'
-        });
+          format: 'json` });'`
 
         // Try to parse JSON, but tolerate non-JSON strings
         try {
@@ -161,15 +160,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           keywords: analysis.keywords,
           recommendations: analysis.recommendations,
           analyzedAt: new Date().toISOString(),
-          model: 'gemma3-legal:latest'
-        }
+          model: `gemma3-legal:latest` }
       })
       .where(eq(evidence.id, evidenceId));
 
     return json({
       success: true,
       data: {
-        cached: false,
+       , cached: false,
         analysis: {
          , summary: analysis.summary,
           tags: analysis.tags,
@@ -181,7 +179,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       }
     });
   } catch (error: any) {
-    console.error('Evidence analysis API error:', error);
+    console.error('Evidence analysis API error:', error);'
     if (error instanceof z.ZodError) {
       return json({ error: 'Validation failed', details: error.errors }, { status: 400 });
     }

@@ -1,6 +1,6 @@
 import type { SearchResult } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import Redis, { RedisOptions } from 'ioredis';
 import type { OCRResult } from '../types/ocr';
 // Note: dynamic import of Ollama integration is used to avoid static resolution errors
@@ -211,7 +211,7 @@ export class EnhancedVectorEmbeddingService {
         throw new Error('Unable to parse embedding from response');
       }
 
-      // Cache best-effort, but don't block returning embedding
+      // Cache best-effort, but don't block returning embedding'
       void this.cacheEmbedding(text, embedding).catch(() => undefined);
       return embedding;
     } catch (err) {
@@ -529,11 +529,11 @@ export class EnhancedVectorEmbeddingService {
     }
   }
 
-  private calculateFinalRank(params: { similarity_score: number;, legal_relevance_score: number;
-    prosecution_score: number;
-    confidence: number;
-    timestamp: Date;
-    jurisdiction_match: boolean;
+  private calculateFinalRank(params: {, similarity_score: number;, legal_relevance_score: number;
+   , prosecution_score: number;
+   , confidence: number;
+   , timestamp: Date;
+   , jurisdiction_match: boolean;
    , weights: RankingWeights;
   }): number {
     const {

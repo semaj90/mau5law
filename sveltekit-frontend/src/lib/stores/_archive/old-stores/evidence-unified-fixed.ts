@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { writable, derived, get } from "svelte/store";
 import { browser } from "$app/environment";
 /**
@@ -97,7 +97,7 @@ class UnifiedEvidenceStore {
           const message = JSON.parse(event.data);
           this.handleRealtimeUpdate(message);
         } catch (error: any) {
-          console.error("WebSocket message error:", error);
+          console.error("WebSocket message error:", error);"
         }
       }
       this.websocket.onclose = () => {
@@ -112,7 +112,7 @@ class UnifiedEvidenceStore {
         }
       }
       this.websocket.onerror = (error) => {
-        console.error("WebSocket connection error:", error);
+        console.error("WebSocket connection error:", error);"
       }
     } catch (error: any) {
       console.error("Failed to create WebSocket:", error);

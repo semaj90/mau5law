@@ -32,7 +32,7 @@ export const searchableButtonIndex = {
       return Array.from(buttonStore.values()).slice(0, maxResults);
     }
     const q = query.toLowerCase().trim();
-    type Scored = { item: ButtonInfo;, score: number };
+    type Scored = { item: ButtonInfo; score: number };
     const scored: Scored[] = [];
     for (const item of buttonStore.values()) {
       let score = 0;

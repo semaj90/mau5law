@@ -483,5 +483,5 @@ ${Object.entries(palette.cssVariables)
   /* Accent colors */
 ${palette.colors.accent.map((color, index) => `  --console-accent-${index}: ${color}`).join('\n')}
 }
-`;
+`;`
 }

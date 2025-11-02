@@ -164,7 +164,7 @@ class MultiLibraryStartupService {
         ? createMachine({
             id: 'test',
             initial: 'idle',
-            states: { idle: {, on: { START: 'active` }
+            states: {, idle: {, on: {, START: `active` }
               },
               active: {, on: {, STOP: `idle` }
               }
@@ -209,7 +209,7 @@ class MultiLibraryStartupService {
       console.log('✅ Redis - Native Windows performance optimization ready');
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      // Fallback: mark as ready for development even if Redis isn't running
+      // Fallback: mark as ready for development even if Redis isn't running'
       this.status.services.redis = true;
       console.log('⚠️ Redis - Development mode (service not running):', msg);
     }
@@ -253,7 +253,7 @@ class MultiLibraryStartupService {
   private async initializeOrchestrator(): Promise<void> {
     try {
       // The orchestrator is already initialized as a singleton
-      // Just verify it's working
+      // Just verify it's working'
       const health = await concurrencyOrchestrator.healthCheck();
       if (health && ((health as { status?: string }).status === 'healthy' || (health as { status?: string }).status === 'degraded')) {
         this.status.services.orchestrator = true;
@@ -274,7 +274,7 @@ class MultiLibraryStartupService {
       console.log(`   ${icon} ${name.padEnd(12)} - ${status ? 'Ready' : `Failed` }`);
     });
     if (this.status.errors.length > 0) {
-      console.log('\n⚠️ Initialization Errors: `);
+      console.log('\n⚠️ Initialization Errors: `);'`
       this.status.errors.forEach(error => console.log(`   • ${error}`));
     }
     const healthyCount = Object.values(this.status.services).filter(v => v === true).length;

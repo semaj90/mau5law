@@ -71,7 +71,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
       systemStatus = {
         services: servicesMap,
-        systemHealth: coordinator.systemHealth ?? { status: 'unknown' },
+        systemHealth: coordinator.systemHealth ?? { status: 'unknown` },'`
         activeErrors: Array.isArray(coordinator.activeErrors) ? coordinator.activeErrors : [],
         performance: coordinator.performance ?? {}
       };
@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ url }) => {
     );
   } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error('Coordinator GET error:', err);
+    console.error('Coordinator GET error:', err);'
     return json({ success: false, error: msg, timestamp: new Date().toISOString() }, { status: 500 });
   }
 };
@@ -215,7 +215,7 @@ export const POST: RequestHandler = async ({ request }) => {
     );
   } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error('Coordinator POST error:', err);
+    console.error('Coordinator POST error:', err);'
     return json({ success: false, error: msg, timestamp: new Date().toISOString() }, { status: 500 });
   }
 };

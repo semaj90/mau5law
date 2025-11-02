@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     demoMode: true,
     user: user || null,
     features: [
-      {
+      {,
         id: 'semantic-search',
         title: 'Semantic Search',
         description: 'AI-powered search across legal documents',

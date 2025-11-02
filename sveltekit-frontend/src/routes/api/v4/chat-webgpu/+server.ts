@@ -288,7 +288,7 @@ async function processWebGPUChat(request: WebGPUChatRequest, clientIP: string): 
       processingTime: performance.now() - startTime,
       gpuAccelerated: false,
       tensorCompression: { enabled: false },
-      error: `WebGPU; failed: ${error?.message ?? String(error)}' };
+      error: 'WebGPU; failed: ${error?.message ?? String(error)}' };
   }
 }
 
@@ -306,7 +306,7 @@ export const GET: RequestHandler = async ({ url }) => {
           webgpuAvailable: capabilities.webgpu?.isSupported ?? false,
           rtxOptimized: true,
           features: {
-            tensorCompression: true,
+           , tensorCompression: true,
             flashAttention: true,
             parallelInference: true,
             memoryOptimization: true
@@ -327,7 +327,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json(webgpuAI.getCapabilities(), { status: 200 });
     }
     return json(
-      { success: false, error: 'Invalid action. Use ?action=health or ?action=capabilities' },
+      { success: false, error: 'Invalid action. Use ?action=health or ?action=capabilities` },'`
       { status: 400 }
     );
   } catch (error: any) {
@@ -345,7 +345,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = (await request.json()) as WebGPUChatRequest;
     // Input validation
     if (!body.message || typeof body.message !== 'string') {
-      return json({ success: false, error: 'Message is required and must be a string' }, { status: 400 });
+      return json({ success: false, error: `Message is required and must be a string` }, { status: 400 });
     }
     if (body.message.length > 4000) {
       return json(

@@ -174,9 +174,9 @@ export const errorHistory = pgTable('error_history', {
   /** Error count by source */
   errorsBySource: jsonb('errors_by_source').$type<Record<string, number>>(),
   /** Top 10 error codes */
-  topErrorCodes: jsonb('top_error_codes').$type<Array<{ code: string;, count: number }>>(),
+  topErrorCodes: jsonb('top_error_codes').$type<Array<{ code: string; count: number }>>(),
   /** Top 10 affected files */
-  topFiles: jsonb('top_files').$type<Array<{ path: string;, count: number }>>(),
+  topFiles: jsonb('top_files').$type<Array<{ path: string; count: number }>>(),
   /** Build metadata */
   buildMetadata: jsonb('build_metadata').$type<{ command: string;, duration: number;
     exitCode: number;
@@ -223,11 +223,11 @@ export const errorSimilarity = pgTable('error_similarity', {
   /** First error ID */
   errorId1: uuid('error_id_1')
     .notNull()
-    .references(() => viteErrors.id, { onDelete: 'cascade' }),
+    .references(() => viteErrors.id, { onDelete: 'cascade` }),'`
   /** Second error ID */
   errorId2: uuid('error_id_2')
     .notNull()
-    .references(() => viteErrors.id, { onDelete: 'cascade' }),
+    .references(() => viteErrors.id, { onDelete: `cascade` }),
   /** Cosine similarity score (0-1) */
   similarity: integer('similarity').notNull(),
   /** Computed timestamp */
@@ -256,7 +256,7 @@ export type NewErrorSimilarity = typeof errorSimilarity.$inferInsert;
  *
  * Run this SQL to create the schema in your database:
  *
- * ```sql
+ * ```sql`
  * -- Enable pgvector extension
  * CREATE EXTENSION IF NOT EXISTS vector;
  *

@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
 <!--
   Legal Document Summarization Interface
   Advanced UI for LangChain-powered document summarization with:
@@ -9,7 +9,7 @@ https://svelte.dev/e/js_parse_error -->
   - Professional legal document handling
   - Integration with your existing legal AI platform
 -->
-<script lang="ts">
+<script, lang="ts">
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Removed unused imports (onMount, enhance) and invalid type import ActionData
@@ -32,22 +32,22 @@ import type { Document } from '$lib/types';
   let charCount = $state<number>(0);
   let estimatedProcessingTime = $state<number>(0);
   // Sample legal document for demonstration
-  const sampleLegalDoc = `MEMORANDUM OF LAW
+  const sampleLegalDoc = `MEMORANDUM OF LAW`
   TO: Senior Partner
   from Legal Research Team
   DATE: August 25, 2025
   RE: Contract Breach Analysis - ABC Corp v. XYZ Industries
   I. EXECUTIVE SUMMARY
-  This memorandum analyzes the potential breach of contract claim by ABC Corporation against XYZ Industries regarding the Master Services Agreement dated January 15, 2024. Based on our analysis of the contract terms, relevant case law, and factual circumstances, we conclude that ABC has a strong claim for material breach due to XYZ's failure to deliver services within the specified timeframes and quality standards.
+  This memorandum analyzes the potential breach of contract claim by ABC Corporation against XYZ Industries regarding the Master Services Agreement dated January 15, 2024. Based on our analysis of the contract terms, relevant case law, and factual circumstances, we conclude that ABC has a strong claim for material breach due to XYZ's failure to deliver services within the specified timeframes and quality standards.'
   II. FACTUAL BACKGROUND
   ABC Corporation entered into a Master Services Agreement with XYZ Industries on January 15, 2024, for the provision of IT infrastructure services over a 24-month period. The contract includes specific performance milestones, service level agreements (SLAs), and liquidated damages provisions. XYZ was required to implement the new system by June 30, 2024, with performance benchmarks of 99.5% uptime and response times under 2 seconds.
-  However, XYZ failed to meet multiple critical deadlines and performance standards. The implementation was delayed by over 90 days, causing significant business disruption to ABC's operations. Additionally, when the system was finally deployed, it consistently failed to meet the contracted SLA requirements, with uptimes averaging only 95% and response times frequently exceeding 5 seconds.
+  However, XYZ failed to meet multiple critical deadlines and performance standards. The implementation was delayed by over 90 days, causing significant business disruption to ABC's operations. Additionally, when the system was finally deployed, it consistently failed to meet the contracted SLA requirements, with uptimes averaging only 95% and response times frequently exceeding 5 seconds.'
   III. LEGAL ANALYSIS
   A. Material Breach Standard
-  Under California law, a material breach occurs when a party's failure to perform substantially defeats the purpose of the contract. In Comunale v. Traders & General Insurance Co. (1958) 50 Cal.2d 654, the court established that materiality depends on the extent to which the injured party is deprived of the benefit reasonably expected from the contract.
+  Under California law, a material breach occurs when a party's failure to perform substantially defeats the purpose of the contract. In Comunale v. Traders & General Insurance Co. (1958) 50 Cal.2d 654, the court established that materiality depends on the extent to which the injured party is deprived of the benefit reasonably expected from the contract.'
   Here, XYZ's delays and performance failures substantially frustrated ABC's legitimate expectations under the agreement. The 90-day delay caused ABC to lose a major client contract worth $2.3 million, and the ongoing performance issues have resulted in additional operational costs and customer complaints.
   B. Damages Calculation
-  The contract includes both liquidated damages provisions for delays ($10,000 per day after the deadline) and general damages for performance failures. Based on the delay period and documented losses, ABC's potential damages include:
+  The contract includes both liquidated damages provisions for delays ($10,000 per day after the deadline) and general damages for performance failures. Based on the delay period and documented losses, ABC's potential damages include:'
   1. Liquidated damages: $900,000 (90 days × $10,000)
   2. Lost profits from terminated client contract: $2,300,000
   3. Additional operational costs: $150,000
@@ -55,7 +55,7 @@ import type { Document } from '$lib/types';
   Total estimated damages: $3,750,000
   IV. CONCLUSION AND RECOMMENDATIONS
   We recommend that ABC proceed with a breach of contract claim against XYZ Industries. The evidence clearly supports a finding of material breach, and ABC's damages are well-documented and substantial. We should also consider whether the contract's limitation of liability clause applies to these circumstances, as it may affect the recoverable damages amount.
-  Additionally, we recommend exploring settlement negotiations before filing suit, as the strength of ABC's position may encourage a favorable resolution without the costs and uncertainties of litigation.`;
+  Additionally, we recommend exploring settlement negotiations before filing suit, as the strength of ABC's position may encourage a favorable resolution without the costs and uncertainties of litigation.`;'`
   // Reactive calculations (use $effect in Svelte 5 runes)
   $effect(() => {
     wordCount = reportText.trim() ? reportText.trim().split(/\s+/).length : 0;
@@ -147,7 +147,7 @@ import type { Document } from '$lib/types';
         processingSteps.push('❌ Processing failed');
       }
     } catch (error) {
-      console.error('Summarization error:', error);
+      console.error('Summarization error:', error);'
       errorMessage = 'Network error: Could not connect to summarization service.';
       processingSteps.push('❌ Network error');
     } finally {
@@ -177,26 +177,26 @@ import type { Document } from '$lib/types';
 
 <svelte:head>
   <title>Legal Document Summarization - Legal AI Platform</title>
-  <meta name="description" content="AI-powered legal document summarization using advanced language models" />
+  <meta name="description" content="AI-powered legal document summarization using advanced language, models" />
 </svelte:head>
-<div class="summarization-container">
-  <header class="page-header">
+<div, class="summarization-container">
+  <header, class="page-header">
     <h1>🏛️ Legal Document Summarization</h1>
-    <p class="subtitle">Advanced AI analysis powered by LangChain and your local legal model</p>
-    <div class="status-bar">
-      <div class="stats">
+    <p, class="subtitle">Advanced AI analysis powered by LangChain and your local legal model</p>
+    <div, class="status-bar">
+      <div, class="stats">
         <span>📄 Words: {wordCount.toLocaleString()}</span>
         <span>📝 Characters: {charCount.toLocaleString()}</span>
         <span>⏱️ Est. time: {estimatedProcessingTime}s</span>
       </div>
-      <div class="actions">
-        <button class="btn nes-btn btn-outline" onclick={loadSampleDocument}> Load Sample </button>
-        <button class="btn nes-btn btn-outline" onclick={clearAll}> Clear All </button>
+      <div, class="actions">
+        <button class="btn nes-btn, btn-outline" onclick={loadSampleDocument}> Load Sample </button>
+        <button class="btn nes-btn, btn-outline" onclick={clearAll}> Clear All </button>
       </div>
     </div>
   </header>
-  <div class="tab-navigation">
-    <button class="tab {activeTab === 'input' ? 'active' : ''}" onclick={() => (activeTab = 'input')}>
+  <div, class="tab-navigation">
+    <button, class="tab {activeTab === 'input' ? 'active' : ''}" onclick={() => (activeTab = 'input')}>
       📝 Document Input
     </button>
     <button
@@ -206,7 +206,7 @@ import type { Document } from '$lib/types';
     >
       📋 Summary
       {#if isLoading}
-        <span class="loading-spinner">⏳</span>
+        <span, class="loading-spinner">⏳</span>
       {/if}
     </button>
     <button
@@ -217,43 +217,43 @@ import type { Document } from '$lib/types';
       ⚖️ Legal Analysis
     </button>
   </div>
-  <main class="content-area">
+  <main, class="content-area">
     {#if activeTab === 'input'}
-      <div class="input-panel">
-        <div class="input-controls">
-          <div class="file-upload">
-            <label for="file-input" class="btn nes-btn"> 📁 Upload Document </label>
-            <input id="file-input" type="file" accept=".txt,.md,.pdf,.docx" onchange={handleFileUpload} hidden />
+      <div, class="input-panel">
+        <div, class="input-controls">
+          <div, class="file-upload">
+            <label for="file-input" class="btn, nes-btn"> 📁 Upload Document </label>
+            <input, id="file-input" type="file" accept=".txt,.md,.pdf,.docx" onchange={handleFileUpload} hidden />
           </div>
-          <div class="options-grid">
-            <div class="option-group">
-              <label for="summary-length">Summary Length:</label>
-              <select id="summary-length" bind:value={summaryLength}>
-                <option value="short">Short (150 tokens)</option>
-                <option value="medium">Medium (300 tokens)</option>
-                <option value="long">Long (500 tokens)</option>
+          <div, class="options-grid">
+            <div, class="option-group">
+              <label, for="summary-length">Summary Length:</label>
+              <select, id="summary-length" bind:value={summaryLength}>
+                <option, value="short">Short (150 tokens)</option>
+                <option, value="medium">Medium (300 tokens)</option>
+                <option, value="long">Long (500 tokens)</option>
               </select>
             </div>
-            <div class="option-group">
-              <label for="temperature">Analysis Creativity:</label>
-              <input id="temperature" type="range" min="0" max="1" step="0.1" bind:value={temperature} />
-              <span class="range-value">{temperature}</span>
+            <div, class="option-group">
+              <label, for="temperature">Analysis Creativity:</label>
+              <input, id="temperature" type="range" min="0" max="1" step="0.1" bind:value={temperature} />
+              <span, class="range-value">{temperature}</span>
             </div>
-            <div class="option-group checkbox-group">
+            <div class="option-group, checkbox-group">
               <label>
-                <input type="checkbox" bind:checked={includeKeyTerms} />
+                <input, type="checkbox" bind:checked={includeKeyTerms} />
                 Extract Key Legal Terms
               </label>
             </div>
-            <div class="option-group checkbox-group">
+            <div class="option-group, checkbox-group">
               <label>
-                <input type="checkbox" bind:checked={includeLegalAnalysis} />
+                <input, type="checkbox" bind:checked={includeLegalAnalysis} />
                 Include Risk Analysis
               </label>
             </div>
           </div>
         </div>
-        <div class="text-input-area">
+        <div, class="text-input-area">
           <textarea
             id="document-input"
             bind:value={reportText}
@@ -261,7 +261,7 @@ import type { Document } from '$lib/types';
             disabled={isLoading}
             rows="20"
           ></textarea>
-          <div class="input-footer">
+          <div, class="input-footer">
             <button
               class="btn nes-btn btn-primary btn-large"
               onclick={handleSummarize}
@@ -278,57 +278,57 @@ import type { Document } from '$lib/types';
       </div>
     {/if}
     {#if activeTab === 'summary'}
-      <div class="summary-panel">
+      <div, class="summary-panel">
         {#if isLoading}
-          <div class="processing-status">
+          <div, class="processing-status">
             <h3>🧠 AI Processing in Progress</h3>
-            <div class="processing-steps">
+            <div, class="processing-steps">
               {#each processingSteps as step, i}
-                <div class="step {i === processingSteps.length - 1 ? 'current' : 'completed'}">
+                <div, class="step {i === processingSteps.length - 1 ? 'current' : 'completed'}">
                   {step}
                 </div>
               {/each}
             </div>
           </div>
         {:else if summary}
-          <div class="summary-result">
-            <div class="result-header">
+          <div, class="summary-result">
+            <div, class="result-header">
               <h3>📋 Document Summary</h3>
-              <div class="result-actions">
-                <button id="copy-btn" class="btn nes-btn btn-outline" onclick={copySummary}> 📋 Copy Summary </button>
+              <div, class="result-actions">
+                <button id="copy-btn" class="btn nes-btn, btn-outline" onclick={copySummary}> 📋 Copy Summary </button>
               </div>
             </div>
-            <div class="summary-content">
-              <div class="summary-text">
+            <div, class="summary-content">
+              <div, class="summary-text">
                 {summary}
               </div>
               {#if metadata}
-                <div class="metadata-panel">
+                <div, class="metadata-panel">
                   <h4>📊 Processing Metadata</h4>
-                  <div class="metadata-grid">
-                    <div class="metadata-item">
+                  <div, class="metadata-grid">
+                    <div, class="metadata-item">
                       <strong>Compression</strong>
                       {metadata.compressionRatio}:1 ratio
                     </div>
-                    <div class="metadata-item">
+                    <div, class="metadata-item">
                       <strong>Processing Time:</strong>
                       {metadata.processingTime}ms
                     </div>
-                    <div class="metadata-item">
+                    <div, class="metadata-item">
                       <strong>Chunks Processed:</strong>
                       {metadata.chunksProcessed}
                     </div>
-                    <div class="metadata-item">
+                    <div, class="metadata-item">
                       <strong>Model:</strong>
                       {metadata.model}
                     </div>
                   </div>
                   {#if metadata.keyLegalTerms?.length}
-                    <div class="key-terms">
+                    <div, class="key-terms">
                       <h5>🏷️ Key Legal Terms</h5>
-                      <div class="terms-list">
+                      <div, class="terms-list">
                         {#each Array.isArray(metadata.keyLegalTerms) ? metadata.keyLegalTerms : [] as term}
-                          <span class="term-tag">{term}</span>
+                          <span, class="term-tag">{term}</span>
                         {/each}
                       </div>
                     </div>
@@ -338,13 +338,13 @@ import type { Document } from '$lib/types';
             </div>
           </div>
         {:else if errorMessage}
-          <div class="error-panel">
+          <div, class="error-panel">
             <h3>❌ Processing Error</h3>
             <p>{errorMessage}</p>
-            <button class="btn nes-btn is-primary" onclick={() => (activeTab = 'input')}> ← Back to Input </button>
+            <button class="btn nes-btn, is-primary" onclick={() => (activeTab = 'input')}> ← Back to Input </button>
           </div>
         {:else}
-          <div class="empty-state">
+          <div, class="empty-state">
             <h3>📝 No Summary Yet</h3>
             <p>Process a document in the Input tab to see the summary here.</p>
           </div>
@@ -352,16 +352,16 @@ import type { Document } from '$lib/types';
       </div>
     {/if}
     {#if activeTab === 'analysis'}
-      <div class="analysis-panel">
+      <div, class="analysis-panel">
         {#if metadata?.legalRiskAnalysis}
-          <div class="risk-analysis">
+          <div, class="risk-analysis">
             <h3>⚖️ Legal Risk Analysis</h3>
-            <div class="analysis-content">
+            <div, class="analysis-content">
               {metadata.legalRiskAnalysis}
             </div>
           </div>
         {:else}
-          <div class="empty-state">
+          <div, class="empty-state">
             <h3>⚖️ No Legal Analysis Available</h3>
             <p>Enable "Include Risk Analysis" in the options and process a document to see legal analysis here.</p>
           </div>

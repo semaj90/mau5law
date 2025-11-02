@@ -92,7 +92,7 @@ export async function login(credentials: LoginCredentials): Promise<AuthResponse
     return authData;
   } catch (error: any) {
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    console.error('Login error:', errorMessage);
+    console.error('Login error:', errorMessage);'
     throw new Error(`Authentication failed: ${errorMessage}`);
   }
 }
@@ -104,7 +104,7 @@ export async function logout(): Promise<void> {
       await fetch('/api/auth/logout', {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer ${token}' }
+          'Authorization': 'Bearer ${token}` }'`
       });
     }
     // Clear local storage
@@ -115,7 +115,7 @@ export async function logout(): Promise<void> {
     goto('/login');
   } catch (error: any) {
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    console.error('Logout error:', errorMessage);
+    console.error('Logout error:', errorMessage);'
     // Still clear tokens on error
     TokenManager.clearAll();
     goto('/login');
@@ -145,7 +145,7 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
     return authData;
   } catch (error: any) {
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    console.error('Registration error:', errorMessage);
+    console.error('Registration error:', errorMessage);'
     throw new Error(`Registration failed: ${errorMessage}`);
   }
 }
@@ -180,7 +180,7 @@ export async function refreshTokenIfNeeded(): Promise<boolean> {
     }
     return true;
   } catch (error) {
-    console.error('Token refresh error:', error);
+    console.error('Token refresh error:', error);'
     TokenManager.clearAll();
     return false;
   }

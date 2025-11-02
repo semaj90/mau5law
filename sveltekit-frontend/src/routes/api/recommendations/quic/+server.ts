@@ -69,8 +69,8 @@ async function getQuicEngine(): Promise<QuicRecommendationEngine> {
       const instance = new (module.QuicNeo4jRecommendationEngine as new () => unknown)();
       QuicEngine = instance as QuicRecommendationEngine;
     } catch (err) {
-      console.error('Failed to load QUIC engine:', err);
-      throw error(503, makeHttpErrorPayload({ message: 'QUIC recommendation engine unavailable' }));
+      console.error('Failed to load QUIC engine: `, err);'`
+      throw error(503, makeHttpErrorPayload({ message: `QUIC recommendation engine unavailable` }));
     }
   }
   return QuicEngine;
@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const useTensorCores = url.searchParams.get('useTensorCores') !== 'false';
     const benchmark = url.searchParams.get('benchmark') === 'true';
     if (!query) {
-      throw error(400, makeHttpErrorPayload({ message: 'Query parameter (q or query) is required' }));
+      throw error(400, makeHttpErrorPayload({ message: `Query parameter (q or query) is required` }));
     }
     const engine = await getQuicEngine();
     // Run benchmark if requested
@@ -118,8 +118,7 @@ export const GET: RequestHandler = async ({ url }) => {
       'X-Protocol': recommendations.protocol ?? 'unknown',
       'X-Cache-Status': recommendations.cacheHit ? 'HIT' : 'MISS',
       'X-GPU-Used': recommendations.tensorMetrics?.tensorCoresUsed ? 'true' : 'false',
-      'X-SIMD-Optimized': recommendations.metadata?.simdOptimized ? 'true' : 'false'
-    };
+      'X-SIMD-Optimized': recommendations.metadata?.simdOptimized ? 'true' : `false` };
 
     return json(
       {
@@ -138,7 +137,7 @@ export const GET: RequestHandler = async ({ url }) => {
       { status: 200, headers }
     );
   } catch (err) {
-    console.error('QUIC recommendations API error:', err);
+    console.error('QUIC recommendations API error:', err);'
     if (err.status) {
       throw err; // Re-throw SvelteKit errors
     }
@@ -169,7 +168,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } = body as PostBody; // cast to typed body
 
     if (!query && !(batchQueries && batchQueries.length)) {
-      throw error(400, makeHttpErrorPayload({ message: 'Query or batchQueries required' }));
+      throw error(400, makeHttpErrorPayload({ message: `Query or batchQueries required` }));
     }
     const engine = await getQuicEngine();
     const startTime = performance.now();
@@ -241,7 +240,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (err) {
-    console.error('QUIC recommendations POST error:', err);
+    console.error('QUIC recommendations POST error:', err);'
     if (err.status) {
       throw err;
     }

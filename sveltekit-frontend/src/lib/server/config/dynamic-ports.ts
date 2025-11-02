@@ -193,7 +193,7 @@ export class DynamicPortManager {
           } catch (err) {
             // Ignore errors when closing the server during timeout, but keep a debug log for diagnostics.
             // This avoids an empty block while preserving the original intention.
-            // Use console.debug so it doesn't spam production logs by default.
+            // Use console.debug so it doesn't spam production logs by default.'
             console.debug('[dynamic-ports] server.close() threw during timeout:', err);
           }
           resolve(false);

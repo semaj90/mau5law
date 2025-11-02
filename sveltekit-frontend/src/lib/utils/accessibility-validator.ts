@@ -89,8 +89,7 @@ export class AccessibilityValidator {
         const hasAriaLabelledBy = element.hasAttribute('aria-labelledby');
         return hasLabel || hasAriaLabel || hasAriaLabelledBy;
       },
-      fix: 'Associate form inputs with labels using for/id or aria-label'
-    },
+      fix: 'Associate form inputs with labels using for/id or aria-label` },'`
     // Legal AI Specific Rules
     {
       name: 'legal-ai-theme-compliance',
@@ -111,7 +110,7 @@ export class AccessibilityValidator {
         );
         return !isEnhancedComponent || hasLegalClasses;
       },
-      fix: `Use legal AI design tokens and CSS variables` },
+      fix: `Use legal AI design tokens and CSS variables` }
   ];
   /**
    * Validate accessibility for a single element
@@ -123,7 +122,7 @@ export class AccessibilityValidator {
       passed: rule.validate(element),
       message: rule.passed
         ? `✅ ${rule.name}: Passed`
-        : `❌ ${rule.name}: ${rule.description}${rule.fix ? ` - ${rule.fix}` : `` }` }));
+        : `❌ ${rule.name}: ${rule.description}${rule.fix ? ` - ${rule.fix}` : `' }` }));'`
   }
   /**
    * Validate accessibility for entire page

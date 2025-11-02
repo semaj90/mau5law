@@ -72,7 +72,7 @@ export type EvidenceAnalysisResult = { success: boolean;, fileId: string;
 // ==================== AI Agent Types ====================
 
 export type AIAgentTool = { name: string;, description: string;
-  parameters: Record<string, { type: string;, description: string; required?: boolean }>;
+  parameters: Record<string, { type: string; description: string; required?: boolean }>;
   execute: (params: Record<string, unknown>) => Promise<unknown>;
 };
 
@@ -131,11 +131,11 @@ export type WorkflowContext = {
 };
 
 export type WorkflowEvent =
-  | { type: 'PROCESS_EVIDENCE';, data: EvidenceFile }
-  | { type: 'OCR_COMPLETE';, text: string }
-  | { type: 'EMBEDDING_COMPLETE';, embedding: number[] }
-  | { type: 'ANALYSIS_COMPLETE';, result: EvidenceAnalysisResult }
-  | { type: 'ERROR';, error: string }
+  | { type: 'PROCESS_EVIDENCE'; data: EvidenceFile }
+  | { type: 'OCR_COMPLETE'; text: string }
+  | { type: 'EMBEDDING_COMPLETE'; embedding: number[] }
+  | { type: 'ANALYSIS_COMPLETE'; result: EvidenceAnalysisResult }
+  | { type: 'ERROR'; error: string }
   | { type: 'RETRY' }
   | { type: 'CANCEL' };
 
@@ -175,11 +175,11 @@ export type SearchResponse = APIResponse<{ results: VectorSearchResult[];, tota
 // ==================== WebSocket Message Types ====================
 
 export type WSMessage =
-  | { type: 'PROCESSING_UPDATE'; fileId: string; stage: string;, progress: number }
-  | { type: 'ANALYSIS_COMPLETE'; fileId: string;, result: EvidenceAnalysisResult }
-  | { type: 'ERROR'; fileId: string;, error: string }
-  | { type: 'CHAT_MESSAGE';, message: ChatMessage }
-  | { type: 'VECTOR_SEARCH_RESULT';, results: VectorSearchResult[] };
+  | { type: 'PROCESSING_UPDATE'; fileId: string; stage: string; progress: number }
+  | { type: 'ANALYSIS_COMPLETE'; fileId: string; result: EvidenceAnalysisResult }
+  | { type: 'ERROR'; fileId: string; error: string }
+  | { type: 'CHAT_MESSAGE'; message: ChatMessage }
+  | { type: 'VECTOR_SEARCH_RESULT'; results: VectorSearchResult[] };
 
 // ==================== Export Actor Types ====================
 
@@ -191,7 +191,7 @@ export type EvidenceSnapshot = {
   context: WorkflowContext;
   // current state value (string | object) depending on machine shape
   value: any; // Made non-optional to satisfy Snapshot<unknown> constraint
-  // The status of the actor, required by XState's Snapshot interface
+  // The status of the actor, required by XState's Snapshot interface'
   status: 'active' | 'done' | 'error' | 'stopped';
   // optional last event that produced this snapshot
   lastEvent?: WorkflowEvent;

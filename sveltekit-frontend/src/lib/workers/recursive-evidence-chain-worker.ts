@@ -188,7 +188,7 @@ export class RecursiveEvidenceChainProcessor {
       // Integration with existing evidence-correlation endpoint
       const response = await fetch(`${this.apiBaseUrl}/evidence/correlate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , evidenceIds: [evidenceId],
           analysisType: 'comprehensive',
@@ -214,7 +214,7 @@ export class RecursiveEvidenceChainProcessor {
             const strength = typeof corr.strength === 'number' ? corr.strength : 0;
             const otherMetadata: Record<string, unknown> = { ...(corr as Record<string, unknown>) };
 
-            // if we can't resolve partner id, skip
+            // if we can't resolve partner id, skip'
             const partnerId = b === evidenceId ? a : b === undefined ? a : b;
             if (!partnerId) return null;
 
@@ -244,7 +244,7 @@ export class RecursiveEvidenceChainProcessor {
         const relationship = await this.determineRelationshipType(evidenceId, related);
         relationships.push(relationship);
       } catch (error) {
-        console.warn(`Error analyzing relationship between ${evidenceId} and ${related.evidenceId}: ', error);
+        console.warn(`Error analyzing relationship between ${evidenceId} and ${related.evidenceId}: ', error);'`
       }
     }
     return relationships;
@@ -295,7 +295,7 @@ export class RecursiveEvidenceChainProcessor {
         chain2.some(
           entry2 =>
             entry1.officer_id === entry2.officer_id ||
-            Math.abs(new Date(entry1.timestamp).getTime() - new Date(entry2.timestamp).getTime()) < 3600000 // 1 hour
+            Math.abs(new Date(entry1.timestamp).getTime() - new Date(entry2.timestamp).getTime()) < 3600000 // 1, hour
         )
       );
     } catch (error) {

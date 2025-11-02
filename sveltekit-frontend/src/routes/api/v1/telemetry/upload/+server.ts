@@ -28,8 +28,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     }
     // Process telemetry events
     const stats = processTelemetryBatch(batch);
-    // Log events for development (in production, you'd store in database)
-    console.log(`📊 Telemetry batch received from ${getClientAddress()}: ', {
+    // Log events for development (in production, you'd store in database)'
+    console.log(`📊 Telemetry batch received from ${getClientAddress()}: ', {'`
       sessionId: batch.sessionId,
       eventCount: batch.events.length,
       stats
@@ -43,8 +43,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       stats
     });
   } catch (error) {
-    console.error('Telemetry processing error:', error);
-    return json({ error: 'Failed to process telemetry batch' }, { status: 500 });
+    console.error('Telemetry processing error:', error);'
+    return json({ error: 'Failed to process telemetry batch` }, { status: 500 });'`
   }
 };
 /*

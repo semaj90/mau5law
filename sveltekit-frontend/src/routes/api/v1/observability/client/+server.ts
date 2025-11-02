@@ -53,14 +53,14 @@ function calculateWebVitalAverage(metrics: MetricEntry[], vital: keyof NonNullab
   return validValues.reduce((sum, v) => sum + v, 0) / validValues.length;
 }
 function logMetricsForDevelopment(payload: ClientMetricsPayload, requestId: string) {
-  console.log(`📊 [${requestId.slice(0, 8)}] Client Metrics Received: ', {
+  console.log(`📊 [${requestId.slice(0, 8)}] Client Metrics Received: ', {'`
     timestamp: new Date(payload.timestamp).toISOString(),
     metricsCount: payload.metrics.length,
     userAgent: payload.userAgent.slice(0, 50) + '...',
     url: payload.url
   });
   payload.metrics.forEach((metric, index) => {
-    console.log(`  📈 [${requestId.slice(0, 8)}] Route ${index + 1}: ', {
+    console.log(`  📈 [${requestId.slice(0, 8)}] Route ${index + 1}: ', {'`
       route: metric.routeId || 'unknown',
       path: metric.pathname,
       loadTime: `${Math.round(metric.loadTime)}ms`,
@@ -71,9 +71,8 @@ function logMetricsForDevelopment(payload: ClientMetricsPayload, requestId: stri
             lcp: metric.webVitals.lcp ? `${Math.round(metric.webVitals.lcp)}ms` : 'N/A',
             fid: metric.webVitals.fid ? `${Math.round(metric.webVitals.fid)}ms` : 'N/A',
             cls: metric.webVitals.cls != null ? Math.round(metric.webVitals.cls * 1000) / 1000 : 'N/A',
-            fcp: metric.webVitals.fcp ? `${Math.round(metric.webVitals.fcp)}ms` : 'N/A'
-          }
-        : 'N/A` });
+            fcp: metric.webVitals.fcp ? `${Math.round(metric.webVitals.fcp)}ms` : `N/A` }
+        : `N/A' });'`
   });
 }
 export const POST: RequestHandler = async ({ request, getClientAddress: _getClientAddress, locals }) => {
@@ -117,12 +116,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress: _getClie
       {
         headers: {
           'X-Request-ID': requestId,
-          'Server-Timing': `client-metrics-processing;dur=${processingTime.toFixed(2)}` }
+          'Server-Timing': `client-metrics-processing;dur=${processingTime.toFixed(2)}' }'`
       }
     );
   } catch (error) {
     const processingTime = performance.now() - requestStart;
-    console.error(`❌ [${requestId.slice(0, 8)}] Client metrics processing failed: ', error);
+    console.error(`❌ [${requestId.slice(0, 8)}] Client metrics processing failed: ', error);'`
     return json(
       {
         error: 'Failed to process client metrics',
@@ -133,7 +132,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress: _getClie
         status: 500,
         headers: {
           'X-Request-ID': requestId,
-          'Server-Timing': `client-metrics-processing;dur=${processingTime.toFixed(2)}` }
+          'Server-Timing': `client-metrics-processing;dur=${processingTime.toFixed(2)}' }'`
       }
     );
   }
@@ -250,7 +249,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       }
     }
   } catch (error) {
-    console.error(`❌ [${requestId.slice(0, 8)}] Client metrics GET failed: ', error);
+    console.error(`❌ [${requestId.slice(0, 8)}] Client metrics GET failed: ', error);'`
     return json(
       {
         error: 'Internal server error',

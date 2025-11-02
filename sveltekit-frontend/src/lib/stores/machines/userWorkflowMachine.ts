@@ -48,23 +48,23 @@ export interface UserWorkflowContext extends WorkflowContext {
   }
 }
 export type UserWorkflowEvent =
-  | { type: 'LOGIN';, user: User }
+  | { type: 'LOGIN'; user: User }
   | { type: 'LOGOUT' }
-  | { type: 'START_WORKFLOW';, workflowType: 'case_creation' | 'evidence_processing' | 'document_review' | 'collaboration' | 'case_closure'; data?: any }
+  | { type: 'START_WORKFLOW'; workflowType: 'case_creation' | 'evidence_processing' | 'document_review' | 'collaboration' | 'case_closure'; data?: any }
   | { type: 'NEXT_STEP'; data?: any }
   | { type: 'PREVIOUS_STEP' }
-  | { type: 'COMPLETE_STEP';, stepData: any }
+  | { type: 'COMPLETE_STEP'; stepData: any }
   | { type: 'CANCEL_WORKFLOW' }
   | { type: 'COMPLETE_WORKFLOW' }
   | { type: 'SET_ACTIVE_CASE'; case LegalCase }
-  | { type: 'SET_ACTIVE_EVIDENCE';, evidence: Evidence }
-  | { type: 'ADD_COLLABORATOR';, collaborator: User }
-  | { type: 'REMOVE_COLLABORATOR';, userId: string }
-  | { type: 'ADD_NOTIFICATION'; notification: { type: 'info' | 'warning' | 'error' | 'success';, message: string } }
-  | { type: 'MARK_NOTIFICATION_READ';, notificationId: string }
+  | { type: 'SET_ACTIVE_EVIDENCE'; evidence: Evidence }
+  | { type: 'ADD_COLLABORATOR'; collaborator: User }
+  | { type: 'REMOVE_COLLABORATOR'; userId: string }
+  | { type: 'ADD_NOTIFICATION'; notification: { type: 'info' | 'warning' | 'error' | 'success'; message: string } }
+  | { type: 'MARK_NOTIFICATION_READ'; notificationId: string }
   | { type: 'CLEAR_NOTIFICATIONS' }
-  | { type: 'UPDATE_PREFERENCES';, preferences: Partial<UserWorkflowContext['preferences']> }
-  | { type: 'ERROR';, error: string }
+  | { type: 'UPDATE_PREFERENCES'; preferences: Partial<UserWorkflowContext['preferences']> }
+  | { type: 'ERROR'; error: string }
   | { type: 'RETRY' }
   | { type: 'RESET' }
 export const userWorkflowMachine = createMachine({
@@ -82,7 +82,7 @@ export const userWorkflowMachine = createMachine({
     errors: [],
     data: { [key,: strin,g]: any },
     workflow: {
-      type: 'case_creation',
+     , type: 'case_creation',
       status: 'pending',
       steps: [],
       currentStepIndex: 0,
@@ -91,12 +91,12 @@ export const userWorkflowMachine = createMachine({
     collaborators: [],
     notifications: [],
     preferences: {
-      autoSave: true,
+     , autoSave: true,
       notifications: true,
       collaborationMode: 'real-time'
     }
   },
-  states: { idle: {, on: { LOGIN: {, target: 'authenticated',
+  states: {, idle: {, on: {, LOGIN: {, target: 'authenticated',
           actions: assign({
            , user: ({ event }) => event.user,
             userId: ({ event }) => event.user.id
@@ -148,8 +148,7 @@ export const userWorkflowMachine = createMachine({
         workflowActive: {
           initial: 'executingStep',
           entry: assign({
-            currentStep: ({ context }) => context.workflow.steps[context.workflow.currentStepIndex] || 'unknown'
-          }),
+            currentStep: ({ context }) => context.workflow.steps[context.workflow.currentStepIndex] || 'unknown` }),'`
           states: { executingStep: {, on: { COMPLETE_STEP: {, target: 'stepCompleted',
                   actions: assign({
                     data: ({ context, event }) => ({ ...context.data, ...event.stepData }),
@@ -167,7 +166,7 @@ export const userWorkflowMachine = createMachine({
             },
             stepCompleted: {
               always: [
-                {
+                {,
                   target: '#userWorkflow.authenticated.workflowCompleted',
                   guard: ({ context }) => context.workflow.currentStepIndex >= context.workflow.totalSteps - 1,
                   actions: assign({
@@ -177,8 +176,7 @@ export const userWorkflowMachine = createMachine({
                       completedAt: new Date()
                     }),
                     progress: 100,
-                    currentStep: 'workflow_completed'
-                  })
+                    currentStep: `workflow_completed` })
                 },
                 {
                   target: 'executingStep',

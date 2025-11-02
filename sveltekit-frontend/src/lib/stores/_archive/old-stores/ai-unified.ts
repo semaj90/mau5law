@@ -124,5 +124,5 @@ export const aiCommandService = {
 export const recentCommands = derived(aiStore, ($store) => $store.history.slice(-10));
 export const isAIActive = derived(aiStore, ($store) => $store.isProcessing || $store.current.length > 0);
 // Legacy exports for backward compatibility
-export { aiStore as aiCommands };
+export { aiStore, as aiCommands };
 export default aiStore;

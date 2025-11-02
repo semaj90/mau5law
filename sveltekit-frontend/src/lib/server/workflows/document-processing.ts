@@ -11,9 +11,9 @@ export interface DocumentProcessingContext { documentId: string;, content: stri
 }
 
 export type DocumentProcessingEvent =
-  | { type: 'START_PROCESSING'; documentId: string;, content: string }
+  | { type: 'START_PROCESSING'; documentId: string; content: string }
   | { type: 'COMPLETE' }
-  | { type: 'FAIL';, error: string };
+  | { type: 'FAIL'; error: string };
 
 export const documentProcessingMachine = createMachine({
   id: 'documentProcessing',
@@ -27,11 +27,11 @@ export const documentProcessingMachine = createMachine({
     errors: [],
     status: 'pending'
   } as DocumentProcessingContext,
-  states: { idle: {, on: { START_PROCESSING: 'processing' }
+  states: {, idle: {, on: {, START_PROCESSING: 'processing' }
     },
-    processing: { on: {, COMPLETE: 'completed', FAIL: 'failed' }
+    processing: {, on: {, COMPLETE: 'completed', FAIL: 'failed' }
     },
-    completed: { type: 'final' },
+    completed: {, type: 'final' },
     failed: {, type: 'final' }
   }
 });

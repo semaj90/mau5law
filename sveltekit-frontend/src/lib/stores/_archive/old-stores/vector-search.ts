@@ -4,7 +4,7 @@
  */
 import { writable, derived } from 'svelte/store';
 // Local minimal types to satisfy compile; replace with real imports if available
-type VectorSearchResult = { id: string; content: string;, score: number; [k: string]: any };
+type VectorSearchResult = { id: string; content: string; score: number; [k: string]: any };
 
 export type SearchHistoryItem = { query: string;, timestamp: number;
   resultCount: number;
@@ -114,12 +114,11 @@ export const vectorSearchActions = {
         ]
       })); // Fixed closing parenthesis and semicolon
     } catch (error: any) {
-      console.error('Vector search failed:', error);
+      console.error('Vector search failed: `, error);'`
       vectorSearchStore.update(state => ({
         ...state,
         isSearching: false, // Added comma
-        error: error instanceof Error ? error.message : 'Search failed'
-      })); // Fixed closing parenthesis and semicolon
+        error: error instanceof Error ? error.message : `Search failed` })); // Fixed closing parenthesis and semicolon
     }
   },
   /**
@@ -140,7 +139,7 @@ export const vectorSearchActions = {
       // Then generate RAG response
       const response = await fetch('/api/v1/rag/enhanced', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
           query,
           userId,
@@ -172,12 +171,11 @@ export const vectorSearchActions = {
         ]
       })); // Added missing closing curly brace and parenthesis
     } catch (error: any) {
-      console.error('RAG query failed:', error);
+      console.error('RAG query failed: `, error);'`
       vectorSearchStore.update(state => ({
         ...state,
         isGeneratingResponse: false, // Added comma
-        error: error instanceof Error ? error.message : 'RAG query failed'
-      })); // Fixed closing parenthesis and semicolon
+        error: error instanceof Error ? error.message : `RAG query failed` })); // Fixed closing parenthesis and semicolon
     }
   },
   /**
@@ -246,7 +244,7 @@ export const vectorSearchActions = {
       const data = await response.json(); // Simplified type assertion
       vectorSearchStore.update(state => ({
         ...state,
-        vectorDbConnected: response.ok && data.status === 'healthy` })); // Fixed closing parenthesis and semicolon
+        vectorDbConnected: response.ok && data.status === 'healthy` })); // Fixed closing parenthesis and semicolon'`
     } catch (error: any) {
       vectorSearchStore.update(state => ({
         ...state,

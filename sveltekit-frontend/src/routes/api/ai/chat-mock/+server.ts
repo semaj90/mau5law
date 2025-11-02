@@ -130,7 +130,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
           similarDocs
             .map(
               (doc: SimilarDoc, idx: number) =>
-                `[Pattern ${idx + 1}] ${doc.payload?.title ?? 'Untitled'}: ${doc.payload?.content?.substring(0, 200) ?? 'No content` }...`
+                `[Pattern ${idx + 1}] ${doc.payload?.title ?? 'Untitled'}: ${doc.payload?.content?.substring(0, 200) ?? 'No content` }...`'`
             )
             .join('\n\n');
 
@@ -155,7 +155,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     try {
       const ragResponse = await fetch('http://localhost:8094/api/rag', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
          , query: message,
           context: context || {},
@@ -198,7 +198,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
 
     // Compose messages with RAG context (like NES nametables) - use a single template string to avoid mixed whitespace
     const messages = [
-      {
+      {,
         role: 'system',
         content: [
           'You are a specialized legal AI assistant powered by NES-style CHR_ROM pattern matching.',
@@ -230,10 +230,10 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
         role: 'assistant',
         timestamp: new Date().toISOString(),
         sources: [
-          {
+          {,
             type: 'Ollama Legal AI (PPU)',
             score: 0.92,
-            title: `${targetModel} with RAG Enhancement' },
+            title: `${targetModel} with RAG Enhancement` },
           ...ragSources,
         ],
         metadata: {
@@ -274,7 +274,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     constitutional: /constitutional|amendment|rights|due process/i,
     procedure: /procedure|motion|filing|court|hearing/i
   };
-  let intelligentResponse = "I understand you're seeking legal assistance. ";
+  let intelligentResponse = "I understand you're seeking legal assistance. ";'
   let detectedArea = 'general';
   let confidence = 0.75;
   // Pattern matching for intelligent responses
@@ -282,7 +282,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     detectedArea = 'evidence';
     confidence = 0.88;
     intelligentResponse +=
-      "Regarding evidence matters, it's important to consider factors such as relevance, reliability, authenticity, and admissibility. Evidence must be properly collected, documented, and preserved to maintain its integrity for legal proceedings.";
+      "Regarding evidence matters, it's important to consider factors such as relevance, reliability, authenticity, and admissibility. Evidence must be properly collected, documented, and preserved to maintain its integrity for legal proceedings.";'
   } else if (legalPatterns.criminal.test(message)) {
     detectedArea = 'criminal';
     confidence = 0.85;
@@ -317,10 +317,10 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
       executionTime,
       detectedArea,
       sources: [
-        {
+        {,
          , type: 'Legal Knowledge Base',
           score: confidence,
-          title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis` },
+          title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis` }
       ],
       production: false,
       fallback: true
@@ -332,10 +332,10 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
       role: 'assistant',
       timestamp: new Date().toISOString(),
       sources: [
-        {
+        {,
           type: 'Legal Knowledge Base',
           score: confidence,
-          title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis' },
+          title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis` }
       ],
       metadata: {
         model: 'intelligent-fallback',

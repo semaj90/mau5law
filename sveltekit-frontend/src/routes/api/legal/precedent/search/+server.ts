@@ -13,24 +13,14 @@ interface PrecedentSearchRequest {
   maxResults?: number
   sortBy?: 'similarity' | 'date' | 'citations' | 'authority'
 }
-interface PrecedentMatch { id: string, title: string; citation: string
-  fullCitation: string; court: string
-  jurisdiction: string; dateDecided: string
-  judges?: string[]
-  similarityScore: number; factualSimilarity: number
-  legalSimilarity: number; precedentialValue: 'BINDING' | 'PERSUASIVE' | 'DISTINGUISHED' | 'OVERRULED'
-  keyFacts: string[]; legalHolding: string
-  reasoningChain: string[]; citationCount: number
-  recentCitations: number; distinguishingFactors: string[]
-  applicabilityScore: number; strengthIndicators: { factualAlignment: number, legalPrinciples: number; jurisdictionalRelevance: number
-    temporalRelevance: number
+interface PrecedentMatch { id: string, title: string; citation: string; fullCitation: string; court: string; jurisdiction: string; dateDecided: string
+  judges?: string[];
+  similarityScore: number; factualSimilarity: number; legalSimilarity: number; precedentialValue: 'BINDING' | 'PERSUASIVE' | 'DISTINGUISHED' | 'OVERRULED'; keyFacts: string[]; legalHolding: string; reasoningChain: string[]; citationCount: number; recentCitations: number; distinguishingFactors: string[]; applicabilityScore: number; strengthIndicators: { factualAlignment: number, legalPrinciples: number; jurisdictionalRelevance: number; temporalRelevance: number
   }
   relatedTopics: string[]; practiceAreas: string[]
   embedding?: number[]
 }
-interface CitationNetwork { caseId: string, citingCases: string[]; citedCases: string[]
-  authorityScore: number; influenceRank: number
-  networkPosition: 'CORE' | 'PERIPHERAL' | 'BRIDGE'; citationGraph: { depth: number, breadth: number; clusters: string[]
+interface CitationNetwork { caseId: string, citingCases: string[]; citedCases: string[]; authorityScore: number; influenceRank: number; networkPosition: 'CORE' | 'PERIPHERAL' | 'BRIDGE'; citationGraph: { depth: number, breadth: number; clusters: string[]
   }
 }
 interface LegalReasoningStep { stepNumber: number;, legalPrinciple: string;
@@ -70,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       results: {
-        matches: searchResults.matches,
+       , matches: searchResults.matches,
         total: searchResults.total,
         citationNetworks,
         reasoningChain,
@@ -88,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error: any) {
-    console.error('Precedent search error:', error);
+    console.error('Precedent search error:', error);'
     return json({ success: false, error: 'Precedent search failed', results: null }, { status: 500 });
   }
 };
@@ -176,7 +166,7 @@ async function buildCitationNetworks(matches: PrecedentMatch[]): Promise<Citatio
 async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<LegalReasoningChain> {
   // Generate legal reasoning steps based on precedent matches
   const steps = [
-    {
+    {,
       stepNumber: 1,
       legalPrinciple: 'Foundational Legal Framework',
       supportingCases: matches.slice(0, 2).map(m => m.id),
@@ -254,10 +244,10 @@ async function analyzeApplicability(matches: PrecedentMatch[], _request: Precede
       practiceAreaCoverage: new Set(matches.flatMap(m => m.practiceAreas)).size
     },
     recommendations: [
-      bindingCount > 0
+      bindingCount > 0,
         ? 'Emphasize binding precedent in primary arguments'
         : 'Build strong persuasive authority foundation',
-      avgSimilarity < 0.7 ? 'Address factual distinctions proactively' : 'Highlight strong factual parallels',
+      avgSimilarity < 0.7 ? 'Address factual distinctions proactively' : 'Highlight strong factual, parallels',
       'Consider alternative legal theories for comprehensive coverage',
       recentCount < matches.length * 0.3
         ? 'Research more recent authority for current trends'
@@ -285,7 +275,7 @@ async function generateStrategicRecommendations(matches: PrecedentMatch[], reaso
       reasoningChain.logicalGaps.length > 0 ? 'Potential gaps in legal reasoning' : null,
     ].filter(Boolean),
     strategicRecommendations: [
-      bindingMatches.length > 0
+      bindingMatches.length > 0,
         ? `Lead arguments with strongest binding precedent (${bindingMatches[0]?.citation})`
         : 'Build compelling persuasive authority foundation',
       strongMatches.length > 2
@@ -344,10 +334,10 @@ function generateMockPrecedents(searchTerm: string, _request: PrecedentSearchReq
     },
   ];
   return basePrecedents.map((partial, index) => ({
-    id: 'PRECEDENT-${String(index + 1).padStart(3, '0')}`,
+    id: 'PRECEDENT-${String(index + 1).padStart(3, '0')}`,'`
     title: partial.title || `Legal Case ${index + 1}`,
     citation: generateMockCitation(partial.court || 'District Court', index),
-    fullCitation: '${partial.title}, ${generateMockCitation(partial.court || 'District Court', index)}`,
+    fullCitation: '${partial.title}, ${generateMockCitation(partial.court || 'District Court', index)}`,'`
     court: partial.court || 'District Court',
     jurisdiction: partial.jurisdiction || 'Federal',
     dateDecided: generateMockDate(),
@@ -404,7 +394,7 @@ function generateMockKeyFacts(searchTerm: string): string[] {
   ];
 }
 function generateMockHolding(searchTerm: string): string {
-  return `The court held that in cases involving ${searchTerm}, the applicable legal standard requires a balance of equitable considerations with strict adherence to contractual terms, taking into account the parties' reasonable expectations and the underlying policy objectives of the relevant statutory framework.`;
+  return `The court held that in cases involving ${searchTerm}, the applicable legal standard requires a balance of equitable considerations with strict adherence to contractual terms, taking into account the parties' reasonable expectations and the underlying policy objectives of the relevant statutory framework.`;'
 }
 function generateMockReasoningChain(): string[] {
   return [

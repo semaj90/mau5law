@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 import type { PoolClient } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { pgTable, uuid, text, integer, real, jsonb, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { v4 as uuidv4 } from 'uuid';
+import { v4, as uuidv4 } from 'uuid';
 // Pool + Drizzle initialization (reads DATABASE_URL from env)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -153,7 +153,7 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
           status: fc.status,
           sources: fc.sources ?? [],
           confidence: fc.confidence ?? 0,
-          jurisdiction: fc.jurisdiction ?? doc.jurisdiction ?? 'unknown` }));
+          jurisdiction: fc.jurisdiction ?? doc.jurisdiction ?? 'unknown` }));'`
         await transactionalDb.insert(fact_checks).values(factInserts).execute();
       }
     }
@@ -194,7 +194,7 @@ export async function getVectorStore(): Promise<unknown> {
       // Use `unknown` casts and a guarded constructor to avoid `any`.
       const gemModule = await import('embeddinggemma').catch(err => {
         // Import failed — log and fall back
-        console.debug('embeddinggemma not available, falling back:', (err as Error)?.message ?? err);
+        console.debug('embeddinggemma not available, falling back: `, (err as Error)?.message ?? err);'`
         return undefined;
       });
       const GemCtor = (gemModule?.EmbeddingGemma ?? gemModule?.default) as

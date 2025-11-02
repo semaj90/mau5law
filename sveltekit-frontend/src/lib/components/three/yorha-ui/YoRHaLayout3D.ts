@@ -228,7 +228,7 @@ export class YoRHaLayout3D extends THREE.Group {
     });
   }
   private getComponentBounds(component: YoRHa3DComponent): THREE.Vector3 {
-    // Get component's bounding box
+    // Get component's bounding box'
     const box = new THREE.Box3().setFromObject(component);
     const size = new THREE.Vector3();
     box.getSize(size);

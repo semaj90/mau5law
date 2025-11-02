@@ -39,7 +39,7 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
     try {
       const response = await fetch(`${ollamaEndpoint}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , model: model,
           prompt: text
@@ -54,7 +54,7 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
       return data.embedding;
     } catch (error: unknown) {
       // Changed type from any to unknown
-      console.warn(`Model ${model} failed: ', error instanceof Error ? error.message : String(error));
+      console.warn(`Model ${model} failed: ', error instanceof Error ? error.message : String(error));'`
       continue; // Try next model
     }
   }
@@ -209,7 +209,7 @@ export async function generateBatchEmbeddingsEnhanced(
       }
     } catch (error: unknown) {
       // Changed type from any to unknown
-      console.error(`Batch ${i}-${i + batchSize} failed: ', error);
+      console.error(`Batch ${i}-${i + batchSize} failed: ', error);'`
       // Add empty embeddings for failed items
       for (let j = 0; j < batch.length; j++) {
         results.push(new Array(384).fill(0)); // nomic-embed-text uses 384 dimensions
@@ -345,11 +345,11 @@ export async function processDocumentWithChunking(
 ): Promise<DocumentProcessingResult> {
   // Updated return type
   const extracted = await extractDocumentStructure(document);
-  const chunks: { text: string; embedding: number[];, metadata: any }[] = [];
+  const chunks: { text: string; embedding: number[]; metadata: any }[] = [];
   // Split document into overlapping chunks
   for (let i = 0; i < document.length; i += chunkSize - chunkOverlap) {
     const chunk = document.slice(i, i + chunkSize);
-    if (chunk.trim().length < 50) continue; // Skip very small chunks
+    if (chunk.trim().length < 50) continue; // Skip very small, chunks
     const embedding = await generateNomicEmbedding(chunk);
     chunks.push({
       text: chunk,

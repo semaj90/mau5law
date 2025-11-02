@@ -23,7 +23,7 @@ export interface UserIntent {
     scrollPosition: number;
     mouseActivity: MouseEvent[];
     keyboardActivity: KeyboardEvent[];
-    eyeTracking?: { x: number; y: number;, timestamp: number }[];
+    eyeTracking?: { x: number; y: number; timestamp: number }[];
   };
   userProfile: { role: "prosecutor" | "detective" | "admin" | "user";, recentActions: string[];
     preferences: { [key: string]: any };
@@ -123,7 +123,7 @@ export class PredictivePrefetcher {
    * Start monitoring user behavior for intent prediction
    */
   private startBehaviorMonitoring(): void {
-    // NOTE: service workers don't receive DOM mouse/keyboard events — these are often proxied from the page via postMessage.
+    // NOTE: service workers don't receive DOM mouse/keyboard events — these are often proxied from the page via postMessage.'
     // The code below remains for integration when the page forwards events into the worker via postMessage.
     self.addEventListener("mousemove", (e: any) => {
       this.mouseEvents.push(e);
@@ -207,7 +207,7 @@ export class PredictivePrefetcher {
       uiBuffers: ["/api/ui/buffers/evidence-viewer", "/api/ui/buffers/timeline"],
       priority: "critical",
       conditions: {
-        userRole: ["prosecutor", "detective"]
+       , userRole: ["prosecutor", "detective"]
       },
       llmIntegration: {
        , useLocalLLM: true,
@@ -222,7 +222,7 @@ export class PredictivePrefetcher {
       uiBuffers: ["/api/ui/buffers/search-interface", "/api/ui/buffers/filters"],
       priority: "high",
       conditions: {
-        connection: "fast"
+       , connection: "fast"
       },
       llmIntegration: {
        , useLocalLLM: true,
@@ -236,7 +236,7 @@ export class PredictivePrefetcher {
    */
   private initializeLegalWorkflowPatterns(): void {
     this.legalWorkflowPatterns = [
-      {
+      {,
         name: "Evidence Review Workflow",
         sequence: ["/cases", "/evidence", "/evidence/viewer", "/analysis"],
         triggerConditions: {
@@ -344,7 +344,7 @@ export class PredictivePrefetcher {
   /**
    * Enhanced prediction with additional context
    */
-  private async predictUserIntentEnhanced(context: {, mouseEvents: MouseEvent[]; keyboardEvents: KeyboardEvent[] }): Promise<UserIntent | null> {
+  private async predictUserIntentEnhanced(context: {, mouseEvents: MouseEvent[];, keyboardEvents: KeyboardEvent[] }): Promise<UserIntent | null> {
     const currentContext: any = {
       currentPage: (typeof window !== "undefined" && window.location ? window.location.pathname : "/"),
       recentActions: this.intentHistory.slice(-5).map((intent: any) => intent.action),
@@ -400,7 +400,7 @@ export class PredictivePrefetcher {
       if (strategy.priority === "high") {
         await Promise.all([...routePromises, ...assetPromises]);
       } else {
-        // Lower priority - don't block
+        // Lower priority - don't block'
         Promise.all([...routePromises, ...assetPromises]).catch(console.warn);
       }
       console.log(`Prefetched resources for intent: ${intent.action} (confidence: ${intent.confidence})`);

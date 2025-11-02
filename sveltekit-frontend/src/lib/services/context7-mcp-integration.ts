@@ -63,11 +63,11 @@ class Context7MCPIntegration {
       title: 'Legal Document Caching',
       description: 'Implement specialized caching for legal documents with confidentiality controls',
       implementation: 'Use advanced cache manager with TTL and tags for legal documents',
-      codeExample: '// Cache legal document with confidentiality tags
+      codeExample: '// Cache legal document with confidentiality tags'
 await advancedCache.set('doc_' + documentId, document, {
   ttl: 3600,
   tags: ['legal', 'confidential', caseId],
-  priority: 'high' });`,
+  priority: 'high` });`,'
       priority: 'high',
       estimatedEffort: '4-6 hours',
       dependencies: ['advanced-cache-manager', 'legal-security-utils'],
@@ -80,12 +80,12 @@ await advancedCache.set('doc_' + documentId, document, {
       title: 'AI Recommendation Engine',
       description: 'Integrate AI-powered recommendation system for legal workflows',
       implementation: 'Connect recommendation engine with legal context and user behavior',
-      codeExample: '// Generate legal recommendations
+      codeExample: '// Generate legal recommendations'
 const recommendations = await aiRecommendationEngine.generateRecommendations({
   component: 'legal-search',
   userBehavior: userActivity,
   legalContext: caseData
-});`,
+});`,`
       priority: 'high',
       estimatedEffort: '6-8 hours',
       dependencies: ['ai-recommendation-engine', 'legal-knowledge-base'],
@@ -98,15 +98,15 @@ const recommendations = await aiRecommendationEngine.generateRecommendations({
       title: 'Intelligent Lazy Loading',
       description: 'Implement intersection observer-based lazy loading with prefetching',
       implementation: 'Use advanced cache manager with lazy loading for legal documents and components',
-      codeExample: '// Observe element for lazy loading
+      codeExample: '// Observe element for lazy loading'
 const observer = new IntersectionObserver(async (entries) => {
   for (const entry of entries) {
     if (entry.isIntersecting) {
       const data = await fetch('/api/legal/documents/' + documentId);
-      await advancedCache.set(cacheKey, data, { priority: 'high' });
+      await advancedCache.set(cacheKey, data, { priority: 'high` });'`
     }
   }
-});`,
+});`,`
       priority: 'medium',
       estimatedEffort: '3-5 hours',
       dependencies: ['IntersectionObserver', 'advanced-cache-manager'],
@@ -119,7 +119,7 @@ const observer = new IntersectionObserver(async (entries) => {
       title: 'Legal Data Security Standards',
       description: 'Implement attorney-client privilege and confidentiality protections',
       implementation: 'Add encryption, audit logging, and access controls for sensitive legal data',
-      codeExample: '// Encrypt sensitive legal data before caching
+      codeExample: '// Encrypt sensitive legal data before caching'
 const encryptedData = await encryptLegalData(document, {
   privileged: document.isPrivileged,
   classification: document.securityLevel
@@ -127,7 +127,7 @@ const encryptedData = await encryptLegalData(document, {
 await advancedCache.set(cacheKey, encryptedData, {
   priority: 'critical',
   tags: ['encrypted', 'privileged', document.caseId]
-});`,
+});`,`
       priority: 'critical',
       estimatedEffort: '8-12 hours',
       dependencies: ['encryption-utils', 'audit-logger', 'access-control'],
@@ -140,18 +140,18 @@ await advancedCache.set(cacheKey, encryptedData, {
       title: 'Legal Industry Accessibility',
       description: 'Ensure compliance with ADA and legal industry accessibility standards',
       implementation: 'Implement screen reader support, keyboard navigation, and high contrast modes',
-      codeExample: `// Legal document accessibility enhancements
+      codeExample: `// Legal document accessibility enhancements`
 <div>
   role="document"
   aria-label="Legal Document: {document.title}"
   tabindex="0"
   class="legal-document"
 >
-  <h1 aria-level="1">{document.title}</h1>
-  <section aria-label="Document content">
+  <h1, aria-level="1">{document.title}</h1>
+  <section aria-label="Document, content">
     {document.content}
   </section>
-</div>`,
+</div>`,`
       priority: 'high',
       estimatedEffort: '5-7 hours',
       dependencies: ['aria-utils', 'keyboard-navigation', 'contrast-checker'],
@@ -334,7 +334,7 @@ ${practices.map(p => `- ${p.title}: ${p.description}`).join('\n')}
 5. Document integration
 ## Legal Considerations:
 ${practices.filter(p => p.legalSpecific).map(p => `- ${p.title}`).join('\n')}
-    `.trim();
+    `.trim();`
   }
   /**
    * Search best practices by criteria

@@ -71,7 +71,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
         .offset(offset);
       // Get total count for pagination
       const totalCountResult = await db
-        .select({ count: sql<number>`count(*)' })
+        .select({ count: sql<number>`count(*)' })'`
         .from(canvasLayouts)
         .where(filters.length > 0 ? and(...filters) : undefined);
       const totalCount = totalCountResult[0]?.count || 0;
@@ -199,13 +199,13 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
     }
     const canvasId = url.searchParams.get('id');
     if (!canvasId) {
-      return json({ error: 'Canvas state ID is required' }, { status: 400 });
+      return json({ error: `Canvas state ID is required` }, { status: 400 });
     }
     const data = (await request.json()) as Record<string, unknown>;
     // Check if canvas state exists
     const existingCanvasState = await db.select().from(canvasLayouts).where(eq(canvasLayouts.id, canvasId)).limit(1);
     if (!existingCanvasState.length) {
-      return json({ error: 'Canvas state not found' }, { status: 404 });
+      return json({ error: `Canvas state not found` }, { status: 404 });
     }
     const updateData: Record<string, unknown> = {
       updatedAt: new Date()
@@ -237,7 +237,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
       .returning();
     return json(updatedCanvasState);
   } catch (error: any) {
-    console.error('Error patching canvas state:', formatError(error));
+    console.error('Error patching canvas state: `, formatError(error));'`
     return json({ error: `Failed to update canvas state` }, { status: 500 });
   }
 }

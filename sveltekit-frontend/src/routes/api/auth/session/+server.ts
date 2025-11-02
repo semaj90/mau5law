@@ -4,7 +4,7 @@ import { json } from '@sveltejs/kit';
  * Session Validation API Endpoint
  * GET /api/auth/session - Check current session status
  */
-import { ExistingUserAuthService as UserAuthService } from '$lib/server/db/existing-user-operations.js';
+import { ExistingUserAuthService, as UserAuthService } from '$lib/server/db/existing-user-operations.js';
 import { dev } from '$app/environment';
 export const GET: RequestHandler = async ({ cookies }) => {
   try {
@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
           success: false,
           message: 'No session found',
           data: {
-            authenticated: false,
+           , authenticated: false,
             user: null
           },
           meta: {
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
           success: false,
           message: 'Invalid or expired session',
           data: {
-            authenticated: false,
+           , authenticated: false,
             user: null
           },
           meta: {
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
         success: true,
         message: 'Session valid',
         data: {
-          authenticated: true,
+         , authenticated: true,
           user: safeUser,
           session: {
            , id: sessionId,
@@ -96,7 +96,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
       }
     );
   } catch (err: any) {
-    console.error('Session validation API error:', err);
+    console.error('Session validation API error:', err);'
     // Clear potentially corrupted session cookie
     cookies.delete('session_id', {
       path: '/',
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
         success: false,
         message: 'Session validation failed',
         data: {
-          authenticated: false,
+         , authenticated: false,
           user: null
         },
         code: 'SESSION_VALIDATION_ERROR',

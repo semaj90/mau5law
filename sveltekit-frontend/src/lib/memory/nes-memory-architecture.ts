@@ -303,7 +303,7 @@ export class NESMemoryArchitecture {
       );
       return true;
     } catch (error: any) {
-      console.error(`❌ Failed to allocate document ${document.id}: ', error);
+      console.error(`❌ Failed to allocate document ${document.id}: ', error);'`
       return false;
     }
   }
@@ -421,7 +421,7 @@ export class NESMemoryArchitecture {
       const swappedDocs: string[] = [];
       for (const [docId, doc] of documents) {
         if (freedSpace >= requiredSpace) break;
-        // Don't swap critical documents
+        // Don't swap critical documents'
         if (doc.riskLevel === 'high' || doc.priority > 200) continue;
         // Move to expansion ROM or remove if not critical
         if (doc.riskLevel === 'low' || doc.riskLevel === 'medium') {
@@ -439,7 +439,7 @@ export class NESMemoryArchitecture {
       );
       return freedSpace >= requiredSpace;
     } catch (error: any) {
-      console.error(`❌ Bank switch failed in ${bankName}: ', error);
+      console.error(`❌ Bank switch failed in ${bankName}: ', error);'`
       return false;
     }
   }
@@ -666,7 +666,7 @@ class PlannerMemoryManager {
   private handleByGraphId: Map<string, number> = new Map();
   private insertionOrder: number[] = []; // for eviction
   private freeList: number[] = [];
-  private transpositionCache: Map<string, { visits: number; value: number;, updated: number }>;
+  private transpositionCache: Map<string, { visits: number; value: number; updated: number }>;
   private lastAllocation = 0;
   constructor(capacity = 8192) {
     this.capacity = capacity;

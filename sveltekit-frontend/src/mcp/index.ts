@@ -30,7 +30,7 @@ export interface MCPTools {
     createEvidence: (evidenceData: any) => Promise<MCPToolResponse<any>>;
     updateEvidence: (evidenceId: string, updates: any) => Promise<MCPToolResponse<any>>;
     deleteEvidence: (evidenceId: string) => Promise<MCPToolResponse<any>>;
-    findSimilarEvidence: (params: { embedding: number[];, caseId: string;
+    findSimilarEvidence: (params: {, embedding: number[];, caseId: string;
      , limit: number;
       threshold?: number;
     }) => Promise<MCPToolResponse<any>>;
@@ -70,7 +70,7 @@ export const mcpTools: MCPTools = { cases: {, loadCases: async (_params: { user
       data: {, id: evidenceId, ...updates }
     }),
     deleteEvidence: async (evidenceId: string) => ({ success: true, data: {, deleted: evidenceId } }),
-    findSimilarEvidence: async (_params: { embedding: number[];, caseId: string;
+    findSimilarEvidence: async (_params: {, embedding: number[];, caseId: string;
      , limit: number;
       threshold?: number;
     }) => ({

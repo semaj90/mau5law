@@ -22,14 +22,14 @@ export function getOllamaBaseUrl(): string {
 }
 
 /**
- * Returns the full endpoint for Ollama's /api/generate.
+ * Returns the full endpoint for Ollama's /api/generate.'
  */
 export function getOllamaGenerateEndpoint(): string {
   return `${getOllamaBaseUrl()}/api/generate`;
 }
 
 /**
- * Returns the full endpoint for Ollama's /api/embeddings.
+ * Returns the full endpoint for Ollama's /api/embeddings.'
  */
 export function getOllamaEmbeddingsEndpoint(): string {
   return `${getOllamaBaseUrl()}/api/embeddings`;

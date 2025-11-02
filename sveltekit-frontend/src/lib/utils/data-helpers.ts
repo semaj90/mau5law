@@ -8,7 +8,7 @@ import { browser } from '$app/environment';
 // Cache management for performance
 class DataCache<T = unknown> {
   // changed: avoid `any` by using a generic T (default unknown)
-  private cache = new Map<string, { data: T; timestamp: number;, ttl: number }>();
+  private cache = new Map<string, { data: T; timestamp: number; ttl: number }>();
   private maxSize = 100;
   set(key: string, data: T, ttlMs: number = 5 * 60 * 1000): void {
     // Remove oldest entries if cache is full
@@ -91,7 +91,7 @@ export class ApiClient {
   async request<T = unknown>(
     endpoint: string,
     options?: RequestInit & ApiOptions
-  ): Promise<{ data: T;, success: boolean; error?: string }> {
+  ): Promise<{ data: T; success: boolean; error?: string }> {
     const {
       useCache = false,
       cacheTtl = 5 * 60 * 1000,
@@ -101,7 +101,7 @@ export class ApiClient {
       ...fetchOptions
     } = options || {};
     const url = `${this.baseUrl}${endpoint}`;
-    const cacheKey = `${(fetchOptions.method as string) || 'GET` }:${url}:${this.serializeBody(fetchOptions.body)}`;
+    const cacheKey = `${(fetchOptions.method as string) || 'GET' }:${url}:${this.serializeBody(fetchOptions.body)}`;
 
     // Check cache first
     if (useCache && !signal) {
@@ -140,7 +140,7 @@ export class ApiClient {
         return { data: data as T, success: true };
       } catch (error: any) {
         lastError = error;
-        // Don't retry on abort
+        // Don't retry on abort'
         const errName = (error as { name?: string } | null)?.name;
         if (errName === 'AbortError') {
           break;
@@ -155,20 +155,20 @@ export class ApiClient {
     return {
       data: null as T,
       success: false,
-      error: (lastError as Error)?.message || 'Request failed` };
+      error: (lastError as Error)?.message || 'Request failed' };
   }
 
   async get<T = unknown>(
     endpoint: string,
     options?: ApiOptions
-  ): Promise<{ data: T;, success: boolean; error?: string }> {
+  ): Promise<{ data: T; success: boolean; error?: string }> {
     return this.request<T>(endpoint, { method: 'GET', ...(options as RequestInit & ApiOptions) });
   }
   async post<T = unknown>(
     endpoint: string,
     body?: any,
     options?: ApiOptions
-  ): Promise<{ data: T;, success: boolean; error?: string }> {
+  ): Promise<{ data: T; success: boolean; error?: string }> {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: typeof body === 'string' ? body : JSON.stringify(body),
@@ -179,7 +179,7 @@ export class ApiClient {
     endpoint: string,
     body?: any,
     options?: ApiOptions
-  ): Promise<{ data: T;, success: boolean; error?: string }> {
+  ): Promise<{ data: T; success: boolean; error?: string }> {
     return this.request<T>(endpoint, {
       method: 'PUT',
       body: typeof body === 'string' ? body : JSON.stringify(body),
@@ -189,7 +189,7 @@ export class ApiClient {
   async delete<T = unknown>(
     endpoint: string,
     options?: ApiOptions
-  ): Promise<{ data: T;, success: boolean; error?: string }> {
+  ): Promise<{ data: T; success: boolean; error?: string }> {
     return this.request<T>(endpoint, { method: 'DELETE', ...(options as RequestInit & ApiOptions) });
   }
 }
@@ -259,7 +259,7 @@ export const validationSchemas = {
   },
   user: { email: {, required: true,
       pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      custom: (_value: string) => (_value && _value.includes('@')) || 'Invalid email format` },
+      custom: (_value: string) => (_value && _value.includes('@')) || 'Invalid email format' },
     name: { minLength: 2, maxLength: 100 },
     role: { required: true }
   }
@@ -292,7 +292,7 @@ export const storage = {
       localStorage.removeItem(key);
       return true;
     } catch (error) {
-      console.warn(`Failed to remove localStorage item: "${key}": ', error);
+      console.warn(`Failed to remove localStorage item: "${key}": ', error);'`
       return false;
     }
   },
@@ -330,7 +330,7 @@ export function formatFileType(mimeType: string): string {
     'audio/mp3': 'MP3 Audio',
     'audio/wav': 'WAV Audio',
     'text/plain': 'Text File',
-    'application/json': 'JSON File` };
+    'application/json': 'JSON File' };
   return typeMap[mimeType] || mimeType.split('/')[1]?.toUpperCase() || 'Unknown';
 }
 // Data transformation helpers
@@ -459,7 +459,7 @@ export class PerformanceMonitor {
 export const performanceMonitor = new PerformanceMonitor();
 // Data synchronization helpers
 export class DataSync {
-  private syncQueue = new Map<string, { data: any;, timestamp: number }>();
+  private syncQueue = new Map<string, { data: any; timestamp: number }>();
   private syncing = $state(false);
   queue(key: string, data: any): void {
     this.syncQueue.set(key, { data, timestamp: Date.now() });

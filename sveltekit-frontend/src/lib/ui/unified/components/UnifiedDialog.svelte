@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import {
     Dialog as BitsDialog,
     DialogContent as BitsDialogContent,
@@ -83,16 +83,16 @@
   const defaultCloseClass = 'absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground';
 </script>
 
-<BitsDialog bind:open onOpenChange={onOpenChange} {modal} {...rest}>
-  <slot name="trigger">
+<BitsDialog bind:open, onOpenChange={onOpenChange} {modal} {...rest}>
+  <slot, name="trigger">
     {#if $$slots.trigger}
-      <BitsDialogTrigger asChild={triggerAsChild} class={triggerClass} {...triggerProps}>
-        <slot name="trigger" />
+      <BitsDialogTrigger, asChild={triggerAsChild} class={triggerClass} {...triggerProps}>
+        <slot, name="trigger" />
       </BitsDialogTrigger>
     {/if}
   </slot>
 
-  <BitsDialogOverlay class={cn(defaultOverlayClass, overlayClass)} {...overlayProps} />
+  <BitsDialogOverlay, class={cn(defaultOverlayClass, overlayClass)} {...overlayProps} />
 
   <BitsDialogContent
     class={cn(defaultContentClass, contentClass)}
@@ -100,20 +100,20 @@
     onPointerDownOutside={onPointerDownOutside}
     {...contentProps}
   >
-    <slot name="header">
+    <slot, name="header">
       {#if $$slots.header || $$slots.title || $$slots.description}
-        <BitsDialogHeader class={cn(defaultHeaderClass, headerClass)} {...headerProps}>
-          <slot name="title">
+        <BitsDialogHeader, class={cn(defaultHeaderClass, headerClass)} {...headerProps}>
+          <slot, name="title">
             {#if $$slots.title}
-              <BitsDialogTitle class={cn(defaultTitleClass, titleClass)} {...titleProps}>
-                <slot name="title" />
+              <BitsDialogTitle, class={cn(defaultTitleClass, titleClass)} {...titleProps}>
+                <slot, name="title" />
               </BitsDialogTitle>
             {/if}
           </slot>
-          <slot name="description">
+          <slot, name="description">
             {#if $$slots.description}
-              <BitsDialogDescription class={cn(defaultDescriptionClass, descriptionClass)} {...descriptionProps}>
-                <slot name="description" />
+              <BitsDialogDescription, class={cn(defaultDescriptionClass, descriptionClass)} {...descriptionProps}>
+                <slot, name="description" />
               </BitsDialogDescription>
             {/if}
           </slot>
@@ -121,18 +121,18 @@
       {/if}
     </slot>
 
-    <slot /> <!-- Default slot for main content -->
+    <slot /> <!-- Default slot for main, content -->
 
-    <slot name="footer">
+    <slot, name="footer">
       {#if $$slots.footer}
-        <BitsDialogFooter class={cn(defaultFooterClass, footerClass)} {...footerProps}>
-          <slot name="footer" />
+        <BitsDialogFooter, class={cn(defaultFooterClass, footerClass)} {...footerProps}>
+          <slot, name="footer" />
         </BitsDialogFooter>
       {/if}
     </slot>
 
-    <BitsDialogClose class={cn(defaultCloseClass, closeClass)} asChild={closeAsChild} {...closeProps}>
-      <slot name="close">
+    <BitsDialogClose, class={cn(defaultCloseClass, closeClass)} asChild={closeAsChild} {...closeProps}>
+      <slot, name="close">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -143,10 +143,10 @@
           stroke-linejoin="round"
           class="h-4 w-4"
         >
-          <path d="M18 6L6 18" />
-          <path d="M6 6L18 18" />
+          <path d="M18 6L6, 18" />
+          <path d="M6 6L18, 18" />
         </svg>
-        <span class="sr-only">Close</span>
+        <span, class="sr-only">Close</span>
       </slot>
     </BitsDialogClose>
   </BitsDialogContent>

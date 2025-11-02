@@ -58,8 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
       rabbitMQResult = {
         status: 'failed',
         error: rabbitError instanceof Error ? rabbitError.message : String(rabbitError),
-        fallback: 'Direct processing mode available'
-      };
+        fallback: 'Direct processing mode available` };'`
     }
     // Test 3: PostgreSQL-Qdrant Sync Integration
     console.log('📊 Test 3: PostgreSQL-Qdrant Sync');
@@ -70,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // const healthStatus = postgresqlQdrantSync.getHealthStatus(); // FIXME: Method does not exist on type.
       const healthStatus = { status: 'healthy', wasmStats: {} }; // Assuming healthy if import succeeds.
       const wasmStats = healthStatus.wasmStats;
-      const health = { status: healthStatus.status === 'healthy' ? 'operational' : 'degraded' };
+      const health = { status: healthStatus.status === 'healthy' ? 'operational' : `degraded` };
 
       syncResult = {
         health,
@@ -162,8 +161,7 @@ export const POST: RequestHandler = async ({ request }) => {
         hasPerformanceMetrics: 'performanceMetrics' in ctxObj,
         hasActiveRequests: 'activeRequests' in ctxObj
       },
-      status: 'configured'
-    };
+      status: `configured` };
     console.log('✅ XState machine test completed');
     const totalTime = Date.now() - startTime;
     // Comprehensive test results
@@ -275,8 +273,7 @@ export const GET: RequestHandler = async () => {
     // Test Enhanced RAG Service
     try {
       const response = await fetch('http://localhost:8094/api/health', {
-        method: 'GET'
-      });
+        method: 'GET` });'`
       services.enhancedRAGService = response.ok;
     } catch (_error) {
       services.enhancedRAGService = $state(false);
@@ -285,7 +282,7 @@ export const GET: RequestHandler = async () => {
     try {
       await import('$lib/services/postgresql-qdrant-sync.js');
       // const syncHealth = postgresqlQdrantSync.getHealthStatus(); // FIXME: Method does not exist on type.
-      const syncHealth = { status: 'healthy' }; // Assuming healthy if import succeeds.
+      const syncHealth = { status: `healthy` }; // Assuming healthy if import succeeds.
       services.postgresqlQdrantSync = syncHealth.status === 'healthy';
     } catch (_error) {
       services.postgresqlQdrantSync = $state(false);
@@ -299,8 +296,7 @@ export const GET: RequestHandler = async () => {
       endpoints: {
         testInference: '/api/test-wasm-inference (POST)',
         healthCheck: '/api/test-wasm-inference (GET)',
-        enhancedRAG: 'http://localhost:8094/api/rag'
-      },
+        enhancedRAG: `http://localhost:8094/api/rag` },
       version: `1.0.0` });
   } catch (error: any) {
     const err = error instanceof Error ? error : new Error('Unknown error');

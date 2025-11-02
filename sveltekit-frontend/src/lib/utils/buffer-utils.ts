@@ -143,7 +143,7 @@ export const verticesToBuffer = (vertices: WebGPUVertex[]): Float32Array => {
 };
 /**
  * Legal document-specific buffer utilities
- * For the legal AI platform's specific needs
+ * For the legal AI platform's specific needs'
  */
 export interface LegalDocumentBuffer { documentId: string;, embeddings: Float32Array;
   metadata: Record<string, unknown>;
@@ -152,7 +152,7 @@ export interface LegalDocumentBuffer { documentId: string;, embeddings: Float32
 export const createLegalDocumentBuffer = (
   device: GPUDevice,
   doc: LegalDocumentBuffer
-): { buffer: GPUBuffer;, byteLength: number } => {
+): { buffer: GPUBuffer; byteLength: number } => {
   const embeddingData = ensureBufferCompatibility(doc.embeddings);
   const buffer = createWebGPUBuffer(device, embeddingData, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
   return {

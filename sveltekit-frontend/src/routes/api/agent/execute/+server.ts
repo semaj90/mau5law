@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Agent busy',
-          message: `Agent ${agentId} is already working on, task: ${activeTasks.get(agentId).taskId}' },
+          message: 'Agent ${agentId} is already working on, task: ${activeTasks.get(agentId).taskId}' },
         { status: 409 }
       );
     }

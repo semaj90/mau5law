@@ -1,6 +1,6 @@
 import type { User } from '$lib/types';
 import type { Document } from '$lib/types';
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import crypto from 'crypto';
 import { json, error } from '@sveltejs/kit';
 // Archived non-essential handlers preserved for reference/reuse
@@ -111,13 +111,13 @@ export async function handleUpload(request: Request): Promise<Response> {
       metadata: result['metadata']
     });
   } catch (err: any) {
-    console.error('Upload error:', err);
+    console.error('Upload error:', err);'
     throw error(500, `Document upload failed: ${errorMessage(err)}`);
   }
 }
 export async function handleCrawl(request: Request): Promise<Response> {
   try {
-    const { url: crawlUrl, maxPages = 5, depth = 2, caseId, documentType = 'web_content' } = await request.json();
+    const { url: crawlUrl, maxPages = 5, depth = 2, caseId, documentType = 'web_content` } = await request.json();'`
     if (!crawlUrl) {
       throw error(400, 'URL is required');
     }
@@ -139,7 +139,7 @@ export async function handleCrawl(request: Request): Promise<Response> {
       processingTime: result['processingTime']
     });
   } catch (err: any) {
-    console.error('Crawl error:', err);
+    console.error('Crawl error:', err);'
     throw error(500, `Web crawling failed: ${errorMessage(err)}`);
   }
 }
@@ -164,7 +164,7 @@ export async function handleWorkflow(request: Request): Promise<Response> {
       metadata: result['metadata']
     });
   } catch (err: any) {
-    console.error('Workflow error:', err);
+    console.error('Workflow error:', err);'
     throw error(500, `Workflow execution failed: ${errorMessage(err)}`);
   }
 }
@@ -188,7 +188,7 @@ export async function handleChat(request: Request): Promise<Response> {
       metadata: result['metadata']
     });
   } catch (err: any) {
-    console.error('Chat error:', err);
+    console.error('Chat error:', err);'
     throw error(500, `AI chat failed: ${errorMessage(err)}`);
   }
 }
@@ -211,8 +211,8 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        model: 'gemma3-summary',
-        prompt: `Process the legal document with ID ${documentId} and provide structured analysis in JSON format that matches this schema:
+       , model: 'gemma3-summary',
+        prompt: `Process the legal document with ID ${documentId} and provide structured analysis in JSON format that matches this, schema:`
 {
   "summary": "2-3 sentence overview",
   "key_points": ["point1", "point2", "point3"],
@@ -225,7 +225,7 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
   "legal_issues": ["issue1", "issue2"],
   "risk_level": "low|medium|high",
   "recommended_actions": ["action1", "action2"]
-}`,
+}`,`
         options: {
          , temperature: 0.1,
           num_predict: 1500
@@ -263,13 +263,13 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
       }
     });
   } catch (err: any) {
-    console.error('pgai process error:', err);
+    console.error('pgai process error:', err);'
     throw error(500, `Document processing failed: ${errorMessage(err)}`);
   }
 }
 export async function handlePgaiCustomAnalysis(request: Request): Promise<Response> {
   try {
-    const { content, prompt, model = 'gemma3-legal` } = await request.json();
+    const { content, prompt, model = 'gemma3-legal` } = await request.json();'`
     if (!content || !prompt) {
       throw error(400, 'Content and prompt are required');
     }
@@ -292,13 +292,13 @@ export async function handlePgaiCustomAnalysis(request: Request): Promise<Respon
       data: result['response'] ?? null
     });
   } catch (err: any) {
-    console.error('pgai custom analysis error:', err);
+    console.error('pgai custom analysis error:', err);'
     throw error(500, `Custom analysis failed: ${errorMessage(err)}`);
   }
 }
 export async function handlePgaiComparison(request: Request): Promise<Response> {
   try {
-    const { document1, document2, model = 'gemma3-legal` } = await request.json();
+    const { document1, document2, model = 'gemma3-legal` } = await request.json();'`
     if (!document1 || !document2) {
       throw error(400, 'Both documents are required for comparison');
     }
@@ -308,14 +308,14 @@ export async function handlePgaiComparison(request: Request): Promise<Response> 
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model,
-        prompt: `Compare these two legal documents and provide a detailed; analysis:
+        prompt: `Compare these two legal documents and provide a detailed; analysis:`
 Document, 1: ${document1.substring(0, 2000)}
 Document 2: ${document2.substring(0, 2000)}
 Provide analysis covering:
 1. Key similarities and differences
 2. Legal implications
 3. Risk assessment
-4. Recommendations`,
+4. Recommendations`,`
         options: {
           temperature: 0.3,
           num_predict: 2500
@@ -328,13 +328,13 @@ Provide analysis covering:
       data: result['response'] ?? null
     });
   } catch (err: any) {
-    console.error('pgai comparison error:', err);
+    console.error('pgai comparison error:', err);'
     throw error(500, `Document comparison failed: ${errorMessage(err)}`);
   }
 }
 export async function handlePgaiExtraction(request: Request): Promise<Response> {
   try {
-    const { content, extractionPrompt, model = 'gemma3-legal` } = await request.json();
+    const { content, extractionPrompt, model = 'gemma3-legal` } = await request.json();'`
     if (!content || !extractionPrompt) {
       throw error(400, 'Content and extraction prompt are required');
     }
@@ -344,8 +344,8 @@ export async function handlePgaiExtraction(request: Request): Promise<Response> 
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         model,
-        prompt: `${extractionPrompt}
-Document, content: ${content.substring(0, 4000)}`,
+        prompt: `${extractionPrompt}`
+Document, content: ${content.substring(0, 4000)}`,`
         options: {
           temperature: 0.1,
           num_predict: 1500
@@ -358,7 +358,7 @@ Document, content: ${content.substring(0, 4000)}`,
       data: result['response'] ?? null
     });
   } catch (err: any) {
-    console.error('pgai extraction error:', err);
+    console.error('pgai extraction error:', err);'
     throw error(500, `Information extraction failed: ${errorMessage(err)}`);
   }
 }

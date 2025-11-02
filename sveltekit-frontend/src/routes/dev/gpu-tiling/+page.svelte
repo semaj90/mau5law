@@ -1,7 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<script, lang="ts">
   import { embedText } from '$lib/ai/tensor-client';
   let text = 'A short legal passage about indemnification and liability.';
   let simdParse = true;
@@ -42,22 +42,22 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<div class="page">
+<div, class="page">
   <h1>GPU Tiling + SIMD Demo (OCR → Embedding)</h1>
   <p>WebGPU: {webgpuSupported ? 'available' : 'unavailable'}</p>
-  <div class="controls">
+  <div, class="controls">
     <label>
-      <input type="checkbox" bind:checked={simdParse} />
+      <input, type="checkbox" bind:checked={simdParse} />
       SIMD parse in Service Worker (zero‑copy)
     </label>
     <label>
-      <input type="checkbox" bind:checked={gpuTile} disabled={!webgpuSupported} />
+      <input, type="checkbox" bind:checked={gpuTile} disabled={!webgpuSupported} />
       GPU tiling (WebGPU)
     </label>
   </div>
-  <div class="inputs">
+  <div, class="inputs">
     <div>
-      <label for="pick-image-for-ocr">Pick image for OCR:</label><input
+      <label, for="pick-image-for-ocr">Pick image for OCR:</label><input
         id="pick-image-for-ocr"
         type="file"
         accept="image/*"
@@ -66,12 +66,12 @@ https://svelte.dev/e/js_parse_error -->
       />
       {#if ocrBusy}<span>OCR…</span>{/if}
     </div>
-    <div class="text">
-      <label for="text">Text</label><textarea id="text" bind:value={text} rows="6" />
+    <div, class="text">
+      <label, for="text">Text</label><textarea, id="text" bind:value={text} rows="6" />
     </div>
   </div>
-  <div class="actions">
-    <button onclick={run} disabled={runBusy}>Process</button>
+  <div, class="actions">
+    <button, onclick={run} disabled={runBusy}>Process</button>
     {#if runBusy}<span>Running…</span>{/if}
   </div>
   {#if result}

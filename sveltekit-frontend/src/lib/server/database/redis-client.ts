@@ -26,7 +26,7 @@ const defaultConfig: RedisConfig = {
 };
 // Replace strict dependency on package types with a minimal local interface
 // that declares only the members we use. This prevents TS errors if installed
-// Redis lib's types differ from runtime.
+// Redis lib's types differ from runtime.'
 interface MinimalRedisClient {
   on(event: string, listener: (...args: any[]) => void): this;
   addListener?(event: string, listener: (...args: any[]) => void): this;
@@ -39,7 +39,7 @@ interface MinimalRedisClient {
 }
 // Use the minimal interface for runtime instances
 type IORedisClient = MinimalRedisClient;
-let redis: IORedisClient | null = null; // This is the module's managed shared instance
+let redis: IORedisClient | null = null; // This is the module's managed shared instance'
 let isConnected = $state<boolean>(false);
 /**
  * Get Redis client instance
@@ -56,7 +56,7 @@ export async function getRedisClient(): Promise<IORedisClient | null> {
     });
     instance.on('error', (error: Error) => {
       isConnected = false;
-      console.warn('🔴 Redis connection error:', (error && (error as Error).message) || String(error));
+      console.warn('🔴 Redis connection error:', (error && (error as Error).message) || String(error));'
     });
     instance.on('close', () => {
       isConnected = false;
@@ -64,7 +64,7 @@ export async function getRedisClient(): Promise<IORedisClient | null> {
     });
     // test ping - returns: 'PONG' on success
     await (instance as unknown as { ping?: () => Promise<string> }).ping?.();
-    redis = instance as unknown as IORedisClient; // Assign to the module's shared instance
+    redis = instance as unknown as IORedisClient; // Assign to the module's shared instance'
     return redis;
   } catch (error) {
     console.warn('🔴 Failed to connect to Redis via createRedisInstance():', error);
@@ -108,7 +108,7 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): IORe
   // For custom clients we can still construct a new ioredis instance, but
   // prefer delegating to createRedisInstance when no custom config is needed.
   if (Object.keys(customConfig).length === 0) {
-    // If no custom config, return the module's managed: 'redis' instance (if available)
+    // If no custom config, return the module's managed: 'redis' instance (if available)'
     // or create a new one with default config.
     return redis || (createRedisConnection() as unknown as IORedisClient);
   }
@@ -122,7 +122,7 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): IORe
     retryStrategy: (times: number) => Math.min(times * 100, 2000)
   }) as unknown as IORedisClient;
   client.on('error', (error: Error) => {
-    console.warn('🔴 Redis client error:', error?.message ?? String(error));
+    console.warn('🔴 Redis client error:', error?.message ?? String(error));'
   });
   return client;
 }
@@ -156,4 +156,4 @@ export async function checkRedisHealth(): Promise<{
 // Export a single redisClient reference and the helper functions
 // Provide a typed alias to the shared redis instance from the central module so callers can
 // continue importing `redisClient` from this helper while we still rely on the central factory.
-export const redisClient = redis; // Export the module's managed shared instance
+export const redisClient = redis; // Export the module's managed shared instance'

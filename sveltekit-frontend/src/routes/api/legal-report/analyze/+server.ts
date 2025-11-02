@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
 
     if (!uploadResult.success) {
       return json(
-        { success: false, error: uploadResult.error || 'File upload failed` },
+        { success: false, error: uploadResult.error || 'File upload failed` },'`
         { status: 500 }
       );
     }
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
         extractionMethod = 'title-fallback';
       }
     } catch (extractError) {
-      console.warn('⚠️ Extraction error:', extractError);
+      console.warn('⚠️ Extraction error:', extractError);'
       extractedText = title; // Fallback to title
       extractionMethod = 'error-fallback';
     }
@@ -226,7 +226,7 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
         comparison: comparisonResult,
         processingTime: totalTime
       },
-      message: `Legal document analyzed successfully in ${(totalTime / 1000).toFixed(2)}s' });
+      message: 'Legal document analyzed successfully in ${(totalTime / 1000).toFixed(2)}s` });'`
   } catch (err: any) {
     console.error('❌ Legal report analysis failed:', err);
     console.error('Stack:', err.stack);
@@ -252,7 +252,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const reportId = url.searchParams.get('reportId');
 
     if (!reportId) {
-      return json({ error: 'Report ID required' }, { status: 400 });
+      return json({ error: `Report ID required` }, { status: 400 });
     }
 
     // TODO: Implement database lookup for cached analysis

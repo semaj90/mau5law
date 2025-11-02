@@ -2,9 +2,9 @@
  * AI Service Worker for Multi-Threading LLM Processing
  * Handles parallel AI tasks across multiple LLM providers
  */
-/// <reference lib="webworker" />
+/// <reference, lib="webworker" />
 import type { AITask, AIResponse, WorkerMessage } from '$lib/types/ai-worker.js';
-import { getOllamaEndpoint } from '$lib/utils/endpoints'; // Assumed utility, create if it doesn't exist
+import { getOllamaEndpoint } from '$lib/utils/endpoints'; // Assumed utility, create if it doesn't exist'
 declare const self: DedicatedWorkerGlobalScope;
 
 export interface AIProviderConfig { id: string;, type: 'ollama' | 'llamacpp' | 'autogen' | 'crewai';
@@ -221,9 +221,9 @@ class AIServiceWorker {
     const ollamaTask = task as OllamaTask;
     const response = await fetch(`${provider.endpoint}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
-        model: ollamaTask.model ?? 'unknown',
+       , model: ollamaTask.model ?? 'unknown',
         prompt: task.prompt,
         system: ollamaTask.systemPrompt,
         stream: false,
@@ -260,7 +260,7 @@ class AIServiceWorker {
     const autoGenTask = task as AutoGenTask;
     const response = await fetch(`${provider.endpoint}/api/chat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , agents: autoGenTask.agents ?? ['assistant'],
         message: task.prompt,
@@ -293,7 +293,7 @@ class AIServiceWorker {
     const crewAITask = task as CrewAITask;
     const response = await fetch(`${provider.endpoint}/api/crew/execute`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , crew_id: crewAITask.crewId ?? 'legal-analysis-crew',
         task: task.prompt,

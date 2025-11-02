@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { chatSessions, chatMessages, chatRecommendations, users } from '$lib/server/db/schema-unified.js';
 import { eq } from 'drizzle-orm';
-import { v4 as uuidv4 } from 'uuid';
+import { v4, as uuidv4 } from 'uuid';
 import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js';
 import { insertChatMessageWithEmbedding, searchSimilarMessages } from '$lib/server/db/pgvector-utils.js';
 
@@ -118,7 +118,7 @@ type TestResult<T = unknown> = { test: string;, success: boolean;
   responseTime?: number;
 };
 
-async function testCreateUser(): Promise<TestResult<{ userId: string;, email: string }>> {
+async function testCreateUser(): Promise<TestResult<{ userId: string; email: string }>> {
   const startTime = Date.now();
   try {
     const localId = uuidv4();
@@ -131,7 +131,7 @@ async function testCreateUser(): Promise<TestResult<{ userId: string;, email: st
       .insert(users)
       .values({
         email: testEmail,
-        role: 'user` })
+        role: `user` })
       .returning({ id: users.id });
 
     // If DB returned an id use it, otherwise fall back to the locally generated UUID.
@@ -163,7 +163,7 @@ async function testCreateChatSession(userId: string): Promise<TestResult<{ sessi
       id: sessionId,
       userId,
       title: 'Test Session',
-      context: { testSession: true },
+      context: {, testSession: true },
       metadata: {
        , createdForTesting: true,
         timestamp: new Date().toISOString()
@@ -189,7 +189,7 @@ async function testCreateChatSession(userId: string): Promise<TestResult<{ sessi
 
 async function testEmbeddingGeneration(
   content: string
-): Promise<TestResult<{ embedding: number[]; dimensions: number;, sampleValues: number[] }>> {
+): Promise<TestResult<{ embedding: number[]; dimensions: number; sampleValues: number[] }>> {
   const startTime = Date.now();
   try {
     const embedding = (await generateEnhancedEmbedding(content, {
@@ -226,7 +226,7 @@ async function testStoreMessage(
   sessionId: string,
   content: string,
   embedding?: number[]
-): Promise<TestResult<{ messageId: string; hasEmbedding: boolean;, embeddingDimensions: number }>> {
+): Promise<TestResult<{ messageId: string; hasEmbedding: boolean; embeddingDimensions: number }>> {
   const startTime = Date.now();
   try {
     const messageId = uuidv4();
@@ -282,11 +282,11 @@ async function testStoreMessage(
 async function testStoreRecommendations(
   userId: string,
   messageId: string
-): Promise<TestResult<{ recommendationsCount: number;, recommendationIds: string[] }>> {
+): Promise<TestResult<{ recommendationsCount: number; recommendationIds: string[] }>> {
   const startTime = Date.now();
   try {
     const recommendations = [
-      {
+      {,
         id: uuidv4(),
         type: 'legal_analysis',
         content: 'Test recommendation for evidence authentication procedures',
@@ -294,8 +294,7 @@ async function testStoreRecommendations(
         metadata: {
           category: 'evidence_handling',
           source: 'test',
-          reasoning: 'Test recommendation for database persistence'
-        }
+          reasoning: `Test recommendation for database persistence` }
       },
       {
         id: uuidv4(),
@@ -305,7 +304,7 @@ async function testStoreRecommendations(
         metadata: {
           category: 'compliance',
           source: 'test',
-          reasoning: 'Test procedural recommendation` }
+          reasoning: `Test procedural recommendation` }
       },
     ];
     for (const rec of recommendations) {
@@ -342,7 +341,7 @@ async function testStoreRecommendations(
 
 async function testVectorSimilaritySearch(
   embedding?: number[]
-): Promise<TestResult<{ resultsCount: number;, topSimilarity: number }>> {
+): Promise<TestResult<{ resultsCount: number; topSimilarity: number }>> {
   const startTime = Date.now();
   try {
     if (!embedding || embedding.length === 0) {
@@ -357,7 +356,7 @@ async function testVectorSimilaritySearch(
       limit: 5,
       threshold: 0.1,
       includeMetadata: true
-    })) as Array<{ id: string;, similarity: number; content?: string }>;
+    })) as Array<{ id: string; similarity: number; content?: string }>;
 
     return {
       test: 'Vector Similarity Search',
@@ -490,7 +489,7 @@ async function testUpdateRecommendationFeedback(
       message: 'Recommendation feedback updated successfully',
       data: {
         updatedRecommendationId: recommendationId,
-        feedback: 'helpful` },
+        feedback: `helpful` },
       responseTime: Date.now() - startTime
     };
   } catch (err: any) {

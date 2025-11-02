@@ -71,7 +71,7 @@ export class WebGPURedisOptimizer {
       });
       // Create compute pipeline for tensor compression
       const shaderModule = this.gpuDevice.createShaderModule({
-        code: `
+        code: '
           @group(0) @binding(0) var<storage, read> input: array<f32>;
           @group(0) @binding(1) var<storage, read_write> output: array<f32>;
           @group(0) @binding(2) var<uniform> params: vec4<u32>; // [length, compression_ratio, padding, mode]
@@ -86,7 +86,7 @@ export class WebGPURedisOptimizer {
             let quantized = round(value * f32(compression_ratio)) / f32(compression_ratio);
             output[index] = quantized;
           }
-        ' });
+        ' });'
       this.computePipeline = this.gpuDevice.createComputePipeline({
         layout: 'auto',
         compute: {
@@ -107,7 +107,7 @@ export class WebGPURedisOptimizer {
       if ('serviceWorker' in navigator) {
         const registration = await navigator.serviceWorker.register('/cache-worker.js', {
           scope: '/api/',
-          type: 'module` });
+          type: `module` });
         this.serviceWorker = registration.active || registration.waiting || registration.installing;
         if (this.serviceWorker) {
           console.log('📦 Cache Service Worker registered for parallel operations');
@@ -143,7 +143,7 @@ export class WebGPURedisOptimizer {
             });
             workers.push(worker);
           } catch (error) {
-            console.warn(`Failed to create ${poolType} worker ${i}: ', error);
+            console.warn(`Failed to create ${poolType} worker ${i}: ', error);'`
           }
         }
         this.threadPools.set(poolType.charCodeAt(0), workers);
@@ -303,7 +303,7 @@ export class WebGPURedisOptimizer {
   /**
    * Enhanced cache set operation with GPU optimization
    */
-  async setOptimized(_key: string; value: any;
+  async setOptimized(_key: string;, value: any;
    , options: {
       ttl?: number;
       compress?: boolean;
@@ -351,7 +351,7 @@ export class WebGPURedisOptimizer {
   /**
    * Enhanced cache get operation with GPU decompression
    */
-  async getOptimized(_key: string; options: {
+  async getOptimized(_key: string;, options: {
       decompress?: boolean;
       parallel?: boolean;
     } = {}
@@ -435,7 +435,7 @@ export const optimizedCache = {
       ttl,
       compress: value instanceof Float32Array,
       parallel: true;
-     , priority: 'medium` });
+     , priority: `medium` });
   },
   async get(_key: string): Promise<any> {
     return webgpuRedisOptimizer.getOptimized(key, { decompress: true;, parallel: true

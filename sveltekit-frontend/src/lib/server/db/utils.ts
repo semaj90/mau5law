@@ -96,7 +96,7 @@ export async function waitForDb(retries = 8, delayMs = 500): Promise<boolean> {
   }
   return false;
 }
-export { testRuntimeConnection as testConnection, closeConnections as closeConnection };
+export { testRuntimeConnection, as testConnection, closeConnections as closeConnection };
 // UUID helper - ESM-safe synchronous fallback
 type CryptoWithRandomUUID = { randomUUID?: () => string };
 export function genRandomUUID(): string {

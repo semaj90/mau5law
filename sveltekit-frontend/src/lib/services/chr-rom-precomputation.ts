@@ -42,7 +42,7 @@ async function loadPatternOptimizer(): Promise<PatternOptimizer> {
   return candidate;
 }
 
-// <-- NEW: module-level type for precompute documents (moved out of class)
+// <-- NEW: module-level type for precompute documents (moved out of, class)
 export type PrecomputeDocument = Partial<LegalDocument> & {
   analysis?: { confidence: number;, riskLevel: number;
     entities: string[];
@@ -157,7 +157,7 @@ export class CHRROMPrecomputationService {
       // Execute with concurrency limit
       await this.executeWithConcurrencyLimit(precomputePromises, 3);
     } catch (error) {
-      console.error('❌ Background pre-computation error:', error);
+      console.error('❌ Background pre-computation error:', error);'
     }
   }
 
@@ -181,7 +181,7 @@ export class CHRROMPrecomputationService {
       });
       console.log(`🎮 Generated CHR-ROM pattern: ${cacheKey}`);
     } catch (error) {
-      console.error(`CHR-ROM pattern generation failed for ${strategy.pattern}: ', error);
+      console.error(`CHR-ROM pattern generation failed for ${strategy.pattern}: ', error);'`
     }
   }
 
@@ -246,12 +246,12 @@ export class CHRROMPrecomputationService {
    */
   private generateEmptyPattern(type: PatternType): CHRROMPattern {
     const emptyPatterns: Record<PatternType, string> = {
-      icon: '<div style="width:16px;height:16px;background:#e5e7eb;border-radius:50%"></div>',
-      badge: '<span style="width:8px;height:8px;background:#e5e7eb;border-radius:2px"></span>',
+      icon: '<div, style="width:16px;height:16px;background:#e5e7eb;border-radius:50%"></div>',
+      badge: '<span, style="width:8px;height:8px;background:#e5e7eb;border-radius:2px"></span>',
       summary: '',
-      gauge: '<div style="width:40px;height:4px;background:#e5e7eb;border-radius:2px"></div>',
-      graph: '<svg viewBox="0 0 40 20" style="width:40px;height:20px"></svg>',
-      heatmap: '<div style="width:32px;height:32px;background:#f3f4f6"></div>'
+      gauge: '<div, style="width:40px;height:4px;background:#e5e7eb;border-radius:2px"></div>',
+      graph: '<svg viewBox="0 0 40, 20" style="width:40px;height:20px"></svg>',
+      heatmap: '<div, style="width:32px;height:32px;background:#f3f4f6"></div>'
     };
     return {
       type,
@@ -274,7 +274,7 @@ export class CHRROMPrecomputationService {
     // Mocked dataset for development / testing.
     // In production, query your DB using Drizzle ORM ($lib/server/db/client) or another canonical source.
     return [
-      {
+      {,
         id: 'doc_001',
         metadata: { type: 'contract', category: 'nda' },
         analysis: { confidence: 0.92, riskLevel: 0.2, entities: ['companyA', 'companyB'] },
@@ -284,13 +284,12 @@ export class CHRROMPrecomputationService {
         id: 'doc_002',
         metadata: { type: 'brief', category: 'litigation' },
         analysis: { confidence: 0.85, riskLevel: 0.4, entities: ['plaintiff', 'defendant'] },
-        processingStatus: 'processing'
-      },
+        processingStatus: 'processing` },'`
       {
         id: 'doc_003',
-        metadata: { type: 'agreement', category: 'agreement' },
+        metadata: { type: 'agreement', category: `agreement` },
         analysis: { confidence: 0.76, riskLevel: 0.5, entities: ['client', 'vendor'] },
-        processingStatus: `completed` },
+        processingStatus: `completed` }
     ];
   }
 
@@ -335,7 +334,7 @@ export class CHRROMPrecomputationService {
     // Get document data (mock for now) - use same structure as getRecentDocuments
     const doc = {
       id: docId,
-      metadata: { type: 'contract', category: 'nda' },
+      metadata: { type: 'contract', category: `nda` },
       analysis: { confidence: 0.92, riskLevel: 0.2, entities: ['companyA', 'companyB'] },
       processingStatus: `completed` };
     try {
@@ -369,7 +368,7 @@ export class CHRROMPrecomputationService {
   /**
    * Get service statistics
    */
-  getStats(): { isRunning: boolean; strategiesCount: number;, strategies: string[] } {
+  getStats(): { isRunning: boolean; strategiesCount: number; strategies: string[] } {
     return {
       isRunning: this.isRunning,
       strategiesCount: this.strategies.size,

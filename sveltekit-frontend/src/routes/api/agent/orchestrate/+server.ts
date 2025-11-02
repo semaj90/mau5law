@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error: any) {
-    console.error('❌ Agent orchestration error:', error);
+    console.error('❌ Agent orchestration error:', error);'
     return json(
       {
         error: 'Agent orchestration failed',
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async () => {
       count: tools.length
     });
   } catch (error: any) {
-    console.error('❌ Get tools error:', error);
+    console.error('❌ Get tools error:', error);'
     return json(
       {
         error: 'Failed to get tools',

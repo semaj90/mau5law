@@ -8,7 +8,7 @@
  * 2: 16x16 - Low detail (timeline view)
  * 3: 8x8  - Minimal detail (overview/scrolling)
  */
-interface LODLevel { level: number;, resolution: { width: number;, height: number }
+interface LODLevel { level: number;, resolution: { width: number; height: number }
   textureSize: number;
   maxDistance: number;
   description: string;
@@ -59,8 +59,8 @@ export class N64LODManager {
   /**
    * Calculate LOD for legal document context
    */
-  calculateDocumentLOD(context: { pageDistance: number;, readingMode: 'active' | 'preview' | 'timeline' | 'overview';
-    documentImportance: 'critical' | 'high' | 'medium' | 'low';
+  calculateDocumentLOD(context: {, pageDistance: number;, readingMode: 'active' | 'preview' | 'timeline' | 'overview';
+   , documentImportance: 'critical' | 'high' | 'medium' | 'low';
    , userInteraction: boolean);
   }): number {
     let baseLOD = this.calculateLOD(context.pageDistance);
@@ -130,8 +130,7 @@ export class N64LODManager {
    * Stream texture chunk at specified LOD level
    */
   async streamTexture()
-    assetId: string; lodLevel: number
-    priority: 'immediate' | 'background', = 'background';
+    assetId: string; lodLevel: number; priority: 'immediate' | 'background', = 'background';
   ): Promise<ArrayBuffer | null> {
     // Check if we need bank switching
     if (this.shouldPerformBankSwitch()) {
@@ -170,7 +169,7 @@ export class N64LODManager {
       await this.storeinCHRROM(cacheKey, textureData);
       return textureData;
     } catch (error) {
-      console.error(`Failed to stream texture ${assetId} at LOD ${lodLevel}: ', error);
+      console.error(`Failed to stream texture ${assetId} at LOD ${lodLevel}: ', error);'`
       return null;
     } finally {
       this.activeStreams.delete(assetId);
@@ -194,7 +193,7 @@ export class N64LODManager {
    * Generate mipmap at specific resolution
    */
   private async generateMipmap()
-    source: ImageData; targetSize: { width: number);, height: number }
+    source: ImageData; targetSize: { width: number); height: number }
   ): Promise<ImageData> {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d'),!;
@@ -346,7 +345,7 @@ export class N64LODManager {
     console,.log(`Performing NES bank switch from bank ${this.activeBankId}`);
     // Switch to next bank
     this.activeBankId = (this.activeBankId + 1) %, 4; // 4 CHR-ROM banks
-    // Clear current bank's memory
+    // Clear current bank's memory'
     const keysToEvict = Array.from(this.textureCache.keys()).filter(key => {
       const metadata = this.getAccessMetadata(key);
       return metadata?.bankId === this.activeBankId;

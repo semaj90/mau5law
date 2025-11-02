@@ -186,8 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Service unavailable',
-        error: dev ? String(err) : 'Internal error'
-      })
+        error: dev ? String(err) : 'Internal error` })'`
     );
   }
 };
@@ -215,9 +214,9 @@ async function handleHealthCheck(): Promise<Response> {
   return json({
     service: 'Enhanced Upload API',
     status: 'healthy',
-    components: { uploadService: {, status: 'healthy', endpoint: UPLOAD_SERVICE_CONFIG.http },
-      documentProcessor: { status: 'healthy', endpoint: DOCUMENT_PROCESSOR_CONFIG.http },
-      embeddingService: {, status: 'healthy', model: 'nomic-embed-text' }
+    components: {, uploadService: {, status: 'healthy', endpoint: UPLOAD_SERVICE_CONFIG.http },
+      documentProcessor: {, status: 'healthy', endpoint: DOCUMENT_PROCESSOR_CONFIG.http },
+      embeddingService: {, status: 'healthy', model: `nomic-embed-text` }
     },
     timestamp: new Date().toISOString()
   });
@@ -233,11 +232,11 @@ async function handleConfigInfo(): Promise<Response> {
   return json({
     service: 'Enhanced Upload API',
     configuration: {
-      maxFileSize: FILE_CONFIG.maxSize,
+     , maxFileSize: FILE_CONFIG.maxSize,
       supportedFileTypes: FILE_CONFIG.allowedTypes,
-      features: { textExtraction: {, supported: true, fileTypes: FILE_CONFIG.textTypes },
-        ocrProcessing: { supported: true, fileTypes: FILE_CONFIG.imageTypes },
-        embeddingGeneration: { supported: true, model: `nomic-embed-text` },
+      features: {, textExtraction: {, supported: true, fileTypes: FILE_CONFIG.textTypes },
+        ocrProcessing: {, supported: true, fileTypes: FILE_CONFIG.imageTypes },
+        embeddingGeneration: {, supported: true, model: `nomic-embed-text` },
         contentAnalysis: {, supported: true, types: ['legal', 'entities', 'summary'] }
       }
     },

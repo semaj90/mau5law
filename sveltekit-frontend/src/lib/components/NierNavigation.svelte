@@ -1,5 +1,5 @@
-<!-- YoRHa Terminal Navigation Component -->
-<script lang="ts">
+<!-- YoRHa Terminal Navigation, Component -->
+<script, lang="ts">
 
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
@@ -16,16 +16,16 @@
   }
 
 </script>
-<nav class="yorha-nav">
-  <div class="yorha-nav-container">
-    <div class="yorha-brand">
-      <div class="yorha-brand-icon">⚖</div>
-      <div class="yorha-brand-info">
-        <span class="yorha-brand-text">{brand}</span>
-        <span class="yorha-brand-version">{version}</span>
+<nav, class="yorha-nav">
+  <div, class="yorha-nav-container">
+    <div, class="yorha-brand">
+      <div, class="yorha-brand-icon">⚖</div>
+      <div, class="yorha-brand-info">
+        <span, class="yorha-brand-text">{brand}</span>
+        <span, class="yorha-brand-version">{version}</span>
       </div>
     </div>
-    <div class="yorha-nav-links">
+    <div, class="yorha-nav-links">
       {#each Array.isArray(links) ? links : [] as link}
         <a
           href={link.href}
@@ -34,26 +34,26 @@
           data-sveltekit-preload-data="hover"
         >
           {#if link.icon}
-            <span class="nav-icon">{link.icon}</span>
+            <span, class="nav-icon">{link.icon}</span>
           {/if}
           {link.label}
           {#if isActive(link.href)}
-            <div class="active-bar">{/if}
+            <div, class="active-bar">{/if}
         </a>
       {/each}
     </div>
-    <div class="yorha-nav-actions">
-      <button class="yorha-toolbar-btn" title="System Settings">
-        <span class="btn-icon">⚙</span>
-        <span class="btn-label">CONFIG</span>
+    <div, class="yorha-nav-actions">
+      <button class="yorha-toolbar-btn" title="System, Settings">
+        <span, class="btn-icon">⚙</span>
+        <span, class="btn-label">CONFIG</span>
       </button>
-      <button class="yorha-toolbar-btn" title="AI Status">
-        <span class="btn-icon">⚡</span>
-        <span class="btn-label">AI</span>
+      <button class="yorha-toolbar-btn" title="AI, Status">
+        <span, class="btn-icon">⚡</span>
+        <span, class="btn-label">AI</span>
       </button>
-      <button class="yorha-toolbar-btn" title="Terminal">
-        <span class="btn-icon">▣</span>
-        <span class="btn-label">TERM</span>
+      <button, class="yorha-toolbar-btn" title="Terminal">
+        <span, class="btn-icon">▣</span>
+        <span, class="btn-label">TERM</span>
       </button>
     </div>
   </div>

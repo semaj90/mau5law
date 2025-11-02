@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
 };
 export const POST: RequestHandler = async ({ params, request }) => {
   const { serviceId } = params;
-  if (!serviceId) return json({ success: false, error: 'Missing serviceId' }, { status: 400 });
+  if (!serviceId) return json({ success: false, error: 'Missing serviceId` }, { status: 400 });'`
   let body: any = {};
   try {
     body = await request.json();
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       });
     default:
       return json(
-        { success: false, error: 'Unknown; action: ${action ?? 'undefined' }`, availableActions: AVAILABLE_POST },
+        { success: false, error: 'Unknown; action: ${action ?? 'undefined` }`, availableActions: AVAILABLE_POST },
         { status: 400 }
       );
   }

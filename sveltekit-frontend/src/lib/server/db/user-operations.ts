@@ -36,7 +36,7 @@ import {
 // ============================================================================
 interface ActivityStats { totalActions: number;, uniqueActions: number;
   successRate: number;
-  topActions: { action: string;, count: number }[];
+  topActions: { action: string; count: number }[];
 }
 
 interface StatsRow { totalActions: number | null;, successRate: number | null;
@@ -68,7 +68,7 @@ export class UserAuthService {
     jurisdiction?: string;
     practiceAreas?: string[];
     profileData?: Partial<NewUserProfile>;
-  }): Promise<{ user: User | null; profile?: UserProfile | undefined;, success: boolean; error?: string }> {
+  }): Promise<{ user: User | null; profile?: UserProfile | undefined; success: boolean; error?: string }> {
     try {
       // Validate input
       const validatedUser = insertUserSchema.parse({
@@ -120,7 +120,7 @@ export class UserAuthService {
       });
       return { ...result, success: true };
     } catch (error: any) {
-      console.error('User registration error:', error);
+      console.error('User registration error:', error);'
       return {
         user: null,
         success: false,
@@ -211,7 +211,7 @@ export class UserAuthService {
         success: true
       };
     } catch (error: any) {
-      console.error('Authentication error:', error instanceof Error ? error.message : String(error));
+      console.error('Authentication error:', error instanceof Error ? error.message : String(error));'
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Authentication failed'
@@ -245,11 +245,11 @@ export class UserAuthService {
       return {
         user,
         profile: profile || undefined,
-        session: session as Record<string, unknown>, // Keep cast for session as it's a generic Record<string, unknown>
+        session: session as Record<string, unknown>, // Keep cast for session as it's a generic Record<string, unknown>'
         valid: true
       };
     } catch (error: any) {
-      console.error('Session validation error:', error instanceof Error ? error.message : String(error));
+      console.error('Session validation error:', error instanceof Error ? error.message : String(error));'
       return { valid: false };
     }
   }
@@ -264,8 +264,8 @@ export class UserAuthService {
         .where(eq(userSessions.sessionId, sessionId));
       return { success: true };
     } catch (error: any) {
-      console.error('Logout error:', error instanceof Error ? error.message : String(error));
-      return { success: false, error: error instanceof Error ? error.message : `Logout failed` };
+      console.error('Logout error: ', error instanceof Error ? error.message : String(error));'
+      return { success: false, error: error instanceof Error ? error.message : `Logout failed' };'`
     }
   }
 }
@@ -292,7 +292,7 @@ export class UserProfileService {
         .select()
         .from(userSessions)
         .where(
-          and(eq(userSessions.userId, userId), eq(userSessions.isActive, true), sql`${userSessions.expiresAt} > NOW()`)
+          and(eq(userSessions.userId, userId), eq(userSessions.isActive, true), sql'${userSessions.expiresAt} > NOW()')
         )
         .orderBy(desc(userSessions.createdAt));
       // Get recent activity
@@ -309,7 +309,7 @@ export class UserProfileService {
         recentActivity
       } as FullUserProfile;
     } catch (error: any) {
-      console.error('Get full profile error:', error);
+      console.error('Get full profile error:', error);'
       return null;
     }
   }
@@ -412,11 +412,10 @@ export class UserProfileService {
       });
       return { ...result, success: true };
     } catch (error: any) {
-      console.error('Update profile error:', error);
+      console.error('Update profile error:', error);'
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Profile update failed'
-      };
+        error: error instanceof Error ? error.message : `Profile update failed' };'`
     }
   }
   /**
@@ -445,14 +444,14 @@ export class UserProfileService {
           action: 'user_deleted',
           resource: 'user',
           resourceId: userId.toString(),
-          context: { deletionType: 'soft_delete' },
+          context: { deletionType: `soft_delete' },'`
           success: true,
           timestamp: new Date()
         });
       });
       return { success: true };
     } catch (error: any) {
-      console.error('Delete user error:', error);
+      console.error('Delete user error: ', error);'
       return {
         success: false,
         error: error instanceof Error ? error.message : `User deletion failed` };
@@ -475,7 +474,7 @@ export class UserProfileService {
       const similarRows = await db
         .select({
           user: users, // Select the full user object
-          similarity: sql<number>`1 - (${users.profileEmbedding} <=> ${embeddingPgVector})` })
+          similarity: sql<number>`1 - (${users.profileEmbedding} <=> ${embeddingPgVector})' })'`
         .from(users)
         .where(
           and(
@@ -485,11 +484,11 @@ export class UserProfileService {
             isNull(users.deletedAt)
           )
         )
-        .orderBy(sql`${users.profileEmbedding} <=> ${embeddingPgVector} ASC`) // Order by distance ascending for similarity descending
+        .orderBy(sql'${users.profileEmbedding} <=> ${embeddingPgVector} ASC') // Order by distance ascending for similarity descending
         .limit(limit);
       return similarRows.map(r => r.user); // Access user directly
     } catch (error: any) {
-      console.error('Find similar users error:', error instanceof Error ? error.message : String(error));
+      console.error('Find similar users error:', error instanceof Error ? error.message : String(error));'
       return [];
     }
   }
@@ -508,7 +507,7 @@ export class UserActivityService {
         timestamp: new Date()
       });
     } catch (error: any) {
-      console.error('Log activity error:', error instanceof Error ? error.message : String(error));
+      console.error('Log activity error:', error instanceof Error ? error.message : String(error));'
     }
   }
   /**
@@ -524,7 +523,7 @@ export class UserActivityService {
         .limit(limit)
         .offset(offset);
     } catch (error: any) {
-      console.error('Get user activity error: ', error instanceof Error ? error.message : String(error));
+      console.error('Get user activity error: ', error instanceof Error ? error.message : String(error));'
       return [];
     }
   }
@@ -538,8 +537,7 @@ export class UserActivityService {
       const stats = (await db
         .select({
           totalActions: count(),
-          successRate: sql<number>`AVG(CASE WHEN success THEN 1.0 ELSE 0.0 END)`
-        })
+          successRate: sql<number>`AVG(CASE WHEN success THEN 1.0 ELSE 0.0 END)' })'`
         .from(userActivityLog)
         .where(and(eq(userActivityLog.userId, userId), sql`${userActivityLog.timestamp} >= ${dateThreshold}`))) as StatsRow[];
 
@@ -556,9 +554,9 @@ export class UserActivityService {
 
       const uniqueActionsResult = (await db
         .select({
-          uniqueActions: sql<number>`COUNT(DISTINCT action)` })
+          uniqueActions: sql<number>`COUNT(DISTINCT action)' })'`
         .from(userActivityLog)
-        .where(and(eq(userActivityLog.userId, userId), sql`${userActivityLog.timestamp} >= ${dateThreshold}`))) as UniqueActionsRow[];
+        .where(and(eq(userActivityLog.userId, userId), sql'${userActivityLog.timestamp} >= ${dateThreshold}'))) as UniqueActionsRow[];
 
       const totalActions = stats && stats[0] ? Number(stats[0].totalActions ?? 0) : 0;
       const successRate = stats && stats[0] ? Number(stats[0].successRate ?? 0) : 0;
@@ -576,7 +574,7 @@ export class UserActivityService {
         topActions
       };
     } catch (error: any) {
-      console.error('Get activity stats error:', error instanceof Error ? error.message : String(error));
+      console.error('Get activity stats error:', error instanceof Error ? error.message : String(error));'
       return {
         totalActions: 0,
         uniqueActions: 0,

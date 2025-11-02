@@ -3,7 +3,7 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import { json, error } from '@sveltejs/kit';
 import pdf from 'pdf-parse';
 import crypto from 'node:crypto';
-import { v4 as uuidv4 } from 'uuid';
+import { v4, as uuidv4 } from 'uuid';
 import { createClient } from 'redis';
 import type { RequestHandler } from './$types';
 // Enhanced RAG processing pipeline
@@ -121,7 +121,7 @@ const TRUSTED_LEGAL_SOURCES = [
 import { storeDocumentsInDatabase } from '$lib/server/db';
 
 // Use the redis package exported client type
-type RedisClientType = ReturnType<typeof createClient>;
+type RedisClientType = ReturnType<typeof, createClient>;
 let redisClient: RedisClientType | null = null;
 let redisConnected = $state<boolean>(false);
 let disconnectHandlerRegistered = $state<boolean>(false);
@@ -181,7 +181,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
     // Helpful telemetry for production debugging
     redisClient.on('error', (err: any) => {
       redisConnected = false;
-      console.warn('Redis client error:', err);
+      console.warn('Redis client error:', err);'
     });
     redisClient.on('connect', () => console.info('Redis client connecting...'));
     redisClient.on('ready', () => {
@@ -214,7 +214,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
   } catch (err) {
     console.warn('Failed to connect to Redis, continuing without cache:', err);
     try {
-      // Ensure we don't hold a broken client reference
+      // Ensure we don't hold a broken client reference'
       if (redisClient) {
         await redisClient.disconnect().catch(e => console.warn('Error disconnecting broken Redis client:', e));
       }
@@ -395,7 +395,7 @@ function detectJurisdiction(text: string, providedJurisdiction: string): string 
   const textLower = text.toLowerCase();
 
   // Typed iteration over JURISDICTION_PATTERNS to avoid `any`
-  const scores: { jurisdiction: string;, score: number }[] = Object.entries(JURISDICTION_PATTERNS).map(
+  const scores: { jurisdiction: string; score: number }[] = Object.entries(JURISDICTION_PATTERNS).map(
     ([jurisdiction, patterns]) => {
       const keywords: string[] = patterns.keywords ?? [];
       const statutes: string[] = patterns.statutes ?? [];
@@ -525,7 +525,7 @@ type EmbeddingsResponse =
 
 // Add a strict type guard for numeric arrays (Embedding)
 function isNumberArray(v: any): v is Embedding {
-  // Ensure it's an array and every element is a number
+  // Ensure it's an array and every element is a number'
   return Array.isArray(v) && v.length > 0 && (v as unknown[]).every(el => typeof el === 'number');
 }
 
@@ -571,7 +571,7 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({ model, input: inputs })
     });
 
@@ -730,7 +730,7 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
       // Define a minimal typed shape for a Redis pipeline/multi used here
       type RedisPipeline = {
         // chainable set as used below
-        set: (key: string; value: string, opts?: { EX?: number }) => RedisPipeline;
+        set: (key: string;, value: string, opts?: { EX?: number }) => RedisPipeline;
         // execution entry points found on different client implementations
         exec?: () => Promise<unknown>;
         execute?: () => Promise<unknown>;

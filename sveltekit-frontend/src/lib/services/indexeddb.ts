@@ -29,7 +29,7 @@ class IndexedDBService {
 
   constructor() {
     if (browser) {
-      // initialize asynchronously (don't block constructor)
+      // initialize asynchronously (don't block constructor)'
       void this.initDB().catch((e) => console.warn("IndexedDB init failed", e));
     }
   }
@@ -172,7 +172,7 @@ class IndexedDBService {
     const store = tx.objectStore("searchResults");
     const result = await this.promisifyRequest<SearchResult | undefined>(store.get(query));
     if (!result) return null;
-    if (Date.now() - (result.timestamp ?? 0) < 5 * 60 * 1000) return result;
+    if (Date.now() - (result.timestamp ?? 0) < 5 * 60 * 1000) return, result;
     return null;
   }
 
@@ -220,7 +220,7 @@ class IndexedDBService {
 
   // Analytics: get user activity patterns
   async getActivitySummary(): Promise<{ totalInteractions: number;, searchQueries: string[];
-    mostViewedDocuments: { id: string;, views: number }[];
+    mostViewedDocuments: { id: string; views: number }[];
     activityByHour: number[];
   }> {
     const interactions = await this.getUserInteractions(undefined, 1000);

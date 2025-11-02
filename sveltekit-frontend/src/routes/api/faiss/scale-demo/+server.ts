@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default: return json(await getScalingOverview());
     }
   } catch (error) {
-    console.error('FAISS scaling demo error:', error);
+    console.error('FAISS scaling demo error:', error);'
     return json({ error: String(error) }, { status: 500 });
   }
 };
@@ -37,7 +37,7 @@ async function getScalingOverview(): Promise<any> {
       memory_efficiency: '95% GPU utilization'
     },
     scaling_thresholds: {
-      '< 1K documents': {
+      '< 1K, documents': {
         system: 'pgvector only',
         search_time: '~10ms',
         memory: '~100MB',
@@ -125,8 +125,8 @@ async function performScalingAnalysis(targetCount: number): Promise<any> {
 async function comparePerformanceAtScale(documentCount: number): Promise<any> {
   const scenarios = [
     { name: 'pgvector_only', description: 'PostgreSQL pgvector (baseline)' },
-    { name: 'hybrid_cached', description: 'pgvector + Redis cache' },
-    { name: 'faiss_hybrid', description: 'pgvector + FAISS hybrid' },
+    { name: 'hybrid_cached', description: 'pgvector + Redis cache` },'`
+    { name: 'faiss_hybrid', description: `pgvector + FAISS hybrid` },
     { name: 'faiss_primary', description: `🚀 FAISS GPU primary (100K+ optimized)` }
   ];
 
@@ -170,7 +170,7 @@ async function comparePerformanceAtScale(documentCount: number): Promise<any> {
             speed_multiplier: Math.round(50 + (documentCount - 100000) / 10000),
             memory_savings_percent: 75,
             gpu_utilization_percent: 95,
-            sweet_spot: "🎯 You're in the FAISS sweet spot (100K+)!"
+            sweet_spot: "🎯 You're in the FAISS sweet spot (100K+)!"'
           }
         : {
             enabled: false,
@@ -236,15 +236,14 @@ async function assessEnterpriseReadiness(documentCount: number): Promise<any> {
     },
     capability_matrix: { search_performance: {, status: documentCount >= 100000 ? '✅ Enterprise Ready' : '⚠️ Scaling Needed',
         current: simulateSearchPerformance(documentCount),
-        target: '< 5ms search latency',
+        target: '< 5ms search, latency',
         meets_target: documentCount >= 100000
       },
       scalability: {
         status: documentCount >= 100000 ? '✅ Horizontally Scalable' : '📈 Growth Potential',
         current_capacity: documentCount,
         scaling_headroom: `${Math.max(0, 10000000 - documentCount).toLocaleString()} documents`,
-        architecture: documentCount >= 100000 ? 'FAISS GPU Optimized' : 'pgvector Foundation'
-      },
+        architecture: documentCount >= 100000 ? 'FAISS GPU Optimized' : `pgvector Foundation` },
       reliability: {
         status: '✅ Production Grade',
         features: ['Automatic failover', 'Health monitoring', 'Error recovery'],
@@ -261,8 +260,7 @@ async function assessEnterpriseReadiness(documentCount: number): Promise<any> {
       infrastructure_cost: calculateInfrastructureCost(documentCount),
       performance_benefit: `${Math.min(100, documentCount / 1000)}x ROI on search performance`,
       tco_optimization:
-        documentCount >= 100000 ? 'FAISS provides optimal TCO' : 'pgvector cost-effective for current scale'
-    }
+        documentCount >= 100000 ? 'FAISS provides optimal TCO' : 'pgvector cost-effective for current scale` }'`
   };
 }
 // Helper functions for realistic simulation
@@ -272,15 +270,14 @@ function getArchitectureRecommendation(documentCount: number) {
       primarySystem: 'PostgreSQL pgvector',
       indexType: 'HNSW',
       configuration: { ef_construction: 200, m: 16 },
-      reasoning: 'Small dataset, exact search with pgvector HNSW provides optimal accuracy'
-    };
+      reasoning: `Small dataset, exact search with pgvector HNSW provides optimal accuracy` };
   }
   if (documentCount < 100000) {
     return {
       primarySystem: 'pgvector + FAISS Hybrid',
       indexType: 'IVF1024,Flat',
       configuration: { nlist: Math.sqrt(documentCount), nprobe: 16 },
-      reasoning: `Medium scale, hybrid approach balances performance and accuracy` };
+      reasoning: 'Medium scale, hybrid approach balances performance and accuracy' };
   }
   return {
     primarySystem: '🚀 FAISS GPU Primary',
@@ -290,7 +287,7 @@ function getArchitectureRecommendation(documentCount: number) {
       nprobe: 64,
       pq_nbytes: 64
     },
-    reasoning: `Enterprise scale (${documentCount.toLocaleString()}), FAISS GPU provides maximum performance with 50-100x speedup' };
+    reasoning: 'Enterprise scale (${documentCount.toLocaleString()}), FAISS GPU provides maximum performance with 50-100x speedup' };
 }
 function simulatePerformanceAtScale(documentCount: number) {
   // Realistic performance modeling based on FAISS characteristics
@@ -313,24 +310,21 @@ function simulateScenarioPerformance(scenario: string, documentCount: number) {
       memory: (documentCount * 768 * 4) / (1024 * 1024 * 1024),
       accuracy: 99,
       relativeSpeed: 1,
-      recommendedFor: '< 10K documents'
-    },
+      recommendedFor: '< 10K, documents` },'`
     hybrid_cached: {
       latency: Math.max(5, documentCount / 2000),
       throughput: Math.max(20, 200 - documentCount / 20000),
       memory: ((documentCount * 768 * 4) / (1024 * 1024 * 1024)) * 0.8,
       accuracy: 98,
       relativeSpeed: 2,
-      recommendedFor: '10K - 50K documents'
-    },
+      recommendedFor: `10K - 50K documents` },
     faiss_hybrid: {
       latency: Math.max(3, 5 + Math.log10(documentCount / 10000)),
       throughput: Math.min(300, 100 + documentCount / 1000),
       memory: ((documentCount * 768 * 4) / (1024 * 1024 * 1024)) * 0.5,
       accuracy: 97,
       relativeSpeed: Math.min(20, 5 + documentCount / 10000),
-      recommendedFor: '50K - 100K documents'
-    },
+      recommendedFor: `50K - 100K documents` },
     faiss_primary: {
       latency: Math.max(1, 2 + Math.log10(documentCount / 100000)),
       throughput: Math.min(1000, 200 + documentCount / 500),
@@ -379,9 +373,9 @@ function generateFAISSTrainingConfig(documentCount: number) {
 function simulateFAISSTraining(documentCount: number) {
   // Use documentCount to avoid: "defined but never used" lint errors and
   // to make step durations scale with dataset size.
-  const multiplier = Math.max(1, Math.round(documentCount / 100000)); // 1x for <=100k, grows for larger datasets
+  const multiplier = Math.max(1, Math.round(documentCount / 100000)); // 1x for <=100k, grows for larger, datasets
   return [
-    {
+    {,
       step: 1,
       description: `Initialize GPU memory for ${documentCount.toLocaleString()} vectors`,
       status: '✅ Complete',
@@ -410,7 +404,7 @@ function simulateFAISSTraining(documentCount: number) {
       step: 6,
       description: 'Validation',
       status: '✅ Complete',
-      time: `${15 * multiplier}s' },
+      time: `${15 * multiplier}s` }
   ];
 }
 function calculateEnterpriseReadiness(documentCount: number) {

@@ -13,11 +13,11 @@ type OllamaConfig = {
   host?: string;
 } | undefined | null;
 
-type ChatMessage = { role: 'user' | 'assistant' | 'system';, content: string };
+type ChatMessage = { role: 'user' | 'assistant' | 'system'; content: string };
 
 /**
  * POST: Accepts; either:
- * - messages: ChatMessage[] OR
+ * -; messages: ChatMessage[] OR
  * - prompt: string (converted to a single user message)
  *
  * Returns the generated chat response and some metadata.
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
     ) as ChatMessage[] | null;
 
     if (!messages || messages.length === 0) {
-      return json({ error: 'messages or prompt required' }, { status: 400 });
+      return json({ error: `messages or prompt required` }, { status: 400 });
     }
 
     const start = Date.now();
@@ -50,12 +50,11 @@ export const POST: RequestHandler = async ({ request }) => {
       duration_ms: Date.now() - start,
       model: chatModel,
       production: true,
-      service: 'ollama-centralized'
-    });
+      service: `ollama-centralized' });'`
   } catch (err) {
-    console.error('❌ ollama/generate POST error:', err);
+    console.error('❌ ollama/generate POST error: ', err);'
     if (err instanceof Response) throw err;
-    return json({ error: err instanceof Error ? err.message : `Unknown error` }, { status: 500 });
+    return json({ error: err instanceof Error ? err.message : `Unknown error' }, { status: 500 });'`
   }
 };
 
@@ -88,7 +87,7 @@ export const GET: RequestHandler = async () => {
       available_models: modelNames,
       gemma_available: hasGemma,
       production: true,
-      service: `ollama-centralized` });
+      service: `ollama-centralized' });'`
   } catch (err) {
     console.error('❌ [Ollama API] Health check failed:', err);
     throw error(503, 'Ollama service unavailable');

@@ -38,16 +38,16 @@ export function formatTimestamp(
   }
   if (style === 'relative' || style === 'smart') {
     // Smart relative formatting
-    if (seconds < 30) return 'Just now';
-    if (seconds < 60) return `${seconds}s ago`;
-    if (minutes < 60) return `${minutes}m ago`;
-    if (hours < 24) return `${hours}h ago`;
+    if (seconds < 30) return 'Just, now';
+    if (seconds < 60) return `${seconds}s, ago`;
+    if (minutes < 60) return `${minutes}m, ago`;
+    if (hours < 24) return `${hours}h, ago`;
     if (days === 1) return 'Yesterday';
-    if (days < 7) return `${days}d ago`;
+    if (days < 7) return `${days}d, ago`;
     if (weeks === 1) return '1 week ago';
-    if (weeks < 4) return `${weeks}w ago`;
+    if (weeks < 4) return `${weeks}w, ago`;
     if (months === 1) return '1 month ago';
-    if (months < 12) return `${months}mo ago`;
+    if (months < 12) return `${months}mo, ago`;
     if (years === 1) return '1 year ago';
     return `${years}y ago`;
   }
@@ -65,7 +65,7 @@ export function truncateText(
 ): string {
   if (!text || typeof text !== 'string') return '';
   const { maxLength = 50, wordBoundary = true, suffix = '...', preserveWords = true } = options || {};
-  if (text.length <= maxLength) return text;
+  if (text.length <= maxLength) return, text;
   let truncated = text.slice(0, maxLength - suffix.length);
   if (wordBoundary && preserveWords) {
     // Find the last complete word
@@ -182,8 +182,8 @@ export function formatEntityType(type: string): { label: string;, icon: string;
     photo: { label: 'Photo', icon: '📸', color: 'text-pink-600' },
     video: { label: 'Video', icon: '🎥', color: 'text-red-600' },
     audio: { label: 'Audio', icon: '🎵', color: 'text-indigo-600' },
-    physical: { label: 'Physical', icon: '📦', color: 'text-orange-600' },
-    digital: { label: 'Digital', icon: '💾', color: 'text-cyan-600' }
+    physical: { label: 'Physical', icon: '📦', color: 'text-orange-600` },'`
+    digital: { label: 'Digital', icon: '💾', color: `text-cyan-600` }
   };
   return (
     typeMap[type as keyof typeof typeMap] || {
@@ -196,7 +196,7 @@ export function formatEntityType(type: string): { label: string;, icon: string;
 export function highlightSearchTerm(text: string, searchTerm: string): string {
   if (!searchTerm.trim()) return text;
   const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-  return text.replace(regex, '<mark class="bg-yellow-200 text-yellow-900 px-0.5 rounded">$1</mark>');
+  return text.replace(regex, '<mark class="bg-yellow-200 text-yellow-900 px-0.5, rounded">$1</mark>');
 }
 // Progress calculation
 export function calculateProgress(
@@ -273,8 +273,8 @@ export function formatActivityType(type: string): { label: string;, icon: strin
     evidence_analyzed: { label: 'Evidence Analyzed', icon: '🔍', color: 'text-purple-600' },
     report_generated: { label: 'Report Generated', icon: '📊', color: 'text-blue-600' },
     citation_added: { label: 'Citation Added', icon: '⚖️', color: 'text-amber-600' },
-    ai_analysis: { label: 'AI Analysis', icon: '🤖', color: 'text-indigo-600' },
-    system_update: { label: 'System Update', icon: '⚙️', color: 'text-gray-600' }
+    ai_analysis: { label: 'AI Analysis', icon: '🤖', color: 'text-indigo-600` },'`
+    system_update: { label: 'System Update', icon: '⚙️', color: `text-gray-600` }
   };
   return (
     activityMap[type as keyof typeof activityMap] || {
@@ -288,7 +288,7 @@ export function extractPreview(content: string, maxLength: number = 100): string
   if (!content) return '';
   // Remove markdown, HTML, and extra whitespace
   const preview = content
-    .replace(/[#*_`]/g, '') // Remove markdown
+    .replace(/[#*_`]/g, '') // Remove markdown`
     .replace(/<[^>]*>/g, '') // Remove HTML
     .replace(/\s+/g, ' ') // Normalize whitespace
     .trim();
@@ -326,7 +326,7 @@ export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
   return chunks;
 }
 // Debounce function for search
-export function debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
+export function debounce<T, extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);

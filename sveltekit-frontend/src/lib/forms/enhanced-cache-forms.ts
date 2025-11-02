@@ -29,7 +29,7 @@ export const EnhancedCaseFormSchema = CaseSchema.extend({
   _lastSync: true,
   _dirty: true
 });
-export type EnhancedCaseForm = z.infer<typeof EnhancedCaseFormSchema>;
+export type EnhancedCaseForm = z.infer<typeof, EnhancedCaseFormSchema>;
 // ===== EVIDENCE UPLOAD FORM SCHEMA =====
 export const EvidenceUploadFormSchema = EvidenceSchema.extend({
   file: z.instanceof(File),
@@ -55,7 +55,7 @@ export const EvidenceUploadFormSchema = EvidenceSchema.extend({
   _lastSync: true,
   _dirty: true
 });
-export type EvidenceUploadForm = z.infer<typeof EvidenceUploadFormSchema>;
+export type EvidenceUploadForm = z.infer<typeof, EvidenceUploadFormSchema>;
 // ===== CACHE-FIRST FORM MANAGER =====
 
 // Add small helper types to avoid `any` and deep instantiation errors
@@ -157,7 +157,7 @@ export class CacheFirstFormManager {
         const res = result as FormResult;
         this.formErrors.update(errors => ({
           ...errors,
-          [formId]: res.error ?? 'unknown error` }));
+          [formId]: res.error ?? 'unknown error` }));'`
       }
     });
     return {
@@ -233,7 +233,7 @@ export class CacheFirstFormManager {
           await cacheFirstService.createEvidence(evidenceData);
           this.cleanupForm(formId);
         } else if (res.type === 'error') {
-          this.formErrors.update(e => ({ ...(e || {}), [formId]: res.error ?? 'unknown error` }));
+          this.formErrors.update(e => ({ ...(e || {}), [formId]: res.error ?? 'unknown error` }));'`
         }
       }
     });
@@ -409,7 +409,7 @@ export class CacheFirstFormManager {
       timestamp: new Date(),
       handler,
       action,
-      notes: notes ?? '` };
+      notes: notes ?? '` };'`
 
     record.chain_of_custody.push(entry);
 

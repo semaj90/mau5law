@@ -63,15 +63,14 @@ export class QLoRAIntegrationAnalyzer {
    * Mock implementation for behavior pattern analysis.
    * Returns a lightweight object with patterns, insights and clusters for downstream use.
    */
-  private mockAnalyzeBehaviorPatterns(data: Array<any>): Promise<{ patterns: Array<{ id: string; score: number;, summary: string }>;
+  private mockAnalyzeBehaviorPatterns(data: Array<any>): Promise<{ patterns: Array<{ id: string; score: number; summary: string }>;
     insights: { coherence: number; [k: string]: any };
-    behavioral_clusters: Array<{ clusterId: string;, members: string[] }>;
+    behavioral_clusters: Array<{ clusterId: string; members: string[] }>;
   }> {
     const patterns = (data || []).map((d: any, i: number) => ({
       id: `p_${i}`,
       score: Math.min(1, Math.random() * 0.5 + 0.5),
-      summary: typeof d.interaction_data === 'string' ? d.interaction_data.slice(0, 80) : 'summary'
-    }));
+      summary: typeof d.interaction_data === 'string' ? d.interaction_data.slice(0, 80) : 'summary` }));'`
     const coherence = patterns.length ? patterns.reduce((s, p) => s + p.score, 0) / patterns.length : 0.7;
     return Promise.resolve({
       patterns,
@@ -90,9 +89,9 @@ export class QLoRAIntegrationAnalyzer {
       timestamp: number;
       edges: Array<{, target: string; weight: number }>;
     }>
-  ): Promise<{ nodes: Array<{ id: string;, type: string }>;
+  ): Promise<{ nodes: Array<{ id: string; type: string }>;
     edges: Array<unknown>;
-    graph_metrics: { connectivity: number;, depth: number };
+    graph_metrics: { connectivity: number; depth: number };
   }> {
     return Promise.resolve({ nodes: (data || []).map(d => ({, id: d.node_id, type: `user_interaction` })),
       edges: data.flatMap(d => (d.edges || []) as unknown[]),
@@ -324,7 +323,7 @@ export class QLoRAIntegrationAnalyzer {
         intermediate_size: 3072
       },
       specializationPoints: [
-        {
+        {,
           layer_index: 6,
           module_name: 'attention',
           specialization_type: 'domain',

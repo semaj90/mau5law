@@ -27,7 +27,7 @@ export interface RabbitMQConfig { url: string;, queues: { documentProcessing: s
 export interface IRabbitMQService {
   initialize(retries?: number, delay?: number): Promise<void>;
   publishDocumentProcessingJob(job: DocumentProcessingJob): Promise<boolean>;
-  publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number;, failed: number }>;
+  publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number; failed: number }>;
   getQueueStats(): Promise<Record<string, any>>;
   purgeQueue(queueType: keyof RabbitMQConfig['queues']): Promise<boolean>;
   close(): Promise<void>;
@@ -113,7 +113,7 @@ class RabbitMQService implements IRabbitMQService {
 
         // connection handlers
         this.connection.on('error', (err: any) => {
-          console.error('RabbitMQ connection error:', err);
+          console.error('RabbitMQ connection error:', err);'
           this.isConnected = false;
         });
         this.connection.on('close', () => {
@@ -128,7 +128,7 @@ class RabbitMQService implements IRabbitMQService {
         console.log('✅ RabbitMQ connected and configured');
         return;
       } catch (err) {
-        console.error(`RabbitMQ connect attempt ${attempt}/${maxRetries} failed: ', err);
+        console.error(`RabbitMQ connect attempt ${attempt}/${maxRetries} failed: ', err);'`
         if (attempt < maxRetries) {
           await new Promise(r => setTimeout(r, retryDelay));
         } else {
@@ -216,7 +216,7 @@ class RabbitMQService implements IRabbitMQService {
     }
   }
 
-  async publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number;, failed: number }> {
+  async publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number; failed: number }> {
     const results = { success: 0, failed: 0 };
     for (const job of jobs) {
       (await this.publishDocumentProcessingJob(job)) ? results.success++ : results.failed++;
@@ -273,7 +273,7 @@ class RabbitMQService implements IRabbitMQService {
       console.log(`🗑️ Queue purged: ${queueName}`);
       return true;
     } catch (err) {
-      console.error(`Error purging queue ${String(queueType)}: ', err);
+      console.error(`Error purging queue ${String(queueType)}: ', err);'`
       return false;
     }
   }

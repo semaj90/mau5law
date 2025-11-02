@@ -34,7 +34,7 @@ export interface AutoEncoderConfig { inputDimension: number;, hiddenLayers: num
 }
 export interface GraphNode { id: string;, label: string;
   type: 'case' | 'statute' | 'regulation' | 'precedent' | 'person' | 'organization';
-  position: { x: number;, y: number };
+  position: { x: number; y: number };
   features: Float32Array;
   metadata: {
     jurisdiction?: string;
@@ -94,11 +94,11 @@ type CacheLike = {
   fetch?: <T = unknown>(key: string) => Promise<T | undefined> | T | undefined;
   getItem?: <T = unknown>(key: string) => Promise<T | undefined> | T | undefined;
   retrieve?: <T = unknown>(key: string) => Promise<T | undefined> | T | undefined;
-  set?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
-  write?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
-  put?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
-  setItem?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
-  store?: <T = unknown>(key: string; value: T, opts?: Record<string, unknown>) => Promise<void> | void;
+  set?: <T = unknown>(key: string;, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
+  write?: <T = unknown>(key: string;, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
+  put?: <T = unknown>(key: string;, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
+  setItem?: <T = unknown>(key: string;, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
+  store?: <T = unknown>(key: string;, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
   cleanup?: () => void | Promise<void>;
 };
 export class GraphPatternAutoEncoder {
@@ -240,8 +240,7 @@ export class GraphPatternAutoEncoder {
           activation: this.config.activationFunction,
           kernelInitializer: 'glorotUniform',
           biasInitializer: 'zeros',
-          name: `encoder_dense_${i}`
-        })
+          name: `encoder_dense_${i}' })'`
         .apply(encoderLayer) as SymbolicTensor;
       // Batch normalization
       if (this.config.enableNormalization) {
@@ -250,7 +249,7 @@ export class GraphPatternAutoEncoder {
       // Dropout
       if (this.config.enableDropout && i < this.config.hiddenLayers.length - 1) {
         encoderLayer = layers
-          .dropout({ rate: this.config.dropoutRate, name: 'encoder_dropout_${i}' })
+          .dropout({ rate: this.config.dropoutRate, name: `encoder_dropout_${i}` })
           .apply(encoderLayer) as SymbolicTensor;
       }
     }
@@ -258,7 +257,7 @@ export class GraphPatternAutoEncoder {
     this.encoder = model({
       inputs: encoderInputs,
       outputs: encoderLayer,
-      name: 'graph_pattern_encoder` }) as LayersModel;
+      name: `graph_pattern_encoder` }) as LayersModel;
     // Build Decoder
     const latentDim = this.config.hiddenLayers[this.config.hiddenLayers.length - 1];
     const decoderInputs = layers.input({ shape: [latentDim] }) as SymbolicTensor;
@@ -273,11 +272,10 @@ export class GraphPatternAutoEncoder {
           activation: this.config.activationFunction,
           kernelInitializer: 'glorotUniform',
           biasInitializer: 'zeros',
-          name: `decoder_dense_${i}`
-        })
+          name: `decoder_dense_${i}' })'`
         .apply(decoderLayer) as SymbolicTensor;
       if (this.config.enableNormalization) {
-        decoderLayer = layers.batchNormalization({ name: `decoder_bn_${i}` }).apply(decoderLayer) as SymbolicTensor;
+        decoderLayer = layers.batchNormalization({ name: 'decoder_bn_${i}' }).apply(decoderLayer) as SymbolicTensor;
       }
       if (this.config.enableDropout && i < decoderLayers.length - 1) {
         decoderLayer = layers
@@ -290,21 +288,19 @@ export class GraphPatternAutoEncoder {
       .dense({
         units: this.config.inputDimension,
         activation: 'sigmoid', // Output between 0 and 1
-        name: 'decoder_output'
-      })
+        name: `decoder_output` })
       .apply(decoderLayer) as SymbolicTensor;
     // Create decoder model
     this.decoder = model({
       inputs: decoderInputs,
       outputs: decoderLayer,
-      name: 'graph_pattern_decoder'
-    }) as LayersModel;
+      name: `graph_pattern_decoder` }) as LayersModel;
     // Build complete autoencoder
     const autoencoderOutput = this.decoder.apply(this.encoder.apply(encoderInputs)) as SymbolicTensor;
     this.autoencoder = model({
       inputs: encoderInputs,
       outputs: autoencoderOutput,
-      name: 'graph_pattern_autoencoder` }) as LayersModel;
+      name: `graph_pattern_autoencoder` }) as LayersModel;
     // Compile with custom loss function
     this.autoencoder.compile({
       optimizer: train.adam(this.config.learningRate),
@@ -332,8 +328,8 @@ export class GraphPatternAutoEncoder {
     // Weight certain dimensions more heavily (e.g., legal importance features)
     const weights = tensor1d(
       Array.from({ length: this.config.inputDimension }, (_, i) => {
-        if (i < this.config.inputDimension * 0.2) return 1.5; // Legal importance features
-        if (i < this.config.inputDimension * 0.4) return 1.2; // Citation features
+        if (i < this.config.inputDimension * 0.2) return 1.5; // Legal importance, features
+        if (i < this.config.inputDimension * 0.4) return 1.2; // Citation, features
         return 1.0; // Other features
       })
     );
@@ -801,7 +797,7 @@ export class GraphPatternAutoEncoder {
     return correctPredictions / Math.min(graphs.length, 10);
   }
   private shouldStopEarly(): boolean {
-    if (this.trainingHistory.length < 5) return false;
+    if (this.trainingHistory.length < 5) return, false;
     const recentLosses = this.trainingHistory.slice(-5).map(h => h.loss);
     const avgLoss = recentLosses.reduce((sum, loss) => sum + loss, 0) / recentLosses.length;
     const variance = recentLosses.reduce((sum, loss) => sum + Math.pow(loss - avgLoss, 2), 0) / recentLosses.length;
@@ -861,7 +857,7 @@ export class GraphPatternAutoEncoder {
     this.encoder?.dispose();
     this.decoder?.dispose();
     this.autoencoder?.dispose();
-    // this.cache?.cleanup(); // MultiLayerCache doesn't have cleanup method
+    // this.cache?.cleanup(); // MultiLayerCache doesn't have cleanup method'
     console.log('Graph Pattern Auto-Encoder cleaned up');
   }
 }

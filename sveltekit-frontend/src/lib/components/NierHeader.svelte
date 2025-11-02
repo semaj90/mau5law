@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
     user: User | null;
@@ -11,7 +11,7 @@
   let searchQuery = $state<string>('');
   let userMenuOpen = $state<boolean>(false);
   // Expect SearchInput to dispatch `search` CustomEvent<{ query: string }>
-  function handleSearch(event: CustomEvent<{ query: string }>) {
+  function handleSearch(event: CustomEvent<{, query: string }>) {
     searchQuery = event.detail.query;
     console.log('Global search:', searchQuery);
   }
@@ -29,30 +29,30 @@
     userMenuOpen = false;
   }
 </script>
-<header class="space-y-4 app-header">
-  <div class="space-y-4 header-content">
-    <!-- Logo and Brand -->
-    <div class="brand-section">
-      <!-- changed on:click -> onclick -->
-      <button class="brand-button" onclick={() => handleNavigation('/')} aria-label="Go to homepage">
-        <!-- replaced lucide icon with simple inline marker -->
-        <span class="icon" aria-hidden="true">🎨</span>
-        <span class="brand-text">Prosecutor Canvas</span>
+<header class="space-y-4, app-header">
+  <div class="space-y-4, header-content">
+    <!-- Logo and, Brand -->
+    <div, class="brand-section">
+      <!-- changed, on:click -> onclick -->
+      <button, class="brand-button" onclick={() => handleNavigation('/')} aria-label="Go to homepage">
+        <!-- replaced lucide icon with simple inline, marker -->
+        <span, class="icon" aria-hidden="true">🎨</span>
+        <span, class="brand-text">Prosecutor Canvas</span>
       </button>
     </div>
     <!-- Navigation -->
-    <nav class="main-nav" aria-label="Main navigation">
-      <!-- changed on:click -> onclick for each button -->
-      <button class="nav-button" onclick={() => handleNavigation('/dashboard')} aria-label="Dashboard">
-        <span class="icon">🏠</span>
+    <nav class="main-nav" aria-label="Main, navigation">
+      <!-- changed, on:click -> onclick for each button -->
+      <button, class="nav-button" onclick={() => handleNavigation('/dashboard')} aria-label="Dashboard">
+        <span, class="icon">🏠</span>
         <span>Dashboard</span>
       </button>
-      <button class="nav-button" onclick={() => handleNavigation('/cases')} aria-label="Cases">
-        <span class="icon">📁</span>
+      <button, class="nav-button" onclick={() => handleNavigation('/cases')} aria-label="Cases">
+        <span, class="icon">📁</span>
         <span>Cases</span>
       </button>
-      <button class="nav-button" onclick={() => handleNavigation('/interactive-canvas')} aria-label="Interactive Canvas">
-        <span class="icon">🖌️</span>
+      <button, class="nav-button" onclick={() => handleNavigation('/interactive-canvas')} aria-label="Interactive Canvas">
+        <span, class="icon">🖌️</span>
         <span>Canvas</span>
       </button>
       <button
@@ -61,66 +61,66 @@
         aria-label="Hash Verification"
         title="Verify evidence file integrity"
       >
-        <span class="icon">🛡️</span>
+        <span, class="icon">🛡️</span>
         <span>Hash Verify</span>
       </button>
     </nav>
     <!-- Search -->
-    <div class="search-section">
-      <!-- changed on:search -> onsearch and added cast to satisfy TS -->
+    <div, class="search-section">
+      <!-- changed, on:search -> onsearch and added cast to satisfy TS -->
       <SearchInput
         placeholder="Search cases, evidence, notes..."
         bind:value={searchQuery}
         onsearch={(e) => handleSearch(e as CustomEvent<{ query: string }>)}
       />
     </div>
-    <!-- User Menu -->
-    <div class="user-section user-menu-container">
+    <!-- User, Menu -->
+    <div class="user-section, user-menu-container">
       {#if user}
         <div>
-          <!-- changed on:click -> onclick -->
+          <!-- changed, on:click -> onclick -->
           <button
             class="user-button"
             onclick={() => toggleUserMenu()}
             aria-label="User menu"
             aria-expanded={userMenuOpen}
           >
-            <div class="user-avatar">
+            <div, class="user-avatar">
               {#if user.avatarUrl}
-                <img src={user.avatarUrl} alt={user.name} />
+                <img, src={user.avatarUrl} alt={user.name} />
               {:else}
                 <span class="avatar-fallback">{user.name?.charAt(0)?.toUpperCase() || 'U'}</span>
               {/if}
             </div>
-            <span class="user-name">{user.name}</span>
-            <span class="icon">⋯</span>
+            <span, class="user-name">{user.name}</span>
+            <span, class="icon">⋯</span>
           </button>
           {#if userMenuOpen}
-            <div class="user-menu" role="menu">
-              <!-- changed on:click -> onclick for menu items -->
-              <button class="menu-item" onclick={() => handleNavigation('/profile')} role="menuitem">
-                <span class="icon">👤</span>
+            <div, class="user-menu" role="menu">
+              <!-- changed, on:click -> onclick for menu items -->
+              <button, class="menu-item" onclick={() => handleNavigation('/profile')} role="menuitem">
+                <span, class="icon">👤</span>
                 Profile
               </button>
-              <button class="menu-item" onclick={() => handleNavigation('/settings')} role="menuitem">
-                <span class="icon">⚙️</span>
+              <button, class="menu-item" onclick={() => handleNavigation('/settings')} role="menuitem">
+                <span, class="icon">⚙️</span>
                 Settings
               </button>
-              <hr class="menu-separator" />
-              <button class="menu-item" onclick={() => handleLogout()} role="menuitem">
-                <span class="icon">🚪</span>
+              <hr, class="menu-separator" />
+              <button, class="menu-item" onclick={() => handleLogout()} role="menuitem">
+                <span, class="icon">🚪</span>
                 Sign Out
               </button>
             {/if}
         </div>
       {:else}
-        <!-- changed on:click -> onclick -->
-        <button class="sign-in-button" onclick={() => handleNavigation('/login')} aria-label="Sign in"> Sign In </button>
+        <!-- changed, on:click -> onclick -->
+        <button, class="sign-in-button" onclick={() => handleNavigation('/login')} aria-label="Sign in"> Sign In </button>
       {/if}
     </div>
   </div>
 </header>
-<!-- Click outside to close menu -->
+<!-- Click outside to close, menu -->
 {#if userMenuOpen}
   <div
     class="menu-overlay"

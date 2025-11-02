@@ -1,7 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string;
+<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a, string;
 https://svelte.dev/e/attribute_invalid_event_handler -->
-<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
-<script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a, string -->
+<script, lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { Tooltip } from '$lib/components/ui/Tooltip.svelte';
@@ -92,22 +92,22 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
 </script>
 {#if showShortcuts}
-  <div class="mx-auto px-4 max-w-7xl" role="dialog" aria-modal="true">
-    <div class="mx-auto px-4 max-w-7xl">
-      <p class="mx-auto px-4 max-w-7xl">
+  <div class="mx-auto px-4, max-w-7xl" role="dialog" aria-modal="true">
+    <div class="mx-auto px-4, max-w-7xl">
+      <p class="mx-auto px-4, max-w-7xl">
         💡 Pro tip: These shortcuts work throughout the application to boost your productivity!
       </p>
-      <ul class="mt-4 space-y-2">
+      <ul class="mt-4, space-y-2">
         {#each Array.isArray(shortcuts) ? shortcuts : [] as s}
-          <li class="flex items-center justify-between p-2 bg-gray-800 rounded">
+          <li class="flex items-center justify-between p-2 bg-gray-800, rounded">
             <div>
-              <div class="font-medium text-white">{s.description}</div>
-              <div class="text-sm text-gray-400">
-                <kbd class="shortcut-key">{s.key}</kbd>
+              <div class="font-medium, text-white">{s.description}</div>
+              <div class="text-sm, text-gray-400">
+                <kbd, class="shortcut-key">{s.key}</kbd>
               </div>
             </div>
             <div>
-              <Button size="sm" variant="ghost" onclick={() => console.log('test', s.action)}>
+              <Button, size="sm" variant="ghost" onclick={() => console.log('test', s.action)}>
                 Test
               </Button.Root>
             </div>
@@ -116,10 +116,10 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       </ul>
     </div>
   {/if}
-<!-- Floating Action Buttons -->
-<div class="mx-auto px-4 max-w-7xl floating-actions">
-  <!-- Accessibility Panel Toggle -->
-  <Tooltip content="Accessibility panel (Ctrl+Alt+A)" placement="left">
+<!-- Floating Action, Buttons -->
+<div class="mx-auto px-4 max-w-7xl, floating-actions">
+  <!-- Accessibility Panel, Toggle -->
+  <Tooltip content="Accessibility, panel (Ctrl+Alt+A)" placement="left">
     <Button.Root
       variant="ghost"
       size="sm"
@@ -130,8 +130,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <Accessibility />
     </Button.Root>
   </Tooltip>
-  <!-- Keyboard Shortcuts Toggle -->
-  <Tooltip content="Keyboard shortcuts (Ctrl+H)" placement="left">
+  <!-- Keyboard Shortcuts, Toggle -->
+  <Tooltip content="Keyboard, shortcuts (Ctrl+H)" placement="left">
     <Button.Root
       variant="ghost"
       size="sm"
@@ -142,8 +142,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <Keyboard />
     </Button.Root>
   </Tooltip>
-  <!-- Fullscreen Toggle -->
-  <Tooltip content={isFullscreen ? 'Exit fullscreen (F11)' : 'Enter fullscreen (F11)'} placement="left">
+  <!-- Fullscreen, Toggle -->
+  <Tooltip content={isFullscreen ? 'Exit fullscreen (F11)' : 'Enter, fullscreen (F11)'} placement="left">
     <Button.Root
       variant="ghost"
       size="sm"
@@ -159,8 +159,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     </Button>
   </Tooltip>
 </div>
-<!-- Accessibility Panel -->
-<AccessibilityPanel bind:showPanel={showAccessibilityPanel} />
+<!-- Accessibility, Panel -->
+<AccessibilityPanel, bind:showPanel={showAccessibilityPanel} />
 <style>
   :global(.floating-actions) {
     transition: all 0.3s ease;

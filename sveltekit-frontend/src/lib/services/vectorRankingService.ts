@@ -147,8 +147,7 @@ export class VectorRankingService {
         evidenceId: ev.evidenceId,
         content: ev.content,
         metadata: ev.metadata,
-        similarity: sql<number>`1 - (${ev.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`
-      })
+        similarity: sql<number>`1 - (${ev.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)` })
       .from(ev)
       .orderBy(sql`${ev.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector`)
       .limit(limit);
@@ -166,7 +165,7 @@ export class VectorRankingService {
         caseId: cv.caseId,
         content: cv.summary,
         confidence: cv.confidence,
-        similarity: sql<number>`1 - (${cv.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)' })
+        similarity: sql<number>`1 - (${cv.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)` })
       .from(cv)
       .orderBy(sql`${cv.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector`)
       .limit(limit);
@@ -222,7 +221,7 @@ export class VectorRankingService {
       contextRelevance: 0.2,
       entityOverlap: 0.1
     };
-    return (Object.keys(weights) as Array<keyof typeof weights>).reduce((score, factor) => {
+    return (Object.keys(weights) as Array<keyof typeof, weights>).reduce((score, factor) => {
       // @ts-ignore access by key
       return score + factors[factor] * weights[factor];
     }, 0);

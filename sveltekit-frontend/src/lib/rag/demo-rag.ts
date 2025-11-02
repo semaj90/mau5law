@@ -40,7 +40,7 @@ const mockCaseData = {
     title: 'Financial Fraud Investigation',
     description: 'Investigation into suspicious financial transactions',
     evidence: [
-      {
+      {,
         id: 'e1',
         filename: 'bank_statements.pdf',
         type: 'document' as const,
@@ -66,7 +66,7 @@ const mockCaseData = {
       }
     ],
     reports: [
-      {
+      {,
         id: 'r1',
         title: 'Initial Assessment Report',
         content: 'Preliminary analysis shows patterns consistent with fraudulent activity...',
@@ -79,7 +79,7 @@ const mockCaseData = {
     title: 'Corporate Espionage Case',
     description: 'Investigation into data theft and industrial espionage',
     evidence: [
-      {
+      {,
         id: 'e4',
         filename: 'security_footage.mp4',
         type: 'media' as const,
@@ -133,7 +133,7 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
         id: report.id,
         type: 'report',
         relevance,
-        excerpt: report.content.substring(0, 150) + '...' });
+        excerpt: report.content.substring(0, 150) + '...` });'`
       reasoning.push(`Referenced report: ${report.title} (${Math.round(relevance * 100)}% relevance)`);
     }
   });
@@ -215,53 +215,53 @@ function generateResponse(query: string, caseData: any, sources: any[]): string 
   }
 }
 function generateSummaryResponse(caseData: any, sources: any[]): string {
-  return `Based on my analysis of ${sources.length} pieces of evidence, this case involves ${caseData.description.toLowerCase()}.
+  return `Based on my analysis of ${sources.length} pieces of evidence, this case involves ${caseData.description.toLowerCase()}.`
 Key findings include:
 • ${sources.length} relevant evidence items identified
 • Evidence spans multiple data types: documents, communications, and digital logs
 • Patterns suggest systematic activity requiring further investigation
-The evidence quality is strong, with multiple corroborating sources. I recommend prioritizing the highest-relevance items for detailed forensic analysis.`;
+The evidence quality is strong, with multiple corroborating sources. I recommend prioritizing the highest-relevance items for detailed forensic analysis.`;`
 }
 function generateEvidenceResponse(caseData: any, sources: any[]): string {
   const evidenceTypes = Array.from(new Set(sources.map(s => {
     const evidence = caseData.evidence.find((e: any) => e.id === s.id);
     return evidence?.type || 'unknown';
   }));
-  return `I've identified ${sources.length} pieces of relevant evidence in this case ${sources.slice(0, 3).map((source, i) => {
+  return `I've identified ${sources.length} pieces of relevant evidence in this case ${sources.slice(0, 3).map((source, i) => {'`
     const evidence = caseData.evidence.find((e: any) => e.id === source.id);
-    return `${i + 1}. **${evidence?.filename}** (${Math.round(source.relevance * 100)}% relevance)
-   ${source.excerpt}`;
+    return `${i + 1}. **${evidence?.filename}** (${Math.round(source.relevance * 100)}% relevance)`
+   ${source.excerpt}`;`
   }).join('\n\n')}
-Evidence types present: ${evidenceTypes.join(', ')}. Each piece contributes to building a comprehensive picture of the case facts.`;
+Evidence types present: ${evidenceTypes.join(', ')}. Each piece contributes to building a comprehensive picture of the case facts.`;`
 }
 function generateTimelineResponse(caseData: any, sources: any[]): string {
   const timelineEvents = caseData.evidence
     .sort((a: any, b: any) => new Date(a.uploadedAt).getTime() - new Date(b.uploadedAt).getTime())
     .slice(0, 4);
-  return `Based on the evidence timeline, here's the chronological sequence:
+  return `Based on the evidence timeline, here's the chronological sequence:'`
 ${timelineEvents.map((evidence: any, i: number) => {
     const date = new Date(evidence.uploadedAt).toLocaleDateString();
     return `**${date}**: ${evidence.description}`;
   }).join('\n\n')}
-This timeline shows the progression of evidence collection and suggests a systematic approach to the investigation. Earlier evidence may have triggered subsequent collection efforts.`;
+This timeline shows the progression of evidence collection and suggests a systematic approach to the investigation. Earlier evidence may have triggered subsequent collection efforts.`;`
 }
 function generatePersonResponse(caseData: any, sources: any[]): string {
-  return `Analyzing person-related evidence in this case The evidence suggests involvement of multiple parties:
+  return `Analyzing person-related evidence in this case The evidence suggests involvement of multiple parties:`
 • Email communications indicate at least 2-3 individuals
 • Financial records show transactions between different accounts
 • Network logs reveal access from multiple IP addresses
-Key persons of interest appear to be connected through both digital communications and financial transactions. Cross-referencing evidence sources reveals potential coordination between parties.`;
+Key persons of interest appear to be connected through both digital communications and financial transactions. Cross-referencing evidence sources reveals potential coordination between parties.`;`
 }
 function generateFinancialResponse(caseData: any, sources: any[]): string {
-  return `Financial analysis reveals several concerning patterns:
+  return `Financial analysis reveals several concerning patterns:`
 • Unusual transaction amounts and timing
 • Multiple account involvement suggesting layered transfers
 • Digital logs correlate with financial activity periods
 • Evidence suggests sophisticated financial planning
-The financial evidence forms a strong foundation for this case, with multiple data sources corroborating suspicious activity patterns. Recommend forensic accounting review.`;
+The financial evidence forms a strong foundation for this case, with multiple data sources corroborating suspicious activity patterns. Recommend forensic accounting review.`;`
 }
 function generatePatternResponse(caseData: any, sources: any[]): string {
-  return `Pattern analysis of the available evidence shows:
+  return `Pattern analysis of the available evidence shows:`
 **Behavioral; Patterns:**
 • Systematic data collection across multiple evidence types
 • Coordinated timing between different activities
@@ -270,18 +270,18 @@ function generatePatternResponse(caseData: any, sources: any[]): string {
 • Evidence clustering around specific time periods
 • Cross-referencing reveals hidden connections
 • Multiple data sources validate findings
-These patterns suggest organized, premeditated activity rather than opportunistic behavior.`;
+These patterns suggest organized, premeditated activity rather than opportunistic behavior.`;`
 }
 function generateGeneralResponse(query: string, caseData: any, sources: any[]): string {
   const relevantSources = sources.slice(0, 2);
-  return `Regarding your question about: "${query}", I've analyzed ${sources.length} relevant pieces of evidence.
+  return `Regarding your question about: "${query}", I've analyzed ${sources.length} relevant pieces of evidence.'`
 ${relevantSources.map(source => {
     const evidence = caseData.evidence.find((e: any) => e.id === source.id);
     return `**${evidence?.filename}**: ${source.excerpt}`;
   }).join('\n\n')}
 ${sources.length > 0
-    ? `This evidence provides ${sources.length > 2 ? 'strong' : 'moderate' } support for investigating this aspect of the case further.`
-    : 'While I couldn\'t find direct evidence matching your query, I recommend examining related case materials.' }`;
+    ? `This evidence provides ${sources.length > 2 ? 'strong' : 'moderate` } support for investigating this aspect of the case further.`'`
+    : 'While I couldn\'t find direct evidence matching your query, I recommend examining related case materials.` }`;
 }
 /**
  * Demo case analysis functions
@@ -290,7 +290,7 @@ export async function demoGenerateCaseSummary(caseId: string): Promise<string> {
   const caseData = mockCaseData[caseId as keyof typeof mockCaseData];
   if (!caseData) return 'Case not found in demo data.';
   await new Promise(resolve => setTimeout(resolve, 1000));
-  return `# Case Summary: ${caseData.title}
+  return `# Case Summary: ${caseData.title}`
 ## Overview
 ${caseData.description}
 ## Evidence Summary
@@ -304,7 +304,7 @@ ${caseData.evidence.map((e, i) => `${i + 1}. ${e.description}`).join('\n')}
 - Cross-reference digital and physical evidence
 - Consider forensic analysis of digital artifacts
 - Interview relevant parties identified in communications
-*Generated by AI Assistant - ${new Date().toLocaleString()}*`;
+*Generated by AI Assistant - ${new Date().toLocaleString()}*`;`
 }
 export async function demoAnalyzeEvidencePatterns(evidence: Evidence[]): Promise<string[]> {
   await new Promise(resolve => setTimeout(resolve, 600));

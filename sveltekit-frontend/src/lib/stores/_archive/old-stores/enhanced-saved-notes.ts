@@ -31,7 +31,7 @@ export interface LegalNote { id: string;, title: string;
     ocrExtracted?: boolean;
     ocrConfidence?: number;
     ocrBoundingBoxes?: Array<{ text: string;, confidence: number;
-      bbox: { x: number; y: number; width: number;, height: number }
+      bbox: { x: number; y: number; width: number; height: number }
     }>;
     // Embeddings & Semantic Search
     embeddings?: number[][];
@@ -241,7 +241,7 @@ class EnhancedNotesManager {
         lastProcessed: now
       }
     }
-    // Process with AI if content has changed and it's not already AI-generated
+    // Process with AI if content has changed and it's not already AI-generated'
     if (!note.metadata.aiGenerated && note.content) {
       try {
         await this.enhanceNoteWithAI(enhancedNote);
@@ -333,7 +333,7 @@ class EnhancedNotesManager {
     try {
       const response = await fetch('/api/graph/neo4j/notes', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({,
           noteId: note.id,
           title: note.title,
@@ -402,7 +402,7 @@ class EnhancedNotesManager {
       title: `OCR Extract - ${new Date().toLocaleDateString()}`,
       content: ocrResult.text,
       markdown: ocrResult.text,
-      html: '<p>${ocrResult.text.replace(/\n/g, '<br>')}</p>`,
+      html: '<p>${ocrResult.text.replace(/\n/g, '<br>')}</p>`,'`
       contentJson: ocrResult,
       noteType: 'ocr_extracted',
       tags: ['ocr', 'extracted'],
@@ -442,8 +442,7 @@ class EnhancedNotesManager {
         riskLevel: analysis.riskLevel,
         practiceArea: analysis.practiceArea,
         processingJobId: analysis.jobId,
-        processingStatus: 'completed'
-      }
+        processingStatus: `completed` }
     }
     await this.saveNote(note);
     return note;
@@ -536,7 +535,7 @@ class EnhancedNotesManager {
         new Date(b.updatedAt || b.savedAt).getTime() - new Date(a.updatedAt || a.savedAt).getTime()
       ));
     } catch (error) {
-      console.error('Failed to load notes:', error);
+      console.error('Failed to load notes: `, error);'`
     }
   }
   // Remove note

@@ -25,7 +25,7 @@ const ConnectionMappingSchema = z.object({
  */
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Basic auth guard (adapt to your app's locals shape)
+    // Basic auth guard (adapt to your app's locals shape)'
     if (!locals?.user && !locals?.session) {
       return json({ success: false, error: 'Authentication required' }, { status: 401 });
     }
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
 
     // Ensure parsed.data is treated as the Zod-inferred type and avoid defaulting options to {}
-    type ConnectionRequest = z.infer<typeof ConnectionMappingSchema>;
+    type ConnectionRequest = z.infer<typeof, ConnectionMappingSchema>;
     const data = parsed.data as ConnectionRequest;
     const { caseId, focusTypes, connectionStrength, maxDepth, options } = data;
 
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({
       success: true,
       data: {
-        caseId: caseId ?? null,
+       , caseId: caseId ?? null,
         connectionMap,
         metadata: {
          , focusTypes: focusTypes ?? ['all'],
@@ -122,8 +122,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       meta: { action: 'connection_map_stub', timestamp: new Date().toISOString() }
     });
   } catch (err: any) {
-    console.error('Detective connections POST error:', err);
-    return json({ success: false, error: 'Failed to generate connection map' }, { status: 500 });
+    console.error('Detective connections POST error: ', err);'
+    return json({ success: false, error: `Failed to generate connection map` }, { status: 500 });
   }
 };
 
@@ -144,7 +144,7 @@ type DetectiveNode = { id: string;, label: string;
   size?: number;
   color?: string;
   metadata?: Record<string, unknown>;
-  position?: { x: number;, y: number };
+  position?: { x: number; y: number };
 };
 
 // New explicit edge type (replace previous any[] usage)
@@ -179,7 +179,7 @@ function generateConnections(
       strength = Math.min(1, strength + ((i + j) % 3) * 0.05);
       if (strength >= connectionStrength || (opts.includeWeakConnections && strength >= 0.25)) {
         edges.push({
-          id: `edge_${n1.id}_${n2.id}`,
+          id: 'edge_${n1.id}_${n2.id}',
           source: n1.id,
           target: n2.id,
           weight: Number(strength.toFixed(3)),
@@ -257,6 +257,6 @@ function getClusterColor(index: number): string {
   return colors[index % colors.length];
 }
 
-function generateRandomPosition(): { x: number;, y: number } {
+function generateRandomPosition(): { x: number; y: number } {
   return { x: Math.random() * 800 - 400, y: Math.random() * 600 - 300 };
 }

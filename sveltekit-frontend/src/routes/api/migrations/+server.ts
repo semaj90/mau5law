@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
     }
   } catch (error) {
-    console.error('Migration API error:', error);
+    console.error('Migration API error:', error);'
     return json(
       {
         success: false,
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           data: {
             filename,
-            message: `Migration ${filename} created successfully' }
+            message: 'Migration ${filename} created successfully' }
         });
       }
       case 'initialize': {
@@ -140,11 +140,11 @@ export const POST: RequestHandler = async ({ request }) => {
         );
     }
   } catch (error) {
-    console.error('Migration API POST error:', error);
+    console.error('Migration API POST error:', error);'
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error` },
+        error: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

@@ -235,7 +235,7 @@ export class StreamingIngestionPipeline {
       }
       return null;
     } catch (error) {
-      console.error('Cache read error:', error);
+      console.error('Cache read error:', error);'
       return null;
     }
   }
@@ -257,7 +257,7 @@ export class StreamingIngestionPipeline {
       } as any;
       await db.insert(embeddingCache512).values(cacheData);
     } catch (error) {
-      console.error('Cache write error:', error);
+      console.error('Cache write error:', error);'
     }
   }
 
@@ -271,7 +271,7 @@ export class StreamingIngestionPipeline {
         } as any)
         .where(eq(embeddingCache512.textHash, textHash));
     } catch (error) {
-      console.error('Cache access update error:', error);
+      console.error('Cache access update error:', error);'
     }
   }
 
@@ -332,7 +332,7 @@ class EmbeddingService {
     try {
       const response = await fetch(`${this.serviceUrl}/embed`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ text, model })
       });
       if (!response.ok) {

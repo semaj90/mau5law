@@ -24,7 +24,7 @@ interface SimilarCaseRow { id: string;, title: string;
 }
 
 // -------------------- new helpers --------------------
-function getOllamaEndpoint(): { url: string;, embedModel: string } {
+function getOllamaEndpoint(): { url: string; embedModel: string } {
   // centralize endpoint resolution, prefer Docker service name then fallback to localhost
   const url = process.env.OLLAMA_URL || 'http://localhost:11434';
   const embedModel = process.env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest';
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ params }) => {
     // Removed unused variable: const analysisPrompt = '
     //   Analyze this legal case for compliance and risk assessment:
     //  ; Case: ${case_.title}
-    //   Description: ${case_.description || 'No description` }
+    //   Description: ${case_.description || 'No description` }'`
     //   Priority: ${case_.priority}
     //   Status: ${case_.status}
     //   Evidence Count: ${evidenceData.length}
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ params }) => {
     //   2. Key legal findings
     //   3. Compliance status
     //   4. Actionable recommendations
-    // `;
+    // `;`
     // Generate analysis using embeddings for context (removed unused analysisEmbedding)
     // const analysisEmbedding = await embeddingService.embed(analysisPrompt); // Keep this line if you plan to use the embedding for actual AI analysis.
     // 5. Find similar cases using vector similarity (use stored embedding if available, otherwise request from Ollama)
@@ -116,13 +116,13 @@ export const POST: RequestHandler = async ({ params }) => {
         const docText = (
           documentsWithEmbeddings[0].text ||
           documentsWithEmbeddings[0].title ||
-          `${case_.title} ${case_.description || '` }`
+          `${case_.title} ${case_.description || '` }`'`
         ).toString();
         try {
           const emb = await embedWithOllama(docText);
           if (emb && emb.length > 0) queryEmbedding = emb;
         } catch (err) {
-          console.error('Embedding retrieval error:', err);
+          console.error('Embedding retrieval error:', err);'
           queryEmbedding = null;
         }
       }
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ params }) => {
 						AND dm.content_embedding IS NOT NULL
 					ORDER BY similarity DESC
 					LIMIT 5
-				`);
+				`);`
         similarCases = (similarityResults as SimilarCaseRow[]).map(row => ({
           id: row.id,
           title: row.title,
@@ -149,8 +149,8 @@ export const POST: RequestHandler = async ({ params }) => {
     // 6. Generate mock AI analysis (replace with actual AI service call)
     const analysisResult: AnalysisResult = {
       caseId,
-      summary: 'Comprehensive analysis of ${case_.title}. Case involves ${evidenceData.length} pieces of evidence with ${case_.priority} priority level. Analysis indicates ${
-        case_.priority === 'high' ? 'elevated' : case_.priority === 'medium' ? 'moderate' : `standard` } risk profile based on case complexity and evidence review.`,
+      summary: 'Comprehensive analysis of ${case_.title}. Case involves ${evidenceData.length} pieces of evidence with ${case_.priority} priority level. Analysis indicates ${'
+        case_.priority === 'high' ? 'elevated' : case_.priority === 'medium' ? 'moderate' : `standard` } risk profile based on case complexity and evidence review.`,`
       riskLevel: case_.priority === 'high' ? 'high' : case_.priority === 'medium' ? 'medium' : 'low',
       keyFindings: [
         `Case contains ${evidenceData.length} evidence items requiring review`,
@@ -168,20 +168,18 @@ export const POST: RequestHandler = async ({ params }) => {
       similarCases,
       complianceStatus: evidenceData.length >= 3 ? 'compliant' : 'needs-review',
       timeline: [
-        {
+        {,
           event: 'Case Analysis Initiated',
           date: new Date().toISOString(),
           importance: `medium` },
         {
           event: `Evidence Review (${evidenceData.length} items)`,
           date: new Date().toISOString(),
-          importance: evidenceData.length > 5 ? 'high' : 'medium'
-        },
+          importance: evidenceData.length > 5 ? 'high' : 'medium` },'`
         {
           event: 'Vector Similarity Analysis Completed',
           date: new Date().toISOString(),
-          importance: similarCases.length > 0 ? 'high' : 'low'
-        },
+          importance: similarCases.length > 0 ? 'high' : `low` }
       ]
     };
     const processingTime = Date.now() - startTime;
@@ -197,7 +195,7 @@ export const POST: RequestHandler = async ({ params }) => {
       }
     });
   } catch (error) {
-    console.error('Case analysis error:', error);
+    console.error('Case analysis error:', error);'
     return json(
       {
         success: false,

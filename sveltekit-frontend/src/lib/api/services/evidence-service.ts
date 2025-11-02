@@ -133,7 +133,7 @@ export async function listEvidence(options: EvidenceListOptions = {}): Promise<E
     console.log(`Fetched ${data.evidence.length} evidence items`);
     return data;
   } catch (error: any) {
-    console.error('Evidence listing error:', error);
+    console.error('Evidence listing error:', error);'
     throw new Error(`Failed to list evidence: ${error.message}`);
   }
 }
@@ -155,7 +155,7 @@ export async function getEvidenceById(evidenceId: string): Promise<Evidence> {
     console.log(`Fetched evidence: ${evidence.title} (${evidenceId})`);
     return evidence;
   } catch (error: any) {
-    console.error('Evidence fetch error:', error);
+    console.error('Evidence fetch error:', error);'
     throw new Error(`Failed to fetch evidence: ${error.message}`);
   }
 }
@@ -178,7 +178,7 @@ export async function createEvidence(evidenceData: CreateEvidenceData): Promise<
     console.log(`Created new evidence: ${newEvidence.title} (${newEvidence.id})`);
     return newEvidence;
   } catch (error: any) {
-    console.error('Evidence creation error:', error);
+    console.error('Evidence creation error:', error);'
     throw new Error(`Failed to create evidence: ${error.message}`);
   }
 }
@@ -201,7 +201,7 @@ export async function updateEvidence(evidenceId: string, updates: UpdateEvidence
     console.log(`Updated evidence: ${updatedEvidence.title} (${evidenceId})`);
     return updatedEvidence;
   } catch (error: any) {
-    console.error('Evidence update error:', error);
+    console.error('Evidence update error:', error);'
     throw new Error(`Failed to update evidence: ${error.message}`);
   }
 }
@@ -221,7 +221,7 @@ export async function deleteEvidence(evidenceId: string): Promise<void> {
     // TODO: Add audit logging for evidence deletion (critical for legal compliance)
     console.log(`Deleted evidence: ${evidenceId}`);
   } catch (error: any) {
-    console.error('Evidence deletion error:', error);
+    console.error('Evidence deletion error:', error);'
     throw new Error(`Failed to delete evidence: ${error.message}`);
   }
 }
@@ -248,7 +248,7 @@ export async function addChainOfCustodyEntry(
     console.log(`Added chain of custody entry for evidence ${evidenceId}: ${entry.action}`);
     return newEntry;
   } catch (error: any) {
-    console.error('Chain of custody error:', error);
+    console.error('Chain of custody error:', error);'
     throw new Error(`Failed to add chain of custody entry: ${error.message}`);
   }
 }
@@ -269,7 +269,7 @@ export async function getChainOfCustody(evidenceId: string): Promise<ChainOfCust
     console.log(`Fetched ${chainOfCustody.length} chain of custody entries for evidence ${evidenceId}`);
     return chainOfCustody;
   } catch (error: any) {
-    console.error('Chain of custody fetch error:', error);
+    console.error('Chain of custody fetch error:', error);'
     throw new Error(`Failed to fetch chain of custody: ${error.message}`);
   }
 }
@@ -292,7 +292,7 @@ export async function requestEvidenceAnalysis(evidenceId: string): Promise<any> 
     console.log(`Requested AI analysis for evidence ${evidenceId}`);
     return result;
   } catch (error: any) {
-    console.error('Evidence analysis request error:', error);
+    console.error('Evidence analysis request error:', error);'
     throw new Error(`Failed to request evidence analysis: ${error.message}`);
   }
 }
@@ -316,7 +316,7 @@ export async function getEvidenceAnalysis(evidenceId: string): Promise<EvidenceA
     console.log(`Fetched analysis for evidence ${evidenceId}`);
     return analysis;
   } catch (error: any) {
-    console.error('Evidence analysis fetch error:', error);
+    console.error('Evidence analysis fetch error:', error);'
     throw new Error(`Failed to fetch evidence analysis: ${error.message}`);
   }
 }
@@ -352,7 +352,7 @@ export async function verifyEvidenceAuthenticity(evidenceId: string): Promise<an
     console.log(`Verified authenticity for evidence ${evidenceId}: ${verification.verified}`);
     return verification;
   } catch (error: any) {
-    console.error('Evidence verification error:', error);
+    console.error('Evidence verification error:', error);'
     throw new Error(`Failed to verify evidence authenticity: ${error.message}`);
   }
 }
@@ -395,7 +395,7 @@ export async function uploadEvidenceAttachment(
       xhr.send(formData);
     });
   } catch (error: any) {
-    console.error('Evidence attachment upload error:', error);
+    console.error('Evidence attachment upload error:', error);'
     throw new Error(`Failed to upload evidence attachment: ${error.message}`);
   }
 }

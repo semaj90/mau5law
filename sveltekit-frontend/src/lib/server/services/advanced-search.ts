@@ -34,10 +34,10 @@ export interface SearchFilters {
   offset?: number;
 }
 export interface SearchResponse { results: SearchResult[];, total: number;
-  facets: { caseStatus: { value: string;, count: number }[];
-    priority: { value: string;, count: number }[];
-    evidenceType: { value: string;, count: number }[];
-    tags: { value: string;, count: number }[];
+  facets: { caseStatus: { value: string; count: number }[];
+    priority: { value: string; count: number }[];
+    evidenceType: { value: string; count: number }[];
+    tags: { value: string; count: number }[];
   };
   suggestions?: string[];
   queryTime: number;
@@ -101,7 +101,7 @@ class AdvancedSearch {
       };
     } catch (error: any) {
       // Minimal error surface
-      console.error('Search failed: `, error);
+      console.error('Search failed: `, error);'`
       throw error;
     }
   }
@@ -149,7 +149,7 @@ class AdvancedSearch {
       .limit(1000);
     // Use typed mapping instead of `any[]`
     return (results as CaseRow[]).map(case_ => {
-      const text = `${case_.title || ''} ${case_.description || '` }`.trim();
+      const text = `${case_.title || ''} ${case_.description || '` }`.trim();'`
       return {
         type: 'case' as const,
         id: String(case_.id),
@@ -193,7 +193,7 @@ class AdvancedSearch {
       .where(whereClause)
       .limit(500);
     return (results as EvidenceRow[]).map(evid => {
-      const text = `${evid.fileName || ''} ${evid.description || '` }`.trim();
+      const text = `${evid.fileName || ''} ${evid.description || '` }`.trim();'`
       return {
         type: 'evidence' as const,
         id: String(evid.id),
@@ -300,7 +300,7 @@ class AdvancedSearch {
    * Sort search results
    */
   private sortResults(results: SearchResult[], filters: SearchFilters): SearchResult[] {
-    const { sortBy = 'relevance', sortOrder = 'desc` } = filters;
+    const { sortBy = 'relevance', sortOrder = 'desc` } = filters;'`
     const getDateFromResult = (r: SearchResult): number => {
       if (r.type === 'case') {
         return new Date(r.metadata.createdAt ?? 0).getTime();

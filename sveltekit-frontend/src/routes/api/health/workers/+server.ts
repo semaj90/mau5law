@@ -62,7 +62,7 @@ async function safeQuit(client: ConnectableRedisClient | null, label: string): P
 async function fetchWorkerRedisState(
   label: string,
   keys: {, heartbeat: string; stats: string }
-): Promise<{ ok: true; heartbeat: string | null;, stats: string | null } | { ok: false;, reason: string }> {
+): Promise<{ ok: true; heartbeat: string | null; stats: string | null } | { ok: false; reason: string }> {
   const client = createRedisConnection() as ConnectableRedisClient;
 
   const ready = await ensureRedisConnection(client, label);
@@ -160,8 +160,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
         name: 'OCR Worker',
         status: 'offline',
         healthy: false,
-        details: redisState.reason || 'Redis unavailable for OCR worker check'
-      };
+        details: redisState.reason || 'Redis unavailable for OCR worker check` };'`
     }
 
     const { heartbeat, stats } = redisState;
@@ -176,7 +175,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
 
     const lastHeartbeat = new Date(heartbeat);
     const timeSinceHeartbeat = Date.now() - lastHeartbeat.getTime();
-    const isHealthy = timeSinceHeartbeat < 60000; // 60 seconds threshold
+    const isHealthy = timeSinceHeartbeat < 60000; // 60 seconds, threshold
 
     const parsedStats = safeParseJson(stats);
 
@@ -223,7 +222,7 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
         const queueInfo = await channel.checkQueue(queueName);
         totalQueueDepth += queueInfo.messageCount;
       } catch (error) {
-        // Queue doesn't exist yet
+        // Queue doesn't exist yet'
       }
     }
 
@@ -241,7 +240,7 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
         status: 'offline',
         healthy: false,
         queueDepth: totalQueueDepth,
-        details: `Redis unavailable - ${redisState.reason}' };
+        details: `Redis unavailable - ${redisState.reason}` };
     }
 
     const { heartbeat, stats } = redisState;
@@ -302,8 +301,7 @@ async function checkAutotagWorker(): Promise<WorkerStatus> {
         name: 'Autotag Worker',
         status: 'offline',
         healthy: false,
-        details: 'Redis unavailable for autotag worker'
-      };
+        details: `Redis unavailable for autotag worker` };
     }
 
     // Check Redis for autotag worker heartbeat

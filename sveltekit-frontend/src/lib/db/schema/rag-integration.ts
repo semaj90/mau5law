@@ -139,7 +139,7 @@ export const getDocumentsByCase = (db: any, caseId: number) => {
   return db.select().from(documents).where(eq(documents.caseId, caseId));
 };
 export const getDocumentChunksWithSimilarity = (db: any, queryEmbedding: number[], threshold = 0.7, limit = 10) => {
-  // This would be a raw SQL query using pgvector's cosine similarity
+  // This would be a raw SQL query using pgvector's cosine similarity'
   return db.execute(
     `
     SELECT dc.*, d.filename, d.original_name,
@@ -149,7 +149,7 @@ export const getDocumentChunksWithSimilarity = (db: any, queryEmbedding: number[
     WHERE 1 - (dc.embedding <=> $1::vector) > $2
     ORDER BY dc.embedding <=> $1::vector
     LIMIT $3
-  `,
+  `,`
     [JSON.stringify(queryEmbedding), threshold, limit]
   );
 };

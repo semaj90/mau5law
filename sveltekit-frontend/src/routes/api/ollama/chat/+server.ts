@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
       { status: 400 }
     );
   } catch (error: any) {
-    console.error('Ollama GET error:', error);
+    console.error('Ollama GET error:', error);'
     return json(
       {
         success: false,
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
             controller.enqueue(encoder.encode('data: [DONE]\n\n'));
             controller.close();
           } catch (error: any) {
-            console.error('Streaming error:', error);
+            console.error('Streaming error:', error);'
             const errorChunk = {
               text: 'An error occurred while processing your request.',
               metadata: { type: 'error', error: error.message }
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache',
           'Connection': 'keep-alive',
-          'Access-Control-Allow-Origin': '*` }
+          'Access-Control-Allow-Origin': '*' }
       });
     }
     // For non-streaming responses
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error: any) {
-    console.error('Chat API error:', error);
+    console.error('Chat API error:', error);'
     return json(
       {
         success: false,

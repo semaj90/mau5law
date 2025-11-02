@@ -44,7 +44,7 @@ class AccessibilityService {
       clip: rect(0, 0, 0, 0);
       white-space: nowrap;
       border: 0;
-    `;
+    `;`
     document.body.appendChild(this.announceElement);
   }
   // Screen reader announcements
@@ -152,7 +152,7 @@ class AccessibilityService {
       - Escape: Close modals and dropdowns
       - Arrow keys: Navigate within components
       - Enter/Space: Activate buttons and links
-    `;
+    `;`
     this.announce(helpContent, 'assertive');
   }
   // User preference detection

@@ -2,7 +2,7 @@
   Advanced Performance Dashboard
   Real-time monitoring and analytics
 -->
-<script lang="ts">
+<script, lang="ts">
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -96,107 +96,107 @@ import type { Case } from '$lib/types';
 <svelte:head>
   <title>Performance Dashboard - Legal Case Management</title>
 </svelte:head>
-<div class="space-y-4">
-  <div class="space-y-4">
+<div, class="space-y-4">
+  <div, class="space-y-4">
     <h1>Performance Dashboard</h1>
-    <div class="space-y-4">
-      <button class="space-y-4" onclick={() => toggleAutoRefresh()}>
+    <div, class="space-y-4">
+      <button, class="space-y-4" onclick={() => toggleAutoRefresh()}>
         {autoRefresh ? '🔄 Auto Refresh On' : '⏸️ Auto Refresh Off'}
       </button>
-      <button class="space-y-4" onclick={() => loadMetrics()}> 🔄 Refresh Now </button>
+      <button, class="space-y-4" onclick={() => loadMetrics()}> 🔄 Refresh Now </button>
     </div>
   </div>
-  <!-- System Health Cards -->
+  <!-- System Health, Cards -->
   {#if $health}
-    <div class="space-y-4">
-      <div class="space-y-4">
+    <div, class="space-y-4">
+      <div, class="space-y-4">
         <h3>Database</h3>
-        <div class="space-y-4">
+        <div, class="space-y-4">
           {$health.database}
         </div>
       </div>
-      <div class="space-y-4">
+      <div, class="space-y-4">
         <h3>CPU Usage</h3>
-        <div class="space-y-4">{$health.cpu}%</div>
-        <div class="space-y-4">
-          <div class="space-y-4" style="width: {$health.cpu}%"></div>
+        <div, class="space-y-4">{$health.cpu}%</div>
+        <div, class="space-y-4">
+          <div, class="space-y-4" style="width: {$health.cpu}%"></div>
         </div>
       </div>
-      <div class="space-y-4">
+      <div, class="space-y-4">
         <h3>Memory Usage</h3>
-        <div class="space-y-4">{$health.memory}%</div>
-        <div class="space-y-4">
-          <div class="space-y-4" style="width: {$health.memory}%"></div>
+        <div, class="space-y-4">{$health.memory}%</div>
+        <div, class="space-y-4">
+          <div, class="space-y-4" style="width: {$health.memory}%"></div>
         </div>
       </div>
-      <div class="space-y-4">
+      <div, class="space-y-4">
         <h3>Storage</h3>
-        <div class="space-y-4">{$health.storage}%</div>
-        <div class="space-y-4">
-          <div class="space-y-4" style="width: {$health.storage}%"></div>
+        <div, class="space-y-4">{$health.storage}%</div>
+        <div, class="space-y-4">
+          <div, class="space-y-4" style="width: {$health.storage}%"></div>
         </div>
       </div>
     {/if}
-  <!-- Performance Metrics -->
+  <!-- Performance, Metrics -->
   {#if $metrics}
-    <div class="space-y-4">
-      <div class="space-y-4">
+    <div, class="space-y-4">
+      <div, class="space-y-4">
         <h3>Total Requests</h3>
-        <div class="space-y-4">{$metrics.totalRequests.toLocaleString()}</div>
+        <div, class="space-y-4">{$metrics.totalRequests.toLocaleString()}</div>
       </div>
-      <div class="space-y-4">
+      <div, class="space-y-4">
         <h3>Average Response Time</h3>
-        <div class="space-y-4">{formatTime($metrics.averageResponseTime)}</div>
+        <div, class="space-y-4">{formatTime($metrics.averageResponseTime)}</div>
       </div>
-      <div class="space-y-4">
+      <div, class="space-y-4">
         <h3>Error Rate</h3>
-        <div class="space-y-4">
+        <div, class="space-y-4">
           {($metrics.errorRate * 100).toFixed(2)}%
         </div>
       </div>
     </div>
-    <!-- Slowest Endpoints -->
-    <div class="space-y-4">
+    <!-- Slowest, Endpoints -->
+    <div, class="space-y-4">
       <h2>Slowest Endpoints</h2>
-      <div class="space-y-4">
+      <div, class="space-y-4">
         {#each Array.isArray($metrics.slowestEndpoints) ? $metrics.slowestEndpoints : [] as endpoint}
-          <div class="space-y-4">
-            <div class="space-y-4">{endpoint.endpoint}</div>
-            <div class="space-y-4">
-              <span class="space-y-4">{formatTime(endpoint.avgTime)}</span>
-              <span class="space-y-4">{endpoint.requests} requests</span>
+          <div, class="space-y-4">
+            <div, class="space-y-4">{endpoint.endpoint}</div>
+            <div, class="space-y-4">
+              <span, class="space-y-4">{formatTime(endpoint.avgTime)}</span>
+              <span, class="space-y-4">{endpoint.requests} requests</span>
             </div>
           </div>
         {/each}
       </div>
     </div>
-    <!-- Peak Hours Chart -->
-    <div class="space-y-4">
+    <!-- Peak Hours, Chart -->
+    <div, class="space-y-4">
       <h2>Peak Hours</h2>
-      <div class="space-y-4">
+      <div, class="space-y-4">
         {#each Array.isArray($metrics.peakHours) ? $metrics.peakHours : [] as peak}
-          <div class="space-y-4">
+          <div, class="space-y-4">
             <div
               class="space-y-4"
               style="height: {(peak.requests / Math.max(...$metrics.peakHours.map(p => p.requests))) * 100}%"
             ></div>
-            <div class="space-y-4">{formatHour(peak.hour)}</div>
-            <div class="space-y-4">{peak.requests}</div>
+            <div, class="space-y-4">{formatHour(peak.hour)}</div>
+            <div, class="space-y-4">{peak.requests}</div>
           </div>
         {/each}
       </div>
     {/if}
-  <!-- Recent Logs -->
-  <div class="space-y-4">
+  <!-- Recent, Logs -->
+  <div, class="space-y-4">
     <h2>Recent System Logs</h2>
-    <div class="space-y-4 logs-container">
+    <div class="space-y-4, logs-container">
       {#each Array.isArray($logs) ? $logs : [] as log}
-        <div class="log-entry {log.level === 'error' ? 'error' : log.level === 'warn' ? 'warn' : 'info'}">
-          <div class="log-timestamp">{log.timestamp ? new Date(log.timestamp).toLocaleString() : ''}</div>
+        <div, class="log-entry {log.level === 'error' ? 'error' : log.level === 'warn' ? 'warn' : 'info'}">
+          <div, class="log-timestamp">{log.timestamp ? new Date(log.timestamp).toLocaleString() : ''}</div>
           <div class="log-level">{(log.level || '').toUpperCase()}</div>
-          <div class="log-message">{log.message ?? ''}</div>
+          <div, class="log-message">{log.message ?? ''}</div>
           {#if log.metadata}
-            <div class="log-metadata">
+            <div, class="log-metadata">
               {JSON.stringify(log.metadata, null, 2)}
             {/if}
         </div>

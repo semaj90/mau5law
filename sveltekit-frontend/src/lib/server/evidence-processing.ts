@@ -47,14 +47,14 @@ const evidenceProcessingMachine = createMachine({
   id: 'evidenceProcessing',
   initial: 'idle',
   context: {
-    currentFile: undefined,
+   , currentFile: undefined,
     result: undefined,
     error: undefined,
     progress: 0,
     stage: 'upload',
     retryCount: 0
   } as WorkflowContext,
-  states: { idle: {, on: { PROCESS_EVIDENCE: {, target: 'analyzing',
+  states: {, idle: {, on: {, PROCESS_EVIDENCE: {, target: 'analyzing',
           actions: assign({
            , currentFile: ({ event }) => event.data,
             progress: 10,
@@ -93,8 +93,7 @@ const evidenceProcessingMachine = createMachine({
           target: 'failed',
           actions: assign({
             error: ({ event }) => (event.error as Error).message,
-            stage: 'complete'
-          })
+            stage: 'complete` })'`
         }
       }
     },
@@ -103,15 +102,13 @@ const evidenceProcessingMachine = createMachine({
           target: 'completed',
           actions: assign({
             progress: 100,
-            stage: 'complete'
-          })
+            stage: `complete` })
         },
         onError: {
           target: 'failed',
           actions: assign({
             error: ({ event }) => (event.error as Error).message,
-            stage: 'complete'
-          })
+            stage: `complete` })
         }
       }
     },

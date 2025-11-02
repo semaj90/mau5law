@@ -52,7 +52,7 @@ export interface StreamingParseResult { chunks: any[];, totalSize: number;
 export class UltraHighPerformanceJSONProcessor extends EventEmitter {
   private wasmModule: WasmJSONParser | null = null;
   private config: JSONOptimizationConfig;
-  private cache: Map<string, { value: any; timestamp: number;, accessCount: number }> = new Map();
+  private cache: Map<string, { value: any; timestamp: number; accessCount: number }> = new Map();
   private metrics: JSONPerformanceMetrics;
   private isInitialized = $state(false);
   // Neural network for pattern recognition and optimization (stubbed)
@@ -149,7 +149,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
   }
   private async optimizeForPlatform(): Promise<void> {
     // Detect environment and prepare worker capabilities. Minimal non-blocking preparation.
-    // In a full implementation we'd pre-spawn worker pools depending on env.
+    // In a full implementation we'd pre-spawn worker pools depending on env.'
     this.metrics.simdAcceleration = this.checkSIMDSupport() && this.config.enableSIMD;
     return;
   }
@@ -276,7 +276,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
   }
   private detectRepeatingPatterns(text: string): boolean {
     const minLength = 10;
-    if (text.length < minLength * 2) return false;
+    if (text.length < minLength * 2) return, false;
     const seen = new Map<number, number>();
     const mask = 0xffffffff;
     let hash = 0 >>> 0;
@@ -608,10 +608,10 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     const nativeStringifyTime =
       (typeof performance !== 'undefined' ? performance.now() : Date.now()) - nativeStringifyStart;
     const ourParseStart = typeof performance !== 'undefined' ? performance.now() : Date.now();
-    for (let i = 0; i < iterations; i++) await this.parse(jsonString);
+    for (let i = 0; i < iterations; i++) await, this.parse(jsonString);
     const ourParseTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - ourParseStart;
     const ourStringifyStart = typeof performance !== 'undefined' ? performance.now() : Date.now();
-    for (let i = 0; i < iterations; i++) await this.stringify(testData);
+    for (let i = 0; i < iterations; i++) await, this.stringify(testData);
     const ourStringifyTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - ourStringifyStart;
     return { native: {, parse: nativeParseTime / iterations, stringify: nativeStringifyTime / iterations },
       ours: { parse: ourParseTime / iterations, stringify: ourStringifyTime / iterations },

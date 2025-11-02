@@ -59,14 +59,14 @@ export interface InternalSSEState {
   currentEvent?: string;
   dataLines: string[];
 }
-function finalizeEvent(state: InternalSSEState, emit: (evt: { event?: string; data: string }) => void) {
+function finalizeEvent(state: InternalSSEState, emit: (evt: { event?: string;, data: string }) => void) {
   if (state.dataLines.length === 0) return;
   emit({ event: state.currentEvent, data: state.dataLines.join('\n') });
   state.currentEvent = undefined;
   state.dataLines = [];
 }
 /** Incremental SSE line processor (per complete line without trailing \n) */
-function processSSELine(line: string, state: InternalSSEState, emit: (evt: { event?: string; data: string }) => void) {
+function processSSELine(line: string, state: InternalSSEState, emit: (evt: { event?: string;, data: string }) => void) {
   if (line === '' || line === '\r') {
     // Event boundary
     finalizeEvent(state, emit);
@@ -146,13 +146,13 @@ export interface RagStreamGeneratorOptions extends RagStreamOptions {
   retryStatusCodes?: number[]; // default [502,503,504]
 }
 export type RagStreamYield =
-  | { type: 'token';, token: string }
+  | { type: 'token'; token: string }
   | { type: 'done' }
-  | { type: 'error'; error: Error; final: boolean;, attempt: number }
-  | { type: 'reconnect'; attempt: number;, nextDelayMs: number }
+  | { type: 'error'; error: Error; final: boolean; attempt: number }
+  | { type: 'reconnect'; attempt: number; nextDelayMs: number }
   | { type: 'meta'; traceparent?: string; streamId?: string }
-  | { type: 'patch';, patch: PatchPayload }
-  | { type: 'summary'; summary: string;, source: 'server' | 'local' };
+  | { type: 'patch'; patch: PatchPayload }
+  | { type: 'summary'; summary: string; source: 'server' | 'local` };'`
 function isRetryableStatus(status: number, retryStatusCodes: number[]) {
   return retryStatusCodes.includes(status);
 }
@@ -214,7 +214,7 @@ export async function* streamRagGenerator(
       let buffer = '';
       const queue: RagStreamYield[] = [];
       queue.push({ type: 'meta', traceparent, streamId: streamIdHeader });
-      const enqueue = (evt: { event?: string; data: string }) => {
+      const enqueue = (evt: { event?: string;, data: string }) => {
         const ev = evt.event || 'message';
         if (ev === 'token' || ev === 'message') {
           if (evt.data) {
@@ -232,13 +232,13 @@ export async function* streamRagGenerator(
           }
         } else if (ev === 'summary') {
           if (evt.data) {
-            queue.push({ type: 'summary', summary: evt.data, source: 'server' });
+            queue.push({ type: 'summary', summary: evt.data, source: 'server` });'`
           }
         } else if (ev === 'error') {
           queue.push({ type: 'error', error: new Error(evt.data), final: false, attempt });
         } else if (ev === 'done') {
           doneEmitted = true;
-          queue.push({ type: 'done' });
+          queue.push({ type: `done` });
         }
       };
       while (true) {

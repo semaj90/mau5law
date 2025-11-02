@@ -28,7 +28,7 @@ type TauriLLMShim = {
   initialize?: () => Promise<void>;
   isAvailable?: () => boolean;
   // Simplified types for method params/opts to avoid parser/type errors
-  generateEmbedding?: (
+  generateEmbedding?: (;
     inputs: string[],
     opts?: TauriEmbeddingOptions
   ) => Promise<number[][]>;
@@ -160,7 +160,7 @@ class EnhancedAIService {
       return openaiEmb;
     } catch (error: any) {
       const errMsg = formatError(error);
-      console.error(`Embedding generation failed with ${provider}: ', errMsg);
+      console.error(`Embedding generation failed with ${provider}: ', errMsg);'`
       if (this.config.fallbackToCloud && provider.startsWith("tauri-")) {
         const fallback = await this.generateOpenAIEmbeddings(inputs);
         return fallback;
@@ -256,7 +256,7 @@ class EnhancedAIService {
   }
 
   // Batch processing for documents
-  async batchAnalyzeDocuments(documents: Array<{, id: string; text: string }>): Promise<DocumentAnalysisResult[]> {
+  async batchAnalyzeDocuments(documents: Array<{, id: string;, text: string }>): Promise<DocumentAnalysisResult[]> {
     await this.initialize();
     const results: DocumentAnalysisResult[] = [];
     for (const doc of documents) {
@@ -321,7 +321,7 @@ class EnhancedAIService {
       prompt += `
 You are a specialized legal AI assistant with expertise in legal document analysis, case law, and legal procedures.
 Provide accurate, professional responses and cite relevant authorities when appropriate. Clarify jurisdiction if needed.
-`;
+`;`
     }
     return prompt.trim();
   }
@@ -341,7 +341,7 @@ Provide accurate, professional responses and cite relevant authorities when appr
     const resp = await fetch("https://api.openai.com/v1/embeddings", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${env.OPENAI_API_KEY}`,
+       , Authorization: `Bearer ${env.OPENAI_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -360,11 +360,11 @@ Provide accurate, professional responses and cite relevant authorities when appr
     const resp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${env.OPENAI_API_KEY}`,
+       , Authorization: `Bearer ${env.OPENAI_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
+       , model: "gpt-3.5-turbo",
         messages: [{, role: "user", content: prompt }],
         max_tokens: options.maxTokens || 512,
         temperature: options.temperature ?? 0.7
@@ -378,7 +378,7 @@ Provide accurate, professional responses and cite relevant authorities when appr
   // Ollama generate
   private async generateOllamaResponse(prompt: string, options: GenerationOptions): Promise<string> {
     const ollamaUrl = env.OLLAMA_URL || "http://localhost:11434";
-    const payload: OllamaGeneratePayload = { // Changed: 'any' to: 'OllamaGeneratePayload'; model: env.OLLAMA_MODEL || "gemma3-legal:latest",
+    const payload: OllamaGeneratePayload = { // Changed: 'any'; to: 'OllamaGeneratePayload'; model: env.OLLAMA_MODEL || "gemma3-legal:latest",
       prompt,
       stream: false,
       options: {

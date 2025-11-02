@@ -142,7 +142,7 @@ export class LegalCanvasManager {
         console.warn(`⚠️ Slow frame: ${renderTime.toFixed(2)}ms (target: 16.67ms)`);
       }
     } catch (error) {
-      console.error('❌ Render frame error:', error);
+      console.error('❌ Render frame error:', error);'
     }
   }
   /**
@@ -176,7 +176,7 @@ export class LegalCanvasManager {
   }
   /**
    * Update cursor position for collaborative features
-   */ private updateCursorPosition(pointer: {, x: number; y: number }): void {
+   */ private updateCursorPosition(pointer: {, x: number;, y: number }): void {
     // Would update cursor via RabbitMQ for real-time collaboration
   }
   /**
@@ -273,7 +273,7 @@ class ProgressIndicator {
       fill: '#ffffff',
       textAlign: 'center',
       originX: 'center',
-      originY: 'center` });
+      originY: `center` });
     // Group elements
     this.progressGroup = new fabric.Group([background, this.progressBar, this.progressText], {
       selectable: false,
@@ -779,7 +779,7 @@ export class RabbitMQRealtimeMessenger {
   /**
    * Handle connection errors
    */ private handleConnectionError(error: Error): void {
-    console.error('❌ RabbitMQ connection error:', error);
+    console.error('❌ RabbitMQ connection error:', error);'
     this.isConnected = $state(false);
     // Would implement reconnection logic here
   }
@@ -887,8 +887,7 @@ export const realTimeUIMachine = createMachine(
           },
           DISABLE_COLLABORATION: {
             target: 'idle',
-            actions: 'disableCollaborativeMode'
-          }
+            actions: `disableCollaborativeMode` }
         }
       },
       error: {
@@ -897,7 +896,7 @@ export const realTimeUIMachine = createMachine(
           RETRY: 'initializing',
           RESET: {
             target: 'idle',
-            actions: 'resetState` }
+            actions: `resetState` }
         }
       }
     }
@@ -942,7 +941,7 @@ export const realTimeUIMachine = createMachine(
         }
       },
       logError: (context, event) => {
-        console.error('❌ Real-time UI error:', event);
+        console.error('❌ Real-time UI error:', event);'
       },
       resetState: assign((context, event) => {
         console.log('🔄 Resetting UI state');
@@ -993,7 +992,7 @@ interface RenderMetrics { frameCount: number;, avgFrameTime: number;
 interface SimilarityResult { document_id: string;, similarity: number;
   metadata: any;
 }
-interface CacheStats { totalEntries: number;, collectionStats: Record<string, { count: number;, size: number }>;
+interface CacheStats { totalEntries: number;, collectionStats: Record<string, { count: number; size: number }>;
   isInitialized: boolean;
 }
 interface ProgressUpdate { progress: number;, stage: string;

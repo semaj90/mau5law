@@ -16,7 +16,7 @@ export async function getSystemMetrics(): Promise<SystemMetrics> {
   } catch (err) {
     // Minimal logging for debugging; return safe fallback
     // (caller should handle empty result)
-    console.error('[getSystemMetrics] fetch error:', err);
+    console.error('[getSystemMetrics] fetch error:', err);'
     return {};
   }
 }

@@ -12,7 +12,7 @@ interface ExpectedMinIOMetadata {
   riskLevel?: 'low' | 'medium' | 'high' | 'critical';
   caseReferences?: string[];
   citationCount?: number;
-  [key: string]: any; // Allow for other properties that might exist in MinIOFile's metadata
+  [key: string]: any; // Allow for other properties that might exist in MinIOFile's metadata'
 }
 
 // Extend the imported MinIOFile type to include: 'originalName', 'uploadedAt',
@@ -118,15 +118,15 @@ class VectorSearchIndex {
     return new Promise((resolve, reject) => {
       transaction.oncomplete = () => {
         // Process embeddings
-        embeddingsRequest.result.forEach((item: {, id: string; embedding: number[] }) => {
+        embeddingsRequest.result.forEach((item: {, id: string;, embedding: number[] }) => {
           this.embeddings.set(item.id, new Float32Array(item.embedding));
         });
         // Process metadata
-        metadataRequest.result.forEach((item: {, id: string; metadata: VectorSearchResult['metadata'] }) => {
+        metadataRequest.result.forEach((item: {, id: string;, metadata: VectorSearchResult['metadata'] }) => {
           this.metadata.set(item.id, item.metadata);
         });
         // Process chunks
-        chunksRequest.result.forEach((item: {, id: string; chunks: VectorSearchResult['chunks'] }) => {
+        chunksRequest.result.forEach((item: {, id: string;, chunks: VectorSearchResult['chunks'] }) => {
           this.textChunks.set(item.id, item.chunks);
         });
         resolve();
@@ -221,7 +221,7 @@ class VectorSearchIndex {
     try {
       const response = await fetch('/api/embeddings/gemma?action=generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ text })
       });
       if (!response.ok) {

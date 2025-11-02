@@ -1,9 +1,9 @@
-<script lang="ts">
+<script, lang="ts">
   import { Button } from '$lib/components/ui/button';
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
   import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
-  import { UiButton as Button } from '$lib/components/ui.svelte';
+  import { UiButton, as Button } from '$lib/components/ui.svelte';
   import { onMount } from 'svelte';
   let caseId: string | null = null;
   let readOnly = $state<boolean>(false);
@@ -18,27 +18,27 @@
 </script>
 <svelte:head>
   <title>Visual Evidence Editor - Legal AI Assistant</title>
-  <meta name="description" content="Advanced visual evidence management with AI-powered tagging and analysis" />
+  <meta name="description" content="Advanced visual evidence management with AI-powered tagging and, analysis" />
 </svelte:head>
-<div class="space-y-4">
+<div, class="space-y-4">
   <!-- Header -->
-  <div class="space-y-4">
-    <div class="space-y-4">
+  <div, class="space-y-4">
+    <div, class="space-y-4">
       <div>
-        <h1 class="space-y-4">Visual Evidence Editor</h1>
-        <p class="space-y-4">
+        <h1, class="space-y-4">Visual Evidence Editor</h1>
+        <p, class="space-y-4">
           Drag and drop evidence files for AI-powered analysis and tagging
         </p>
       </div>
-      <div class="space-y-4">
-    <Button.Root class="bits-btn"
+      <div, class="space-y-4">
+    <Button.Root, class="bits-btn"
       onclick={toggleReadOnly}
           variant={readOnly ? "default" : "outline"}
           size="sm"
         >
 {readOnly ? 'Enable Editing' : 'Read Only'}
         </Button.Root>
-        <div class="space-y-4">
+        <div, class="space-y-4">
           {#if caseId}
             case {caseId}
           {:else}
@@ -48,15 +48,15 @@
       </div>
     </div>
   </div>
-  <!-- Main Editor -->
-  <div class="space-y-4">
+  <!-- Main, Editor -->
+  <div, class="space-y-4">
     <VisualEvidenceEditor {caseId} {readOnly} />
   </div>
 </div>
-<!-- Help Overlay (initially hidden) -->
-<div class="space-y-4" style="display: none;" id="help-overlay">
-  <h3 class="space-y-4">Quick Start Guide</h3>
-  <ul class="space-y-4">
+<!-- Help Overlay (initially, hidden) -->
+<div, class="space-y-4" style="display: none;" id="help-overlay">
+  <h3, class="space-y-4">Quick Start Guide</h3>
+  <ul, class="space-y-4">
     <li>• Drag files onto the canvas to add evidence</li>
     <li>• Files are automatically analyzed with AI</li>
     <li>• Click evidence to view details in the inspector</li>

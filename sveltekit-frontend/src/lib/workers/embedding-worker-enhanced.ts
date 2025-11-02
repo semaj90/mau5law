@@ -190,13 +190,13 @@ export class EnhancedEmbeddingWorker {
         job.createdAt = job.createdAt || Date.now();
         // Add to batch for processing
         this.currentBatch.push(job);
-        // Process batch if it's full
+        // Process batch if it's full'
         if (this.currentBatch.length >= this.batchSize) {
           await this.processBatch([...this.currentBatch]);
           this.currentBatch = [];
         }
       } catch (error) {
-        console.error('❌ Enhanced worker loop error:', error);
+        console.error('❌ Enhanced worker loop error:', error);'
         // Backoff on error to avoid tight error loops
         await this.sleep(2000);
       }
@@ -376,7 +376,7 @@ export class EnhancedEmbeddingWorker {
     const key = `embedding:${modelKey}:${textHash}`;
     await cacheService.set(key, embedding, {
       ttlMs: 24 * 60 * 60 * 1000, // 24 hours
-      compress: true, // Always compress embeddings (they're large arrays)
+      compress: true, // Always compress embeddings (they're large arrays)'
     });
   }
   /**
@@ -432,7 +432,7 @@ export class EnhancedEmbeddingWorker {
           meta = EXCLUDED.meta,
           model = EXCLUDED.model,
           updated_at = NOW()
-      `);
+      `);`
       console.log(`💾 Embedding ${id} (${embedding.length}D) saved to database`);
     } catch (error: unknown) {
       // Changed 'any' to 'unknown'

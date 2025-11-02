@@ -83,5 +83,5 @@ export interface WebGPUContext { device: GPUDevice;, canvas: HTMLCanvasElement;
 // Utility types
 export type AsyncFunction<T = void> = () => Promise<T>;
 export type EventCallback<T = Event> = (_event: T) => void;
-export type ValidationResult = { valid: boolean;, errors: string[] };
+export type ValidationResult = { valid: boolean; errors: string[] };
 export type ComponentState = 'idle' | 'loading' | 'success' | 'error';

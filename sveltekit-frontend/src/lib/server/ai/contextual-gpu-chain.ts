@@ -42,7 +42,7 @@ export const contextualChain = RunnableSequence.from<ContextualChainInput, strin
       RETURN r.summary AS summary, r.id AS id
       ORDER BY size((r)-[:TAGGED_WITH]->(:Tag)) DESC
       LIMIT 5
-    `;
+    `;`
     const related =
       userId != null
         ? await graph.query(graphQuery, { userId })

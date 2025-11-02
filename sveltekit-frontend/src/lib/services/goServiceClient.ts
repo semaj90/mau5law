@@ -68,7 +68,7 @@ export class GoServiceClient {
     }
   }
 
-  async checkHealth(): Promise<{ rag: boolean; upload: boolean;, kratos: boolean }> {
+  async checkHealth(): Promise<{ rag: boolean; upload: boolean; kratos: boolean }> {
     const results = await Promise.allSettled([
       fetch(`${this.config.enhancedRagUrl}/health`, { signal: AbortSignal.timeout(5000) }),
       fetch(`${this.config.uploadServiceUrl}/health`, { signal: AbortSignal.timeout(5000) }),
@@ -97,7 +97,7 @@ export class GoServiceClient {
     }
   }
 
-  async checkServiceHealth(): Promise<{ rag: boolean; upload: boolean;, kratos: boolean }> {
+  async checkServiceHealth(): Promise<{ rag: boolean; upload: boolean; kratos: boolean }> {
     return this.checkHealth();
   }
 

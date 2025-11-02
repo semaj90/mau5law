@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
   import Button from '$lib/components/ui/Button.svelte';
@@ -15,34 +15,34 @@
 
 <svelte:head>
   <title>Evidence Board - Legal AI Assistant</title>
-  <meta name="description" content="AI-powered evidence management with Ollama integration" />
+  <meta name="description" content="AI-powered evidence management with Ollama, integration" />
 </svelte:head>
-<div class="evidence-page-container">
+<div, class="evidence-page-container">
   {#if showWelcome && pageLoaded}
-    <div class="welcome-banner animate-fade-in">
-      <Card.Root variant="evidence" hoverable fullWidth class="nes-container">
-        <div class="nier-bits-yorha-panel-header">
-          <h3 class="nier-bits-nes-text is-primary">🎯 Evidence Board Ready</h3>
-          <p class="nier-bits-nes-text">AI-powered evidence management with RTX 3060 Ti acceleration</p>
+    <div class="welcome-banner, animate-fade-in">
+      <Card.Root variant="evidence" hoverable fullWidth, class="nes-container">
+        <div, class="nier-bits-yorha-panel-header">
+          <h3 class="nier-bits-nes-text, is-primary">🎯 Evidence Board Ready</h3>
+          <p, class="nier-bits-nes-text">AI-powered evidence management with RTX 3060 Ti acceleration</p>
         </div>
-        <div class="nier-bits-yorha-panel-content">
-          <div class="welcome-stats">
-            <div class="stat">
-              <span class="stat-label">GPU</span>
-              <span class="stat-value">Active</span>
+        <div, class="nier-bits-yorha-panel-content">
+          <div, class="welcome-stats">
+            <div, class="stat">
+              <span, class="stat-label">GPU</span>
+              <span, class="stat-value">Active</span>
             </div>
-            <div class="stat">
-              <span class="stat-label">WebGPU</span>
-              <span class="stat-value">Ready</span>
+            <div, class="stat">
+              <span, class="stat-label">WebGPU</span>
+              <span, class="stat-value">Ready</span>
             </div>
-            <div class="stat">
-              <span class="stat-label">pgvector</span>
-              <span class="stat-value">Connected</span>
+            <div, class="stat">
+              <span, class="stat-label">pgvector</span>
+              <span, class="stat-value">Connected</span>
             </div>
           </div>
         </div>
-        <div class="nier-bits-yorha-panel-content">
-          <Button.Root class="nes-btn" variant="ghost" size="sm" onclick={() => (showWelcome = false)}>Get Started →</Button.Root>
+        <div, class="nier-bits-yorha-panel-content">
+          <Button.Root, class="nes-btn" variant="ghost" size="sm" onclick={() => (showWelcome = false)}>Get Started →</Button.Root>
         </div>
       </Card.Root>
     </div>
@@ -50,8 +50,8 @@
   {#if pageLoaded}
     <EnhancedEvidenceBoard />
   {:else}
-    <div class="loading-screen">
-      <div class="loading-spinner"></div>
+    <div, class="loading-screen">
+      <div, class="loading-spinner"></div>
       <p>Initializing Legal AI Platform...</p>
       <small>Loading GPU acceleration, vector search, and fabric.js canvas...</small>
     </div>

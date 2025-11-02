@@ -68,7 +68,7 @@ class FAISSGPUEngine {
               }
               this.ntotal += numVectors;
             }
-            search(queryVector: Float32Array, k: number): { distances: Float32Array;, indices: Int32Array } {
+            search(queryVector: Float32Array, k: number): { distances: Float32Array; indices: Int32Array } {
               // Simple dot product similarity (mock implementation)
               const similarities = this.vectors.map((vector: Float32Array, index: number) => {
                 let dotProduct = 0;
@@ -126,7 +126,7 @@ class FAISSGPUEngine {
               }
               this.ntotal += numVectors;
             }
-            search(queryVector: Float32Array, k: number): { distances: Float32Array;, indices: Int32Array } {
+            search(queryVector: Float32Array, k: number): { distances: Float32Array; indices: Int32Array } {
               // Search in nprobe clusters
               const candidates = [];
               for (let cluster = 0; cluster < Math.min(this.nprobe, this.nlist); cluster++) {
@@ -269,11 +269,11 @@ class PgVectorBridge {
         console.log(`✅ Stored document ${document.id} in pgvector`);
         return true;
       } else {
-        console.error(`❌ Failed to store document ${document.id}: ', result.error || result.reason);
+        console.error(`❌ Failed to store document ${document.id}: ', result.error || result.reason);'`
         return false;
       }
     } catch (error) {
-      console.error('❌ pgvector storage error:', error);
+      console.error('❌ pgvector storage error:', error);'
       return false;
     }
   }
@@ -290,7 +290,7 @@ class PgVectorBridge {
         updated_at: new Date()
       }));
     } catch (error) {
-      console.error('❌ pgvector query error:', error);
+      console.error('❌ pgvector query error:', error);'
       return [];
     }
   }
@@ -312,7 +312,7 @@ class PgVectorBridge {
             metadata: {
               type: 'legal_document',
               similarity_score: score,
-              search_method: `pgvector` },
+              search_method: `pgvector' },'`
             created_at: new Date(),
             updated_at: new Date()
           });
@@ -320,7 +320,7 @@ class PgVectorBridge {
       }
       return mockResults;
     } catch (error) {
-      console.error('❌ pgvector similarity search error:', error);
+      console.error('❌ pgvector similarity search error:', error);'
       return [];
     }
   }
@@ -509,7 +509,7 @@ export class PgVectorFAISSBridge {
           fusion_time_ms: 0,
           gpu_accelerated: false
         },
-        explanation: `Search; failed: ${error}' };
+        explanation: `Search; failed: ${error}' };'`
     }
   }
   private fuseResults(
@@ -525,11 +525,11 @@ export class PgVectorFAISSBridge {
       case 'score':
         // Score-based fusion (prefer higher similarity)
         const combinedResults = [
-          ...faissResults.map((doc, i) => ({ ...doc, fusionScore: faissScores[i] || 0, source: 'faiss' })),
+          ...faissResults.map((doc, i) => ({ ...doc, fusionScore: faissScores[i] || 0, source: `faiss` })),
           ...pgvectorResults.map(doc => ({
             ...doc,
             fusionScore: doc.metadata?.similarity_score || 0.8,
-            source: `pgvector` })),
+            source: `pgvector' }))'`
         ];
         return combinedResults.sort((a, b) => (b as any).fusionScore - (a as any).fusionScore).slice(0, 50);
       case 'weighted':

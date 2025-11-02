@@ -136,7 +136,7 @@ export class WebGPUTextTileRenderer {
     this.renderPipeline = this.device.createRenderPipeline({ vertex: {, module: shaderModule,
         entryPoint: 'vs_main',
         buffers: [
-          {
+          {,
             arrayStride: 32,
             attributes: [
               { shaderLocation: 0, offset: 0, format: 'float32x2' }, // position
@@ -147,13 +147,13 @@ export class WebGPUTextTileRenderer {
         ]
       },
       fragment: {
-        module: shaderModule,
+       , module: shaderModule,
         entryPoint: 'fs_main',
         targets: [
-          {
-            format: 'bgra8unorm',
-            blend: { color: {, srcFactor: 'src-alpha', dstFactor: 'one-minus-src-alpha' },
-              alpha: { srcFactor: 'one', dstFactor: 'one-minus-src-alpha' }
+          {,
+           , format: 'bgra8unorm',
+            blend: {, color: {, srcFactor: 'src-alpha', dstFactor: 'one-minus-src-alpha' },
+              alpha: {, srcFactor: 'one', dstFactor: 'one-minus-src-alpha' }
             }
           },
         ]
@@ -230,10 +230,10 @@ fn fs_main(input: VertexOutput) -> @location(0) vec4<f32> {
   // Apply NES-style color quantization
   var finalColor = input.nesColor * baseColor.rgb;
   // Quality tier adjustments
-  if (uniforms.qualityTier < 0.5) { // NES mode
+  if (uniforms.qualityTier < 0.5) { // NES, mode
     // 4-color palette limitation
     finalColor = floor(finalColor * 3.0) / 3.0;
-  } else if (uniforms.qualityTier < 1.5) { // SNES mode
+  } else if (uniforms.qualityTier < 1.5) { // SNES, mode
     // 16-color palette
     finalColor = floor(finalColor * 15.0) / 15.0;
   }
@@ -263,7 +263,7 @@ fn hsv2rgb(hsv: vec3<f32>) -> vec3<f32> {
     rgb = vec3<f32>(c, 0.0, x);
   }
   return rgb + m;
-}`;
+}`;`
   }
 
   /**
@@ -275,8 +275,7 @@ fn hsv2rgb(hsv: vec3<f32>) -> vec3<f32> {
 // Decompresses 7-bit tile data and prepares for rendering
 struct TileData {
   compressedData: array<u32, 2>, // 7 bytes packed into 2 u32s
-  semanticHash: u32; patternId: u32
-  metadata: vec4<f32>
+  semanticHash: u32; patternId: u32; metadata: vec4<f32>
 }
 struct RenderData { position: vec2<f32>, texCoord: vec2<f32>; tileInfo: vec4<f32>
 }
@@ -310,7 +309,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       tile.metadata.x
     )
   );
-}`;
+}`;`
   }
 
   /**
@@ -474,7 +473,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 @keyframes nes-flicker-${tile.id} {
   0%, 100% { opacity: 1; }
   50% { opacity: ${(tile.tileMetadata.semanticDensity * 0.3 + 0.7).toFixed(2)}; }
-}`;
+}`;`
   }
 
   /**
@@ -484,18 +483,18 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const className = `text-tile-${tile.id}`;
     switch (componentType) {
       case 'data-visualization':
-        return `<div class="${className} data-viz" data-pattern="${tile.tileMetadata.patternId}" data-density="${tile.tileMetadata.semanticDensity}">
-          <span class="value">${tile.compressedData[3]}</span>
-          <span class="unit">${tile.tileMetadata.categories.join(',')}</span>
-        </div>`;
+        return `<div, class="${className} data-viz" data-pattern="${tile.tileMetadata.patternId}" data-density="${tile.tileMetadata.semanticDensity}">`
+          <span, class="value">${tile.compressedData[3]}</span>
+          <span, class="unit">${tile.tileMetadata.categories.join(',')}</span>
+        </div>`;`
       case 'interactive-element':
-        return `<button class="${className} interactive" data-semantic-hash="${tile.semanticHash}">
-          <span class="content">${tile.tileMetadata.tokenCount} tokens</span>
-        </button>`;
+        return `<button, class="${className} interactive" data-semantic-hash="${tile.semanticHash}">`
+          <span, class="content">${tile.tileMetadata.tokenCount} tokens</span>
+        </button>`;`
       default: // text-display
-        return `<span class="${className} text-display" title="Compression: ${tile.compressionRatio.toFixed(1)}:1">
+        return `<span, class="${className} text-display" title="Compression: ${tile.compressionRatio.toFixed(1)}:1">`
           ${tile.tileMetadata.categories.join(' ')}
-        </span>`;
+        </span>`;`
     }
   }
 
@@ -513,11 +512,11 @@ document.querySelector('.text-tile-${tile.id}').addEventListener('click', functi
     id: '${tile.id}',
     compression: ${tile.compressionRatio},
     semanticHash: '${tile.semanticHash}',
-    patternId: '${tile.tileMetadata.patternId}' });
+    patternId: '${tile.tileMetadata.patternId}` });'`
   // Trigger NES-style click animation
   this.style.transform = 'scale(0.95)';
   setTimeout(() => this.style.transform = 'scale(1)', 100);
-});`;
+});`;`
   }
 
   /**

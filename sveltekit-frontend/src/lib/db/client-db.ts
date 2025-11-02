@@ -62,7 +62,7 @@ export interface SearchHistory {
   filters?: {
     evidenceType?: string[];
     priority?: string[];
-    dateRange?: { start: Date;, end: Date };
+    dateRange?: { start: Date; end: Date };
     jurisdiction?: string[];
   };
 }
@@ -163,7 +163,7 @@ export interface GraphVisualizationData {
   layout: { algorithm: string;, parameters: Record<string, unknown>; // was any
     dimensions: 2 | 3;
   };
-  cameraPosition?: { x: number; y: number;, z: number };
+  cameraPosition?: { x: number; y: number; z: number };
   createdAt: Date;
   lastAccessed: Date;
   computationTime: number;
@@ -225,7 +225,7 @@ export class LegalAIClientDB extends Dexie {
       legalEntities: '++id, name, type, lastUpdated, confidence',
       graphVisualizationData: '++id, graphId, graphType, lastAccessed, createdAt',
       aiAnalysisCache: '++id, contentHash, analysisType, timestamp, expiresAt',
-      userPreferences: '++id, userId, lastUpdated` });
+      userPreferences: '++id, userId, lastUpdated' });
     // Hooks for data management
     // Dexie passes (primaryKey, obj, transaction). We prefix unused args with: "_" to satisfy linting.
     this.chatHistory.hook('creating', (_primaryKey, obj: Partial<ChatMessage>, _trans) => {
@@ -284,10 +284,10 @@ export class LegalDBUtils {
    * Get database statistics
    */
   static async getStorageStats(): Promise<{ totalRecords: number;, storageUsed: string;
-    tables: Array<{ name: string;, count: number }>;
+    tables: Array<{ name: string; count: number }>;
   }> {
     const stats: { totalRecords: number;, storageUsed: string;
-      tables: Array<{ name: string;, count: number }>;
+      tables: Array<{ name: string; count: number }>;
     } = {
       totalRecords: 0,
       storageUsed: 'Unknown',
@@ -401,8 +401,8 @@ export const annotationsCount = liveQuery(async () => {
 /**
  * Storage usage monitor
  */
-type StorageTableStat = { name: string;, count: number };
-type StorageStats = { totalRecords: number; storageUsed: string;, tables: StorageTableStat[] };
+type StorageTableStat = { name: string; count: number };
+type StorageStats = { totalRecords: number; storageUsed: string; tables: StorageTableStat[] };
 
 export const storageStats = writable<StorageStats>({ totalRecords: 0, storageUsed: 'Unknown', tables: [] });
 // Update storage stats periodically

@@ -101,7 +101,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
             anonId,
             processingTime: Math.round(processingTime)
           },
-          { status: 202, headers: { 'Content-Type': 'application/json', 'X-Client-Fallback': `save-local` } }
+          { status: 202, headers: { 'Content-Type': 'application/json', 'X-Client-Fallback': `save-local' } }'`
         );
       }
 
@@ -311,26 +311,26 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Prepare headers; set anon cookie when we created one
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'X-Processing-Time': `${Math.round(processingTime)}ms` };
+      'X-Processing-Time': `${Math.round(processingTime)}ms' };'`
     if (setAnonCookie && anonId) {
       // short TTL cookie (3600s). Only set Secure if request appears to be HTTPS (x-forwarded-proto)
       const isHttps = (request.headers.get('x-forwarded-proto') || '').toLowerCase() === 'https';
-      headers['Set-Cookie'] = `anon_id=${encodeURIComponent(anonId)}; Path=/; HttpOnly; Max-Age=3600; SameSite=Lax${
-        isHttps ? '; Secure' : `` }`;
+      headers['Set-Cookie'] = `anon_id=${encodeURIComponent(anonId)}; Path=/; HttpOnly; Max-Age=3600; SameSite=Lax${`
+        isHttps ? '; Secure' : `` }`;`
     }
 
     // when returning response, include claim info if present
     return json(
       {
         success: true,
-        evidence: updatedEvidence ?? { id: evidenceId },
+        evidence: updatedEvidence ?? {, id: evidenceId },
         anonId: isAnonymous ? anonId : undefined,
         claim: consentFlow
           ? {
               claimToken,
               claimUrl,
               expiresInHours: 24,
-              message: `Temporary upload — claim this evidence after signing in.` }
+              message: `Temporary upload — claim this evidence after signing in.' }'`
           : undefined,
         ocrProcessing: {
          , method: processingMethod,
@@ -349,7 +349,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     );
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Evidence OCR update error:', err);
+    console.error('Evidence OCR update error:', err);'
 
     // Normalize unknown error into a safe shape
     type ErrLike = { status?: number; body?: { message?: string }; message?: string };
@@ -369,7 +369,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': `true` }
+        'X-Error': `true' }'`
     });
   }
 };
@@ -415,8 +415,8 @@ async function scanForViruses(payload: string | null): Promise<any> {
   // Return true if infected
   if (!payload) return false;
   // extremely naive check (do NOT rely on this)
-  if (payload.includes('<script>
-import type { User } from '$lib/types';evil</script>')) return true;
+  if (payload.includes('<script>'
+import type { User } from '$lib/types';evil</script>')) return true;'
   return false;
 }
 

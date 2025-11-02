@@ -24,7 +24,7 @@ export async function initializeWsBroker(): Promise<void> {
       // Subscriber: dedicated fresh connection for pub/sub
       subscriber = createRedisConnection({ lazyConnect: true });
     } catch (e) {
-      // If factory can't create Redis (e.g., missing env in some runtimes), fall back to null and run local-only mode
+      // If factory can't create Redis (e.g., missing env in some runtimes), fall back to null and run local-only mode'
       console.warn('⚠️ createRedisInstance failed, running wsBroker in local-only mode:', e);
       redis = null;
       subscriber = null;
@@ -60,13 +60,13 @@ export async function initializeWsBroker(): Promise<void> {
       });
 
       subscriber.on('error', (err: any) => {
-        console.error('❌ Redis subscriber error:', err);
+        console.error('❌ Redis subscriber error:', err);'
       });
     }
 
     if (redis) {
       redis.on('error', (err: any) => {
-        console.error('❌ Redis publisher error:', err);
+        console.error('❌ Redis publisher error:', err);'
       });
     }
 
@@ -97,7 +97,7 @@ export function registerWsConnection(sessionId: string, ws: WebSocket): void {
     }
   });
   ws.on('error', error => {
-    console.error(`❌ WebSocket error for session ${sessionId}: ', error);
+    console.error(`❌ WebSocket error for session ${sessionId}: ', error);'`
   });
   // Send initial connection confirmation
   try {
@@ -225,11 +225,11 @@ export function broadcastToAllSessions(msg: ProgressMsg): void {
 }
 
 // Health check
-export function wsHealthCheck(): { local: number;, redis: boolean } {
+export function wsHealthCheck(): { local: number; redis: boolean } {
   const localConnections = Array.from(sessions.values()).reduce((total, set) => total + set.size, 0);
   return {
     local: localConnections,
-    redis: redis?.status === 'ready` };
+    redis: redis?.status === 'ready' };
 }
 
 // Graceful shutdown

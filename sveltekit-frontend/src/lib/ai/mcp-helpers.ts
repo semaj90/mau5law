@@ -85,15 +85,14 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'SvelteKit error detected - suggesting best practices',
         args: {, area: 'performance' },
         priority: 'medium',
-        expectedOutput: 'SvelteKit performance optimization guidelines'
-      });
+        expectedOutput: 'SvelteKit performance optimization guidelines` });'`
     }
     if (error.message.includes('env') || error.message.includes('environment')) {
       suggestions.push({
         tool: 'suggest-integration',
         confidence: 0.75,
         reasoning: 'Environment configuration error detected',
-        args: {, feature: 'environment-setup', requirements: 'sveltekit server-side' },
+        args: {, feature: 'environment-setup', requirements: `sveltekit server-side` },
         priority: 'medium',
         expectedOutput: `Environment variable setup recommendations` });
     }
@@ -124,9 +123,9 @@ export function analyzeFilesForStackSuggestions(activeFiles: string[]): AutoMCPS
       tool: 'analyze-stack',
       confidence: 0.7,
       reasoning: `${tech} files detected in workspace`,
-      args: {, component: tech, context: `legal-ai` },
+      args: {, component: tech, context: 'legal-ai' },
       priority: 'medium',
-      expectedOutput: `${tech} analysis and optimization recommendations' });
+      expectedOutput: '${tech} analysis and optimization recommendations' });
   });
   return suggestions;
 }
@@ -209,7 +208,7 @@ export async function getContextAwareLibraryDocs(
     }
     return await getLibraryDocs(libraryName, enhancedTopic);
   } catch (err: any) {
-    console.error('getContextAwareLibraryDocs error:', err);
+    console.error('getContextAwareLibraryDocs error:', err);'
     throw err;
   }
 }
@@ -221,7 +220,7 @@ export async function resolveLibraryId(libraryName: string): Promise<string> {
   try {
     const response = await fetch('http://localhost:3000/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , tool: 'resolve-library-id',
         arguments: { libraryName }
@@ -233,7 +232,7 @@ export async function resolveLibraryId(libraryName: string): Promise<string> {
     if (match) return match[1];
     throw new Error(data?.content?.[0]?.text || 'No library ID found');
   } catch (err: any) {
-    console.error('resolveLibraryId error:', err);
+    console.error('resolveLibraryId error:', err);'
     throw err;
   }
 }
@@ -246,7 +245,7 @@ export async function getLibraryDocs(
   try {
     const response = await fetch('http://localhost:3000/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
        , tool: 'get-library-docs',
         arguments: { context7CompatibleLibraryID, topic, tokens }
@@ -255,7 +254,7 @@ export async function getLibraryDocs(
     const data = await response.json();
     return data?.content?.[0]?.text || 'No documentation found.';
   } catch (err: any) {
-    console.error('getLibraryDocs error:', err);
+    console.error('getLibraryDocs error:', err);'
     throw err;
   }
 }
@@ -273,7 +272,7 @@ export async function semanticSearch(query: string): Promise<any[]> {
     const data = await response.json();
     return data.results || [];
   } catch (err: any) {
-    console.error('semanticSearch error:', err);
+    console.error('semanticSearch error:', err);'
     // Return empty array on error to prevent UI breakage
     return [];
   }
@@ -306,7 +305,7 @@ export async function callContext7Tool(
     const data = await response.json();
     return data;
   } catch (err: any) {
-    console.error(`Context7 tool ${toolName} error: ', err);
+    console.error(`Context7 tool ${toolName} error: ', err);'`
     throw err;
   }
 }
@@ -326,7 +325,7 @@ export async function getLibraryDocsWithContext(
     });
     return response?.content?.[0]?.text || 'No documentation found.';
   } catch (err: any) {
-    console.error('getLibraryDocsWithContext error:', err);
+    console.error('getLibraryDocsWithContext error:', err);'
     throw err;
   }
 }
@@ -339,7 +338,7 @@ export async function createMemoryRelation(entityId: string, relation: string, t
       targetId
     });
   } catch (err: any) {
-    console.error('createMemoryRelation error:', err);
+    console.error('createMemoryRelation error:', err);'
     throw err;
   }
 }

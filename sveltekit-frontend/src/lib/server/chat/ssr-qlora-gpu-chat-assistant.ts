@@ -87,7 +87,7 @@ export interface UserDictionary { userId: string;, legalTerms: Map<
   >;
   preferredStyle: 'formal' | 'casual' | 'technical' | 'adaptive';
   domainExpertise: string[]; // ['contract-law', 'criminal-defense', etc.]
-  qloraCheckpoint: string; // Path to user's fine-tuned model,
+  qloraCheckpoint: string; // Path to user's fine-tuned model,'
   interactionHistory: ChatInteraction[];
 }
 export interface ChatInteraction { id: string;, timestamp: Date;
@@ -137,12 +137,11 @@ export class SSRQLorAGPUChatAssistant {
    */
   private async initializeCommonPatterns(): Promise<void> {
     const commonPatterns: Array<Pick<PatternItem, 'pattern' | 'response'>> = [
-      {
+      {,
         pattern: 'contract review',
-        response: 'I can help analyze contract terms, identify risks, and suggest modifications.'
-      },
-      { pattern: 'legal research', response: 'Let me search relevant case law and statutes for your jurisdiction.' },
-      { pattern: 'document analysis', response: "I'll extract key information and identify potential issues." },
+        response: 'I can help analyze contract terms, identify risks, and suggest modifications.` },'`
+      { pattern: 'legal research', response: `Let me search relevant case law and statutes for your jurisdiction.` },
+      { pattern: 'document analysis', response: "I'll extract key information and identify potential issues." },'
       { pattern: 'case preparation', response: `I can help organize evidence and build legal arguments.` }
     ];
     for (const [index, item] of commonPatterns.entries()) {
@@ -176,11 +175,11 @@ export class SSRQLorAGPUChatAssistant {
     userId: string,
     sessionId: string,
     initialMessage?: string
-  ): Promise<{ ssrContext: SSRChatContext; prerenderedHTML: string;, preloadedData: Record<string, unknown> }> {
+  ): Promise<{ ssrContext: SSRChatContext; prerenderedHTML: string; preloadedData: Record<string, unknown> }> {
     console.log(`📱 Rendering SSR chat context for user ${userId}`);
     // Load or create user dictionary
     const userDictionary = await this.getUserDictionary(userId);
-    // Pre-warm GPU cache with user's patterns
+    // Pre-warm GPU cache with user's patterns'
     await this.prewarmGPUCache(userDictionary);
     // Generate SSR context
     const ssrContext: SSRChatContext = {
@@ -227,7 +226,7 @@ export class SSRQLorAGPUChatAssistant {
           if (instantResponse) {
             controller.enqueue(
               new TextEncoder().encode(
-                `data: ${JSON.stringify({
+                `data: ${JSON.stringify({`
                  , type: 'instant',
                   content: instantResponse,
                   source: `nes_memory` })}\n\n`
@@ -247,7 +246,7 @@ export class SSRQLorAGPUChatAssistant {
           if (cacheHit && cacheHit.length > 0) {
             controller.enqueue(
               new TextEncoder().encode(
-                `data: ${JSON.stringify({
+                `data: ${JSON.stringify({`
                  , type: 'cached',
                   content: cacheHit[0]?.metadata?.response ?? null,
                   similarity: cacheHit[0]?.similarity ?? 0,
@@ -266,7 +265,7 @@ export class SSRQLorAGPUChatAssistant {
           for (const [index, chunk] of chunks.entries()) {
             controller.enqueue(
               new TextEncoder().encode(
-                `data: ${JSON.stringify({
+                `data: ${JSON.stringify({`
                  , type: 'chunk',
                   content: chunk,
                   index,
@@ -282,7 +281,7 @@ export class SSRQLorAGPUChatAssistant {
           if (glyphData) {
             controller.enqueue(
               new TextEncoder().encode(
-                `data: ${JSON.stringify({
+                `data: ${JSON.stringify({`
                  , type: 'glyph',
                   content: glyphData,
                   source: `neural_sprite` })}\n\n`
@@ -371,7 +370,7 @@ export class SSRQLorAGPUChatAssistant {
     return newDictionary;
   }
   /**
-   * Pre-warm GPU cache with user's frequently used patterns
+   * Pre-warm GPU cache with user's frequently used patterns'
    */
   private async prewarmGPUCache(userDictionary: UserDictionary): Promise<void> {
     const recentInteractions = userDictionary.interactionHistory
@@ -394,11 +393,11 @@ export class SSRQLorAGPUChatAssistant {
    */
   private async generatePreloadedResponses(userDictionary: UserDictionary): Promise<Map<string, string>> {
     const responses = new Map<string, string>();
-    // Generate responses based on user's domain expertise
+    // Generate responses based on user's domain expertise'
     for (const domain of userDictionary.domainExpertise) {
       responses.set(
         `${domain}_intro`,
-        `I see you're working in ${domain}. I can help with document analysis, case research, and regulatory compliance.`
+        `I see you're working in ${domain}. I can help with document analysis, case research, and regulatory compliance.`'
       );
       responses.set(`${domain}_research`, `Let me search recent developments and precedents in ${domain}.`);
     }
@@ -434,7 +433,7 @@ export class SSRQLorAGPUChatAssistant {
     return null;
   }
   /**
-   * Generate QLoRA response using user's fine-tuned model
+   * Generate QLoRA response using user's fine-tuned model'
    */
   private async generateQLorAResponse(
     userDictionary: UserDictionary,
@@ -510,7 +509,7 @@ export class SSRQLorAGPUChatAssistant {
   ): Promise<{ id: string;, vertices: number[];
     colors: number[];
     animation: string;
-    metadata: { complexity: number;, confidence: number };
+    metadata: { complexity: number; confidence: number };
   }> {
     // Create neural sprite for 3D visualization
     const glyphData = {
@@ -630,20 +629,20 @@ export class SSRQLorAGPUChatAssistant {
   private async generateChatHTML(context: SSRChatContext, initialMessage?: string): Promise<string> {
     // Generate server-rendered HTML for instant hydration
     return `
-      <div class="ssr-chat-container nes-retro-ui">
-        <div class="chat-header">
+      <div class="ssr-chat-container, nes-retro-ui">
+        <div, class="chat-header">
           <h3>Legal AI Assistant</h3>
-          <div class="user-context">${context.userDictionary.domainExpertise.join(', ')}</div>
+          <div, class="user-context">${context.userDictionary.domainExpertise.join(', ')}</div>
         </div>
-        <div class="chat-messages" id="chat-messages">
-          ${initialMessage ? `<div class="user-message">${initialMessage}</div>` : `` }
+        <div, class="chat-messages" id="chat-messages">
+          ${initialMessage ? `<div, class="user-message">${initialMessage}</div>` : `` }
         </div>
-        <div class="chat-input-container">
-          <input type="text" id="chat-input" placeholder="Ask me about legal matters..." />
-          <button id="send-btn">Send</button>
+        <div, class="chat-input-container">
+          <input type="text" id="chat-input" placeholder="Ask me about legal, matters..." />
+          <button, id="send-btn">Send</button>
         </div>
       </div>
-    `;
+    `;`
   }
   private async storeInteraction(context: SSRChatContext, userMessage: string, aiResponse: string): Promise<void> {
     const interaction: ChatInteraction = {

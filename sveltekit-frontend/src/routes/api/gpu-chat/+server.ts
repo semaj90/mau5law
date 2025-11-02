@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
     if (!gpuServerResponse.ok) {
       const errorText = await gpuServerResponse.text();
-      console.error('Go GPU server error:', errorText);
+      console.error('Go GPU server error:', errorText);'
       throw error(gpuServerResponse.status, `GPU server error: ${errorText}`);
     }
     // Parse and return the JSON response from Go inference server
@@ -63,11 +63,11 @@ export const POST: RequestHandler = async ({ request }) => {
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'Cache-Control': 'no-cache',
-          'Connection': `keep-alive` }
+          'Connection': `keep-alive' }'`
       }
     );
   } catch (err: any) {
-    console.error('GPU Chat API error:', err);
+    console.error('GPU Chat API error:', err);'
     // If this is a SvelteKit HTTP error (object with status) rethrow it unchanged
     if (typeof err === 'object' && err !== null && 'status' in err) {
       throw err;
@@ -88,11 +88,11 @@ export const GET: RequestHandler = async () => {
         JSON.stringify({
           status: 'healthy',
           service: 'go-gpu-server',
-          url: GO_GPU_SERVER_URL, // <-- added missing comma
+          url: GO_GPU_SERVER_URL, // <-- added missing, comma
           timestamp: new Date().toISOString()
         }),
         {
-          headers: { 'Content-Type': `application/json` }
+          headers: { 'Content-Type': `application/json' }'`
         }
       );
     } else {
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async () => {
       }),
       {
         status: 503,
-        headers: { 'Content-Type': `application/json` }
+        headers: { 'Content-Type': `application/json' }'`
       }
     );
   }

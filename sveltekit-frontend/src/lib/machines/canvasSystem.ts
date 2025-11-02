@@ -7,18 +7,18 @@ export interface CanvasContext { nodes: CanvasNode[];, connections: CanvasConne
   error: string | null;
 }
 type CanvasEvent =
-  | { type: 'ADD_NODE';, node: CanvasNode }
-  | { type: 'REMOVE_NODE';, nodeId: string }
-  | { type: 'UPDATE_NODE'; nodeId: string;, updates: Partial<CanvasNode> }
-  | { type: 'SELECT_NODE';, nodeId: string | null }
-  | { type: 'START_DRAG';, nodeId: string }
+  | { type: 'ADD_NODE'; node: CanvasNode }
+  | { type: 'REMOVE_NODE'; nodeId: string }
+  | { type: 'UPDATE_NODE'; nodeId: string; updates: Partial<CanvasNode> }
+  | { type: 'SELECT_NODE'; nodeId: string | null }
+  | { type: 'START_DRAG'; nodeId: string }
   | { type: 'END_DRAG' }
-  | { type: 'ADD_CONNECTION';, connection: CanvasConnection }
-  | { type: 'REMOVE_CONNECTION';, connectionId: string }
+  | { type: 'ADD_CONNECTION'; connection: CanvasConnection }
+  | { type: 'REMOVE_CONNECTION'; connectionId: string }
   | { type: 'SAVE_STATE' }
-  | { type: 'LOAD_STATE';, state: InteractiveCanvasState }
+  | { type: 'LOAD_STATE'; state: InteractiveCanvasState }
   | { type: 'CLEAR_CANVAS' }
-  | { type: 'ERROR';, error: string }
+  | { type: 'ERROR'; error: string }
   | { type: 'CLEAR_ERROR' };
 function isInteractiveCanvasState(obj: any): obj is InteractiveCanvasState {
   if (typeof obj !== 'object' || obj === null) return false;
@@ -96,17 +96,17 @@ export const canvasSystemMachine = createMachine<CanvasContext, CanvasEvent>(
             actions: ['endDrag']
           },
           UPDATE_NODE: {
-            actions: ['updateNode']
+           , actions: ['updateNode']
           }
         }
       },
-      saving: { invoke: {, src: 'saveState',
+      saving: {, invoke: {, src: 'saveState',
           onDone: {
-            target: 'idle',
+           , target: 'idle',
             actions: ['saveDone']
           },
           onError: {
-            target: 'idle',
+           , target: 'idle',
             actions: ['setError']
           }
         }

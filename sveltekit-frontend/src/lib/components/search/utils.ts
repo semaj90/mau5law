@@ -57,7 +57,7 @@ export function formatSearchResults(results: RawSearchResult[]): SearchResult[] 
     const r = result as RawSearchResult; // Cast once to the new type alias
     return {
       id: r.id,
-      title: r.title || r.name || `${r.firstName || ''} ${r.lastName || '` }`.trim(),
+      title: r.title || r.name || `${r.firstName || ''} ${r.lastName || '` }`.trim(),'`
       type: r.type || inferType(r),
       content: r.content || r.description || r.summary || r.notes || '',
       score: r.score || r.similarity || calculateDefaultScore(r),
@@ -193,7 +193,7 @@ export function highlightSearchTerms(text: string, query: string, options?: {
 /**
  * Debounce function for search input
  */
-export function debounce<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
+export function debounce<T, extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
     clearTimeout(timeoutId);

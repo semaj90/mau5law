@@ -68,7 +68,7 @@ export class VectorSearchService {
           model.replace("ollama-", "")
         );
       } else if (model.startsWith("claude-")) {
-        // Claude doesn't have embeddings API, fallback to Ollama
+        // Claude doesn't have embeddings API, fallback to Ollama'
         embedding = await this.generateOllamaEmbedding(
           text,
           "nomic-embed-text"
@@ -154,7 +154,7 @@ export class VectorSearchService {
           (1 - (d.embedding <=> ${embeddingVector}::vector)) as relevance_score
         FROM ${documents} d
         WHERE d.embedding IS NOT NULL
-      `;
+      `;`
       // Add filters
       const conditions = [];
       if (caseId) {
@@ -175,7 +175,7 @@ export class VectorSearchService {
         ${sqlQuery}
         ORDER BY distance ASC
         LIMIT ${limit}
-      `;
+      `;`
       const results = await db.execute(sqlQuery);
       return results.rows.map((row: any) => ({ // Removed extraneous comma
         id: row.id,
@@ -237,7 +237,7 @@ export class VectorSearchService {
         MIN(created_at) as oldest_embedding,
         MAX(created_at) as newest_embedding
       FROM ${embeddingCache}
-    `);
+    `);`
     return stats.rows[0];
   }
   /**
@@ -250,7 +250,7 @@ export class VectorSearchService {
         CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_documents_embedding_ivfflat
         ON documents USING ivfflat (embedding vector_cosine_ops)
         WITH (lists = 100)
-      `);
+      `);`
       // Analyze table for better query planning
       await db.execute(sql`ANALYZE documents`);
       console.log("Vector index created successfully");

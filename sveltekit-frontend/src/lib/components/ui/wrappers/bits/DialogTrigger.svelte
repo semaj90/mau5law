@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
   import type { Snippet } from 'svelte';
   import type { ComponentType } from 'svelte';
   import { getBitsOverrides } from './bits-overrides';
@@ -44,5 +44,5 @@
 {:else if asChild}
   <slot />
 {:else}
-  <button type="button"><slot /></button>
+  <button, type="button"><slot /></button>
 {/if}

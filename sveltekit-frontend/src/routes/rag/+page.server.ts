@@ -1,5 +1,5 @@
 import type { Actions, PageServerLoad } from './$types';
-import { Client as MinioClient } from 'minio';
+import { Client, as MinioClient } from 'minio';
 import { Buffer } from 'buffer';
 import { db } from '$lib/server/db';
 import { documents } from '$lib/server/db/enhanced-embedding-schema';
@@ -108,7 +108,7 @@ export const actions: Actions = {
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       // keep returning a shape the client expects; use 500 status if desired
-      return { form, result: { error: `Upload, failed: ${msg}` } };
+      return { form, result: { error: `Upload, failed: ${msg}' } };'`
     }
   }
 };

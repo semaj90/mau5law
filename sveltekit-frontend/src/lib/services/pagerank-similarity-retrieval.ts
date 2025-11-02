@@ -47,7 +47,7 @@ export interface SimilarityQuery {
   filters: {
     nodeTypes?: string[];
     categories?: string[];
-    dateRange?: { start: Date;, end: Date };
+    dateRange?: { start: Date; end: Date };
     minPageRank?: number;
     tags?: string[];
   };
@@ -127,7 +127,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
     console.log('🐘 Loading legal documents from PostgreSQL...');
     // Simulate loading legal documents with pgvector embeddings
     const sampleDocuments = [
-      {
+      {,
         id: 'doc_legal_001',
         title: 'Contract Law Fundamentals',
         content: 'Comprehensive overview of contract formation, performance, and breach...',
@@ -213,8 +213,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         tags: ['case', 'contract', 'dispute'],
         timestamp: Date.now() - 86400000, // 1 day ago
         importance: 1.0,
-        category: 'case_law'
-      },
+        category: `case_law` },
       pageRankScore: 0,
       inboundLinks: new Set(),
       outboundLinks: new Set(),
@@ -315,7 +314,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       this.emit('pageRankComplete', { scores, processingTime });
       return scores;
     } catch (error: any) {
-      console.error('❌ PageRank calculation error:', error);
+      console.error('❌ PageRank calculation error:', error);'
       throw error;
     }
   }
@@ -495,7 +494,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       });
       return paginatedResults;
     } catch (error: any) {
-      console.error('❌ Similarity search error:', error);
+      console.error('❌ Similarity search error:', error);'
       throw error;
     }
   }
@@ -590,7 +589,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
     // Normalize weights
     const totalWeight = Object.values(weights).reduce((sum, w) => sum + w, 0);
     if (totalWeight === 0) return 0;
-    (Object.keys(weights) as Array<keyof typeof weights>).forEach(key => {
+    (Object.keys(weights) as Array<keyof typeof, weights>).forEach(key => {
       weights[key] = weights[key] / totalWeight;
     });
     switch (ranking.combinationStrategy) {
@@ -625,8 +624,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         return (
           this.calculateCombinedScore(scores, {
             ...ranking,
-            combinationStrategy: 'weighted'
-          }) * adaptiveWeight
+            combinationStrategy: `weighted` }) * adaptiveWeight
         );
       }
       default: return this.calculateCombinedScore(scores, {
@@ -713,7 +711,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         tags: metadata.tags || [],
         timestamp: Date.now(),
         importance: metadata.importance || 0.5,
-        category: metadata.category || 'document` },
+        category: metadata.category || 'document` },'`
       embedding: nodeEmbedding,
       pageRankScore: 0,
       inboundLinks: new Set(),

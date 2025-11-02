@@ -13,8 +13,8 @@ export interface LegalCaseContext { caseId: string;, title: string;
 }
 
 export type LegalCaseEvent =
-  | { type: 'CREATE_CASE'; title: string; description: string; caseType: string; jurisdiction: string;, createdBy: string }
-  | { type: 'UPDATE_CASE';, updates: Partial<LegalCaseContext> }
+  | { type: 'CREATE_CASE'; title: string; description: string; caseType: string; jurisdiction: string; createdBy: string }
+  | { type: 'UPDATE_CASE'; updates: Partial<LegalCaseContext> }
   | { type: 'COMPLETE' }
   | { type: 'ARCHIVE' };
 
@@ -32,14 +32,14 @@ export const legalCaseManagementMachine = createMachine({
     progress: 0,
     errors: []
   } as LegalCaseContext,
-  states: { idle: {, on: { CREATE_CASE: 'active' }
+  states: {, idle: {, on: {, CREATE_CASE: 'active' }
     },
-    active: { on: {, UPDATE_CASE: 'active',
+    active: {, on: {, UPDATE_CASE: 'active',
         COMPLETE: 'completed',
         ARCHIVE: 'archived'
       }
     },
-    completed: { on: {, ARCHIVE: 'archived' }
+    completed: {, on: {, ARCHIVE: 'archived' }
     },
     archived: {
      , type: 'final'

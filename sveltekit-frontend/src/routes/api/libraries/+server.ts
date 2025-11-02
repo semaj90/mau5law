@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json({
       success: true,
-      message: `Libraries synced successfully${source ? ` for ${source}` : `` }' });
+      message: `Libraries synced successfully${source ? ` for ${source}` : '' }` });
   } catch (error: any) {
     console.error('Failed to sync libraries:', error);
     const message = error instanceof Error ? error.message : String(error);

@@ -47,7 +47,7 @@ export class UXPatternValidator {
           );
           return !hasVariantClass && btn.textContent?.trim();
         });
-        return inconsistentButtons.length < buttons.length * 0.1; // Allow 10% variance
+        return inconsistentButtons.length < buttons.length * 0.1; // Allow, 10% variance
       },
       recommendation: 'Apply consistent button variant classes to all interactive buttons'
     },
@@ -270,7 +270,7 @@ export class UXPatternValidator {
    * Monitor UX patterns in real-time
    */
   startUXMonitoring(): () => void {
-    // Use ReturnType<typeof setInterval> to be compatible with both browser and Node typings
+    // Use ReturnType<typeof, setInterval> to be compatible with both browser and Node typings
     let monitoringInterval: ReturnType<typeof setInterval> | undefined;
     const runMonitoring = async () => {
       const results = await this.validateAllPatterns();
@@ -286,7 +286,7 @@ export class UXPatternValidator {
     // Set up periodic monitoring (guard for non-browser environments)
     if (typeof window !== 'undefined') {
       // Cast to satisfy differing lib types for setInterval (NodeJS.Timeout vs number)
-      monitoringInterval = window.setInterval(runMonitoring, 30000) as unknown as ReturnType<typeof setInterval>; // Every 30 seconds
+      monitoringInterval = window.setInterval(runMonitoring, 30000) as unknown as ReturnType<typeof, setInterval>; // Every 30 seconds
     }
     return () => {
       if (monitoringInterval !== undefined) {
@@ -312,7 +312,7 @@ export class PerformanceMetrics {
     if (typeof PerformanceObserver === 'undefined') return {};
     return new Promise(resolve => {
       // Use a typed partial metrics object instead of `any`
-      const metrics: Partial<{ lcp: number; fid: number;, cls: number }> = {};
+      const metrics: Partial<{ lcp: number; fid: number; cls: number }> = {};
 
       // Largest Contentful Paint
       try {

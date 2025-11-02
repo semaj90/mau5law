@@ -86,7 +86,7 @@ class ParallelCacheOrchestrator {
     }
   };
 
-  private circuitBreakerState = new Map<string, { failures: number; lastFailure: number;, isOpen: boolean }>();
+  private circuitBreakerState = new Map<string, { failures: number; lastFailure: number; isOpen: boolean }>();
   // Use typed activeRequests for deduplication of in-flight requests
   private activeRequests = new Map<string, Promise<ParallelCacheResponse>>();
   private executionMetrics: CacheExecutionMetrics = this.initializeMetrics();
@@ -378,7 +378,7 @@ class ParallelCacheOrchestrator {
       type?: string;
     } = {}
   ): Promise<void> {
-    const { tier = 'all', ttl = 30 * 60 * 1000, priority = 'normal` } = options;
+    const { tier = 'all', ttl = 30 * 60 * 1000, priority = 'normal` } = options;'`
     const storeOperations: Promise<unknown>[] = [];
 
     const dataSize = JSON.stringify(data).length;
@@ -485,7 +485,7 @@ class ParallelCacheOrchestrator {
   /**
    * Get performance statistics
    */
-  async getPerformanceStats(): Promise<{ currentMetrics: CacheExecutionMetrics;, cacheStats: { l1Size: number; l2Size: number; l3Size: number; xstateStats: any;, shaderStats: any };
+  async getPerformanceStats(): Promise<{ currentMetrics: CacheExecutionMetrics;, cacheStats: { l1Size: number; l2Size: number; l3Size: number; xstateStats: any; shaderStats: any };
     systemResources: CacheResourceAllocation;
   }> {
     return {

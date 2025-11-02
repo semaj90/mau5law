@@ -7,7 +7,7 @@ export interface DialogProps {
    */
   open?: boolean;
   /**
-   * Callback function invoked when the dialog's open state changes.
+   * Callback function invoked when the dialog's open state changes.'
    * @param open The new open state of the dialog.
    */
   onOpenChange?: (open: boolean) => void;

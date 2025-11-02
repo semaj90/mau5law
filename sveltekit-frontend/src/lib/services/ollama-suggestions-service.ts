@@ -106,13 +106,13 @@ export class OllamaSuggestionsService {
    */
   private buildSuggestionPrompt(request: OllamaSuggestionRequest): string {
     const { content, reportType, context, maxSuggestions = 5 } = request;
-    let prompt = `You are an expert legal AI assistant specializing in ${reportType} documents.
+    let prompt = `You are an expert legal AI assistant specializing in ${reportType} documents.`
 Content to analyze:
 """
 ${content}
 """
 Document Type: ${reportType}
-`;
+`;`
     if (context?.caseId) {
       prompt += `Case Context: Working within case ID ${context.caseId}\n`;
     }
@@ -139,7 +139,7 @@ Focus on:
 - Risk assessment and strategic considerations
 Format your response as a JSON array with this structure:
 [
-  {
+  {,
     "content": "Specific suggestion text",
     "type": "suggestion_type",
     "confidence": 0.85,
@@ -152,7 +152,7 @@ Format your response as a JSON array with this structure:
     }
   }
 ]
-Provide practical, implementable suggestions that would genuinely improve the legal document.`;
+Provide practical, implementable suggestions that would genuinely improve the legal document.`;`
     return prompt;
   }
 
@@ -405,7 +405,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
   /**
    * Get service configuration
    */
-  public getConfig(): { baseUrl: string; model: string;, timeout: number } {
+  public getConfig(): { baseUrl: string; model: string; timeout: number } {
     return {
       baseUrl: this.baseUrl,
       model: this.model,

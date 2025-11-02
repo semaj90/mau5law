@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Document processed successfully',
       document: {
-        id: result.documentId,
+       , id: result.documentId,
         filename: file.name,
         chunks: result.chunks,
         minioUrl: result.minioUrl,
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Failed to process document',
-        details: error instanceof Error ? error.message : 'Unknown error` },
+        details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

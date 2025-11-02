@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import { ollamaService } from '$lib/server/services/OllamaService'
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
@@ -32,7 +32,7 @@ type FetchResult =
     };
 
 // Simple in-memory cache to avoid frequent upstream calls
-let cached: { ts: number;, payload: FetchResult } | null = null;
+let cached: { ts: number; payload: FetchResult } | null = null;
 
 // validate unknown payloads safely
 function isValidGpuConfig(payload: any): payload is GPUConfig {
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async () => {
   try {
     const healthy = await Promise.resolve(ollamaService.isHealthy());
     if (!healthy) {
-      // If Ollama isn't healthy return 503 and best-effort (cached or shim) config
+      // If Ollama isn't healthy return 503 and best-effort (cached or shim) config'
       const fallback = cached?.payload ?? {
         ok: false,
         source: 'shim',
@@ -126,15 +126,14 @@ export const GET: RequestHandler = async () => {
       cached = { ts: Date.now(), payload };
       return json(payload, { status: 200 });
     } catch (err: any) {
-      console.warn('gpu-config: upstream fetch; failed:', getErrorMessage(err));
+      console.warn('gpu-config: upstream fetch;, failed:', getErrorMessage(err));
       // On failure use cache if available; otherwise return shim but indicate fallback
       if (cached) {
         const payload: FetchResult = {
           ok: false,
           source: 'cache',
           config: cached.payload.config,
-          reason: 'upstream_unreachable'
-        };
+          reason: 'upstream_unreachable` };'`
         // refresh timestamp to avoid tight loops
         cached = { ts: Date.now(), payload };
         return json(payload, { status: 200 });
@@ -143,9 +142,8 @@ export const GET: RequestHandler = async () => {
         ok: false,
         source: 'shim',
         config: { ...DEFAULT_SHIM, gpu: { enabled: false } },
-        reason: 'upstream_unreachable'
-      };
-      // do not cache shim as a positive result; it's a fallback only
+        reason: `upstream_unreachable` };
+      // do not cache shim as a positive result; it's a fallback only'
       return json(payload, { status: 200 });
     }
   } catch (err: any) {

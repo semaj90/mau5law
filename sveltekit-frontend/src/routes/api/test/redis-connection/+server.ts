@@ -13,9 +13,9 @@ declare module 'ioredis' {
   interface Redis {
     // Add: 'call' for Redis Stack commands (as hinted by ioredis-extension.d.ts)
     call(command: string, ...args: (string | number)[]): Promise<unknown>; // Changed any to unknown
-    // Add: 'info' if it's missing from the default types
+    // Add: 'info' if it's missing from the default types'
     info(section?: string): Promise<string>;
-    // Add: 'quit' if it's missing from the default types
+    // Add: 'quit' if it's missing from the default types'
     quit(): Promise<'OK'>;
     // removeListener and once are inherited from EventEmitter and should not need augmentation
   }
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ url }) => {
     try {
       // Attempt to use a RedisJSON command, e.g., JSON.SET
       // This requires Redis Stack. If it fails, it means JSON module is not loaded or not Redis Stack.
-      await connectedRedis.call('JSON.SET', 'json-test-key', '$', JSON.stringify({ message: 'hello' }));
+      await connectedRedis.call('JSON.SET', 'json-test-key', '$', JSON.stringify({ message: 'hello` }));'`
       const jsonRetrieved = await connectedRedis.call('JSON.GET', 'json-test-key', '$');
       if (jsonRetrieved) {
         jsonSupported = true;

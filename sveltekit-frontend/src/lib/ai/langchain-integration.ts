@@ -48,7 +48,7 @@ export async function queryWithLangChain(query: string, documents: RAGDocument[]
       }))
     };
   } catch (error) {
-    console.error('LangChain RAG error:', error);
+    console.error('LangChain RAG error:', error);'
     throw error;
   }
 }
@@ -65,7 +65,7 @@ export async function processDocumentWithLangChain(
   try {
     return await service.processDocument(content, { documentId });
   } catch (error) {
-    console.error('Document processing error:', error);
+    console.error('Document processing error:', error);'
     throw error;
   }
 }

@@ -13,7 +13,7 @@ export async function generateEmbedding(text: string, model: string): Promise<nu
     const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': 'application/json' },
       body: JSON.stringify({ model, prompt: text })
     });
 
@@ -41,7 +41,7 @@ export async function generateText(prompt: string, model: string): Promise<strin
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },
+        'Content-Type': 'application/json' },
       body: JSON.stringify({ model, prompt, stream: false }), // Assuming non-streaming for simplicity
     });
 

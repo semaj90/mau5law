@@ -3,12 +3,12 @@ import type { User } from '$lib/types';
 
 Provides small helpers to pick the top adapter from Redis and record
 adapter usage/feedback into Neo4j. This file intentionally keeps I/O
-side-effects optional and defensive so importing it won't crash in tests.
+side-effects optional and defensive so importing it won't crash in tests.'
 */
 import type { RedisClientType } from 'redis';
 import type { Driver } from 'neo4j-driver';
 
-export type AdapterRank = { id: string;, score: number };
+export type AdapterRank = { id: string; score: number };
 
 export async function getTopAdapter(redis: RedisClientType, namespace = 'adapters:rank'): Promise<AdapterRank | null> {
   try {
@@ -66,6 +66,6 @@ export async function recordAdapterUsage(
     }
     await session.close();
   } catch (e) {
-    console.warn('recordAdapterUsage neo4j error:', e);
+    console.warn('recordAdapterUsage neo4j error:', e);'
   }
 }

@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
 
     return new Response(stream, {
-      headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' }
+      headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache` }'`
     });
   } catch (err) {
     return json({ success: false, error: String(err) }, { status: 500 });

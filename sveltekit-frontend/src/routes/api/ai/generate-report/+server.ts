@@ -111,7 +111,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error: any) {
-    console.error('AI report generation error:', error);
+    console.error('AI report generation error:', error);'
     return json({ error: 'Failed to generate report' }, { status: 500 });
   }
 };
@@ -123,35 +123,35 @@ function generateReportContent(template: ReportTemplate, caseId: string, reportI
     day: 'numeric'
   });
   let content = `
-    <div style="text-align: center; margin-bottom: 40px;">
-      <h1 style="color: #1f2937; font-size: 28px; font-weight: bold; margin-bottom: 8px;">
+    <div, style="text-align: center; margin-bottom: 40px;">
+      <h1, style="color: #1f2937; font-size: 28px; font-weight: bold; margin-bottom: 8px;">
         ${template.title}
       </h1>
-      <p style="color: #6b7280; font-size: 16px; margin: 0;">
-        Generated on ${formattedDate} | Case ID: ${caseId || 'N/A'} | Report ID: ${reportId || 'N/A` }
+      <p, style="color: #6b7280; font-size: 16px; margin: 0;">
+        Generated on ${formattedDate} | Case ID: ${caseId || 'N/A'} | Report ID: ${reportId || 'N/A` }'`
       </p>
     </div>
-  `;
+  `;`
   // Add AI-generated content for each section
   template.sections.forEach((section: string, index: number) => {
     content += `
-      <div style="margin-bottom: 32px;">
-        <h2 style="color: #374151; font-size: 20px; font-weight: 600; margin-bottom: 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px;">
+      <div, style="margin-bottom: 32px;">
+        <h2 style="color: #374151; font-size: 20px; font-weight: 600; margin-bottom: 16px; border-bottom: 2px, solid #e5e7eb; padding-bottom: 8px;">
           ${index + 1}. ${section}
         </h2>
         ${generateSectionContent(section, template.title)}
       </div>
-    `;
+    `;`
   });
   // Add AI disclaimer
   content += `
-    <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 40px;">
-      <p style="margin: 0; font-size: 14px; color: #6b7280; font-style: italic;">
+    <div style="background: #f9fafb; border: 1px, solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 40px;">
+      <p, style="margin: 0; font-size: 14px; color: #6b7280; font-style: italic;">
         <strong>AI Disclaimer:</strong> This report was generated using AI assistance. Please review all content for accuracy and completeness.
         Legal analysis should be verified by qualified legal professionals before use in official proceedings.
       </p>
     </div>
-  `;
+  `;`
   return content;
 }
 function generateSectionContent(section: string, reportType: string): string {
@@ -165,7 +165,7 @@ function generateSectionContent(section: string, reportType: string): string {
         <li>Legal precedents support the primary arguments presented</li>
         <li>Recommended actions align with best practices in similar cases</li>
       </ul>
-    `,
+    `,`
     'Case Overview': `
       <p>This section provides background information and context for the case under investigation.</p>
       <p><strong>Case Details:</strong></p>
@@ -175,7 +175,7 @@ function generateSectionContent(section: string, reportType: string): string {
         <li>Case type: [Criminal/Civil/Administrative]</li>
         <li>Current status: Active investigation</li>
       </ul>
-    `,
+    `,`
     'Key Facts': `
       <p>The following facts have been established through investigation and evidence analysis:</p>
       <ol>
@@ -184,32 +184,32 @@ function generateSectionContent(section: string, reportType: string): string {
         <li>Location of incident: [Address/Description]</li>
         <li>Witnesses identified: [Number] individuals interviewed</li>
       </ol>
-    `,
+    `,`
     'Evidence Summary': `
       <p>Evidence collected and analyzed includes:</p>
-      <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
-        <tr style="background: #f9fafb;">
-          <th style="border: 1px solid #e5e7eb; padding: 12px; text-align: left;">Evidence Type</th>
-          <th style="border: 1px solid #e5e7eb; padding: 12px; text-align: left;">Description</th>
-          <th style="border: 1px solid #e5e7eb; padding: 12px; text-align: left;">Status</th>
+      <table style="width: 100%; border-collapse: collapse; margin: 16px, 0;">
+        <tr, style="background: #f9fafb;">
+          <th style="border: 1px, solid #e5e7eb; padding: 12px; text-align: left;">Evidence Type</th>
+          <th style="border: 1px, solid #e5e7eb; padding: 12px; text-align: left;">Description</th>
+          <th style="border: 1px, solid #e5e7eb; padding: 12px; text-align: left;">Status</th>
         </tr>
         <tr>
-          <td style="border: 1px solid #e5e7eb; padding: 12px;">Physical Evidence</td>
-          <td style="border: 1px solid #e5e7eb; padding: 12px;">Items collected from scene</td>
-          <td style="border: 1px solid #e5e7eb; padding: 12px;">Under analysis</td>
+          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Physical Evidence</td>
+          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Items collected from scene</td>
+          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Under analysis</td>
         </tr>
         <tr>
-          <td style="border: 1px solid #e5e7eb; padding: 12px;">Digital Evidence</td>
-          <td style="border: 1px solid #e5e7eb; padding: 12px;">Electronic records and data</td>
-          <td style="border: 1px solid #e5e7eb; padding: 12px;">Reviewed</td>
+          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Digital Evidence</td>
+          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Electronic records and data</td>
+          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Reviewed</td>
         </tr>
         <tr>
-          <td style="border: 1px solid #e5e7eb; padding: 12px;">Witness Statements</td>
-          <td style="border: 1px solid #e5e7eb; padding: 12px;">Testimonial evidence</td>
-          <td style="border: 1px solid #e5e7eb; padding: 12px;">Documented</td>
+          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Witness Statements</td>
+          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Testimonial evidence</td>
+          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Documented</td>
         </tr>
       </table>
-    `,
+    `,`
     'Legal Analysis': `
       <p>Based on applicable laws and regulations, the following legal analysis applies:</p>
       <p><strong>Relevant Statutes:</strong></p>
@@ -223,7 +223,7 @@ function generateSectionContent(section: string, reportType: string): string {
         <li><em>[Case Name v. Defendant]</em>: Established precedent for similar circumstances</li>
         <li><em>[Landmark Case]</em>: Provides guidance on evidence admissibility</li>
       </ul>
-    `,
+    `,`
     'Conclusions and Recommendations': `
       <p>Based on the analysis conducted, the following conclusions and recommendations are made:</p>
       <p><strong>Conclusions:</strong></p>
@@ -239,7 +239,7 @@ function generateSectionContent(section: string, reportType: string): string {
         <li>Prepare for potential challenges to evidence admissibility</li>
         <li>Schedule follow-up review in 30 days</li>
       </ol>
-    ` };
+    ` };`
   return (
     sampleContent[section] ||
     `

@@ -183,7 +183,7 @@ class WebGPUCudaBridge {
 				}
 				outputData[index] = result;
 			}
-		`;
+		`;`
     const shaderModule = device.createShaderModule({
       code: computeShaderCode
     });
@@ -227,20 +227,20 @@ class WebGPUCudaBridge {
     // Create bind group layout
     const bindGroupLayout = device.createBindGroupLayout({
       entries: [
-        {
-          binding: 0,
+        {,
+         , binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' }
+          buffer: {, type: 'read-only-storage` }'`
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' }
+          buffer: {, type: `storage` }
         },
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'uniform' }
+          buffer: {, type: `uniform` }
         },
       ]
     });
@@ -248,8 +248,8 @@ class WebGPUCudaBridge {
     const bindGroup = device.createBindGroup({
       layout: bindGroupLayout,
       entries: [
-        { binding: 0, resource: { buffer: inputBuffer } },
-        { binding: 1, resource: { buffer: outputBuffer } },
+        {, binding: 0, resource: {, buffer: inputBuffer } },
+        { binding: 1, resource: {, buffer: outputBuffer } },
         { binding: 2, resource: {, buffer: configBuffer } }
       ]
     });
@@ -293,7 +293,7 @@ class WebGPUCudaBridge {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          model: config?.model || 'gemma3-legal',
+         , model: config?.model || 'gemma3-legal',
           prompt: config.prompt || 'Analyze the provided legal document.',
           stream: false,
           options: {
@@ -332,9 +332,9 @@ class WebGPUCudaBridge {
     try {
       const response = await fetch(`${this.cudaServiceEndpoint}/api/legal/inference`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          query: config.prompt || config.query || 'Legal analysis required',
+         , query: config.prompt || config.query || 'Legal analysis required',
           max_tokens: config.max_tokens || 2048,
           temperature: config.temperature || 0.7,
           top_p: config.top_p || 0.9,
@@ -611,7 +611,7 @@ class WebGPUCudaBridge {
       deviceInfo: this.webgpuDevice
         ? {
             vendor: this.webgpuDevice.adapter.info?.vendor || 'Unknown',
-            architecture: this.webgpuDevice.adapter.info?.architecture || 'Unknown` }
+            architecture: this.webgpuDevice.adapter.info?.architecture || 'Unknown` }'`
         : null,
       endpoints: {
         ollama: this.ollamaEndpoint,

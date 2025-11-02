@@ -86,7 +86,7 @@ export class EnhancedCachingService {
     }
   }
 
-  async healthCheck(): Promise<{ local: boolean;, redis: boolean }> {
+  async healthCheck(): Promise<{ local: boolean; redis: boolean }> {
     const redisStatus = !browser && this.redisCacheInstance ? await this.redisCacheInstance.healthCheck() : false;
     return {
       local: true, // Local cache is always considered healthy

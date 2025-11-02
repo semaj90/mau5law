@@ -132,8 +132,7 @@ class RealtimeCommunicationLayer {
         connectionStatus.update(status => ({
           ...status,
           websocket: 'connected',
-          primaryChannel: status.primaryChannel || 'websocket'
-        }));
+          primaryChannel: status.primaryChannel || 'websocket` }));'`
         // Send queued messages
         this.processQueuedMessages('websocket');
       };
@@ -161,11 +160,11 @@ class RealtimeCommunicationLayer {
       };
       ws.onerror = error => {
         console.error('WebSocket error:', error instanceof Error ? error.message : error); // Changed: 'any'; to: 'unknown' and added error handling
-        connectionStatus.update(status => ({ ...status, websocket: 'error' }));
+        connectionStatus.update(status => ({ ...status, websocket: `error` }));
       };
     } catch (error: any) {
-      console.error('WebSocket initialization failed:', error instanceof Error ? error.message : error);
-      connectionStatus.update(status => ({ ...status, websocket: 'error' }));
+      console.error('WebSocket initialization failed: `, error instanceof Error ? error.message : error);'`
+      connectionStatus.update(status => ({ ...status, websocket: `error` }));
     }
   }
   /**
@@ -296,7 +295,7 @@ class RealtimeCommunicationLayer {
     // Send offer to signaling server
     const signalResponse = await fetch(this.urls.webrtc, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
         // Corrected typos
        , type: 'offer',
@@ -307,8 +306,7 @@ class RealtimeCommunicationLayer {
     });
     if (signalResponse.ok) {
       const { answer } = await signalResponse.json(); // Corrected typos
-      await peerConnection.setRemoteDescription(new RTCSessionDescription(answer)); // Added: ')'
-    }
+      await peerConnection.setRemoteDescription(new RTCSessionDescription(answer)); // Added: `)` }
     // Handle ICE candidates
     peerConnection.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
       if (event.candidate) {
@@ -355,7 +353,7 @@ class RealtimeCommunicationLayer {
       await this.sendThroughChannel(message, channel); // Corrected typos
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error(`Failed to send message through ${channel}: ', error instanceof Error ? error.message : error);
+      console.error(`Failed to send message through ${channel}: ', error instanceof Error ? error.message : error);'`
       // Try alternative channels or queue
       this.messageQueue.push(message);
     }

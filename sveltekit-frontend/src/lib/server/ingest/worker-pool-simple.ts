@@ -34,7 +34,7 @@ export type Job = {
 export class WorkerPool { pool: Worker[] = [];, queue: Job[] = [];
   free: boolean[] = [];
   // Explicitly type resolve and reject functions
-  private jobCallbacks = new Map<string, { resolve: (value: JobResult) => void;, reject: (reason?: Error) => void }>();
+  private jobCallbacks = new Map<string, { resolve: (value: JobResult) => void; reject: (reason?: Error) => void }>();
   constructor(num = Math.max(1, Math.floor(os.cpus().length / 2))) {
     for (let i = 0; i < num; i++) {
       const workerPath = path.resolve(__dirname, 'ingest-worker.js');
@@ -57,7 +57,7 @@ export class WorkerPool { pool: Worker[] = [];, queue: Job[] = [];
         this.maybeProcessQueue();
       });
       w.on('error', err => {
-        console.error('Worker error:', err);
+        console.error('Worker error:', err);'
         const idx = this.pool.indexOf(w);
         this.free[idx] = true;
         this.maybeProcessQueue();

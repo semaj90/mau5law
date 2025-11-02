@@ -139,7 +139,7 @@ export class VectorSearchClient {
         headers: {
           'Content-Type': 'application/x-protobuf',
           'Accept': 'application/x-protobuf',
-          'X-Client-Version': '1.0.0` },
+          'X-Client-Version': '1.0.0' },
         body: requestBuffer,
         signal: AbortSignal.timeout(this.timeout)
       });
@@ -156,7 +156,7 @@ export class VectorSearchClient {
       searchResponse.metadata.client_time_ms = Math.round(clientTime);
       return searchResponse;
     } catch (error) {
-      console.error('Protocol buffer vector search error:', error);
+      console.error('Protocol buffer vector search error:', error);'
       throw new Error(`Vector search failed: ${error.message}`);
     }
   }
@@ -169,7 +169,7 @@ export class VectorSearchClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json` },
+          'Accept': 'application/json' },
         body: JSON.stringify(request),
         signal: AbortSignal.timeout(this.timeout)
       });
@@ -179,7 +179,7 @@ export class VectorSearchClient {
       }
       return await response.json();
     } catch (error) {
-      console.error('JSON vector search error:', error);
+      console.error('JSON vector search error:', error);'
       throw error;
     }
   }
@@ -212,7 +212,7 @@ export class VectorSearchClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json` },
+          'Accept': 'application/json' },
         body: JSON.stringify(batchRequest),
         signal: AbortSignal.timeout(this.timeout * 2), // Double timeout for batch
       });
@@ -222,7 +222,7 @@ export class VectorSearchClient {
       const batchResponse = await response.json();
       return batchResponse.responses;
     } catch (error) {
-      console.error('Batch vector search error:', error);
+      console.error('Batch vector search error:', error);'
       throw error;
     }
   }
@@ -253,7 +253,7 @@ export class VectorSearchClient {
         }
       } catch (error) {
         lastError = error as Error;
-        console.warn(`Vector search attempt ${attempt} failed: ', error.message);
+        console.warn(`Vector search attempt ${attempt} failed: ', error.message);'`
         // Wait before retry (exponential backoff)
         if (attempt < maxRetries) {
           await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
@@ -316,7 +316,7 @@ export function getDocumentTypeLabel(type: DocumentType): string {
     [DocumentType.RULING]: 'Ruling',
     [DocumentType.STATUTE]: 'Statute',
     [DocumentType.CASE_LAW]: 'Case Law',
-    [DocumentType.REGULATION]: 'Regulation` };
+    [DocumentType.REGULATION]: 'Regulation' };
   return labels[type] || 'Unknown';
 }
 export function highlightText(text: string, highlights: HighlightRange[]): string {
@@ -331,9 +331,9 @@ export function highlightText(text: string, highlights: HighlightRange[]): strin
     const before = result.slice(0, start);
     const highlighted = result.slice(start, end);
     const after = result.slice(end);
-    result = `${before}<mark class="highlight-${highlight.match_type}">${highlighted}</mark>${after}`;
+    result = `${before}<mark, class="highlight-${highlight.match_type}">${highlighted}</mark>${after}`;
     // Account for added markup in offset
-    offset += `<mark class="highlight-${highlight.match_type}"></mark>`.length;
+    offset += `<mark, class="highlight-${highlight.match_type}"></mark>`.length;
   }
   return result;
 }

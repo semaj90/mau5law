@@ -131,8 +131,8 @@ export class AIProviderRouter {
   /**
    * Get all providers sorted by priority and health
    */
-  getProviders(): { provider: LLMProviderConfig;, status: ProviderStatus }[] {
-    const result: { provider: LLMProviderConfig;, status: ProviderStatus }[] = [];
+  getProviders(): { provider: LLMProviderConfig; status: ProviderStatus }[] {
+    const result: { provider: LLMProviderConfig; status: ProviderStatus }[] = [];
     const sorted = Array.from(this.providers.values())
       .filter(p => p.enabled)
       .sort((a, b) => {
@@ -213,17 +213,17 @@ export class AIProviderRouter {
   private async callTensorRT(provider: LLMProviderConfig, request: LLMRequest): Promise<LLMResponse> {
     const response = await fetch(`${provider.baseUrl}/v2/models/${provider.model}/infer`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-        inputs: [
-          {
-            name: 'input_ids',
+       , inputs: [
+          {,
+           , name: 'input_ids',
             shape: [1, -1],
             datatype: 'UINT32',
             data: request.prompt
           }
         ],
-        outputs: [{ name: `output_ids` }],
+        outputs: [{, name: `output_ids` }],
         parameters: {
          , temperature: request.temperature || 0.7,
           max_tokens: request.maxTokens || 512,
@@ -269,7 +269,7 @@ export class AIProviderRouter {
       throw new Error(`vLLM request failed: ${response.statusText}`);
     }
     const data = (await response.json()) as { choices: Array<{, text: string }>;
-      usage: { prompt_tokens: number; completion_tokens: number;, total_tokens: number };
+      usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
     };
     return {
       content: data.choices[0]?.text || '',
@@ -332,11 +332,11 @@ export class AIProviderRouter {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${provider.apiKey}' },
       body: JSON.stringify({
-        model: provider.model,
+       , model: provider.model,
         messages: [
-          {
+          {,
            , role: 'system',
-            content: request.systemPrompt || 'You are a helpful assistant.` },
+            content: request.systemPrompt || 'You are a helpful assistant.` },'`
           {
             role: 'user',
             content: request.prompt
@@ -352,7 +352,7 @@ export class AIProviderRouter {
       throw new Error(`OpenAI request failed: ${response.statusText}`);
     }
     const data = (await response.json()) as { choices: Array<{, message: {, content: string } }>;
-      usage: { prompt_tokens: number; completion_tokens: number;, total_tokens: number };
+      usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
     };
     return {
       content: data.choices[0]?.message.content || '',
@@ -373,7 +373,7 @@ export class AIProviderRouter {
   async callWithFunctions(
     request: LLMRequest,
     _functions: FunctionCall[]
-  ): Promise<{ response: LLMResponse;, functionCalls: FunctionCallingResponse[] }> {
+  ): Promise<{ response: LLMResponse; functionCalls: FunctionCallingResponse[] }> {
     // Get response from LLM
     const response = await this.callLLM(request);
     // Parse function calls (implementation depends on model support)

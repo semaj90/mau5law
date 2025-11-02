@@ -2,7 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit'; // Changed: Import RequestH
 import { json } from '@sveltejs/kit';
 import { quicAuthClient, setSessionCookie } from '$lib/services/quic-auth-client';
 import { db } from '$lib/server/db';
-import { sessions as sessionsTable, users as usersTable } from '$lib/server/db/unified-schema';
+import { sessions, as sessionsTable, users as usersTable } from '$lib/server/db/unified-schema';
 import { eq } from 'drizzle-orm';
 /**
  * POST /api/auth/quic-login
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async event => {
     const existingUser = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
     let userId: string;
     if (existingUser.length === 0 && authResponse.profile) {
-      // Create user in local database if doesn't exist
+      // Create user in local database if doesn't exist'
       const newUser = await db
         .insert(usersTable)
         .values({
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async event => {
       expiresAt: authResponse.expiresAt
     });
   } catch (error) {
-    console.error('QUIC login error:', error);
+    console.error('QUIC login error:', error);'
     return json({ success: false, error: 'Internal server error' }, { status: 500 });
   }
 };
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async event => {
       expiresAt: validation.expiresAt
     });
   } catch (error) {
-    console.error('QUIC session validation error:', error);
+    console.error('QUIC session validation error:', error);'
     return json({ valid: false, error: 'Internal server error' }, { status: 500 });
   }
 };

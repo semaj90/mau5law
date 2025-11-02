@@ -77,17 +77,17 @@ export const legalApiResponses = {
   invalidEvidenceFormat: (format: string) => apiError(`Unsupported evidence; format: ${format}`, 400),
   // Success responses (made generic)
   caseCreated: <T>(caseData: T) =>
-    apiSuccess<{ case T; message: string }>({ case caseData, message: 'Case created successfully' }, 201),
+    apiSuccess<{ case, T; message: string }>({ case caseData, message: 'Case created successfully' }, 201),
   evidenceProcessed: <T>(result: T) =>
-    apiSuccess<{ analysis: T;, message: string }>({ analysis: result, message: 'Evidence processed successfully' }, 200),
+    apiSuccess<{ analysis: T; message: string }>({ analysis: result, message: 'Evidence processed successfully' }, 200),
   aiAnalysisComplete: <T>(analysis: T) =>
-    apiSuccess<{ analysis: T;, message: string }>({ analysis, message: 'AI analysis completed' }, 200)
+    apiSuccess<{ analysis: T; message: string }>({ analysis, message: 'AI analysis completed' }, 200)
 };
 /**
  * Middleware to wrap API handlers with standardized error handling
  */
 export type ApiHandler = (...args: any[]) => Promise<Response> | Response;
-export function withErrorHandling<T extends ApiHandler>(handler: T): (...args: Parameters<T>) => Promise<Response> {
+export function withErrorHandling<T extends, ApiHandler>(handler: T): (...args: Parameters<T>) => Promise<Response> {
   return async (...args: Parameters<T>): Promise<Response> => {
     try {
       const result = await handler(...args);
@@ -97,7 +97,7 @@ export function withErrorHandling<T extends ApiHandler>(handler: T): (...args: P
       const err = error as { name?: string; details?: any; message?: string };
       if (err.name === 'ValidationError') {
         return apiResponses.validationFailed(
-          (err.details as object) ?? { message: err.message ?? 'Validation failed` }
+          (err.details as object) ?? { message: err.message ?? 'Validation failed` }'`
         );
       }
       if (err.name === 'UnauthorizedError') {

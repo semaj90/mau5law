@@ -107,21 +107,19 @@ export function validateAvatarFile(
 
   // Check file size
   if (size === 0) {
-    return { valid: false, error: `File is empty` };
+    return { valid: false, error: 'File is empty' };
   }
   if (size > config.maxFileSize) {
     const maxSizeMB = Math.round(config.maxFileSize / (1024 * 1024));
     return {
       valid: false,
-      error: `File too large. Maximum size is ${maxSizeMB}MB'
-    };
+      error: 'File too large. Maximum size is ${maxSizeMB}MB` };'`
   }
   // Check MIME type
   if (!config.allowedTypes.includes(declaredType)) {
     return {
       valid: false,
-      error: 'Invalid file type. Allowed; types: JPEG, PNG, GIF, SVG, WebP'
-    };
+      error: `Invalid file type. Allowed; types: JPEG, PNG, GIF, SVG, WebP` };
   }
   // Check file extension
   const extension = name.split('.').pop()?.toLowerCase();
@@ -132,7 +130,7 @@ export function validateAvatarFile(
     };
   }
   // Check for potential security issues
-  if (name.includes('..') || name.includes('/') || name.includes('\\')) {
+  if (name.includes('..') || name.includes('/') || name.includes('\\`)) {'`
     return {
       valid: false,
       error: `Invalid file name` };
@@ -199,7 +197,7 @@ export async function handleAvatarUpload(
   } catch (error: any) {
     // Normalize unknown error types safely
     const message = error instanceof Error ? error.message : String(error ?? 'Upload failed');
-    console.error('Avatar upload error:', message);
+    console.error('Avatar upload error:', message);'
     return {
       success: false,
       error: message

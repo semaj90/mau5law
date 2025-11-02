@@ -78,8 +78,7 @@ export class WebTransportService {
     this.setState({
       activeTransport: 'http',
       isConnected: true,
-      error: 'Using HTTP fallback (reduced real-time capabilities)'
-    });
+      error: 'Using HTTP fallback (reduced real-time capabilities)' });
     console.log('📡 Using HTTP-only mode');
   }
 
@@ -126,7 +125,7 @@ export class WebTransportService {
             console.log('🔌 WebTransport connection closed');
             this.setState({
               isConnected: false,
-              error: 'Connection closed` });
+              error: 'Connection closed' });
             this.scheduleReconnection();
           })
           .catch(err => {
@@ -223,7 +222,7 @@ export class WebTransportService {
         await writer.write(new TextEncoder().encode(response));
       }
     } catch (error) {
-      console.error('❌ Stream error:', error);
+      console.error('❌ Stream error:', error);'
     } finally {
       try {
         reader.releaseLock();
@@ -254,7 +253,7 @@ export class WebTransportService {
         console.log('📥 Received (unidirectional):', message);
       }
     } catch (error) {
-      console.error('❌ Stream error:', error);
+      console.error('❌ Stream error:', error);'
     } finally {
       try {
         reader.releaseLock();
@@ -281,7 +280,7 @@ export class WebTransportService {
 
       console.log('📤 Sent via WebTransport:', data);
     } catch (error) {
-      console.error('❌ Send error:', error);
+      console.error('❌ Send error:', error);'
       throw error;
     }
   }
@@ -307,7 +306,7 @@ export class WebTransportService {
         };
 
         this.ws.onerror = error => {
-          console.error('❌ WebSocket error:', error);
+          console.error('❌ WebSocket error:', error);'
           reject(error);
         };
 
@@ -315,8 +314,7 @@ export class WebTransportService {
           console.log('🔌 WebSocket closed');
           this.setState({
             isConnected: false,
-            error: 'Connection closed'
-          });
+            error: 'Connection closed' });
           this.scheduleReconnection();
         };
 
@@ -350,7 +348,7 @@ export class WebTransportService {
       const response = await fetch(this.config.httpUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },
+          'Content-Type': `application/json' },'`
         body: JSON.stringify(data)
       });
 
@@ -363,7 +361,7 @@ export class WebTransportService {
       console.log('📥 Received:', result);
       return result;
     } catch (error) {
-      console.error('❌ HTTP error:', error);
+      console.error('❌ HTTP error:', error);'
       throw error;
     }
   }
@@ -390,7 +388,7 @@ export class WebTransportService {
       this.setState({ latency });
       console.log(`⚡ Latency: ${latency.toFixed(2)}ms (${this.state.activeTransport})`);
     } catch (error) {
-      console.error(`❌ Send failed on ${this.state.activeTransport}: ', error);
+      console.error(`❌ Send failed on ${this.state.activeTransport}: ', error);'`
 
       // Try fallback
       if (this.state.activeTransport === 'webtransport') {

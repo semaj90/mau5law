@@ -70,7 +70,7 @@ export class GemmaEmbeddingService {
     this.primaryModel = primaryModel;
     this.fallbackModel = fallbackModel;
     this.timeout = timeout;
-    // Initial refresh of models, but don't await in constructor
+    // Initial refresh of models, but don't await in constructor'
     this.refreshAvailableModels().catch(e => console.error('Failed to refresh models on init:', e));
   }
 
@@ -312,7 +312,7 @@ export class GemmaEmbeddingService {
         return {
           success: false,
           available: false,
-          error: `Ollama not; responding: ${versionResponse.status}' };
+          error: `Ollama not; responding: ${versionResponse.status}` };
       }
 
       const versionData = await versionResponse.json();
@@ -344,7 +344,7 @@ export class GemmaEmbeddingService {
         recommendation: hasGemma
           ? 'Using fast Gemma models with nomic fallback'
           : hasNomic
-            ? 'Using reliable nomic-embed-text (no Gemma models available)'
+            ? 'Using reliable nomic-embed-text (no Gemma models available)`'`
             : `No embedding models available` };
 
       // Optionally fetch model info for primaryModel (non-blocking for health)
@@ -434,7 +434,7 @@ export class GemmaEmbeddingService {
       const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
-        error: `Model info retrieval; failed: ${msg}' };
+        error: 'Model info retrieval; failed: ${msg}' };
     } finally {
       clearTimeout(timeoutId);
     }
@@ -474,15 +474,15 @@ export class GemmaEmbeddingService {
       return { speed: 'fast', quality: 'high', dimensions: 384, type: 'gemma' }; // Changed from 1536 to 384
     }
     if (modelName.includes('nomic-embed-text')) {
-      return { speed: 'medium', quality: 'good', dimensions: 768, type: 'nomic' };
+      return { speed: 'medium', quality: 'good', dimensions: 768, type: 'nomic` };'`
     }
-    return { speed: 'medium', quality: 'medium', dimensions: 768, type: 'other' };
+    return { speed: 'medium', quality: 'medium', dimensions: 768, type: `other` };
   }
   /**
    * Test embedding generation with sample text
    */
   async testEmbeddingGeneration(): Promise<GemmaEmbeddingResult> {
-    const testText = 'This is a test legal document for embedding generation validation.';
+    const testText = 'This is a test legal document for embedding generation validation.`;'`
     return await this.generateEmbedding(testText, { test: true, purpose: `validation` });
   }
 }

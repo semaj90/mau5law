@@ -45,7 +45,7 @@ export type FieldType =
   | 'text_block';
 
 export interface OCRMetadata { filename: string;, fileSize: number;
-  dimensions: { width: number;, height: number };
+  dimensions: { width: number; height: number };
   pageCount: number;
   language: string;
   documentType: string;
@@ -135,7 +135,7 @@ export class OCRService {
       await this.worker.initialize('eng');
       await this.worker.setParameters({
         tessedit_char_whitelist:
-          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.);:!?-)()[]{}/@#$%^&*+=<>|\\~`"\' \n\t',
+          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.);:!?-)()[]{}/@#$%^&*+=<>|\\~`"\' \n\t',"`
         preserve_interword_spaces: '1',
         // removed tessedit_pageseg_mode referencing PSM (not exported by tesseract.js here)
       });
@@ -277,8 +277,8 @@ export class OCRService {
   private async detectDocumentType(text: string): Promise<DocumentType> {
     // Try LLM endpoint; on failure fall back to simple heuristics
     try {
-      const prompt = `Analyze this document text and determine its type:; Text: "${text.substring(0, 1000)}..."
-Return only one of: legal_document, contract, form`;
+      const prompt = `Analyze this document text and determine its type:; Text: "${text.substring(0, 1000)}..."`
+Return only one of: legal_document, contract, form`;`
       // Resolve Ollama endpoint via centralized helper
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { getOllamaEndpoint } = await import('$lib/services/get-ollama-endpoint');
@@ -383,10 +383,10 @@ Return only one of: legal_document, contract, form`;
   ): Promise<ExtractedField[]> {
     try {
       const existingNames = existingFields.map(f => f.fieldName).join(', ');
-      const prompt = `Analyze this ${documentType} and extract additional structured fields that may have been missed:
+      const prompt = `Analyze this ${documentType} and extract additional structured fields that may have been missed:`
 Document; text: "${text.substring(0, 2000)}..."
 Already extracted: ${existingNames}
-Return JSON array of objects: [{"fieldName":"...", "value":"...", "fieldType":"name","confidence":0.85}]`;
+Return JSON array of objects: [{"fieldName":"...", "value":"...", "fieldType":"name","confidence":0.85}]`;`
       const { getOllamaEndpoint } = await import('$lib/services/get-ollama-endpoint');
       const base = getOllamaEndpoint().replace(/\/$/, '');
       const res = await fetch(`${base}/api/generate`, {
@@ -481,9 +481,9 @@ Return JSON array of objects: [{"fieldName":"...", "value":"...", "fieldType":"n
 
   public async getSuggestions(fieldName: string, fieldType: FieldType, context: string): Promise<string[]> {
     try {
-      const prompt = `Based on this document context, suggest possible values for the field: "${fieldName}" of type: "${fieldType}":
+      const prompt = `Based on this document context, suggest possible values for the field: "${fieldName}" of type: "${fieldType}":`
 Context: "${context.substring(0, 500)}..."
-Provide 3 realistic suggestions as a JSON array: ["suggestion1", "suggestion2", "suggestion3"]`;
+Provide 3 realistic suggestions as a JSON array: ["suggestion1", "suggestion2", "suggestion3"]`;`
       const { getOllamaEndpoint } = await import('$lib/services/get-ollama-endpoint');
       const base = getOllamaEndpoint().replace(/\/$/, '');
       const res = await fetch(`${base}/api/generate`, {

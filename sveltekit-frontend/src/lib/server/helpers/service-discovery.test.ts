@@ -2,12 +2,12 @@
  * Service Discovery Test Suite
  *
  * Run with:
- * ```bash
+ * ```bash`
  * npx vitest src/lib/server/helpers/service-discovery.test.ts
  * ```
  *
  * Or with tsx:
- * ```bash
+ * ```bash`
  * tsx --test src/lib/server/helpers/service-discovery.test.ts
  * ```
  */
@@ -200,7 +200,7 @@ describe('ServiceDiscovery Integration Tests', () => {
       containerName: 'test-container-xyz',
       port: 8000
     });
-    // Should get fallback since env var doesn't exist and discovery is disabled
+    // Should get fallback since env var doesn't exist and discovery is disabled'
     expect(result.url).toBe('http://test-fallback:8000');
     expect(result.source).toBe('fallback');
   });

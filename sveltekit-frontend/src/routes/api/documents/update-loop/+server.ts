@@ -10,7 +10,7 @@ import { eq } from 'drizzle-orm'; // Assuming eq is imported from drizzle-orm
 // Instantiate the DocumentUpdateLoop service
 const documentUpdateLoop = new DocumentUpdateLoop() as DocumentUpdateLoop & {
   queueDocumentUpdate: (documentId: string, content: string) => Promise<void>;
-  getQueueStatus: () => Promise<{ processing: boolean;, queued: number }>;
+  getQueueStatus: () => Promise<{ processing: boolean; queued: number }>;
 };
 
 // Define a type for batch operation results
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
       } // End block
       case 'detect': {
         // Wrapped in block
-        // Only detect changes, don't process
+        // Only detect changes, don't process'
         const change = await documentUpdateLoop.detectDocumentChanges(documentId, content);
         result = {
           action: 'detected',
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (err: any) {
     // Changed from any to unknown
-    console.error('❌ Document update loop error:', err);
+    console.error('❌ Document update loop error:', err);'
     if (err instanceof Error && 'status' in err) {
       throw err; // Re-throw SvelteKit errors
     }
@@ -166,12 +166,11 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   } catch (err: any) {
     // Changed from any to unknown
-    console.error('❌ Update loop status error:', err);
+    console.error('❌ Update loop status error:', err);'
     return json(
       {
         success: false,
-        error: err instanceof Error ? err.message : 'Unknown error'
-      },
+        error: err instanceof Error ? err.message : 'Unknown error` },'`
       { status: 500 }
     );
   }
@@ -205,8 +204,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
             batchResults.push({
               documentId,
               success: false,
-              error: err instanceof Error ? err.message : 'Unknown error'
-            });
+              error: err instanceof Error ? err.message : `Unknown error` });
           }
         }
         return json({
@@ -235,7 +233,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     }
   } catch (err: any) {
     // Changed from any to unknown
-    console.error('❌ Batch operation error:', err);
+    console.error('❌ Batch operation error:', err);'
     if (err instanceof Error && 'status' in err) {
       throw err;
     }

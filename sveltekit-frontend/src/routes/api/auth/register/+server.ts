@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       {
         success: true,
         user: {
-          id: newUser.id,
+         , id: newUser.id,
           email: newUser.email,
           firstName: newUser.firstName,
           lastName: newUser.lastName,

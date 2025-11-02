@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
           assets: assetPredictions,
           count: assetPredictions.length,
           aggregateMetrics: {
-            avgConfidence:
+           , avgConfidence:
               assetPredictions.reduce(
                 (sum: number, a: {, totalConfidence: number }) => sum + a.totalConfidence,
                 0
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url }) => {
           sprites: bitmapSprites,
           count: bitmapSprites.length,
           cacheStats: {
-            totalHits: bitmapSprites.reduce(
+           , totalHits: bitmapSprites.reduce(
               (sum: number, s: {, hitCount: number }) => sum + s.hitCount,
               0
             ),
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ url }) => {
           manifests: chrManifests,
           count: chrManifests.length,
           systemMetrics: {
-            totalBanks: chrManifests.reduce(
+           , totalBanks: chrManifests.reduce(
               (sum: number, m: {, bankCount: number }) => sum + m.bankCount,
               0
             ),
@@ -207,15 +207,13 @@ export const GET: RequestHandler = async ({ url }) => {
             utilization: 0.6 + Math.random() * 0.3,
             avgBankSize: Math.floor(Math.random() * 8192 + 4096), // bytes
             swapRate: Math.random() * 0.05,
-            status: Math.random() > 0.05 ? 'healthy' : 'warning'
-          },
+            status: Math.random() > 0.05 ? 'healthy' : 'warning` },'`
           predictiveEngine: {
             accuracy: 0.75 + Math.random() * 0.2,
             predictions: Math.floor(Math.random() * 1000 + 500),
             mispredictions: Math.floor(Math.random() * 50 + 10),
             adaptationRate: Math.random() * 0.1,
-            status: Math.random() > 0.05 ? 'healthy' : 'learning'
-          },
+            status: Math.random() > 0.05 ? 'healthy' : `learning` },
           overallHealth:
             Math.random() > 0.8
               ? 'optimal'
@@ -247,7 +245,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
     }
   } catch (error: any) {
-    console.error('❌ Neural topology assets API error:', error);
+    console.error('❌ Neural topology assets API error:', error);'
     return json(
       {
         error: 'Neural assets operation failed',
@@ -288,7 +286,7 @@ export const POST: RequestHandler = async ({ request }) => {
           estimatedImprovements: {
             performanceGain: `${Math.floor(Math.random() * 25 + 15)}%`,
             memoryReduction: `${Math.floor(Math.random() * 20 + 10)}%`,
-            responseTimeImprovement: `${Math.floor(Math.random() * 30 + 20)}%' },
+            responseTimeImprovement: `${Math.floor(Math.random() * 30 + 20)}%` },
           mockOptimization: true
         };
         return json({
@@ -312,7 +310,7 @@ export const POST: RequestHandler = async ({ request }) => {
             palette: Array.from(
               { length: 4 },
               () =>
-                '#${Math.floor(Math.random() * 16777215)
+                '#${Math.floor(Math.random() * 16777215)'
                   .toString(16)
                   .padStart(6, '0')}`
             ),
@@ -408,7 +406,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
     }
   } catch (error: any) {
-    console.error('❌ Neural topology assets POST API error:', error);
+    console.error('❌ Neural topology assets POST API error:', error);'
     return json(
       {
         error: 'POST operation failed',

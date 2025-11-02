@@ -7,7 +7,7 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import pgClient, { poolShim } from '$lib/server/db-shim';
 import postgres from 'postgres'; // added: import to derive client type
 // Load environment-specific variables
-const envFile = `.env.${process.env.NODE_ENV || 'development' }`;
+const envFile = `.env.${process.env.NODE_ENV || 'development` }`;'`
 dotenv.config({ path: envFile });
 // Add a minimal typed shape for pools/shims we interact with
 type PoolLike = {
@@ -16,7 +16,7 @@ type PoolLike = {
   close?: () => Promise<void> | void;
   // Connection acquisition for code that expects to call connect()
   connect?: () => Promise<{
-    query?: (text: string | {, text: string; values?: any[] }, params?: any[]) => Promise<{ rows?: any[] }>;
+    query?: (text: string | {;, text: string; values?: any[] }, params?: any[]) => Promise<{ rows?: any[] }>;
     release?: () => void;
   }>;
   // Optional bookkeeping / diagnostics commonly present on pool shims
@@ -26,7 +26,7 @@ type PoolLike = {
   on?: (event: string, handler: (...args: any[]) => void) => void;
 };
 // derive the concrete type used by postgres-js at runtime
-type PostgresJsClient = ReturnType<typeof postgres>;
+type PostgresJsClient = ReturnType<typeof, postgres>;
 let _db: PostgresJsDatabase<typeof schema> | null = null;
 let _pool: PoolLike | null = null;
 function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
@@ -59,12 +59,12 @@ function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
       console.log('Running PostgreSQL migrations (async) ...');
       // run migrations asynchronously so initializeDatabase can remain sync.
       // Use promise handlers to log success/failure.
-      migrate(_db, { migrationsFolder: './drizzle' })
+      migrate(_db, { migrationsFolder: './drizzle` })'`
         .then(() => {
           console.log('✅ PostgreSQL migrations completed');
         })
         .catch(error => {
-          console.error('❌ PostgreSQL migration error:', error);
+          console.error('❌ PostgreSQL migration error:', error);'
         });
     } catch (error) {
       console.error('❌ PostgreSQL migration error (sync):', error);
@@ -74,7 +74,7 @@ function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   return _db;
 }
 // Main database connection
-export const db: PostgresJsDatabase<typeof schema> = new Proxy({} as unknown as PostgresJsDatabase<typeof schema>, {
+export const db: PostgresJsDatabase<typeof, schema> = new Proxy({} as unknown as PostgresJsDatabase<typeof, schema>, {
   get(target, prop, receiver) {
     const database = initializeDatabase();
     if (!database) {
@@ -93,7 +93,7 @@ async function initializeQdrantCollection(): Promise<void> {
     console.info('initializeQdrantCollection: no Qdrant client configured, skipping seeding.');
     return;
   } catch (err) {
-    console.error('initializeQdrantCollection error:', err);
+    console.error('initializeQdrantCollection error:', err);'
     throw err;
   }
 }

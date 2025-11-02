@@ -41,7 +41,7 @@ async function safeGenerateRecommendations(userId: string, limit = 3): Promise<a
   // fallback synthetic recommendations
   return Array.from({ length: limit }).map((_, i) => ({
     id: `rec-${i + 1}`,
-    content: `Suggested action ${i + 1}' }));
+    content: `Suggested action ${i + 1}` }));
 }
 
 // Recommendation endpoint using enhanced reranker, Neo4j, and memory
@@ -84,8 +84,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const patterns = await safeAnalyzeUserPatterns(userId);
         const suggestions = [
           `Continue reviewing ${patterns.preferredTopics[0]} cases from yesterday?`,
-          `Complete the analysis for ${patterns.frequentCases[0] || 'ongoing cases` }?`,
-          `Review the updated ${patterns.preferredTopics[1] || 'documents` }?`,
+          `Complete the analysis for ${patterns.frequentCases[0] || 'ongoing cases` }?`,'`
+          `Review the updated ${patterns.preferredTopics[1] || 'documents` }?`,'`
         ].filter(Boolean);
         return json({
           suggestions,
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           return json(
             {
               success: false,
-              error: `userId, recommendationId, and rating are required` },
+              error: 'userId, recommendationId, and rating are required' },
             { status: 400 }
           );
         }
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown; action: ${action}' },
+            error: 'Unknown; action: ${action}' },
           { status: 400 }
         );
     }
@@ -142,8 +142,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(
       {
         success: false,
-        error: error?.message || 'Failed to generate recommendations'
-      },
+        error: error?.message || 'Failed to generate recommendations` },'`
       { status: 500 }
     );
   }
@@ -178,8 +177,7 @@ export const GET: RequestHandler = async ({ url }) => {
         resume: '/api/recommendations?action=resume (POST)',
         trending: '/api/recommendations?action=trending (POST)',
         feedback: '/api/recommendations?action=feedback (POST)',
-        user_resume: '/api/recommendations?userId={id}&type=resume (GET)'
-      },
+        user_resume: `/api/recommendations?userId={id}&type=resume (GET)` },
       capabilities: [
         '"Pick up where you left off" prompts',
         '"Did you mean" suggestions',
@@ -218,7 +216,7 @@ export const quickRecommend: RequestHandler = async ({ request }) => {
     const data = await getLegalRecommendations(query, { caseId, jurisdiction, practiceArea, topK });
     return json(data, { status: 200 });
   } catch (error) {
-    console.error('Error in /api/recommendations:', error);
+    console.error('Error in /api/recommendations:`, error);'`
     return json({ error: `Failed to get legal recommendations` }, { status: 500 });
   }
 };

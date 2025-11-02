@@ -222,7 +222,7 @@ class IntelligentModelSwitcher {
     userProfile: UserLearningProfile,
     optimizationResult: OptimizationResult
   ): Promise<ModelSwitchDecision> {
-    // Don't switch if already using recommended model
+    // Don't switch if already using recommended model'
     if (currentModel === recommendedModel) {
       return {
         shouldSwitch: false,
@@ -301,7 +301,7 @@ class IntelligentModelSwitcher {
       return {
         success: false,
         switchTime: performance.now() - startTime,
-        error: message || 'Unknown error` };
+        error: message || 'Unknown error' };
     }
   }
   /**
@@ -604,7 +604,7 @@ class IntelligentModelSwitcher {
     recommendedModel: string,
     userProfile: UserLearningProfile,
     optimizationResult: OptimizationResult
-  ): { speedGain: number; qualityGain: number;, userSatisfactionGain: number } {
+  ): { speedGain: number; qualityGain: number; userSatisfactionGain: number } {
     // Simplified calculation - would use actual performance data
     const speedGain = currentModel === 'llama-rl' && recommendedModel === 'gemma270m' ? 25 : 10;
     const qualityGain = currentModel === 'gemma270m' && recommendedModel === 'llama-rl' ? 20 : 5;
@@ -614,9 +614,9 @@ class IntelligentModelSwitcher {
   private async calculateSwitchCost(
     fromModel: string,
     toModel: string
-  ): Promise<{ timeMs: number; memoryMB: number;, cpuUsage: number }> {
+  ): Promise<{ timeMs: number; memoryMB: number; cpuUsage: number }> {
     // Estimated switch costs - would measure actual performance
-    const switchCosts: Record<string, { timeMs: number; memoryMB: number;, cpuUsage: number }> = {
+    const switchCosts: Record<string, { timeMs: number; memoryMB: number; cpuUsage: number }> = {
       'gemma270m->llama-rl': { timeMs: 200, memoryMB: 1024, cpuUsage: 60 },
       'llama-rl->gemma270m': { timeMs: 100, memoryMB: -1024, cpuUsage: 40 },
       'gemma270m->legal-bert': { timeMs: 50, memoryMB: -512, cpuUsage: 20 },
@@ -626,8 +626,8 @@ class IntelligentModelSwitcher {
     return switchCosts[key] || { timeMs: 150, memoryMB: 0, cpuUsage: 50 };
   }
   private calculateNetBenefit(
-    improvements: { speedGain: number; qualityGain: number;, userSatisfactionGain: number },
-    switchCost: { timeMs: number; memoryMB: number;, cpuUsage: number },
+    improvements: { speedGain: number; qualityGain: number; userSatisfactionGain: number },
+    switchCost: { timeMs: number; memoryMB: number; cpuUsage: number },
     userProfile: UserLearningProfile
   ): number {
     // Weight benefits based on user preferences

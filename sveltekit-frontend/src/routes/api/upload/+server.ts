@@ -36,11 +36,11 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     if (error instanceof Error) {
-      console.error('Upload error:', error.message);
+      console.error('Upload error:', error.message);'
     } else {
-      console.error('Upload error:', error);
+      console.error('Upload error:', error);'
     }
-    return json({ error: 'Upload failed' }, { status: 500 });
+    return json({ error: 'Upload failed` }, { status: 500 });'`
   }
 };
 

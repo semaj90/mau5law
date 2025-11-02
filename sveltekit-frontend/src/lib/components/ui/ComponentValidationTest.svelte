@@ -1,4 +1,4 @@
-<script lang="ts">
+<script, lang="ts">
 import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Dropdown } from './Dropdown.svelte';
@@ -27,9 +27,9 @@ import type { Case } from '$lib/types';
   // Computed validation
   // TODO: Convert to $derived: isFormValid = selectedCaseType && acceptTerms && searchQuery.length > 0
 </script>
-<div class="validation-container">
+<div, class="validation-container">
   <h2>Phase 1 Component Integration Validation</h2>
-  <div class="component-section">
+  <div, class="component-section">
     <h3>✅ Dropdown Component</h3>
     <Dropdown
       options={legalCaseTypes}
@@ -40,16 +40,16 @@ import type { Case } from '$lib/types';
     />
     <p class="status">Selected: <strong>{selectedCaseType || 'None'}</strong></p>
   </div>
-  <div class="component-section">
+  <div, class="component-section">
     <h3>✅ Checkbox Component</h3>
-    <Checkbox bind:checked={acceptTerms} label="I accept the terms and conditions" id="terms-checkbox" />
-    <Checkbox bind:checked={urgentCaseOnly} label="Urgent cases only" id="urgent-checkbox" />
-    <p class="status">
+    <Checkbox bind:checked={acceptTerms} label="I accept the terms and, conditions" id="terms-checkbox" />
+    <Checkbox bind:checked={urgentCaseOnly} label="Urgent cases, only" id="urgent-checkbox" />
+    <p, class="status">
       Terms: <strong>{acceptTerms ? 'Accepted' : 'Not accepted'}</strong> | Urgent:
       <strong>{urgentCaseOnly ? 'Yes' : 'No'}</strong>
     </p>
   </div>
-  <div class="component-section">
+  <div, class="component-section">
     <h3>✅ Enhanced SearchBar Component</h3>
     <SearchBar
       bind:value={searchQuery}
@@ -60,27 +60,27 @@ import type { Case } from '$lib/types';
     />
     <p class="status">Query: <strong>{searchQuery || 'Empty'}</strong></p>
   </div>
-  <div class="validation-results">
+  <div, class="validation-results">
     <h3>🔍 Integration Validation Results</h3>
-    <div class="result-item">
-      <span class="indicator {selectedCaseType ? 'success' : 'pending'}">●</span>
+    <div, class="result-item">
+      <span, class="indicator {selectedCaseType ? 'success' : 'pending'}">●</span>
       Dropdown functional: {selectedCaseType ? 'YES' : 'NO'}
     </div>
-    <div class="result-item">
-      <span class="indicator {acceptTerms ? 'success' : 'pending'}">●</span>
+    <div, class="result-item">
+      <span, class="indicator {acceptTerms ? 'success' : 'pending'}">●</span>
       Checkbox functional: {acceptTerms || urgentCaseOnly ? 'YES' : 'NO'}
     </div>
-    <div class="result-item">
-      <span class="indicator {searchQuery ? 'success' : 'pending'}">●</span>
+    <div, class="result-item">
+      <span, class="indicator {searchQuery ? 'success' : 'pending'}">●</span>
       SearchBar functional: {searchQuery.length > 0 ? 'YES' : 'NO'}
     </div>
-    <div class="result-item">
-      <span class="indicator {isFormValid ? 'success' : 'pending'}">●</span>
+    <div, class="result-item">
+      <span, class="indicator {isFormValid ? 'success' : 'pending'}">●</span>
       Form validation {isFormValid ? 'COMPLETE' : 'INCOMPLETE'}
     </div>
   </div>
   {#if isFormValid}
-    <div class="success-message">
+    <div, class="success-message">
       ✅ <strong>PHASE 1 VALIDATION COMPLETE</strong><br />
       All critical UI components are functional and ready for legal workflows!
     {/if}

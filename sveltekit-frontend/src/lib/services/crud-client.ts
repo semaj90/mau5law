@@ -146,8 +146,7 @@ export class CrudClient {
     const options: RequestInit = {
       method,
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json` }'`
     };
     if (body) {
       options.body = JSON.stringify(body);
@@ -179,25 +178,25 @@ export class CrudClient {
   }
 
   // Generic CRUD operations
-  async create<T extends EntityData>(entity: EntityName, data: Partial<T>): Promise<CrudResponse<T>> {
+  async create<T extends, EntityData>(entity: EntityName, data: Partial<T>): Promise<CrudResponse<T>> {
     return this.request<T>('POST', null, { action: 'create', entity, data });
   }
 
-  async read<T extends EntityData>(entity: EntityName, id: string): Promise<CrudResponse<T>> {
+  async read<T extends, EntityData>(entity: EntityName, id: string): Promise<CrudResponse<T>> {
     const params = new URLSearchParams({ action: 'read', entity, id });
     return this.request<T>('GET', params);
   }
 
-  async update<T extends EntityData>(entity: EntityName, id: string, data: Partial<T>): Promise<CrudResponse<T>> {
+  async update<T extends, EntityData>(entity: EntityName, id: string, data: Partial<T>): Promise<CrudResponse<T>> {
     return this.request<T>('POST', null, { action: 'update', entity, id, data });
   }
 
-  async delete<T extends EntityData>(entity: EntityName, id: string): Promise<CrudResponse<T>> {
+  async delete<T extends, EntityData>(entity: EntityName, id: string): Promise<CrudResponse<T>> {
     return this.request<T>('POST', null, { action: 'delete', entity, id });
   }
 
   // List with optional pagination / sorting
-  async list<T extends EntityData>(entity: EntityName, options: PaginationOptions = {}): Promise<CrudResponse<T[]>> {
+  async list<T extends, EntityData>(entity: EntityName, options: PaginationOptions = {}): Promise<CrudResponse<T[]>> {
     const paramsObj: Record<string, string> = {
       action: 'list',
       entity
@@ -211,7 +210,7 @@ export class CrudClient {
   }
 
   // Search with support for vector search parameters
-  async search<T extends EntityData>(entity: EntityName, options: SearchOptions): Promise<CrudResponse<T[]>> {
+  async search<T extends, EntityData>(entity: EntityName, options: SearchOptions): Promise<CrudResponse<T[]>> {
     const paramsObj: Record<string, string> = {
       action: options.vector ? 'vector_search' : 'search',
       entity,

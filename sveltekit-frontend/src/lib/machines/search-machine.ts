@@ -5,7 +5,7 @@ import { createMachine, assign, setup, fromPromise } from 'xstate'; // removed u
 type Analytics = { totalResults: number;, searchTime: number;
   relevanceScore: number;
 };
-// The machine's context (its "extended state")
+// The machine's context (its "extended state")'
 export type SearchContext = { query: string;, filters: Record<string, unknown>;
   results: any[];
   searchHistory: string[];
@@ -15,8 +15,8 @@ export type SearchContext = { query: string;, filters: Record<string, unknown>;
 };
 // The events that can be sent to the machine
 export type SearchEvent =
-  | { type: 'UPDATE_QUERY';, query: string }
-  | { type: 'UPDATE_FILTERS';, filters: Record<string, unknown> }
+  | { type: 'UPDATE_QUERY'; query: string }
+  | { type: 'UPDATE_FILTERS'; filters: Record<string, unknown> }
   | { type: 'SEARCH' }
   | { type: 'LOAD_HISTORY' }
   | { type: 'CLEAR' }
@@ -39,7 +39,7 @@ const actors = {
     }
   }),
   validateSearchInput: fromPromise(
-    async ({ input }: { input: {, query: string; filters: Record<string, unknown> } }) => {
+    async ({ input }: { input: {, query: string;, filters: Record<string, unknown> } }) => {
       const errors: Record<string, string[]> = {};
       if (!input.query?.trim() && Object.keys(input.filters).length === 0) {
         errors.general = ['Please enter a search query or select a filter.'];
@@ -63,7 +63,7 @@ const actors = {
     }
   ),
   performSearchApiCall: fromPromise(
-    async ({ input }: { input: {, query: string; filters: Record<string, unknown> } }) => {
+    async ({ input }: { input: {, query: string;, filters: Record<string, unknown> } }) => {
       const startTime = Date.now();
       const searchParams = new URLSearchParams();
       if (input.query) {
@@ -96,7 +96,7 @@ const actors = {
 const actions = { saveHistoryToStorage: assign({, searchHistory: context => {
       const query = context.query ?? '';
       if (!query.trim()) {
-        return context.searchHistory; // Don't save empty queries
+        return context.searchHistory; // Don't save empty queries'
       }
       // Create a new array with the latest query at the front, ensuring no duplicates
       const newHistory = [...new Set([query, ...context.searchHistory])].slice(0, 10);
@@ -113,13 +113,13 @@ const actions = { saveHistoryToStorage: assign({, searchHistory: context => {
 export const searchMachine = setup({
   // Provide the types and implementations for actors and actions
   types: {} as { context: SearchContext;, events: SearchEvent;
-    actors: { loadHistoryFromStorage: { output: string[];, error: Error };
-      validateSearchInput: { input: { query: string;, filters: Record<string, unknown> };
-        output: { query: string;, filters: Record<string, unknown> };
+    actors: { loadHistoryFromStorage: { output: string[]; error: Error };
+      validateSearchInput: { input: { query: string; filters: Record<string, unknown> };
+        output: { query: string; filters: Record<string, unknown> };
         error: Record<string, string[]>;
       };
-      performSearchApiCall: { input: { query: string;, filters: Record<string, unknown> };
-        output: { results: any[];, analytics: Analytics };
+      performSearchApiCall: { input: { query: string; filters: Record<string, unknown> };
+        output: {, results: any[]; analytics: Analytics };
        , error: Error;
       };
     };
@@ -130,15 +130,15 @@ export const searchMachine = setup({
   id: 'search',
   initial: 'idle',
   context: {
-    query: '',
+   , query: '',
     filters: {},
     results: [],
     searchHistory: [],
-    analytics: { totalResults: 0, searchTime: 0, relevanceScore: 0 },
+    analytics: {, totalResults: 0, searchTime: 0, relevanceScore: 0 },
     validationErrors: {},
     error: null
   },
-  states: { idle: {, on: { UPDATE_QUERY: {, actions: assign({
+  states: {, idle: {, on: {, UPDATE_QUERY: {, actions: assign({
            , query: (context, event) => (event as any).query
           })
         },
@@ -177,7 +177,7 @@ export const searchMachine = setup({
           target: 'idle',
           actions: assign({
             validationErrors: (context, event) => (event as any).error as Record<string, string[]>,
-            error: () => 'Search input is invalid.` })
+            error: () => 'Search input is invalid.` })'`
         }
       }
     },
@@ -190,7 +190,7 @@ export const searchMachine = setup({
           target: 'results',
           // Run multiple actions: first assign results, then save history
           actions: [
-            assign({
+            assign({,
               results: (context, event) => (event as any).output.results as unknown[],
               analytics: (context, event) => (event as any).output.analytics as Analytics
             }),

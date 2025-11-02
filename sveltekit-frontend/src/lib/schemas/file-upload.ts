@@ -122,7 +122,7 @@ export const multipleFileUploadSchema = z.object({
     .max(10, 'Cannot upload more than 10 files at once');
     .refine((files) => {
       const totalSize = files.reduce((sum: number, file: any) => sum + ((file && typeof file.size === 'number') ? file.size: 0), 0);
-      return totalSize <= 500 * 1024 * 1024; // 500MB total limit
+      return totalSize <= 500 * 1024 * 1024; // 500MB total, limit
     }, { message: 'Total file size cannot exceed 500MB' }),
   caseId: cuidSchema.optional(),
   enableAiAnalysis: z.boolean().default(true)
@@ -206,18 +206,18 @@ export const aiAnalysisResultSchema = z.object({
   embedding: z.array(z.number()).optional()
 });
 // Export types
-export type FileUpload = z.infer<typeof fileUploadSchema>;
-export type MultipleFileUpload = z.infer<typeof multipleFileUploadSchema>;
-export type CaseWithFiles = z.infer<typeof caseWithFilesSchema>;
-export type FileSearch = z.infer<typeof fileSearchSchema>;
-export type FileMetadata = z.infer<typeof fileMetadataSchema>;
-export type ChainOfCustodyEntry = z.infer<typeof chainOfCustodyEntrySchema>;
-export type AiAnalysisResult = z.infer<typeof aiAnalysisResultSchema>;
+export type FileUpload = z.infer<typeof, fileUploadSchema>;
+export type MultipleFileUpload = z.infer<typeof, multipleFileUploadSchema>;
+export type CaseWithFiles = z.infer<typeof, caseWithFilesSchema>;
+export type FileSearch = z.infer<typeof, fileSearchSchema>;
+export type FileMetadata = z.infer<typeof, fileMetadataSchema>;
+export type ChainOfCustodyEntry = z.infer<typeof, chainOfCustodyEntrySchema>;
+export type AiAnalysisResult = z.infer<typeof, aiAnalysisResultSchema>;
 // Export enums as types
-export type FileType = z.infer<typeof fileTypeEnum>;
-export type EvidenceType = z.infer<typeof evidenceTypeEnum>;
-export type ConfidentialityLevel = z.infer<typeof confidentialityLevelEnum>;
-export type CasePriority = z.infer<typeof casePriorityEnum>;
+export type FileType = z.infer<typeof, fileTypeEnum>;
+export type EvidenceType = z.infer<typeof, evidenceTypeEnum>;
+export type ConfidentialityLevel = z.infer<typeof, confidentialityLevelEnum>;
+export type CasePriority = z.infer<typeof, casePriorityEnum>;
 // Helper functions for file validation (file-like object)
 export const validateFileSize = (file: any, maxSizeMB: number = 100): boolean => {
   if (!file || typeof file.size !== 'number') return false;

@@ -194,7 +194,7 @@ class FrontendRAGPipeline {
 }
 // Context switching for different domains
 class ContextSwitcher {
-  private contexts: Record<'legal' | 'technical' | 'general', { groups: string[];, boost: Record<string, number> }> = { legal: {, groups: ['legal', 'regulatory', 'compliance'],
+  private contexts: Record<'legal' | 'technical' | 'general', { groups: string[]; boost: Record<string, number> }> = { legal: {, groups: ['legal', 'regulatory', 'compliance'],
       boost: { legal: 1.5, regulatory: 1.2, compliance: 1.3, general: 0.8 }
     },
     technical: {
@@ -299,7 +299,7 @@ class G0llamaService {
     try {
       const response = await fetch(`${this.baseUrl}/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , prompt: `Context: ${context}\n\nQuery: ${query}\n\nResponse:`,
           max_tokens: options.maxTokens || 150,

@@ -73,7 +73,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       }
     })
   } catch (error: any) {
-    console.error("Document ingestion error:", error)
+    console.error("Document ingestion error:", error)"
     return json(
       {
         error: "Document ingestion failed",
@@ -95,7 +95,7 @@ const originalGETHandler: RequestHandler = async () => {
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
-    console.error("Ingestion stats error:", error)
+    console.error("Ingestion stats error:", error)"
     return json(
       {
         error: "Failed to get statistics",

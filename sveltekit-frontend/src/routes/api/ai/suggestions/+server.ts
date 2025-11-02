@@ -23,7 +23,7 @@ import { db } from '$lib/server/db/index.js';
 import { chatMessages, chatRecommendations } from '$lib/server/db/schema-unified.js';
 import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js';
 import { eq } from 'drizzle-orm';
-import { v4 as uuidv4 } from 'uuid';
+import { v4, as uuidv4 } from 'uuid';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types.js';
 // Import our new AI suggestion services
@@ -181,10 +181,10 @@ async function generateComprehensiveSuggestions({
   context: any;
   useVectorSearch: boolean;
   useOllamaAI: boolean;
-  useEnhancedRAG: boolean;
-  useProtobuf: boolean;
-  maxSuggestions: number;
-  confidenceThreshold: number;
+ , useEnhancedRAG: boolean;
+ , useProtobuf: boolean;
+ , maxSuggestions: number;
+ , confidenceThreshold: number;
  , temperature: number;
   userId?: string;
 }): Promise<UnifiedSuggestion[]> {
@@ -376,7 +376,7 @@ function generateRuleBasedSuggestions(content: string, reportType: string, conte
     if (contentLower.includes('suspect') || contentLower.includes('defendant')) {
       suggestions.push({
         content:
-          "Consider including the defendant's criminal history and prior convictions to establish a pattern of behavior.",
+          "Consider including the defendant's criminal history and prior convictions to establish a pattern of behavior.",'
         type: 'background_check',
         confidence: 0.8,
         reasoning: 'Document mentions suspect/defendant - criminal history relevant',
@@ -494,7 +494,7 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
       .leftJoin(chatRecommendations, eq(chatMessages.id, chatRecommendations.messageId))
       .where(
         // Note: This is a simplified similarity search
-        // In production, you'd use pgvector operators for proper cosine similarity
+        // In production, you'd use pgvector operators for proper cosine similarity'
         eq(chatMessages.role, 'user')
       )
       .limit(10);
@@ -522,7 +522,7 @@ async function generateContextualSuggestions(content: string, context: any): Pro
         type: 'case_context',
         confidence: 0.75,
         reasoning: 'Working within specific case context',
-        metadata: {, caseId: context.caseId, category: 'context_aware' }
+        metadata: {, caseId: context.caseId, category: 'context_aware` }'`
       });
     }
     // If we have evidence context, suggest evidence-specific analysis
@@ -532,7 +532,7 @@ async function generateContextualSuggestions(content: string, context: any): Pro
         type: 'evidence_context',
         confidence: 0.78,
         reasoning: 'Specific evidence items referenced',
-        metadata: {, evidenceIds: context.evidenceIds, category: 'evidence_specific' }
+        metadata: {, evidenceIds: context.evidenceIds, category: `evidence_specific` }
       });
     }
     // If we have previous messages, suggest consistency
@@ -593,9 +593,9 @@ async function storeRecommendations({
   recommendationId,
   reportType
 }: { userId: string;, sessionId: string;
-  content: string;
-  suggestions: UnifiedSuggestion[];
-  recommendationId: string;
+ , content: string;
+ , suggestions: UnifiedSuggestion[];
+ , recommendationId: string;
  , reportType: string;
 }): Promise<any> {
   try {

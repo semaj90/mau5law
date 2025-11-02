@@ -28,7 +28,7 @@ export interface OptimizationConfig { enableContext7Boost: boolean;, enableSema
 export interface CodeContext { language: string;, currentLine: string;
   previousLines: string[];
   nextLines: string[];
-  cursorPosition: { line: number;, character: number };
+  cursorPosition: { line: number; character: number };
   fullContext: string;
 }
 
@@ -388,7 +388,7 @@ export class CopilotIndexOptimizer {
    * Generate semantic clusters for better organization
    */
   private async generateSemanticClusters(entries: CopilotIndexEntry[]) {
-    // Use the enhanced RAG store's SOM clustering
+    // Use the enhanced RAG store's SOM clustering'
     const { somRAG } = enhancedRAGStore;
     // Train with all embeddings
     for (const entry of entries) {
@@ -483,7 +483,7 @@ export class CopilotIndexOptimizer {
   /**
    * Analyze code context for suggestions
    */
-  private analyzeCodeContext(code: string, cursor: {, line: number; character: number }, language: string): CodeContext {
+  private analyzeCodeContext(code: string, cursor: {, line: number;, character: number }, language: string): CodeContext {
     const lines = code.split('\n');
     const currentLine = lines[cursor.line] || '';
     const previousLines = lines.slice(Math.max(0, cursor.line - 5), cursor.line);
@@ -669,8 +669,7 @@ export class CopilotIndexOptimizer {
           language: entry.language,
           tags: [entry.metadata.priority, entry.metadata.source]
         },
-        version: '1.0'
-      };
+        version: '1.0` };'`
       await enhancedRAGStore.addDocument(ragDocument);
     }
   }
@@ -742,7 +741,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { copilotContent } = await request.json();
     if (!copilotContent) {
-      return new Response(JSON.stringify({ error: 'Missing copilotContent' }), { status: 400 });
+      return new Response(JSON.stringify({ error: `Missing copilotContent` }), { status: 400 });
     }
     const optimizedIndex = await copilotIndexOptimizer.optimizeCopilotIndex(copilotContent);
     return new Response(JSON.stringify(optimizedIndex), {

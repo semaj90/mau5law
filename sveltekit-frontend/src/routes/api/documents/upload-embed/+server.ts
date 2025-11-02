@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!config.allowedTypes.includes(file.type)) {
       throw error(400, `Unsupported file type: ${file.type}`);
     }
-    // Create upload directory if it doesn't exist
+    // Create upload directory if it doesn't exist'
     if (!existsSync(config.uploadDir)) {
       await mkdir(config.uploadDir, { recursive: true });
     }
@@ -103,9 +103,9 @@ export const POST: RequestHandler = async ({ request }) => {
         title, // Added title
         userId, // Added userId
       },
-      message: 'Document uploaded successfully` });
+      message: 'Document uploaded successfully' });
   } catch (err: any) {
-    console.error('❌ Upload error:', err);
+    console.error('❌ Upload error:', err);'
     if (err instanceof Error) {
       throw error(500, `Upload failed: ${err.message}`);
     }
@@ -121,7 +121,7 @@ export const GET: RequestHandler = async () => {
        , model: config.embeddingModel,
         chunkSize: config.chunkSize,
         uploadDir: config.uploadDir,
-        maxFileSize: `${config.maxFileSize / (1024 * 1024)}MB` },
+        maxFileSize: `${config.maxFileSize / (1024 * 1024)}MB' },'`
       ollama: {
         baseUrl: config.ollamaBaseUrl,
         connected: true

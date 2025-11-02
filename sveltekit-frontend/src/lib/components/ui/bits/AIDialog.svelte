@@ -1,8 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call expressions
+<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call, expressions
 https://svelte.dev/e/render_tag_invalid_expression -->
-<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call expressions -->
-<!-- AI Dialog: Svelte 5, Bits UI, UnoCSS, transitions, analytics logging -->
-<script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call, expressions -->
+<!-- AI Dialog: Svelte 5, Bits UI, UnoCSS, transitions, analytics, logging -->
+<script, lang="ts">
   import type { Snippet } from 'svelte';
   import { accessibleClick } from '$lib/actions/accessibleClick';
   interface Props {
@@ -16,7 +16,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   let { open = $bindable(), title = $bindable(), onClose = $bindable() }: Props = $props();
 </script>
 {#if open}
-  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" transitionfade>
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center, z-50" transitionfade>
     <div
       class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative"
       ;
@@ -25,7 +25,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       aria-modal="true"
       aria-labelledby="dialog-title"
     >
-      <h2 id="dialog-title" class="font-bold text-lg mb-4">{title}</h2>
+      <h2 id="dialog-title" class="font-bold text-lg, mb-4">{title}</h2>
       <slot />
       <button
         class="absolute top-2 right-2 text-gray-400 hover: text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

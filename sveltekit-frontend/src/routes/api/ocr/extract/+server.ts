@@ -61,8 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const worker = await createWorker({
           // Removed: 'eng', 1 arguments
           workerPath: '/tesseract-worker.js',
-          corePath: '/tesseract-core.js'
-        });
+          corePath: `/tesseract-core.js` });
         await worker.load(); // Load the Tesseract.js core
         await worker.loadLanguage('eng'); // Load the English language
         // Perform OCR using the canvas directly
@@ -73,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
           page: pageNum,
           text: ocrData.text,
           confidence: ocrData.confidence,
-          method: 'ocr` });
+          method: `ocr` });
         totalCharacters += ocrData.text.length;
         totalConfidence += ocrData.confidence;
       }
@@ -101,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     return json(result);
   } catch (err: any) {
-    console.error('OCR processing error:', err);
+    console.error('OCR processing error:', err);'
     const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
     throw error(500, `OCR processing failed: ${errorMessage}`);
   }
@@ -110,7 +109,7 @@ function extractLegalConcepts(text: string): string[] {
   const concepts = new Set<string>();
   // Legal concept patterns
   const patterns = [
-    // Contract terms
+    // Contract terms,
     /(?:breach\s+of\s+contract|contract\s+formation|consideration|offer\s+and\s+acceptance)/gi,
     // Liability terms
     /(?:negligence|liability|damages|indemnification|limitation\s+of\s+liability)/gi,
@@ -133,7 +132,7 @@ function extractCitations(text: string): string[] {
   const citations = new Set<string>();
   // Citation patterns
   const patterns = [
-    // Federal courts
+    // Federal courts,
     /\b\d+\s+F\.\s*(?:2d|3d)\s+\d+/g,
     // Supreme Court
     /\b\d+\s+U\.S\.\s+\d+/g,

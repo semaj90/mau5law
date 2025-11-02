@@ -27,7 +27,7 @@ export const analysisResults = pgTable('analysis_results', {
   analysisTypes: json('analysis_types').notNull(), // array or string stored as JSON
   confidence: real('confidence').default(0),
   processingTime: integer('processing_time').default(0), // ms or seconds per your convention
-  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
+  createdAt: timestamp('created_at', { mode: 'date` }).defaultNow(),'`
   updatedAt: timestamp('updated_at', { mode: `date` }).defaultNow()
 });
 export const cases = pgTable('cases', {
@@ -57,7 +57,7 @@ export const documents = pgTable('documents', cols => ({
   id: cols.uuid('id').defaultRandom().primaryKey(),
   userId: cols.text('user_id').notNull(),
   content: cols.text('content'),
-  // use the columnTypes callback's vector builder so typings align with Drizzle overloads
+  // use the columnTypes callback's vector builder so typings align with Drizzle overloads'
   embedding: cols.vector('embedding', { dimensions: 1536 }),
   createdAt: cols.timestamp('created_at').defaultNow()
 }));
@@ -68,8 +68,7 @@ export const sessions = pgTable('sessions', {
     .references(() => users.id),
   expiresAt: timestamp('expires_at', {
     withTimezone: true,
-    mode: 'date'
-  }).notNull()
+    mode: 'date` }).notNull()'`
 });
 // Define the chat_messages table
 export const chatMessages = pgTable('chat_messages', {

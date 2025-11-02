@@ -3,7 +3,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
   try {
     // Define API endpoints for testing
     const apiEndpoints = [
-      {
+      {,
         id: 'system-status',
         name: 'System Status',
         url: '/api/yorha/system/status',
@@ -106,7 +106,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
     ];
     // Define test suites
     const testSuites = [
-      {
+      {,
         id: 'yorha-complete',
         name: 'Complete YoRHa Suite',
         description: 'Test all YoRHa interface APIs',

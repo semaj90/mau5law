@@ -27,7 +27,7 @@ export interface VectorSearchQuery {
   filters?: {
     documentTypes?: string[];
     jurisdictions?: string[];
-    dateRange?: { start: Date;, end: Date }
+    dateRange?: { start: Date; end: Date }
     authors?: string[];
     tags?: string[];
     minConfidence?: number;
@@ -124,7 +124,7 @@ export interface IndexStatistics { totalDocuments: number;, totalEmbeddings: nu
 export class EnterpriseVectorSearchService {
   private embeddingModel: string;
   private _vectorConfig: typeof drizzleVectorConfig; // renamed to avoid unused var lint
-  private searchCache: Map<string, { results: VectorSearchResult[];, timestamp: number }> = new Map();
+  private searchCache: Map<string, { results: VectorSearchResult[]; timestamp: number }> = new Map();
   private analytics: SearchAnalytics[] = [];
   private indexStats: IndexStatistics;
   constructor() {
@@ -156,7 +156,7 @@ export class EnterpriseVectorSearchService {
   /**
    * Perform hybrid vector + keyword search
    */
-  async search(query: VectorSearchQuery): Promise<{ results: VectorSearchResult[]; analytics: SearchAnalytics; totalCount: number;, processingTime: number }> {
+  async search(query: VectorSearchQuery): Promise<{ results: VectorSearchResult[]; analytics: SearchAnalytics; totalCount: number; processingTime: number }> {
     // use slice instead of deprecated substr
     const queryId = `search_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const startTime = Date.now();
@@ -167,7 +167,7 @@ export class EnterpriseVectorSearchService {
       const cached = this.searchCache.get(cacheKey);
       const useCached = query.options?.useCache !== false &&
                         cached &&
-                        Date.now() - cached.timestamp < 300000; // 5 minutes
+                        Date.now() - cached.timestamp < 300000; // 5, minutes
       if (useCached) {
         const processingTime = Date.now() - startTime;
         console.log(`✅ Cache hit for search query (${processingTime}ms)`);
@@ -242,7 +242,7 @@ export class EnterpriseVectorSearchService {
   /**
    * Index a single document with optimized embedding generation
    */
-  async indexDocument(document: LegalDocument): Promise<{ success: boolean; documentId: string; processingTime: number;, metadata: DocumentMetadata }> {
+  async indexDocument(document: LegalDocument): Promise<{ success: boolean; documentId: string; processingTime: number; metadata: DocumentMetadata }> {
     console.log(`📥 Indexing document: ${document.id}`);
     const startTime = Date.now();
     try {
@@ -347,7 +347,7 @@ export class EnterpriseVectorSearchService {
         const batchResults = await Promise.allSettled(batchPromises);
         batchResults.forEach((r: PromiseSettledResult<any>) => {
           if (r.status === 'fulfilled') {
-            const value = r.value as { documentId: string;, success: boolean; skipped?: boolean; error?: string };
+            const value = r.value as { documentId: string; success: boolean; skipped?: boolean; error?: string };
             if (value.success) successful++;
             else failed++;
             results.push(value);
@@ -516,7 +516,7 @@ export class EnterpriseVectorSearchService {
       const tempDoc: LegalDocument = {
         id: 'temp_query',
         content: query,
-        type: 'query' };
+        type: 'query` };'`
       const analysis = await enhancedAIAnalysis.analyzeDocument(tempDoc);
       return analysis.embedding;
     } catch (error) {
@@ -536,7 +536,7 @@ export class EnterpriseVectorSearchService {
       mockResults.push({ document: {, id: `doc_${i}`,
           content: `Sample legal document content ${i}...`,
           title: `Legal Document ${i}`,
-          type: 'contract' },
+          type: 'contract` },'`
         similarity,
         relevanceScore: similarity,
         rankingFactors: {
@@ -556,9 +556,9 @@ export class EnterpriseVectorSearchService {
     const keywords = queryText.toLowerCase().split(/\s+/);
     // Mock keyword search results
     return [{ document: {, id: 'keyword_match_1',
-        content: 'Document containing; keywords: ${keywords.join(', ')}`,
+        content: 'Document containing; keywords: ${keywords.join(', ')}`,'`
         title: 'Keyword Matched Document',
-        type: 'statute' },
+        type: 'statute` },'`
       similarity: 0,
       relevanceScore: 0.7,
       rankingFactors: {
@@ -653,7 +653,7 @@ export class EnterpriseVectorSearchService {
         endOffset: content.indexOf(sentence) + sentence.length,
         relevanceScore: 0.8,
         highlightedText: this.highlightQuery(sentence, query),
-        context: `Snippet ${index + 1}' }));
+        context: `Snippet ${index + 1}` }));
       return result;
     });
   }
@@ -668,12 +668,12 @@ export class EnterpriseVectorSearchService {
     return results.slice(offset, offset + limit);
   }
   private generateCacheKey(query: VectorSearchQuery): string {
-    return `search_${JSON.stringify({
+    return `search_${JSON.stringify({`
       text: query.text,
       filters: query.filters,
       ranking: query.ranking,
       options: { ...query.options, useCache: undefined }
-    })}`;
+    })}`;`
   }
   private async storeDocumentVector(doc: { id: string; embedding: number[]; content: string; title: string;, metadata: DocumentMetadata }): Promise<void> {
     // In production, this would store in PostgreSQL with pgvector

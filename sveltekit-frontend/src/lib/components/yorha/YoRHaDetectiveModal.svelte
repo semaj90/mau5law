@@ -1,5 +1,5 @@
-<!-- YoRHa Detective Modal Component -->
-<script lang="ts">
+<!-- YoRHa Detective Modal, Component -->
+<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import type {     Snippet     } from 'svelte';
@@ -30,7 +30,7 @@
   });
 </script>
 {#if showModal}
-  <!-- Modal Backdrop -->
+  <!-- Modal, Backdrop -->
   <div
     class="modal-backdrop"
     onclick={handleBackdrop}
@@ -40,15 +40,15 @@
     aria-labelledby="modal-title"
     tabindex="-1"
   >
-    <!-- Modal Panel -->
-    <div class="modal-panel">
+    <!-- Modal, Panel -->
+    <div, class="modal-panel">
       <!-- Header -->
-      <div class="modal-header">
-        <h2 id="modal-title" class="modal-title">{title}</h2>
+      <div, class="modal-header">
+        <h2, id="modal-title" class="modal-title">{title}</h2>
         <button class="modal-close" onclick={onClose} aria-label="Close modal"> &time; </button>
       </div>
       <!-- Content -->
-      <div class="modal-content">
+      <div, class="modal-content">
         {#if children}
           {@render children()}
         {/if}

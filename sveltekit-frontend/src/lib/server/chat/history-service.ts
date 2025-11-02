@@ -37,7 +37,7 @@ export class ChatHistoryService {
     await db.insert(chatSessions).values(session);
     return id;
   }
-  static async addMessage(params: { sessionId: string;, role: 'user' | 'assistant' | 'system';
+  static async addMessage(params: {, sessionId: string;, role: 'user' | 'assistant' | 'system';
    , content: string;
     model?: string;
     metadata?: any;

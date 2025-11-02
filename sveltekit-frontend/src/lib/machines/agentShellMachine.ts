@@ -16,20 +16,20 @@ export interface AgentShellContext { input: string;, response: string;
   };
 }
 type AgentShellEvent =
-  | { type: 'PROMPT';, input: string; userId?: string; caseId?: string }
-  | { type: 'xstate.done.actor.callAgent';, data: string }
-  | { type: 'ACCEPT_PATCH'; jobId: string; userId: string;, patchContent: string }
-  | { type: 'RATE_SUGGESTION'; jobId: string; rating: number;, userId: string; feedback?: string }
-  | { type: 'SEMANTIC_SEARCH'; query: string;, userId: string; caseId?: string }
-  | { type: 'FILE_UPLOAD'; file: File;, userId: string; caseId?: string }
+  | { type: 'PROMPT'; input: string; userId?: string; caseId?: string }
+  | { type: 'xstate.done.actor.callAgent'; data: string }
+  | { type: 'ACCEPT_PATCH'; jobId: string; userId: string; patchContent: string }
+  | { type: 'RATE_SUGGESTION'; jobId: string; rating: number; userId: string; feedback?: string }
+  | { type: 'SEMANTIC_SEARCH'; query: string; userId: string; caseId?: string }
+  | { type: 'FILE_UPLOAD'; file: File; userId: string; caseId?: string }
   | { type: 'CHECK_HEALTH' };
 export const agentShellMachine = createMachine({
   id: 'agentShell',
   initial: 'idle',
-  context: { input: '', response: '' },
-  types: {} as { context: AgentShellContext;, events: AgentShellEvent;
+  context: {, input: '', response: '' },
+  types: {} as {, context: AgentShellContext;, events: AgentShellEvent;
   },
-  states: { idle: {, on: { PROMPT: {, target: 'processing',
+  states: {, idle: {, on: {, PROMPT: {, target: 'processing',
           actions: assign({
            , input: ({ event }) => (event as any).input || '',
             userId: ({ event }) => (event as any).userId,

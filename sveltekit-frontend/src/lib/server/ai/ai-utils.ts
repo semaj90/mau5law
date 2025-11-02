@@ -1,4 +1,4 @@
-// Define Candidate interface locally as it's not exported from $lib/types
+// Define Candidate interface locally as it's not exported from $lib/types'
 export interface Candidate { id: string;, text: string;
   rerankedScore?: number;
 }

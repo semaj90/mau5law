@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
-// NOTE: Do NOT import from '@webgpu/types' at runtime — it's a .d.ts-only module and can cause
+// NOTE: Do NOT import from '@webgpu/types' at runtime — it's a .d.ts-only module and can cause'
 // "is not a module" errors. If you want compile-time WebGPU types, install the package as a
 // devDependency and add it to tsconfig: "types": ["@webgpu/types"] instead of importing it here.
 
@@ -114,8 +114,7 @@ export const GET: RequestHandler = async () => {
         note: 'This is a simulated GPU memory test; no actual hardware check is performed.',
         gpuInfo: 'NVIDIA GeForce RTX 3060 Ti',
         memoryAvailable: '8GB VRAM',
-        webgpuSupport: 'Requires browser context'
-      }
+        webgpuSupport: `Requires browser context` }
     });
     return json({
       success: true,
@@ -127,9 +126,8 @@ export const GET: RequestHandler = async () => {
         failed: results.filter(item => item.status === 'error'),
         warnings: results.filter(item => item.status === 'warning').length,
         gpuMemoryTestSimulated: true,
-        gpuMemoryTestNote: 'GPU memory test is simulated; no real hardware check is performed.'
-      },
-      note: 'WebGPU and WebGL tests require browser context. Server-side tests validate imports and architecture. GPU memory test is simulated for transparency.` });
+        gpuMemoryTestNote: `GPU memory test is simulated; no real hardware check is performed.` },
+      note: `WebGPU and WebGL tests require browser context. Server-side tests validate imports and architecture. GPU memory test is simulated for transparency.` });
   } catch (error: any) {
     // Normalize unknown error to an Error instance for safe message extraction
     const err = error instanceof Error ? error : new Error(String(error));

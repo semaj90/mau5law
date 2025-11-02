@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return error(400, 'Invalid action. Use deploy, start, stop, or status.');
     }
   } catch (err: any) {
-    console.error('❌ GPU orchestration deployment error:', err);
+    console.error('❌ GPU orchestration deployment error:', err);'
     return error(500, `Deployment failed: ${(err as Error).message}`);
   }
 };
@@ -247,8 +247,7 @@ async function updateDeploymentReport(config: DeploymentConfig): Promise<void> {
       device: 'RTX3060Ti',
       flashAttentionEnabled: config.enableFlashAttention,
       memoryOptimization: 'balanced',
-      errorProcessing: 'active'
-    }
+      errorProcessing: 'active` }'`
   };
   try {
     await writeFile(reportPath, JSON.stringify(report, null, 2));
@@ -267,7 +266,7 @@ async function startOrchestrationSystem(): Promise<Response> {
   try {
     // Check Go services
     const services = [
-      { name: 'Enhanced RAG', port: 8094, path: '../go-microservice/bin/enhanced-rag.exe' },
+      { name: 'Enhanced RAG', port: 8094, path: `../go-microservice/bin/enhanced-rag.exe` },
       { name: 'Upload Service', port: 8093, path: `../go-microservice/bin/upload-service.exe` }
     ];
     const serviceStatus: Array<{ name: string;, port: number;
@@ -337,8 +336,7 @@ async function getOrchestrationStatus(): Promise<DeploymentStatus> {
     mcp: 'disconnected',
     models: {
       gemma3Legal: 'missing',
-      nomicEmbed: 'missing'
-    },
+      nomicEmbed: `missing` },
     gpu: {
       device: 'RTX3060Ti',
       memory: '8GB',
@@ -404,12 +402,12 @@ async function getOrchestrationStatus(): Promise<DeploymentStatus> {
  */
 async function $deployCompleteLocal(): Promise<{ success: boolean;, completedSteps: number;
   totalSteps: number;
-  results: Array<{ step: string;, status: 'success' | 'error'; error?: string }>;
+  results: Array<{ step: string; status: 'success' | 'error'; error?: string }>;
   status: DeploymentStatus;
 }> {
   console.log('🎯 Deploying complete GPU orchestration system...');
   const deploymentSteps = [
-    {
+    {,
       name: 'Model Validation',
       action: () =>
         validateModelConstraints({
@@ -479,7 +477,7 @@ async function $deployCompleteLocal(): Promise<{ success: boolean;, completedSt
     },
     { name: 'FlashAttention GPU', action: verifyFlashAttentionGPU }
   ];
-  const results: Array<{ step: string;, status: 'success' | 'error'; error?: string }> = [];
+  const results: Array<{ step: string; status: 'success' | 'error'; error?: string }> = [];
   for (const step of deploymentSteps) {
     try {
       console.log(`⚡ Executing: ${step.name}`);
@@ -487,7 +485,7 @@ async function $deployCompleteLocal(): Promise<{ success: boolean;, completedSt
       results.push({ step: step.name, status: `success` });
       console.log(`✅ ${step.name} completed`);
     } catch (err: any) {
-      console.error(`❌ ${step.name} failed: ', err);
+      console.error(`❌ ${step.name} failed: ', err);'`
       results.push({
         step: step.name,
         status: 'error',

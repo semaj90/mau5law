@@ -104,7 +104,7 @@ export async function listCases(options: CaseListOptions = {}): Promise<CaseList
     console.log(`Fetched ${data.cases.length} cases`);
     return data;
   } catch (error: any) {
-    console.error('Case listing error:', error);
+    console.error('Case listing error:', error);'
     throw new Error(`Failed to list cases: ${error.message}`);
   }
 }
@@ -126,7 +126,7 @@ export async function getCaseById(caseId: string): Promise<LegalCase> {
     console.log(`Fetched case ${caseData.title} (${caseId})`);
     return caseData;
   } catch (error: any) {
-    console.error('Case fetch error:', error);
+    console.error('Case fetch error:', error);'
     throw new Error(`Failed to fetch case ${error.message}`);
   }
 }
@@ -149,7 +149,7 @@ export async function createCase(caseData: CreateCaseData): Promise<LegalCase> {
     console.log(`Created new case ${newCase.title} (${newCase.id})`);
     return newCase;
   } catch (error: any) {
-    console.error('Case creation error:', error);
+    console.error('Case creation error:', error);'
     throw new Error(`Failed to create case ${error.message}`);
   }
 }
@@ -172,7 +172,7 @@ export async function updateCase(caseId: string, updates: UpdateCaseData): Promi
     console.log(`Updated case ${updatedCase.title} (${caseId})`);
     return updatedCase;
   } catch (error: any) {
-    console.error('Case update error:', error);
+    console.error('Case update error:', error);'
     throw new Error(`Failed to update case ${error.message}`);
   }
 }
@@ -192,7 +192,7 @@ export async function deleteCase(caseId: string): Promise<void> {
     // TODO: Add audit logging for case deletion
     console.log(`Deleted case ${caseId}`);
   } catch (error: any) {
-    console.error('Case deletion error:', error);
+    console.error('Case deletion error:', error);'
     throw new Error(`Failed to delete case ${error.message}`);
   }
 }
@@ -214,7 +214,7 @@ export async function getCaseDocuments(caseId: string): Promise<CaseDocument[]> 
     console.log(`Fetched ${documents.length} documents for case ${caseId}`);
     return documents;
   } catch (error: any) {
-    console.error('Case documents fetch error:', error);
+    console.error('Case documents fetch error:', error);'
     throw new Error(`Failed to fetch case documents: ${error.message}`);
   }
 }
@@ -235,7 +235,7 @@ export async function assignLawyer(caseId: string, lawyerId: string): Promise<vo
     // TODO: Add audit logging for lawyer assignment
     console.log(`Assigned lawyer ${lawyerId} to case ${caseId}`);
   } catch (error: any) {
-    console.error('Lawyer assignment error:', error);
+    console.error('Lawyer assignment error:', error);'
     throw new Error(`Failed to assign lawyer: ${error.message}`);
   }
 }
@@ -263,7 +263,7 @@ export async function getCasesByClient(clientId: string, options: CaseListOption
     console.log(`Fetched ${data.cases.length} cases for client ${clientId}`);
     return data;
   } catch (error: any) {
-    console.error('Client cases fetch error:', error);
+    console.error('Client cases fetch error:', error);'
     throw new Error(`Failed to fetch client cases: ${error.message}`);
   }
 }
@@ -285,7 +285,7 @@ export async function getCaseAnalytics(caseId: string): Promise<any> {
     console.log(`Fetched analytics for case ${caseId}`);
     return analytics;
   } catch (error: any) {
-    console.error('Case analytics error:', error);
+    console.error('Case analytics error:', error);'
     throw new Error(`Failed to fetch case analytics: ${error.message}`);
   }
 }

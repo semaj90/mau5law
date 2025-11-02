@@ -163,7 +163,7 @@ export class HybridRAGSIMDBridge {
     const totalTime = performance.now() - startTime;
     const throughput = (ragDocuments.length / totalTime) * 1000; // docs per second
 
-    console.log('\n📊 Hybrid Pipeline Summary: `);
+    console.log('\n📊 Hybrid Pipeline Summary: `);'`
     console.log(`   - SIMD Time: ${simdTime.toFixed(2)}ms`);
     console.log(`   - RAG Time: ${ragTime.toFixed(2)}ms`);
     console.log(`   - Total Time: ${totalTime.toFixed(2)}ms`);
@@ -247,8 +247,8 @@ export class HybridRAGSIMDBridge {
     simdResults: PipelineExecutionResult,
     sourceKey: string
   ): Promise<RAGDocument[]> {
-    // Note: SIMD pipeline doesn't return individual results, only metrics
-    // In a real implementation, we'd fetch the processed results from LokiJS/cache
+    // Note: SIMD pipeline doesn't return individual results, only metrics'
+    // In a real implementation, we'd fetch the processed results from LokiJS/cache'
 
     // For now, create placeholder documents
     // In production, this would query: await advancedPipeline.searchProcessedTensors('', simdResults.totalResults);
@@ -282,9 +282,9 @@ export class HybridRAGSIMDBridge {
   /**
    * Get current pipeline status and statistics
    */
-  async getStatus(): Promise<{ simd: { available: boolean;, tensorDimensions: number };
-    rag: { available: boolean;, embeddingModel: string };
-    mcp: { available: boolean;, workers: number };
+  async getStatus(): Promise<{ simd: { available: boolean; tensorDimensions: number };
+    rag: { available: boolean; embeddingModel: string };
+    mcp: { available: boolean; workers: number };
   }> {
     return { simd: {, available: true,
         tensorDimensions: this.config.simd?.tensorDimensions || 384
@@ -381,7 +381,7 @@ export const hybridBridge = new HybridRAGSIMDBridge();
  * // 5. Custom configuration
  * const customBridge = new HybridRAGSIMDBridge({
  *   ranking: {
- *     weights: { relevance: 0.7, keywords: 0.2, synthesis: 0.1 }
+ *    , weights: {, relevance: 0.7, keywords: 0.2, synthesis: 0.1 }
  *   },
  *   mcp: {
  *    , enableMulticore: true,

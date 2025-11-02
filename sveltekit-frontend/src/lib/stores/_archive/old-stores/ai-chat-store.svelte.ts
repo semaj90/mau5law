@@ -203,7 +203,7 @@ class AIChatStore {
       const response = await fetch(`${this.RAG_SERVICE_URL}/api/chat`, {
         method: 'POST',
         headers: {
-          'Content-Type': `application/json` },
+          'Content-Type': `application/json' },'`
         body: JSON.stringify({
           message,
           context: context || 'legal-ai',
@@ -226,7 +226,7 @@ class AIChatStore {
 
       return result;
     } catch (error: any) {
-      console.error('RAG service error:', error);
+      console.error('RAG service error:', error);'
 
       this.state.connectionStatus = 'disconnected';
       this.state.isLoading = $state(false);
@@ -241,7 +241,7 @@ class AIChatStore {
 
     try {
       const response = await fetch(`${this.RAG_SERVICE_URL}/health`, {
-        method: `GET` });
+        method: `GET' });'`
 
       const isHealthy = response.ok;
       this.state.connectionStatus = isHealthy ? 'connected' : 'disconnected';
@@ -336,7 +336,7 @@ class AIChatStore {
         md += `**Tags:** ${session.tags.join(', ')}\n\n`;
 
         session.messages.forEach(msg => {
-          md += `## ${msg.role === 'user' ? 'User' : `YoRHa AI` } (${msg.timestamp.toLocaleTimeString()})\n\n`;
+          md += `## ${msg.role === 'user' ? 'User' : `YoRHa AI' } (${msg.timestamp.toLocaleTimeString()})\n\n`;'`
           md += `${msg.content}\n\n`;
         });
 

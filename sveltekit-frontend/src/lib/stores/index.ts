@@ -7,15 +7,15 @@ import type { Document } from '$lib/types';
 // Core UI stores
 export { contextMenuStore, contextMenuActions } from './ui';
 export { uiStore } from './ui';
-export { default as modalStore } from './modal';
-export { notifications as notificationStore } from './notification';
+export { default, as modalStore } from './modal';
+export { notifications, as notificationStore } from './notification';
 // Authentication & User stores (Consolidated)
-export { authService as auth, type User, type AuthState } from './auth.svelte';
-export { default as userStore } from './user';
+export { authService, as auth, type User, type AuthState } from './auth.svelte';
+export { default, as userStore } from './user';
 export { avatarStore } from './avatarStore';
 
 // Legacy auth compatibility (gradual migration)
-export { default as authStore } from './auth';
+export { default, as authStore } from './auth';
 export { authService } from './auth.svelte';
 // Session Management with XState
 export {
@@ -31,12 +31,12 @@ export {
   recordActivity
 } from './sessionManager.svelte';
 // Data stores
-export { default as casesStore } from './cases';
-export { default as citationsStore } from './citations';
-export { report as reportStore } from './report';
+export { default, as casesStore } from './cases';
+export { default, as citationsStore } from './citations';
+export { report, as reportStore } from './report';
 // AI & Machine Learning stores
 export { aiStore, parseAICommand, applyAIClasses, aiCommandService, recentCommands, isAIActive } from './ai-unified';
-export { aiHistory as aiHistoryStore } from './aiHistoryStore';
+export { aiHistory, as aiHistoryStore } from './aiHistoryStore';
 export { chatStore } from './chatStore';
 export { enhancedRAGStore } from './enhanced-rag-store';
 // AI Assistant with Ollama Cluster + Context7 (Consolidated)
@@ -70,7 +70,7 @@ export {
 // Evidence & Document stores
 export { evidenceStore, evidenceById, evidenceByCase, type Evidence } from './evidence-unified';
 // Form handling stores
-export { createFormStore as formStore } from './form';
+export { createFormStore, as formStore } from './form';
 // Database & Caching stores
 export { lokiStore } from './lokiStore';
 export { enhancedLokiStore } from './enhancedLokiStore';
@@ -87,15 +87,15 @@ export * from './machines';
 // Canvas & Visual stores
 export { canvasStore } from './canvas';
 // Utility stores
-export { enhancedErrorHandler as errorHandler } from './error-handler';
-export { default as savedNotesStore } from './saved-notes';
+export { enhancedErrorHandler, as errorHandler } from './error-handler';
+export { default, as savedNotesStore } from './saved-notes';
 export * from './keyboardShortcuts';
 // UI Integration utilities
 export * from './melt-ui-integration';
 // Demo and testing
 export { runPhase2Demo, phase2HealthCheck, demoEvidenceUpload, demoEnhancedButton } from './phase2-demo';
 // Legacy compatibility aliases
-export { aiStore as aiCommands } from './ai-unified';
-export { evidenceStore as evidence } from './evidence-unified';
+export { aiStore, as aiCommands } from './ai-unified';
+export { evidenceStore, as evidence } from './evidence-unified';
 // Types and interfaces
 // Note: local ./types does not export StoreState/Action/Context consistently; omit to avoid TS errors

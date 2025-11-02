@@ -5,9 +5,9 @@ const FALLBACK_WORKER_SOURCE = `
 self.onmessage = (event) => {
   const payload = event?.data ?? {};
   const suggestions = Array.isArray(payload.suggestions) ? payload.suggestions : [];
-  self.postMessage({ data: suggestions, error: 'worker-module-unavailable' });
+  self.postMessage({ data: suggestions, error: 'worker-module-unavailable` });'`
 };
-';
+';'
 export async function webgpuRerank(query: string, suggestions: RerankSuggestion[], options?: RerankOptions): Promise<RerankSuggestion[]> {
   return new Promise<RerankSuggestion[]>((resolve) => {
     let worker: Worker | null = null;
@@ -15,10 +15,10 @@ export async function webgpuRerank(query: string, suggestions: RerankSuggestion[
       try {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore Vite/rollup will rewrite the module URL at build time
-        worker = new Worker(new URL('./webgpu-reranker-worker.ts', import.meta.url), { type: 'module' });
+        worker = new Worker(new URL('./webgpu-reranker-worker.ts', import.meta.url), { type: `module` });
       } catch {
         const blobUrl = URL.createObjectURL(
-          new Blob([FALLBACK_WORKER_SOURCE], { type: 'application/javascript' })
+          new Blob([FALLBACK_WORKER_SOURCE], { type: `application/javascript` })
         );
         worker = new Worker(blobUrl, { type: `classic` });
       }
@@ -35,7 +35,7 @@ export async function webgpuRerank(query: string, suggestions: RerankSuggestion[
         worker?.terminate();
       };
       worker.onerror = (err) => {
-        console.warn('WebGPU rerank worker error:', err.message || err);
+        console.warn('WebGPU rerank worker error:', err.message || err);'
         worker?.terminate();
         resolve(suggestions);
       };

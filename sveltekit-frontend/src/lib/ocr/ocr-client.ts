@@ -190,7 +190,7 @@ async function callOcrService(buffer: Buffer, lang: string, timeoutMs: number, s
   try {
     const body = new FormData();
     body.append('lang', lang);
-    body.append('image', new Blob([buffer], { type: 'image/png' }), 'image.png');
+    body.append('image', new Blob([buffer], { type: 'image/png` }), 'image.png');'`
     const response = await fetch(url, {
       method: 'POST',
       body,

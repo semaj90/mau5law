@@ -8,7 +8,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     body = await request.json();
     const { operation = 'generate_text', input, fallback = true } = body;
-    // Return simulated WebGPU results since we can't run WebGPU on server-side
+    // Return simulated WebGPU results since we can't run WebGPU on server-side'
     // Actual WebGPU testing happens in browser via webgpu-wasm-service.ts
     console.log(`🧪 WebGPU test request: ${operation}`);
     const startTime = Date.now();
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown; operation: ${operation}' },
+            error: 'Unknown; operation: ${operation}' },
           { status: 400 }
         );
     }
@@ -40,13 +40,12 @@ export const POST: RequestHandler = async ({ request }) => {
       note: 'This is a server-side simulation. Actual WebGPU testing occurs in browser.'
     });
   } catch (error: any) {
-    console.error('❌ WebGPU test error:', error);
+    console.error('❌ WebGPU test error:', error);'
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Test failed',
-        operation: body?.operation || 'unknown'
-      },
+        operation: body?.operation || 'unknown` },'`
       { status: 500 }
     );
   }
@@ -99,8 +98,7 @@ async function simulateEmbeddingGeneration(_input: string): Promise<EmbeddingGen
     dimensions: 768, // This value should match the interface
     device: deviceType,
     processingTimeMs: processingTime,
-    model: 'gemma3-legal-embeddings'
-  };
+    model: `gemma3-legal-embeddings` };
 }
 async function simulateCapabilityTest(): Promise<any> {
   // Simulate browser capability detection
@@ -114,7 +112,7 @@ async function simulateCapabilityTest(): Promise<any> {
       vendor: 'Simulated GPU Vendor',
       architecture: 'rdna2',
       device: 'Radeon RX Series',
-      description: 'Simulated GPU for testing` },
+      description: `Simulated GPU for testing` },
     limits: {
       maxBufferSize: 1024 * 1024 * 1024, // 1GB
       maxComputeInvocationsPerWorkgroup: 256,
@@ -210,8 +208,7 @@ function estimatePerformance(deviceType: string) {
       tokensPerSecond: 0,
       embeddingTimeMs: 0,
       memoryUsageMB: 0,
-      powerEfficiency: 'none'
-    }
+      powerEfficiency: `none` }
   };
   return estimates[deviceType] || estimates.none;
 }
@@ -229,7 +226,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Service unavailable` },
+        error: error instanceof Error ? error.message : `Service unavailable` },
       { status: 500 }
     );
   }

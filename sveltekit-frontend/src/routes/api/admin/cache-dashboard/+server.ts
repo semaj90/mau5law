@@ -7,7 +7,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { redisService } from '$lib/server/redis-service';
 import { getVectorCacheStats, clearVectorCache } from '$lib/server/vector-cache';
-import { getCache as getSummaryCache, memoryStats as getSummaryMemoryStats } from '$lib/server/summarizeCache';
+import { getCache, as getSummaryCache, memoryStats as getSummaryMemoryStats } from '$lib/server/summarizeCache';
 
 interface CacheMetrics { redis: {, connected: boolean;
     status: string;
@@ -25,7 +25,7 @@ interface CacheMetrics { redis: {, connected: boolean;
   };
   performance: {
     hitRates: Record<string, number>;
-    avgResponseTimes: Record<string, number | { avg: number; p95: number;, p99: number }>;
+    avgResponseTimes: Record<string, number | { avg: number; p95: number; p99: number }>;
     topQueries: string[];
   };
   storage: { totalKeys: number;, keysByPrefix: Record<string, number>;
@@ -64,7 +64,7 @@ type KeyListResponse = { success: boolean;, pattern: string;
   timestamp: string;
 };
 
-type MemoryPrefixStats = { keys: number;, totalMemory: number };
+type MemoryPrefixStats = { keys: number; totalMemory: number };
 
 type MemoryAnalysisResponse = { success: boolean;, redis: {
     usedMemory?: string | null;
@@ -156,7 +156,7 @@ async function safeRedisGetStats(): Promise<any> {
       // fallthrough to fallback
     }
   }
-  // Fallback minimal shape - properly await isHealthy when it's async
+  // Fallback minimal shape - properly await isHealthy when it's async'
   try {
     let connected = false;
     if (typeof rs.isHealthy === 'function') {
@@ -203,10 +203,10 @@ async function safeRedisGetInfo(): Promise<any> {
     if (client && typeof client.info === 'function') {
       const raw = await client.info().catch(() => null);
       if (typeof raw === 'string') {
-        // We don't attempt to parse full INFO format here; return normalized empty shape
+        // We don't attempt to parse full INFO format here; return normalized empty shape'
         return { memory: null, stats: {}, keyspace: {} };
       }
-      // if it's already an object, return it
+      // if it's already an object, return it'
       return raw ?? { memory: null, stats: {}, keyspace: {} };
     }
   } catch {
@@ -381,7 +381,7 @@ async function getDashboardMetrics(timeRange: string): Promise<CacheMetrics> {
     },
     performance: {
       hitRates: hitRates as Record<string, number>,
-      avgResponseTimes: responseTimeMetrics as Record<string, number | { avg: number; p95: number;, p99: number }>,
+      avgResponseTimes: responseTimeMetrics as Record<string, number | { avg: number; p95: number; p99: number }>,
       topQueries: []
     },
     storage: {
@@ -419,8 +419,7 @@ async function getCacheKeys(pattern: string, limit: number): Promise<KeyListResp
             type,
             ttl: ttl === -1 ? 'No expiration' : `${ttl}s`,
             memory: 'Unknown',
-            prefix: key.split(':')[0] || 'no-prefix'
-          } as KeyMetadata;
+            prefix: key.split(':')[0] || 'no-prefix` } as KeyMetadata;'`
         } catch {
           return { key, error: `Redis unavailable` } as KeyMetadata;
         }
@@ -444,7 +443,7 @@ async function getCacheKeys(pattern: string, limit: number): Promise<KeyListResp
         return {
           key,
           error: 'Failed to get metadata',
-          prefix: key.split(':')[0] || 'no-prefix` } as KeyMetadata;
+          prefix: key.split(':')[0] || 'no-prefix` } as KeyMetadata;'`
       }
     })
   );
@@ -480,7 +479,7 @@ async function getMemoryAnalysis(): Promise<MemoryAnalysisResponse> {
         memoryByPrefix[prefix].keys++;
         memoryByPrefix[prefix].totalMemory += memory || 0;
       } catch {
-        // Skip keys that can't be analyzed
+        // Skip keys that can't be analyzed'
       }
     }
   }
@@ -607,7 +606,7 @@ async function calculateHitRates(_keys: string[]): Promise<Record<string, number
   };
 }
 
-async function calculateResponseTimes(): Promise<Record<string, { avg: number; p95: number;, p99: number }>> {
+async function calculateResponseTimes(): Promise<Record<string, { avg: number; p95: number; p99: number }>> {
   return { cached: {, avg: 5, p95: 15, p99: 25 },
     uncached: { avg: 150, p95: 300, p99: 500 }
   };
@@ -670,7 +669,7 @@ function generatePerformanceRecommendations(
 // Management operations
 async function clearCacheByPattern(
   pattern: string
-): Promise<{ success: boolean; pattern: string; keysFound: number; keysCleared: number;, timestamp: string }> {
+): Promise<{ success: boolean; pattern: string; keysFound: number; keysCleared: number; timestamp: string }> {
   const keys = await redisService.keys(pattern);
   let cleared = 0;
   for (const key of keys) {
@@ -687,8 +686,8 @@ async function clearCacheByPattern(
   };
 }
 
-async function warmPopularCache(_queries: string[] = []): Promise<{ success: boolean;, timestamp: string }> {
-  // Placeholder: accepts query list but doesn't use it yet.
+async function warmPopularCache(_queries: string[] = []): Promise<{ success: boolean; timestamp: string }> {
+  // Placeholder: accepts query list but doesn't use it yet.'
   // Parameter intentionally prefixed with: "_" to satisfy linting rules for unused args.
   // Future implementation: iterate _queries to pre-populate caches, call relevant services, etc.
   return { success: true, timestamp: new Date().toISOString() };
@@ -698,13 +697,13 @@ async function warmPopularCache(_queries: string[] = []): Promise<{ success: boo
 
 async function analyzeKeyPatterns(): Promise<{ success: true;, totalKeys: number;
   counts: Record<string, number>;
-  sample: Array<{ key: string;, prefix: string }>;
+  sample: Array<{ key: string; prefix: string }>;
   timestamp: string;
 }> {
   try {
     const keys = Array.isArray(await redisService.keys('*')) ? await redisService.keys('*') : [];
     const counts = analyzeKeyPrefixes(keys);
-    const sample = keys.slice(0, 50).map(k => ({ key: k, prefix: k.split(':')[0] || 'no-prefix` }));
+    const sample = keys.slice(0, 50).map(k => ({ key: k, prefix: k.split(':')[0] || 'no-prefix` }));'`
     return {
       success: true,
       totalKeys: keys.length,

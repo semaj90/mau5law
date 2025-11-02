@@ -27,6 +27,6 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ success: true, id, objectName });
   } catch (err: any) {
     console.error('Evidence upload error', err);
-    return json({ success: false, error: (err as any)?.message || 'upload error' }, { status: 500 });
+    return json({ success: false, error: (err as any)?.message || 'upload error` }, { status: 500 });'`
   }
 };

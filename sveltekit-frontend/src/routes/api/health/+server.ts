@@ -46,7 +46,7 @@ async function httpCheck(url: string): Promise<HttpCheck> {
 export const GET: RequestHandler = async () => {
   // Core services health checks
   const [
-    // Database services
+    // Database services,
     pgOpen,
     redisOpen,
     neo4jHealth,
@@ -183,6 +183,6 @@ export const GET: RequestHandler = async () => {
     headers: {
       'X-Health-Score': healthScore.toString(),
       'X-Service-Count': `${healthyServices}/${totalServices}`,
-      'X-Architecture': 'Legal-AI-Platform-v2.0` }
+      'X-Architecture': 'Legal-AI-Platform-v2.0' }
   });
 };

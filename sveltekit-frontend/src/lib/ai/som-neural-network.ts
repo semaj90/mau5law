@@ -6,7 +6,7 @@ import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-webgpu';
 import { MultiLayerCache } from '../services/multiLayerCache.js';
-export interface SOMConfig { gridSize: { width: number;, height: number };
+export interface SOMConfig { gridSize: { width: number; height: number };
   learningRate: number;
   neighborhoodRadius: number;
   epochs: number;
@@ -14,7 +14,7 @@ export interface SOMConfig { gridSize: { width: number;, height: number };
   decayRate: number;
   inputDimension: number;
 }
-export interface SOMNode { position: { x: number;, y: number };
+export interface SOMNode { position: { x: number; y: number };
   weights: Float32Array;
   activationLevel: number;
   legalContext: { conceptType: 'case' | 'statute' | 'regulation' | 'precedent' | 'mixed';, importance: number;
@@ -32,9 +32,9 @@ export interface SOMCluster { id: string;, centroid: Float32Array;
   nodes: string[];
   legalSignificance: number;
   conceptSimilarity: number;
-  boundingBox: { x: number; y: number; width: number;, height: number };
+  boundingBox: { x: number; y: number; width: number; height: number };
 }
-export interface LegalConceptMapping { conceptId: string;, somPosition: { x: number;, y: number };
+export interface LegalConceptMapping { conceptId: string;, somPosition: { x: number; y: number };
   legalTerms: string[];
   citationNetwork: string[];
   importance: number;
@@ -69,7 +69,7 @@ export class SOMNeuralNetwork {
   private async initializeCache() {
     try {
       this.cache = new MultiLayerCache();
-      // Cache doesn't need explicit initialization
+      // Cache doesn't need explicit initialization'
     } catch (error) {
       console.warn('Failed to initialize SOM cache:', error);
     }
@@ -248,7 +248,7 @@ export class SOMNeuralNetwork {
     distances.dispose();
     return { x, y };
   }
-  private findBMUCPU(inputSample: number[]): { x: number;, y: number } {
+  private findBMUCPU(inputSample: number[]): { x: number; y: number } {
     let minDistance = Infinity;
     let bmuX = 0,
       bmuY = 0;
@@ -336,7 +336,7 @@ export class SOMNeuralNetwork {
     this.weightTensor.dispose();
     this.weightTensor = newWeightTensor;
   }
-  private calculateTopographicError(bmu: {, x: number; y: number }, inputSample: number[]): number {
+  private calculateTopographicError(bmu: {, x: number;, y: number }, inputSample: number[]): number {
     // Simplified topographic error calculation
     const neighbors = this.getNeighbors(bmu.x, bmu.y, 1);
     let minNeighborDistance = Infinity;
@@ -347,8 +347,8 @@ export class SOMNeuralNetwork {
     const bmuDistance = this.calculateDistance(inputSample, this.somGrid[bmu.x][bmu.y].weights);
     return bmuDistance > minNeighborDistance ? 1 : 0;
   }
-  private getNeighbors(x: number, y: number, radius: number): { x: number;, y: number }[] {
-    const neighbors: { x: number;, y: number }[] = [];
+  private getNeighbors(x: number, y: number, radius: number): { x: number; y: number }[] {
+    const neighbors: { x: number; y: number }[] = [];
     const { width, height } = this.config.gridSize;
     for (let dx = -radius; dx <= radius; dx++) {
       for (let dy = -radius; dy <= radius; dy++) {
@@ -401,7 +401,7 @@ export class SOMNeuralNetwork {
     visited: boolean[][],
     clusterId: string
   ): Promise<SOMCluster> {
-    const queue: { x: number;, y: number }[] = [{ x: startX, y: startY }];
+    const queue: { x: number; y: number }[] = [{ x: startX, y: startY }];
     const clusterNodes: string[] = [];
     let minX = startX,
       minY = startY,
@@ -457,7 +457,7 @@ export class SOMNeuralNetwork {
     };
   }
   private calculateClusterSimilarity(nodes: string[]): number {
-    if (nodes.length < 2) return 1.0;
+    if (nodes.length < 2) return, 1.0;
     let totalSimilarity = 0;
     let comparisons = 0;
     for (let i = 0; i < nodes.length; i++) {

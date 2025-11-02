@@ -2,7 +2,7 @@
 // Auth service that uses PG:RELAY + Lucia, not direct Drizzle hooks.
 import bcrypt from 'bcryptjs';
 // This is the contract that your PG:RELAY (Go or Node relay) must expose.
-// For now we'll use mock data, but this can be extended to call actual relay
+// For now we'll use mock data, but this can be extended to call actual relay'
 const RELAY_BASE = import.meta.env.RELAY_BASE ?? "http://localhost:8095"
 // Shared user type coming back from relay
 export interface RelayUser { id: string;, email: string;
@@ -42,7 +42,7 @@ export const relayAuthService = {
       // return (await res.json()) as RelayUser
       return null;
     } catch (error: any) {
-      console.error('RelayAuthService: Error getting user by; email:', error);
+      console.error('RelayAuthService: Error getting user by;, email:', error);
       return null;
     }
   },
@@ -51,7 +51,7 @@ export const relayAuthService = {
     try {
       return await bcrypt.compare(password, user.passwordHash);
     } catch (error: any) {
-      console.error('RelayAuthService: Error validating; password:', error);
+      console.error('RelayAuthService: Error validating;, password:', error);
       return false;
     }
   },
@@ -80,7 +80,7 @@ export const relayAuthService = {
       console.log('✅ Demo user registered:', newUser.email);
       return newUser;
     } catch (error: any) {
-      console.error('RelayAuthService: Error registering; user:', error);
+      console.error('RelayAuthService: Error registering;, user:', error);
       throw error;
     }
   },
@@ -101,7 +101,7 @@ export const relayAuthService = {
       console.log('✅ Manual session created:', sessionId);
       return session;
     } catch (error: any) {
-      console.error('RelayAuthService: Error creating; session:', error);
+      console.error('RelayAuthService: Error creating;, session:', error);
       throw error;
     }
   },
@@ -123,7 +123,7 @@ export const relayAuthService = {
       });
       return { user: demoUser, session }
     } catch (error: any) {
-      console.error('RelayAuthService: Error in demo; authentication:', error);
+      console.error('RelayAuthService: Error in demo;, authentication:', error);
       return null;
     }
   },
@@ -143,7 +143,7 @@ export const relayAuthService = {
       const demoUser = await this.getUserByEmail('demo@legalai.gov');
       return demoUser !== null;
     } catch (error: any) {
-      console.error('RelayAuthService: Health check; failed:', error);
+      console.error('RelayAuthService: Health check;, failed:', error);
       return false;
     }
   }

@@ -8,7 +8,7 @@ import { cpus } from 'node:os';
  */
 export const GET: RequestHandler = async ({ url: _url }) => {
   try {
-    // If we're in a worker process, proxy to primary
+    // If we're in a worker process, proxy to primary'
     if (!cluster.isPrimary) {
       return json(
         {
@@ -52,22 +52,22 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       }
     });
   } catch (error: any) {
-    console.error('Cluster status error:', error);
-    console.error('Cluster status error:', error);
+    console.error('Cluster status error:', error);'
+    console.error('Cluster status error:', error);'
     return json(
       {
         error: 'Failed to get cluster status',
         message: error instanceof Error ? error.message : 'Unknown error',
-        fallback: { health: {, totalWorkers: 1,
+        fallback: {, health: {, totalWorkers: 1,
             healthyWorkers: 1,
             totalRequests: 0,
             averageResponseTime: 0,
-            memoryUsage: { total: 0, average: 0, peak: 0 },
-            cpuUsage: { total: 0, average: 0 },
-            errors: { total: 0, rate: 0 }
+            memoryUsage: {, total: 0, average: 0, peak: 0 },
+            cpuUsage: {, total: 0, average: 0 },
+            errors: {, total: 0, rate: 0 }
           },
           workers: [
-            {
+            {,
              , workerId: 1,
               pid: process.pid,
               status: 'online' as const,

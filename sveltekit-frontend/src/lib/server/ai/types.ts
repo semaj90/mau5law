@@ -122,7 +122,7 @@ export interface LegalDocument { id: string;, title: string;
   };
   chunks: DocumentChunk[];
   embedding?: number[];
-  somCoordinates?: { x: number;, y: number };
+  somCoordinates?: { x: number; y: number };
   relevanceScore?: number;
 }
 export interface AnalysisResult { documentId: string;, summary: string;

@@ -3,7 +3,7 @@
  *
  * Import this file from any API endpoint to access production services:
  *
- * ```typescript
+ * ```typescript`
  * import { services } from '$lib/server/services';
  *
  * // Use Ollama for embeddings
@@ -133,7 +133,7 @@ export async function indexDocument(doc: {, id: string;, content: string;
 	// Index in Qdrant
 	try {
 		await qdrant.upsert?.('legal_documents', [
-			{
+			{,
 				id: doc.id,
 				vector: embedding,
 				payload: {
@@ -148,7 +148,7 @@ export async function indexDocument(doc: {, id: string;, content: string;
 
 	// Index in PostgreSQL
 	await pgvector.insert('legal_documents', [
-		{
+		{,
 			id: doc.id,
 			vector: embedding,
 			metadata: {
@@ -190,7 +190,7 @@ export async function uploadFile(
 
 	// Upload file
 	return await minio.putObject(bucket, key, data, {
-		'Content-Type': contentType || 'application/octet-stream' });
+		'Content-Type': contentType || 'application/octet-stream` });'`
 }
 
 /**

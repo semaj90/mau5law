@@ -28,17 +28,17 @@ export interface SearchWorkerMessage { type: 'search' | 'index' | 'clear';, dat
 }
 
 // Add typed worker message shapes to avoid `any`
-type WorkerSearchEntry = { item: SearchableDocument; refIndex: number;, score: number };
-type WorkerSearchData = { results: WorkerSearchEntry[]; processingTime: number;, documentCount: number };
-type WorkerIndexData = { success: true;, documentsIndexed: number };
+type WorkerSearchEntry = { item: SearchableDocument; refIndex: number; score: number };
+type WorkerSearchData = { results: WorkerSearchEntry[]; processingTime: number; documentCount: number };
+type WorkerIndexData = { success: true; documentsIndexed: number };
 type WorkerCacheData = { success: true };
 type WorkerErrorData = { error: string };
 
 type WorkerMessage =
-  | { workerId: string; type: 'searchResult';, data: WorkerSearchData }
-  | { workerId: string; type: 'indexUpdated';, data: WorkerIndexData }
-  | { workerId: string; type: 'cacheCleared';, data: WorkerCacheData }
-  | { workerId: string; type: 'error';, data: WorkerErrorData };
+  | { workerId: string; type: 'searchResult'; data: WorkerSearchData }
+  | { workerId: string; type: 'indexUpdated'; data: WorkerIndexData }
+  | { workerId: string; type: 'cacheCleared'; data: WorkerCacheData }
+  | { workerId: string; type: 'error'; data: WorkerErrorData };
 
 export class ConcurrentIndexedDBSearch {
   private db: IDBDatabase | null = null;
@@ -89,13 +89,13 @@ export class ConcurrentIndexedDBSearch {
         const req = event.target as IDBOpenDBRequest;
         const db = req.result as IDBDatabase;
         if (!db.objectStoreNames.contains('documents')) {
-          const store = db.createObjectStore('documents', { keyPath: 'id' });
+          const store = db.createObjectStore('documents', { keyPath: 'id` });'`
           store.createIndex('type', 'type', { unique: false });
           store.createIndex('language', 'metadata.language', { unique: false });
           store.createIndex('lastModified', 'metadata.lastModified', { unique: false });
         }
         if (!db.objectStoreNames.contains('embeddings')) {
-          const embeddingStore = db.createObjectStore('embeddings', { keyPath: 'id' });
+          const embeddingStore = db.createObjectStore('embeddings', { keyPath: `id` });
           embeddingStore.createIndex('documentId', 'documentId', { unique: false });
         }
       };
@@ -211,7 +211,7 @@ export class ConcurrentIndexedDBSearch {
         console.log(`✅ Worker ${msg.workerId} cleared cache`);
         break;
       case 'error':
-        console.error(`❌ Worker ${msg.workerId} error:`, msg.data?.error);
+        console.error(`❌ Worker ${msg.workerId} error:`, msg.data?.error);`
         break;
       default: break;
     }
@@ -248,7 +248,7 @@ export class ConcurrentIndexedDBSearch {
       console.log(`📊 Found ${finalResults.length} results for query: "${request.query}"`);
       return finalResults;
     } catch (error: any) {
-      console.error('❌ Search error:', error instanceof Error ? error : String(error));
+      console.error('❌ Search error:', error instanceof Error ? error : String(error));'
       return [];
     }
   }
@@ -502,7 +502,7 @@ export class ConcurrentIndexedDBSearch {
   async searchErrors(query: string): Promise<SearchableDocument[]> {
     return this.search({
       query,
-      filters: { type: ['error'] },
+      filters: {, type: ['error'] },
       options: {, threshold: 0.2, maxResults: 100 }
     });
   }

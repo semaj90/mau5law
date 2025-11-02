@@ -312,7 +312,7 @@ export class CompilerFeedbackLoop {
           return {
             content: doc?.content ?? result?.content ?? '',
             relevance: result?.finalScore ?? result?.score ?? 0,
-            source: (doc?.metadata && doc.metadata.source) || 'unknown` };
+            source: (doc?.metadata && doc.metadata.source) || 'unknown' };
         });
       }
       // Fallback: empty results
@@ -398,7 +398,7 @@ export class CompilerFeedbackLoop {
     const lines = content.split('\n');
     for (const line of lines) {
       const trimmed = line.trim();
-      if (trimmed.length > 10 && !trimmed.startsWith('```') && !trimmed.startsWith('//')) {
+      if (trimmed.length > 10 && !trimmed.startsWith('```') && !trimmed.startsWith('//')) {`
         return trimmed;
       }
     }
@@ -474,7 +474,7 @@ export class CompilerFeedbackLoop {
       {
         type: 'ERROR_DETECTED',
         logs: [
-          {
+          {,
             id: 'error_1',
             timestamp: Date.now(),
             level: 'error',
@@ -485,8 +485,7 @@ export class CompilerFeedbackLoop {
             metadata: {
               component: 'TypeScript',
               phase: 'type-checking',
-              category: 'type'
-            }
+              category: 'type' }
           },
         ],
         performance: {
@@ -499,7 +498,7 @@ export class CompilerFeedbackLoop {
       {
         type: 'ERROR_DETECTED',
         logs: [
-          {
+          {,
             id: 'error_2',
             timestamp: Date.now(),
             level: 'error',
@@ -510,7 +509,7 @@ export class CompilerFeedbackLoop {
             metadata: {
               component: 'Module Resolver',
               phase: 'bundling',
-              category: 'import` }
+              category: `import' }'`
           },
         ],
         performance: {

@@ -5,7 +5,8 @@
 // - Optional external Go service fallback (configurable via INITIALIZE)
 // - Simple LRU cache and processing stats
 
-export type MultiDimArray = { shape: number[];, data: Float32Array | number[];
+export type MultiDimArray = { shape: number[];
+, data: Float32Array | number[];
   layout?: string;
   cacheKey?: string;
   timestamp?: number;
@@ -44,7 +45,8 @@ export interface WorkerResponse {
   error?: string;
 }
 
-export interface GPUProcessingStats { totalProcessed: number;, cacheHitRate: number; // 0..100
+export interface GPUProcessingStats { totalProcessed: number;
+, cacheHitRate: number; // 0..100
   averageProcessingTime: number; // ms
   webgpuSupported: boolean;
   lastProcessedTime?: number;
@@ -59,7 +61,7 @@ interface NavigatorWithGPU {
 }
 
 class GPUTensorWorker {
-  private tensorCache = new Map<string, { data: MultiDimArray;, timestamp: number }>();
+  private tensorCache = new Map<string, { data: MultiDimArray; timestamp: number }>();
   private cacheLimit = 100;
   private stats: GPUProcessingStats = {
     totalProcessed: 0,
@@ -82,7 +84,7 @@ class GPUTensorWorker {
     try {
       const nav = (globalThis as unknown as NavigatorWithGPU | undefined) ?? undefined;
       if (nav?.gpu && typeof nav.gpu.requestAdapter === 'function') {
-        const adapter = await nav.gpu.requestAdapter({ powerPreference: 'high-performance` });
+        const adapter = await nav.gpu.requestAdapter({ powerPreference: 'high-performance' });
         if (adapter && typeof adapter.requestDevice === 'function') {
           this.gpuDevice = (await adapter.requestDevice()) ?? null;
           this.stats.webgpuSupported = Boolean(this.gpuDevice);
@@ -178,7 +180,7 @@ class GPUTensorWorker {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Processing-Mode': 'webworker` },
+        'X-Processing-Mode': 'webworker' },
       body: JSON.stringify(tensor)
     });
     if (!resp.ok) throw new Error(`Go service error ${resp.status} ${resp.statusText}`);
@@ -276,17 +278,17 @@ self.onmessage = async (ev: MessageEvent<WorkerMessage>) => {
       }
       case 'CLEAR_CACHE': {
         worker.clearCache();
-        self.postMessage({ type: 'SUCCESS', id: msg.id, data: { cleared: true } } as WorkerResponse);
+        self.postMessage({ type: 'SUCCESS', id: msg.id, data: {, cleared: true } } as WorkerResponse);
         break;
       }
       default:
         self.postMessage({
           type: 'ERROR',
           id: msg.id,
-          error: `Unknown message: type: ${String(msg.type)}` } as WorkerResponse);
+          error: `Unknown; message:; type: ${String(msg.type)}' } as WorkerResponse);'`
     }
   } catch (err: any) {
     const errorMessage = err instanceof Error ? err.message : String(err);
-    self.postMessage({ type: 'ERROR', id: msg?.id, error: errorMessage } as WorkerResponse);
+    self.postMessage({ type: 'ERROR`, id: msg?.id, error: errorMessage } as WorkerResponse);'`
   }
 };

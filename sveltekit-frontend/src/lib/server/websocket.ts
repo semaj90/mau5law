@@ -27,7 +27,7 @@ export function setupWebSocketServer(server: any) {
     const user = {
       id: `user-${Math.random().toString(36).substr(2, 9)}`,
       name: `Prosecutor ${Math.floor(Math.random() * 100)}`,
-      email: `user${Math.floor(Math.random() * 100)}@prosecutor.office` }
+      email: `user${Math.floor(Math.random() * 100)}@prosecutor.office' }'`
     // Add user to active users
     if (!activeUsers.has(caseId)) {
       activeUsers.set(caseId, new Set();
@@ -76,7 +76,7 @@ export function setupWebSocketServer(server: any) {
       }
     });
     ws.on("error", (error: Error) => {
-      console.error("WebSocket error:", error);
+      console.error("WebSocket error:", error);"
     });
   });
   console.log("WebSocket server initialized");

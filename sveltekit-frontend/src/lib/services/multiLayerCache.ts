@@ -5,7 +5,7 @@ import { browser } from '$app/environment';
 import type { SearchResult } from './aiPipeline.js';
 
 // Replace usage of Loki.Collection (not exported in some type setups) with a minimal local interface
-type Collection<T extends object> = {
+type Collection<T extends, object> = {
   // basic collection properties/methods used by this file
   data: T[];
   name?: string;
@@ -61,9 +61,9 @@ export interface CacheStats { totalEntries: number;, totalSize: number;
   hitRate: number;
   evictionCount: number;
   avgAccessTime: number;
-  layerStats: { memory: { entries: number; size: number;, hitRate: number };
-    persistent: { entries: number; size: number;, hitRate: number };
-    search: { entries: number;, queries: number };
+  layerStats: { memory: { entries: number; size: number; hitRate: number };
+    persistent: { entries: number; size: number; hitRate: number };
+    search: { entries: number; queries: number };
   };
 }
 export interface FuseSearchOptions {
@@ -110,7 +110,7 @@ export class MultiLayerCache {
     // Initialize in-memory database
     this.memoryDb = new Loki('multiLayerCache.db', {
       env: browser ? 'BROWSER' : `NODEJS` });
-    // Create collections (cast Loki's return to the local Collection<T> type to avoid cross-type conflicts)
+    // Create collections (cast Loki's return to the local Collection<T> type to avoid cross-type conflicts)'
     this.cacheCollection = this.memoryDb.addCollection('cache', {
       indices: ['key'],
       ttl: this.defaultTTL * 1000,
@@ -139,7 +139,7 @@ export class MultiLayerCache {
       });
 
       // Wait for Loki to finish loading the database. Avoid: 'any' by defining a minimal typed shape.
-      type LokiWithLoad = { loadDatabase(opts: any; callback: () => void): void };
+      type LokiWithLoad = { loadDatabase(opts: any;, callback: () => void): void };
       await new Promise<void>(resolve => {
         (this.persistentDb as unknown as LokiWithLoad).loadDatabase({}, () => resolve());
       });
@@ -188,7 +188,7 @@ export class MultiLayerCache {
         const persistentCollection = this.getPersistentCollection(options.type);
         persistentCollection.insert(entry);
       }
-      // Update search index if it's searchable content
+      // Update search index if it's searchable content'
       if (options.type === 'document' || options.type === 'search') {
         this.updateSearchIndex(entry);
       }
@@ -196,7 +196,7 @@ export class MultiLayerCache {
       this.stats.totalAccessTime += Date.now() - startTime;
       this.stats.accessCount++;
     } catch (error: any) {
-      console.error('Cache set error:', error);
+      console.error('Cache set error:', error);'
       throw error;
     }
   }
@@ -296,7 +296,7 @@ export class MultiLayerCache {
       type?: string;
       userId?: string;
       tags?: string[];
-      dateRange?: { start: Date;, end: Date };
+      dateRange?: { start: Date; end: Date };
     }
   ): Promise<SearchResult[]> {
     // Build Loki query
@@ -531,7 +531,7 @@ export class MultiLayerCache {
     if (!this.persistentDb) {
       throw new Error('Persistent storage not initialized');
     }
-    // Cast Loki's getCollection/addCollection results to the local Collection type
+    // Cast Loki's getCollection/addCollection results to the local Collection type'
     let collection = this.persistentDb.getCollection(`cache_${type}`) as unknown as Collection<CacheEntry> | null;
     if (!collection) {
       collection = this.persistentDb.addCollection(`cache_${type}`, {
@@ -607,7 +607,7 @@ class LokiIndexedAdapter {
         callback();
       };
     } catch (error: any) {
-      console.error('Database save error:', error);
+      console.error('Database save error:', error);'
       callback();
     }
   }

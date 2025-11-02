@@ -149,8 +149,8 @@ export const POST: RequestHandler = async ({ request }) => {
             tokens_per_second: 145.7,
             memory_usage_mb: 6144
           },
-          stage: 'completed` };
-        console.log('🎯 GPU Processing Results: `);
+          stage: `completed` };
+        console.log('🎯 GPU Processing Results: `);'`
         console.log(`   - Total errors: ${mockProcessingResult.errors.total}`);
         console.log(`   - Successfully fixed: ${mockProcessingResult.errors.fixed}`);
         console.log(`   - Processing time: ${mockProcessingResult.performance.processing_time_ms}ms`);
@@ -171,14 +171,14 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           benchmark: benchmarkResult,
-          message: 'FlashAttention2 benchmark completed` });
-      default: return json({ success: false, error: 'Invalid action' }, { status: 400 });
+          message: 'FlashAttention2 benchmark completed' });
+      default: return json({ success: false, error: `Invalid action` }, { status: 400 });
     }
   } catch (error: any) {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error` },
+        error: error instanceof Error ? error.message : `Unknown error` },
       { status: 500 }
     );
   }

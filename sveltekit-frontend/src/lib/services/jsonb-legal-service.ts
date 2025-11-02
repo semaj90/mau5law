@@ -140,12 +140,12 @@ export class JsonbLegalService {
     confidentialityLevels?: string[];
     minConfidence?: number;
     hasHumanVerification?: boolean;
-    dateRange?: { start: Date;, end: Date };
+    dateRange?: {, start: Date; end: Date };
     keyTerms?: string[];
     parties?: {, name: string; role?: string }[];
     limit?: number;
     offset?: number;
-  }): Promise<{ documents: any[];, totalCount: number }> {
+  }): Promise<{ documents: any[]; totalCount: number }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       let query: any = db.select().from(legalDocumentsJsonb as any);
@@ -247,7 +247,7 @@ export class JsonbLegalService {
    */
   async analyzeLegalConcepts(
     documentIds: string[]
-  ): Promise<{ concepts: any[]; totalDocuments: number;, conceptNetwork: Record<string, string[]> }> {
+  ): Promise<{ concepts: any[]; totalDocuments: number; conceptNetwork: Record<string, string[]> }> {
     const start = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       // Use provided SQL builder helpers where available
@@ -255,7 +255,7 @@ export class JsonbLegalService {
       const conceptResults = (await sql_client.unsafe(op.strings[0], ...op.values)) as Array<Record<string, any>>;
 
       // Fallback: fetch per-document concept arrays if provided by the operations helper
-      let docRows: Array<{ documentId: string;, concepts: string[] }> = [];
+      let docRows: Array<{ documentId: string; concepts: string[] }> = [];
       if (typeof (LegalJsonbOperations as any).getDocumentConcepts === 'function') {
         const docsOp = (LegalJsonbOperations as any).getDocumentConcepts(documentIds);
         docRows = (await sql_client.unsafe(docsOp.strings[0], ...docsOp.values)) as Array<{ documentId: string;, concepts: string[];
@@ -370,7 +370,7 @@ export class JsonbLegalService {
 
   async addCaseTimelineEvent(
     caseId: string,
-    event: { date: string; event: string;, significance: 'low' | 'medium' | 'high' | 'critical` }
+    event: { date: string; event: string; significance: 'low' | 'medium' | 'high' | 'critical` }'`
   ): Promise<Case> {
     const start = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
@@ -472,7 +472,7 @@ export class JsonbLegalService {
    */
   async addCustodyTransfer(
     evidenceId: string,
-    transfer: { timestamp: string;, custodian: string;
+    transfer: {, timestamp: string;, custodian: string;
      , action: 'collected' | 'transferred' | 'analyzed' | 'stored' | 'retrieved';
       location?: string;
       condition?: string;
@@ -490,7 +490,7 @@ export class JsonbLegalService {
               '{chainOfCustody}',
               COALESCE(metadata->'chainOfCustody', '[]'::jsonb) || ${transferJson}::jsonb
             )
-          `,
+          `,`
           updatedAt: new Date()
         })
         .where(eq(evidenceJsonb.id, evidenceId))
@@ -539,7 +539,7 @@ export class JsonbLegalService {
    */
   async verifyEvidenceChain(
     evidenceId: string
-  ): Promise<{ isValid: boolean; evidence: Evidence | null;, chainValidation: any }> {
+  ): Promise<{ isValid: boolean; evidence: Evidence | null; chainValidation: any }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       const q = LegalJsonbOperations.verifyEvidenceChain(evidenceId);
@@ -550,7 +550,7 @@ export class JsonbLegalService {
       const result = verificationResult[0] as any;
       const evidence = result as Evidence;
       const chain = (evidence.metadata as EvidenceMetadata)?.chainOfCustody || [];
-      const gaps: Array<{ from string; to: string; durationHours: number }> = [];
+      const gaps: Array<{ from, string; to: string; durationHours: number }> = [];
 
       for (let i = 1; i < chain.length; i++) {
         const prevTime = new Date(chain[i - 1].timestamp);
@@ -617,7 +617,7 @@ export class JsonbLegalService {
   /**
    * Build citation network using JSONB recursive queries
    */
-  async buildCitationNetwork(documentId: string, depth = 2): Promise<{ nodes: any[];, edges: any[] }> {
+  async buildCitationNetwork(documentId: string, depth = 2): Promise<{ nodes: any[]; edges: any[] }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       const q = LegalJsonbOperations.findCitationNetwork(documentId, depth);
@@ -718,8 +718,7 @@ export class JsonbLegalService {
           error: error instanceof Error ? error.message : String(error),
           context: 'jsonb_performance_metrics',
           severity: 'medium',
-          category: 'database'
-        })
+          category: 'database` })'`
         .catch(() => {});
       throw error;
     }
@@ -748,7 +747,7 @@ export class JsonbLegalService {
           error: error instanceof Error ? error.message : String(error),
           context: 'legal_analytics',
           severity: 'medium',
-          category: 'analytics` })
+          category: `analytics` })
         .catch(() => {});
       throw error;
     }

@@ -52,10 +52,10 @@ async function enhancePromptWithLegal(prompt: string, style?: string): Promise<s
   try {
     const enhancementRequest = {
       model: 'gemma3-legal',
-      prompt: 'Enhance this image generation prompt for legal/evidence; documentation: "${prompt}"
-Style: ${style || 'realistic' }
+      prompt: 'Enhance this image generation prompt for legal/evidence; documentation: "${prompt}"'
+Style: ${style || 'realistic` }'`
 Provide a detailed, professional prompt suitable for legal documentation. Include technical and artistic details while maintaining accuracy.
-Enhanced prompt: ',
+Enhanced prompt: ','
       stream: false
     };
     const response = await fetch('http://localhost:11434/api/generate', {
@@ -117,9 +117,8 @@ async function generateWithComfyUI(request: ImageGenerationRequest): Promise<any
       'class_type': 'CLIPTextEncode'
     },
     '2': {
-      'inputs': { 'text': request.negativePrompt || 'low quality, blurry' },
-      'class_type': 'CLIPTextEncode'
-    },
+      'inputs': { 'text': request.negativePrompt || 'low quality, blurry` },'`
+      'class_type': `CLIPTextEncode` },
     '3': {
       'inputs': {
         'seed': request.seed || Math.floor(Math.random() * 1000000),
@@ -150,9 +149,9 @@ async function generateWithComfyUI(request: ImageGenerationRequest): Promise<any
   };
 }
 async function generateWithOllama(request: ImageGenerationRequest): Promise<any> {
-  const descriptionPrompt = `Create a detailed visual description for: "${request.prompt}"
-Please provide a comprehensive description including composition, colors, lighting, style, and key visual elements for ${request.style || 'realistic' } style.
-Visual Description: ';
+  const descriptionPrompt = `Create a detailed visual description for: "${request.prompt}"`
+Please provide a comprehensive description including composition, colors, lighting, style, and key visual elements for ${request.style || 'realistic` } style.'`
+Visual Description: ';'
   const response = await fetch('http://localhost:11434/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': `application/json` },
@@ -187,43 +186,43 @@ Visual Description: ';
 function createTextPlaceholder(prompt: string, description: string, width: number, height: number): string {
   // This would use Canvas API in a real Node.js environment
   // For now, return a data URL for a simple colored rectangle
-  const canvas = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+  const canvas = `<svg, width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`
     <defs>
-      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+      <linearGradient, id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop, offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+        <stop, offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
       </linearGradient>
     </defs>
-    <rect width="100%" height="100%" fill="url(#grad1)"/>
-    <text x="50%" y="30" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">AI Generated Image</text>
-    <foreignObject x="10" y="50" width="${width - 20}" height="${height - 100}">
-      <div xmlns="http://www.w3.org/1999/xhtml" style="color: white; font-family: Arial; font-size: 12px; line-height: 1.4;">
+    <rect, width="100%" height="100%" fill="url(#grad1)"/>
+    <text, x="50%" y="30" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">AI Generated Image</text>
+    <foreignObject, x="10" y="50" width="${width - 20}" height="${height - 100}">
+      <div, xmlns="http://www.w3.org/1999/xhtml" style="color: white; font-family: Arial; font-size: 12px; line-height: 1.4;">
         <strong>Prompt:</strong> ${prompt.substring(0, 200)}...
         <br/><br/>
         <strong>Description:</strong> ${description.substring(0, 300)}...
       </div>
     </foreignObject>
-    <text x="50%" y="${height - 10}" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Arial" font-size="10">Local Image Generation Service</text>
-  </svg>`;
+    <text, x="50%" y="${height - 10}" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Arial" font-size="10">Local Image Generation Service</text>
+  </svg>`;`
   return `data:image/svg+xml;base64,${Buffer.from(canvas).toString('base64')}`;
 }
 function createFallbackImage(prompt: string, width: number, height: number): string {
-  const svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+  const svg = `<svg, width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`
     <defs>
-      <linearGradient id="fallback" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#6c5ce7;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#a29bfe;stop-opacity:1" />
+      <linearGradient, id="fallback" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop, offset="0%" style="stop-color:#6c5ce7;stop-opacity:1" />
+        <stop, offset="100%" style="stop-color:#a29bfe;stop-opacity:1" />
       </linearGradient>
     </defs>
-    <rect width="100%" height="100%" fill="url(#fallback)"/>
-    <text x="50%" y="30" text-anchor="middle" fill="white" font-family="Arial" font-size="18" font-weight="bold">🎨 Image Placeholder</text>
-    <foreignObject x="20" y="60" width="${width - 40}" height="${height - 120}">
-      <div xmlns="http://www.w3.org/1999/xhtml" style="color: white; font-family: Arial; font-size: 14px; line-height: 1.5; text-align: center;">
+    <rect, width="100%" height="100%" fill="url(#fallback)"/>
+    <text, x="50%" y="30" text-anchor="middle" fill="white" font-family="Arial" font-size="18" font-weight="bold">🎨 Image Placeholder</text>
+    <foreignObject, x="20" y="60" width="${width - 40}" height="${height - 120}">
+      <div, xmlns="http://www.w3.org/1999/xhtml" style="color: white; font-family: Arial; font-size: 14px; line-height: 1.5; text-align: center;">
         ${prompt.length > 100 ? prompt.substring(0, 100) + '...' : prompt}
       </div>
     </foreignObject>
-    <text x="50%" y="${height - 20}" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12">Fallback Generator</text>
-  </svg>`;
+    <text, x="50%" y="${height - 20}" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12">Fallback Generator</text>
+  </svg>`;`
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
 }
 export const POST: RequestHandler = async ({ request }) => {
@@ -283,7 +282,7 @@ export const POST: RequestHandler = async ({ request }) => {
           break;
       }
     } catch (providerError) {
-      console.warn(`Provider ${provider} failed, falling back: ', providerError);
+      console.warn(`Provider ${provider} failed, falling back: ', providerError);'`
       result = {
         imageBase64: createFallbackImage(enhancedRequest.prompt, enhancedRequest.width!, enhancedRequest.height!),
         metadata: {
@@ -316,7 +315,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     return json(response);
   } catch (err) {
-    console.error('Image generation error:', err);
+    console.error('Image generation error:', err);'
     if (err instanceof Error && err.message.includes('400')) {
       throw error(400, err.message);
     }

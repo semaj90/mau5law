@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import type { RequestHandler } from './$types.js';
 // Server-Sent Events API route for SSR-safe real-time updates
 import { createClient } from 'redis';
@@ -49,10 +49,10 @@ class SSEConnectionManager {
       try {
         // Send SSE formatted message
         const sseMessage = `data: ${JSON.stringify(data)}\n\n`;
-        // Note: In a real implementation, you'd need to handle the response stream
+        // Note: In a real implementation, you'd need to handle the response stream'
         console.log(`Broadcasting to SSE connection ${connectionId}:`, sseMessage);
       } catch (error: any) {
-        console.error(`Failed to send to connection ${connectionId}: ', error);
+        console.error(`Failed to send to connection ${connectionId}: ', error);'`
         this.connections.delete(connectionId);
       }
     }
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
   // Get connection parameters
   const userId = url.searchParams.get('userId');
   const subscriptions = url.searchParams.get('subscriptions')?.split(',') || [];
-  const connectionId = `${userId || 'anonymous` }_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const connectionId = `${userId || 'anonymous` }_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;'`
   // Create SSE response
   const stream = new ReadableStream({
     start(controller) {
@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       };
       controller.enqueue(`data: ${JSON.stringify(initialMessage)}\n\n`);
       // Store connection for broadcasting
-      // Note: This is a simplified approach - in production, you'd store the controller
+      // Note: This is a simplified approach - in production, you'd store the controller'
       console.log(`SSE connection established: ${connectionId}`);
       // Send heartbeat every 30 seconds
       const heartbeatInterval = setInterval(() => {
@@ -115,8 +115,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control'
-    }
+      'Access-Control-Allow-Headers': 'Cache-Control` }'`
   });
 };
 // Health check endpoint

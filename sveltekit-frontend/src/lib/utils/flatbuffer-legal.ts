@@ -35,7 +35,7 @@ interface LegalEntityExtraction { documentId: string;, entities: LegalEntity[];
 
 interface SearchResultItem { documentId: string;, score: number;
   excerpt: string;
-  metadata: { type: string;, jurisdiction: string };
+  metadata: { type: string; jurisdiction: string };
 }
 
 /**
@@ -55,9 +55,9 @@ export class FlatBufferLegalProcessor {
    */
   async storeLegalDocument(document: {
     // Changed _document to document for consistency
-    id: string;
-    title: string;
-    content: string | Uint8Array;
+   , id: string;
+   , title: string;
+   , content: string | Uint8Array;
    , contentType: string;
     compress?: boolean;
   }): Promise<Uint8Array> {
@@ -82,7 +82,7 @@ export class FlatBufferLegalProcessor {
    * Process vector embeddings with FlatBuffer for GPU acceleration
    * Optimized for your CUDA/SIMD Go microservices
    */
-  async storeVectorEmbeddings(embeddings: { documentId: string;, vectors: Float32Array;
+  async storeVectorEmbeddings(embeddings: {, documentId: string;, vectors: Float32Array;
    , model: string;
     batchSize?: number;
   }): Promise<Uint8Array> {
@@ -122,7 +122,7 @@ export class FlatBufferLegalProcessor {
       const resultBuffer = await response.arrayBuffer(); // Simplified type assertion
       return this.parseLegalEntitiesFromFlatBuffer(new Uint8Array(resultBuffer)); // Added missing parenthesis
     } catch (error) {
-      console.error('Legal entity extraction error:', error);
+      console.error('Legal entity extraction error:', error);'
       // Fallback to local processing
       return this.extractEntitiesLocally(documentId, content);
     }
@@ -158,7 +158,7 @@ export class FlatBufferLegalProcessor {
       const resultBuffer = await response.arrayBuffer(); // Simplified type assertion
       return this.parseSearchResultsFromFlatBuffer(new Uint8Array(resultBuffer)); // Added missing parenthesis
     } catch (error) {
-      console.error('Semantic search error:', error);
+      console.error('Semantic search error:', error);'
       return [];
     }
   }
@@ -176,7 +176,7 @@ export class FlatBufferLegalProcessor {
   ): Promise<ReadableStream<Uint8Array>> {
     const { qualityLevel = 2, chunkSize = 64 * 1024, targetFPS = 60 } = options;
 
-    // Capture class members so they're available inside stream callbacks
+    // Capture class members so they're available inside stream callbacks'
     const apiBase = this.API_BASE;
     const processTextureChunk = this.processTextureChunk.bind(this);
 
@@ -333,7 +333,7 @@ export class FlatBufferLegalProcessor {
     return {
       documentId: 'parsed-doc-id',
       entities: [
-        {
+        {,
           text: 'Sample Entity',
           type: 'ORGANIZATION',
           confidence: 0.95,
@@ -347,11 +347,11 @@ export class FlatBufferLegalProcessor {
     // Renamed to _buffer and changed return type
     // Mock parsing - would use generated FlatBuffer classes
     return [
-      {
+      {,
         documentId: 'result-doc-1',
         score: 0.89,
         excerpt: 'Sample search result excerpt...',
-        metadata: { type: 'contract', jurisdiction: 'federal' }
+        metadata: { type: 'contract', jurisdiction: 'federal` }'`
       },
     ];
   }
@@ -384,8 +384,8 @@ export class FlatBufferPerformanceMonitor {
     const times = this.metrics.get(operation) || [];
     return times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : 0;
   }
-  getPerformanceReport(): Record<string, { avg: number; min: number; max: number;, count: number }> {
-    const report: Record<string, { avg: number; min: number; max: number;, count: number }> = {}; // Refined type
+  getPerformanceReport(): Record<string, { avg: number; min: number; max: number; count: number }> {
+    const report: Record<string, { avg: number; min: number; max: number; count: number }> = {}; // Refined type
     for (const [operation, times] of this.metrics.entries()) {
       report[operation] = {
         avg: this.getAverageTime(operation),

@@ -32,7 +32,7 @@ export const MockDataGenerators = {
       isActive: true,
       emailVerified: true,
       practiceAreas: ['test_area'],
-      barNumber: 'TEST${String(i).padStart(6, '0')}`,
+      barNumber: 'TEST${String(i).padStart(6, '0')}`,'`
       firmName: 'Test Legal Firm',
       profileEmbedding: null,
       metadata: { test_user: true, created_by: `unified_test_utilities` }
@@ -116,7 +116,7 @@ export const MockDataGenerators = {
 // ============================================================================
 
 interface MockDatabase {
-  query(sql: string, params?: any[]): Promise<{ rows: any[];, rowCount: number }>;
+  query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }>;
   transaction<T>(fn: (trx: MockDatabase) => Promise<T>): Promise<T>;
 }
 
@@ -148,12 +148,12 @@ export const MockServices = {
    */
   createMockDatabase(config?: MockServiceConfig): MockDatabase {
     return {
-      async query(sql: string, params?: any[]): Promise<{ rows: any[];, rowCount: number }> {
-        console.log(`Mock DB Query (Configured URL: ${config?.databaseUrl || 'N/A` }): ${sql}`, params);
+      async query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }> {
+        console.log(`Mock DB Query (Configured URL: ${config?.databaseUrl || 'N/A` }): ${sql}`, params);'`
         return { rows: [], rowCount: 0 };
       },
       async transaction<T>(fn: (trx: MockDatabase) => Promise<T>): Promise<T> {
-        console.log(`Mock DB Transaction (Configured URL: ${config?.databaseUrl || 'N/A` })`);
+        console.log(`Mock DB Transaction (Configured URL: ${config?.databaseUrl || 'N/A` })`);'`
         return fn(this);
       }
     };
@@ -165,7 +165,7 @@ export const MockServices = {
     return {
       async makeRequest(endpoint: string, options: MockApiClientOptions = {}): Promise<MockApiResponse> {
         console.log(
-          `Mock API Request (Configured API URL: ${config?.apiUrl || 'N/A'}): ${options.method || 'GET` } ${endpoint}`
+          `Mock API Request (Configured API URL: ${config?.apiUrl || 'N/A'}): ${options.method || 'GET` } ${endpoint}`'`
         );
         // Simulate successful responses based on endpoint patterns
         if (endpoint.includes('/auth/login')) {
@@ -250,7 +250,7 @@ export const TestUtilities = {
     return base.slice(0, -12) + indexStr;
   },
   /**
-   * Create mock date that's deterministic for tests
+   * Create mock date that's deterministic for tests'
    */
   createMockDate(daysAgo: number = 0): Date {
     const baseDate = new Date('2024-01-01T00:00:00.000Z');
@@ -334,7 +334,7 @@ export const VitestHelpers = {
   /**
    * Create a spy that tracks all calls with detailed info
    */
-  createDetailedSpy<T extends (...args: any[]) => unknown>(fn?: T) {
+  createDetailedSpy<T, extends (...args: any[]) => unknown>(fn?: T) {
     const spy = vi.fn(fn);
     const calls: Array<CallDetails<T>> = [];
     spy.mockImplementation((...args: Parameters<T>): ReturnType<T> => {
@@ -396,7 +396,7 @@ export const UnifiedTestUtils = {
         REDIS_URL: mockServiceConfig.redisUrl || '',
         OLLAMA_URL: mockServiceConfig.ollamaUrl || '',
         MINIO_ENDPOINT: mockServiceConfig.minioEndpoint || '',
-        NEO4J_URI: mockServiceConfig.neo4jUri || '` });
+        NEO4J_URI: mockServiceConfig.neo4jUri || '` });'`
 
       return {
         mockDb,

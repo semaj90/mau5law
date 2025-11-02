@@ -6,7 +6,7 @@ import { get, writable } from 'svelte/store';
 // provide a cross-runtime id generator that prefers crypto.randomUUID when available
 const generateId = (): string => {
   try {
-    // globalThis crypto (browser) or node's crypto (if available on global)
+    // globalThis crypto (browser) or node's crypto (if available on global)'
     // @ts-ignore
     const globalCrypto = typeof globalThis !== 'undefined' ? (globalThis as any).crypto : undefined;
     if (globalCrypto && typeof globalCrypto.randomUUID === 'function') {
@@ -245,7 +245,7 @@ export function createCaseService() {
       });
       // Update local state
       // Use a generic helper so the returned array preserves the original item type (Report/Evidence/POI)
-      const applyUpdate = <T extends { id: string; posX?: number; posY?: number }>(items: T[]): T[] =>
+      const applyUpdate = <T, extends { id: string; posX?: number; posY?: number }>(items: T[]): T[] =>
         items.map(item => (item.id === id ? ({ ...(item as object), posX: position.x, posY: position.y } as T) : item));
 
       switch (type) {
@@ -261,17 +261,17 @@ export function createCaseService() {
       }
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`Failed to update ${type} position: ', msg);
+      console.error(`Failed to update ${type} position: ', msg);'`
     }
   }
   // Delete item
   async function deleteItem(type: 'report' | 'evidence' | 'poi', id: string): Promise<void> {
     try {
       await apiCall(`/api/${type}s/${id}`, {
-        method: 'DELETE` });
+        method: 'DELETE' });
       // Update local state
       // Generic filter preserving the original item type
-      const filterOut = <T extends { id: string }>(items: T[]): T[] => items.filter(item => item.id !== id);
+      const filterOut = <T, extends { id: string }>(items: T[]): T[] => items.filter(item => item.id !== id);
 
       switch (type) {
         case 'report':
@@ -286,7 +286,7 @@ export function createCaseService() {
       }
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`Failed to delete ${type}: ', msg);
+      console.error(`Failed to delete ${type}: ', msg);'`
     }
   }
   // Save all changes

@@ -13,7 +13,7 @@ export async function qdrantSearch(embedding: number[], topK = 10): Promise<any>
   };
   const res = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json` },'`
     body: JSON.stringify(body)
   });
   if (!res.ok) {

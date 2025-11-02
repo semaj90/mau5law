@@ -35,7 +35,7 @@ function normalizeHttp(urlLike: string | undefined, defaultProto = 'http'): stri
   if (!urlLike) return undefined;
   // if it already looks like a URL, return as-is
   if (urlLike.startsWith('http://') || urlLike.startsWith('https://')) return urlLike;
-  // if it's host:port or host only
+  // if it's host:port or host only'
   if (urlLike.includes(':')) return `${defaultProto}://${urlLike}`;
   return `${defaultProto}://${urlLike}`;
 }

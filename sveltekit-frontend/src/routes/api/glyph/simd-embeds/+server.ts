@@ -61,19 +61,18 @@ export const POST: RequestHandler = async ({ request }) => {
         compression_target: body.simd_config?.compression_target || 50,
         shader_format: body.simd_config?.shader_format || 'webgpu',
         adaptive_quality: body.simd_config?.adaptive_quality ?? true,
-        performance_tier: body.simd_config?.performance_tier || 'n64'
-      }
+        performance_tier: body.simd_config?.performance_tier || 'n64' }
     };
     // Validate required fields
     if (!simdGlyphRequest.evidence_id || !simdGlyphRequest.prompt) {
       return json(
         {
           success: false,
-          error: `evidence_id and prompt are required` },
+          error: 'evidence_id and prompt are required` },'`
         { status: 400 }
       );
     }
-    console.log(`🔧 Generating SIMD-optimized glyph for evidence ${simdGlyphRequest.evidence_id}: ', {
+    console.log(`🔧 Generating SIMD-optimized glyph for evidence ${simdGlyphRequest.evidence_id}: ', {'`
       prompt: simdGlyphRequest.prompt,
       style: simdGlyphRequest.style,
       dimensions: simdGlyphRequest.dimensions,
@@ -83,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Phase 1: Generate base glyph using existing diffusion service
     let glyphResult: GlyphResult;
     try {
-      // Service's declared type may not include `generateGlyph`; cast to any to allow runtime call.
+      // Service's declared type may not include `generateGlyph`; cast to any to allow runtime call.'
       glyphResult = await (glyphDiffusionService as any).generateGlyph(simdGlyphRequest);
       if (!glyphResult?.glyph_url) {
         throw new Error('Base glyph generation failed - no URL returned');
@@ -114,7 +113,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Apply SIMD GPU tiling with CHR-ROM style optimization
         let tilingResult: TilingResult;
         try {
-          // Engine's TS signature in the codebase differs from runtime signature.
+          // Engine's TS signature in the codebase differs from runtime signature.'
           // Cast to any to avoid compile-time arg/return mismatches, then assert to our TilingResult.
           tilingResult = (await (simdGPUTilingEngine as any).processEvidenceWithSIMDTiling(
             {
@@ -211,7 +210,7 @@ export const POST: RequestHandler = async ({ request }) => {
               'ai_generated',
             ],
             entities: [
-              {
+              {,
                 type: 'style',
                 value: simdGlyphRequest.style,
                 confidence: 1.0
@@ -243,7 +242,7 @@ export const POST: RequestHandler = async ({ request }) => {
             processing_stats: simdShaderData.performance_stats
           },
           processing_chain: [
-            {
+            {,
               step: 'prompt_embedding',
               duration_ms: Math.floor(glyphResult.generation_time_ms * 0.1),
               success: true,
@@ -337,11 +336,11 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error) {
-    console.error('SIMD glyph generation error:', error);
+    console.error('SIMD glyph generation error: ', error);'
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : `SIMD glyph generation failed` },
+        error: error instanceof Error ? error.message : 'SIMD glyph generation failed` },'`
       { status: 500 }
     );
   }
@@ -454,7 +453,7 @@ type Tile = { patternId: string;, frequency: number;
 // Type for tiling result to fix TypeScript errors
 interface TilingResult { compressedData: Float32Array;, compressionStats: { achievedRatio: number;, processingTime: number;
   };
-  tileMap: Tile[]; // <- typed instead of Array<any>
+  tileMap: Tile[]; // <- typed instead of, Array<any>
   processingTime: number;
   tileSize: number;
 }
@@ -482,7 +481,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let patternValue = tileData[tileIndex];
   let qualityMultiplier = ${tier === 'nes' ? '0.25' : tier === 'snes' ? '0.5' : `1.0` };
   outputBuffer[global_id.y * 512u + global_id.x] = patternValue * qualityMultiplier;
-}`;
+}`;`
     case 'webgl':
       return `
 // SIMD-Optimized WebGL Fragment Shader - ${tier.toUpperCase()} Quality
@@ -495,7 +494,7 @@ void main() {
   vec2 tileCoord = floor(v_texCoord * ${Math.ceil(512 / tilingResult.tileSize)}.0) / ${Math.ceil(512 / tilingResult.tileSize)}.0
   vec4 tileValue = texture2D(u_tileData, tileCoord)
   gl_FragColor = tileValue * u_qualityTier
-}`;
+}`;`
     case 'css':
       return `
 /* SIMD-Optimized CSS Animation - ${tier.toUpperCase()} Quality */
@@ -510,17 +509,17 @@ void main() {
   }`
     )
     .join('')}
-}`;
+}`;`
     case 'svg':
       return `
-<!-- SIMD-Optimized SVG Pattern - ${tier.toUpperCase()} Quality -->
-<!-- ${tileCount} tiles, ${compressionRatio.toFixed(1)}:1 compression -->
+<!-- SIMD-Optimized SVG, Pattern - ${tier.toUpperCase()} Quality -->
+<!-- ${tileCount} tiles, ${compressionRatio.toFixed(1)}:1, compression -->
 <defs>
-  <pattern id="simdTilePattern" patternUnits="userSpaceOnUse" width="${tilingResult.tileSize}" height="${tilingResult.tileSize}">
+  <pattern, id="simdTilePattern" patternUnits="userSpaceOnUse" width="${tilingResult.tileSize}" height="${tilingResult.tileSize}">
     ${tilingResult.tileMap
       .map(
         (tile: Tile, i: number) => `
-    <rect x="${(i % Math.ceil(512 / tilingResult.tileSize)) * tilingResult.tileSize}"
+    <rect, x="${(i % Math.ceil(512 / tilingResult.tileSize)) * tilingResult.tileSize}"
           y="${Math.floor(i / Math.ceil(512 / tilingResult.tileSize)) * tilingResult.tileSize}"
           width="${tilingResult.tileSize}"
           height="${tilingResult.tileSize}"
@@ -529,7 +528,7 @@ void main() {
       )
       .join('')}
   </pattern>
-</defs>`;
+</defs>`;`
     default: return `// Unsupported shader; format: ${format}`;
   }
 }
@@ -558,8 +557,7 @@ export const GET: RequestHandler = async () => {
       integration_status: {
         glyph_diffusion_service: 'connected',
         simd_gpu_tiling_engine: 'connected',
-        png_embed_extractor: 'connected'
-      }
+        png_embed_extractor: 'connected' }
     };
     return json({
       success: true,
@@ -569,7 +567,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: `SIMD glyph service unavailable` },
+        error: 'SIMD glyph service unavailable` },'`
       { status: 503 }
     );
   }

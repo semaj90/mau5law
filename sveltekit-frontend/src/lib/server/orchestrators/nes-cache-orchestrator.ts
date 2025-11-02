@@ -22,7 +22,7 @@ class NesCacheOrchestrator {
   }
   setPaused(paused: boolean) {
     this.paused = !!paused;
-    console.log(`nes-cache-orchestrator: ${this.paused ? 'paused' : 'resumed' }`);
+    console.log(`nes-cache-orchestrator: ${this.paused ? 'paused' : 'resumed` }`);'`
   }
 }
 export const nesCacheOrchestrator = new NesCacheOrchestrator();

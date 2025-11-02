@@ -25,7 +25,7 @@ export const JobSchema = z.object({
   updatedAt: z.date(),
   metadata: z.record(z.unknown()).optional()
 });
-export type Job = z.infer<typeof JobSchema>;
+export type Job = z.infer<typeof, JobSchema>;
 /* Type additions to reduce `any` usage */
 type JsonMap = Record<string, unknown>;
 type EvidenceRow = {
@@ -70,10 +70,10 @@ type AnalysisResult = { summary: string;, confidence: number;
   entities: string[];
   timestamp: string;
 };
-type CaseSynthesisResult = { summary: string;, timeline: Array<{ event: string; timestamp?: Date | string;, significance: string }>;
+type CaseSynthesisResult = { summary: string;, timeline: Array<{ event: string; timestamp?: Date | string; significance: string }>;
   relationships: Array<{ evidenceId?: string; connections: string[]; strength: number }>;
   recommendations: string[];
-  riskAssessment: { overall: string;, factors: string[] };
+  riskAssessment: { overall: string; factors: string[] };
 };
 type ReportContent = { content: string;, metadata: JsonMap;
 };
@@ -140,7 +140,7 @@ export class LegalAIJobQueue {
       try {
         await this.processNextJob();
       } catch (err) {
-        console.error('[JobQueue] processing loop error:', err);
+        console.error('[JobQueue] processing loop error:', err);'
       }
     }, 5000); // Process every 5 seconds
   }
@@ -327,14 +327,14 @@ export class LegalAIJobQueue {
       const rawEntityType = data?.entityType;
       const rawEntityId = data?.entityId;
       if (typeof rawEntityType !== 'string' || typeof rawEntityId !== 'string') {
-        return { success: false, error: 'Invalid entityType or entityId' };
+        return { success: false, error: 'Invalid entityType or entityId` };'`
       }
       const entityType = rawEntityType;
       const entityId = rawEntityId;
       // Get entity text content for embedding
       const textContent = await this.getEntityTextContent(entityType, entityId, job.userId);
       if (!textContent) {
-        return { success: false, error: 'No text content found for embedding' };
+        return { success: false, error: `No text content found for embedding` };
       }
       // Generate vector embedding using Ollama (simulated)
       const embedding = await this.generateVectorEmbedding(textContent);
@@ -368,7 +368,7 @@ export class LegalAIJobQueue {
     }
   }
   /**
-   * Vector embedding generator using Ollama's nomic-embed-text model.
+   * Vector embedding generator using Ollama's nomic-embed-text model.'
    * Replace the fetch URL and payload as needed for your Ollama deployment.
    */
   private async generateVectorEmbedding(text: string): Promise<number[]> {
@@ -469,9 +469,9 @@ export class LegalAIJobQueue {
       evidence: 'Evidence Inventory Report'
     };
     return {
-      content: '# ${reportTypes[reportData.reportType ?? ''] || 'Legal Report'}
+      content: '# ${reportTypes[reportData.reportType ?? ''] || 'Legal Report'}'
 ## Case Overview
-${reportData.description || 'Case analysis and findings` }
+${reportData.description || 'Case analysis and findings` }'`
 ## Key Findings
 - Evidence integrity maintained
 - Chain of custody verified
@@ -481,7 +481,7 @@ ${reportData.description || 'Case analysis and findings` }
 - Consider additional expert analysis
 - Prepare for deposition phase
 ## Generated: ${new Date().toLocaleString()}
-`,
+`,`
       metadata: {
         wordCount: 150,
         sections: 4,
@@ -500,19 +500,19 @@ ${reportData.description || 'Case analysis and findings` }
         case 'evidence': {
           const rows = await db.select().from(evidence).where(eq(evidence.id, entityId)).limit(1);
           const evidenceData = rows[0] as EvidenceRow | undefined;
-          content = `${evidenceData?.title || ''} ${evidenceData?.description || ''} ${evidenceData?.aiSummary || '` }`;
+          content = `${evidenceData?.title || ''} ${evidenceData?.description || ''} ${evidenceData?.aiSummary || '` }`;'`
           break;
         }
         case 'case': {
           const rows = await db.select().from(cases).where(eq(cases.id, entityId)).limit(1);
           const caseData = rows[0] as CaseRow | undefined;
-          content = `${caseData?.title || ''} ${caseData?.description || '` }`;
+          content = `${caseData?.title || ''} ${caseData?.description || '` }`;'`
           break;
         }
         case 'report': {
           const rows = await db.select().from(reports).where(eq(reports.id, entityId)).limit(1);
           const reportData = rows[0] as ReportRow | undefined;
-          content = `${reportData?.title || ''} ${reportData?.description || ''} ${reportData?.content || '` }`;
+          content = `${reportData?.title || ''} ${reportData?.description || ''} ${reportData?.content || '` }`;'`
           break;
         }
         case 'person':
@@ -520,7 +520,7 @@ ${reportData.description || 'Case analysis and findings` }
         case 'personsOfInterest': {
           const rows = await db.select().from(personsOfInterest).where(eq(personsOfInterest.id, entityId)).limit(1);
           const person = rows[0] as PersonRow | undefined;
-          content = `${person?.name || ''} ${person?.notes || ''} ${person?.biography || '` }`;
+          content = `${person?.name || ''} ${person?.notes || ''} ${person?.biography || '` }`;'`
           break;
         }
         default: return null;

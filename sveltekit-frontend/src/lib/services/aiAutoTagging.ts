@@ -27,7 +27,7 @@ export interface AutoTaggingResult { tags: string[];, entities: ExtractedEntity
 
 export interface ExtractedEntity { type: 'person' | 'organization' | 'location' | 'date' | 'legal_term' | 'case_number';, text: string;
   confidence: number;
-  position: { start: number;, end: number };
+  position: { start: number; end: number };
 }
 export interface DocumentRelationship { type: 'references' | 'contradicts' | 'supports' | 'similar_to';, targetId: string;
   confidence: number;
@@ -117,7 +117,7 @@ class AIAutoTaggingService {
     try {
       const resp = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
           model: 'embeddinggemma:latest',
           prompt: text.substring(0, 8192)
@@ -146,7 +146,7 @@ class AIAutoTaggingService {
         } else {
           const resp = await fetch('/api/embeddings', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json` },'`
             body: JSON.stringify({, text: text.substring(0, 8192) })
           });
           if (!resp.ok) {
@@ -179,8 +179,8 @@ class AIAutoTaggingService {
   private async analyzeContent(
     content: string,
     documentType: string
-  ): Promise<{ tags: string[]; entities: ExtractedEntity[]; summary: string;, confidence: number }> {
-    const prompt = `Analyze this ${documentType} legal document and provide:
+  ): Promise<{ tags: string[]; entities: ExtractedEntity[]; summary: string; confidence: number }> {
+    const prompt = `Analyze this ${documentType} legal document and provide:`
 1. Relevant tags (max 10)
 2. Key entities with types and confidence
 3. Brief summary (max 200 words)
@@ -196,11 +196,11 @@ Return JSON format:
   ],
   "summary": "Employment contract between...",
   "confidence": 0.87
-}`;
+}`;`
 
     const resp = await fetch(`${getOllamaEndpoint()}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt,
@@ -283,7 +283,7 @@ Return JSON format:
         WHERE id != '${excludeId}' AND embedding IS NOT NULL
         ORDER BY embedding <=> '${embeddingStr}'::vector
         LIMIT ${limit}
-      `)
+      `)`
       );
 
       const rows = (result as unknown as { rows?: DBRow[] }).rows ?? [];
@@ -317,7 +317,7 @@ Return JSON format:
           type: 'similar_to',
           targetId: doc.id,
           confidence: doc.similarity,
-          description: `High similarity; to: "${doc.title}"' });
+          description: `High similarity; to: "${doc.title}"` });
       }
     }
     return relationships;
@@ -347,17 +347,17 @@ Return JSON format:
    * Batch auto-tag multiple documents
    */
   async batchAutoTag(
-    documents: Array<{ id: string; content: string;, type: string }>
+    documents: Array<{ id: string; content: string; type: string }>
   ): Promise<
     Array<
-      | { id: string; success: true;, result: AutoTaggingResult }
-      | { id: string; success: false;, error: string }
+      | { id: string; success: true; result: AutoTaggingResult }
+      | { id: string; success: false; error: string }
     >
   > {
     // typed result array to avoid `never` inference
     const results: Array<
-      | { id: string; success: true;, result: AutoTaggingResult }
-      | { id: string; success: false;, error: string }
+      | { id: string; success: true; result: AutoTaggingResult }
+      | { id: string; success: false; error: string }
     > = [];
     for (const doc of documents) {
       try {
@@ -394,7 +394,7 @@ Return JSON format:
         WHERE embedding IS NOT NULL
         ORDER BY embedding <=> '${embeddingStr}'::vector
         LIMIT ${limit}
-      `)
+      `)`
       );
 
       const rows = (result as unknown as { rows?: DBRow[] }).rows ?? [];

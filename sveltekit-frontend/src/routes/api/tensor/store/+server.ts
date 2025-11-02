@@ -18,7 +18,7 @@ const TensorStoreSchema = z.object({
     lod_levels: z.number().min(1).max(5).default(3)
   })
 });
-type TensorStoreRequest = z.infer<typeof TensorStoreSchema>;
+type TensorStoreRequest = z.infer<typeof, TensorStoreSchema>;
 const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433';
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
@@ -48,12 +48,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionId}`,
         'X-Forwarded-For': request.headers.get('x-forwarded-for') || 'unknown',
-        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown` },
+        'X-Client-IP': request.headers.get('x-real-ip') || 'unknown' },
       body: JSON.stringify(validatedData.data)
     });
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('QUIC server tensor store error:', errorData);
+      console.error('QUIC server tensor store error:', errorData);'
       throw error(response.status, `Tensor storage failed: ${errorData}`);
     }
     const result = await response.json();
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       }
     });
   } catch (err) {
-    console.error('Tensor store API error:', err);
+    console.error('Tensor store API error:', err);'
     if (err instanceof Error && 'status' in err) {
       throw err;
     }
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
     // Get tensor cache metrics from QUIC server
     const response = await fetch(`${QUIC_SERVER_URL}/tensor/metrics`, {
       headers: {
-        'Authorization': `Bearer ${sessionId}` }
+        'Authorization': `Bearer ${sessionId}' }'`
     });
     if (!response.ok) {
       throw error(response.status, 'Failed to retrieve tensor metrics');
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
       }
     });
   } catch (err) {
-    console.error('Tensor metrics error:', err);
+    console.error('Tensor metrics error:', err);'
     if (err instanceof Error && 'status' in err) {
       throw err;
     }

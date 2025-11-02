@@ -351,7 +351,7 @@ function createCanvasStore() {
      * Save canvas
      */
     async saveCanvas() {
-      const state: { canvasId: string | null; elements: CanvasElement[];, connections: CanvasConnection[] } = {
+      const state: { canvasId: string | null; elements: CanvasElement[]; connections: CanvasConnection[] } = {
         canvasId: null,
         elements: [],
         connections: []
@@ -370,7 +370,7 @@ function createCanvasStore() {
       try {
         const response = await fetch(`/api/canvas/${state.canvasId}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({
            , elements: state.elements,
             connections: state.connections
@@ -386,7 +386,7 @@ function createCanvasStore() {
           }));
         }
       } catch (error) {
-        console.error('Save error:', error);
+        console.error('Save error:', error);'
         update(s => ({ ...s, isSyncing: false }));
       }
     },
@@ -432,7 +432,7 @@ function createCanvasStore() {
      */
     undo() {
       update(s => {
-        if (s.historyIndex <= 0) return s;
+        if (s.historyIndex <= 0) return, s;
         return { ...s, historyIndex: s.historyIndex - 1 };
       });
     },
@@ -474,7 +474,7 @@ function createCanvasStore() {
       try {
         const response = await fetch(`/api/canvas/${state.canvasId}/export`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ format }),
           credentials: `include` });
 
@@ -488,7 +488,7 @@ function createCanvasStore() {
           URL.revokeObjectURL(url);
         }
       } catch (error) {
-        console.error('Export error:', error);
+        console.error('Export error:', error);'
       }
     },
 
@@ -506,11 +506,11 @@ function createCanvasStore() {
       try {
         await fetch(`/api/canvas/${state.canvasId}/share`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ userIds }),
           credentials: `include` });
       } catch (error) {
-        console.error('Share error:', error);
+        console.error('Share error:', error);'
       }
     },
 

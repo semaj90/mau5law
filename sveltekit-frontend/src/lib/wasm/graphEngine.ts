@@ -152,7 +152,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         type: ['Case', 'Evidence', 'Person', 'Document'][Math.floor(Math.random() * 4)] as any,
         properties: {
           created: new Date().toISOString(),
-          source: `wasm` }
+          source: `wasm' }'`
       });
     }
     // Generate mock edges
@@ -174,8 +174,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: wasmResult.executionTime,
         resultCount: nodes.length + edges.length,
-        source: 'wasm'
-      }
+        source: 'wasm' }
     };
   }
   private async executeRemoteQuery(query: string): Promise<GraphResult> {
@@ -184,18 +183,18 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
     await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 50));
     return {
       nodes: [
-        {
+        {,
           id: 'remote_1',
           label: 'Remote Case',
           type: 'Case',
-          properties: { title: 'Remote Case Example', status: 'active' }
+          properties: { title: 'Remote Case Example', status: `active` }
         },
       ],
       edges: [],
       metadata: {
         queryTime: 75,
         resultCount: 1,
-        source: `remote` }
+        source: `remote' }'`
     };
   }
   async cacheQuery(query: string, result: GraphResult): Promise<void> {
@@ -264,7 +263,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       console.log(`✅ Cache hydrated with ${hydratedCount} queries`);
       return hydratedCount;
     } catch (error) {
-      console.error('❌ Cache hydration failed:', error);
+      console.error('❌ Cache hydration failed: `, error);'`
       return 0;
     }
   }
@@ -276,7 +275,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: storedResult.queryTime || 0,
         resultCount: (storedResult.nodes?.length || 0) + (storedResult.edges?.length || 0),
-        source: `cache` }
+        source: `cache' }'`
     };
   }
   private hashQuery(query: string): string {

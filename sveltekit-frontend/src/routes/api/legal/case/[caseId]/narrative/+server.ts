@@ -103,7 +103,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       });
     }
   } catch (error) {
-    console.error('Narrative API error:', error);
+    console.error('Narrative API error:', error);'
     return json({ success: false, error: 'Failed to retrieve narrative data' }, { status: 500 });
   }
 };
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       message: 'Case narrative generated successfully'
     });
   } catch (error) {
-    console.error('Narrative generation error:', error);
+    console.error('Narrative generation error:', error);'
     return json({ success: false, error: 'Failed to generate narrative' }, { status: 500 });
   }
 };
@@ -156,7 +156,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
       message: 'Narrative updated successfully'
     });
   } catch (error) {
-    console.error('Narrative update error:', error);
+    console.error('Narrative update error:', error);'
     return json({ success: false, error: 'Failed to update narrative' }, { status: 500 });
   }
 };
@@ -207,7 +207,7 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
       },
       suggestions: [],
       revisionHistory: [
-        {
+        {,
           timestamp: new Date().toISOString(),
           author: 'AI Assistant',
           changes: 'Initial generation',
@@ -238,7 +238,7 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
       },
       suggestions: [],
       revisionHistory: [
-        {
+        {,
           timestamp: new Date().toISOString(),
           author: 'AI Assistant',
           changes: 'Initial generation',
@@ -269,7 +269,7 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
       },
       suggestions: [],
       revisionHistory: [
-        {
+        {,
           timestamp: new Date().toISOString(),
           author: 'AI Assistant',
           changes: 'Initial generation',
@@ -346,7 +346,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
   // Mock AI writing assistance
   return {
     suggestions: [
-      {
+      {,
         section: 'SECTION-001',
         type: 'CONTENT',
         suggestion: 'Consider adding more specific details about the timeline of events',
@@ -388,7 +388,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
       },
     ],
     alternativePhrasings: [
-      {
+      {,
         original: 'The evidence clearly shows',
         alternatives: [
           'The evidence demonstrates',
@@ -410,26 +410,24 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
       },
     ],
     factChecking: [
-      {
+      {,
         claim: 'Incident occurred on January 15, 2024',
         verification: 'VERIFIED',
         sources: ['Police Report PR-2024-001', 'Witness Statement WS-001'],
-        notes: 'Multiple independent sources confirm this date'
-      },
+        notes: 'Multiple independent sources confirm this date` },'`
       {
         claim: 'Evidence was collected within 24 hours',
         verification: 'DISPUTED',
         sources: ['Evidence Log EL-2024-001'],
-        notes: 'Some evidence items show collection dates beyond 24-hour window'
-      },
+        notes: `Some evidence items show collection dates beyond 24-hour window` },
       {
         claim: 'All witnesses provided consistent testimony',
         verification: 'UNVERIFIED',
         sources: ['Witness Statements WS-001, WS-002, WS-003'],
-        notes: `Minor inconsistencies noted in witness accounts requiring clarification` },
+        notes: `Minor inconsistencies noted in witness accounts requiring clarification` }
     ],
     legalReferences: [
-      {
+      {,
         concept: 'Chain of custody',
         suggestedCitations: [
           'State v. Johnson, 567 U.S. 123 (2023)',
@@ -496,7 +494,7 @@ function generateMockNarrative(caseId: string, narrativeId: string, includeRevis
   return {
     id: narrativeId,
     caseId,
-    title: '${selectedType.replace('_', ' ')} - ${caseId}`,
+    title: '${selectedType.replace('_', ' ')} - ${caseId}`,'`
     narrativeType: selectedType,
     status: ['DRAFT', 'REVIEW', 'APPROVED', 'FINAL'][Math.floor(Math.random() * 4)] as CaseNarrative['status'],
     sections,
@@ -524,7 +522,7 @@ function generateMockSections(
   narrativeType: CaseNarrative['narrativeType'],
   includeRevisions: boolean
 ): NarrativeSection[] {
-  const sectionConfigs: Record<string, { type: NarrativeSection['sectionType'];, title: string }[]> = {
+  const sectionConfigs: Record<string, { type: NarrativeSection['sectionType']; title: string }[]> = {
     OPENING_STATEMENT: [
       { type: 'OPENING', title: 'Introduction' },
       { type: 'FACTS', title: 'Key Facts' },
@@ -555,14 +553,14 @@ function generateMockSections(
     ],
     INVESTIGATION_REPORT: [
       { type: 'OPENING', title: 'Investigation Summary' },
-      { type: 'FACTS', title: 'Findings' },
-      { type: 'EVIDENCE', title: 'Evidence Summary' },
+      { type: 'FACTS', title: 'Findings` },'`
+      { type: 'EVIDENCE', title: `Evidence Summary` },
       { type: 'CONCLUSION', title: `Recommendations` }
     ]
   };
   const configs = sectionConfigs[narrativeType] || sectionConfigs.CASE_SUMMARY;
   return configs.map((config, index) => ({
-    id: 'SECTION-${String(index + 1).padStart(3, '0')}`,
+    id: 'SECTION-${String(index + 1).padStart(3, '0')}`,'`
     title: config.title,
     content: generateNarrativeContent(config.type),
     sectionType: config.type,
@@ -589,7 +587,7 @@ function generateMockSections(
     revisionHistory: includeRevisions
       ? generateMockRevisionHistory()
       : [
-          {
+          {,
             timestamp: new Date().toISOString(),
             author: 'AI Assistant',
             changes: 'Initial creation',
@@ -669,23 +667,22 @@ function generateMockEvidenceReferences(): string[] {
 
 function generateMockSuggestions(): NarrativeSection['suggestions'] {
   return [
-    {
+    {,
       type: 'IMPROVEMENT',
       text: 'Consider strengthening this argument with additional case law',
       rationale: 'More legal precedent would enhance persuasiveness',
-      priority: 'MEDIUM'
-    },
+      priority: `MEDIUM` },
     {
       type: 'CITATION',
       text: 'Add citation to support factual claim',
       rationale: 'Unsupported claims reduce credibility',
-      priority: `HIGH` },
+      priority: `HIGH` }
   ].slice(0, Math.floor(Math.random() * 2) + 1);
 }
 
 function generateMockRevisionHistory(): NarrativeSection['revisionHistory'] {
   return [
-    {
+    {,
       timestamp: new Date(Date.now() - 86400000).toISOString(),
       author: 'AI Assistant',
       changes: 'Initial creation',

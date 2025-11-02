@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
     }
     // Validate evidence ID
     const evidenceId = UUIDSchema.parse(params.id);
@@ -179,13 +179,12 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           timestamp: new Date().toISOString(),
           analyzedBy: getUserId(locals),
           options,
-          version: '1.0'
-        }
+          version: '1.0` }'`
       }
     };
     // Update evidence with analysis results
     // Note: Update would need proper implementation in the evidence service
-    // For now, we'll just return the analysis results
+    // For now, we'll just return the analysis results'
     return json({
       success: true,
       data: {
@@ -193,7 +192,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         analysisType,
         result: analysisResult,
         evidence: {
-          id: evidence.id,
+         , id: evidence.id,
           title: evidence.title,
           evidenceType: evidence.evidenceType
         },
@@ -283,7 +282,7 @@ async function performAIAnalysis(
     analysisResults.alerts = generateAlerts(analysisResults);
     return analysisResults;
   } catch (error: any) {
-    console.error('AI analysis error:', error);
+    console.error('AI analysis error:', error);'
     const details = error instanceof Error ? error.message : 'Unknown error';
     return {
       ...analysisResults,

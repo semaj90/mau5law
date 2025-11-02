@@ -50,11 +50,11 @@ class IngestionService {
     const cleared = jobTracker.clearCompletedJobs();
     return {
       success: true,
-      message: `Cleared ${cleared} completed jobs' };
+      message: `Cleared ${cleared} completed jobs` };
   }
 
   async resetStats(): Promise<ServiceResponse> {
-    this.workflowActor?.send?.({ type: 'RESET_STATS' });
+    this.workflowActor?.send?.({ type: `RESET_STATS` });
     jobTracker.reset();
     return {
       success: true,

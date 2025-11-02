@@ -37,7 +37,7 @@ export interface GPUApiRequest {
 }
 export interface GPUApiResponse { success: boolean, operation: string
 	result?: any
-	error?: string
+	error?: string;
 	serviceUsed: string; performance: { processingTime: number, memoryUsed: number; gpuUtilization: number
 	}
 	metadata: { [key: string]: any }
@@ -134,8 +134,7 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 					prompt: (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).prompt || (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).query || '',
 					max_tokens: (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).max_tokens || 1024,
 					temperature: (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).temperature || 0.7,
-					priority: options.priority || 'medium'
-				})
+					priority: options.priority || 'medium` })'`
 				result = response
 				serviceUsed = 'nvidia_llama'
 				memoryUsed = 1024 * 1024; // Estimate
@@ -277,7 +276,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 				result: health,
 				serviceUsed: 'health_aggregator',
 				performance: {
-					processingTime: 0,
+				, processingTime: 0,
 					memoryUsed: 0,
 					gpuUtilization: 0
 				},
@@ -296,9 +295,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 		}
 		return json({
 			success: false,
-			error: 'Unsupported GET; operation: ${operation}' }, { status: 400 })
+			error: `Unsupported GET; operation: ${operation}` }, { status: 400 })
 	} catch (error: any) {
-		console.error('GPU API GET error:', error)
+		console.error('GPU API GET error: ', error)'
 		return json({
 			success: false,
 			error: error instanceof Error ? error.message: `Unknown error` }, { status: 500 })
@@ -442,7 +441,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		}
 		return json(response)
 	} catch (error: any) {
-		console.error('GPU API POST error:', error)
+		console.error('GPU API POST error:', error)'
 		return json(
       {
         success: false,

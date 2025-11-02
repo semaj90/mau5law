@@ -9,7 +9,7 @@ import { writable } from 'svelte/store';
 import * as amqp from 'amqplib';
 
 // Replace problematic amqplib type aliases with lightweight local interfaces
-// so we don't rely on non-exported symbol names from the amqplib package.
+// so we don't rely on non-exported symbol names from the amqplib package.'
 interface AmqpConsumeMessage {
   content: Buffer;
   fields?: Record<string, unknown>;
@@ -77,7 +77,7 @@ class EnhancedRabbitMQCudaBridge {
   private resultCache = new Map<string, CUDAResponse>();
 
   constructor() {
-    // initial health probe (don't await in constructor)
+    // initial health probe (don't await in constructor)'
     void this.checkCudaHealth();
     setInterval(() => void this.checkCudaHealth(), 30_000);
   }
@@ -144,7 +144,7 @@ class EnhancedRabbitMQCudaBridge {
             // ack/nack expect amqplib.Message
             this.channel!.ack(msg);
           } catch (err) {
-            console.error(`❌ Error processing message from ${queue}: ', err);
+            console.error(`❌ Error processing message from ${queue}: ', err);'`
             try {
               this.channel!.nack(msg, false, false);
             } catch (nackErr) {
@@ -308,7 +308,7 @@ class EnhancedRabbitMQCudaBridge {
       const health = await response.json();
       this.cudaHealthy = health.status === 'healthy' && (health.ready_workers ?? 0) > 0;
       rabbitMQCudaState.update(s => ({ ...s, cudaHealthy: this.cudaHealthy }));
-      if (this.cudaHealthy) console.log(`✅ CUDA service healthy: ${health.gpu_model ?? 'unknown` }`);
+      if (this.cudaHealthy) console.log(`✅ CUDA service healthy: ${health.gpu_model ?? 'unknown` }`);'`
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('⚠️ CUDA health check failed:', msg);
@@ -366,8 +366,7 @@ class EnhancedRabbitMQCudaBridge {
       tensor_compute: 'legal_cuda_tensor_compute',
       vector_similarity: 'legal_cuda_vector_similarity',
       embedding_normalize: 'legal_cuda_embedding_normalize',
-      batch_process: 'legal_cuda_batch_process'
-    };
+      batch_process: 'legal_cuda_batch_process` };'`
     const routingKey = routingKeyMap[type];
     this.channel.publish('legal-ai-cuda', routingKey, Buffer.from(JSON.stringify(job)), {
       priority,

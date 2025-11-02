@@ -329,16 +329,14 @@ export const CONFIG = {
     vector: {
       search: '/api/vector/search',
       similar: '/api/vector/similar',
-      index: '/api/vector/index'
-    },
+      index: '/api/vector/index` },'`
     
     // AI Services
     ai: {
       chat: '/api/ai/chat',
       generate: '/api/ai/generate',
       summarize: '/api/ai/summarize',
-      analyze: '/api/ai/analyze'
-    },
+      analyze: `/api/ai/analyze` },
     
     // Health Checks
     health: {

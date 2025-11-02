@@ -2,9 +2,9 @@ import { getContext7MulticoreService } from '$lib/services/context7-multicore.js
 import type { RequestHandler } from './$types.js';
 const startTime = Date.now();
 let requestCount = 0;
-export interface YoRHaSystemStatus { database: { connected: boolean; latency: number; activeConnections: number;, queryCount: number };
-  backend: { healthy: boolean; uptime: number; activeServices: number; cpuUsage: number;, memoryUsage: number };
-  frontend: { renderFPS: number; componentCount: number; activeComponents: number;, webGPUEnabled: boolean };
+export interface YoRHaSystemStatus { database: { connected: boolean; latency: number; activeConnections: number; queryCount: number };
+  backend: { healthy: boolean; uptime: number; activeServices: number; cpuUsage: number; memoryUsage: number };
+  frontend: { renderFPS: number; componentCount: number; activeComponents: number; webGPUEnabled: boolean };
   multicore?: { totalWorkers: number;, healthyWorkers: number;
     busyWorkers: number;
     queueSize: number;

@@ -8,8 +8,7 @@ import type { RequestHandler } from './$types.js'
 import { createRedisInstance } from '$lib/server/redis'
 // Create Redis client directly
 let redis = createRedisInstance()
-interface PerformanceResult { operation: string, uncachedTime: number; cachedTime: number
-  speedupFactor: number;
+interface PerformanceResult { operation: string, uncachedTime: number; cachedTime: number; speedupFactor: number;
   result: any
 }
 // Simulate expensive operations like vector search, legal analysis, etc.
@@ -19,7 +18,7 @@ async function expensiveVectorSearch(query: string): Promise<any> {
   return {
     query,
     results: [
-      {
+      {,
         id: 'doc_001',
         title: 'Employment Contract Analysis - Remote Work Clauses',
         similarity: 0.94,
@@ -128,7 +127,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       demo: {
-        title: 'Redis Cache Performance Demonstration',
+       , title: 'Redis Cache Performance Demonstration',
         description: 'Real-world performance comparison showing dramatic speed improvements',
         testQuery: query,
         operationsTested: operation
@@ -141,8 +140,7 @@ export const POST: RequestHandler = async ({ request }) => {
             ? Math.round(results.reduce((sum, r) => sum + r.speedupFactor, 0) / results.length)
             : 0,
         cacheHitBenefit: 'Up to 240x faster response times',
-        productionImpact: 'Enables real-time legal AI with sub-second responses'
-      },
+        productionImpact: 'Enables real-time legal AI with sub-second responses` },'`
       redis: redisStats,
       costSavings: {
         computeReduction: '99.6%',
@@ -195,7 +193,7 @@ export const GET: RequestHandler = async () => {
           fragmentation: memory.mem_fragmentation_ratio
         },
         keys: keyCount,
-        performance: '${responseTime.toFixed(2)}ms' },
+        performance: '${responseTime.toFixed(2)}ms` },'`
       cacheDemo: {
         endpoint: 'POST /api/demo/redis-performance',
         operations: ['vector-search', 'legal-analysis', 'all'],

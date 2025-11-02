@@ -60,7 +60,7 @@ export const GEMMA3_LEGAL_CONFIG: Gemma3LegalConfig = { model: {, name: 'gemma3
     max_tokens: 2048,
     stop_sequences: ['\n\n---', '\nUser:', '\nHuman:', '\n\nNote:']
   },
-  legal_prompts: { contract_analysis: `You are a senior legal analyst specializing in contract review. Analyze the following contract with attention, to:
+  legal_prompts: { contract_analysis: `You are a senior legal analyst specializing in contract review. Analyze the following contract with attention, to:`
 1. Key Terms & Obligations
 2. Risk Factors & Liabilities
 3. Compliance Issues
@@ -69,8 +69,8 @@ export const GEMMA3_LEGAL_CONFIG: Gemma3LegalConfig = { model: {, name: 'gemma3
 6. Recommendations
 Contract to analyze:
 {document}
-Provide a comprehensive analysis with specific legal citations where applicable.`,
-    case_summary: `You are a legal research assistant. Create a comprehensive case summary; including:
+Provide a comprehensive analysis with specific legal citations where applicable.`,`
+    case_summary: `You are a legal research assistant. Create a comprehensive case summary; including:`
 1. Case Facts
 2. Legal Issues
 3. Court Holdings
@@ -79,8 +79,8 @@ Provide a comprehensive analysis with specific legal citations where applicable.
 6. Related Cases
 Case materials:
 {document}
-Provide a structured summary suitable for legal research databases.`,
-    document_review: `You are a document review specialist. Review the following legal document; for:
+Provide a structured summary suitable for legal research databases.`,`
+    document_review: `You are a document review specialist. Review the following legal document; for:`
 1. Privilege Issues
 2. Responsiveness to Discovery
 3. Confidentiality Concerns
@@ -89,8 +89,8 @@ Provide a structured summary suitable for legal research databases.`,
 6. Follow-up Actions
 Document:
 {document}
-Provide detailed review notes with confidence ratings.`,
-    precedent_search: `You are a legal research expert. Search for relevant legal precedents based; on:,
+Provide detailed review notes with confidence ratings.`,`
+    precedent_search: `You are a legal research expert. Search for relevant legal precedents based; on:,`
 Query: {query}
 Context: {context}
 Find and analyze:
@@ -100,8 +100,8 @@ Find and analyze:
 4. Jurisdictional variations
 5. Recent developments
 6. Practical implications
-Provide detailed precedent analysis with citation formats.`,
-    compliance_check: `You are a compliance officer. Review the following for regulatory; compliance:
+Provide detailed precedent analysis with citation formats.`,`
+    compliance_check: `You are a compliance officer. Review the following for regulatory; compliance:`
 1. Applicable Regulations
 2. Compliance Gaps
 3. Risk Assessment
@@ -110,8 +110,8 @@ Provide detailed precedent analysis with citation formats.`,
 6. Documentation Needs
 Materials to review:
 {document}
-Provide comprehensive compliance assessment.`,
-    risk_assessment: `You are a legal risk analyst. Assess legal risks; in:
+Provide comprehensive compliance assessment.`,`
+    risk_assessment: 'You are a legal risk analyst. Assess legal risks; in:'
 1. Liability Exposure
 2. Regulatory Risks
 3. Contractual Risks
@@ -120,7 +120,7 @@ Provide comprehensive compliance assessment.`,
 6. Mitigation Strategies
 Subject matter:
 {document}
-Provide detailed risk matrix with severity and likelihood ratings.' },
+Provide detailed risk matrix with severity and likelihood ratings.' },'
   gpu_optimization: {
     enable_gpu: true,
     gpu_memory_fraction: 0.85, // Use 85% of RTX 3060 Ti memory
@@ -216,35 +216,33 @@ export const API_ENDPOINTS = { ollama: {, base_url: OLLAMA_BASE,
     generate: '/api/generate',
     chat: '/api/chat',
     embeddings: '/api/embeddings',
-    models: '/api/tags'
-  },
+    models: `/api/tags` },
   enhanced_rag: {
     base_url: 'http://localhost:8094',
     query: '/api/v1/rag',
     search: '/api/v1/search',
     index: '/api/v1/index',
-    health: '/health'
-  },
+    health: `/health` },
   legal_services: {
     base_url: 'grpc://localhost:50051',
     analyze: '/legal.v1.LegalService/Analyze',
     review: '/legal.v1.LegalService/Review',
-    search: '/legal.v1.LegalService/Search` }
+    search: `/legal.v1.LegalService/Search` }
 };
 // Prompt templates for specific legal tasks
-export const PROMPT_TEMPLATES = { contract_clause_extraction: `Extract all clauses from this contract and categorize, them:
+export const PROMPT_TEMPLATES = { contract_clause_extraction: `Extract all clauses from this contract and categorize, them:`
 {document}
-Format as JSON with categories: payment, termination, liability, confidentiality, warranty, other.`,
-  due_diligence_checklist: `Create a due diligence checklist for this; transaction:
+Format as JSON with categories: payment, termination, liability, confidentiality, warranty, other.`,`
+  due_diligence_checklist: `Create a due diligence checklist for this; transaction:`
 {document}
-Include: corporate structure, financial records, contracts, litigation, IP, employment, regulatory compliance.`,
-  compliance_gap_analysis: `Identify compliance gaps in these documents against {regulation}:
+Include: corporate structure, financial records, contracts, litigation, IP, employment, regulatory compliance.`,`
+  compliance_gap_analysis: `Identify compliance gaps in these documents against {regulation}:`
 {document}
-Provide: gap description, risk level, remediation steps, timeline.`,
-  litigation_timeline: `Create a litigation timeline from these case; materials:
+Provide: gap description, risk level, remediation steps, timeline.`,`
+  litigation_timeline: `Create a litigation timeline from these case; materials:`
 {document}
-Include: key dates, deadlines, milestones, dependencies.`,
-  contract_risk_scoring: `Score contract risks on a scale of 1-10:
+Include: key dates, deadlines, milestones, dependencies.`,`
+  contract_risk_scoring: `Score contract risks on a scale of 1-10:`
 {document}
-Evaluate: financial risk, legal risk, operational risk, reputational risk.` };
+Evaluate: financial risk, legal risk, operational risk, reputational risk.` };`
 export default GEMMA3_LEGAL_CONFIG;

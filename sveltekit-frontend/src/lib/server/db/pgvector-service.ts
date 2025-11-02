@@ -5,7 +5,7 @@
 import pgClient, { poolShim } from '$lib/server/db-shim';
 import { drizzle } from 'drizzle-orm/postgres-js';
 // Add types to replace `any`
-type DrizzleDB = ReturnType<typeof drizzle>;
+type DrizzleDB = ReturnType<typeof, drizzle>;
 // Replaced invalid interface with a concrete class implementation
 class PgVectorService {
   private db: DrizzleDB | null = null;
@@ -67,7 +67,7 @@ class PgVectorService {
   async testConnection(): Promise<any> {
     try {
       const clientWrapper = await this.getQueryClient();
-      if (!clientWrapper) return { success: false, details: { error: 'No DB client available' } };
+      if (!clientWrapper) return { success: false, details: { error: 'No DB client available` } };'`
       try {
         const res = await clientWrapper.query('SELECT NOW() as current_time');
         return { success: true, details: { connection: res?.rows?.[0] ?? null } };
@@ -94,19 +94,19 @@ class PgVectorService {
       // Basic validation
       if (!Array.isArray(embedding)) throw new Error('Invalid embedding');
       if (embedding.length !== 768 && embedding.length !== 1536) {
-        return { success: false, error: `Invalid embedding; dimension: ${embedding.length}' };
+        return { success: false, error: `Invalid embedding; dimension: ${embedding.length}` };
       }
       const embeddingStr = `[${embedding.join(',')}]`;
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) {
-        return { success: false, error: 'No DB client available. Ensure poolShim or pg client is configured.' };
+        return { success: false, error: 'No DB client available. Ensure poolShim or pg client is configured.` };'`
       }
       // Use metadata column consistently (JSON) and store embedding as ::vector
-      const insertQuery = `
+      const insertQuery = '
         INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)
         VALUES ($1, $2, $3, $4, $5::jsonb, $6::vector, NOW())
         RETURNING id
-      ';
+      ';'
       const params = [
         documentId,
         metadata.title || 'Untitled',
@@ -167,7 +167,7 @@ class PgVectorService {
           ld.created_at
         FROM legal_documents ld
         WHERE ld.embedding IS NOT NULL
-      `;
+      `;`
       const params: any[] = [embeddingStr];
       // Optional threshold filter — use next parameter index
       if (typeof threshold === 'number') {
@@ -184,7 +184,7 @@ class PgVectorService {
       query += ` ORDER BY distance ASC LIMIT $${params.length}`;
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) {
-        return { success: false, error: 'No DB client available' };
+        return { success: false, error: 'No DB client available` };'`
       }
       const startTime = Date.now();
       try {
@@ -219,7 +219,7 @@ class PgVectorService {
    * Best Practice: Use prepared statements and batch processing
    */
   async batchInsertDocuments(
-    documents: Array<{ documentId: string;, content: string;
+    documents: Array<{, documentId: string;, content: string;
      , embedding: number[];
       metadata?: any;
     }>
@@ -245,7 +245,7 @@ class PgVectorService {
             if (clientWrapper) {
               try {
                 await clientWrapper.query(
-                  `INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)
+                  `INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)`
                VALUES ($1, $2, $3, $4, $5::jsonb, $6::vector, NOW())
                ON CONFLICT (document_id) DO UPDATE SET
                  title = EXCLUDED.title,
@@ -253,7 +253,7 @@ class PgVectorService {
                  document_type = EXCLUDED.document_type,
                  metadata = EXCLUDED.metadata,
                  embedding = EXCLUDED.embedding,
-                 created_at = COALESCE(legal_documents.created_at, NOW())`,
+                 created_at = COALESCE(legal_documents.created_at, NOW())`,`
                   [
                     doc.documentId,
                     doc.metadata?.title || 'Batch Insert',
@@ -269,9 +269,9 @@ class PgVectorService {
               }
             } else if (poolShim && typeof poolShim.query === 'function') {
               await poolShim.query(
-                `INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)
+                `INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)`
                VALUES ($1, $2, $3, $4, $5::jsonb, $6::vector, NOW())
-               ON CONFLICT (document_id) DO UPDATE SET embedding = EXCLUDED.embedding, metadata = EXCLUDED.metadata, updated_at = NOW()`,
+               ON CONFLICT (document_id) DO UPDATE SET embedding = EXCLUDED.embedding, metadata = EXCLUDED.metadata, updated_at = NOW()`,`
                 [
                   doc.documentId,
                   doc.metadata?.title || 'Batch Insert',
@@ -329,7 +329,7 @@ class PgVectorService {
     } = {}
   ): Promise<any> {
     try {
-      const { lists = 100, metric = 'cosine', tableName = 'vector_embeddings', columnName = 'embedding' } = options;
+      const { lists = 100, metric = 'cosine', tableName = 'vector_embeddings', columnName = 'embedding` } = options;'`
       const safeTable = String(tableName).replace(/[^\w]/g, '_');
       const safeColumn = String(columnName).replace(/[^\w]/g, '_');
       const safeMetric =
@@ -338,19 +338,19 @@ class PgVectorService {
       const start = Date.now();
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) {
-        return { success: false, error: 'No DB client available for index creation' };
+        return { success: false, error: 'No DB client available for index creation` };'`
       }
       try {
-        await clientWrapper.query(`DROP INDEX IF EXISTS ${indexName}');
+        await clientWrapper.query('DROP INDEX IF EXISTS ${indexName}');
         const opClass =
           safeMetric === 'cosine'
             ? 'vector_cosine_ops'
             : safeMetric === 'euclidean'
               ? 'vector_l2_ops'
               : 'vector_ip_ops';
-        const indexQuery = `CREATE INDEX ${indexName} ON ${safeTable} USING ivfflat (${safeColumn} ${opClass}) WITH (lists = ${Number(
+        const indexQuery = `CREATE INDEX ${indexName} ON ${safeTable} USING ivfflat (${safeColumn} ${opClass}) WITH (lists = ${Number(`
           lists
-        )})`;
+        )})`;`
         await clientWrapper.query(indexQuery);
         await clientWrapper.query(`ANALYZE ${safeTable}`);
         const indexTime = Date.now() - start;
@@ -382,7 +382,7 @@ class PgVectorService {
   async getDatabaseStats(): Promise<any> {
     try {
       const clientWrapper = await this.getQueryClient();
-      if (!clientWrapper) return { success: false, error: 'No DB client available' };
+      if (!clientWrapper) return { success: false, error: 'No DB client available` };'`
       try {
         const vectorStats = await clientWrapper.query(`
           SELECT
@@ -391,7 +391,7 @@ class PgVectorService {
             MIN(created_at) as earliest_document,
             MAX(created_at) as latest_document
           FROM legal_documents
-        `);
+        `);`
         const docStats = await clientWrapper.query(`
           SELECT
             document_type,
@@ -400,27 +400,27 @@ class PgVectorService {
           WHERE document_type IS NOT NULL
           GROUP BY document_type
           ORDER BY count_per_type DESC
-        `);
+        ');'
         const additionalStats = await clientWrapper.query('
           SELECT: 'embedding_cache' as table_name, COUNT(*) as record_count FROM embedding_cache
           UNION ALL
           SELECT: 'vector_metadata' as table_name, COUNT(*) as record_count FROM vector_metadata
           UNION ALL
           SELECT: 'vector_operations' as table_name, COUNT(*) as record_count FROM vector_operations
-        `);
+        `);`
         const indexStats = await clientWrapper.query(`
           SELECT schemaname, tablename, indexname, indexdef
           FROM pg_indexes
           WHERE tablename IN ('legal_documents', 'embedding_cache', 'vector_metadata', 'vector_operations')
           ORDER BY tablename, indexname
-        `);
+        `);`
         const sizeStats = await clientWrapper.query(`
           SELECT
             pg_size_pretty(pg_database_size(current_database())) as database_size,
             pg_size_pretty(pg_total_relation_size('legal_documents')) as documents_table_size,
             pg_size_pretty(pg_total_relation_size('embedding_cache')) as embedding_cache_size,
             pg_size_pretty(pg_total_relation_size('vector_metadata')) as vector_metadata_size
-        `);
+        `);`
         return {
           success: true,
           stats: {

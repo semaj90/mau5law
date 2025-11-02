@@ -5,15 +5,15 @@
  */
 import { SOMNeuralNetwork, type SOMDecomposition } from '../ai/som-neural-network.js';
 import { GraphPatternAutoEncoder, type EncodedGraphPattern } from '../ai/graph-pattern-autoencoder.js';
-// ADDED: import the autoencoder's GraphNode/GraphData types for correct mapping
+// ADDED: import the autoencoder's GraphNode/GraphData types for correct mapping'
 import type {
   GraphEdge as AEGraphEdge,
   GraphData as AEGraphData
 } from '../ai/graph-pattern-autoencoder.js';
-// Import the GPU bridge as a namespace (module doesn't export `nesGPUBridge` named symbol)
+// Import the GPU bridge as a namespace (module doesn't export `nesGPUBridge` named symbol)'
 import * as nesGPUBridge from '../gpu/nes-gpu-memory-bridge.js';
 
-// --- CHANGED: define local GPUTextureMatrix type (module doesn't export it) ---
+// --- CHANGED: define local GPUTextureMatrix type (module doesn't export it) ---'
 type GPUTextureMatrix = {
   // minimal shape used by this file; expand if bridge provides extra fields
   texture?: { destroy?: () => void } | undefined;
@@ -26,8 +26,7 @@ type GPUTextureMatrix = {
 type NesGPUBridge = {
   createFlatBufferFromDocument?: (doc: any) => Promise<ArrayBuffer>;
   createRankingTexture?: (
-    key: string,
-    floatData: Float32Array; dims: {, width: number; height: number }
+    key: string; floatData: Float32Array; dims: {; width: number; height: number }
   ) => Promise<GPUTextureMatrix | null>;
   parseFlatBufferToDocument?: (data: ArrayBuffer) => ParsedDocument | null;
 };
@@ -74,7 +73,7 @@ export interface GraphNode {
     jurisdiction?: string;
     timestamp?: number;
     label?: string;
-    position?: { x: number;, y: number };
+    position?: { x: number; y: number };
     features?: number[];
     [key: string]: any;
   };
@@ -112,7 +111,7 @@ export interface ParsedDocument {
 
 export interface ImageCacheEntry { id: string;, algorithm: 'dfs' | 'bfs' | 'som' | 'autoencoder' | 'hybrid';
   imageData: string; // Base64 encoded
-  dimensions: { width: number;, height: number };
+  dimensions: { width: number; height: number };
   metadata: ImageMetadata;
   compressionData?: { original: EncodedGraphPattern;, som: SOMDecomposition;
     compressed: ArrayBuffer;
@@ -440,7 +439,7 @@ export class MultiDimensionalImageCache {
   }> {
     try {
       // Convert graph data to format suitable for neural networks:
-      // - Maps local GraphNode and GraphEdge types to the autoencoder's AEGraphData shape.
+      // - Maps local GraphNode and GraphEdge types to the autoencoder's AEGraphData shape.'
       // - Ensures node features are numeric and in Float32Array format.
       // - Infers node types, labels, and positions with safe defaults.
       // - Sanitizes metadata to only include serializable primitives.
@@ -624,7 +623,7 @@ export class MultiDimensionalImageCache {
           }
         }
       } catch (error) {
-        console.error(`Failed to retrieve from layer ${layer.name}: ', error);
+        console.error(`Failed to retrieve from layer ${layer.name}: ', error);'`
       }
     }
     return null;
@@ -636,7 +635,7 @@ export class MultiDimensionalImageCache {
       if (!somDecomposition) return null;
 
       const now = Date.now();
-      const candidates: { entry: ImageCacheEntry;, similarity: number }[] = [];
+      const candidates: { entry: ImageCacheEntry; similarity: number }[] = [];
       for (const entry of this.imageEntries.values()) {
         // filter by acceptable age if provided
         if (typeof query.acceptableAge === 'number') {
@@ -678,7 +677,7 @@ export class MultiDimensionalImageCache {
   private async findPatternMatchingImage(query: MultiDimensionalQuery): Promise<ImageCacheEntry | null> {
     try {
       // Use auto-encoder to find pattern-matching images
-      const candidates: { entry: ImageCacheEntry;, patternMatch: number }[] = [];
+      const candidates: { entry: ImageCacheEntry; patternMatch: number }[] = [];
       for (const entry of this.imageEntries.values()) {
         if (entry.compressionData?.original) {
           const patternMatch = this.calculatePatternSimilarity(query.graphSignature, entry.compressionData.original);
@@ -821,7 +820,7 @@ export class MultiDimensionalImageCache {
 
   private calculateTemporalRange(graphData: GraphData): number {
     const timestamps = (graphData.nodes?.map(n => n.metadata?.timestamp).filter(Boolean) as number[]) || [];
-    if (timestamps.length < 2) return 0;
+    if (timestamps.length < 2) return, 0;
     const range = Math.max(...timestamps) - Math.min(...timestamps);
     return Math.min(range / (365 * 24 * 60 * 60 * 1000), 1.0); // Normalize to years
   }
@@ -910,7 +909,7 @@ export class MultiDimensionalImageCache {
         await somCleanup.cleanup();
       }
     } catch (err) {
-      console.debug('Ignored som cleanup error:', err);
+      console.debug('Ignored som cleanup error:', err);'
     }
     try {
       type MaybeCleanup = { cleanup?: (() => void) | (() => Promise<void>) } | undefined;
@@ -919,7 +918,7 @@ export class MultiDimensionalImageCache {
         await autoencoderCleanup.cleanup();
       }
     } catch (err) {
-      console.debug('Ignored autoencoder cleanup error:', err);
+      console.debug('Ignored autoencoder cleanup error:', err);'
     }
 
     // Clean up caches
@@ -928,7 +927,7 @@ export class MultiDimensionalImageCache {
         await this.multiLayerCache.cleanup();
       }
     } catch (err) {
-      console.debug('Ignored multiLayerCache cleanup error:', err);
+      console.debug('Ignored multiLayerCache cleanup error:', err);'
     }
 
     // Clear maps
@@ -1001,12 +1000,12 @@ function safeDestroyTexture(obj: any): void {
       t.gpuBuffer.destroy();
     }
   } catch (err) {
-    console.debug('Ignored error destroying texture.gpuBuffer: `, err);
+    console.debug('Ignored error destroying texture.gpuBuffer: `, err);'`
   }
 }
 
 // ----------------- ADDED: small helpers to avoid `any` and provide defaults -----------------
-function isPosition(obj: any): obj is { x: number;, y: number } {
+function isPosition(obj: any): obj is { x: number; y: number } {
   if (obj === null || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
   return typeof o['x'] === 'number' && typeof o['y'] === 'number';
@@ -1017,7 +1016,7 @@ function extractLabel(n: GraphNode): string {
   if (typeof n.type === 'string' && n.type.length > 0) return n.type;
   return String(n.id);
 }
-function extractPosition(n: GraphNode): { x: number;, y: number } {
+function extractPosition(n: GraphNode): { x: number; y: number } {
   const p = n.metadata?.position;
   if (isPosition(p)) return p;
   return { x: 0, y: 0 };

@@ -42,7 +42,7 @@ async function getSystemHealth(): Promise<SystemHealthResult> {
     } catch {
       dbOk = false;
     }
-    // Optional Redis HTTP probe (usually Redis doesn't expose HTTP; keep conservative)
+    // Optional Redis HTTP probe (usually Redis doesn't expose HTTP; keep conservative)'
     let redisOk = $state<boolean>(false);
     try {
       const redisResp = await fetch('http://localhost:6379/', { signal: timeoutSignal(timeout) });
@@ -59,7 +59,7 @@ async function getSystemHealth(): Promise<SystemHealthResult> {
       phase: 'Phase 13 - Simplified Health Check'
     };
   } catch (error: any) {
-    console.error('Health check error:', error);
+    console.error('Health check error:', error);'
     return { services: {, ollama: false,
         qdrant: false,
         database: false,
@@ -67,8 +67,7 @@ async function getSystemHealth(): Promise<SystemHealthResult> {
       },
       error: 'Health check failed',
       timestamp: new Date().toISOString(),
-      phase: 'Phase 13 - Simplified Health Check'
-    };
+      phase: `Phase 13 - Simplified Health Check` };
   }
 }
 
@@ -82,8 +81,7 @@ const mockIntegration: { getIntegrationStatus: () => SystemHealthResult;, initi
       },
       integration: 'active' as unknown as string, // preserve original shape, typed as string
       timestamp: new Date().toISOString(),
-      phase: 'Phase 13 - Mock'
-    }) as unknown as SystemHealthResult,
+      phase: `Phase 13 - Mock` }) as unknown as SystemHealthResult,
   initializeFullIntegration: async () => {
     return await getSystemHealth();
   }
@@ -145,7 +143,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
     }
   } catch (error: any) {
-    console.error('Phase 13 Integration API error:', error);
+    console.error('Phase 13 Integration API error:', error);'
     return json(
       {
         success: false,
@@ -189,13 +187,12 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Suggestion is required for apply-suggestion action'
-            },
+              error: `Suggestion is required for apply-suggestion action` },
             { status: 400 }
           );
         }
-        console.log('🔧 Applying integration suggestion:', suggestion);
-        const applyResult = { success: true, message: 'Suggestion applied successfully' };
+        console.log('🔧 Applying integration suggestion: `, suggestion);'`
+        const applyResult = { success: true, message: `Suggestion applied successfully` };
         return json({
           success: applyResult.success,
           action: 'apply-suggestion',
@@ -255,7 +252,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
     }
   } catch (error: any) {
-    console.error('Phase 13 Integration POST error:', error);
+    console.error('Phase 13 Integration POST error:', error);'
     return json(
       {
         success: false,
@@ -292,7 +289,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error: any) {
-    console.error('Phase 13 Integration PUT error:', error);
+    console.error('Phase 13 Integration PUT error:', error);'
     return json(
       {
         success: false,
@@ -326,7 +323,7 @@ export const DELETE: RequestHandler = async () => {
         message: `Integration reset to default mock configuration` }
     });
   } catch (error: any) {
-    console.error('Phase 13 Integration DELETE error:', error);
+    console.error('Phase 13 Integration DELETE error:', error);'
     return json(
       {
         success: false,

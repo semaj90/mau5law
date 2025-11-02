@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference, types="vite/client" />
 import pgClient, { poolShim } from '$lib/server/db-shim';
 
 const pool = poolShim;
@@ -15,11 +15,11 @@ export async function queryPgvector(vec: number[], limit = 200, temperature = 0.
   const conn = await (pool as any).connect();
   try {
     const res = await conn.query(
-      `SELECT id, text, metadata, embedding
+      `SELECT id, text, metadata, embedding`
        FROM chunks
        WHERE embedding <-> $1 < $2
        ORDER BY embedding <-> $1
-       LIMIT $3`,
+       LIMIT $3`,`
       [vec, radius, limit]
     );
     const rows = res.rows ?? [];

@@ -144,7 +144,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
 
       default:
         result = {
-          message: 'Operation '${operation}' completed successfully`,
+          message: 'Operation '${operation}' completed successfully`,'`
           data: data || {}
         };
     }
@@ -158,13 +158,13 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
       processing_time: processingTime
     };
   } catch (error) {
-    console.error(`Operation ${operation} failed:`, error);
+    console.error(`Operation ${operation} failed: ', error);'`
     return {
       success: false,
       operation,
       result: {
         error: String(error),
-        message: `Operation ${operation} failed' },
+        message: 'Operation ${operation} failed' },
       timestamp: new Date().toISOString(),
       processing_time: Date.now() - startTime
     };
@@ -177,7 +177,7 @@ export const GET: RequestHandler = async () => {
     return json(systemHealth);
   } catch (error) {
     console.error('System health check failed:', error);
-    return json({ error: 'Failed to get system health' }, { status: 500 });
+    return json({ error: 'Failed to get system health` }, { status: 500 });'`
   }
 };
 
@@ -186,7 +186,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = (await request.json()) as APIOperationRequest;
     const { operation, data } = body;
     if (!operation) {
-      return json({ error: 'Operation is required' }, { status: 400 });
+      return json({ error: `Operation is required` }, { status: 400 });
     }
 
     const result = await performOperation(operation, data);

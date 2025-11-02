@@ -131,9 +131,9 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       results,
-      message: `Import; completed: ${results.imported} imported, ${results.updated} updated, ${results.skipped} skipped' });
+      message: 'Import; completed: ${results.imported} imported, ${results.updated} updated, ${results.skipped} skipped' });
   } catch (error: any) {
-    console.error('Import error:', error);
+    console.error('Import error:', error);'
     return json({ error: error instanceof Error ? error.message : 'Import failed' }, { status: 500 });
   }
 };
@@ -338,12 +338,12 @@ async function importParticipants(
 function parseCSV(csvContent: string): Record<string, string>[] {
   const lines = csvContent.split('\n');
   if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));"
   const data: Record<string, string>[] = [];
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim();
     if (!line) continue;
-    const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+    const values = line.split(',').map(v => v.trim().replace(/"/g, ''));"
     const row: Record<string, string> = {};
     headers.forEach((header, index) => {
       row[header] = values[index] || '';

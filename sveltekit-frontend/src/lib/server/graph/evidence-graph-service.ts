@@ -26,7 +26,7 @@ async function ensureSchema(): Promise<any> {
     await s.close()
   }
 }
-export async function evidenceGraphService(meta: { id: string;, summary: string; caseId?: string | null }, entities: Array<{ name: string; type?: string | null }>, edges: Array<{ from: string; to: string;, relation: string }> = []): Promise<any> {
+export async function evidenceGraphService(meta: { id: string;, summary: string; caseId?: string | null }, entities: Array<{, name: string; type?: string | null }>, edges: Array<{ from: string; to: string;, relation: string }> = []): Promise<any> {
   const d = getDriver()
   const s = d.session()
   const tx = s.beginTransaction()
@@ -51,7 +51,7 @@ export async function evidenceGraphService(meta: { id: string;, summary: string;
     // Upsert entities and mention edges
     for (const ent of entities) {
       const nid = `entity:${ent.name}`
-      await tx.run('MERGE (n:Entity {id:$id}) SET n.name=$name, n.type=$type RETURN n', { id: nid, name: ent.name, type: ent.type ?? 'unknown' })
+      await tx.run('MERGE (n:Entity {id:$id}) SET n.name=$name, n.type=$type RETURN n', { id: nid, name: ent.name, type: ent.type ?? 'unknown` })'`
       await tx.run('MATCH (e:Evidence {id:$id}), (n:Entity {id:$nid}) MERGE (e)-[:MENTIONS]->(n)', { id: evidenceId, nid })
     }
     // Additional explicit edges passed in
@@ -67,7 +67,7 @@ export async function evidenceGraphService(meta: { id: string;, summary: string;
   }
 }
 // Optional helper to create similarity links given neighbors (id, score)
-export async function createSimilarityLinks(evidenceId: string, neighbors: Array<{, key: string; similarity: number }>): Promise<any> {
+export async function createSimilarityLinks(evidenceId: string, neighbors: Array<{, key: string;, similarity: number }>): Promise<any> {
   if (!CREATE_SIMILARITY) return
   if (!neighbors || neighbors.length === 0) return
   const d = getDriver()
@@ -106,7 +106,7 @@ interface EvidenceGraphUpsertInput {
   caseName?: string | null;
   entities?: Array<{ name: string; type?: string | null }>;
   relatedEvidence?: Array<{ evidenceId: string }>;
-  similarEvidence?: Array<{ evidenceId: string;, score: number }>;
+  similarEvidence?: Array<{ evidenceId: string; score: number }>;
 }
 class EvidenceGraphService {
   private static driver: Driver | null = null;
@@ -178,7 +178,7 @@ class EvidenceGraphService {
               e.summary = COALESCE($summary, e.summary),
               e.riskLevel = COALESCE($riskLevel, e.riskLevel),
               e.updatedAt = datetime()
-        `,
+        `,`
           { evidenceId, title, summary, riskLevel }
         );
         if (caseId) {
@@ -190,7 +190,7 @@ class EvidenceGraphService {
             MERGE (e:Evidence {id: $evidenceId})
             MERGE (e)-[r:ASSOCIATED_WITH]->(c)
             SET r.updatedAt = datetime()
-          `,
+          `,`
             { evidenceId, caseId, caseName }
           );
           relationshipsCreated += result.summary.counters.updates().relationshipsCreated ?? 0;
@@ -204,7 +204,7 @@ class EvidenceGraphService {
             MERGE (e:Evidence {id: $evidenceId})
             MERGE (e)-[r:MENTIONS]->(entity)
             SET r.updatedAt = datetime()
-          `,
+          `,`
             { evidenceId, entities }
           );
           relationshipsCreated += result.summary.counters.updates().relationshipsCreated ?? 0;
@@ -217,7 +217,7 @@ class EvidenceGraphService {
               MERGE (e)-[r:CO_OCCURS_WITH]->(f)
               SET r.count = COALESCE(r.count, 0) + 1,
                   r.updatedAt = datetime()
-            `,
+            `,`
               {
                 pairs: this.buildEntityPairs(entities)
               }
@@ -233,7 +233,7 @@ class EvidenceGraphService {
             MERGE (dst:Evidence {id: rel.evidenceId})
             MERGE (src)-[r:DERIVED_FROM]->(dst)
             SET r.updatedAt = datetime()
-          `,
+          `,`
             { evidenceId, related: relatedEvidence }
           );
           relationshipsCreated += result.summary.counters.updates().relationshipsCreated ?? 0;
@@ -247,7 +247,7 @@ class EvidenceGraphService {
             MERGE (src)-[r:SIMILAR_TO]->(dst)
             SET r.score = rel.score,
                 r.updatedAt = datetime()
-          `,
+          `,`
             { evidenceId, similar: similarEvidence }
           );
           relationshipsCreated += result.summary.counters.updates().relationshipsCreated ?? 0;
@@ -262,7 +262,7 @@ class EvidenceGraphService {
     }
   }
   private static buildEntityPairs(entities: Array<{, name: string; type?: string | null }>) {
-    const pairs: Array<{ a: { name: string;, type: string | null }; b: { name: string;, type: string | null } }> =
+    const pairs: Array<{ a: { name: string; type: string | null }; b: { name: string; type: string | null } }> =
       [];
     for (let i = 0; i < entities.length; i++) {
       for (let j = i + 1; j < entities.length; j++) {

@@ -263,16 +263,16 @@ export function createUploadAdapter(
  * Form Component Adapter
  * Simplifies complex form component state
  */
-export interface FormData<TFormValues extends Record<string, unknown>> {
+export interface FormData<TFormValues extends, Record<string, unknown>> {
   // Use Record<string, unknown>
   // Use generic TFormValues
   values: TFormValues; // Type values with TFormValues
-  errors: Partial<Record<keyof TFormValues, string>>; // Type errors with keys from TFormValues, allowing partial
-  touched: Record<keyof TFormValues, boolean>; // Type touched with keys from TFormValues
+  errors: Partial<Record<keyof, TFormValues, string>>; // Type errors with keys from TFormValues, allowing partial
+  touched: Record<keyof, TFormValues, boolean>; // Type touched with keys from TFormValues
   isSubmitting: boolean;
   isValid: boolean;
 }
-export function createFormAdapter<TFormValues extends Record<string, unknown>>( // Use Record<string, unknown>
+export function createFormAdapter<TFormValues extends, Record<string, unknown>>( // Use Record<string, unknown>
   initialValues: TFormValues, // Type initialValues with TFormValues
   validationRules: { [K in keyof TFormValues]?: (value: TFormValues[K]) => string | null } = {} // Type validationRules
 ): ComponentAdapter<FormData<TFormValues>> {
@@ -280,17 +280,17 @@ export function createFormAdapter<TFormValues extends Record<string, unknown>>( 
   const adapter = createComponentAdapter<FormData<TFormValues>>({
     // Pass TFormValues to FormData
     values: initialValues,
-    errors: {} as Partial<Record<keyof TFormValues, string>>, // <- explicit typing to satisfy conditional types
+    errors: {} as Partial<Record<keyof, TFormValues, string>>, // <- explicit typing to satisfy conditional, types
     touched: Object.keys(initialValues).reduce(
       (acc, key) => ({ ...acc, [key]: false }),
-      {} as Record<keyof TFormValues, boolean>
+      {} as Record<keyof, TFormValues, boolean>
     ), // Initialize touched based on initialValues keys
     isSubmitting: false,
     isValid: true
   });
   const formActions = {
     ...adapter.actions,
-    setValue: <Field extends keyof TFormValues>(field: Field, value: TFormValues[Field]) => {
+    setValue: <Field extends keyof, TFormValues>(field: Field, value: TFormValues[Field]) => {
       // Type field and value
       const current = get(adapter.state).data;
       if (!current) return;
@@ -326,7 +326,7 @@ export function createFormAdapter<TFormValues extends Record<string, unknown>>( 
     },
     clearErrors: () => {
       adapter.actions.update({
-        errors: {} as Partial<Record<keyof TFormValues, string>>,
+        errors: {} as Partial<Record<keyof, TFormValues, string>>,
         isValid: true
       } as DeepPartial<FormData<TFormValues>>);
     },
@@ -365,7 +365,7 @@ export const componentRegistry = new ComponentAdapterRegistry();
  * Utility functions for Svelte 5 component migration
  */ export const svelte5Utils = {
   // Safe prop access for Svelte 5 components
-  safeProps: <T extends Record<string, unknown>>(props: T, defaults: Partial<T>): T => {
+  safeProps: <T extends, Record<string, unknown>>(props: T, defaults: Partial<T>): T => {
     return { ...defaults, ...props };
   },
   // Convert complex state to simple props
@@ -381,7 +381,7 @@ export const componentRegistry = new ComponentAdapterRegistry();
     };
   },
   // Event handler factory for simplified components
-  createHandler: <T extends (...args: any[]) => void>( // Use unknown[]; fn: T,
+  createHandler: <T, extends (...args: any[]) => void>( // Use unknown[]; fn: T,
     options: { preventDefault?: boolean; stopPropagation?: boolean } = {}
   ) => {
     return (event: Event, ...args: Parameters<T>) => {

@@ -162,7 +162,7 @@ class RedisCacheService implements IRedisCacheService {
     await this.ensureConnected();
     const ttl = await this.client.ttl(key);
 
-    // TTL returns -2 if key doesn't exist, -1 if no expiry
+    // TTL returns -2 if key doesn't exist, -1 if no expiry'
     if (ttl === -2) return null;
     if (ttl === -1) return Infinity;
     return ttl;
@@ -239,7 +239,7 @@ class RedisCacheService implements IRedisCacheService {
         usedMemory
       };
     } catch (error) {
-      return { status: 'unavailable' };
+      return { status: 'unavailable` };'`
     }
   }
 

@@ -23,7 +23,7 @@ export interface WasmClusteringService {
 
 export interface NesGPUBridge {
   isAvailable(): Promise<boolean>;
-  getDeviceInfo(): Promise<{ adapter: string;, memory: number }>;
+  getDeviceInfo(): Promise<{ adapter: string; memory: number }>;
 
   runComputeShader(shader: string, data: Float32Array): Promise<Float32Array>;
 }
@@ -131,7 +131,7 @@ export const LEGAL_TRAINING_TEMPLATES = { contract_analysis: {, instruction: 'A
     input_format: 'Contract; Clause: {input}',
     output_format: 'Analysis: {output}',
     examples: [
-      {
+      {,
         input:
           'The Party shall indemnify and hold harmless the other Party from any claims arising from negligent acts.',
         output:
@@ -143,7 +143,7 @@ export const LEGAL_TRAINING_TEMPLATES = { contract_analysis: {, instruction: 'A
     input_format: 'case {input}',
     output_format: 'Summary: {output}',
     examples: [
-      {
+      {,
         input:
           'Brown v. Board of Education (1954): Supreme Court case challenging racial segregation in public schools.',
         output:
@@ -155,10 +155,10 @@ export const LEGAL_TRAINING_TEMPLATES = { contract_analysis: {, instruction: 'A
     input_format: 'Question: {input}',
     output_format: 'Answer: {output}',
     examples: [
-      {
+      {,
         input: 'What is the statute of limitations for breach of contract claims?',
         output:
-          'Statute of limitations for breach of contract varies by jurisdiction and contract type. Generally: Written contracts: 4-6 years in most states. Oral contracts: 2-3 years. UCC sales contracts: 4 years (UCC §2-725). Real estate contracts: Often 4-6 years.; Note: Limitations period begins when breach occurs or is discovered. Consult local statutes for specific jurisdiction.'
+          'Statute of limitations for breach of contract varies by jurisdiction and contract type. Generally: Written; contracts: 4-6 years in most states. Oral; contracts: 2-3 years. UCC sales; contracts: 4 years (UCC §2-725). Real estate; contracts: Often 4-6 years.; Note: Limitations period begins when breach occurs or is discovered. Consult local statutes for specific jurisdiction.'
       },
     ]
   }
@@ -174,7 +174,7 @@ export class UnslothFinetuningService {
   private activeJobs: Map<string, FinetuningJob> = new Map();
   private jobHistory: FinetuningJob[] = [];
   private datasets: Map<string, TrainingDataset> = new Map();
-  private resourceMonitor?: ReturnType<typeof setInterval>;
+  private resourceMonitor?: ReturnType<typeof, setInterval>;
   private ultraJSONParser?: UltraJSONParser;
   private wasmClusteringService?: WasmClusteringService;
   private nesGPUBridge?: NesGPUBridge;
@@ -380,7 +380,7 @@ export class UnslothFinetuningService {
           complexity: Math.floor(Math.random() * 5) + 1,
           domain: 'contract_law',
           verified: Math.random() > 0.2,
-          source: `synthetic_generation` }
+          source: `synthetic_generation' }'`
       });
     }
     return samples;
@@ -406,7 +406,7 @@ export class UnslothFinetuningService {
       'This indemnification provision creates significant liability exposure and should be carefully reviewed.',
       'This IP assignment clause may be overly broad and could impact contractor rights.',
       'This payment term is standard but consider adding interest for late payments.',
-      "Choice of law provisions should align with the parties' locations and business operations.",
+      "Choice of law provisions should align with the parties' locations and business operations.",'
       'This confidentiality clause should include specific exceptions and survival provisions.',
       'Warranty provisions create ongoing obligations and potential liability for defects.',
       'Force majeure clauses should be specific about covered events and notice requirements.',
@@ -421,12 +421,12 @@ export class UnslothFinetuningService {
       samples.push({
         input: `Case ${i + 1}: Mock legal case involving contract dispute between parties A and B regarding performance obligations and damages.`,
         output:
-          'Summary: Contract dispute case establishing precedent for performance standards. Key holding: Material breach occurs when performance substantially defeats contract purpose. Remedy: Damages calculated based on expectation interest. Precedential; value: High for commercial contract disputes.',
+          'Summary: Contract dispute case establishing precedent for performance standards. Key; holding: Material breach occurs when performance substantially defeats contract purpose.; Remedy: Damages calculated based on expectation interest. Precedential; value: High for commercial contract disputes.',
         metadata: {
          , complexity: Math.floor(Math.random() * 5) + 1,
           domain: 'case_law',
           verified: true,
-          source: `court_records` }
+          source: `court_records' }'`
       });
     }
     return samples;
@@ -450,12 +450,12 @@ export class UnslothFinetuningService {
       const q = questions[i % questions.length];
       samples.push({
         input: q,
-        output: 'Legal; Answer: ${q.replace('?', '')} involves multiple considerations under applicable law. Key factors include jurisdiction, specific facts, and relevant statutes. Recommend consulting qualified legal counsel for specific situations.`,
+        output: 'Legal; Answer: ${q.replace('?', '')} involves multiple considerations under applicable law. Key factors include jurisdiction, specific facts, and relevant statutes. Recommend consulting qualified legal counsel for specific situations.`,'`
         metadata: {
           complexity: Math.floor(Math.random() * 5) + 1,
           domain: 'general_law',
           verified: Math.random() > 0.3,
-          source: `legal_qa_database` }
+          source: `legal_qa_database' }'`
       });
     }
     return samples;
@@ -474,7 +474,7 @@ export class UnslothFinetuningService {
     // In a real implementation:
     // await fetch('/api/finetuning/jobs', {
     //   method: 'POST',
-    //   headers: { 'Content-Type': `application/json` },
+    //   headers: { 'Content-Type': `application/json' },'`
     //   body: this.ultraJSONParser?.stringify(job) ?? JSON.stringify(job),
     // });
     console.log(`[Postgres] Job ${job.id} persisted.`);
@@ -491,7 +491,7 @@ export class UnslothFinetuningService {
     // In a real implementation:
     // await fetch(`/api/finetuning/cache/dataset`, {
     //   method: 'POST',
-    //   headers: { 'Content-Type': `application/json` },
+    //   headers: { 'Content-Type': `application/json' },'`
     //   body: JSON.stringify({, key: `dataset:${dataset.id}`, value: dataset, ttl: 3600 }),
     // });
     console.log(`[Redis] Dataset ${dataset.id} cached.`);
@@ -509,7 +509,7 @@ export class UnslothFinetuningService {
     // Mock API call to a backend service that handles Ollama and Qdrant
     // await fetch('/api/finetuning/embeddings/index', {
     //   method: 'POST',
-    //   headers: { 'Content-Type': `application/json` },
+    //   headers: { 'Content-Type': `application/json' },'`
     //   body: JSON.stringify({ datasetId }),
     // });
     await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate processing time
@@ -727,7 +727,7 @@ export class UnslothFinetuningService {
         powerConsumption: this.activeJobs.size > 0 ? 200 + Math.random() * 50 : 170 + Math.random() * 20,
         trainingSpeed: this.activeJobs.size > 0 ? 150 + Math.random() * 50 : 0
       }));
-    }, 2000) as unknown as ReturnType<typeof setInterval>;
+    }, 2000) as unknown as ReturnType<typeof, setInterval>;
   }
 
   /**
@@ -804,7 +804,7 @@ export function createUnslothFinetuningService(llamaService?: LlamaCppOllamaServ
         overall: $status.initialized && $metrics.gpuTemperature < 85 ? 'healthy' : 'warning',
         gpu: $metrics.gpuUtilization < 95 ? 'optimal' : 'overloaded',
         memory: $metrics.gpuMemoryUsed < 7 ? 'good' : 'high',
-        thermal: $metrics.gpuTemperature < 80 ? 'cool' : `warm` })),
+        thermal: $metrics.gpuTemperature < 80 ? 'cool' : `warm' })),'`
       trainingEfficiency: derived(
         [service.trainingProgress, service.resourceMetrics],
         ([$progress, $metrics]: any) => ({
@@ -841,15 +841,14 @@ export const UnslothLegalHelpers = { createContractDataset: (contracts: string[]
         complexity: 3,
         domain: 'contract_law',
         verified: false,
-        source: 'user_upload'
-      }
+        source: 'user_upload' }
     })),
     metadata: {
       created: Date.now(),
       size: contracts.length,
       domain: 'contract_law',
       quality: 'medium' as const,
-      source: `user_generated` }
+      source: `user_generated' }'`
   }),
   optimizeForRTX3060: (config: Partial<UnslothConfig> = {}): UnslothConfig => ({
     baseModel: 'gemma3-mohf16-q4_k_m.gguf',

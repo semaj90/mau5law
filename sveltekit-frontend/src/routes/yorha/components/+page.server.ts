@@ -126,7 +126,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
     };
     // Generate demo code snippets
     const codeSnippets = {
-      button: '<script>,
+      button: '<script>,'
   import { YoRHaButton3D } from '$lib/components/three/yorha-ui.svelte';
   let buttonConfig = {
     text: 'Execute Command',
@@ -138,8 +138,8 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 <YoRHaButton3D
   {...buttonConfig}
   onclick={() => console.log('YoRHa button clicked')}
-/>`,
-      panel: '<script>,
+/>`,`
+      panel: '<script>,'
   import { YoRHaPanel3D } from '$lib/components/three/yorha-ui.svelte';
 </script>
 <YoRHaPanel3D
@@ -147,11 +147,11 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   variant="terminal"
   borderGlow={true}
 >
-  <div slot="content">
+  <div, slot="content">
     Panel content goes here...
   </div>
-</YoRHaPanel3D>`,
-      input: '<script>,
+</YoRHaPanel3D>`,`
+      input: '<script>,'
   import { YoRHaInput3D } from '$lib/components/three/yorha-ui.svelte';
   let inputValue = '';
 </script>
@@ -160,8 +160,8 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   placeholder="Enter neural link..."
   variant="terminal"
   neuralGlow={true}
-/>`,
-      modal: '<script>,
+/>`,`
+      modal: '<script>,'
   import { YoRHaModal3D } from '$lib/components/three/yorha-ui.svelte';
   let showModal = $state<boolean>(false);
 </script>
@@ -171,10 +171,10 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   variant="alert"
   size="medium"
 >
-  <div slot="content">
+  <div, slot="content">
     Modal content...
   </div>
-</YoRHaModal3D>' };
+</YoRHaModal3D>' };'
     return {
       specs: componentSpecs,
       gallery: galleryData,
@@ -183,13 +183,13 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       timestamp: new Date().toISOString()
     };
   } catch (error: any) {
-    console.error('Error loading YoRHa components data:', error);
+    console.error('Error loading YoRHa components data: `, error);'`
     return {
       specs: {},
       gallery: { categories: [], components: [], totalComponents: 0, previewModes: [] },
       codeSnippets: {},
       initialLoad: false,
       timestamp: new Date().toISOString(),
-      error: 'Failed to load components data` };
+      error: 'Failed to load components data' };
   }
 };

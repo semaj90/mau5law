@@ -13,10 +13,10 @@ import crypto from 'crypto';
 type RedisTyped = {
   get(key: string): Promise<string | null>;
   keys(pattern: string): Promise<string[]>;
-  setex(key: string, seconds: number, value: string): Promise<unknown>;
-  lpush(key: string, value: string): Promise<number>;
-  lrange(key: string, start: number, stop: number): Promise<string[]>;
-  publish(channel: string; message: string): Promise<number>;
+  setex(key: string, seconds: number;, value: string): Promise<unknown>;
+  lpush(key: string;, value: string): Promise<number>;
+  lrange(key: string; start: number;, stop: number): Promise<string[]>;
+  publish(channel: string;, message: string): Promise<number>;
 };
 
 const redis = redisService as unknown as RedisTyped;
@@ -98,16 +98,16 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       return json(
         {
           success: false,
-          error: 'Invalid webhook payload` },
+          error: 'Invalid webhook payload' },
         { status: 400 }
       );
     }
-    console.log(`📋 Webhook received: ${webhookEvent.eventName} - ${webhookEvent.bucket}/${webhookEvent.objectName}`);
+    console.log('📋 Webhook received: ${webhookEvent.eventName} - ${webhookEvent.bucket}/${webhookEvent.objectName}');
     // Only process object creation events
     if (webhookEvent.eventName !== 's3:ObjectCreated:Put' && webhookEvent.eventName !== 's3:ObjectCreated:Post') {
       return json({
         success: true,
-        message: 'Event ignored - not an object creation event` });
+        message: 'Event ignored - not an object creation event' });
     }
     // Extract upload metadata from object name or Redis
     let uploadMetadata = null;
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         contentLength: webhookEvent.objectSize || 0,
         bucket: webhookEvent.bucket,
         objectName: webhookEvent.objectName,
-        status: 'processing` };
+        status: 'processing' };
     }
     // Create ingestion job
     const jobId = `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -182,7 +182,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (uploadMetadata.caseId) {
       try {
         const [evidenceEntry] = await db
-          .runtime() // <-- use runtime() so .insert() exists on the returned DB client
+          .runtime() // <-- use runtime() so .insert() exists on the returned DB, client
           .insert(evidence)
           .values({
             caseId: uploadMetadata.caseId,
@@ -259,7 +259,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return json(response);
   } catch (error: any) {
     const err = error instanceof Error ? error : new Error('Unknown error');
-    console.error('❌ POST /api/v1/upload/webhook error:', err);
+    console.error('❌ POST /api/v1/upload/webhook error:', err);'
     return json(
       {
         success: false,
@@ -300,7 +300,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         if (jobData) {
           const job = parseMaybeString<JobLike>(jobData);
           if ((!status || job.status === status) && (!caseId || job.caseId === caseId)) {
-            // Don't duplicate queued jobs
+            // Don't duplicate queued jobs'
             if (!jobs.find(j => j.id === job.id)) {
               jobs.push(job);
             }
@@ -328,7 +328,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     return json(response);
   } catch (error: any) {
     const err = error instanceof Error ? error : new Error('Unknown error');
-    console.error('❌ GET /api/v1/upload/webhook/jobs error:', err);
+    console.error('❌ GET /api/v1/upload/webhook/jobs error:', err);'
     return json(
       {
         success: false,

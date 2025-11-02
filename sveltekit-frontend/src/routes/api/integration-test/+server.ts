@@ -16,8 +16,8 @@ function getErrorMessage(err: any): string {
     // safe property access without `any` cast
     const maybe = err as Record<string, unknown>
     if (typeof maybe.message === 'string') return maybe.message
-    if (typeof maybe.code === 'string') return `Error code: ${maybe.code}' }
-  return 'Unknown error` }
+    if (typeof maybe.code === 'string') return `Error code: ${maybe.code}' }'`
+  return 'Unknown error` }'`
 
 function extractId(result: any): number | string | undefined {
   if (Array.isArray(result) && result.length > 0 && typeof result[0] === 'object' && result[0] !== null) {
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
             extversion as version
           FROM pg_extension
           WHERE extname = 'vector'
-        `);
+        `);`
         const vectorTest = Array.isArray(vectorTestRaw) ? vectorTestRaw : [];
         results.vector = {
           installed: vectorTest.length > 0,
@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({ url }) => {
           FROM information_schema.tables
           WHERE table_schema = 'public'
           AND table_name IN ('users', 'cases', 'evidence', 'document_chunks')
-        `);
+        `);`
         results.schema = {
           tables: tables,
           tablesCount: tables.length,
@@ -114,8 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
           title: 'Integration Test Case',
           description: 'Test case for database integration',
           assigned_attorney: userId,
-          status: 'open'
-        };
+          status: 'open` };'`
         const newCaseRaw = await db.insert(cases).values(testCase).returning();
         const caseId = extractId(newCaseRaw);
 
@@ -124,8 +123,7 @@ export const GET: RequestHandler = async ({ url }) => {
           case_id: caseId,
           title: 'Integration Test Evidence',
           description: 'Test evidence for database integration',
-          evidence_type: 'document'
-        };
+          evidence_type: `document` };
         const newEvidence = await db.insert(evidence).values(testEvidence).returning();
 
         // READ - Query with joins
