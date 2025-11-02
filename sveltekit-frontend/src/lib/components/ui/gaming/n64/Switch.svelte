@@ -56,10 +56,10 @@
   const { className } = $props<{ className: string }>()
 
   // Local state
-  let isFocused = $state(false);
-  let isHovered = $state(false);
-  let isPressed = $state(false);
-  let isAnimating = $state(false);
+  let isFocused = $state<boolean>(false);
+  let isHovered = $state<boolean>(false);
+  let isPressed = $state<boolean>(false);
+  let isAnimating = $state<boolean>(false);
   let switchElement: HTMLElement | null = null;
   let audioContext: AudioContext | null = null;
   let animationFrameId: number | null = null;
@@ -75,7 +75,7 @@
   } as N64RenderingOptions;
 
   // Play spatial/mechanical switch sound (best-effort, guarded)
-  async function playSwitchSound(isOn: boolean) {
+  async function playSwitchSound(isOn: boolean): Promise<any> {
     if (!enableSpatialAudio) return;
     try {
       if (!audioContext) {
@@ -160,7 +160,7 @@
   }
 
   // Toggle handler
-  async function handleToggle() {
+  async function handleToggle(): Promise<any> {
     if (disabled || readonly || loading) return;
     isPressed = true;
     isAnimating = true;
@@ -169,8 +169,8 @@
     await playSwitchSound(newValue);
     if (enableParticles) createSwitchParticles();
     setTimeout(() => {
-      isPressed = $state(false);
-      isAnimating = $state(false);
+      isPressed = false;
+      isAnimating = false;
     }, animationDuration);
     ondispatch?.({ checked: newValue, value });
   }
@@ -180,14 +180,14 @@
     isFocused = true;
   }
   function handleBlur() {
-    isFocused = $state(false);
+    isFocused = false;
   }
   function handleHover() {
     if (disabled) return;
     isHovered = true;
   }
   function handleUnhover() {
-    isHovered = $state(false);
+    isHovered = false;
   }
   function handleKeyDown(e: KeyboardEvent) {
     if (disabled || readonly) return;

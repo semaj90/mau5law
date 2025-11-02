@@ -78,7 +78,7 @@
   >
     <!-- FF-Style Modal Container -->
     <div
-      class="relative {sizeClasses[size]} bg-gradient-to-br {typeColors[type]}
+      class="relative" {sizeClasses[size]} bg-gradient-to-br {typeColors[type]}
              border-2 border-amber-400/80 shadow-2xl overflow-hidden
              {cornerClasses[cornerStyle]}"
       transitiscale={{ duration 400, easing: quintOut, start: 0.8 }}
@@ -93,18 +93,18 @@
       <!-- FF-Style Title Bar -->
       {#if title}
         <div
-          class="relative px-6 py-3 bg-gradient-to-r from-amber-600/90 to-yellow-500/90
+          class="relative" px-6 py-3 bg-gradient-to-r from-amber-600/90 to-yellow-500/90
                     border-b border-amber-400/50"
         >
           <h2
             id="modal-title"
-            class="text-lg font-bold text-white tracking-wider uppercase
+            class="text-lg" font-bold text-white tracking-wider uppercase
                                    text-shadow-lg shadow-black/50"
           >
             {title}
           </h2>
           <button
-            class="absolute top-2 right-2 w-6 h-6 text-white hover:text-red-300
+            class="absolute" top-2 right-2 w-6 h-6 text-white hover:text-red-300
                    transition-colors duration-200 font-bold text-xl leading-none"
             onclick={handleClose}
             aria-label="Close modal"
@@ -119,7 +119,7 @@
       <!-- FF-Style Action Bar (if actions snippet provided) -->
       {#if actions}
         <div
-          class="px-6 py-4 bg-gradient-to-r from-slate-800/90 to-slate-700/90
+          class="px-6" py-4 bg-gradient-to-r from-slate-800/90 to-slate-700/90
                     border-t border-amber-400/30"
         >
           <div class="flex justify-end space-x-3">

@@ -54,7 +54,7 @@
     tags: case_?.tags ?? [],
     metadata: case_?.metadata ?? {}
   });
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let errors = $state<Record<string, string>>({});
   // Form validation
   function validateForm() {
@@ -74,7 +74,7 @@
     return Object.keys(errors).length === 0;
   }
   // Handle form submission
-  async function handleSubmit() {
+  async function handleSubmit(): Promise<any> {
     if (!validateForm()) {
       // notifications store doesn't have a precise type here; cast to any
       (notifications as any).add({

@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { db } from '$lib/server/db/index';
 import { cases, criminals, evidence } from 'drizzle-orm';
 import { eq } from 'drizzle-orm';

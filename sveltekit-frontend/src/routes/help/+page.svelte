@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Button } from '$lib/components/ui/enhanced-bits.svelte'; // Changed from default to named import
   import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
@@ -30,8 +31,8 @@
     type: string;
   }
   // Help state
-  let activeCategory = $state('getting-started');
-  let searchQuery = $state('');
+  let activeCategory = $state<string>('getting-started');
+  let searchQuery = $state<string>('');
   // Help categories
   const categories = [
     {

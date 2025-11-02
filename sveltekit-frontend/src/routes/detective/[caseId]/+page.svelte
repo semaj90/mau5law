@@ -7,6 +7,8 @@
   - Case management integration
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
@@ -18,11 +20,11 @@
   let caseData = $state<any>(null);
   let evidenceList = $state<any[]>([]);
   let connectionMap = $state<any>(null);
-  let isLoading = $state(true);
+  let isLoading = $state<boolean>(true);
   let error = $state<string | null>(null);
   let analytics = $state<any>( );
   // Event handlers
-  let connectionMapGenerated = $state(false);
+  let connectionMapGenerated = $state<boolean>(false);
   let lastContextualPrompts: string[] = [];
   /**
    * Initialize the page
@@ -30,17 +32,17 @@
   $effect(() => {
     if (!caseId) {
       error = 'Case ID is required';
-      isLoading = $state(false);
+      isLoading = false;
       return;
     }
     loadCaseData();
     loadCaseEvidence();
-    isLoading = $state(false);
+    isLoading = false;
   });
   /**
    * Load case information
    */
-  async function loadCaseData() {
+  async function loadCaseData(): Promise<any> {
     try {
       // removed unused response assignment
       if ((response as { ok?: any; json?: any }).ok) {
@@ -57,7 +59,7 @@
   /**
    * Load evidence for the case
    */
-  async function loadCaseEvidence() {
+  async function loadCaseEvidence(): Promise<any> {
     try {
       // removed unused response assignment
       if ((response as { ok?: any; json?: any }).ok) {
@@ -122,11 +124,11 @@
   /**
    * Refresh case data
    */
-  async function refreshCase() {
+  async function refreshCase(): Promise<any> {
     isLoading = true;
     await loadCaseData();
     await loadCaseEvidence();
-    isLoading = $state(false);
+    isLoading = false;
   }
 </script>
 <svelte:head>

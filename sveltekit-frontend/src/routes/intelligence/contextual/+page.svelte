@@ -10,6 +10,7 @@
   - Advanced AI reasoning chains with vector intelligence
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { page } from '$app/state';
@@ -142,12 +143,12 @@
     }
   ]);
   let optimisticInsights = $state<Item<ContextualInsight>(null)[]>([]);
-  let isDialogOpen = $state(false);
+  let isDialogOpen = $state<boolean>(false);
   let selectedInsight = $state<ContextualInsight | null>(null);
-  let isAnalyzing = $state(false);
-  let analysisQuery = $state('');
-  let systemStatus = $state('operational');
-  let realTimeUpdates = $state(true);
+  let isAnalyzing = $state<boolean>(false);
+  let analysisQuery = $state<string>('');
+  let systemStatus = $state<string>('operational');
+  let realTimeUpdates = $state<boolean>(true);
   // Derived values
   let averageConfidence = $derived(
     intelligenceMetrics.reduce((sum, metric) => sum + metric.confidence, 0) / intelligenceMetrics.length
@@ -205,7 +206,7 @@
     const hours = Math.floor(minutes / 60);
     return `${hours}h ago`;
   }
-  async function analyzeContextualQuery() {
+  async function analyzeContextualQuery(): Promise<any> {
     if (!analysisQuery.trim()) return;
     isAnalyzing = true;
     // Add optimistic insight
@@ -253,7 +254,7 @@
     isDialogOpen = true;
   }
   function closeInsightDetails() {
-    isDialogOpen = $state(false);
+    isDialogOpen = false;
     selectedInsight = null;
   }
 </script>

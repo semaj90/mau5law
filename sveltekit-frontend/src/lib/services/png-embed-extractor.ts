@@ -375,7 +375,7 @@ export class PNGEmbedExtractor {
       writer.write(new TextEncoder().encode(data));
       writer.close();
       const chunks: Uint8Array[] = [];
-      let done = $state(false);
+      let done = $state<boolean>(false);
       while (!done) {
         const { value, done: readerDone } = await reader.read();
         done = readerDone;
@@ -406,7 +406,7 @@ export class PNGEmbedExtractor {
       writer.write(ab as BufferSource);
       writer.close();
       const chunks: Uint8Array[] = [];
-      let done = $state(false);
+      let done = $state<boolean>(false);
       while (!done) {
         const { value, done: readerDone } = await reader.read();
         done = readerDone;

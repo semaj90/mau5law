@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Redis Configuration Service for Legal AI Platform
  * Centralized configuration management for all Redis connections

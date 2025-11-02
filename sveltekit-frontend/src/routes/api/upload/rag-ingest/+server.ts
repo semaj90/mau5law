@@ -135,7 +135,7 @@ async function generateEmbeddings(text: string, fileName: string): Promise<numbe
   }
 }
 
-async function storeInVectorDB(data: any) {
+async function storeInVectorDB(data: any): Promise<any> {
   try {
     // If we have embeddings, store them directly using pg client
     if (data.embeddings && data.embeddings.length > 0) {

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { json } from '@sveltejs/kit'
 import { db } from '$lib/server/db'
 import { users, userProfiles } from '$lib/server/db/schema-postgres'

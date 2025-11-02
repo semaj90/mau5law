@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import { z } from 'zod';
 import type { RequestHandler } from './$types.js';

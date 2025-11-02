@@ -2,16 +2,17 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Component props
   let { ...props }: any = $props();
 </script>
   import { onMount } from 'svelte';
-  let demoResults = $state(null);
-  let loading = $state(false);
-  let selectedOperation = $state('benchmark');
-  let systemCapabilities = $state(null);
-  let errorMessage = $state('');
+  let demoResults = $state<any>(null);
+  let loading = $state<boolean>(false);
+  let selectedOperation = $state<string>('benchmark');
+  let systemCapabilities = $state<any>(null);
+  let errorMessage = $state<string>('');
   // Demo configuration
   let config = $state({
     batchSize: 64,
@@ -30,7 +31,7 @@ https://svelte.dev/e/expected_token -->
 await loadSystemCapabilities();
     })();
   });
-  async function loadSystemCapabilities() {
+  async function loadSystemCapabilities(): Promise<any> {
     try {
       // removed unused response assignment
       const data = await (response as { json?: any }).json();
@@ -43,7 +44,7 @@ await loadSystemCapabilities();
       errorMessage = `System check failed: ${error.message}`;
     }
   }
-  async function runDemo() {
+  async function runDemo(): Promise<any> {
     if (loading) return;
     loading = true;
     errorMessage = '';

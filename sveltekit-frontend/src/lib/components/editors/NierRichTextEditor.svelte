@@ -21,10 +21,10 @@ https://svelte.dev/e/attribute_duplicate -->
   	} from 'lucide-svelte';
   	// Svelte 5 state management
   	let editorContainer: HTMLDivElement;
-  	let editorContent = $state('');
-  	let isEditing = $state(false);
-  	let wordCount = $state(0);
-  	let characterCount = $state(0);
+  	let editorContent = $state<string>('');
+  	let isEditing = $state<boolean>(false);
+  	let wordCount = $state<number>(0);
+  	let characterCount = $state<number>(0);
   	let editorState = $state({
   		isBold: false
   		isItalic: false
@@ -115,7 +115,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		isEditing = true;
   	}
   	function handleBlur() {
-  		isEditing = $state(false);
+  		isEditing = false;
   		if (autosave) {
   			saveContent();
   		}
@@ -181,7 +181,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		editorState.isItalic = document.queryCommandState('italic');
   		editorState.isUnderlined = document.queryCommandState('underline');
   	}
-  	async function saveContent() {
+  	async function saveContent(): Promise<void> {
   		console.log('💾 Saving investigation notes...');
   		try {
   			const response = await fetch('/api/legal/investigation-notes', {

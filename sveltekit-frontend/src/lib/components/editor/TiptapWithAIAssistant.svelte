@@ -1,6 +1,7 @@
 <!-- Tiptap Editor with AI Assistant Integration -->
 <!-- Real-time suggestions, auto-save, and CrewAI inline recommendations -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { onDestroy } from 'svelte';
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';
@@ -46,12 +47,12 @@
   // Component state
   let editor = $state<Editor | null >(null);
   let editorElement: HTMLElement;
-  let showSuggestions = $state(false);
-  let currentSuggestions = $state([]);
-  let userTyping = $state(false);
+  let showSuggestions = $state<boolean>(false);
+  let currentSuggestions = $state<any[]>([]);
+  let userTyping = $state<boolean>(false);
   let lastSaveTime = $state<Date | null>(null);
-  let wordCount = $state(0);
-  let aiAssistantVisible = $state(false);
+  let wordCount = $state<number>(0);
+  let aiAssistantVisible = $state<boolean>(false);
   let currentRecommendation = $state<string | null>(null);
   let recommendationPosition = $state({ x: 0, y: 0 });
   // Auto-save timer
@@ -82,7 +83,7 @@
   // ============================================================================
   // EDITOR INITIALIZATION
   // ============================================================================
-  async function initializeEditor() {
+  async function initializeEditor(): Promise<void> {
     editor = new Editor({
       element: editorElement,
       extensions: [
@@ -133,7 +134,7 @@
     send({ type: 'USER_ACTIVITY', activity: 'typing' });
     // Reset typing flag after short delay
     setTimeout(() => {
-      userTyping = $state(false);
+      userTyping = false;
     }, 1000);
     // Handle special key combinations
     if (event.ctrlKey || event.metaKey) {
@@ -202,7 +203,7 @@
       handleAutoSave();
     }, 3000); // 3 second delay
   }
-  async function handleAutoSave() {
+  async function handleAutoSave(): Promise<void> {
     if (!editor) return;
     const content = editor.getHTML();
     try {
@@ -215,7 +216,7 @@
       console.error('Auto-save failed:', error);
     }
   }
-  async function handleManualSave() {
+  async function handleManualSave(): Promise<void> {
     if (!editor) return;
     const content = editor.getHTML();
     await saveDocument(content);
@@ -242,7 +243,7 @@
       send({ type: 'FOCUS_CHANGED', schema: 'document_edit' });
     }
   }
-  async function generateInlineSuggestions(content: string) {
+  async function generateInlineSuggestions(content: string): Promise<any> {
     if (!enableInlineSuggestions || content.length < 100) return;
     // This would integrate with your AI suggestion system
     try {
@@ -255,7 +256,7 @@
       console.error('Failed to generate suggestions:', error);
     }
   }
-  async function startCrewAIReview() {
+  async function startCrewAIReview(): Promise<any> {
     if (!editor || !documentId) return;
     const content = editor.getText();
     try {
@@ -321,8 +322,8 @@
     showNotification('Suggestion rejected', 'info');
   }
   function hideAllSuggestions() {
-    showSuggestions = $state(false);
-    aiAssistantVisible = $state(false);
+    showSuggestions = false;
+    aiAssistantVisible = false;
     currentRecommendation = null;
   }
   function showInlineSuggestions() {

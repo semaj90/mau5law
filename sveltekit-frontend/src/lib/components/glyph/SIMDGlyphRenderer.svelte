@@ -23,8 +23,8 @@ https://svelte.dev/e/expected_token -->
     showStats = false
   }: Props = $props();
   let canvas: HTMLCanvasElement;
-  let isRendering = $state(false);
-  let renderError = $state('');
+  let isRendering = $state<boolean>(false);
+  let renderError = $state<string>('');
   let renderStats = $state({
     renderTime: 0,
     frameRate: 0,
@@ -41,7 +41,7 @@ https://svelte.dev/e/expected_token -->
   onDestroy(() => {
     stopRendering();
   });
-  async function startRendering() {
+  async function startRendering(): Promise<any> {
     if (isRendering) return;
     try {
       isRendering = true;
@@ -62,16 +62,16 @@ https://svelte.dev/e/expected_token -->
       }
     } catch (error) {
       renderError = `Rendering failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
-      isRendering = $state(false);
+      isRendering = false;
     }
   }
   function stopRendering() {
     if (animationFrameId) {
       cancelAnimationFrame(animationFrameId);
     }
-    isRendering = $state(false);
+    isRendering = false;
   }
-  async function initWebGPU() {
+  async function initWebGPU(): Promise<void> {
     if (!navigator.gpu) {
       throw new Error('WebGPU not supported');
     }
@@ -108,7 +108,7 @@ https://svelte.dev/e/expected_token -->
     );
     console.log('✅ WebGPU initialized with SIMD texture data');
   }
-  async function initWebGL() {
+  async function initWebGL(): Promise<void> {
     if (!glyphResult.simd_shader_data) {
       throw new Error('No SIMD shader data available');
     }
@@ -158,7 +158,7 @@ https://svelte.dev/e/expected_token -->
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     console.log('✅ WebGL initialized with SIMD texture data');
   }
-  async function initCanvas2D() {
+  async function initCanvas2D(): Promise<void> {
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       throw new Error('Canvas 2D not supported');

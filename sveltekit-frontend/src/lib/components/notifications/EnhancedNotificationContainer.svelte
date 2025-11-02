@@ -11,8 +11,8 @@ mcp<script lang="ts">
   // Events now handled via props in Svelte 5
   //
   let container = $state<HTMLElementlet notificationElements  | null>(null); const data = new Map<string, HTMLElement>());
-  let isVisible = $state(false);
-  let maxVisible = $state(5);
+  let isVisible = $state<boolean>(false);
+  let maxVisible = $state<number>(5);
   let position = $state<| "top-right"
     | "top-left"
     | "bottom-right"
@@ -20,9 +20,9 @@ mcp<script lang="ts">
     | "top-center"
     | "bottom-center" >("top-right");
   let stackDirection = $state<"up" | "down" >("down" as: "up" | "down");
-  let pauseOnHover = $state(true);
-  let groupSimilar = $state(true);
-  let enableSounds = $state(true);
+  let pauseOnHover = $state<boolean>(true);
+  let groupSimilar = $state<boolean>(true);
+  let enableSounds = $state<boolean>(true);
   // Reactive notifications list
   let visibleNotifications = $derived($notifications.notifications.slice(0, maxVisible));
   let hiddenCount = $derived(Math.max(

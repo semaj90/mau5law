@@ -164,7 +164,7 @@ export class UnifiedGPUCacheOrchestrator {
         useCache: options.useCache,
       })) ?? { results: [], metrics: {} };
 
-      let gpuAccelerated = $state(false);
+      let gpuAccelerated = $state<boolean>(false);
       if (options.enableGPUAcceleration && webASMGPUBridge.getCapabilities?.()?.webgpu) {
         try {
           const reranked = await this.gpuRerank(query, searchResult.results || []);

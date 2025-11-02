@@ -26,8 +26,8 @@ Use this template for all essential routes
 		className = '',
 		children
 	}: Props = $props();
-	let isLoading = $state(false);
-	let isClient = $state(false);
+	let isLoading = $state<boolean>(false);
+	let isClient = $state<boolean>(false);
 	$effect(() => {
 		isClient = true;
 	});

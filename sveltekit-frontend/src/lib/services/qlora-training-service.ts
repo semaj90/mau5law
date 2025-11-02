@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * QLorA Training Service - Enhanced with GPU-Aware Cache
  * Low-Rank Adaptation training integration for legal document fine-tuning

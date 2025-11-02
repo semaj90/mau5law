@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     };
   // --- rune state --- (ensure these runes are at top-level)
-  let errorMessage = $state('');
+  let errorMessage = $state<string>('');
   $effect(() => {
     // optional init
   });
@@ -97,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
     });
   }
   // Save summary to DB using the comprehensive summaries API
-  async function saveSummary() {
+  async function saveSummary(): Promise<void> {
     if (!aiSummary() || !caseId || !user?.id) return;
     try {
       const response = await fetch('/api/summaries', {

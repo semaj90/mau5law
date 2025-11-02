@@ -10,7 +10,7 @@ https://svelte.dev/e/expected_token -->
   let webgpuDevice: GPUDevice | null = null;
   let diffusionPipeline: GPUComputePipeline | null = null;
   let embeddingTexture: any = null;
-  let isWebGPUSupported = $state(false);
+  let isWebGPUSupported = $state<boolean>(false);
   let currentEffect = 'nomic-diffusion';
   let intensity = 0.7;
   let nomicEmbeddings: Array<{ id: number; vector: Float32Array; cluster: number; similarity: number }> = [];
@@ -43,7 +43,7 @@ https://svelte.dev/e/expected_token -->
     })();
   });
 
-  async function detectCapabilities() {
+  async function detectCapabilities(): Promise<any> {
     // Detect device capabilities for automatic LOD
     const memory = deviceCapabilities.memory;
     const cores = deviceCapabilities.cores;
@@ -59,7 +59,7 @@ https://svelte.dev/e/expected_token -->
     console.log(`🎯 Auto-detected LOD: ${lodLevel} (${memory}GB RAM, ${cores} cores)`);
   }
 
-  async function initWebGPU() {
+  async function initWebGPU(): Promise<void> {
     try {
       if (!(navigator as any).gpu) {
         console.log('WebGPU not supported');
@@ -84,11 +84,11 @@ https://svelte.dev/e/expected_token -->
       await createDiffusionPipeline();
     } catch (error) {
       console.warn('WebGPU initialization failed:', error);
-      isWebGPUSupported = $state(false);
+      isWebGPUSupported = false;
     }
   }
 
-  async function createDiffusionPipeline() {
+  async function createDiffusionPipeline(): Promise<any> {
     if (!webgpuDevice) return;
     // Create compute shader for nomic-embed-text style diffusion (WGSL)
     const shaderCode = `
@@ -149,7 +149,7 @@ https://svelte.dev/e/expected_token -->
     console.log(`📊 Generated ${numEmbeddings} nomic-style embeddings`);
   }
 
-  async function runWebGPUDiffusion() {
+  async function runWebGPUDiffusion(): Promise<any> {
     if (!diffusionPipeline || !webgpuDevice) return;
     // Create buffer for embeddings
     const embeddingData = new Float32Array(nomicEmbeddings.length * 384);

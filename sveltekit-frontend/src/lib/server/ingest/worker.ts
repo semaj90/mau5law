@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * Worker Thread Script for CPU-Intensive Operations
  *
@@ -89,7 +90,7 @@ async function handleOCR(payload: {
   buffer: number[]; // Buffer as array
   contentType?: string;
   options?: any;
-}) {
+}): Promise<any> {
   const buffer = Buffer.from(payload.buffer);
   if (payload.contentType === 'application/pdf') {
     return await extractTextFromPDF(buffer);
@@ -100,7 +101,7 @@ async function handleOCR(payload: {
 async function handleAudioExtraction(payload: {
   buffer: number[];
   filename: string;
-}) {
+}): Promise<any> {
   const buffer = Buffer.from(payload.buffer);
   return await extractAudioFromBuffer(buffer, payload.filename);
 }
@@ -108,20 +109,20 @@ async function handleVideoFrames(payload: {
   buffer: number[];
   filename: string;
   frameCount?: number;
-}) {
+}): Promise<any> {
   const buffer = Buffer.from(payload.buffer);
   return await sampleFramesFromVideo(buffer, payload.filename, payload.frameCount);
 }
 async function handleJsonParsing(payload: {
   jsonText: string;
-}) {
+}): Promise<any> {
   return await parseJsonWithSimd(payload.jsonText);
 }
 async function handleEmbedding(payload: {
   content: string | number[]; // string for text, number[] for Buffer
   contentType: string;
   options?: any;
-}) {
+}): Promise<any> {
   if (typeof payload.content === 'string') {
     // Text content
     return await embedText(payload.content);
@@ -133,7 +134,7 @@ async function handleEmbedding(payload: {
 }
 async function handleImageProcessing(payload: {
   buffer: number[];
-  operations: Array<any>) {
+  operations: Array<any>): Promise<any> {
   const buffer = Buffer.from(payload.buffer);
   // Dynamic import Sharp
   const sharp = await import('sharp');

@@ -3,7 +3,7 @@
   let query = '';
   let results: any[] = [];
 
-  async function searchDocs() {
+  async function searchDocs(): Promise<any> {
     const resp = await fetch('/api/rag/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

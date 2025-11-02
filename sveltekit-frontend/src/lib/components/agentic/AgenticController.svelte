@@ -32,14 +32,14 @@
   let status: AgenticStatus | null = null;
   let recentErrors: ErrorEmbedding[] = [];
   let fixSuggestions: FixSuggestion[] = [];
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let error = '';
   // Form states
   let errorQuery = '';
   let selectedFile: File | null = null;
-  let dragActive = $state(false);
+  let dragActive = $state<boolean>(false);
   // Fetch system status
-  async function fetchStatus() {
+  async function fetchStatus(): Promise<Response> {
     loading = true;
     error = '';
     try {
@@ -56,7 +56,7 @@
     }
   }
   // Fetch recent errors
-  async function fetchRecentErrors() {
+  async function fetchRecentErrors(): Promise<Response> {
     try {
       const response = await fetch('/api/v1/agentic?action=recent-errors');
       if (!response.ok) {
@@ -70,7 +70,7 @@
     }
   }
   // Query for fix suggestions
-  async function queryFixSuggestions() {
+  async function queryFixSuggestions(): Promise<any> {
     if (!errorQuery.trim()) return;
     loading = true;
     fixSuggestions = [];
@@ -89,7 +89,7 @@
     }
   }
   // Upload screenshot
-  async function uploadScreenshot() {
+  async function uploadScreenshot(): Promise<any> {
     if (!selectedFile) return;
     loading = true;
     error = '';
@@ -119,7 +119,7 @@
   // File drop handling
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       const file = files[0];
@@ -135,7 +135,7 @@
     dragActive = true;
   }
   function handleDragLeave() {
-    dragActive = $state(false);
+    dragActive = false;
   }
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;

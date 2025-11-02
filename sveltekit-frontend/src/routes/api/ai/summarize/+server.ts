@@ -259,7 +259,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       }
     }
     const startTime = Date.now();
-    let fallbackUsed = $state(false);
+    let fallbackUsed = $state<boolean>(false);
     let modelUsed = model;
     const body = {
       model,

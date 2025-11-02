@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Grid, Layout, Maximize2, Minimize2, Save, RotateCcw } from 'lucide-svelte';
   import type { EvidenceItem } from './types';
@@ -43,8 +44,8 @@
     ...restProp
   }: Props = $props();
   let boardElement: HTMLDivElement;
-  let isFullscreen = $state(false);
-  let isDragging = $state(false);
+  let isFullscreen = $state<boolean>(false);
+  let isDragging = $state<boolean>(false);
   let draggedItem: BoardItem | null = $state(null);
   let dragOffset = $state({ x: 0, y: 0 });
   let connections = $state<any[]>([]) => []);
@@ -107,7 +108,7 @@
   }
   // Handle drag end
   function handleMouseUp() {
-    isDragging = $state(false);
+    isDragging = false;
     draggedItem = null;
   }
   // Toggle fullscreen
@@ -117,7 +118,7 @@
       isFullscreen = true;
     } else {
       document.exitFullscreen();
-      isFullscreen = $state(false);
+      isFullscreen = false;
     }
   }
   // Auto-arrange items

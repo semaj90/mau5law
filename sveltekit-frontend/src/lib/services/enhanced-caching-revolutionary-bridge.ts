@@ -434,15 +434,15 @@ export const enhancedCachingRevolutionaryBridge = new EnhancedCachingRevolutiona
 /**
  * Convenience functions for common operations
  */
-export async function getUnifiedEmbedding(text: string, options?: HybridCacheQuery['options']) {
+export async function getUnifiedEmbedding(text: string, options?: HybridCacheQuery['options']): Promise<any> {
   return await enhancedCachingRevolutionaryBridge.getCachedEmbeddingUnified(text, options);
 }
-export async function getUnifiedQueryResults(query: string, options?: HybridCacheQuery['options']) {
+export async function getUnifiedQueryResults(query: string, options?: HybridCacheQuery['options']): Promise<any> {
   return await enhancedCachingRevolutionaryBridge.getCachedQueryResultsUnified(query, options);
 }
-export async function processUnifiedLegalQuery(query: string, options?: HybridCacheQuery['options']) {
+export async function processUnifiedLegalQuery(query: string, options?: HybridCacheQuery['options']): Promise<any> {
   return await enhancedCachingRevolutionaryBridge.processLegalQueryUnified(query, options);
 }
-export async function getBridgeMetrics() {
+export async function getBridgeMetrics(): Promise<any> {
   return enhancedCachingRevolutionaryBridge.getPerformanceMetrics();
 }

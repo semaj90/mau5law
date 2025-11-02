@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import { registerSchema } from '$lib/schemas/auth';

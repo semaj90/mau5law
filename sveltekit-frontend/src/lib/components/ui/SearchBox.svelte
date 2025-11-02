@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // onMount was unused — removed
   // Use a namespace import to safely access public env vars without TS named-export errors
   import * as env from '$env/static/public';
@@ -14,17 +15,17 @@
     onResults = () => {},
     className = ""
   }: Props = $props();
-  let query = $state("");
+  let query = $state<string>("");
   let results = $state<any[]>([]);
-  let isLoading = $state(false);
-  let isExpanded = $state(false);
+  let isLoading = $state<boolean>(false);
+  let isExpanded = $state<boolean>(false);
   let searchInput: HTMLInputElement | null = null;
   // prefer PUBLIC env, fallback to empty so relative paths work in dev/prod
   const API_BASE = (env.PUBLIC_API_BASE ?? "").replace(/\/$/, "");
   const performSearch = async () => {
     if (!query?.trim() || query.length < 2) {
       results = [];
-      isExpanded = $state(false);
+      isExpanded = false;
       return;
     }
     isLoading = true;
@@ -56,27 +57,27 @@
     } else if (event.key === 'Escape') {
       query = "";
       results = [];
-      isExpanded = $state(false);
+      isExpanded = false;
       searchInput?.blur();
     }
   };
   const selectResult = (result: any) => {
     query = result.content ? result.content.substring(0, 100) + "..." : (result.title || "");
     results = [];
-    isExpanded = $state(false);
+    isExpanded = false;
     onResults([result]);
   };
   const clearSearch = () => {
     query = "";
     results = [];
-    isExpanded = $state(false);
+    isExpanded = false;
     searchInput?.focus();
   };
   $effect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Element | null;
       if (!target || !target.closest('.search-container')) {
-        isExpanded = $state(false);
+        isExpanded = false;
       }
     };
     document.addEventListener('click', handleClickOutside);

@@ -1,19 +1,20 @@
 <!-- Simple Upload Test Page -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // $state runtime rune is provided globally
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
   let uploadResults = $state<unknown[]>([]);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults = $state<unknown[]>([]);
-  let isSearching = $state(false);
+  let isSearching = $state<boolean>(false);
 
   function handleUploadComplete(result: any) {
     console.log('Upload completed:', result);
     uploadResults = [...uploadResults, result];
   }
 
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     isSearching = true;
     try {

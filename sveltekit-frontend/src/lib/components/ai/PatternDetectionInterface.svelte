@@ -10,12 +10,12 @@
   // Pattern detection state
   let patterns = $state<DetectedPattern[]>([]);
   let selectedPattern = $state<DetectedPattern | null>(null);
-  let isAnalyzing = $state(false);
-  let showPatternDetails = $state(false);
+  let isAnalyzing = $state<boolean>(false);
+  let showPatternDetails = $state<boolean>(false);
   let analysisResults = $state<AnalysisResult | null>(null);
   // Filters and controls
   let patternTypeFilter = $state<'all' | 'temporal' | 'behavioral' | 'financial' | 'communication'>('all');
-  let confidenceThreshold = $state(70);
+  let confidenceThreshold = $state<number>(70);
   let timeRange = $state<'1d' | '7d' | '30d' | '90d' | 'all'>('30d');
   let selectedDataSources = $state<string[]>(['evidence', 'communications', 'financial']);
   interface DetectedPattern {
@@ -61,7 +61,7 @@
   $effect(() => {
     loadExistingPatterns();
   });
-  async function loadExistingPatterns() {
+  async function loadExistingPatterns(): Promise<any> {
     try {
       const response = await fetch('/api/ai/pattern-detection', {
         method: 'GET',
@@ -77,7 +77,7 @@
       console.error('Error loading patterns:', error);
     }
   }
-  async function runPatternAnalysis() {
+  async function runPatternAnalysis(): Promise<any> {
     isAnalyzing = true;
     try {
       const analysisRequest = {

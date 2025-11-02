@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -10,28 +12,28 @@
     type MCPToolRequest
   } from '$lib/utils/mcp-helpers';
   // Component state
-  let selectedTool = $state('analyze-stack');
-  let component = $state('sveltekit');
-  let context = $state('legal-ai');
-  let area = $state('performance');
-  let feature = $state('');
-  let requirements = $state('');
-  let library = $state('');
-  let topic = $state('');
+  let selectedTool = $state<string>('analyze-stack');
+  let component = $state<string>('sveltekit');
+  let context = $state<string>('legal-ai');
+  let area = $state<string>('performance');
+  let feature = $state<string>('');
+  let requirements = $state<string>('');
+  let library = $state<string>('');
+  let topic = $state<string>('');
   // RAG-specific variables
-  let ragQuery = $state('');
-  let maxResults = $state(10);
+  let ragQuery = $state<string>('');
+  let maxResults = $state<number>(10);
   let confidenceThreshold = $state(0.7);
-  let ragCaseId = $state('');
-  let documentTypes = $state('');
-  let filePath = $state('');
-  let documentType = $state('general');
-  let documentTitle = $state('');
-  let documentId = $state('');
-  let integrationType = $state('api-integration');
-  let result = $state('');
-  let loading = $state(false);
-  let error = $state('');
+  let ragCaseId = $state<string>('');
+  let documentTypes = $state<string>('');
+  let filePath = $state<string>('');
+  let documentType = $state<string>('general');
+  let documentTitle = $state<string>('');
+  let documentId = $state<string>('');
+  let integrationType = $state<string>('api-integration');
+  let result = $state<string>('');
+  let loading = $state<boolean>(false);
+  let error = $state<string>('');
   // Available options
   const tools = [
     { value: 'analyze-stack', label: 'Analyze Stack Component' },
@@ -112,7 +114,7 @@
     return request;
   }
   // Execute MCP tool (simulated)
-  async function executeTool() {
+  async function executeTool(): Promise<any> {
     loading = true;
     error = '';
     result = '';

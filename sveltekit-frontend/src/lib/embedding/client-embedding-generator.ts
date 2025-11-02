@@ -34,7 +34,7 @@ export class ClientEmbeddingGenerator {
   private postWorkerRequest(match: (msg: any) => boolean, message: any, timeoutMs = 60000): Promise<any> {
     if (!this.worker) return Promise.reject(new Error('Worker not initialized'));
     return new Promise((resolve, reject) => {
-      let settled = $state(false);
+      let settled = $state<boolean>(false);
       // capture worker locally to avoid TS nullability complaints
       const worker = this.worker as Worker;
 

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * RTX 3060 Ti System Integration Status Component
  * Real-time monitoring of the complete Legal AI → RTX → CUDA pipeline

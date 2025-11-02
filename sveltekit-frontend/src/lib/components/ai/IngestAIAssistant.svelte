@@ -2,6 +2,8 @@
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   /**
    * Enhanced AI-Powered Document Ingest Assistant
@@ -34,7 +36,7 @@ https://svelte.dev/e/attribute_duplicate -->
   let documentContent = '';
   let caseId = '';
   let selectedDocumentType = 'legal';
-  let batchMode = $state(false);
+  let batchMode = $state<boolean>(false);
   let batchDocuments = writable([]);
   // Processing state
   let ingestResults = writable([] as any[]);
@@ -56,7 +58,7 @@ https://svelte.dev/e/attribute_duplicate -->
     { value: 'precedent', label: 'Legal Precedent', icon: '📚' },
   ];
   // Enhanced ingest function with AI integration
-  async function ingestDocument() {
+  async function ingestDocument(): Promise<any> {
     if (!get(canIngest)) return;
     processingStatus.set('processing');
     currentProgress.set(10);
@@ -107,7 +109,7 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   }
   // AI summary generation using your existing chat patterns
-  async function generateAISummary(documentId: string, content: string) {
+  async function generateAISummary(documentId: string, content: string): Promise<any> {
     try {
       const prompt = `Please provide a concise legal analysis summary of this document:\n\n${content.substring(0, 1000)}...`;
       // Use your existing AI agent for summary
@@ -121,7 +123,7 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   }
   // Batch processing following your batch patterns
-  async function processBatch() {
+  async function processBatch(): Promise<any> {
     let documents: any[] = [];
     batchDocuments.subscribe(v => (documents = v))();
     if (documents.length === 0) return;
@@ -194,7 +196,7 @@ https://svelte.dev/e/attribute_duplicate -->
   <div class="flex items-center justify-between">
     <div class="flex items-center space-x-3">
       <div
-        class="w-3 h-3 rounded-full {$systemHealth === 'healthy'
+        class="w-3" h-3 rounded-full {$systemHealth === 'healthy'
           ? 'bg-green-500'
           : $systemHealth === 'degraded'
             ? 'bg-yellow-500'
@@ -202,7 +204,7 @@ https://svelte.dev/e/attribute_duplicate -->
       ></div>
       <h1 class="text-2xl font-bold">AI-Powered Document Ingest</h1>
       <span
-        class="px-2 py-1 rounded text-xs font-medium {$systemHealth === 'healthy'
+        class="px-2" py-1 rounded text-xs font-medium {$systemHealth === 'healthy'
           ? 'bg-green-200 text-green-800'
           : 'bg-yellow-200 text-yellow-800'}"
       >
@@ -275,7 +277,7 @@ https://svelte.dev/e/attribute_duplicate -->
           <div class="grid grid-cols-2 gap-2">
             {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
               <button
-                class="nes-btn bits-btn justify-start is-small {selectedDocumentType === type.value
+                class="nes-btn" bits-btn justify-start is-small {selectedDocumentType === type.value
                   ? 'is-primary'
                   : ''}"
                 onclick={() => (selectedDocumentType = type.value)}
@@ -545,7 +547,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {#each Array.isArray($currentConversation.slice(-2)) ? $currentConversation.slice(-2) : [] as message}
             <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
               <div
-                class="max-w-[80%] p-3 rounded-lg {message.role === 'user'
+                class="max-w-[80%]" p-3 rounded-lg {message.role === 'user'
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-muted'}"
               >

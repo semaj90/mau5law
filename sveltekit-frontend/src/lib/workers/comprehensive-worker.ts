@@ -8,7 +8,7 @@ import { consumeFromQueue } from '$lib/server/rabbitmq';
 import { ingestionService } from '$lib/server/workflows/ingestion-service';
 // Use postgres-js client from db-shim (drizzle adapter expects postgres-js client)
 const db = drizzle(pgClient as any);
-let shuttingDown = $state(false);
+let shuttingDown = $state<boolean>(false);
 const workerId = `worker_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 interface ChunkJob {
   jobId: string;
@@ -36,7 +36,7 @@ function formatError(err: any): string {
     return String(err);
   }
 }
-async function processChunkJob(job: ChunkJob) {
+async function processChunkJob(job: ChunkJob): Promise<any> {
   console.log(`📥 Processing chunk job: ${job.jobId}:${job.chunkIndex}`);
   const startTime = Date.now();
   const text = job.chunkText || job.text;
@@ -96,7 +96,7 @@ async function processChunkJob(job: ChunkJob) {
     throw error;
   }
 }
-async function reportProgress(jobId: string, chunkIndex: number, totalChunks: number) {
+async function reportProgress(jobId: string, chunkIndex: number, totalChunks: number): Promise<any> {
   try {
     // Calculate progress
     const progress = Math.round(((chunkIndex + 1) / totalChunks) * 100);
@@ -120,7 +120,7 @@ async function reportProgress(jobId: string, chunkIndex: number, totalChunks: nu
     console.error(`❌ Error reporting progress for ${jobId}:`, error);
   }
 }
-async function reportError(jobId: string, chunkIndex: number, error: any) {
+async function reportError(jobId: string, chunkIndex: number, error: any): Promise<any> {
   try {
     await cache.set(
       `job:${jobId}:error`,
@@ -136,7 +136,7 @@ async function reportError(jobId: string, chunkIndex: number, error: any) {
     console.error(`❌ Error reporting error for ${jobId}:`, formatError(cacheError));
   }
 }
-async function runRabbitConsumer() {
+async function runRabbitConsumer(): Promise<any> {
   try {
     // Initialize ingestion service
     await ingestionService.initialize();
@@ -201,7 +201,7 @@ async function runRabbitConsumer() {
     return false;
   }
 }
-async function runRedisLoop() {
+async function runRedisLoop(): Promise<any> {
   try {
     // Initialize ingestion service
     await ingestionService.initialize();
@@ -249,7 +249,7 @@ async function runRedisLoop() {
     console.error('❌ Error in Redis loop:', error);
   }
 }
-async function runComprehensiveWorker() {
+async function runComprehensiveWorker(): Promise<any> {
   console.log(`🚀 Comprehensive embedding worker starting (ID: ${workerId})`);
   try {
     const rabbitOk = await runRabbitConsumer();
@@ -263,7 +263,7 @@ async function runComprehensiveWorker() {
   }
 }
 // Graceful shutdown
-async function shutdown() {
+async function shutdown(): Promise<any> {
   console.log('🛑 Comprehensive worker shutting down...');
   shuttingDown = true;
   try {

@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Drizzle ORM Enhanced Type Definitions
  * Fixes: "Untyped function calls may not accept type arguments" errors

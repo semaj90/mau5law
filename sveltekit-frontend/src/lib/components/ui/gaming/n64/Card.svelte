@@ -83,11 +83,11 @@
     onFocus,
     class: className = '';
   }: Props = $props();
-  let isHovered = $state(false);
-  let isFocused = $state(false);
-  let isPressed = $state(false);
-  let mouseX = $state(0);
-  let mouseY = $state(0);
+  let isHovered = $state<boolean>(false);
+  let isFocused = $state<boolean>(false);
+  let isPressed = $state<boolean>(false);
+  let mouseX = $state<number>(0);
+  let mouseY = $state<number>(0);
   let cardElement = $state<HTMLElement | null>(null);
   let audioContext = $state<AudioContext | null>(null);
   // Default to balanced N64 rendering options
@@ -156,7 +156,7 @@
     isPressed = true;
     await playCardSound(440, 0.3);
     setTimeout(() => {
-      isPressed = $state(false);
+      isPressed = false;
     }, 200);
     onClick?.();
     // ondispatch removed;
@@ -169,7 +169,7 @@
     // ondispatch removed;
   }
   const handleUnhover = () => {
-    isHovered = $state(false);
+    isHovered = false;
   }
   const handleFocus = () => {
     if (disabled) return;
@@ -179,7 +179,7 @@
     // ondispatch removed;
   }
   const handleBlur = () => {
-    isFocused = $state(false);
+    isFocused = false;
   }
   const handleKeyDown = (_event: KeyboardEvent) => {
     if (clickable && (event.key === 'Enter' || event.key === ' ')) {

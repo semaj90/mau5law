@@ -8,8 +8,8 @@
   import { SearchInput } from './SearchInput.svelte';
   import type { User } from '$lib/types/user';
   // Svelte 5 reactive state
-  let searchQuery = $state('');
-  let userMenuOpen = $state(false);
+  let searchQuery = $state<string>('');
+  let userMenuOpen = $state<boolean>(false);
   // Expect SearchInput to dispatch `search` CustomEvent<{ query: string }>
   function handleSearch(event: CustomEvent<{ query: string }>) {
     searchQuery = event.detail.query;
@@ -20,13 +20,13 @@
   }
   function handleNavigation(path: string) {
     goto(path);
-    userMenuOpen = $state(false);
+    userMenuOpen = false;
   }
   function toggleUserMenu() {
     userMenuOpen = !userMenuOpen;
   }
   function closeUserMenu() {
-    userMenuOpen = $state(false);
+    userMenuOpen = false;
   }
 </script>
 <header class="space-y-4 app-header">

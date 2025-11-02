@@ -11,7 +11,7 @@
     isActive = false,
     disabled = false
   : any } = $props();
-  import { Badge } from '$lib/components/ui/index.svelte'";
+  import { Badge } from '$lib/components/ui/index.svelte';
   import type { Case as CaseType } from '$lib/types';
   import { formatDistanceToNow } from "date-fns";
   import { Archive, Calendar, CheckCircle, Clock, FileText, User as UserIcon } from "lucide-svelte";

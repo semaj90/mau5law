@@ -95,7 +95,7 @@ export async function vectorSearch(
 /**
  * Get vector search statistics
  */
-export async function getVectorSearchStats() {
+export async function getVectorSearchStats(): Promise<any> {
   try {
     const statsQuery = sql`
       SELECT
@@ -129,7 +129,7 @@ export async function batchInsertEmbeddings(
     embedding: number[];
     metadata?: { [key: string]: any }
   }>
-) {
+): Promise<any> {
   try {
     const insertQuery = sql`
       INSERT INTO legal_documents (id, content, embedding, metadata, created_at, updated_at)
@@ -160,7 +160,7 @@ export async function batchInsertEmbeddings(
 /**
  * Update vector index for optimal performance
  */
-export async function optimizeVectorIndex() {
+export async function optimizeVectorIndex(): Promise<any> {
   try {
     // Create or recreate IVFFLAT index for optimal search performance
     await db.execute(sql`
@@ -188,7 +188,7 @@ export async function optimizeVectorIndex() {
 /**
  * Health check for vector search capability
  */
-export async function vectorSearchHealthCheck() {
+export async function vectorSearchHealthCheck(): Promise<any> {
   try {
     // Test basic vector operation
     const testQuery = sql`

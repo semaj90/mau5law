@@ -10,12 +10,12 @@
     title = 'NES Gaming UI Showcase',
     showStats = true
   }: NESGamingShowcaseProps = $props();
-  let showModal = $state(false);
+  let showModal = $state<boolean>(false);
   let selectedCard = $state<string | null>(null);
-  let score = $state(1337);
-  let level = $state(42);
-  let lives = $state(3);
-  let isPlaying = $state(false);
+  let score = $state<number>(1337);
+  let level = $state<number>(42);
+  let lives = $state<number>(3);
+  let isPlaying = $state<boolean>(false);
   const gameFeatures = [
     {
       id: 'legal-ai',
@@ -57,7 +57,7 @@
         score = 0;
         break;
       case 'pause':
-        isPlaying = $state(false);
+        isPlaying = false;
         break;
       case 'powerup':
         score += 100;
@@ -71,7 +71,7 @@
         score = 1337;
         level = 42;
         lives = 3;
-        isPlaying = $state(false);
+        isPlaying = false;
         break;
     }
   }

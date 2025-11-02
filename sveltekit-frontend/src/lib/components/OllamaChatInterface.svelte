@@ -2,7 +2,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { TokenUsageManager } from "$lib/components/TokenUsageManager.svelte";
-  import { Badge } from '$lib/components/ui/badge.svelte'";
+  import { Badge } from '$lib/components/ui/badge.svelte';
   // explicit default imports for UI primitives
   import { Button } from '$lib/components/ui/enhanced-bits/Button.svelte';
   import { Input } from '$lib/components/ui/enhanced-bits/Input.svelte';
@@ -54,11 +54,11 @@
     className = "",
   }: Props = $props();
   // Reactive state using Svelte 5 runes
-  let message = $state("");
-  let isLoading = $state(false);
-  let showSettings = $state(false);
+  let message = $state<string>("");
+  let isLoading = $state<boolean>(false);
+  let showSettings = $state<boolean>(false);
   let temperature = $state(0.7);
-  let streamMode = $state(false);
+  let streamMode = $state<boolean>(false);
   // Chat history and UI state
   let chatHistory = $state<ChatMessage[]>([]);
   // Make element ref reactive so updates trigger correctly in Svelte 5 runes
@@ -68,8 +68,8 @@
   let ollamaStatus = $state<"unknown" | "healthy" | "unhealthy">("unknown");
   let availableModels = $state<string[]>([]);
   // Error and success states
-  let errorMessage = $state("");
-  let successMessage = $state("");
+  let errorMessage = $state<string>("");
+  let successMessage = $state<string>("");
   // Reactive computations
   let canSend = $derived(message.trim().length > 0 && !isLoading);
   let messageCount = $derived(chatHistory.length);
@@ -87,7 +87,7 @@
     })();
   });
   // Health check function
-  async function checkOllamaHealth() {
+  async function checkOllamaHealth(): Promise<any> {
     try {
       const response = await fetch('/api/health/ollama');
       if (!response.ok) {
@@ -106,7 +106,7 @@
     }
   }
   // Send message function
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!canSend) return;
     const userMessage = message.trim();
     const messageId = Date.now().toString();
@@ -160,7 +160,7 @@
       isLoading = false;
     }
   }
-  async function handleNormalResponse(response: Response, messageId: string) {
+  async function handleNormalResponse(response: Response, messageId: string): Promise<any> {
     const data: ChatResponse = await response.json();
     chatHistory.push({
       id: messageId + "_response",
@@ -187,7 +187,7 @@
   async function handleStreamingResponse(
     response: Response,
     messageId: string
-  ) {
+  ): Promise<any> {
     const reader = response.body?.getReader();
     if (!reader) throw new Error("No response body");
     let assistantMessageIndex = chatHistory.length;
@@ -365,7 +365,7 @@
               {msg.timestamp.toLocaleTimeString()} • {msg.timestamp.toLocaleDateString()}
             </div>
             <div
-              class="inline-block max-w-[85%] {msg.type === 'user'
+              class="inline-block" max-w-[85%] {msg.type === 'user'
                 ? 'bg-blue-600 text-white rounded-2xl rounded-br-md shadow-md'
                 : 'bg-gray-50 text-gray-900 rounded-2xl rounded-bl-md border border-gray-200 shadow-sm'} px-6 py-4"
               data-testid={msg.type === 'assistant' ? 'chat-response' : 'chat-message'}

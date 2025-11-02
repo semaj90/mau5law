@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 
 // XState CrewAI Orchestration Machine
 // Manages multi-agent workflows with self-prompting and auto-save

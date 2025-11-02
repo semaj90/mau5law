@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { createMachine, assign } from 'xstate';
   // interpret is a default export in some xstate builds/environments

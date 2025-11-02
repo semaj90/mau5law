@@ -3,6 +3,8 @@
   Enhanced-Bits orchestrated components with Svelte 5 runes
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Enhanced-Bits orchestrated components — adjust imports to match module exports
   import Badge from '$lib/components/ui/enhanced-bits/Badge.svelte';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
@@ -61,8 +63,8 @@
   }
 
   // Svelte 5 runes for reactive state
-  let query = $state('');
-  let loading = $state(false);
+  let query = $state<string>('');
+  let loading = $state<boolean>(false);
   let results = $state<VectorSearchResult[]>([]);
   let searchInfo = $state<SearchResponse['query_info'] | null>(null);
   let suggestions = $state<string[]>([]);
@@ -93,7 +95,7 @@
   ];
 
   // Perform vector search
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!query.trim()) return;
     loading = true;
     error = null;

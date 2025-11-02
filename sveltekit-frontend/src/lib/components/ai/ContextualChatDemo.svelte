@@ -8,6 +8,9 @@
   - Redis contextual caching
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import type {
     ContextualState,
@@ -22,17 +25,17 @@
     enableFunctions?: boolean;
   }
   let {
-    sessionId = $state(`session-${Date.now()}`),
-    userId = $state('demo-user'),
-    enableFunctions = $state(true)
+    sessionId = `session-${Date.now(}`),
+    userId = 'demo-user',
+    enableFunctions = true
   }: Props = $props();
   // State
-  let message = $state('');
+  let message = $state<string>('');
   let conversationHistory = $state<ConversationTurn[]>([]);
   let contextualState = $state<ContextualState | null>(null);
   let predictions = $state<NextStepPrediction[]>([]);
   let entities = $state<LegalEntity[]>([]);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
   let stats = $state<{
     totalTurns: number;
@@ -62,7 +65,7 @@
   /**
    * Send message to contextual chat API
    */
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!message.trim()) return;
     isLoading = true;
     error = null;
@@ -113,7 +116,7 @@
   /**
    * Fetch current contextual state
    */
-  async function fetchContextualState() {
+  async function fetchContextualState(): Promise<Response> {
     try {
       const response = await fetch(
         `/api/contextual/state?sessionId=${sessionId}&userId=${userId}`
@@ -133,7 +136,7 @@
   /**
    * Fetch next-step predictions
    */
-  async function fetchPredictions() {
+  async function fetchPredictions(): Promise<Response> {
     try {
       const response = await fetch(
         `/api/contextual/predictions?sessionId=${sessionId}&userId=${userId}`
@@ -152,7 +155,7 @@
   /**
    * Fetch session statistics
    */
-  async function fetchStats() {
+  async function fetchStats(): Promise<Response> {
     try {
       const response = await fetch(
         `/api/contextual/stats?sessionId=${sessionId}&userId=${userId}`
@@ -171,7 +174,7 @@
   /**
    * Clear conversation
    */
-  async function clearConversation() {
+  async function clearConversation(): Promise<any> {
     try {
       const response = await fetch(
         `/api/contextual/state?sessionId=${sessionId}`,

@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 interface SearchRequest {
@@ -69,7 +70,7 @@ async function performSemanticSearch(
   sort: string,
   page: number,
   limit: number
-) {
+): Promise<any> {
   const startTime = Date.now();
   // Generate embedding for the query
   const queryEmbedding = await generateQueryEmbedding(query);
@@ -153,7 +154,7 @@ async function performKeywordSearch(
   sort: string,
   page: number,
   limit: number
-) {
+): Promise<any> {
   const startTime = Date.now();
   let $sql = ''; // Initialize sql renamed to $sql to satisfy linter allowance for unused vars
   const params: (string | number)[] = [];

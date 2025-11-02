@@ -379,7 +379,7 @@ export class RabbitMQXStateConsumer {
 // Helper Functions (Placeholders - Implement with your services)
 // ============================================================================
 
-async function uploadToStorage(context: Partial<DocumentWorkflowContext>) {
+async function uploadToStorage(context: Partial<DocumentWorkflowContext>): Promise<any> {
   // TODO: Implement with your MinIO/S3 upload service
   return {
     s3Key: `documents/${context.documentId}/${context.originalName}`,
@@ -387,7 +387,7 @@ async function uploadToStorage(context: Partial<DocumentWorkflowContext>) {
   };
 }
 
-async function storeProcessingResults(context: DocumentWorkflowContext) {
+async function storeProcessingResults(context: DocumentWorkflowContext): Promise<any> {
   // TODO: Implement with your PostgreSQL storage
   console.log('💾 Storing processing results:', {
     documentId: context.documentId,

@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 // Legal Search Components
 export { default as LegalSearchCombobox } from './LegalSearchCombobox.svelte';
 // Export types for the components

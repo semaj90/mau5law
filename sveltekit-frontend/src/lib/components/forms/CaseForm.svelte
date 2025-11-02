@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { caseFormSchema } from '$lib/schemas/forms';
   import { z, type ZodTypeAny, type ZodObject } from 'zod';
   // infer a concrete TS type from the Zod schema to avoid namespace collisions
@@ -61,7 +62,7 @@
     }
   });
   // Tag management
-  let tagInput = $state('');
+  let tagInput = $state<string>('');
   function addTag() {
     if (tagInput.trim() && (!$form.tags || !$form.tags.includes(tagInput.trim()))) {
       $form.tags = [...($form.tags || []), tagInput.trim()];

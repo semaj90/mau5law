@@ -25,7 +25,7 @@ https://svelte.dev/e/js_parse_error -->
   // Fixed $state generics and initializers
   let selectedRows = $state<Set<string | number>>(new Set());
   let sortConfig = $state<{ column: string; direction: 'asc' | 'desc' } | null>(null);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let columnFilters = $state<Map<string, string>>(new Map());
   // filteredData: search across stringified row and apply column filters
   let filteredData = $derived(() => {

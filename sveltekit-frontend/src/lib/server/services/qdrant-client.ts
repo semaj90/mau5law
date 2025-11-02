@@ -72,7 +72,7 @@ async function tryCreateSdkClient(): Promise<SdkClientLike | null> {
     return null;
   }
 }
-async function httpRequest(path: string, method = 'GET', body?: any) {
+async function httpRequest(path: string, method = 'GET', body?: any): Promise<any> {
   const f = await ensureFetch();
   const base = getQdrantUrl().replace(/\/$/, '');
   const headers: Record<string, string> = { 'Content-Type': 'application/json', ...getApiKeyHeader() };
@@ -90,10 +90,10 @@ async function httpRequest(path: string, method = 'GET', body?: any) {
 async function httpGetCollections(): Promise<CollectionsListResponse> {
   return (await httpRequest('/collections')) as CollectionsListResponse;
 }
-async function httpCreateCollection(name: string, body: CreateCollectionBody) {
+async function httpCreateCollection(name: string, body: CreateCollectionBody): Promise<any> {
   return await httpRequest(`/collections/${encodeURIComponent(name)}`, 'PUT', body);
 }
-async function httpCreatePayloadIndex(collectionName: string, body: PayloadIndexBody) {
+async function httpCreatePayloadIndex(collectionName: string, body: PayloadIndexBody): Promise<any> {
   const base = getQdrantUrl().replace(/\/$/, '');
   const tries = [
     `${base}/collections/${encodeURIComponent(collectionName)}/payload/index`,
@@ -123,7 +123,7 @@ async function httpSearch(collectionName: string, body: SearchRequestBody): Prom
     body
   )) as SearchHit[];
 }
-async function httpUpsert(collectionName: string, points: Array<Record<string, unknown>>) {
+async function httpUpsert(collectionName: string, points: Array<Record<string, unknown>>): Promise<any> {
   return await httpRequest(`/collections/${encodeURIComponent(collectionName)}/points?wait=true`, 'PUT', { points });
 }
 async function httpDelete(collectionName: string, ids: (string | number)[]) {
@@ -232,7 +232,7 @@ async function waitForQdrantReady(maxRetries = 15, delayMs = 2000): Promise<bool
   console.error('❌ Qdrant did not become ready in time.');
   return false;
 }
-async function initQdrantIndexes(collectionName = process.env.QDRANT_COLLECTION || 'documents') {
+async function initQdrantIndexes(collectionName = process.env.QDRANT_COLLECTION || 'documents'): Promise<void> {
   try {
     const cols = await qdrant.getCollections();
     const exists = cols?.collections?.some((c: any) => c.name === collectionName);
@@ -259,7 +259,7 @@ async function initQdrantIndexes(collectionName = process.env.QDRANT_COLLECTION 
     return { ok: false, error: String(e) };
   }
 }
-async function bootstrapQdrant(collectionName?: string) {
+async function bootstrapQdrant(collectionName?: string): Promise<any> {
   const ready = await waitForQdrantReady();
   if (!ready) throw new Error('Qdrant startup timeout');
   return await initQdrantIndexes(collectionName || process.env.QDRANT_COLLECTION || 'documents');

@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { Upload, X, CheckCircle, AlertCircle } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/button/Button.svelte';
   interface UploadResult {
@@ -15,13 +16,13 @@
     error?: string;
   }
   let files = $state<FileList | null>(null);
-  let tags = $state('');
-  let uploading = $state(false);
-  let uploadProgress = $state(0);
-  let message = $state('');
+  let tags = $state<string>('');
+  let uploading = $state<boolean>(false);
+  let uploadProgress = $state<number>(0);
+  let message = $state<string>('');
   let messageType = $state<'success' | 'error' | 'info'>('info');
   let uploadResult = $state<UploadResult | null>(null);
-  let dragActive = $state(false);
+  let dragActive = $state<boolean>(false);
   function handleDrag(e: DragEvent) {
     e.preventDefault();
     e.stopPropagation();
@@ -30,12 +31,12 @@
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     e.stopPropagation();
-    dragActive = $state(false);
+    dragActive = false;
     if (e.dataTransfer?.files) {
       files = e.dataTransfer.files;
     }
   }
-  async function handleUpload() {
+  async function handleUpload(): Promise<any> {
     if (!files || files.length === 0) {
       message = 'Please select a file first';
       messageType = 'error';

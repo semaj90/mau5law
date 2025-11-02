@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *

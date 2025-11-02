@@ -7,10 +7,10 @@ https://svelte.dev/e/js_parse_error -->
   let simdParse = true;
   let gpuTile = true;
   let result: any = null;
-  let ocrBusy = $state(false);
-  let runBusy = $state(false);
+  let ocrBusy = $state<boolean>(false);
+  let runBusy = $state<boolean>(false);
   let webgpuSupported = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
-  async function run() {
+  async function run(): Promise<any> {
     runBusy = true;
     result = null;
     try {
@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
       runBusy = false;
     }
   }
-  async function onImageSelected(e: Event) {
+  async function onImageSelected(e: Event): Promise<any> {
     const input = e.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;

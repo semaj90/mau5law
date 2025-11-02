@@ -83,7 +83,7 @@ export function createSSRStore<T>(
   }
 ) {
   let data = $state<T | null>(initialData || null);
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let error = $state<string | null>(null);
   const load = async () => {
     loading = true;
@@ -194,9 +194,9 @@ export function validateSSRData<T>(data: any, validator: (data: any) => data is 
  */
 export function createDebouncedSearch<T>(searchFn: (query: string) => Promise<T[]>, delay: number = 300) {
   let searchTimeout: ReturnType<typeof setTimeout> | undefined;
-  let currentQuery = $state('');
+  let currentQuery = $state<string>('');
   let results = $state<T[]>([]);
-  let searching = $state(false);
+  let searching = $state<boolean>(false);
   const search = (query: string) => {
     currentQuery = query;
     if (searchTimeout) {
@@ -204,7 +204,7 @@ export function createDebouncedSearch<T>(searchFn: (query: string) => Promise<T[
     }
     if (!query.trim()) {
       results = [];
-      searching = $state(false);
+      searching = false;
       return;
     }
     searching = true;
@@ -254,7 +254,7 @@ export function withSSRErrorBoundary<T>(
  */
 export function createOptimisticStore<T>(initialData: T) {
   let data = $state<T>(initialData);
-  let pending = $state(false);
+  let pending = $state<boolean>(false);
   let error = $state<string | null>(null);
   const update = async (optimisticData: T, updateFn: () => Promise<T>) => {
     const previousData = data;

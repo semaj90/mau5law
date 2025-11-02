@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Intelligent Web Analyzer - Complete AI-Aware Pipeline
  * Full-page semantic understanding with minimal CPU/GPU usage
@@ -138,7 +139,7 @@ export class IntelligentWebAnalyzer {
    * Set up DOM mutation observer for real-time page changes
    */ private setupDOMObserver(): void {
     this.mutationObserver = new MutationObserver(mutations => {
-      let hasSignificantChanges = $state(false);
+      let hasSignificantChanges = $state<boolean>(false);
       mutations.forEach(mutation => {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
           hasSignificantChanges = true;

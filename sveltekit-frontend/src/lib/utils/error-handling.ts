@@ -66,8 +66,8 @@ export function safeJsonParse<T = unknown>(json: string, fallback?: T): { data?:
 }
 // Error boundary hook for Svelte 5
 export function createErrorBoundary() {
-  let errorMessage = $state('');
-  let hasError = $state(false);
+  let errorMessage = $state<string>('');
+  let hasError = $state<boolean>(false);
   function captureError(error: Error, context?: string) {
     console.error(`Error${context ? ` in ${context}` : ''}:`, error);
     errorMessage = error.message;
@@ -75,7 +75,7 @@ export function createErrorBoundary() {
   }
   function clearError() {
     errorMessage = '';
-    hasError = $state(false);
+    hasError = false;
   }
   function withErrorBoundary<T extends (...args: readonly unknown[]) => unknown>(fn: T, context?: string): T {
     const wrapper = (...args: Parameters<T>): ReturnType<T> => {

@@ -22,7 +22,7 @@ export function nowId() {
 	return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
-export async function getMissedMessages(sessionId: string, since?: string | undefined) {
+export async function getMissedMessages(sessionId: string, since?: string | undefined): Promise<any> {
 	const sinceTs = since ? new Date(since).getTime() : 0;
 	return messageStore.filter((m) => m.sessionId === sessionId && new Date(m.timestamp).getTime() > sinceTs);
 }

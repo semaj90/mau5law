@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/svelte';
 import AIAssistantMachine from './AIAssistantMachineComponent.svelte.js';

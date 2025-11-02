@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Analytics Store - User Activity Tracking (Svelte 5)
  * Handles frontend analytics events and backend reporting

@@ -23,7 +23,7 @@ type ComponentCacheConfig = {
   autoCache?: boolean;
 };
 export function useRedisAI() {
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   let lastResult: RedisOptimizationResult | null = null;
   let error: string | null = null;
   async function query(queryText: string, context: QueryContext = {}): Promise<RedisOptimizationResult> {
@@ -80,7 +80,7 @@ export function useRedisAI() {
 }
 export function useRedisMonitoring() {
   let healthData: any = null;
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   async function refresh(): Promise<void> {
     isLoading = true;
     try {
@@ -91,7 +91,7 @@ export function useRedisMonitoring() {
       isLoading = false;
     }
   }
-  async function clearCache(confirm = false) {
+  async function clearCache(confirm = false): Promise<any> {
     if (!confirm) {
       throw new Error('Cache clear requires confirmation');
     }
@@ -119,7 +119,7 @@ export function useRedisMonitoring() {
 }
 export function useRedisTaskQueue(defaultPollInterval = 5000) {
   let tasks: Map<string, QueuedTask> = new Map();
-  let isPolling = $state(false);
+  let isPolling = $state<boolean>(false);
   let pollHandle: ReturnType<typeof setInterval> | null = null;
   let unsubscribe: (() => void) | undefined;
   function subscribeToTasks() {
@@ -127,7 +127,7 @@ export function useRedisTaskQueue(defaultPollInterval = 5000) {
       tasks = value;
     });
   }
-  async function pollOnce() {
+  async function pollOnce(): Promise<any> {
     try {
       if (typeof redisOrchestratorClient.refreshQueuedTasks === 'function') {
         await redisOrchestratorClient.refreshQueuedTasks();
@@ -148,7 +148,7 @@ export function useRedisTaskQueue(defaultPollInterval = 5000) {
       clearInterval(pollHandle);
       pollHandle = null;
     }
-    isPolling = $state(false);
+    isPolling = false;
   }
   onMount(() => {
     subscribeToTasks();
@@ -192,7 +192,7 @@ export function useRedisComponentCache(componentName: string, config: ComponentC
   let lastQuery: string | null = null;
   let cacheHits = 0;
   let cacheMisses = 0;
-  async function queryWithCache(queryText: string, context: Record<string, unknown> = {}) {
+  async function queryWithCache(queryText: string, context: Record<string, unknown> = {}): Promise<any> {
     const cacheKey = `${componentName}:${JSON.stringify({ queryText, ...context })}`;
     if (config.autoCache !== false && componentCache.has(cacheKey)) {
       cacheHits += 1;
@@ -244,14 +244,14 @@ export function useRedisComponentCache(componentName: string, config: ComponentC
   };
 }
 export function useRedisForm() {
-  let isSubmitting = $state(false);
+  let isSubmitting = $state<boolean>(false);
   let submitError: string | null = null;
   let lastSubmission: any = null;
   async function submitForm(
     formData: Record<string, unknown>,
     endpoint: string,
     options: { useCache?: boolean; priority?: number; queueIfComplex?: boolean } = {},
-  ) {
+  ): Promise<any> {
     isSubmitting = true;
     submitError = null;
     try {

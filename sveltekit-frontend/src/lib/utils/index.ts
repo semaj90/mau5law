@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Comprehensive Utility Functions
  * SvelteKit 2 + Svelte 5 + TypeScript Compatible
@@ -76,14 +77,14 @@ export function throttle<T extends (...args: any[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
-  let inThrottle = $state(false);
+  let inThrottle = $state<boolean>(false);
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
       // use spread operator instead of .apply
       func(...(args as Parameters<T>));
       inThrottle = true;
       window.setTimeout(() => {
-        inThrottle = $state(false);
+        inThrottle = false;
       }, limit);
     }
   };

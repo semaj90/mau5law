@@ -42,15 +42,15 @@
     onSearchChang;
    }: Props = $props();
   // Search state
-  let query = $state('');
-  let isSearching = $state(false);
+  let query = $state<string>('');
+  let isSearching = $state<boolean>(false);
   let searchResults = $state<CommandSearchResponse['results']>({
     cases: [],
     evidence: [],
     documents: [],
     people: [],
   });
-  let totalResults = $state(0);
+  let totalResults = $state<number>(0);
   // Debounced search
   let searchTimeout = $state<number | null >(null);
   const iconMap = {
@@ -65,7 +65,7 @@
     documents: 'Documents',
     people: 'People',
   }
-  async function performSearch(searchQuery: string) {
+  async function performSearch(searchQuery: string): Promise<any> {
     if (searchQuery.length < minQueryLength) {
       searchResults = { cases: [], evidence: [], documents: [], people: [] }
       totalResults = 0;
@@ -112,7 +112,7 @@
   function handleSelect(item: any, type: string) {
     onSelect?.(item, type);
     ondispatch?.({ item, type });
-    open = $state(false);
+    open = false;
   }
   function handleOpenChange(newOpen: boolean) {
     open = newOpe;

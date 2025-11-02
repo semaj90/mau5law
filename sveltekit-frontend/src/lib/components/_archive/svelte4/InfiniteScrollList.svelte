@@ -35,8 +35,8 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   let scrollContainer: HTMLElement = $state(undefined as any);
   let displayedItems: any[] = $state([]);
-  let currentPage = $state(0);
-  let hasMore = $state(true);
+  let currentPage = $state<number>(0);
+  let hasMore = $state<boolean>(true);
   // Replace broken reset logic with a proper effect that runs when `items` changes.
   $effect(() => {
     // Reset pagination when incoming items reference/contents change
@@ -58,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
     const endIndex = Math.min(startIndex + pageSize, currentItems.length);
     const newItems = currentItems.slice(startIndex, endIndex);
     if (newItems.length === 0) {
-      hasMore = $state(false);
+      hasMore = false;
       return;
     }
     displayedItems = [...displayedItems, ...newItems];

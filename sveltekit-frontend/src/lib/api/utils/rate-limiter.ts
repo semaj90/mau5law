@@ -97,7 +97,7 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
     }
     return b;
   }
-  async function runWithBucket(bucket: Bucket<Args, T>, pending: Pending<Args, T>) {
+  async function runWithBucket(bucket: Bucket<Args, T>, pending: Pending<Args, T>): Promise<any> {
     // Attempt to run immediately
     if (!bucket.consumeToken()) {
       // cannot consume, shouldn't happen if queued correctly, but guard

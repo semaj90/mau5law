@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * WebGPU-Accelerated Chat API v4
  * High-performance chat with RTX 3060 Ti optimization and tensor acceleration

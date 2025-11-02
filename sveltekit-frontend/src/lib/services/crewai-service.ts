@@ -1,3 +1,5 @@
+import type { AIResponse } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * CrewAI Multi-Agent Service
  * Handles role-based agent crews for specialized legal workflows

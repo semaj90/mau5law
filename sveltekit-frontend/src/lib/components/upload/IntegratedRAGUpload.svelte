@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   /**
    * Integrated RAG Upload Component
    * Upload → embeddinggemma → pgvector → Qdrant → MinIO → Search → Recommendations
@@ -11,20 +12,20 @@
     onError?: (error: string) => void;
   } = $props();
   let fileInput = $state<HTMLInputElement | null>(null);
-  let uploading = $state(false);
-  let progress = $state(0);
+  let uploading = $state<boolean>(false);
+  let progress = $state<number>(0);
   let result = $state<any>(null);
   let error = $state<string | null>(null);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults = $state<any[]>([]);
-  let searching = $state(false);
-  async function handleFileSelect(e: Event) {
+  let searching = $state<boolean>(false);
+  async function handleFileSelect(e: Event): Promise<any> {
     const input = e.currentTarget as HTMLInputElement;
     if (!input.files?.length) return;
     const file = input.files[0];
     await uploadFile(file);
   }
-  async function uploadFile(file: File) {
+  async function uploadFile(file: File): Promise<any> {
     uploading = true;
     progress = 0;
     error = null;
@@ -58,7 +59,7 @@
       uploading = false;
     }
   }
-  async function searchDocuments() {
+  async function searchDocuments(): Promise<any> {
     if (!searchQuery.trim()) return;
     searching = true;
     searchResults = [];

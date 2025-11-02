@@ -30,9 +30,9 @@
   let connections = $state<EvidenceConnection[]>([]);
   let selectedNodes = $state<string[]>([]);
   let highlightedNodes = $state<string[]>([]);
-  let isAnalyzing = $state(false);
+  let isAnalyzing = $state<boolean>(false);
   let canvasSize = $state({ width: 1200, height: 800 });
-  let showConnections = $state(true);
+  let showConnections = $state<boolean>(true);
   let connectionType = $state<'similarity' | 'temporal' | 'causal' | 'reference'>('similarity');
   // Subscribe to evidence store
   $effect(() => {
@@ -76,7 +76,7 @@ await embeddingsService.initialize();
     }, 3000);
   }
   // Connection creation
-  async function handleCreateConnection(fromId: string, toId: string) {
+  async function handleCreateConnection(fromId: string, toId: string): Promise<any> {
     if (fromId === toId) return;
     // Check if connection already exists
     const existingConnection = connections.find(
@@ -128,7 +128,7 @@ await embeddingsService.initialize();
     }
   }
   // AI-powered analysis
-  async function analyzeAllEvidence() {
+  async function analyzeAllEvidence(): Promise<any> {
     if (isAnalyzing || evidenceList.length === 0) return;
     isAnalyzing = true;
     try {
@@ -238,7 +238,7 @@ await embeddingsService.initialize();
     }
   }
   // Export functions
-  async function exportCanvasData() {
+  async function exportCanvasData(): Promise<any> {
     const canvasData = {
       evidence: evidenceList
       connections,

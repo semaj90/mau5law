@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // AI embedding generation service
 // Supports local Ollama models with Redis/memory caching for performance
 // Use process.env for server-side environment variables

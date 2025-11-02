@@ -37,7 +37,7 @@
   const { formData } = $props<{ formData: InternalFormData }>()
 
   // Local state variables
-  let dragActive = $state(false);
+  let dragActive = $state<boolean>(false);
   let fileInput: HTMLInputElement | null = null;
   let uploadProgress: Record<string, number> = {};
   let processingErrors: Record<string, string> = {};
@@ -68,12 +68,12 @@
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     if (!(e.currentTarget as Element)?.contains((e as any).relatedTarget as Node)) {
-      dragActive = $state(false);
+      dragActive = false;
     }
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     const files = Array.from(e.dataTransfer?.files || []);
     handleFileSelection(files);
   }
@@ -82,7 +82,7 @@
     const files = Array.from(input.files || []);
     handleFileSelection(files);
   }
-  async function handleFileSelection(files: File[]) {
+  async function handleFileSelection(files: File[]): Promise<any> {
     if (!files || files.length === 0) return;
     const remainingSlots = Math.max(0, maxFiles - formData.uploaded_files.length);
     if (remainingSlots <= 0) {
@@ -114,7 +114,7 @@
       }
     }
   }
-  async function processFile(file: File) {
+  async function processFile(file: File): Promise<any> {
     formData.processing_status = 'processing';
     try {
       uploadProgress = { ...uploadProgress, [file.name]: 0 };

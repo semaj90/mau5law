@@ -1,5 +1,7 @@
 <!-- NES-Style Texture Streaming Component for Legal Document Visualization -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { N64LODManager } from '$lib/services/n64-lod-manager';
@@ -24,9 +26,9 @@
   // use `any` for lodManager to avoid tight type errors for runtime helper methods
   let lodManager: any;
   let currentTexture = $state<ArrayBuffer | null>(null);
-  let currentLOD = $state(3);
-  let isStreaming = $state(false);
-  let streamingProgress = $state(0);
+  let currentLOD = $state<number>(3);
+  let isStreaming = $state<boolean>(false);
+  let streamingProgress = $state<number>(0);
   let memoryStats = $state({
     memoryUsage: 0,
     maxMemory: 8192,
@@ -35,13 +37,13 @@
   });
   // Viewing context
   let viewerElement: HTMLElement;
-  let scrollPosition = $state(0);
-  let zoomLevel = $state(1);
-  let scrollSpeed = $state(0);
-  let userInteracting = $state(false);
+  let scrollPosition = $state<number>(0);
+  let zoomLevel = $state<number>(1);
+  let scrollSpeed = $state<number>(0);
+  let userInteracting = $state<boolean>(false);
   // Performance metrics
-  let frameRate = $state(0);
-  let loadTime = $state(0);
+  let frameRate = $state<number>(0);
+  let loadTime = $state<number>(0);
   let lastScrollTime = Date.now();
   // Calculated LOD based on context
   let targetLOD = $derived(() => {
@@ -170,7 +172,7 @@
       // Debounce scroll end
       if (scrollTimeout) clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
-        userInteracting = $state(false);
+        userInteracting = false;
         scrollSpeed = 0;
         // Re-evaluate LOD after scrolling stops
         if (autoStream && targetLOD() !== currentLOD) {
@@ -203,7 +205,7 @@
       if (autoStream && targetLOD() !== currentLOD) {
         streamSpecificLOD(targetLOD());
       }
-      userInteracting = $state(false);
+      userInteracting = false;
     }, 100);
   }
   // Convert ArrayBuffer texture to displayable format

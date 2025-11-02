@@ -28,7 +28,7 @@
     children,
     docKey,
     docCategory,
-    showDocumentation = $state(false);
+    showDocumentation = false;
   }: Props = $props();
   let tooltipClasses = $derived(cn(
     "legal-ai-tooltip z-50 px-3 py-2 text-sm font-medium text-slate-900 bg-amber-400 rounded-lg shadow-lg shadow-amber-500/25 max-w-xs",
@@ -37,8 +37,8 @@
   ));
   // Context7 documentation integration
   let documentationContent = $state<string>('');
-  let isLoadingDocs = $state(false);
-  async function fetchDocumentation() {
+  let isLoadingDocs = $state<boolean>(false);
+  async function fetchDocumentation(): Promise<Response> {
     if (!docKey || !docCategory || !showDocumentation) return;
     isLoadingDocs = true;
     try {

@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Qdrant Vector Database Service
  * High-performance vector search and auto-tagging integration for SvelteKit.

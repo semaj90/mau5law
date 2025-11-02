@@ -4,6 +4,9 @@ https://svelte.dev/e/attribute_invalid_name -->
 <!-- Gemma3LegalChat.svelte -->
 <!-- Complete Gemma3 Legal Model Integration Component for SvelteKit -->
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived, get } from 'svelte/store';
@@ -267,8 +270,8 @@ https://svelte.dev/e/attribute_invalid_name -->
     }
   });
   // Message handling
-  let userInput = $state('');
-  async function sendMessage() {
+  let userInput = $state<string>('');
+  async function sendMessage(): Promise<any> {
     if (!userInput.trim() || get(isProcessing)) return;
     const userMessage: Message = {
       id: crypto.randomUUID(),
@@ -322,7 +325,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     return prompt;
   }
 
-  async function handleStreamingResponse(response: Response) {
+  async function handleStreamingResponse(response: Response): Promise<any> {
     const reader = (response as { results?: any; json?: any; body?: any }).body?.getReader();
     const decoder = new TextDecoder();
     let fullContent = '';
@@ -380,7 +383,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     }));
   }
   // UI state
-  let activeTab = $state('chat');
+  let activeTab = $state<string>('chat');
 </script>
 <div class="gemma3-legal-chat h-full flex flex-col">
   <!-- Header -->

@@ -30,8 +30,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let nodeConnections: any[] = [];
   let selectedNodeId: string | null = null;
   let hoveredNodeId: string | null = null;
-  let isDragging = $state(false);
-  let isConnecting = $state(false);
+  let isDragging = $state<boolean>(false);
+  let isConnecting = $state<boolean>(false);
   let connectingFromId: string | null = null;
   let dragOffset = { x: 0, y: 0 };
 
@@ -42,12 +42,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let minZoom = 0.1;
   let maxZoom = 3;
   let panOffset = { x: 0, y: 0 };
-  let isPanning = $state(false);
+  let isPanning = $state<boolean>(false);
   let lastPanPoint = { x: 0, y: 0 };
 
   // Auto-save
   let autoSaveTimer: ReturnType<typeof setInterval> | undefined;
-  let isAutoSaving = $state(false);
+  let isAutoSaving = $state<boolean>(false);
 
   onMount(() => {
     if (!browser) return;
@@ -348,7 +348,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
 
   // Event handlers (fixed to accept the event parameter)
-  async function handleDrop(event: DragEvent) {
+  async function handleDrop(event: DragEvent): Promise<any> {
     event.preventDefault();
     if (readOnly) return;
     const files = Array.from(event.dataTransfer?.files || []);
@@ -361,7 +361,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     }
   }
 
-  async function processDroppedFile(file: File, x: number, y: number) {
+  async function processDroppedFile(file: File, x: number, y: number): Promise<any> {
     const reader = new FileReader();
     reader.onload = async e => {
       const content = e.target?.result as string;
@@ -386,7 +386,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     reader.readAsDataURL(file);
   }
 
-  async function autoTagFileEnhanced(node: any) {
+  async function autoTagFileEnhanced(node: any): Promise<any> {
     try {
       const response = await fetch('/api/ai/tag', {
         method: 'POST',
@@ -560,8 +560,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
   function handleMouseUp() {
     const wasDragging = isDragging;
-    isPanning = $state(false);
-    isDragging = $state(false);
+    isPanning = false;
+    isDragging = false;
     if (canvas) canvas.style.cursor = 'default';
     if (wasDragging) {
       autoSave();
@@ -610,7 +610,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     event.preventDefault();
   }
 
-  async function autoSave() {
+  async function autoSave(): Promise<void> {
     if (isAutoSaving) return;
     isAutoSaving = true;
     try {

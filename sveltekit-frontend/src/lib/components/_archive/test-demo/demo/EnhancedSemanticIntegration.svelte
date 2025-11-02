@@ -59,10 +59,10 @@ https://svelte.dev/e/js_parse_error -->
   	const processingProgress = writable(0);
   	const webGPUSupported = writable(false);
   	// Analysis input and results
-  let analysisText = $state('');
+  let analysisText = $state<string>('');
   let selectedTodo = $state<IntelligentTodo | null >(null);
-  let showSOMVisualization = $state(false);
-  let showPageRankGraph = $state(false);
+  let showSOMVisualization = $state<boolean>(false);
+  let showPageRankGraph = $state<boolean>(false);
   	// Derived stores for computed values
   	const todosByCategory = derived(todos, $todos => {
   		const categories: Record<string, IntelligentTodo[]> = {}
@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
   	});
   	// Event dispatcher for parent communication
   	// API integration functions
-  	async function fetchIntelligentTodos() {
+  	async function fetchIntelligentTodos(): Promise<Response> {
   		if (!browser) return;
   		isProcessing.set(true);
   		processingProgress.set(10);
@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
   			processingProgress.set(0);
   		}
   	}
-  	async function analyzeText(text: string) {
+  	async function analyzeText(text: string): Promise<any> {
   		if (!browser || !text.trim()) return;
   		isProcessing.set(true);
   		processingProgress.set(20);
@@ -152,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
   			processingProgress.set(0);
   		}
   	}
-  	async function fetchCacheStats() {
+  	async function fetchCacheStats(): Promise<Response> {
   		if (!browser) return;
   		try {
   			// removed unused response assignment
@@ -164,7 +164,7 @@ https://svelte.dev/e/js_parse_error -->
   			console.error('Error fetching cache stats:', error);
   		}
   	}
-  	async function checkSystemStatus() {
+  	async function checkSystemStatus(): Promise<any> {
   		if (!browser) return;
   		// Check all service endpoints
   		const services = [
@@ -193,7 +193,7 @@ https://svelte.dev/e/js_parse_error -->
   		systemStatus.set(newStatus);
   	}
   	// WebGPU detection and initialization
-  	async function initializeWebGPU() {
+  	async function initializeWebGPU(): Promise<void> {
   		if (!browser) return;
   		try {
   			// Check WebGPU support
@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
   			webGPUSupported.set(false);
   		}
   	}
-  	async function initializeWebGPUCache() {
+  	async function initializeWebGPUCache(): Promise<void> {
   		// Simulate WebGPU-accelerated IndexDB-style caching
   		if (!browser) return;
   		try {
@@ -367,7 +367,7 @@ await initializeWebGPU();
           <div class="todo-preview max-h-48 overflow-y-auto space-y-2">
             {#each Array.isArray($topPriorityTodos) ? $topPriorityTodos : [] as todo}
               <div
-                class="todo-item bg-slate-700/50 p-3 rounded border-l-2 border-{todo.priority >= 4
+                class="todo-item" bg-slate-700/50 p-3 rounded border-l-2 border-{todo.priority >= 4
                   ? 'red'
                   : 'yellow'}-400"
               >

@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Citations API with Rich Text Editor Integration
  *

@@ -1,3 +1,6 @@
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 // Svelte 5 TypeScript Patterns - Progressive Type Replacement
 // Replaces generic: 'any' shims with proper Svelte 5 type definitions
 import type { Component, Snippet } from 'svelte';

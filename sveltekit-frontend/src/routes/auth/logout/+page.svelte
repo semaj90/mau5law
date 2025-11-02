@@ -9,8 +9,8 @@ TODO: Implement logout functionality, clear session, redirect to login
 	import * as Card from '$lib/components/ui/card.svelte';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	let isLoggingOut = $state(false);
-	async function handleLogout() {
+	let isLoggingOut = $state<boolean>(false);
+	async function handleLogout(): Promise<any> {
 		isLoggingOut = true;
 		try {
 			// TODO: Call logout API
@@ -26,7 +26,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 			}, 1000);
 		} catch (error) {
 			console.error('Logout failed:', error);
-			isLoggingOut = $state(false);
+			isLoggingOut = false;
 		}
 	}
 	$effect(() => {

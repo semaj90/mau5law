@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 // Mock VectorSearchService for testing - actual service has @ts-nocheck

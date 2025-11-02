@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
 
@@ -15,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   let pollInterval: ReturnType<typeof setInterval> | null = null;
-  let isConnected = $state(false);
+  let isConnected = $state<boolean>(false);
   let errorMessage = '';
   let autoRefresh = true;
   let refreshRate = 5000; // ms
@@ -29,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   };
   let submissionStatus = '';
 
-  async function fetchDashboardData() {
+  async function fetchDashboardData(): Promise<Response> {
     try {
       const response = await fetch('/api/ingestion/dashboard');
       const result = await response.json().catch(() => null);
@@ -40,16 +41,16 @@ https://svelte.dev/e/js_parse_error -->
         isConnected = true;
         errorMessage = '';
       } else {
-        isConnected = $state(false);
+        isConnected = false;
         errorMessage = result?.error || 'Failed to fetch dashboard data';
       }
     } catch (err: any) {
-      isConnected = $state(false);
+      isConnected = false;
       errorMessage = `Connection error: ${err?.message ?? String(err)}`;
     }
   }
 
-  async function submitTestJob() {
+  async function submitTestJob(): Promise<any> {
     if (!newJob.documentId || !newJob.text) {
       submissionStatus = 'Error: Document ID and text are required';
       return;
@@ -97,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function controlWorkflow(action: string, params: Record<string, any> = {}) {
+  async function controlWorkflow(action: string, params: Record<string, any> = {}): Promise<any> {
     try {
       const response = await fetch('/api/ingestion/comprehensive', {
         method: 'POST',

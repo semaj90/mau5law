@@ -296,17 +296,17 @@ export async function cacheAnalysis(
     caseId?: string;
     metadata?: { [key: string]: any };
   }
-) {
+): Promise<any> {
   const key: CacheKey = { evidenceId, analysisType };
   return evidenceAnalysisCacheService.cacheAnalysisResult(key, result, options);
 }
-export async function getCachedAnalysis(evidenceId: string, analysisType: string) {
+export async function getCachedAnalysis(evidenceId: string, analysisType: string): Promise<any> {
   const key: CacheKey = { evidenceId, analysisType };
   return evidenceAnalysisCacheService.getCachedAnalysisResult(key);
 }
-export async function invalidateEvidenceCache(evidenceId: string) {
+export async function invalidateEvidenceCache(evidenceId: string): Promise<any> {
   return evidenceAnalysisCacheService.invalidateEvidenceAnalysis(evidenceId);
 }
-export async function getCacheStats() {
+export async function getCacheStats(): Promise<any> {
   return evidenceAnalysisCacheService.getCacheStatistics();
 }

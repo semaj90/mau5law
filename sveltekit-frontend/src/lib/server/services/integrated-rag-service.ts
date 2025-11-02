@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Integrated RAG Service - Full-Stack Implementation
@@ -33,8 +34,8 @@ let fuseInstance: Fuse<LokiDocument> | null = null;
 let redisClient: RedisClientType | null = null;
 let minioClient: MinioClient | null = null;
 let qdrantClient: QdrantClientType | null = null;
-let cudaAvailable = $state(false);
-export async function initializeIntegratedRAG() {
+let cudaAvailable = $state<boolean>(false);
+export async function initializeIntegratedRAG(): Promise<void> {
   try {
     const cudaCheck = await fetch('http://localhost:8095/health').catch(() => null);
     cudaAvailable = cudaCheck?.ok || false;
@@ -128,7 +129,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
     return new Array(768).fill(0);
   }
 }
-export async function processDocument(file: File, content: string) {
+export async function processDocument(file: File, content: string): Promise<any> {
   await initializeIntegratedRAG();
   const documentId = `doc_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
   const filename = file.name;
@@ -266,13 +267,13 @@ export async function searchSimilarDocuments(query: string, limit: number = 5): 
   }
   return results;
 }
-export async function getDocumentRecommendations(documentId: string, limit: number = 5) {
+export async function getDocumentRecommendations(documentId: string, limit: number = 5): Promise<any> {
   await initializeIntegratedRAG();
   const doc = lokiCollection.findOne({ id: documentId });
   if (!doc) return [];
   return searchSimilarDocuments(doc.content.slice(0, 500), limit);
 }
-export async function getSystemHealth() {
+export async function getSystemHealth(): Promise<any> {
   await initializeIntegratedRAG();
   return {
     database: !!queryClient,

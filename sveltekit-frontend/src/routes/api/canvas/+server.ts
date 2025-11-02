@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import { canvasStates } from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';

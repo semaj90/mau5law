@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
 
     let processPath: string;
-    let shouldCleanup = $state(false);
+    let shouldCleanup = $state<boolean>(false);
 
     if (imageFile) {
       // Save uploaded file temporarily

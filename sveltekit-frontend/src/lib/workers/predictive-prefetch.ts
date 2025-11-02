@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // Service Worker for AI-Driven Predictive Prefetching
 // Integrates with our legal AI system for intelligent resource loading
 

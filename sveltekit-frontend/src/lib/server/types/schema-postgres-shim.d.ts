@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 // Lightweight shim for: "$lib/server/db/schema-postgres" to reduce TypeScript
 // noise while migrating. Exports are intentionally typed as `any` and are
 // temporary until the canonical schema types are reconciled.

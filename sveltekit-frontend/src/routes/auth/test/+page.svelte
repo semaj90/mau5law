@@ -3,6 +3,7 @@
   Tests GPU accelerated authentication, XState integration, and Context7 documentation
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { auth  } from '$lib/stores/unified';
@@ -22,8 +23,8 @@
   } from 'lucide-svelte';
   // Test state
   let testResults = $state<{ [key: string]: any }('')>( );
-  let testRunning = $state(false);
-  let currentTab = $state('auth');
+  let testRunning = $state<boolean>(false);
+  let currentTab = $state<string>('auth');
   // GPU cluster status
   let clusterStatus = $state<any>(null);
   let context7Docs = $state<any>(null);
@@ -53,7 +54,7 @@
 await runInitialTests();
     })();
   });
-  async function runInitialTests() {
+  async function runInitialTests(): Promise<void> {
     testRunning = true;
     testResults = {}
     try {

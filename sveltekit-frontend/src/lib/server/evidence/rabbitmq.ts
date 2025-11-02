@@ -1,11 +1,11 @@
 import amqp from 'amqplib';
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://localhost';
-export async function connectRabbit() {
+export async function connectRabbit(): Promise<void> {
   const conn = await amqp.connect(RABBITMQ_URL);
   const channel = await conn.createChannel();
   return { conn, channel };
 }
-export async function publish(queue: string, msg: any) {
+export async function publish(queue: string, msg: any): Promise<any> {
   const { conn, channel } = await connectRabbit();
   try {
     await channel.assertQueue(queue, { durable: true });

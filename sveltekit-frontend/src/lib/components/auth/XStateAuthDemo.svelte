@@ -4,6 +4,8 @@
   Uses Bits UI v2 + GPU orchestrator + Context7 documentation
 -->
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   // Card components removed - using native HTML elements
@@ -32,10 +34,10 @@
     globalState
   } from '$lib/services/xstate-integration';
   // Component state
-  let email = $state('prosecutor@example.gov');
-  let password = $state('TestPassword123!');
-  let aiMessage = $state('Analyze the evidence from case #2024-001');
-  let isLoading = $state(false);
+  let email = $state<string>('prosecutor@example.gov');
+  let password = $state<string>('TestPassword123!');
+  let aiMessage = $state<string>('Analyze the evidence from case #2024-001');
+  let isLoading = $state<boolean>(false);
   let demoStep = $state<'auth' | 'dashboard' | 'ai' | 'complete'>('auth');
   // Reactive state from XState integration
   let auth = $state($authState);
@@ -75,7 +77,7 @@
     unsubscribeHealth?.();
   });
   // Demo functions
-  async function demonstrateLogin() {
+  async function demonstrateLogin(): Promise<any> {
     isLoading = true;
     try {
       // Use XState integration service for login
@@ -87,11 +89,11 @@
         if (authenticated) {
           demoStep = 'dashboard';
         }
-        isLoading = $state(false);
+        isLoading = false;
       }, 2000);
     } catch (error) {
       console.error('Login demo failed:', error);
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function demonstrateAI() {

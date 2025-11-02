@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * 🎮 Simple Chat API - NES Architecture Compatible
  * Basic chat endpoint without complex dependencies

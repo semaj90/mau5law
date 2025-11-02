@@ -10,8 +10,8 @@
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
 
   // Use Svelte 5 reactive state API so updates trigger reactivity
-  let showWebGPUDemo = $state(false);
-  let webGPUSupported = $state(false);
+  let showWebGPUDemo = $state<boolean>(false);
+  let webGPUSupported = $state<boolean>(false);
 
   // Sample analysis for WebGPU demo
   const sampleAnalysis = {

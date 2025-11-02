@@ -40,7 +40,7 @@ export function useEvidenceCanvas() {
     filter: 'all',
   });
   // Interaction state
-  let isDragging = $state(false);
+  let isDragging = $state<boolean>(false);
   let dragStartPos = $state<{ x: number; y: number } | null>(null);
   // draggedItems is reassigned in pointer handling, keep let
   let draggedItems = $state<Set<string>>(new Set());
@@ -251,7 +251,7 @@ export function useEvidenceCanvas() {
   }
   function handlePointerUp() {
     const hadDragged = draggedItems.size > 0;
-    isDragging = $state(false);
+    isDragging = false;
     dragStartPos = null;
     draggedItems.clear();
     if (hadDragged) {

@@ -1,5 +1,6 @@
 <!-- Legal Precedent Matching System -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/Button.svelte';
   import NesCard from '$lib/components/ui/nes-card.svelte'; // Main card component
@@ -24,19 +25,19 @@
   import nesMemoryBridge from '$lib/gpu/nes-gpu-memory-bridge';
   import glyphShaderCache from '$lib/cache/glyph-shader-cache-bridge';
   // Svelte 5 Runes
-  let activeTab = $state('search');
-  let searchQuery = $state('');
-  let caseFactPattern = $state('');
-  let selectedJurisdiction = $state('');
-  let selectedCourtLevel = $state('');
-  let selectedPracticeArea = $state('');
-  let analysisInProgress = $state(false);
-  let analysisProgress = $state(0);
+  let activeTab = $state<string>('search');
+  let searchQuery = $state<string>('');
+  let caseFactPattern = $state<string>('');
+  let selectedJurisdiction = $state<string>('');
+  let selectedCourtLevel = $state<string>('');
+  let selectedPracticeArea = $state<string>('');
+  let analysisInProgress = $state<boolean>(false);
+  let analysisProgress = $state<number>(0);
   let precedentMatches = $state<PrecedentMatch[]>([]);
-  // let similarityScores = $state([]);
+  // let similarityScores = $state<any[]>([]);
   let legalReasoningChain = $state<LegalReasoningStep[]>([]);
   let citationNetworkMap = $state<CitationNetwork[]>([]);
-  // let distinguishingFactors = $state([]);
+  // let distinguishingFactors = $state<any[]>([]);
   let applicabilityAnalysis = $state<ApplicabilityAnalysisResult | null>(null);
   let strengthAssessment = $state<StrengthAssessmentResult | null>(null);
   // Legal AI System State
@@ -129,7 +130,7 @@
     initializePrecedentSystem();
     startSystemMonitoring();
   });
-  async function initializePrecedentSystem() {
+  async function initializePrecedentSystem(): Promise<void> {
     legalSystem.status = 'initializing';
     legalSystem.processingStage = 'Loading legal precedent databases...';
     // Initialize NES-GPU Memory Bridge for vector operations
@@ -148,7 +149,7 @@
     legalSystem.status = 'ready';
     legalSystem.processingStage = 'Precedent matching system online';
   }
-  async function searchPrecedents() {
+  async function searchPrecedents(): Promise<any> {
     if (!searchQuery.trim() && !caseFactPattern.trim()) {
       alert('Please enter either a search query or case fact pattern');
       return;
@@ -191,7 +192,7 @@
           break;
       }
     }
-    analysisInProgress = $state(false);
+    analysisInProgress = false;
     legalSystem.status = 'complete';
     legalSystem.processingStage = 'Precedent analysis complete';
     legalSystem.vectorSearchActive = $state(false);
@@ -299,7 +300,7 @@
       ];
     }
   }
-  async function calculateSimilarityScores() {
+  async function calculateSimilarityScores(): Promise<any> {
     return precedentMatches.map(match => ({
       caseId: match.id,
       overallSimilarity: match.similarityScore,
@@ -359,7 +360,7 @@
       }
     ];
   }
-  async function assessApplicability() {
+  async function assessApplicability(): Promise<any> {
     return {
       overallApplicability: 'HIGH',
       jurisdictionalAlignment: 'STRONG',
@@ -379,7 +380,7 @@
       ], // Added semicolon
     };
   }
-  async function assessStrength() {
+  async function assessStrength(): Promise<any> {
     return {
       overallStrength: 'STRONG',
       bindingAuthorityScore: 85,

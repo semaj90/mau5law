@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // Clean minimal RAG ingestion worker
 
 // Use centralized environment config for service endpoints

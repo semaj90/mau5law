@@ -6,6 +6,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   Integrates with the global AI assistant store and pgvector semantic search
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { browser } from '$app/environment'; // added
@@ -35,13 +36,13 @@ https://svelte.dev/e/effect_invalid_placement -->
     oncitation
   }: Props = $props();
   // Local reactive state
-  let messageInput = $state('');
-  let showSettings = $state(false);
-  let showSearchResults = $state(false);
+  let messageInput = $state<string>('');
+  let showSettings = $state<boolean>(false);
+  let showSearchResults = $state<boolean>(false);
   let searchResults = $state<any[]>([]);
   let messagesContainer: HTMLDivElement;
-  let showCitationDialog = $state(false);
-  let selectedCitation = $state('');
+  let showCitationDialog = $state<boolean>(false);
+  let selectedCitation = $state<string>('');
   // Derived state from store
   const messages = $derived(aiAssistant.messages);
   const isProcessing = $derived(aiAssistant.isProcessing);
@@ -49,7 +50,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   const backendLatency = $derived(aiAssistant.backendLatency);
   const config = $derived(aiAssistant.config);
   // Voice input support
-  let isListening = $state(false);
+  let isListening = $state<boolean>(false);
   let recognition: SpeechRecognition | null = null; // fixed type syntax
   // Initialize SpeechRecognition only in browser
   $effect(() => {
@@ -67,7 +68,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       if (transcript) {
         messageInput = transcript;
       }
-      isListening = $state(false);
+      isListening = false;
     };
     recognition.onerror = () => { isListening = $state(false); };
     recognition.onend = () => { isListening = $state(false); };
@@ -87,7 +88,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     }
   });
   // Send message function
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!messageInput.trim() || isProcessing) return;
     const message = messageInput;
     messageInput = '';
@@ -136,7 +137,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     }
   }
   // Search conversation history - fixed call syntax and assignment
-  async function searchHistory() {
+  async function searchHistory(): Promise<any> {
     if (!messageInput.trim()) return;
     try {
       const results = await pgVectorSearch.searchChatHistory({
@@ -154,7 +155,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   // Insert search result
   function insertSearchResult(result: any) {
     messageInput = (result as { content?: any }).content || '';
-    showSearchResults = $state(false);
+    showSearchResults = false;
   }
   // Backend selection
   function selectBackend(backend: Backend) {
@@ -198,7 +199,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   function insertCitation() {
     oncitation?.();
-    showCitationDialog = $state(false);
+    showCitationDialog = false;
   }
 </script>
 <!-- Main AI Assistant Interface -->

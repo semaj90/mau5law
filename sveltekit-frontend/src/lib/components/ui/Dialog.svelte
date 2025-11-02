@@ -18,7 +18,7 @@
     children,
   }: Props = $props();
   function handleClose() {
-    open = $state(false);
+    open = false;
     onOpenChange?.(false);
   }
   function handleBackdropClick(e: MouseEvent) {

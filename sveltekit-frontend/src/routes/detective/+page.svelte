@@ -6,8 +6,8 @@
   import { getAuthContext  } from '$lib/stores/unified';
   import { onMount } from 'svelte';
   const auth = getAuthContext();
-  let currentView = $state('board'); // 'board' | 'create-case' | 'auth-demo'
-  let mounted = $state(false);
+  let currentView = $state<string>('board'); // 'board' | 'create-case' | 'auth-demo'
+  let mounted = $state<boolean>(false);
   // Sample evidence data for the detective board
   let sampleEvidence = $state([
     {

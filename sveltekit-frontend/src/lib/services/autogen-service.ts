@@ -1,3 +1,5 @@
+import type { AIResponse } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * AutoGen Multi-Agent Service
  * Handles conversational AI agents with role-based interactions
@@ -428,7 +430,7 @@ export class AutoGenService {
     let resolveNext: ((value: AutoGenMessage | PromiseLike<AutoGenMessage>) => void) | null = null;
     // Use unknown instead of any for better type safety
     let rejectNext: ((reason?: any) => void) | null = null;
-    let isDone = $state(false);
+    let isDone = $state<boolean>(false);
 
     const pullMessage = (): Promise<AutoGenMessage> => {
       return new Promise((resolve, reject) => {

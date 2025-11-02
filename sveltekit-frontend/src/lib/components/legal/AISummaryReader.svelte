@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { aiSummaryMachine, type SummarySection } from '$lib/machines/aiSummaryMachine';
   // Replace: '@xstate/svelte' with a small local adapter using xstate interpreter + svelte store

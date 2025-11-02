@@ -25,7 +25,7 @@
     }
   });
   function handleClose() {
-    open = $state(false);
+    open = false;
     onClose();
   }
 </script>

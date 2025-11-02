@@ -1,6 +1,8 @@
 <!-- Unified AI Assistant Chat Interface -->
 <!-- Integrates Ollama, LLaMA.cpp WebASM, WebGPU acceleration, and Go microservices -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   // Temporarily disable TypeScript checking for this file because some UI modules
   // export namespace/instance shapes that TypeScript complains about when used
   // as Svelte component constructors. Follow-up: fix those module exports to
@@ -22,8 +24,8 @@
   import * as Tooltip from '$lib/components/ui/tooltip.svelte';
   // Svelte 5 state management
   let messages = $state<any[]>([]);
-  let currentMessage = $state('');
-  let isProcessing = $state(false);
+  let currentMessage = $state<string>('');
+  let isProcessing = $state<boolean>(false);
   // make these nullable / any to avoid component-vs-dom binding type errors
   let chatContainer: HTMLDivElement | null = null;
   let messageInput: any = null;
@@ -69,7 +71,7 @@
       addSystemMessage('Legal AI Assistant initialized. How can I help you analyze your case today?');
     })();
   });
-  async function initializeBackends() {
+  async function initializeBackends(): Promise<void> {
     console.log('🔌 Checking backend availability...');
     // Check vLLM
     try {
@@ -129,7 +131,7 @@
     }
     console.log('📊 Backend Status:', aiBackends);
   }
-  async function setupWebGPUWorker() {
+  async function setupWebGPUWorker(): Promise<any> {
     if (aiBackends.webgpu.available && !webgpuBridge) {
       try {
         // Use Vite-compatible worker URL resolution
@@ -164,7 +166,7 @@
     // Update performance metrics
     performanceMetrics.gpuUtilization = (data as { gpuUtilization?: any })?.gpuUtilization || 0;
   }
-  async function loadConversationHistory() {
+  async function loadConversationHistory(): Promise<any> {
     if (caseId) {
       try {
         const response = await fetch(`/api/legal/conversations?caseId=${encodeURIComponent(caseId)}`);
@@ -178,7 +180,7 @@
       }
     }
   }
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!currentMessage.trim() || isProcessing) return;
     const userMessage = {
       id: `msg-${Date.now()}-user`,
@@ -372,7 +374,7 @@
       tokensPerSecond: result?.metadata?.tokensPerSecond || 0,
     };
   }
-  async function saveConversation() {
+  async function saveConversation(): Promise<void> {
     if (caseId) {
       try {
         await fetch('/api/legal/conversations', {
@@ -399,7 +401,7 @@
     };
     messages = [...messages, systemMessage];
   }
-  async function scrollToBottom() {
+  async function scrollToBottom(): Promise<any> {
     await tick();
     if (chatContainer) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -412,7 +414,7 @@
       sendMessage();
     }
   }
-  async function startVoiceRecording() {
+  async function startVoiceRecording(): Promise<any> {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       voiceRecording.mediaRecorder = new MediaRecorder(stream);
@@ -436,7 +438,7 @@
       voiceRecording.isRecording = $state(false);
     }
   }
-  async function processVoiceInput(audioBlob: Blob) {
+  async function processVoiceInput(audioBlob: Blob): Promise<any> {
     // Voice-to-text processing (placeholder)
     // In a real implementation, this would use a speech-to-text service
     currentMessage = '[Voice input detected - speech-to-text processing would occur here]';

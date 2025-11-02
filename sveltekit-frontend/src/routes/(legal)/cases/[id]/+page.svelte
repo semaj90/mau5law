@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
 
@@ -48,11 +49,11 @@
 		}
 	}
 
-	async function handleBack() {
+	async function handleBack(): Promise<any> {
 		await goto('/(legal)/cases');
 	}
 
-	async function handleEdit() {
+	async function handleEdit(): Promise<any> {
 		if (caseId) {
 			// TODO: Create edit route
 			console.log('Edit case:', caseId);

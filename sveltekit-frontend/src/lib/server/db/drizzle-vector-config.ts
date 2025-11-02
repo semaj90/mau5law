@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Drizzle ORM Configuration with Vector Operations
  * Production-ready database schema with pgvector support

@@ -39,7 +39,7 @@
   // Typed dispatcher avoids deprecated createEventDispatcher signature
   const dispatch = createEventDispatcher<{ motionPreferenceChange: { reduced: boolean } }>();
   // Check for user's motion preferences
-  let prefersReducedMotion = $state(false);
+  let prefersReducedMotion = $state<boolean>(false);
   $effect(() => {
     if (typeof window !== 'undefined') {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');

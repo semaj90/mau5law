@@ -3,13 +3,13 @@
   import { onMount } from 'svelte';
   // Svelte 5 runes
   let messages: Array<{ id: string; role: 'user' | 'assistant'; content: string; timestamp: Date }> = $state([]);
-  let currentMessage = $state('');
-  let isLoading = $state(false);
+  let currentMessage = $state<string>('');
+  let isLoading = $state<boolean>(false);
   let chatContainer: HTMLElement;
   // Enhanced UX state
   let connectionStatus = $state<'connected' | 'disconnected' | 'connecting'>('disconnected');
   // Check TensorRT service health
-  async function checkServiceHealth() {
+  async function checkServiceHealth(): Promise<any> {
     try {
       connectionStatus = 'connecting';
       // perform actual fetch to the health endpoint
@@ -25,7 +25,7 @@
     }
   }
   // Send message to AI
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!currentMessage.trim() || isLoading) return;
     const userMessage = {
       // fixed Date.now usage
@@ -112,7 +112,7 @@
       <div class="flex items-center gap-2">
         <span class="text-sm text-gray-600">Status:</span>
         <span
-          class="px-2 py-1 rounded-full text-xs font-medium {connectionStatus === 'connected'
+          class="px-2" py-1 rounded-full text-xs font-medium {connectionStatus === 'connected'
             ? 'bg-green-100 text-green-800'
             : connectionStatus === 'connecting'
               ? 'bg-yellow-100 text-yellow-800'
@@ -130,7 +130,7 @@
         {#each messages as message (message.id)}
           <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
             <div
-              class="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-2 rounded-lg {message.role === 'user'
+              class="max-w-xs" lg:max-w-md xl:max-w-lg px-4 py-2 rounded-lg {message.role === 'user'
                 ? 'bg-blue-500 text-white'
                 : 'bg-white text-gray-900 shadow-sm border'}"
             >

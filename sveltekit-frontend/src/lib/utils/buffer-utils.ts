@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * WebGPU Buffer Compatibility Utilities
  * Resolves TypeScript errors related to WebGPU buffer type mismatches

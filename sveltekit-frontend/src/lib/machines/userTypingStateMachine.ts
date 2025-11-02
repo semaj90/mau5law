@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * XState Event Machine for User Typing States
  * Tracks user typing behavior for contextual prompting and analytics

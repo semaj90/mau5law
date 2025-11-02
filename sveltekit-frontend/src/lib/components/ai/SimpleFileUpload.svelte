@@ -1,5 +1,6 @@
 <!-- Enhanced File Upload Component with Full Stack Integration -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { createMachine, interpret } from 'xstate';
@@ -58,7 +59,7 @@
   // Local state
   let files: File[] = [];
   let uploadStates: Map<string, any> = new Map();
-  let isDragOver = $state(false);
+  let isDragOver = $state<boolean>(false);
   let fileInput: HTMLInputElement | undefined;
   let systemStatus: any = { services: {}, performance: {}, queues: {}, storage: {} };
   let uploadMachine: any = null;
@@ -154,11 +155,11 @@
     isDragOver = true;
   }
   function handleDragLeave() {
-    isDragOver = $state(false);
+    isDragOver = false;
   }
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    isDragOver = $state(false);
+    isDragOver = false;
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     handleFiles(droppedFiles);
   }
@@ -300,7 +301,7 @@
   }
 
   // Helper functions
-  async function updateStage(fileId: string, stage: string, status: 'pending' | 'processing' | 'completed' | 'skipped' | 'error') {
+  async function updateStage(fileId: string, stage: string, status: 'pending' | 'processing' | 'completed' | 'skipped' | 'error'): Promise<any> {
     const state = uploadStates.get(fileId);
     if (state) {
       state.stages[stage] = status;
@@ -646,7 +647,7 @@
             <div class="grid grid-cols-4 md:grid-cols-8 gap-2">
               {#each Object.entries(state.stages || {}) as [stageName, stageStatus]}
                 {@const IconComponent = getStageIcon(stageName)}
-                <div class="flex flex-col items-center p-2 rounded-lg {
+                <div class="flex" flex-col items-center p-2 rounded-lg {
                   stageStatus === 'completed' ? 'bg-green-100 border border-green-200' :
                   stageStatus === 'processing' ? 'bg-blue-100 border border-blue-200' :
                   stageStatus === 'error' ? 'bg-red-100 border border-red-200' :
@@ -663,7 +664,7 @@
                     <div class="w-4 h-4 text-gray-400 mb-1">
   <IconComponent />
                   {/if}
-                  <span class="text-xs font-medium capitalize text-center {
+                  <span class="text-xs" font-medium capitalize text-center {
                     stageStatus === 'completed' ? 'text-green-700' :
                     stageStatus === 'processing' ? 'text-blue-700' :
                     stageStatus === 'error' ? 'text-red-700' :

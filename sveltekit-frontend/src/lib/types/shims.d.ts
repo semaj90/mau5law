@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Lightweight shims to reduce noisy type errors during fast checks.
 // These intentionally use `any` to be non-invasive and temporary.

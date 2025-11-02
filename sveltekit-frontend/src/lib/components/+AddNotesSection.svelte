@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   type Option = { value: string; label: string };
   // createEventDispatcher is deprecated in Svelte 5 — use callback props instead
@@ -9,7 +10,7 @@
   // Replace static dummy arrays with reactive arrays populated from API
   let caseOptions: Option[] = $state([]);
   let poiOptions: Option[] = $state([]);
-  let optionsLoading = $state(false);
+  let optionsLoading = $state<boolean>(false);
   let optionsError: string | null = $state(null);
   // Original dummy fallbacks
   const defaultCaseOptions: Option[] = [
@@ -22,7 +23,7 @@
     { value: 'poi2', label: 'Jane Smith' },
     { value: 'poi3', label: 'Criminal X' },
   ];
-  async function loadOptions() {
+  async function loadOptions(): Promise<any> {
     optionsLoading = true;
     optionsError = null;
     try {

@@ -1,3 +1,6 @@
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /*
  * Gallery Search API - Advanced Search and Filtering
  * Provides comprehensive search capabilities across all gallery content
@@ -481,7 +484,7 @@ function generateSnippet(item: Record<string, unknown>, query?: string): string 
 }
 
 // Facets and suggestions: try Docker Desktop endpoints first
-async function generateFacets(filters: SearchFilters) {
+async function generateFacets(filters: SearchFilters): Promise<any> {
   try {
     // Try Docker Desktop microservice for facets
     const res = await fetch(`${GALLERY_SEARCH_API_URL}/facets`, {
@@ -526,7 +529,7 @@ async function generateFacets(filters: SearchFilters) {
   }
 }
 
-async function getTypeFacets() {
+async function getTypeFacets(): Promise<any> {
   // TODO: Implement proper type facet counting
   return [
     { name: 'Evidence', count: 0 },
@@ -537,7 +540,7 @@ async function getTypeFacets() {
   ];
 }
 
-async function getFileTypeFacets() {
+async function getFileTypeFacets(): Promise<any> {
   // TODO: Implement file type facet counting
   return [
     { name: 'PDF', count: 0 },
@@ -548,7 +551,7 @@ async function getFileTypeFacets() {
   ];
 }
 
-async function getCaseFacets() {
+async function getCaseFacets(): Promise<any> {
   try {
     const caseCounts = await db
       .select({
@@ -571,7 +574,7 @@ async function getCaseFacets() {
   }
 }
 
-async function getTagFacets() {
+async function getTagFacets(): Promise<any> {
   return [];
 }
 

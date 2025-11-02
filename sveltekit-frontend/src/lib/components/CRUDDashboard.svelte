@@ -1,5 +1,6 @@
 <!-- Comprehensive CRUD Dashboard showing all entities working together -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { notifications } from '$lib/stores/unified';
   // Replace named imports (which triggered TS errors) with a namespace import
@@ -48,9 +49,9 @@
     activities: '',
     users: '', // <-- added missing: 'users' property so searchTerms.users is valid
   });
-  let refreshing = $state(false);
+  let refreshing = $state<boolean>(false);
   // Fetch all data
-  async function fetchAllData() {
+  async function fetchAllData(): Promise<Response> {
     if (refreshing) return;
     refreshing = true;
     try {
@@ -83,7 +84,7 @@
     }
   }
   // Fetch functions for each entity
-  async function fetchCases() {
+  async function fetchCases(): Promise<Response> {
     loading.cases = true;
     try {
       const response = await fetch(`/api/cases?limit=10&search=${searchTerms.cases}`);
@@ -104,7 +105,7 @@
       loading.cases = false;
     }
   }
-  async function fetchEvidence() {
+  async function fetchEvidence(): Promise<Response> {
     loading.evidence = true;
     try {
       const response = await fetch(`/api/evidence?limit=10&search=${searchTerms.evidence}`);
@@ -125,7 +126,7 @@
       loading.evidence = false;
     }
   }
-  async function fetchReports() {
+  async function fetchReports(): Promise<Response> {
     loading.reports = true;
     try {
       const response = await fetch(`/api/reports?limit=10&search=${searchTerms.reports}`);
@@ -146,7 +147,7 @@
       loading.reports = false;
     }
   }
-  async function fetchCriminals() {
+  async function fetchCriminals(): Promise<Response> {
     loading.criminals = true;
     try {
       const response = await fetch(`/api/criminals?limit=10&search=${searchTerms.criminals}`);
@@ -167,7 +168,7 @@
       loading.criminals = false;
     }
   }
-  async function fetchActivities() {
+  async function fetchActivities(): Promise<Response> {
     loading.activities = true;
     try {
       const response = await fetch(`/api/activities?limit=10&search=${searchTerms.activities}`);
@@ -188,7 +189,7 @@
       loading.activities = false;
     }
   }
-  async function fetchUsers() {
+  async function fetchUsers(): Promise<Response> {
     loading.users = true;
     try {
       const response = await fetch(`/api/users?limit=10&search=${searchTerms.users || ''}`);

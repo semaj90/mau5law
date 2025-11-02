@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import { redisService } from '$lib/server/redis-service';

@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import { ModernButton } from '$lib/components/ui/Button.svelte';
   interface UploadResponse {
@@ -8,14 +10,14 @@
   }
   let fileInput: HTMLInputElement;
   let selectedFile = $state<File | null>(null);
-  let uploading = $state(false);
+  let uploading = $state<boolean>(false);
   let uploadResult = $state<any>(null);
-  let errorMessage = $state('');
+  let errorMessage = $state<string>('');
   let uploadConfig = $state<any>(null);
   // Form fields
-  let caseId = $state('');
-  let documentType = $state('');
-  let title = $state('');
+  let caseId = $state<string>('');
+  let documentType = $state<string>('');
+  let title = $state<string>('');
   onMount(async () => {
     // Load upload configuration from an endpoint (placeholder)
     try {
@@ -39,7 +41,7 @@
       }
     }
   }
-  async function uploadDocument() {
+  async function uploadDocument(): Promise<any> {
     if (!selectedFile) {
       errorMessage = 'Please select a file to upload';
       return;

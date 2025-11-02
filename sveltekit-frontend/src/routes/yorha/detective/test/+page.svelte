@@ -1,10 +1,11 @@
 <!-- Test page for YoRHa Detective functionality -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  let testResult = $state('');
-  let isLoading = $state(false);
-  async function testCaseCreation() {
+  let testResult = $state<string>('');
+  let isLoading = $state<boolean>(false);
+  async function testCaseCreation(): Promise<any> {
     isLoading = true;
     try {
       const response = await fetch('/api/cases', {
@@ -30,7 +31,7 @@
       isLoading = false;
     }
   }
-  async function testCaseList() {
+  async function testCaseList(): Promise<any> {
     isLoading = true;
     try {
       const response = await fetch('/api/cases');

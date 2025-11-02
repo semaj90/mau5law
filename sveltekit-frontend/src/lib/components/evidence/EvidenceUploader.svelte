@@ -21,7 +21,7 @@ export default ;
     disabled = false,
     ariaLabel = 'Upload evidence files'
   }: Props = $props();
-  let files = $state([]);
+  let files = $state<any[]>([]);
   let inputEl;
   function bytesToSize(bytes) {
 	if (bytes === 0) return '0 B';

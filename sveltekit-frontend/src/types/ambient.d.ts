@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { User } from '$lib/types';
 declare module '$lib/shims/xstate' {
   // Minimal re-exports used by machines to avoid pulling full xstate types
   export function createMachine(...args: any[]): any;

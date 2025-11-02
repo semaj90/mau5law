@@ -14,7 +14,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   let { open = $bindable(false), title = '', description = '', side = 'right', size = 'md' }: Props = $props();
   let dialogEl = $state<HTMLElement | null>(null);
   function handleClose() {
-    open = $state(false);
+    open = false;
   }
   function handleBackdropClick(e: MouseEvent) {
     if (e.target === e.currentTarget) handleClose();

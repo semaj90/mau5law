@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * End-to-End API Integration Service
  * Wires together all legal AI platform components for seamless end-to-end workflows

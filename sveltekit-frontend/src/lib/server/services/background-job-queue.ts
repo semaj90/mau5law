@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Legal AI Background Processing Service Worker
  * Handles evidence analysis, case synthesis, report generation, and vector embeddings

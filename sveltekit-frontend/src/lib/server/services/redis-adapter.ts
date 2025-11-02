@@ -2,7 +2,7 @@ import { RedisCacheService } from './redis-cache';
 
 // Simple helper to persist an embedding under a key.
 // Uses hset (field-per-dimension) if available, otherwise stores JSON via set.
-export async function setEmbedding(key: string, embedding: number[]) {
+export async function setEmbedding(key: string, embedding: number[]): Promise<any> {
   const svc: any = RedisCacheService as any;
 
   // If service exposes hset, store as a hash (fields f0..fN)

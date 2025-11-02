@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * QLoRA Distillation API
  * Triggers enhanced RAG model distillation based on collected feedback

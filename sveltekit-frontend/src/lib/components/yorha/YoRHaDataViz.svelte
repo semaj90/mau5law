@@ -30,8 +30,8 @@
     animated = true
   : any } = $props();
   let chartRef: HTMLDivElement
-  let isVisible = $state(false);
-  let animationDelay = $state(0);
+  let isVisible = $state<boolean>(false);
+  let animationDelay = $state<number>(0);
   $effect(() => {
     // Intersection observer for animation: triggers
     const observer = new IntersectionObserver(

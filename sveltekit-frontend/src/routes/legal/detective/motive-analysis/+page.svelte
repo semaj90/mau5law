@@ -108,12 +108,12 @@
   let suspectProfile: SuspectProfile | null = $state(null);
   let motiveMatrix: MotiveAnalysis[] = $state([]);
   let timelineEvents: TimelineEvent[] = $state([]);
-  let relationshipMap = $state([]);
+  let relationshipMap = $state<any[]>([]);
   let psychologicalProfile: PsychologicalProfile | null = $state(null);
   let riskAssessment: RiskAssessment | null = $state(null);
   let evidenceCorrelation: EvidenceItem[] = $state([]);
   let behaviorPatterns: BehaviorPattern[] = $state([]);
-  let motiveTriggers = $state([]);
+  let motiveTriggers = $state<any[]>([]);
   let investigativeRecommendations: Recommendation[] = $state([]);
 
   // helper for safely iterating riskAssessment.factors without: 'unknown'
@@ -146,7 +146,7 @@
     if (_monitorInterval) clearInterval(_monitorInterval);
   });
 
-  async function initializeDetectiveMode() {
+  async function initializeDetectiveMode(): Promise<void> {
     detectiveSystem.status = 'initializing';
     detectiveSystem.processingStage = 'Loading detective AI systems...';
     // Initialize NES-GPU Memory Bridge for pattern recognition
@@ -166,7 +166,7 @@
     detectiveSystem.processingStage = 'Detective systems online';
     loadCaseData();
   }
-  async function loadCaseData() {
+  async function loadCaseData(): Promise<any> {
     try {
       const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api';
       const response = await fetch(`${apiBase}/cases/${caseId}`);
@@ -198,7 +198,7 @@
       evidenceCorrelation = generateMockEvidence();
     }
   }
-  async function analyzeMotives() {
+  async function analyzeMotives(): Promise<any> {
     if (!suspectProfile) return;
     analysisInProgress = true;
     analysisProgress = 0;
@@ -237,7 +237,7 @@
           break;
       }
     }
-    analysisInProgress = $state(false);
+    analysisInProgress = false;
     detectiveSystem.status = 'complete';
     detectiveSystem.processingStage = 'Motive analysis complete';
     detectiveSystem.motiveConfidence = calculateOverallConfidence();
@@ -253,7 +253,7 @@
       memoryMetrics.gpuUtilization = Math.random() * 100;
     }, 2000);
   }
-  async function analyzeBehaviorPatterns() {
+  async function analyzeBehaviorPatterns(): Promise<any> {
     return [
       {
         pattern: 'Escalating Aggression',
@@ -275,7 +275,7 @@
       }
     ];
   }
-  async function generatePsychologicalProfile() {
+  async function generatePsychologicalProfile(): Promise<any> {
     return {
       primaryTraits: ['Narcissistic tendencies', 'Poor impulse control', 'Emotional instability'],
       riskFactors: ['History of violence', 'Substance abuse', 'Financial stress'],
@@ -350,7 +350,7 @@
       }
     ];
   }
-  async function assessRisk() {
+  async function assessRisk(): Promise<any> {
     return {
       overallLevel: 'HIGH',
       immediateThreat: 'MEDIUM',
@@ -369,7 +369,7 @@
       }
     }
   }
-  async function generateRecommendations() {
+  async function generateRecommendations(): Promise<any> {
     return [
       {
         priority: 'IMMEDIATE',

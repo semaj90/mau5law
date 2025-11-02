@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * 3D Asset Search API with Neural Topology Integration
  * Connects enhanced reinforcement learning cache with brain graph topology

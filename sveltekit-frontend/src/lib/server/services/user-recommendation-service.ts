@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 // User Recommendation Service with PostgreSQL Integration
 // Predictive Analytics & Self-Prompting AI Chat History
 import { db } from '../db/index.js';

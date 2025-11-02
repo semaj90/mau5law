@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   	import { page } from '$app/state';
   	import { GamingHUD } from './GamingHUD.svelte';
@@ -49,7 +50,7 @@
   		children
   	} = $props();
   	let currentPath = $derived(page.url.pathname)
-  	let sidebarCollapsed = $state(false);
+  	let sidebarCollapsed = $state<boolean>(false);
   	function toggleSidebar() {
   		sidebarCollapsed = !sidebarCollapsed;
   	}

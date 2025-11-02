@@ -40,10 +40,10 @@ https: //svelte.dev/e/js_parse_error -->
   import { Input } from '$lib/components/ui/input.svelte';
   // Icons
   import { FileText, Brain, Tag, Scale, Zap, Download, Sparkles, Loader2 } from 'lucide-svelte';
-  let isAnalyzing = $state(false);
+  let isAnalyzing = $state<boolean>(false);
   let newTags = $state<string>('');
   let analysisMode = $state<'quick' | 'detailed' | 'legal'>('detailed');
-  async function analyzeEvidence() {
+  async function analyzeEvidence(): Promise<any> {
     if (!evidence) return;
     isAnalyzing = true;
     try {
@@ -69,7 +69,7 @@ https: //svelte.dev/e/js_parse_error -->
       isAnalyzing = false;
     }
   }
-  async function updateTags() {
+  async function updateTags(): Promise<any> {
     if (!evidence || !newTags.trim()) return;
     const tags = newTags
       .split(',')
@@ -252,7 +252,7 @@ https: //svelte.dev/e/js_parse_error -->
                     Admissibility
                   </div>
                   <span
-                    class="px-2 py-1 text-xs font-semibold rounded-full capitalize {getAdmissibilityColor(
+                    class="px-2" py-1 text-xs font-semibold rounded-full capitalize {getAdmissibilityColor(
                       evidence.analysis.admissibility
                     )}"
                   >

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { writable } from 'svelte/store'; // moved near top for clarity
 
 export interface LazyLoadOptions {

@@ -16,7 +16,7 @@
   }
   const { onViewEvidence = () => {} }: Props = $props();
   let fileInput: HTMLInputElement;
-  let dragActive = $state(false);
+  let dragActive = $state<boolean>(false);
   let isOpen = $derived($uploadStore.isOpen);
   let files = $derived($uploadStore.files || []);
   let activeUploads = $derived(files.filter(f => f?.status === 'uploading' || f?.status === 'processing'));
@@ -29,7 +29,7 @@
   }
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
       uploadStore.addFiles(Array.from(event.dataTransfer.files));
     }
@@ -40,7 +40,7 @@
   }
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
   }
   function removeFile(fileId: string) {
     uploadStore.removeFile(fileId);

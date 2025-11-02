@@ -28,7 +28,7 @@
   }: HeadlessDialogProps = $props();
   let container = $state<HTMLElement | null>(null);
   let previousActive = $state<HTMLElement | null>(null);
-  let mounted = $state(false);
+  let mounted = $state<boolean>(false);
   function setOpen(v: boolean) {
     open = v;
     if (v && onOpen) onOpen();
@@ -63,7 +63,7 @@
       }
     }
   }
-  async function trapFocus() {
+  async function trapFocus(): Promise<any> {
     if (!open || !container || !mounted) return;
     await tick();
     const target =
@@ -107,7 +107,7 @@
   $effect(() => {
     mounted = true;
     return () => {
-      mounted = $state(false);
+      mounted = false;
     };
   });
   function backdropClick(e: MouseEvent) {

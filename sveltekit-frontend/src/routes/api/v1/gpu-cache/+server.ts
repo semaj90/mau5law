@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 /*
@@ -152,7 +153,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { obj: gpuShaderCacheOrchestrator as unknown as ShaderCacheAPI, name: 'store' },
         ];
 
-        let invoked = $state(false);
+        let invoked = $state<boolean>(false);
         for (const c of candidates) {
           const fn = c.obj?.[c.name];
           if (typeof fn === 'function') {

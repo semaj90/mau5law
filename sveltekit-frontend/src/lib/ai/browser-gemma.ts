@@ -323,23 +323,23 @@ export const browserGemma = new BrowserGemma();
  *   import { browserGemma } from '$lib/ai/browser-gemma';
  *   import { onMount } from 'svelte';
  *
- *   let response = $state('');
- *   let isGenerating = $state(false);
+ *   let response = $state<string>('');
+ *   let isGenerating = $state<boolean>(false);
  *
  *   onMount(async () => {
  *     await browserGemma.initialize(); // Load model once
  *   });
  *
- *   async function askQuestion(question: string) {
+ *   async function askQuestion(question: string): Promise<any> {
  *     isGenerating = true;
  *     response = await browserGemma.generate(question, {
  *       maxTokens: 300,
  *       temperature: 0.7
  *     });
- *     isGenerating = $state(false);
+ *     isGenerating = false;
  *   }
  *
- *   async function streamResponse(question: string) {
+ *   async function streamResponse(question: string): Promise<any> {
  *     response = '';
  *     for await (const chunk of browserGemma.generateStream(question)) {
  *       response += chunk.text;

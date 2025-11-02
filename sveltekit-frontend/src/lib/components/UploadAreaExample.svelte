@@ -3,15 +3,15 @@
   import { UploadArea } from './UploadArea.svelte';
 
   let uploadComponent: any = $state(null);
-  let uploadStatus = $state('');
+  let uploadStatus = $state<string>('');
   let uploadedFiles: any[] = $state([]);
-  let showProgress = $state(true);
-  let autoUpload = $state(false);
-  let maxFiles = $state(5);
+  let showProgress = $state<boolean>(true);
+  let autoUpload = $state<boolean>(false);
+  let maxFiles = $state<number>(5);
   // rename to `maxSize` (bytes) - matches the example input: "Max Size (MB)"
   let maxSize = $state(10 * 1024 * 1024); // 10MB
   // add retryAttempts local config (do not pass as template prop to avoid Props type error)
-  let retryAttempts = $state(2);
+  let retryAttempts = $state<number>(2);
   // add a local endpoint variable instead of passing as a typed prop
   let uploadEndpoint = '/api/upload/';
 

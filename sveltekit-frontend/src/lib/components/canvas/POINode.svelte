@@ -3,7 +3,7 @@
   import { createEventDispatcher } from 'svelte';
   import { draggable } from '$lib/actions/draggable';
   import { aiService } from '$lib/services/aiService';
-  import * as ContextMenu from '$lib/components/ui/context-menu.svelte'";
+  import * as ContextMenu from '$lib/components/ui/context-menu.svelte';
   import { Edit, Save, Sparkles, Tag, User as UserIcon, X } from "lucide-svelte";
   // Simple POI interface for the component
   export interface POIData {
@@ -30,8 +30,8 @@
   let { poi } = $props(): POIData;
   const dispatch = createEventDispatcher();
   let nodeElement: HTMLElement | null = null;
-  let isEditing = $state(false);
-  let showContextMenu = $state(false);
+  let isEditing = $state<boolean>(false);
+  let showContextMenu = $state<boolean>(false);
   let contextX = 0;
   let contextY = 0;
   // Derived reactive values
@@ -108,10 +108,10 @@
     // Update local poi reference and emit an update event
     poi = updatedPoi;
     dispatch('update', updatedPoi);
-    isEditing = $state(false);
+    isEditing = false;
   }
   function cancelEditing() {
-    isEditing = $state(false);
+    isEditing = false;
     // reset form to current poi values
     formData = {
       name,
@@ -129,7 +129,7 @@
     contextY = event.clientY;
     showContextMenu = true;
   }
-  async function summarizePOI() {
+  async function summarizePOI(): Promise<any> {
     try {
       const summary = await aiService.summarizePOI(
         { name, profileData },

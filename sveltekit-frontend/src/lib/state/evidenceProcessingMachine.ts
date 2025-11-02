@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * XState State Machine for Evidence Processing Workflow
  * Handles the complete lifecycle of evidence from upload to AI analysis

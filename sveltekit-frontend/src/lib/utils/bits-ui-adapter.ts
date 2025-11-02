@@ -22,7 +22,7 @@ async function resolveBits(): Promise<BitsNamespace> {
   }
 }
 
-export async function getBitsNamespace() {
+export async function getBitsNamespace(): Promise<any> {
   return await resolveBits();
 }
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import { glyphShaderCacheBridge } from '$lib/cache/glyph-shader-cache-bridge';
@@ -42,8 +43,8 @@
     successRate: 0,
     memoryEfficiency: 0
   });
-  let showJobDialog = $state(false);
-  let isProcessing = $state(false);
+  let showJobDialog = $state<boolean>(false);
+  let isProcessing = $state<boolean>(false);
   let newJobForm = $state({
     documentId: '',
     analysisType: 'semantic',
@@ -51,7 +52,7 @@
     useGPU: true,
     errors: {} as Record<string, string[]>, // errors keyed by field name, e.g. { documentId: ['msg'], general: ['msg'] }
   });
-  let realTimeStats = $state(true);
+  let realTimeStats = $state<boolean>(true);
   $effect(() => {
     initializeNESGPUBridge();
     if (realTimeStats) {
@@ -59,7 +60,7 @@
     }
     loadProcessingHistory();
   });
-  async function initializeNESGPUBridge() {
+  async function initializeNESGPUBridge(): Promise<void> {
     try {
       // Initialize GPU device for glyph shader cache
       const adapter = await navigator.gpu?.requestAdapter();
@@ -82,7 +83,7 @@
       }
     }, 1000); // Update every second
   }
-  async function updateSystemMetrics() {
+  async function updateSystemMetrics(): Promise<any> {
     try {
       // Guard calls on nesGPUBridge which may not implement these exact methods
       const nesGPUMetrics = (nesGPUBridge as any).getPerformanceMetrics?.();
@@ -111,7 +112,7 @@
       console.error('Failed to update metrics:', error);
     }
   }
-  async function updateProcessingQueue() {
+  async function updateProcessingQueue(): Promise<any> {
     // Simulate processing queue updates
     if (activeJobs.length > 0 && Math.random() > 0.7) {
       const job = activeJobs[0];
@@ -133,7 +134,7 @@
       processingQueue = processingQueue.slice(1);
     }
   }
-  async function loadProcessingHistory() {
+  async function loadProcessingHistory(): Promise<any> {
     // Mock processing history
     completedJobs = [
       {
@@ -173,7 +174,7 @@
       }
     ];
   }
-  async function submitProcessingJob(event: Event) {
+  async function submitProcessingJob(event: Event): Promise<any> {
     // typed event to avoid implicit any
     event.preventDefault();
     if (!newJobForm.documentId.trim()) {
@@ -200,7 +201,7 @@
         await (nesGPUBridge as any).storeCHRROMPattern?.(`job_${job.id}`, {});
       }
       processingQueue = [...processingQueue, job];
-      showJobDialog = $state(false);
+      showJobDialog = false;
       // Reset form
       newJobForm = {
         documentId: '',

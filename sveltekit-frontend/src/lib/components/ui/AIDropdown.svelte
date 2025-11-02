@@ -1,5 +1,6 @@
 <!-- Production-level AI Dropdown using bits-ui with keyboard shortcuts -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   interface Props {
     disabled?: boolean;
@@ -27,7 +28,7 @@
     Wand2,
   } from "lucide-svelte";
   import { fly } from "svelte/transition";
-  let open = $state(false);
+  let open = $state<boolean>(false);
   // Track selected item
   let selectedItem = $state<string | null>(null);
   // Report types configuration
@@ -91,7 +92,7 @@
     if (reportShortcut && !disabled && !isGenerating) {
       event.preventDefault();
       onReportGenerate(reportShortcut.id);
-      open = $state(false);
+      open = false;
       return;
     }
     // AI tool shortcuts
@@ -100,12 +101,12 @@
         case "s":
           event.preventDefault();
           onSummarize();
-          open = $state(false);
+          open = false;
           break;
         case "a":
           event.preventDefault();
           onAnalyze();
-          open = $state(false);
+          open = false;
           break;
       }
     }
@@ -509,7 +510,7 @@
     onAnalyze,
   }: Props = $props();
   // HTML5-driven dropdown (no Melt UI). Accessible and keyboard aware.
-  let open = $state(false);
+  let open = $state<boolean>(false);
   type ReportCfg = {
     id: string;
     name: string;
@@ -568,14 +569,14 @@
   function triggerReport(id: string) {
     if (disabled || isGenerating) return;
     onReportGenerate?.(id);
-    open = $state(false);
+    open = false;
   }
   function triggerTool(id: 'summarize' | 'analyze', requiresContent = true) {
     if (disabled || isGenerating) return;
     if (requiresContent && !hasContent) return;
     if (id === 'summarize') onSummarize?.();
     if (id === 'analyze') onAnalyze?.();
-    open = $state(false);
+    open = false;
   }
   function handleGlobalKey(e: KeyboardEvent) {
     if (!(e.ctrlKey && e.shiftKey)) return;
@@ -585,13 +586,13 @@
       if (k === 's') {
         e.preventDefault();
         onSummarize?.();
-        open = $state(false);
+        open = false;
         return;
       }
       if (k === 'a') {
         e.preventDefault();
         onAnalyze?.();
-        open = $state(false);
+        open = false;
         return;
       }
     }
@@ -600,7 +601,7 @@
     if (match && !disabled && !isGenerating) {
       e.preventDefault();
       onReportGenerate?.(match.id);
-      open = $state(false);
+      open = false;
     }
   }
   onMount(() => {

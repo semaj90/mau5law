@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * SvelteKit GPU Cache Integration - SSR + Client Cache Orchestration
  * Provides seamless integration between server-side GPU caching and client-side caching

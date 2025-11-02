@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   const { caseId } = $props<{ caseId: string | undefined }>()
   const { enableRealtimeUpdates = true } = $props()
   const { showMetrics = true } = $props()
@@ -46,9 +47,9 @@
   const queryResults = writable<QueryResult[]>([]);
   const contextualSuggestions = writable<ContextualSuggestion[]>([]);
   let wsConnection: WebSocket | null = null; // Fixed syntax
-  let queryInput = $state(''); // Made reactive
-  let selectedTool = $state(''); // Made reactive
-  let isProcessing = $state(false); // Made reactive
+  let queryInput = $state<string>(''); // Made reactive
+  let selectedTool = $state<string>(''); // Made reactive
+  let isProcessing = $state<boolean>(false); // Made reactive
   let metricsInterval: ReturnType<typeof setInterval> | null = null;
   const availableMCPTools = [
     { id: 'enhanced_rag_query', name: 'Enhanced RAG Query', description: 'Semantic search with Context7 integration' }, // Fixed syntax
@@ -67,7 +68,7 @@
     if (wsConnection) wsConnection.close();
     if (metricsInterval) clearInterval(metricsInterval);
   });
-  async function initializeMCPConnection() {
+  async function initializeMCPConnection(): Promise<void> {
     mcpStatus.set('connecting');
     try {
       // Assuming /mcp/health is proxied by SvelteKit backend
@@ -137,7 +138,7 @@
         break;
     }
   }
-  async function loadInitialData() {
+  async function loadInitialData(): Promise<any> {
     const suggestions: any[] = [];
     if (caseId) {
       suggestions.push({
@@ -170,7 +171,7 @@
       }
     }, 5000);
   }
-  async function executeMCPTool(toolId: string, args: any = {}) {
+  async function executeMCPTool(toolId: string, args: any = {}): Promise<any> {
     if (isProcessing || !toolId) return;
     isProcessing = true;
     mcpTools.update(tools => tools.map(t => (t.id === toolId ? { ...t, status: 'busy' } : t)));

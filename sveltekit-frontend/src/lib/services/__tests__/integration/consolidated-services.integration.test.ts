@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // src/lib/services/__tests__/integration/consolidated-services.integration.test.ts
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import {

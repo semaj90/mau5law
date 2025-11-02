@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import { minioStorage } from '$lib/server/storage/minio';
 import { createId } from '@paralleldrive/cuid2';

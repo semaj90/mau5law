@@ -608,7 +608,7 @@ export function getServiceAdapters() {
 /**
  * Health check all services
  */
-export async function healthCheckServices() {
+export async function healthCheckServices(): Promise<any> {
 	const services = getServiceAdapters();
 	const results: Record<string, boolean> = {};
 	try {

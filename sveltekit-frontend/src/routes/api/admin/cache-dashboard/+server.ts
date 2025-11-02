@@ -154,7 +154,7 @@ function safeRedisGetClient(): RedisClientLike | null {
 
 // Use typed alias instead of repeated `(redisService as any)` casts
 // CHANGED: make async and always return a resolved object (never a Promise left unawaited)
-async function safeRedisGetStats() {
+async function safeRedisGetStats(): Promise<any> {
   const rs = redisService as unknown as RedisServiceLike;
   if (typeof rs.getStats === 'function') {
     try {
@@ -175,7 +175,7 @@ async function safeRedisGetStats() {
         connected = false;
       }
     } else {
-      connected = $state(false);
+      connected = false;
     }
     return {
       connected,
@@ -191,7 +191,7 @@ async function safeRedisGetStats() {
   }
 }
 
-async function safeRedisGetInfo() {
+async function safeRedisGetInfo(): Promise<any> {
   const rs = redisService as unknown as RedisServiceLike;
   if (typeof rs.getRedisInfo === 'function') {
     try {
@@ -566,7 +566,7 @@ async function getPerformanceMetrics(timeRange: string): Promise<PerformanceMetr
  */
 async function getSystemHealth(): Promise<SystemHealthResponse> {
   // Prefer a guarded method call; fallback to safe redis connected state
-  let isRedisHealthy = $state(false);
+  let isRedisHealthy = $state<boolean>(false);
   try {
     const maybeFn = (redisService as unknown as Record<string, unknown>).isHealthy;
     if (typeof maybeFn === 'function') {

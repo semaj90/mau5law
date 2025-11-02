@@ -290,8 +290,8 @@ export async function testVectorOperations(): Promise<{
   embeddingCacheWorking: boolean;
 }> {
   const pgvectorAvailable = await checkPgVectorAvailable();
-  let similaritySearchWorking = $state(false);
-  let embeddingCacheWorking = $state(false);
+  let similaritySearchWorking = $state<boolean>(false);
+  let embeddingCacheWorking = $state<boolean>(false);
   if (pgvectorAvailable) {
     try {
       const testEmbedding = generateSampleEmbedding();

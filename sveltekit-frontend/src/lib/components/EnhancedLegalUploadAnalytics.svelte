@@ -4,6 +4,8 @@
   Features NieR theming and legal-specific optimizations
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // --- Fixes applied in this block: imports, props default, $state usage, helper functions, event handlers, network checks ---
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -57,14 +59,14 @@
   let uploadActor = $state<ReturnType<typeof createUploadAnalyticsActor> | null>(null);
   let machineState = $state<any>(null);
   let fileInput = $state<HTMLInputElement | null>(null);
-  let dragOver = $state(false);
+  let dragOver = $state<boolean>(false);
   let selectedFiles = $state<File[]>([]);
   let aiAnalysisResults = $state<any[]>([]);
-  let showAdvancedSettings = $state(false);
+  let showAdvancedSettings = $state<boolean>(false);
   let uploadStartTime = $state<number>(0);
   // Legal AI integration
-  let ollamaConnected = $state(false);
-  let currentModel = $state('gemma3:270m');
+  let ollamaConnected = $state<boolean>(false);
+  let currentModel = $state<string>('gemma3:270m');
   let analysisDepth = $state<'quick' | 'standard' | 'comprehensive'>('standard');
   const analysisDepthOptions = [
     { value: 'quick', label: 'Quick Scan' },
@@ -117,7 +119,7 @@
       uploadActor?.stop?.();
     };
   });
-  async function initializeEnhancedUploadAnalytics() {
+  async function initializeEnhancedUploadAnalytics(): Promise<any> {
     const userAnalytics: UserAnalytics = {
       userId: userId || 'anonymous',
       sessionId: `legal-session-${Date.now()}`,
@@ -155,7 +157,7 @@
     });
     uploadActor.start();
   }
-  async function checkOllamaConnection() {
+  async function checkOllamaConnection(): Promise<void> {
     try {
       const modelsResponse = await fetch('/api/ai/ollama/models');
       if (modelsResponse.ok) {
@@ -165,11 +167,11 @@
         }
         ollamaConnected = true;
       } else {
-        ollamaConnected = $state(false);
+        ollamaConnected = false;
       }
     } catch (error) {
       console.warn('Ollama connection check failed:', error);
-      ollamaConnected = $state(false);
+      ollamaConnected = false;
     }
   }
   function setupAdvancedUserTracking() {
@@ -212,16 +214,16 @@
       });
     });
   }
-  async function handleFileSelect(ev: Event) {
+  async function handleFileSelect(ev: Event): Promise<any> {
     const target = ev.target as HTMLInputElement | null;
     if (target?.files) {
       const files = Array.from(target.files);
       await selectFiles(files);
     }
   }
-  async function handleDrop(ev: DragEvent) {
+  async function handleDrop(ev: DragEvent): Promise<any> {
     ev.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     if (ev.dataTransfer?.files) {
       const files = Array.from(ev.dataTransfer.files);
       await selectFiles(files);
@@ -232,9 +234,9 @@
     dragOver = true;
   }
   function handleDragLeave() {
-    dragOver = $state(false);
+    dragOver = false;
   }
-  async function selectFiles(files: File[]) {
+  async function selectFiles(files: File[]): Promise<any> {
     // Enhanced file validation for legal documents
     const validFiles = files.filter(file => {
       const isValidType = allowedTypes.includes(file.type);
@@ -271,7 +273,7 @@
       await performPreAnalysis(limitedFiles);
     }
   }
-  async function performPreAnalysis(files: File[]) {
+  async function performPreAnalysis(files: File[]): Promise<any> {
     try {
       const analysisPromises = files.map(async (file) => {
         const formData = new FormData();
@@ -290,7 +292,7 @@
       console.warn('Pre-analysis failed:', error);
     }
   }
-  async function startEnhancedUpload() {
+  async function startEnhancedUpload(): Promise<any> {
     if (uploadActor && selectedFiles.length > 0) {
       uploadStartTime = Date.now();
       uploadActor.send({ type: 'START_UPLOAD' });
@@ -300,7 +302,7 @@
       }
     }
   }
-  async function performEnhancedAnalysis() {
+  async function performEnhancedAnalysis(): Promise<any> {
     try {
       const analysisRequests = selectedFiles.map(async (file) => {
         const formData = new FormData();

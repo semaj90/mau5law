@@ -1,5 +1,6 @@
 <!-- Evidence Manager - Enhanced-Bits Legal Component -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { fade, scale, fly } from 'svelte/transition';
   // the module exports a default builder (adjusted per compile hint)
   import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte';
@@ -42,11 +43,11 @@
   });
   // Svelte 5 runes / reactive primitives (keep existing project pattern)
   let selectedEvidence = $state<Set<string>>(new Set());
-  let searchTerm = $state('');
+  let searchTerm = $state<string>('');
   let filterType = $state<string>('all');
   let sortBy = $state<'date' | 'relevance' | 'type' | 'authenticity'>('relevance');
-  let isAnalyzing = $state(false);
-  let showUpload = $state(false);
+  let isAnalyzing = $state<boolean>(false);
+  let showUpload = $state<boolean>(false);
   // Sample evidence data if none provided
   let evidenceData = $state<EvidenceItem[]>(evidence.length > 0 ? evidence : [
     {
@@ -170,7 +171,7 @@
   function clearSelection() {
     selectedEvidence = new Set();
   }
-  async function analyzeEvidence(evidenceId: string) {
+  async function analyzeEvidence(evidenceId: string): Promise<any> {
     if (!onAnalyze) return;
     isAnalyzing = true;
     try {
@@ -213,7 +214,7 @@
     }
     return (styles as any)[authenticity] || styles.pending;
   }
-  async function handleFileUpload(event: Event) {
+  async function handleFileUpload(event: Event): Promise<any> {
     const input = event.target as HTMLInputElement | null;
     if (!input) return;
     const files = input.files;

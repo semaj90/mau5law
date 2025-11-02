@@ -297,7 +297,7 @@ async function handleSearch(options: {
   maxResults?: number;
   useAI?: boolean;
   advancedOptions?: Record<string, unknown>;
-}) {
+}): Promise<any> {
   const { query, jurisdiction, category, maxResults = 10, useAI = true, advancedOptions = {} } = options;
   const startTime = Date.now();
   const results = await enhancedLegalSearch.search(query, {

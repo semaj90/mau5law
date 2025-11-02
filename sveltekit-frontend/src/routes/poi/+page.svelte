@@ -1,12 +1,13 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from 'lucide-svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   // State
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let viewMode = $state<'grid' | 'list' >('grid');
-  let showFilters = $state(false);
+  let showFilters = $state<boolean>(false);
   // Mock persons data - replace with real API call
   let persons = $state([
     {
@@ -157,7 +158,7 @@ Clear Filters
               </div>
               <div>
                 <h3 class="font-semibold text-gray-900 dark:text-white">{person.name}</h3>
-                <span class="inline-block px-2 py-1 text-xs rounded-full {
+                <span class="inline-block" px-2 py-1 text-xs rounded-full {
                   person.status === 'Person of Interest' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
                   person.status === 'Witness' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
                   person.status === 'Suspect' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :

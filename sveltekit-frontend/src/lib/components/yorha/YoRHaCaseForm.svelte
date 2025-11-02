@@ -57,8 +57,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // allow null initially; template guards with {#if formIntegration}
   let formIntegration FormIntegrationType | null = $state(null);
   // Form integration state
-  let currentStep = $state(0);
-  let totalSteps = $state(3); // Basic Info, Legal Details, Review
+  let currentStep = $state<number>(0);
+  let totalSteps = $state<number>(3); // Basic Info, Legal Details, Review
   // subscription cleanup function
   let unsubscribe: (() => void) | null = null;
   // Derived reactive sources (use formIntegration now that it's declared)
@@ -70,7 +70,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   let isValid: boolean = $derived(formIntegration ? get(formIntegration.form.allErrors).length === 0 : true);
   // Removed: let isValidating: boolean = $derived(formIntegration ? Boolean($(formIntegration.form.validating)) : false); // Corrected property name and explicitly typed
   // errors will be accessed directly from $formIntegration.form.errors
-  let progress = $state(0);
+  let progress = $state<number>(0);
   // Derived variable for unwrapped form data to simplify template access
   // Explicitly cast to CaseCreationSchemaType to resolve property access errors
   let formData: CaseCreationSchemaType = $derived(
@@ -133,7 +133,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     }
   });
   // Enhanced form submission with PostgreSQL-first worker integration
-  async function handleEnhancedSubmit(formData: Record<string, any>) {
+  async function handleEnhancedSubmit(formData: Record<string, any>): Promise<any> {
     console.log('🚀 Enhanced case creation starting:', formData);
     try {
       // call the API with the form data (cast as any to avoid strict mismatch)

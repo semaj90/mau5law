@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // Enhanced Legal AI Search Service with LangChain.js, Nomic Embed, and pgvector
 // Implements RAG pattern with vector similarity search and semantic enhancement
 import { MemoryVectorStore } from "@langchain/community/vectorstores/memory";

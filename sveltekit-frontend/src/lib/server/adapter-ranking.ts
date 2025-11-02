@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /* Server helper: adapter-ranking
 
 Provides small helpers to pick the top adapter from Redis and record

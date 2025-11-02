@@ -1,4 +1,7 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
   import { Badge } from '$lib/components/ui/badge.svelte';
   import { Button } from '$lib/components/ui/core.svelte';

@@ -36,7 +36,7 @@ export const ENHANCED_BITS_COMPONENTS = {
   EditorCard: () => import('./EditorCard.svelte'),
 };
 // Dynamic component loader
-export async function loadComponent(name: keyof typeof ENHANCED_BITS_COMPONENTS) {
+export async function loadComponent(name: keyof typeof ENHANCED_BITS_COMPONENTS): Promise<any> {
   try {
     const module = await ENHANCED_BITS_COMPONENTS[name]();
     return module.default;

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // QdrantService.ts - Production Implementation
 // Fixed: 384-dimensional vectors for nomic-embed-text
 import { QdrantClient } from '@qdrant/js-client-rest';

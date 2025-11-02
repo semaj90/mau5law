@@ -81,7 +81,7 @@ export function getTableByName(tableName: string) {
   return tableMap[tableName as keyof typeof tableMap];
 }
 // Enhanced health check using centralized connection manager
-export async function healthCheck() {
+export async function healthCheck(): Promise<any> {
   try {
     const health = await getDatabaseHealth();
     const connection = await testDatabaseConnection();
@@ -132,7 +132,7 @@ export async function healthCheck() {
   }
 }
 // System health with comprehensive checks
-export async function getSystemHealth() {
+export async function getSystemHealth(): Promise<any> {
   const dbHealth = await getDatabaseHealth();
   const connectionTest = await testDatabaseConnection();
   const appHealth = await healthCheck();
@@ -175,7 +175,7 @@ export function getVectorStore() {
   }
 }
 // Database migration utilities
-export async function runMigration(migrationName: string, migrationSql: string) {
+export async function runMigration(migrationName: string, migrationSql: string): Promise<any> {
   return executeQuery(async (client) => {
     const start = Date.now();
     try {

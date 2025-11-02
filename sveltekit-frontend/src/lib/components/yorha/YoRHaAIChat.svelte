@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa AI Chat Component with Enhanced RAG Integration -->
 <script lang="ts">
+import type { Message } from '$lib/types';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { aiChatStore  } from '$lib/stores/unified';
@@ -10,9 +11,9 @@ https://svelte.dev/e/js_parse_error -->
   const messages = writable<any[]>([]);
   let messageInput = '';
   let chatContainer: HTMLDivElement | null = null;
-  let isConnected = $state(false);
-  let isTyping = $state(false);
-  let isLoading = $state(false);
+  let isConnected = $state<boolean>(false);
+  let isTyping = $state<boolean>(false);
+  let isLoading = $state<boolean>(false);
   const RAG_SERVICE_URL = 'http://localhost:8093';
   function pushMessage(msg: any) {
     messages.update(m => [...m, msg]);
@@ -38,7 +39,7 @@ How can I assist with your legal AI operations?`,
         },
       ]);
     } catch (error) {
-      isConnected = $state(false);
+      isConnected = false;
       messages.set([
         {
           id: 'error',
@@ -62,7 +63,7 @@ Offline Mode Available — Basic chat functionality only.`,
     // scroll initial
     scrollToBottom();
   });
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     const trimmed = messageInput.trim();
     if (!trimmed) return;
     const userMessage = {
@@ -79,8 +80,8 @@ Offline Mode Available — Basic chat functionality only.`,
     // Handle commands locally
     if (trimmed.startsWith('/')) {
       await handleCommand(trimmed);
-      isLoading = $state(false);
-      isTyping = $state(false);
+      isLoading = false;
+      isTyping = false;
       scrollToBottom();
       return;
     }
@@ -119,11 +120,11 @@ Offline Mode Available — Basic chat functionality only.`,
       pushMessage(errorMessage);
     } finally {
       isLoading = false;
-      isTyping = $state(false);
+      isTyping = false;
       scrollToBottom();
     }
   }
-  async function handleCommand(command: string) {
+  async function handleCommand(command: string): Promise<any> {
     const parts = command.slice(1).split(' ');
     const cmd = parts.shift()?.toLowerCase() || '';
     const arg = parts.join(' ');

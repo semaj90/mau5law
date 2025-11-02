@@ -1,10 +1,12 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { vectorSearchIndex, type SearchQuery, type VectorSearchResult } from '$lib/services/vector-search-index';
   import { ModernButton } from '$lib/components/ui/Button.svelte';
-  let searchQuery = $state('');
-  let isSearching = $state(false);
+  let searchQuery = $state<string>('');
+  let isSearching = $state<boolean>(false);
   let searchResults: VectorSearchResult[] = $state([]);
   let searchStats = $state<any>(null);
   let selectedFilters = $state({
@@ -14,7 +16,7 @@
     minimumConfidence: 0.5,
   });
   let rankingStrategy = $state<SearchQuery['rankingStrategy']>('similarity');
-  let showFilters = $state(false);
+  let showFilters = $state<boolean>(false);
   const documentTypes = ['contract', 'evidence', 'brief', 'citation', 'regulation', 'case_law'];
   const jurisdictions = ['federal', 'state', 'municipal', 'international'];
   const riskLevels = ['low', 'medium', 'high', 'critical'];
@@ -33,7 +35,7 @@ try {
     }
     })();
   });
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     isSearching = true;
     try {

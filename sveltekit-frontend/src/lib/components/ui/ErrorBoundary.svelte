@@ -11,7 +11,7 @@
   let { fallback = '', showDetails = false, onError = null }: Props = $props();
   let error: Error | null = null;
   let errorInfo: string = '';
-  let isRetrying = $state(false);
+  let isRetrying = $state<boolean>(false);
   // Error details for debugging
   let errorDetails = $derived(
     error
@@ -41,7 +41,7 @@
     error = null;
     errorInfo = '';
     setTimeout(() => {
-      isRetrying = $state(false);
+      isRetrying = false;
       // Reload the page if in browser
       if (typeof window !== 'undefined') {
         window.location.reload();

@@ -12,15 +12,15 @@ https://svelte.dev/e/js_parse_error -->
   let { isOpen = false, onClose, userRole = 'prosecutor' }: AssistantProps = $props();
   // Core state
   let currentMode = $state<'chat' | 'evidence' | 'analysis'>('chat');
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let chatMessages = $state<
     Array()
   >([]);
   let evidenceItems = $state<
     Array()
   >([]);
-  let isProcessing = $state(false);
-  let contextExpanded = $state(false);
+  let isProcessing = $state<boolean>(false);
+  let contextExpanded = $state<boolean>(false);
   // RAG Integration
   let ragStore = createRagStreamStore({
     maxRetries: 3,
@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
   let chatContainerRef: HTMLDivElement;
   let evidenceEditorRef: HTMLDivElement// Golden ratio dimensions
   const GOLDEN_RATIO  | null>(null); const data = 1.618);
-  let containerWidth = $state(800);
+  let containerWidth = $state<number>(800);
   let containerHeight = $state(containerWidth / GOLDEN_RATIO);
   $effect(() => {
     if (isOpen && searchBarRef) {
@@ -61,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     }, 100);
   }
-  async function handleSearch() {
+  async function handleSearch(): Promise<any> {
     if (!searchQuery.trim() || isProcessing) return;
     const query = searchQuery.trim();
     addMessage('user', query);
@@ -81,12 +81,12 @@ https://svelte.dev/e/js_parse_error -->
           updateLastAssistantMessage(responseContent);
         },
         onDone: () => {
-          isProcessing = $state(false);
+          isProcessing = false;
         },
         onError: (error) => {
           console.error('RAG Error:', error);
           addMessage('assistant', `I encountered an error: ${error.message}. Please try again.`);
-          isProcessing = $state(false);
+          isProcessing = false;
         },
       });
       if (!responseContent) {
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
         'assistant',
         "I'm sorry, I encountered an error processing your request. Please try again."
       );
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   function updateLastAssistantMessage(content: string) {

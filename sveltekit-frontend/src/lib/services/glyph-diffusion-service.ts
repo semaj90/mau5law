@@ -626,7 +626,7 @@ export class GlyphDiffusionService {
   }
 }
 // Initialize database tables
-async function initializeGlyphTables() {
+async function initializeGlyphTables(): Promise<void> {
   await query(`)
     CREATE TABLE IF NOT EXISTS glyph_generations ()
       id TEXT PRIMARY KEY,

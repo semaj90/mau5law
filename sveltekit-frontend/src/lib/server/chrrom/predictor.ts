@@ -187,14 +187,14 @@ class MarkovPredictorWithRedis {
     pendingUpdates: number;
     redisConnected: boolean;
   }> {
-    let redisConnected = $state(false);
+    let redisConnected = $state<boolean>(false);
     if (this.cacheEnabled) {
       try {
         await this.redis.ping();
         redisConnected = true;
         const keys = (await this.redis.keys?.('transitions:*')) ?? [];
       } catch (error) {
-        redisConnected = $state(false);
+        redisConnected = false;
       }
     }
     const uniqueActions = new Set<string>();

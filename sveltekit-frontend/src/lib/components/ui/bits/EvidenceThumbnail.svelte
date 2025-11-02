@@ -19,8 +19,8 @@
     class: className = '',
     ...restProp
   }: Props = $props();
-  let isPlaying = $state(false);
-  let isLoaded = $state(false);
+  let isPlaying = $state<boolean>(false);
+  let isLoaded = $state<boolean>(false);
   let aiHighlights = $state<any[]>([]) => []);
   // Size configurations
   let sizeClasses = $derived({

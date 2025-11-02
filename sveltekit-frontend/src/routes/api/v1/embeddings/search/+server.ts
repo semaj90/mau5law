@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /*
  * Semantic Search API Endpoint
  * GPU-accelerated semantic search using nomic-embed-text

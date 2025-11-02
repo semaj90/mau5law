@@ -20,9 +20,9 @@
   // Local state
   let aiSearchQuery: string = '';
   let errorMessage: string = '';
-  let isAISearching = $state(false);
-  let isAIChatting = $state(false);
-  let isSummarizing = $state(false);
+  let isAISearching = $state<boolean>(false);
+  let isAIChatting = $state<boolean>(false);
+  let isSummarizing = $state<boolean>(false);
   let aiSearchResults: any[] = [];
   let aiChatMessage: string = '';
   let aiChatResponse = '';
@@ -30,7 +30,7 @@
   let summaryResult = '';
 
   // Enhanced AI Search with LangChain.js and vector similarity
-  async function performAISearch() {
+  async function performAISearch(): Promise<any> {
     if (!aiSearchQuery.trim() || isAISearching) return;
     isAISearching = true;
     aiSearchResults = [];
@@ -76,7 +76,7 @@
   }
 
   // Fallback search method
-  async function performFallbackSearch() {
+  async function performFallbackSearch(): Promise<any> {
     try {
       const payload = { query: aiSearchQuery, jurisdiction: 'all', category: 'all', useAI: true };
       const response = await fetch('/api/ai/legal-search', {
@@ -98,7 +98,7 @@
   }
 
   // AI Chat
-  async function performAIChat() {
+  async function performAIChat(): Promise<any> {
     if (!aiChatMessage.trim() || isAIChatting) return;
     isAIChatting = true;
     aiChatResponse = '';
@@ -128,7 +128,7 @@
   }
 
   // AI Summarization
-  async function performAISummarization() {
+  async function performAISummarization(): Promise<any> {
     if (!summarizeText.trim() || isSummarizing) return;
     isSummarizing = true;
     summaryResult = '';

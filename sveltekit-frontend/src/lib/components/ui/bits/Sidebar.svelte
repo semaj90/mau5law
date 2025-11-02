@@ -46,7 +46,7 @@
   const themeContext = getContext<any>('theme');
   const currentTheme = themeContext?.resolvedTheme?.() || 'light';
   let isCollapsed = $state(defaultCollapsed);
-  let isHovering = $state(false);
+  let isHovering = $state<boolean>(false);
   let activeItem = $state<string | null>(null);
   // Computed expanded state - expands on hover or when explicitly opened
   let isExpanded = $derived(!isCollapsed || isHovering);
@@ -89,7 +89,7 @@
     dispatch('mouseEnter');
   }
   function handleMouseLeave() {
-    isHovering = $state(false);
+    isHovering = false;
     dispatch('mouseLeave');
   }
   // Calculate sidebar position classes

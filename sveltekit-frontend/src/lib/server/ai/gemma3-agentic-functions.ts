@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 import { caseScoringService } from '../services/CaseScoringService';
 import { cognitiveCache } from './cache'; // Keep this import
 import { embeddingGemma } from './embeddinggemma-service'; // Direct embeddingGemma import

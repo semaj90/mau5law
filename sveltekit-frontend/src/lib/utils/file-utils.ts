@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // File utility functions for evidence management
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 Bytes';

@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 // Evidence search API endpoint with advanced vector capabilities
@@ -26,7 +28,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({ results: [], searchMode: 'none', executionTime: 0 });
     }
     const startTime = Date.now();
-    let results = [];
+    let results: SearchResult[] = [];
     switch (searchMode) {
       case 'text':
         // Fast metadata search

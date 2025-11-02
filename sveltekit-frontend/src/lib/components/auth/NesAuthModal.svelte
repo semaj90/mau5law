@@ -17,15 +17,15 @@
     form = null
   }: Props = $props();
   // component state
-  let email = $state('');
-  let password = $state('');
+  let email = $state<string>('');
+  let password = $state<string>('');
   let error = $state<string | null>(null);
-  let submitting = $state(false);
+  let submitting = $state<boolean>(false);
   function close() {
-    open = $state(false);
+    open = false;
     onClose?.();
   }
-  async function submit(e?: Event) {
+  async function submit(e?: Event): Promise<any> {
     e?.preventDefault();
     error = null;
     if (!email || !password) {

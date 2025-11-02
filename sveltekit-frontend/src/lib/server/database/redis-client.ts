@@ -42,7 +42,7 @@ interface MinimalRedisClient {
 // Use the minimal interface for runtime instances
 type IORedisClient = MinimalRedisClient;
 let redis: IORedisClient | null = null; // This is the module's managed shared instance
-let isConnected = $state(false);
+let isConnected = $state<boolean>(false);
 /**
  * Get Redis client instance
  */
@@ -57,11 +57,11 @@ export async function getRedisClient(): Promise<IORedisClient | null> {
       console.log('🎮 Redis connected successfully');
     });
     instance.on('error', (error: Error) => {
-      isConnected = $state(false);
+      isConnected = false;
       console.warn('🔴 Redis connection error:', (error && (error as Error).message) || String(error));
     });
     instance.on('close', () => {
-      isConnected = $state(false);
+      isConnected = false;
       console.log('🔴 Redis connection closed');
     });
     // test ping - returns: 'PONG' on success
@@ -71,7 +71,7 @@ export async function getRedisClient(): Promise<IORedisClient | null> {
   } catch (error) {
     console.warn('🔴 Failed to connect to Redis via createRedisInstance():', error);
     redis = null;
-    isConnected = $state(false);
+    isConnected = false;
     return null;
   }
 }
@@ -99,7 +99,7 @@ export async function closeRedisConnection(): Promise<void> {
       }
     }
     redis = null;
-    isConnected = $state(false);
+    isConnected = false;
     console.log('🎮 Redis connection closed gracefully');
   }
 }

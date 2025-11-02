@@ -40,8 +40,8 @@
     gpu: false,
     vectorSearch: true,
   });
-  let recentActivity = $state([]);
-  let isLoading = $state(true);
+  let recentActivity = $state<any[]>([]);
+  let isLoading = $state<boolean>(true);
   let lastUpdated = $state(new Date());
   $effect(() => {
     (async () => {
@@ -53,7 +53,7 @@
     const interval = setInterval(refreshData, 30000);
     return () => clearInterval(interval);
   });
-  async function loadSystemStats() {
+  async function loadSystemStats(): Promise<any> {
     try {
       const response = await fetch('/api/admin/system-stats');
       if (response.ok) {
@@ -76,7 +76,7 @@
       console.error('Failed to load system stats:', error);
     }
   }
-  async function loadSystemHealth() {
+  async function loadSystemHealth(): Promise<any> {
     try {
       const response = await fetch('/api/admin/system-health');
       if (response.ok) {
@@ -89,7 +89,7 @@
       isLoading = false;
     }
   }
-  async function loadRecentActivity() {
+  async function loadRecentActivity(): Promise<any> {
     try {
       const response = await fetch('/api/admin/recent-activity');
       if (response.ok) {
@@ -128,7 +128,7 @@
       console.error('Failed to load recent activity:', error);
     }
   }
-  async function refreshData() {
+  async function refreshData(): Promise<any> {
     await Promise.all([loadSystemStats(), loadSystemHealth(), loadRecentActivity()]);
     lastUpdated = new Date();
   }
@@ -312,7 +312,7 @@
           {#each Array.isArray(recentActivity) ? recentActivity : [] as activity}
             {@const ActivityIconComp = getActivityIcon(activity.type)}
             <div
-              class="flex items-start gap-3 p-3 border-l-4 {activity.status === 'success'
+              class="flex" items-start gap-3 p-3 border-l-4 {activity.status === 'success'
                 ? 'border-green-500 bg-green-50'
                 : activity.status === 'error'
                   ? 'border-red-500 bg-red-50'

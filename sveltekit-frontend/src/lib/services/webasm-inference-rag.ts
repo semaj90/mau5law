@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * WebAssembly Inference RAG Integration
  * Integrates WebAssembly inference capabilities with the Enhanced RAG pipeline

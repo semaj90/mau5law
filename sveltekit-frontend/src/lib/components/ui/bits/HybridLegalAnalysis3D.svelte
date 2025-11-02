@@ -4,6 +4,7 @@ https://svelte.dev/e/expected_token -->
 <!-- Hybrid Legal Document Analysis Component -->
 <!-- Combines EmbeddingGemma + NES YoRHa 3D + Hybrid Vector APIs -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount, tick } from "svelte";
@@ -17,7 +18,7 @@ https://svelte.dev/e/expected_token -->
     createNESProgressBar,
     NES_YORHA_PALETTE,
     type NESYoRHaHybridStyle
-  } from '$lib/components/three/yorha-ui/NESYoRHaHybrid3D.svelte'";
+  } from '$lib/components/three/yorha-ui/NESYoRHaHybrid3D.svelte';
   import * as THREE from 'three';
   import {
     FileText,
@@ -55,8 +56,8 @@ https://svelte.dev/e/expected_token -->
   let canvasContainer: HTMLElement;
   let analysisComponents: NESYoRHaHybrid3D[] = [];
   // Analysis State
-  let isAnalyzing = $state(false);
-  let analysisProgress = $state(0);
+  let isAnalyzing = $state<boolean>(false);
+  let analysisProgress = $state<number>(0);
   let analysisResults = $state<any>(null);
   let hybridEmbeddings = $state<any[]>([]);
   let vectorBackend = $state<'pgvector' | 'qdrant' | 'hybrid'>('hybrid');
@@ -186,7 +187,7 @@ https://svelte.dev/e/expected_token -->
     camera.updateProjectionMatrix();
     renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
   }
-  async function checkSystemHealth() {
+  async function checkSystemHealth(): Promise<any> {
     try {
       // Check hybrid embedding API health
       const healthResponse = await fetch('/api/embeddings/hybrid?action=health');
@@ -211,7 +212,7 @@ https://svelte.dev/e/expected_token -->
       });
     }
   }
-  async function startHybridAnalysis() {
+  async function startHybridAnalysis(): Promise<any> {
     if (documents.length === 0) {
       notifications.add({
         type: "warning",
@@ -324,7 +325,7 @@ https://svelte.dev/e/expected_token -->
       docComponent.scale.setScalar(confidenceScale);
     }
   }
-  async function performDocumentClustering() {
+  async function performDocumentClustering(): Promise<any> {
     if (analysisData.length < 2) return;
     // Simple k-means clustering based on embeddings
     const embeddings = analysisData.map(d => d.embedding);

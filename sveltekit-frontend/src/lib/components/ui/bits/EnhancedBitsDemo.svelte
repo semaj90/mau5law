@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Button, Dialog, Input } from './index';
   // Local SelectOption type (used by the demo data)
@@ -11,15 +13,15 @@
   import { cn } from '$lib/utils/cn';
   import { Search, FileText, Scale, Brain, AlertTriangle, CheckCircle } from 'lucide-svelte';
   // Demo state using Svelte 5 runes
-  let selectedCaseType = $state('');
-  let selectedEvidenceCategory = $state('');
-  let searchQuery = $state('');
-  let dialogOpen = $state(false);
-  let evidenceDialogOpen = $state(false);
-  let currentTab = $state('buttons');
-  let selectedEvidenceCard = $state(null);
-  let aiAnalysisLoading = $state(false);
-  let evidenceUploadProgress = $state(0);
+  let selectedCaseType = $state<string>('');
+  let selectedEvidenceCategory = $state<string>('');
+  let searchQuery = $state<string>('');
+  let dialogOpen = $state<boolean>(false);
+  let evidenceDialogOpen = $state<boolean>(false);
+  let currentTab = $state<string>('buttons');
+  let selectedEvidenceCard = $state<any>(null);
+  let aiAnalysisLoading = $state<boolean>(false);
+  let evidenceUploadProgress = $state<number>(0);
   // Mock data for demos
   const caseTypes: SelectOption[] = [
     { value: 'criminal', label: 'Criminal Cases', description: 'Criminal law proceedings and investigations' },
@@ -73,19 +75,19 @@
     },
   ];
   // Demo functions
-  async function runAIAnalysis() {
+  async function runAIAnalysis(): Promise<any> {
     aiAnalysisLoading = true;
     // Simulate AI processing
     await new Promise(resolve => setTimeout(resolve, 2000));
-    aiAnalysisLoading = $state(false);
+    aiAnalysisLoading = false;
   }
-  async function uploadEvidence() {
+  async function uploadEvidence(): Promise<any> {
     evidenceUploadProgress = 0;
     const interval = setInterval(() => {
       evidenceUploadProgress += 10;
       if (evidenceUploadProgress >= 100) {
         clearInterval(interval);
-        evidenceDialogOpen = $state(false);
+        evidenceDialogOpen = false;
         evidenceUploadProgress = 0;
       }
     }, 200);

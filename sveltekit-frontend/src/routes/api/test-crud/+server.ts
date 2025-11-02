@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /*
  * PostgreSQL CRUD Test Endpoint
  * Tests database connectivity and basic operations

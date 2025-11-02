@@ -165,15 +165,15 @@ export const browserEmbeddings = new BrowserEmbeddings();
  *   import { browserEmbeddings } from '$lib/ai/browser-embeddings';
  *   import { onMount } from 'svelte';
  *
- *   let isReady = $state(false);
- *   let searchResults = $state([]);
+ *   let isReady = $state<boolean>(false);
+ *   let searchResults = $state<any[]>([]);
  *
  *   onMount(async () => {
  *     await browserEmbeddings.initialize();
  *     isReady = true;
  *   });
  *
- *   async function searchLocal(query: string) {
+ *   async function searchLocal(query: string): Promise<any> {
  *     const embedding = await browserEmbeddings.embed(query);
  *     // Use embedding for local search without server call
  *     searchResults = await localVectorSearch(embedding);

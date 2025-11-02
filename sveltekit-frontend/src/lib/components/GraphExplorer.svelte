@@ -7,6 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   Neo4j → Embeddings → Quantization → WebGPU Textures → LokiJS → IndexedDB → Reactive UI
 -->
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { db, chatHistory, graphNodes } from '../db/dexie-integration';
@@ -49,9 +50,9 @@ https://svelte.dev/e/js_parse_error -->
   })));
   let nodes = $derived((($graphNodes as GraphNode[] | undefined) ?? []));
   // Component state
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults = $state<SearchResult[]>([]);
-  let isSearching = $state(false);
+  let isSearching = $state<boolean>(false);
   let selectedNode = $state<GraphNode | null>(null);
   let viewport = $state<Viewport>({ x: 0, y: 0, width: 1000, height: 1000 });
   let performanceStats = $state<any>(null);
@@ -91,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
   // ========================================================================
   // DATA LOADING
   // ========================================================================
-  async function loadGraphData() {
+  async function loadGraphData(): Promise<any> {
     try {
       // Load from database
       await graphTextureManager.loadGraphData(viewport);
@@ -102,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Failed to load graph data:', error);
     }
   }
-  async function addSampleData() {
+  async function addSampleData(): Promise<any> {
     try {
       // Add sample chat message (do NOT provide timestamp - DB/Type expects it)
       await db.addChatMessage({
@@ -146,7 +147,7 @@ https://svelte.dev/e/js_parse_error -->
   // ========================================================================
   // SEARCH FUNCTIONALITY
   // ========================================================================
-  async function handleSearch() {
+  async function handleSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     isSearching = true;
     try {
@@ -206,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
   // VIEWPORT MANAGEMENT
   // ========================================================================
   // Exported so parent components or external code can call it (avoids "declared but never read")
-  export async function updateViewport(newViewport: Viewport) {
+  export async function updateViewport(newViewport: Viewport): Promise<any> {
     viewport = newViewport;
     await graphTextureManager.updateViewport(viewport);
     await updatePerformanceStats();
@@ -237,7 +238,7 @@ https://svelte.dev/e/js_parse_error -->
   // ========================================================================
   // PERFORMANCE MONITORING
   // ========================================================================
-  async function updatePerformanceStats() {
+  async function updatePerformanceStats(): Promise<any> {
     try {
       const [dbStats, searchStats, gpuStats, storageStats, quantizationStats] = await Promise.all([
         db.getDatabaseStats(),
@@ -298,7 +299,7 @@ https://svelte.dev/e/js_parse_error -->
   // ========================================================================
   // CLEANUP
   // ========================================================================
-  async function clearAllData() {
+  async function clearAllData(): Promise<any> {
     if (confirm('Clear all data? This cannot be undone.')) {
       await Promise.all([
         db.chatHistory.clear(),

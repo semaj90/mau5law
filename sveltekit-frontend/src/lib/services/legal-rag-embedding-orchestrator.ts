@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // Legal RAG Embedding Orchestrator
 // Handles case-specific law retrieval with optimized embedding strategies
 // Integrates multiple embedding models for different legal content types

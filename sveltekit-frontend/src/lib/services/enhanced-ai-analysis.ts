@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Enhanced AI Analysis Service - Phase 2: Advanced NLP & Semantic Analysis
  *

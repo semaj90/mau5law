@@ -42,10 +42,10 @@
   const currentTheme = themeContext?.resolvedTheme?.() || 'dark';
   let modalElement: HTMLDivElement;
   let headerElement: HTMLDivElement;
-  let isMinimized = $state(false);
-  let isDragging = $state(false);
-  let isResizing = $state(false);
-  let resizeDirection = $state('');
+  let isMinimized = $state<boolean>(false);
+  let isDragging = $state<boolean>(false);
+  let isResizing = $state<boolean>(false);
+  let resizeDirection = $state<string>('');
   let position = $state({ x: initialX, y: initialY });
   let dimensions = $state({ width, height });
   // Dragging state
@@ -97,7 +97,7 @@
     }
   }
   function stopDrag() {
-    isDragging = $state(false);
+    isDragging = false;
     document.removeEventListener('mousemove', handleDrag);
     document.removeEventListener('mouseup', stopDrag);
   }
@@ -142,7 +142,7 @@
     position = { x: newX, y: newY }
   }
   function stopResize() {
-    isResizing = $state(false);
+    isResizing = false;
     resizeDirection = '';
     document.removeEventListener('mousemove', handleResize);
     document.removeEventListener('mouseup', stopResize);
@@ -152,7 +152,7 @@
     dispatch('minimize', { minimized: isMinimized });
   }
   function closeModal() {
-    open = $state(false);
+    open = false;
     dispatch('close');
   }
   // Ensure modal stays within bounds when window resizes

@@ -1,4 +1,4 @@
-export async function initWebGPUWorker() {
+export async function initWebGPUWorker(): Promise<void> {
   // Assert globalThis.navigator to include the: 'gpu' property for WebGPU types
   const typedNavigator = globalThis.navigator as (Navigator & { gpu?: GPU });
   if (typeof typedNavigator === 'undefined' || !typedNavigator.gpu) return null;

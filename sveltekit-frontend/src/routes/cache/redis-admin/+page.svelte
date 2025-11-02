@@ -25,15 +25,15 @@
   let { data, form }: { data: PageData; form: ActionData } = $props();
   // Svelte 5 runes for admin interface state
   let selectedTab = $state<'overview' | 'keys' | 'performance' | 'tools'>('overview');
-  let isAutoRefresh = $state(false);
+  let isAutoRefresh = $state<boolean>(false);
   let refreshInterval = $state<NodeJS.Timeout | null>(null);
-  let keyFilter = $state('');
-  let newKey = $state('');
-  let newValue = $state('');
-  let newTtl = $state(3600);
+  let keyFilter = $state<string>('');
+  let newKey = $state<string>('');
+  let newValue = $state<string>('');
+  let newTtl = $state<number>(3600);
   let selectedKey = $state<string | null>(null);
   let keyDetails = $state<any>(null);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   // Derived state for filtered keys
   let filteredKeys = $derived(
     data.recentKeys.filter(item => item.includes(keyFilter.toLowerCase())
@@ -65,13 +65,13 @@
     }
   }
   // Manual refresh
-  async function refreshData() {
+  async function refreshData(): Promise<any> {
     isLoading = true;
     await invalidateAll();
-    isLoading = $state(false);
+    isLoading = false;
   }
   // Key management
-  async function viewKeyDetails(_key: string) {
+  async function viewKeyDetails(_key: string): Promise<any> {
     selectedKey = key;
     isLoading = true;
     try {
@@ -188,7 +188,7 @@
     ] as tab}
       <Button
         onclick={() => selectedTab = tab.id}
-        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
+        class="flex" items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
                {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
       >
         {@render tab.icon({ class: "w-4 h-4" })}

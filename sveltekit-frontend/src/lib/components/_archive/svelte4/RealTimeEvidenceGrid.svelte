@@ -38,24 +38,24 @@ https://svelte.dev/e/js_parse_error -->
   } from "lucide-svelte";
   import { onMount } from "svelte";
   // Props
-  let showAdvancedFilters = $state(false);
+  let showAdvancedFilters = $state<boolean>(false);
   // Store subscriptions - using $derived below
   // Connection status
-  let connectionStatus = $state("disconnected");
+  let connectionStatus = $state<string>("disconnected");
   let lastUpdateTime = $state<string | null >(null);
   let syncStatus = $state({ pending: 0, failed: 0, total: 0, inProgress: false });
   // UI state
   let viewMode = $state<"grid" | "list" >("grid");
   let sortBy = $state<"date" | "title" | "type" | "relevance" >("date");
   let sortOrder = $state<"asc" | "desc" >("desc");
-  let pageSize = $state(20);
-  let currentPage = $state(0);
+  let pageSize = $state<number>(20);
+  let currentPage = $state<number>(0);
   let selectedEvidence = $state<Set<string>(new Set());
   let editingEvidence = $state<string | null >(null);
   // Filtered and sorted evidence
   let filteredEvidence = $state<Evidence[] >([]);
   let paginatedEvidence = $state<Evidence[] >([]);
-  let totalPages = $state(0);
+  let totalPages = $state<number>(0);
   // Subscribe to store values (use function form so the global $derived signature is satisfied)
   let evidence = $derived(() => $evidenceStore.evidence || []);
   let isLoading = $derived(() => $evidenceStore.isLoading || false);
@@ -133,7 +133,7 @@ https://svelte.dev/e/js_parse_error -->
       evidenceStore.disconnect();
     }
   });
-  async function initializeRealTimeEvidence() {
+  async function initializeRealTimeEvidence(): Promise<void> {
     try {
       // Load from local cache first
       if (lokiEvidenceService.isReady()) {
@@ -163,7 +163,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error("Failed to load from local:", err);
     }
   }
-  async function syncWithServer() {
+  async function syncWithServer(): Promise<any> {
     try {
       evidenceStore.isLoading.set(true);
       const endpoint = caseId
@@ -189,7 +189,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Evidence operations
-  async function createEvidence() {
+  async function createEvidence(): Promise<any> {
     try {
       const newEvidence = {
         title: "New Evidence",
@@ -208,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
   async function updateEvidence(
     evidenceId: string
     changes: Partial<Evidence>
-  ) {
+  ): Promise<any> {
     try {
       await evidenceStore.updateEvidence(evidenceId, changes);
       editingEvidence = null;
@@ -217,7 +217,7 @@ https://svelte.dev/e/js_parse_error -->
       error = err instanceof Error ? err.message: "Failed to update evidence",
     }
   }
-  async function deleteEvidence(evidenceId: string) {
+  async function deleteEvidence(evidenceId: string): Promise<void> {
     if (!confirm("Are you sure you want to delete this evidence?")) return;
     try {
       await evidenceStore.deleteEvidence(evidenceId);

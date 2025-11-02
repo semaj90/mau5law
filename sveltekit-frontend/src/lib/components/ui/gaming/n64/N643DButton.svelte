@@ -74,11 +74,11 @@
   }: Props = $props();
   // Events now handled via props in Svelte 5
   //
-  let isPressed = $state(false);
-  let isHovered = $state(false);
-  let isFocused = $state(false);
-  let mouseX = $state(0);
-  let mouseY = $state(0);
+  let isPressed = $state<boolean>(false);
+  let isHovered = $state<boolean>(false);
+  let isFocused = $state<boolean>(false);
+  let mouseX = $state<number>(0);
+  let mouseY = $state<number>(0);
   let audioContext = $state<AudioContext | null >(null);
   let buttonElement = $state<HTMLButtonElement | null >(null);
   let animationId = $state<number | null >(null);
@@ -149,7 +149,7 @@
       createParticleEffect();
     }
     setTimeout(() => {
-      isPressed = $state(false);
+      isPressed = false;
     }, 150);
     onClick?.();
     // ondispatch removed;
@@ -161,7 +161,7 @@
     // ondispatch removed;
   }
   const handleUnhover = () => {
-    isHovered = $state(false);
+    isHovered = false;
   }
   const handleFocus = () => {
     if (disabled) return;
@@ -170,7 +170,7 @@
     // ondispatch removed;
   }
   const handleBlur = () => {
-    isFocused = $state(false);
+    isFocused = false;
   }
   const createParticleEffect = () => {
     // Simple particle effect using CSS animations

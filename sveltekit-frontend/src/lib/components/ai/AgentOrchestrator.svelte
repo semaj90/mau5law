@@ -63,10 +63,10 @@ Manages AutoGen and CrewAI multi-agent workflows
   }: Props = $props();
   // Component state
   let selectedWorkflow = $state(defaultWorkflow);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let selectedProvider = $state<'autogen' | 'crewai'>('autogen');
-  let inputText = $state('');
-  let isProcessing = $state(false);
+  let inputText = $state<string>('');
+  let isProcessing = $state<boolean>(false);
   let serviceStatus = $state({ autogen: false, crewai: false });
   // Execution state
   let activeConversation = $state<AutoGenConversation | null>(null);
@@ -75,7 +75,7 @@ Manages AutoGen and CrewAI multi-agent workflows
   let executionResults = $state<CrewTaskResult[]>([]);
   // Monitoring
   let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
-  let executionProgress = $state(0);
+  let executionProgress = $state<number>(0);
   let lastUpdate = $state<string>('');
   // Available workflows
   const workflows = [
@@ -125,7 +125,7 @@ if (autoStartServices) {
       clearInterval(statusCheckInterval);
     }
   });
-  async function checkServiceStatus() {
+  async function checkServiceStatus(): Promise<any> {
     try {
       const [autogenHealthy, crewaiHealthy] = await Promise.all([
         autoGenService.healthCheck(),
@@ -139,7 +139,7 @@ if (autoStartServices) {
   function startStatusMonitoring() {
     statusCheckInterval = setInterval(checkServiceStatus, 10000); // Every 10 seconds
   }
-  async function executeWorkflow() {
+  async function executeWorkflow(): Promise<any> {
     if (!inputText.trim() || isProcessing) return;
     const workflow = workflows.find(w => w.id === selectedWorkflow);
     if (!workflow || !workflow.providers.includes(selectedProvider)) {
@@ -163,7 +163,7 @@ if (autoStartServices) {
       executionProgress = 100;
     }
   }
-  async function executeAutoGenWorkflow() {
+  async function executeAutoGenWorkflow(): Promise<any> {
     lastUpdate = 'Initializing AutoGen agents...';
     executionProgress = 10;
     switch (selectedWorkflow) {
@@ -236,7 +236,7 @@ if (autoStartServices) {
         break;
     }
   }
-  async function executeCrewAIWorkflow() {
+  async function executeCrewAIWorkflow(): Promise<any> {
     lastUpdate = 'Assembling CrewAI team...';
     executionProgress = 10;
     switch (selectedWorkflow) {
@@ -310,7 +310,7 @@ if (autoStartServices) {
         break;
     }
   }
-  async function cancelExecution() {
+  async function cancelExecution(): Promise<any> {
     if (activeConversation) {
       try {
         await autoGenService.terminateConversation(activeConversation.id);
@@ -327,7 +327,7 @@ if (autoStartServices) {
         console.error('Failed to cancel CrewAI execution', error);
       }
     }
-    isProcessing = $state(false);
+    isProcessing = false;
     lastUpdate = 'Execution cancelled';
   }
   function clearResults() {

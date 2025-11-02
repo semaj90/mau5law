@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * Redis-Optimized AI Chat Endpoint
  * Example integration showing how to apply Redis orchestrator to existing endpoints

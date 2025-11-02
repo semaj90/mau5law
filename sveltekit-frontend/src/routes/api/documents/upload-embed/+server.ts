@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { json, error } from '@sveltejs/kit'
 import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'

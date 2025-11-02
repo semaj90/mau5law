@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount, onDestroy } from 'svelte';
@@ -29,9 +30,9 @@ https://svelte.dev/e/js_parse_error -->
     enableAutocomplete = true
   }: Props = $props();
   // State
-  let initialized = $state(false);
-  let processing = $state(false);
-  let inputText = $state('Analyze the semantic structure of this legal document: "This agreement shall be governed by the laws of the state of California and any disputes will be resolved through binding arbitration."');
+  let initialized = $state<boolean>(false);
+  let processing = $state<boolean>(false);
+  let inputText = $state<string>('Analyze the semantic structure of this legal document: "This agreement shall be governed by the laws of the state of California and any disputes will be resolved through binding arbitration."');
   let results = $state<any>(null);
   let spatialPoints = $state<any[]>([]) => []);
   let processingStats = $state({
@@ -44,8 +45,8 @@ https://svelte.dev/e/js_parse_error -->
   // 3D Visualization state
   let canvasRef: HTMLCanvasElement | undefined = undefined;
   let animationFrameId: number | undefined = undefined;
-  let rotationX = $state(0);
-  let rotationY = $state(0);
+  let rotationX = $state<number>(0);
+  let rotationY = $state<number>(0);
   // Sample semantic data for demonstration
   let sampleSemanticNodes = [
     { x: 0, y: 0, z: 0, label: 'Legal Document', confidence: 0.95, color: '#3B82F6' },
@@ -55,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
     { x: -1, y: 1, z: -2, label: 'California Law', confidence: 0.84, color: '#8B5CF6' },
     { x: 3, y: 0, z: 0, label: 'Binding', confidence: 0.81, color: '#06B6D4' }
   ];
-  async function processSemanticStructure() {
+  async function processSemanticStructure(): Promise<any> {
     if (!inputText.trim()) return;
     processing = true;
     results = null;
@@ -92,11 +93,11 @@ https://svelte.dev/e/js_parse_error -->
       processing = false;
     }
   }
-  async function simulateSemanticAnalysis() {
+  async function simulateSemanticAnalysis(): Promise<any> {
     // Simulate WebGPU compute shader processing
     await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 400));
   }
-  async function generateSpatialMappings() {
+  async function generateSpatialMappings(): Promise<any> {
     // Generate spatial points based on semantic analysis
     const words = inputText.split.filter(w => w.length > 3);
     const newPoints: Array = [];

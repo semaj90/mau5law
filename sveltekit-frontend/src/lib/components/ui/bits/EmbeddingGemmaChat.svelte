@@ -24,11 +24,11 @@
   }: Props = $props();
   // Svelte 5 state management
   let messages = $state<any[]>([]) => []);
-  let messageInput = $state("");
-  let isLoading = $state(false);
-  let isTyping = $state(false);
-  let useAdvancedRAG = $state(true);
-  let contextLimit = $state(5);
+  let messageInput = $state<string>("");
+  let isLoading = $state<boolean>(false);
+  let isTyping = $state<boolean>(false);
+  let useAdvancedRAG = $state<boolean>(true);
+  let contextLimit = $state<number>(5);
   let similarityThreshold = $state(0.4);
   let messagesContainer: HTMLElement;
   let inputElement: HTMLTextAreaElement = $state(undefined as any);
@@ -46,7 +46,7 @@
   let embeddedDocuments = $state<EmbeddedDocument[]>([]);
   let lastSearchResults = $state<SemanticSearchResult[]>([]);
   let serviceHealth = $state<any>(null);
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!messageInput.trim()) return;
     const userMessage = messageInput.trim();
     messageInput = "";
@@ -230,7 +230,7 @@
       });
     } finally {
       isLoading = false;
-      isTyping = $state(false);
+      isTyping = false;
     }
   }
   function scrollToBottom() {
@@ -250,7 +250,7 @@
       inputElement.style.height = Math.min(inputElement.scrollHeight, 120) + "px";
     }
   }
-  async function analyzeDocuments() {
+  async function analyzeDocuments(): Promise<any> {
     if (availableDocuments.length === 0) {
       notifications.add({
         type: "warning",
@@ -291,7 +291,7 @@
       isLoading = false;
     }
   }
-  async function checkServiceHealth() {
+  async function checkServiceHealth(): Promise<any> {
     try {
       const health = await enhancedEmbeddingService.getServiceHealth();
       serviceHealth = health;
@@ -311,7 +311,7 @@
       });
     }
   }
-  async function queueEmbeddingJobs() {
+  async function queueEmbeddingJobs(): Promise<any> {
     if (availableDocuments.length === 0) {
       notifications.add({
         type: "warning",

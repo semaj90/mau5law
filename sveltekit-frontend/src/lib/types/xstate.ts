@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 // XState Machine Types for Legal AI Platform
 // AI Assistant Events - Strongly Typed
 export type AIAssistantEvent =

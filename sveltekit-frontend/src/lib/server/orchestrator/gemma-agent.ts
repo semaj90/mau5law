@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 import { caseScoringService } from '../services/CaseScoringService';
 import { cognitiveCache } from '../ai/cache';
 import { aiService } from './index';

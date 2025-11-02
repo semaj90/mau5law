@@ -1,3 +1,5 @@
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
 // RabbitMQ Message Queue Service for Legal Document Processing
 // Provides reliable message queuing with dead letter exchanges and retry logic
 import * as amqp from 'amqplib';

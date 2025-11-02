@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import neo4j from 'neo4j-driver'
 const NEO4J_URL = process.env.NEO4J_URL ?? 'bolt://localhost:7687'
 const NEO4J_USER = process.env.NEO4J_USER ?? 'neo4j'
@@ -12,7 +13,7 @@ function getDriver() {
   }
   return driver
 }
-async function ensureSchema() {
+async function ensureSchema(): Promise<any> {
   if (!NEO4J_INIT_ON_START) return
   const d = getDriver()
   const s = d.session()
@@ -25,7 +26,7 @@ async function ensureSchema() {
     await s.close()
   }
 }
-export async function evidenceGraphService(meta: { id: string; summary: string; caseId?: string | null }, entities: Array<{ name: string; type?: string | null }>, edges: Array<{ from: string; to: string; relation: string }> = []) {
+export async function evidenceGraphService(meta: { id: string; summary: string; caseId?: string | null }, entities: Array<{ name: string; type?: string | null }>, edges: Array<{ from: string; to: string; relation: string }> = []): Promise<any> {
   const d = getDriver()
   const s = d.session()
   const tx = s.beginTransaction()
@@ -66,7 +67,7 @@ export async function evidenceGraphService(meta: { id: string; summary: string; 
   }
 }
 // Optional helper to create similarity links given neighbors (id, score)
-export async function createSimilarityLinks(evidenceId: string, neighbors: Array<{ key: string; similarity: number }>) {
+export async function createSimilarityLinks(evidenceId: string, neighbors: Array<{ key: string; similarity: number }>): Promise<any> {
   if (!CREATE_SIMILARITY) return
   if (!neighbors || neighbors.length === 0) return
   const d = getDriver()

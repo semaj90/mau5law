@@ -14,9 +14,9 @@
   import Folder from 'lucide-svelte';
   import X from 'lucide-svelte';
   let sidebarElement: HTMLElement;
-  let isHovered = $state(false);
-  let isPinned = $state(false);
-  let searchQuery = $state('');
+  let isHovered = $state<boolean>(false);
+  let isPinned = $state<boolean>(false);
+  let searchQuery = $state<string>('');
   let activeTab: 'evidence' | 'notes' | 'canvas' = $state('evidence');
   let fuse: Fuse<any> | null = null;
   // Define expected interfaces for Loki service to resolve type errors
@@ -76,7 +76,7 @@
     isHovered = true;
   }
   function handleMouseLeave() {
-    isHovered = $state(false);
+    isHovered = false;
   }
   function togglePin() {
     isPinned = !isPinned;

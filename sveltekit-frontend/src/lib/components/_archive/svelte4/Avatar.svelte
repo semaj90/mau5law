@@ -2,6 +2,7 @@
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
+import type { User } from '$lib/types';
 
   import { onMount } from 'svelte';
   import { avatarStore } from '../stores/avatarStore';
@@ -11,7 +12,7 @@ https://svelte.dev/e/props_duplicate -->
   const { showUploadButton } = $props<{ showUploadButton: boolean }>()
 
   let fileInput: HTMLInputElement | null = null;
-  let dragOver = $state(false);
+  let dragOver = $state<boolean>(false);
 
   // reactive avatarSize based on size prop
   const avatarSize = $derived(size === 'small' ? '32px' : size === 'large' ? '80px' : '48px');
@@ -36,7 +37,7 @@ https://svelte.dev/e/props_duplicate -->
 
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       uploadFile(files[0]);
@@ -50,10 +51,10 @@ https://svelte.dev/e/props_duplicate -->
 
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
   }
 
-  async function uploadFile(file: File) {
+  async function uploadFile(file: File): Promise<any> {
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {

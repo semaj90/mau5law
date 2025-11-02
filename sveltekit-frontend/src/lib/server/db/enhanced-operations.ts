@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // Enhanced database operations for cases and evidence
 import { db } from '../db/index';
 import { cases, evidence } from './schema-postgres';

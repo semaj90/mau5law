@@ -4,7 +4,7 @@ import type { User } from '$lib/server/auth/lucia'; // Adjust import path as per
 export const user = writable<User | null>(null);
 export const sessionLoading = writable(true);
 
-export async function loadSession() {
+export async function loadSession(): Promise<any> {
   try {
     const res = await fetch('/api/auth/session');
     if (res.ok) {

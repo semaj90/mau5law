@@ -7,7 +7,7 @@
   const { children } = $props();
   // Simplified state management for compatibility
   let theme = $state<'dark' | 'light'>('dark');
-  let sidebarOpen = $state(false);
+  let sidebarOpen = $state<boolean>(false);
   // App context for global state
   setContext('app', {
     get theme() {

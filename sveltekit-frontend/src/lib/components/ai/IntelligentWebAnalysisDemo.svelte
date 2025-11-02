@@ -4,13 +4,15 @@
   Minimal CPU/GPU usage with SIMD optimization and user context awareness
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { intelligentWebAnalyzer, type UserAnalytics, type QLoRATrainingData } from '$lib/ai/intelligent-web-analyzer.js';
   import { browser } from '$app/environment';
   // Svelte 5 runes for reactive state management
-  let isInitialized = $state(false);
-  let isAnalyzing = $state(false);
+  let isInitialized = $state<boolean>(false);
+  let isAnalyzing = $state<boolean>(false);
   let analysisResults: QLoRATrainingData | null = $state(null);
   let userAnalytics: UserAnalytics = $state({,
     userId: 'demo_user_' + Date.now(),
@@ -94,7 +96,7 @@ if (!browser) return;
   /**
    * Analyze the current page with full AI pipeline
    */
-  async function analyzeCurrentPage() {
+  async function analyzeCurrentPage(): Promise<any> {
     if (!isInitialized || isAnalyzing) return;
     isAnalyzing = true;
     analysisState.currentStep = 'Starting analysis...';
@@ -234,7 +236,7 @@ if (!browser) return;
   /**
    * Export QLoRA training data
    */
-  async function exportQLoRAData() {
+  async function exportQLoRAData(): Promise<any> {
     if (!analysisResults) return;
     try {
       const dataBlob = new Blob([JSON.stringify(analysisResults, null, 2)], {
@@ -254,7 +256,7 @@ if (!browser) return;
   /**
    * Test batch processing
    */
-  async function testBatchProcessing() {
+  async function testBatchProcessing(): Promise<any> {
     addLog('🔄 Testing batch processing performance...');
     const testTexts = [
       'This is a contract between parties for legal services',

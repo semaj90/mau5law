@@ -1,3 +1,6 @@
+import type { Message } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // Advanced experimental service
 /**
  * RabbitMQ Service Worker - simplified, syntactically-correct version

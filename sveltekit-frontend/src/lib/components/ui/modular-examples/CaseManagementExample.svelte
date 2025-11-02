@@ -10,8 +10,8 @@ https://svelte.dev/e/illegal_element_attribute -->
   import { reactiveApiClient } from '$lib/services/api-client';
   import type { Case, Evidence } from '$lib/types/api';
   // Component state
-  let showCaseDialog = $state(false);
-  let showCommandPalette = $state(false);
+  let showCaseDialog = $state<boolean>(false);
+  let showCommandPalette = $state<boolean>(false);
   let selectedCaseId = $state<string>('');
   let selectedCase = $state<Case | null>(null);
   let caseEvidence = $state<Evidence[]>([]);
@@ -50,7 +50,7 @@ https://svelte.dev/e/illegal_element_attribute -->
     }
   }
   // Data refresh handlers
-  async function refreshCaseData() {
+  async function refreshCaseData(): Promise<any> {
     if (selectedCaseId) {
       const updatedCase = await reactiveApiClient.fetchCase(selectedCaseId, false);
       if (updatedCase) {
@@ -61,11 +61,11 @@ https://svelte.dev/e/illegal_element_attribute -->
     }
   }
   // Form submission handlers
-  async function createNewCase() {
+  async function createNewCase(): Promise<any> {
     // Show create case dialog or form
     console.log('Create new case');
   }
-  async function updateCase(caseData: Partial<Case>) {
+  async function updateCase(caseData: Partial<Case>): Promise<any> {
     if (!selectedCase) return;
     try {
       await reactiveApiClient.updateCase({

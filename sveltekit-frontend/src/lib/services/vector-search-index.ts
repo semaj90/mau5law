@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { browser } from '$app/environment';
 import type { MinIOFile } from './minio-service.js';
 

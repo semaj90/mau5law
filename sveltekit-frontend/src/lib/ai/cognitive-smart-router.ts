@@ -349,7 +349,7 @@ class CognitiveSmartRouter {
     if (cached && now - cached.lastCheck < 30000) {
       return cached;
     }
-    let healthy = $state(false);
+    let healthy = $state<boolean>(false);
     switch (engine) {
       case 'webasm-cache':
         healthy = this.isWebGPUAvailable && typeof webLlamaService !== 'undefined';
@@ -365,7 +365,7 @@ class CognitiveSmartRouter {
         healthy = this.isOllamaAvailable; // Fallback for now
         break;
       default:
-        healthy = $state(false);
+        healthy = false;
     }
     const result = { healthy, lastCheck: now };
     this.engineHealthCache.set(engine, result);

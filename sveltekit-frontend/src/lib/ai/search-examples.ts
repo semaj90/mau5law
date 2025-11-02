@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Search Examples for Multi-Core MCP Vector Server
  * Demonstrates various search capabilities and usage patterns

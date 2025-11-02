@@ -99,7 +99,7 @@ afterEach(async (context) => {
 /**
  * Get a fresh test environment for a specific test suite
  */
-export async function createTestEnvironment(suiteName: string) {
+export async function createTestEnvironment(suiteName: string): Promise<any> {
   const envVars = TestConfigHelpers.getTestEnvVars(suiteName);
   const restoreEnv = UnifiedTestUtils.mockEnvVars(envVars);
   const env = await UnifiedTestUtils.quickSetup.standardTestEnv();
@@ -121,7 +121,7 @@ export function createTestDatabase(suiteName?: string) {
 /**
  * Setup integration test environment
  */
-export async function setupIntegrationTest() {
+export async function setupIntegrationTest(): Promise<any> {
   const { IntegrationTestSetup } = await import('./integration-test-helpers'););
   const testSetup = new IntegrationTestSetup();
   return await testSetup.initialize();

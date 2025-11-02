@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Svelte 5 Component Adapter Logic Layer
  * Converts complex stateful components into simple: "dumb" prop receivers

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // Phase 3: Live Agent Integration Orchestrator
 // Replaces stubs with real Go backend + Ollama integration
 // WebSocket/SSE for real-time communication, gRPC/HTTP context switching

@@ -19,9 +19,9 @@
     onResults = () => ,
     onsearch
   }: Props = $props();
-  let query = $state('');
-  let loading = $state(false);
-  async function handleSearch() {
+  let query = $state<string>('');
+  let loading = $state<boolean>(false);
+  async function handleSearch(): Promise<any> {
     if (!query) return;
     loading = true;
     analyticsLog({ event: 'ai_search_submitted', query, userContext, timestamp: Date.now() });

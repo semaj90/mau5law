@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Advanced Evidence Analysis API Endpoint
  * Integrates with AdvancedEvidenceAnalyzer for comprehensive AI-powered analysis
@@ -106,7 +107,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     );
   }
 };
-async function handleAnalyzeEvidence(data: AnalyzeRequest) {
+async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
   const { evidenceId, analysisTypes, caseId, options = {} } = data as AnalyzeRequest;
   if (!evidenceId) {
     return json({ error: 'Evidence ID required' }, { status: 400 });
@@ -187,7 +188,7 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest) {
     throw error;
   }
 }
-async function handleBatchAnalyze(data: BatchAnalyzeRequest) {
+async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
   const { evidenceIds, analysisTypes, caseId, options = {} } = data;
   if (!evidenceIds || !Array.isArray(evidenceIds)) {
     return json({ error: 'Evidence IDs array required' }, { status: 400 });
@@ -284,7 +285,7 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest) {
     timestamp: new Date().toISOString(),
   });
 }
-async function handleGetAnalysis(data: GetAnalysisRequest) {
+async function handleGetAnalysis(data: GetAnalysisRequest): Promise<any> {
   const { evidenceId, analysisId } = data;
   if (!evidenceId && !analysisId) {
     return json({ error: 'Evidence ID or Analysis ID required' }, { status: 400 });
@@ -318,7 +319,7 @@ async function handleGetAnalysis(data: GetAnalysisRequest) {
     }),
   });
 }
-async function handleSynthesis(data: SynthesisRequest) {
+async function handleSynthesis(data: SynthesisRequest): Promise<any> {
   const { evidenceIds, caseId, synthesisType = 'comprehensive', options = {} } = data;
   if (!evidenceIds || !Array.isArray(evidenceIds)) {
     return json({ error: 'Evidence IDs array required' }, { status: 400 });
@@ -409,7 +410,7 @@ async function handleSynthesis(data: SynthesisRequest) {
     throw error;
   }
 }
-async function handleRealTimeAnalysis(data: RealTimeRequest) {
+async function handleRealTimeAnalysis(data: RealTimeRequest): Promise<any> {
   const { evidenceId, caseId, analysisTypes = ['quick_summary'] } = data;
   if (!evidenceId || !caseId) {
     return json({ error: 'Evidence ID and Case ID required' }, { status: 400 });
@@ -453,7 +454,7 @@ async function handleRealTimeAnalysis(data: RealTimeRequest) {
     timestamp: new Date().toISOString(),
   });
 }
-async function storeAnalysisResult(evidenceId: string, results: any, analysisId: string) {
+async function storeAnalysisResult(evidenceId: string, results: any, analysisId: string): Promise<any> {
   try {
     // Safely treat results as AnalyzerOutput when extracting expected fields
     const res = (results as AnalyzerOutput) || {};

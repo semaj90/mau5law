@@ -54,7 +54,7 @@
   const maxHistorySize = 50;
   // Auto-save
   let autoSaveTimeout: ReturnType<typeof setTimeout> | null = null;
-  let isDirty = $state(false);
+  let isDirty = $state<boolean>(false);
   // Tools (use simple text/icon placeholders to avoid icon import issues)
   const tools = [
     { id: "select", icon: "🖱️", label: "Select" },
@@ -433,7 +433,7 @@
     }
     updateCanvasState();
   }
-  async function undo() {
+  async function undo(): Promise<any> {
     if (!canvas || historyIndex <= 0) return;
     historyIndex--;
     const state = historyStack[historyIndex];
@@ -441,7 +441,7 @@
     canvas.renderAll && canvas.renderAll();
     updateCanvasState();
   }
-  async function redo() {
+  async function redo(): Promise<any> {
     if (!canvas || historyIndex >= historyStack.length - 1) return;
     historyIndex++;
     const state = historyStack[historyIndex];
@@ -454,7 +454,7 @@
     if (autoSaveTimeout) clearTimeout(autoSaveTimeout as any);
     autoSaveTimeout = setTimeout(() => saveCanvas(), 3000);
   }
-  async function saveCanvas() {
+  async function saveCanvas(): Promise<void> {
     if (!canvas || !canvasCollection || !isDirty) return;
     try {
       const canvasData = {
@@ -477,13 +477,13 @@
       await fetch("/api/canvas/save", {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(canvasData)
       });
-      isDirty = $state(false);
+      isDirty = false;
       showSaveIndicator();
     } catch (error) {
       console.error("Failed to save canvas:", error);
     }
   }
-  async function loadCanvasData() {
+  async function loadCanvasData(): Promise<any> {
     if (!canvasCollection) return;
     try {
       const localData = canvasCollection.findOne ? canvasCollection.findOne({ caseId }) : null;
@@ -561,7 +561,7 @@
       canvas.renderAll && canvas.renderAll();
     }
   }
-  async function copySelected() {
+  async function copySelected(): Promise<any> {
     if (!canvas) return;
     const activeObject = canvas.getActiveObject && canvas.getActiveObject();
     if (activeObject && activeObject.clone) {
@@ -573,7 +573,7 @@
       });
     }
   }
-  async function pasteClipboard() {
+  async function pasteClipboard(): Promise<any> {
     if (!canvas) return;
     try {
       // navigator.clipboard.read() is async and may require permissions
@@ -640,7 +640,7 @@
     searchResults = results.map((r: any) => r.item || r);
   }
   // AI summary
-  async function generateAISummary() {
+  async function generateAISummary(): Promise<any> {
     if (!canvas) return;
     try {
       const canvasObjects = canvas.getObjects ? canvas.getObjects() : [];

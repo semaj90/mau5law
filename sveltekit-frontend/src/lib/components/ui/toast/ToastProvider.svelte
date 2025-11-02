@@ -1,5 +1,6 @@
 <!-- Toast Provider for Legal AI App -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import createToast from 'bits-ui';
   import BitsToast, { type ToastProps } from './BitsToast.svelte';

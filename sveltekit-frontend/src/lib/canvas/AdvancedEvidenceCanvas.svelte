@@ -66,12 +66,12 @@ https://svelte.dev/e/expected_token -->
   let ctx: CanvasRenderingContext2D = $state(undefined as any);
   let canvasNodes = $state<EvidenceNode[]>(nodes);
   let selectedNode = $state<EvidenceNode | null>(null);
-  let isDragging = $state(false);
-  let errorMessage = $state('');
+  let isDragging = $state<boolean>(false);
+  let errorMessage = $state<string>('');
   let dragOffset = $state({ x: 0, y: 0 });
   let zoom = $state(1.0);
   let pan = $state({ x: 0, y: 0 });
-  let isMouseDown = $state(false);
+  let isMouseDown = $state<boolean>(false);
   let lastMousePos = $state({ x: 0, y: 0 });
   // Derived canvas options
   let canvasOptions = $derived<CanvasOptions>(() => ({
@@ -339,7 +339,7 @@ https://svelte.dev/e/expected_token -->
       };
     } else {
       selectedNode = null;
-      isDragging = $state(false);
+      isDragging = false;
     }
     render();
   }
@@ -373,8 +373,8 @@ https://svelte.dev/e/expected_token -->
     render();
   }
   function handleMouseUp(): void {
-    isMouseDown = $state(false);
-    isDragging = $state(false);
+    isMouseDown = false;
+    isDragging = false;
   }
   function handleWheel(event: WheelEvent): void {
     if (!enableZoom) return;

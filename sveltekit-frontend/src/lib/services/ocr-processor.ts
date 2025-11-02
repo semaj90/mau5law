@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import path from 'path';
 import { createWorker } from 'tesseract.js';
 import pdf2pic from 'pdf2pic';

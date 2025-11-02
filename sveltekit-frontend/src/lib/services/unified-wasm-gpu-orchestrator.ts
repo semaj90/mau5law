@@ -525,7 +525,7 @@ export class UnifiedWASMGPUOrchestrator {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let serviceUsed = task.targetService;
     let result: any = null;
-    let success = $state(false);
+    let success = $state<boolean>(false);
     // Auto-select best service if needed
     if (task.targetService === 'auto') {
       serviceUsed = this.selectOptimalService(task);
@@ -645,7 +645,7 @@ export class UnifiedWASMGPUOrchestrator {
       }
     } catch (error: any) {
       console.error(`Service ${serviceUsed} failed:`, this.getErrorMessage(error));
-      success = $state(false);
+      success = false;
       result = null;
     }
     const endTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * PostgreSQL to Qdrant Sync Service
  *
@@ -335,7 +336,7 @@ export class PostgreSQLQdrantSyncService {
         .limit(this.config.batchSize)
         .offset(offset);
       if (evidenceItems.length === 0) {
-        hasMore = $state(false);
+        hasMore = false;
         break;
       }
       this.stats.totalEvidenceItems += evidenceItems.length;
@@ -366,7 +367,7 @@ export class PostgreSQLQdrantSyncService {
         .limit(this.config.batchSize)
         .offset(offset);
       if (documents.length === 0) {
-        hasMore = $state(false);
+        hasMore = false;
         break;
       }
       this.stats.totalDocumentEmbeddings += documents.length;

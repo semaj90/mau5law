@@ -4,8 +4,8 @@
   import Button from '$lib/components/ui/Button.svelte';
   import Card from '$lib/components/ui/enhanced-bits.svelte';
 
-  let pageLoaded = $state(false);
-  let showWelcome = $state(true);
+  let pageLoaded = $state<boolean>(false);
+  let showWelcome = $state<boolean>(true);
   $effect(() => {
     pageLoaded = true;
     // Auto-hide welcome after 3 seconds

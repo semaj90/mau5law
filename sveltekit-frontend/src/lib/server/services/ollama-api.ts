@@ -25,7 +25,7 @@ export async function getEmbeddingFromOllama(text: string, model = DEFAULT_EMBED
     return null;
   }
 }
-export async function generateTextFromOllama(prompt: string, model = process.env.OLLAMA_DEFAULT_MODEL || 'gemma3-legal:latest') {
+export async function generateTextFromOllama(prompt: string, model = process.env.OLLAMA_DEFAULT_MODEL || 'gemma3-legal:latest'): Promise<any> {
   try {
     const res = await fetch(`${OLLAMA_URL}/api/generate`, {
       method: 'POST',

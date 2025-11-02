@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * Real-Time Async Communication Layer for Legal AI Platform
  * Provides WebSocket, SSE, and WebRTC connections with intelligent fallback

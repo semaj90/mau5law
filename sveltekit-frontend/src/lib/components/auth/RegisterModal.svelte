@@ -30,13 +30,13 @@
       onUpdate({ form: f }) {
         if (f.valid) {
           onsuccess?.();
-          open = $state(false);
+          open = false;
         }
       }
     }
   );
   function closeModal() {
-    open = $state(false);
+    open = false;
   }
   function handleOverlayKeydown(e: KeyboardEvent) {
     // Allow Enter / Space to activate the overlay (close) and Escape to close as well

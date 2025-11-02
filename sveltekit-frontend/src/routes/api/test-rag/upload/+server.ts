@@ -260,7 +260,7 @@ export const GET: RequestHandler = async () => {
       const probe = await QdrantVectorService.searchVector(Array(768).fill(0), 1);
       qdrantHealthy = Array.isArray(probe);
     } catch (err) {
-      qdrantHealthy = $state(false);
+      qdrantHealthy = false;
     }
     const dbConnected = !!db;
 

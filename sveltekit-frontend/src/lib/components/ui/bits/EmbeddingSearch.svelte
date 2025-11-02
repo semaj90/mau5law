@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Button } from './Button.svelte';
   import { Input } from './Input.svelte';
@@ -30,10 +31,10 @@
     showAdvanced = false
   }: Props = $props();
   // Search state using Svelte 5 runes
-  let query = $state('');
+  let query = $state<string>('');
   let threshold = $state(0.7);
-  let limit = $state(5);
-  let isSearching = $state(false);
+  let limit = $state<number>(5);
+  let isSearching = $state<boolean>(false);
   let results = $state<SearchResult[]>([]);
   let error = $state<string>('');
   let searchTime = $state<number>(0);
@@ -90,7 +91,7 @@
     }
   }
   // Handle search submission
-  async function handleSearch() {
+  async function handleSearch(): Promise<any> {
     if (!validateSearch()) {
       return;
     }

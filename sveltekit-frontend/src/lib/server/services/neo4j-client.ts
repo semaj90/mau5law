@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * ⚖️ Neo4j Client for Legal Entity Graphs
  * --------------------------------------------------

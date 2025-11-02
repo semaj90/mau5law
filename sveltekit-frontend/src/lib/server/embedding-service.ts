@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Enhanced Embedding Service
  * Production-ready service for generating and managing vector embeddings

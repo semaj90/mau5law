@@ -26,7 +26,7 @@
       useCanvas = true;
       return;
     }
-    useCanvas = $state(false);
+    useCanvas = false;
   });
 </script>
 {#if useCanvas}

@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 
 // Enhanced Drizzle schema with pgvector support
 import { sql } from "drizzle-orm";

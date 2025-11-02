@@ -14,7 +14,7 @@ export async function getLegalRecommendations(query: string, opts: {
   jurisdiction?: string;
   practiceArea?: string;
   topK?: number;
-}) {
+}): Promise<any> {
   // 1. Try cached embedding via gRPC → Redis VectorCache
   const embedding = new Float32Array(await langChainOllamaService.generateEmbedding(query));
   const cached = await lookupSemanticCache(embedding);

@@ -72,7 +72,7 @@
   // Confidence level styling
   const confidenceColor = $derived(person.confidence > 0.8 ? 'text-green-600' : person.confidence > 0.6 ? 'text-yellow-600' : 'text-red-600');
   const barColor = $derived(person.confidence > 0.8 ? 'bg-green-500' : person.confidence > 0.6 ? 'bg-yellow-500' : 'bg-red-500');
-  let showFullDetails = $state(false);
+  let showFullDetails = $state<boolean>(false);
 </script>
 <div class="w-full max-w-md hover:shadow-lg transition-shadow nes-container">
   <div class="yorha-panel-header pb-3">

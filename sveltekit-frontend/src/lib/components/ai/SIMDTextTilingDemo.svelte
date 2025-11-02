@@ -11,13 +11,13 @@ https://svelte.dev/e/expected_token -->
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits.svelte';
-  let isProcessing = $state(false);
-  let results = $state([]);
-  let selectedMode = $state('langchain-simd');
-  let compressionTarget = $state(109);
-  let qualityTier = $state('nes');
-  let batchMode = $state(false);
-  let enableInstantUI = $state(true);
+  let isProcessing = $state<boolean>(false);
+  let results = $state<SearchResult[]>([]);
+  let selectedMode = $state<string>('langchain-simd');
+  let compressionTarget = $state<number>(109);
+  let qualityTier = $state<string>('nes');
+  let batchMode = $state<boolean>(false);
+  let enableInstantUI = $state<boolean>(true);
   const sampleTexts = [
     {
       title: 'Legal Contract Analysis',
@@ -48,9 +48,9 @@ https://svelte.dev/e/expected_token -->
     gpuUtilizationAverage: 0,
     memoryEfficiencyAverage: 0
   });
-  let liveRenderedComponents = $state([]);
-  let processingLogs = $state([]);
-  async function processSingleText(sampleIndex = 0) {
+  let liveRenderedComponents = $state<any[]>([]);
+  let processingLogs = $state<any[]>([]);
+  async function processSingleText(sampleIndex = 0): Promise<any> {
     try {
       isProcessing = true;
       const sample = sampleTexts[sampleIndex];
@@ -132,7 +132,7 @@ https://svelte.dev/e/expected_token -->
       isProcessing = false;
     }
   }
-  async function processBatchTexts() {
+  async function processBatchTexts(): Promise<any> {
     try {
       isProcessing = true;
       batchMode = true;
@@ -146,10 +146,10 @@ https://svelte.dev/e/expected_token -->
       addLog(`✅ Batch processing complete: ${results.length} texts processed`);
     } finally {
       batchMode = false;
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
-  async function benchmarkCompressionLevels() {
+  async function benchmarkCompressionLevels(): Promise<any> {
     try {
       isProcessing = true;
       addLog('🧪 Starting compression benchmark...');
@@ -182,7 +182,7 @@ https://svelte.dev/e/expected_token -->
       (systemStats.memoryEfficiencyAverage * (systemStats.totalProcessed - 1) + (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).memoryEfficiency) / systemStats.totalProcessed;
     systemStats.instantComponentsGenerated += (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).componentCount;
   }
-  async function renderLiveComponents(result) {
+  async function renderLiveComponents(result): Promise<any> {
     if (!(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).cssOptimized || !(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).renderingInstructions) return;
     try {
       // Create live rendered component

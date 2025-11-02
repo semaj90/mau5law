@@ -3,6 +3,7 @@
   YoRHa-themed interface for all vector systems integration
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -15,16 +16,16 @@
   const logs = writable<string[]>([]);
   // Form state
   let selectedOperation: 'analyze' | 'search' | 'recommend' | 'visualize' | 'ingest' = $state('analyze');
-  let inputText = $state('');
-  let userId = $state('demo_user');
+  let inputText = $state<string>('');
+  let userId = $state<string>('demo_user');
   let sessionId = $state(`session_${Date.now()}`);
   // Options
-  let useWebGPU = $state(true);
-  let useWebAssembly = $state(true);
-  let usePageRank = $state(true);
-  let generateGlyphs = $state(false);
-  let useRecommendations = $state(true);
-  let useNeo4j = $state(true);
+  let useWebGPU = $state<boolean>(true);
+  let useWebAssembly = $state<boolean>(true);
+  let usePageRank = $state<boolean>(true);
+  let generateGlyphs = $state<boolean>(false);
+  let useRecommendations = $state<boolean>(true);
+  let useNeo4j = $state<boolean>(true);
   let cacheResults = true;
   // Sample documents for testing
   let sampleDocuments = [
@@ -47,7 +48,7 @@
       ...currentLogs.slice(0, 99) // Keep last 100 logs
     ]);
   }
-  async function checkHealth() {
+  async function checkHealth(): Promise<any> {
     try {
       const response = await fetch('/api/health/status');
       const data = await response.json();
@@ -58,7 +59,7 @@
       addLog(`Health check failed: ${(error as Error).message}`);
     }
   }
-  async function loadAnalytics() {
+  async function loadAnalytics(): Promise<any> {
     try {
       const response = await fetch('/api/analytics');
       const data = await response.json();
@@ -68,7 +69,7 @@
       addLog(`Analytics failed: ${(error as Error).message}`);
     }
   }
-  async function processRequest() {
+  async function processRequest(): Promise<any> {
     if (!inputText.trim() && selectedOperation !== 'ingest') {
       addLog('Error: Input text is required');
       return;

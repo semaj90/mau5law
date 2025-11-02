@@ -1,5 +1,6 @@
 <!-- Real-time Evidence Management Demo Page -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import MonacoEditor from "$lib/components/MonacoEditor.svelte";
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
@@ -19,10 +20,10 @@
   import { onMount } from "svelte";
   // Demo state
   let selectedCaseId: string | undefined = $state(undefined);
-  let searchQuery = $state("");
+  let searchQuery = $state<string>("");
   let selectedTypes: string[] = $state([]);
-  let showAdvancedFilters = $state(false);
-  let demoMode = $state(false);
+  let showAdvancedFilters = $state<boolean>(false);
+  let demoMode = $state<boolean>(false);
   // Store values - Access individual store properties correctly
   const { isConnected, evidence, isLoading, error } = evidenceStor;
   // Analytics data
@@ -64,7 +65,7 @@
         inProgress: status.inProgress ?? false,
       }
   }}
-  async function startDemoMode() {
+  async function startDemoMode(): Promise<any> {
     demoMode = true;
     // Create some demo evidence
     const demoEvidence = [
@@ -127,7 +128,7 @@
   }
       }, i * 1000);
   }}
-  async function clearAllEvidence() {
+  async function clearAllEvidence(): Promise<any> {
     if (
       !confirm(
         "Are you sure you want to clear all evidence? This action cannot be undone."

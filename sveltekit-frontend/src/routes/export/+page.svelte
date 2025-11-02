@@ -8,22 +8,22 @@
   import { AlertTriangle, Calendar, CheckCircle, Database, Download, FileText, Filter } from 'lucide-svelte';
   import { onMount } from 'svelte';
   // Export state
-  let exportLoading = $state(false);
+  let exportLoading = $state<boolean>(false);
   let exportError: string | null = $state(null);
-  let exportSuccess = $state(false);
+  let exportSuccess = $state<boolean>(false);
   let availableCases: Case[] = $state([]);
   // Export configuration
   let format: 'json' | 'csv' | 'xml' = $state('json');
-  let includeEvidence = $state(true);
-  let includeCases = $state(true);
-  let includeAnalytics = $state(false);
+  let includeEvidence = $state<boolean>(true);
+  let includeCases = $state<boolean>(true);
+  let includeAnalytics = $state<boolean>(false);
   let selectedCaseIds: string[] = $state([]);
-  let dateFrom = $state('');
-  let dateTo = $state('');
+  let dateFrom = $state<string>('');
+  let dateTo = $state<string>('');
   $effect(() => {
     loadAvailableCases();
   });
-  async function loadAvailableCases() {
+  async function loadAvailableCases(): Promise<any> {
     try {
       // removed unused response assignment
       if (response.ok) {
@@ -34,10 +34,10 @@
       console.error('Failed to load cases:', error);
     }
   }
-  async function exportData() {
+  async function exportData(): Promise<any> {
     exportLoading = true;
     exportError = null;
-    exportSuccess = $state(false);
+    exportSuccess = false;
     try {
       const exportRequest = {
         format,

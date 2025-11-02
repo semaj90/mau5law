@@ -1,11 +1,12 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import PgvectorSearchInterface from '$lib/components/search/PgvectorSearchInterface.svelte';
 
-  let isAuthenticated = $state(false);
-  let userName = $state('');
+  let isAuthenticated = $state<boolean>(false);
+  let userName = $state<string>('');
 
   onMount(async () => {
     // Check if user is authenticated

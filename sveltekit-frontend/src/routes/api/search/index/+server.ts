@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url }) => {
 /*
  * Build PostgreSQL + Drizzle index with pgvector
  */
-async function buildPostgreSQLIndex() {
+async function buildPostgreSQLIndex(): Promise<any> {
   console.log('📊 Building PostgreSQL + pgvector index...')
   try {
     // Query documents with embeddings using Drizzle ORM
@@ -132,7 +132,7 @@ async function buildPostgreSQLIndex() {
 /*
  * Build Qdrant vector index
  */
-async function buildVectorIndex() {
+async function buildVectorIndex(): Promise<any> {
   console.log('🧠 Building Qdrant vector index...')
   try {
     // In production: Query Qdrant collection
@@ -194,7 +194,7 @@ async function buildVectorIndex() {
 /*
  * Build MinIO object storage index
  */
-async function buildMinIOIndex() {
+async function buildMinIOIndex(): Promise<any> {
   console.log('🗄️ Building MinIO storage index...')
   try {
     // In production: List MinIO objects
@@ -259,7 +259,7 @@ async function buildMinIOIndex() {
 /*
  * Build Loki.js log index
  */
-async function buildLokiIndex() {
+async function buildLokiIndex(): Promise<any> {
   console.log('📊 Building Loki.js log index...')
   try {
     // In production: Query Loki for relevant log entries

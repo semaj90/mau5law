@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 export function isWebGPUAvailable(): boolean {
   try {
     // Feature-detect in browsers
@@ -8,7 +9,7 @@ export function isWebGPUAvailable(): boolean {
   }
 }
 
-export async function initWebGPU(canvas: HTMLCanvasElement | null) {
+export async function initWebGPU(canvas: HTMLCanvasElement | null): Promise<void> {
   if (!canvas || !isWebGPUAvailable()) {
     return { mode: 'canvas', canvas };
   }

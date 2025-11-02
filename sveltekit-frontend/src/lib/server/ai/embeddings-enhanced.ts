@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // Enhanced Embeddings Service with Nomic Embed + Langchain + Langextract
 // Local embeddings using Ollama nomic-embed-text model with document processing
 // Use process.env for server-side environment variables

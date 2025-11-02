@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Production Pipeline Integration Service
  * Connects SvelteKit frontend to the crawl → OCR → embed → serve pipeline

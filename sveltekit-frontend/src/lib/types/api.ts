@@ -1,3 +1,7 @@
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // Evidence AI Analysis Type
 export interface EvidenceAIAnalysis {
   // Core analysis metrics (required by the user)

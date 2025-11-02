@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import { json, error } from '@sveltejs/kit';
 import pdf from 'pdf-parse';
@@ -134,11 +135,11 @@ import { storeDocumentsInDatabase } from '$lib/server/db';
 // Use the redis package exported client type
 type RedisClientType = ReturnType<typeof createClient>;
 let redisClient: RedisClientType | null = null;
-let redisConnected = $state(false);
-let disconnectHandlerRegistered = $state(false);
+let redisConnected = $state<boolean>(false);
+let disconnectHandlerRegistered = $state<boolean>(false);
 
 // Local helper to disconnect cleanly (declared before use)
-async function disconnectHandler() {
+async function disconnectHandler(): Promise<void> {
   try {
     if (redisClient && redisConnected) {
       console.info('Disconnecting Redis client due to shutdown signal...');
@@ -202,7 +203,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
     });
     redisClient.on('reconnecting', () => console.info('Redis client reconnecting...'));
     redisClient.on('end', () => {
-      redisConnected = $state(false);
+      redisConnected = false;
       console.info('Redis client connection ended');
     });
 
@@ -234,7 +235,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
       console.warn('Error while cleaning up Redis client after failed connect:', e);
     }
     redisClient = null;
-    redisConnected = $state(false);
+    redisConnected = false;
     return null;
   }
 }

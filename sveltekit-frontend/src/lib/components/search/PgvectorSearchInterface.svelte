@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
+import type { Message } from '$lib/types';
   import { onMount } from 'svelte';
   interface SearchResult {
     id: string;
@@ -30,14 +32,14 @@
       indexType: string;
     };
   }
-  let query = $state('');
+  let query = $state<string>('');
   let results: SearchResult[] = $state([]);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
   let stats = $state<SearchResponse['stats'] | null>(null);
-  let limit = $state(10);
+  let limit = $state<number>(10);
   let threshold = $state(0.5);
-  async function handleSearch() {
+  async function handleSearch(): Promise<any> {
     if (!query.trim()) {
       error = 'Please enter a search query';
       return;

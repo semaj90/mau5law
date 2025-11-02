@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Legal AI Database Schema with Drizzle ORM
  * Optimized for pgvector embeddings and gemma3-legal:latest integration

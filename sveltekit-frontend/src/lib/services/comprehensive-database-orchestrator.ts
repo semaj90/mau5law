@@ -19,7 +19,7 @@ let db: DrizzleDB | null = null;
 let schema: { [key: string]: any } = {};
 
 // Replace top-level await/import with an async IIFE to avoid parser/TS build errors
-(async function initDb() {
+(async function initDb(): Promise<void> {
 	try {
 		const dbMod = await import('../server/db/index');
 		db = dbMod.db ?? null;

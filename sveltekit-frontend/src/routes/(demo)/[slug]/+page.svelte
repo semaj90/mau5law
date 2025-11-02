@@ -33,10 +33,10 @@
 
   let demoSlug = $derived($page.params.slug ?? 'showcase');
   let currentComponent = $state<SvelteComponentConstructor | null>(null);
-  let loading = $state(true);
+  let loading = $state<boolean>(true);
   let error = $state<string | null>(null);
 
-  async function loadDemoComponent(slug: string) {
+  async function loadDemoComponent(slug: string): Promise<any> {
     loading = true;
     error = null;
 

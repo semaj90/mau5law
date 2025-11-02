@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Message } from '$lib/types';
   // Svelte 5 runes are auto-imported
   	// ================================================================================
   	// WEBGPU + THREE.JS + SERVICE WORKER OPTIMIZATION COMPONENT
@@ -440,7 +441,7 @@ https://svelte.dev/e/js_parse_error -->
   	// ============================================================================
   	let canvas: HTMLCanvasElement;
   	let animationFrame: number;
-  	let initialized = $state(false);
+  	let initialized = $state<boolean>(false);
   	onMount(() => {
   		const init = async () => {
   			console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');

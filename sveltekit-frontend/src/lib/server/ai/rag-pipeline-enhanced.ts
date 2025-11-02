@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Enhanced RAG Pipeline - Legal AI Platform
  *

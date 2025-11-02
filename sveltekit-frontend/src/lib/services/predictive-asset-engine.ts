@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 // @ts-nocheck - Advanced experimental service
 /**
  * Predictive Asset Engine: HMM + SOM integration with bitmap state encoding

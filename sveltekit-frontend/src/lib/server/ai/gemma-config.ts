@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Gemma Models Configuration - Phase 3
  * Optimized settings for gemma3-legal:latest and embeddinggemma:latest
@@ -166,8 +168,8 @@ export async function validateGemmaModels(): Promise<{
   errors: string[];
 }> {
   const errors: string[] = [];
-  let legalAvailable = $state(false);
-  let embeddingAvailable = $state(false);
+  let legalAvailable = $state<boolean>(false);
+  let embeddingAvailable = $state<boolean>(false);
   try {
     const response = await fetch(`${AI_CONFIG.ollama.baseUrl}/api/tags`);
     if (!response.ok) {

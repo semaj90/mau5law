@@ -152,7 +152,7 @@ https://svelte.dev/e/attribute_duplicate -->
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     return new Intl.DateTimeFormat().format(dateObj);
   }
-  async function downloadEvidence(item: EvidenceAny) {
+  async function downloadEvidence(item: EvidenceAny): Promise<any> {
     const fileUrl = item.fileUrl as string | undefined;
     if (!fileUrl) return;
     try {
@@ -172,7 +172,7 @@ https://svelte.dev/e/attribute_duplicate -->
       console.error('Download failed:', error);
     }
   }
-  async function deleteEvidence(item: EvidenceAny) {
+  async function deleteEvidence(item: EvidenceAny): Promise<void> {
     const title = item.title ?? 'evidence';
     if (confirm(`Are you sure you want to delete: "${title}"?`)) {
       try {

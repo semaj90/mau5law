@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /*
  * RTX 3060 Ti Integration API
  * SvelteKit → Go → CUDA Pipeline with FlashAttention2 + Tensor Core optimization
@@ -170,7 +171,7 @@ function callMonitorMethod(candidates: string[], ...args: any[]): any | undefine
   return undefined;
 }
 
-async function handleStatusRequest() {
+async function handleStatusRequest(): Promise<any> {
   console.log('📊 RTX Status Request');
   // Initialize if not already done
   try {
@@ -215,7 +216,7 @@ async function handleStatusRequest() {
     timestamp: new Date().toISOString(),
   });
 }
-async function handleBenchmarkRequest() {
+async function handleBenchmarkRequest(): Promise<any> {
   console.log('🔬 RTX Benchmark Request');
   const benchmarkResults = await rtxSystemMonitor.triggerBenchmark();
   if (!benchmarkResults) {
@@ -266,7 +267,7 @@ async function handleBenchmarkRequest() {
     timestamp: new Date().toISOString(),
   });
 }
-async function handlePipelineRequest() {
+async function handlePipelineRequest(): Promise<any> {
   console.log('🏗️ RTX Pipeline Status Request');
   const status = getCurrentStatus();
   const metrics = getCurrentMetrics();
@@ -306,7 +307,7 @@ async function handlePipelineRequest() {
     timestamp: new Date().toISOString(),
   });
 }
-async function handleHealthRequest() {
+async function handleHealthRequest(): Promise<any> {
   console.log('🏥 RTX Health Check Request');
   const status = getCurrentStatus();
   const isHealthy =
@@ -324,7 +325,7 @@ async function handleHealthRequest() {
     timestamp: new Date().toISOString(),
   });
 }
-async function handleMetricsRequest() {
+async function handleMetricsRequest(): Promise<any> {
   console.log('📈 RTX Metrics Request');
   const status = getCurrentStatus();
   const metrics = getCurrentMetrics();
@@ -363,7 +364,7 @@ async function handleMetricsRequest() {
     timestamp: new Date().toISOString(),
   });
 }
-async function handleProcessRequest(request: Request) {
+async function handleProcessRequest(request: Request): Promise<any> {
   console.log('🔄 RTX Document Processing Request');
   try {
     const body = await request.json();
@@ -430,7 +431,7 @@ async function handleProcessRequest(request: Request) {
     );
   }
 }
-async function handleConfigureRequest(request: Request) {
+async function handleConfigureRequest(request: Request): Promise<any> {
   console.log('🔧 RTX Configuration Request');
   try {
     const body = await request.json();
@@ -503,7 +504,7 @@ async function handleConfigureRequest(request: Request) {
     );
   }
 }
-async function handleRunBenchmarkRequest(request: Request) {
+async function handleRunBenchmarkRequest(request: Request): Promise<any> {
   console.log('🚀 RTX Benchmark Run Request');
   try {
     const body = await request.json();

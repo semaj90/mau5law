@@ -36,7 +36,7 @@
   const { onExport } = $props<{ onExport: ((format: 'pdf' | 'docx' | 'json') }>()
 
   // local component state (no Svelte store misuse)
-  let isAnalyzing = $state(false);
+  let isAnalyzing = $state<boolean>(false);
   let selectedClause: string | null = null;
   let searchTerm = '';
 
@@ -116,7 +116,7 @@
     return icons[type] ?? '📄';
   }
 
-  async function analyzeContract() {
+  async function analyzeContract(): Promise<any> {
     if (!onAnalyze) return;
     isAnalyzing = true;
     try {

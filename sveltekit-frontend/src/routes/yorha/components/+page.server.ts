@@ -165,7 +165,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 />`,
       modal: `<script>,
   import { YoRHaModal3D } from '$lib/components/three/yorha-ui.svelte';
-  let showModal = $state(false);
+  let showModal = $state<boolean>(false);
 </script>
 <YoRHaModal3D
   bind:open={showModal}

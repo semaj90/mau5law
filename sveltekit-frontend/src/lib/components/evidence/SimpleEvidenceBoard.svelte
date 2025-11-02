@@ -8,16 +8,16 @@
   // Props
   let { caseId = '', boardId = null } = $props();
   // State
-  let isLoading = $state(false);
-  let isSaving = $state(false);
-  let showAddItemDialog = $state(false);
-  let selectedItem = $state(null);
+  let isLoading = $state<boolean>(false);
+  let isSaving = $state<boolean>(false);
+  let showAddItemDialog = $state<boolean>(false);
+  let selectedItem = $state<any>(null);
   // Board data
-  let board = $state(null);
-  let items = $state([]);
-  let connections = $state([]);
-  let availableEvidence = $state([]);
-  let availablePois = $state([]);
+  let board = $state<any>(null);
+  let items = $state<any[]>([]);
+  let connections = $state<any[]>([]);
+  let availableEvidence = $state<any[]>([]);
+  let availablePois = $state<any[]>([]);
   // New item form
   let newItem = $state({
     type: 'note',
@@ -26,7 +26,7 @@
     poiId: null,
   });
   // Load board data
-  async function loadBoard() {
+  async function loadBoard(): Promise<any> {
     if (!caseId) return;
     isLoading = true;
     try {
@@ -64,7 +64,7 @@
     }
   }
   // Load available evidence and POIs
-  async function loadAvailableData() {
+  async function loadAvailableData(): Promise<any> {
     try {
       const [evidenceResponse, poisResponse] = await Promise.all([
         fetch(`/api/cases/${caseId}/evidence`),
@@ -83,7 +83,7 @@
     }
   }
   // Add new item
-  async function addItem() {
+  async function addItem(): Promise<any> {
     if (!boardId) return;
     try {
       const response = await fetch(`/api/evidence-boards/${boardId}/items`, {
@@ -98,7 +98,7 @@
       const result = await response.json();
       if (result.success) {
         items = [...items, result.data];
-        showAddItemDialog = $state(false);
+        showAddItemDialog = false;
         resetNewItem();
         toast.success('Item added successfully');
       } else {
@@ -110,7 +110,7 @@
     }
   }
   // Delete item
-  async function deleteItem(item) {
+  async function deleteItem(item): Promise<void> {
     if (!confirm('Are you sure you want to delete this item?')) return;
     try {
       const response = await fetch(`/api/evidence-boards/${boardId}/items/${item.id}`, {

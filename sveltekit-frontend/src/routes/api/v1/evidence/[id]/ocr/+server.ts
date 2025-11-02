@@ -35,7 +35,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const cookieHeader = request.headers.get('cookie');
     const cookies = parseCookies(cookieHeader);
     let anonId = cookies['anon_id'] ?? null;
-    let setAnonCookie = $state(false);
+    let setAnonCookie = $state<boolean>(false);
     if (!anonId && isAnonymous) {
       anonId = generateAnonId();
       setAnonCookie = true;
@@ -85,7 +85,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     } = body;
 
     // --- Modified anonymous handling: support client-side fallback & consent flow ---
-    let consentFlow = $state(false);
+    let consentFlow = $state<boolean>(false);
     let claimToken: string | null = null;
     let claimUrl: string | null = null;
     if (isAnonymous) {
@@ -410,7 +410,7 @@ function generateAnonId() {
   return `anon-${uuid}`;
 }
 
-async function verifyCaptcha(token?: string) {
+async function verifyCaptcha(token?: string): Promise<any> {
   // Placeholder: wire to real CAPTCHA provider (reCAPTCHA, hCaptcha, Turnstile) in production
   if (!token) return false;
   if (process.env.NODE_ENV === 'development') return token === 'dev-valid-captcha';
@@ -418,12 +418,13 @@ async function verifyCaptcha(token?: string) {
   return false;
 }
 
-async function scanForViruses(payload: string | null) {
+async function scanForViruses(payload: string | null): Promise<any> {
   // Placeholder: integrate with ClamAV/third-party virus scanner
   // Return true if infected
   if (!payload) return false;
   // extremely naive check (do NOT rely on this)
-  if (payload.includes('<script>evil</script>')) return true;
+  if (payload.includes('<script>
+import type { User } from '$lib/types';evil</script>')) return true;
   return false;
 }
 

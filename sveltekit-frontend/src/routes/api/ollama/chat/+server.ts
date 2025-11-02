@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 /*
@@ -134,7 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // For non-streaming responses
     let fullResponse = '';
-    let sources = [];
+    let sources: any[] = [];
     let confidence = 0;
     const streamGenerator = ollamaChatStream({
       message,

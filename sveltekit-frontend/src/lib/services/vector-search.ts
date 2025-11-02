@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { db } from "$lib/server/database";
 import {
   legalDocuments as documents,

@@ -7,11 +7,12 @@ https://svelte.dev/e/js_parse_error -->
   Addresses all user requirements: caching, state machines, recommendations
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import ModularAIExperience from '$lib/components/ai/ModularAIExperience.svelte';
   import { onMount } from 'svelte';
-  let userId = $state('demo_user_' + Math.random().toString().substring(2, 11));
-  let showAdvancedSettings = $state(false);
+  let userId = $state<string>('demo_user_' + Math.random().toString().substring(2, 11));
+  let showAdvancedSettings = $state<boolean>(false);
   let systemStatus = $state({
     cudaService: false,
     webgpuSupported: false,

@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 export interface EditableNode {
   id: string;
   x: number;

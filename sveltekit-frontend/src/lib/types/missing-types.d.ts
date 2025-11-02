@@ -1,3 +1,5 @@
+import type { TextChunk } from '$lib/types';
+import type { Document } from '$lib/types';
 // TypeScript declarations for missing types across the codebase
 // This file resolves many TS2304: "Cannot find name" errors
 // Engine/Graphics types

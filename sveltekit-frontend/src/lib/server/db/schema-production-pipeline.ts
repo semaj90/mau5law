@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Production Pipeline Database Schema
  * Optimized for crawl → OCR → embed → index → cache → serve workflow

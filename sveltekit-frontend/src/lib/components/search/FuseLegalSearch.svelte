@@ -16,9 +16,9 @@
     showAIActions?: boolean;
     maxResults?: number;
   } = $props();
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults = $state<any[]>([]);
-  let isSearching = $state(false);
+  let isSearching = $state<boolean>(false);
   let fuse = $state<Fuse<any> | null>(null);
   // --- fixed: proper Fuse options (missing commas removed) ---
   const fuseOptions = {
@@ -118,7 +118,7 @@
     if (score < 0.4) return 'Good Match';
     return 'Fair Match';
   }
-  async function handleAIAction(law, action) {
+  async function handleAIAction(law, action): Promise<any> {
     if (onResultSelect) onResultSelect(law, action);
   }
   function handleKeydown(event: KeyboardEvent) {

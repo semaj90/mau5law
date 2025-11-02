@@ -34,8 +34,8 @@
     clusters: [],
     cacheLayers: [],
   });
-  let updateCount = $state(0);
-  let isOptimizing = $state(false);
+  let updateCount = $state<number>(0);
+  let isOptimizing = $state<boolean>(false);
   // resilient subscription adapter using onMount/onDestroy
   let _unsubscribe: (() => void) | null = null;
   let _callback: ((data: MemoryData) => void) | null = null;
@@ -82,7 +82,7 @@
       try { (memoryMonitoring as any).dispose(); } catch (e) { /* ignore */ }
     }
   });
-  async function triggerOptimization() {
+  async function triggerOptimization(): Promise<any> {
     isOptimizing = true;
     try {
       // support multiple possible method names

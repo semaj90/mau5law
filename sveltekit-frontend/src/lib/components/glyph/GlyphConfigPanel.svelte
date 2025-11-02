@@ -15,11 +15,11 @@ https://svelte.dev/e/expected_token -->
   // Form state
   let evidenceId = $state(initialConfig.evidence_id?.toString() || 'demo_evidence_001');
   let prompt = $state(initialConfig.prompt || 'Legal evidence visualization showing document authenticity');
-  let customStyle = $state('');
-  let useCustomStyle = $state(false);
+  let customStyle = $state<string>('');
+  let useCustomStyle = $state<boolean>(false);
   let selectedPreset = $state<keyof typeof GLYPH_PRESETS>('detective');
   // Advanced options
-  let showAdvanced = $state(false);
+  let showAdvanced = $state<boolean>(false);
   let dimensions = $state<[number, number]>(initialConfig.dimensions || [512, 512]);
   let seed = $state<number | undefined>(initialConfig.seed);
   // SIMD Configuration
@@ -83,12 +83,12 @@ https://svelte.dev/e/expected_token -->
     selectedPreset = preset;
     const presetConfig = GLYPH_PRESETS[preset];
     simdConfig = { ...simdConfig, ...presetConfig.simd_config }
-    useCustomStyle = $state(false);
+    useCustomStyle = false;
   }
   function resetToDefaults() {
     evidenceId = 'demo_evidence_001';
     prompt = 'Legal evidence visualization showing document authenticity';
-    useCustomStyle = $state(false);
+    useCustomStyle = false;
     selectedPreset = 'detective';
     dimensions = [512, 512];
     seed = undefined;

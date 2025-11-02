@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { createEventDispatcher } from 'svelte';
   import { scale } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
@@ -46,7 +48,7 @@
   let dragOffset = $state({ x: 0, y: 0 });
   let connectionStart: string | null = $state(null);
   let selectedItems = $state<Set<string>>(new Set());
-  let isConnecting = $state(false);
+  let isConnecting = $state<boolean>(false);
   // Sample evidence items for demo
   const sampleItems: EvidenceItem[] = [
     {
@@ -198,7 +200,7 @@
       }
     }
     connectionStart = null;
-    isConnecting = $state(false);
+    isConnecting = false;
   }
   function deleteSelected() {
     if (readonly || selectedItems.size === 0) return;
@@ -243,7 +245,7 @@
     if (event.key === 'Escape') {
       selectedItems.clear();
       connectionStart = null;
-      isConnecting = $state(false);
+      isConnecting = false;
     }
   }
   function handleItemKeyDown(event: KeyboardEvent, item: EvidenceItem) {

@@ -437,7 +437,7 @@ async function processSIMDDirect(
   }) as unknown as SIMDProcessingResult; // Cast result via unknown
 }
 // Helper function: Update XState session
-async function updateXStateSession(sessionId: string, data: XStateSessionUpdateData) {
+async function updateXStateSession(sessionId: string, data: XStateSessionUpdateData): Promise<any> {
   // Changed data type to XStateSessionUpdateData
   // Simulate XState session update
   return {

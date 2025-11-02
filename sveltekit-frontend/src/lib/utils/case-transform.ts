@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Case Transformation Utilities
  * Handles snake_case <-> camelCase conversion between database and frontend

@@ -1,13 +1,14 @@
 <!-- Enhanced RAG Interface Component for SvelteKit 2 + Svelte 5 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import Fuse from 'fuse.js';
   // Svelte 5 reactive state
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let documents = $state<unknown[]>([]);
   let searchResults = $state<unknown[]>([]);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let embeddings = $state<Map<string, number[]>([])>(new Map());
   let analytics = $state({
     totalDocuments: 0,
@@ -31,7 +32,7 @@ await loadDocuments();
     })();
   });
   // Load documents from enhanced RAG cache
-  async function loadDocuments() {
+  async function loadDocuments(): Promise<any> {
     try {
       isLoading = true;
       // In a real app, this would come from your backend API
@@ -119,7 +120,7 @@ await loadDocuments();
     }
   }
   // Generate embeddings using nomic-embed-text
-  async function generateEmbeddings() {
+  async function generateEmbeddings(): Promise<any> {
     console.log('🧠 Generating embeddings with nomic-embed-text...');
     for (const doc of documents) {
       try {
@@ -206,7 +207,7 @@ await loadDocuments();
     return colors[label as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
   // Analyze document with gemma3-legal
-  async function analyzeDocument(doc: any) {
+  async function analyzeDocument(doc: any): Promise<any> {
     try {
       console.log(`🤖 Analyzing document ${doc.id} with ${config.legalModel}...`);
       const response = await fetch(`${config.ollamaHost}/api/generate`, {

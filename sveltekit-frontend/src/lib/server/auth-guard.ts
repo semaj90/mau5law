@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import type { RequestEvent } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import jwt from 'jsonwebtoken';

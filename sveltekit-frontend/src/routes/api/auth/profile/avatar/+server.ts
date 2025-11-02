@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Avatar upload endpoint - Upload and optimize user profile pictures to MinIO S3
  * Uses separate: 'user-avatars' bucket for profile images

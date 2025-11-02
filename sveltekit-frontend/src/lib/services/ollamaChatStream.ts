@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 // @ts-nocheck - Advanced experimental service
 import * as stream from "stream";
 // ollamaChatStream.ts - Ollama Chat Stream with Langchain integration

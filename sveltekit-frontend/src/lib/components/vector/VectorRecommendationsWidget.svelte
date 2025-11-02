@@ -49,7 +49,7 @@ Compact AI recommendations component for sidebar/dashboard use
     onRecommendationClick = () => {}
   }: Props = $props();
   let recommendations = $state<IntelligenceRecommendation[]>([]);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let lastUpdated = $state<Date | null>(null);
   let refreshTimer = $state<number | null>(null);
 
@@ -66,7 +66,7 @@ Compact AI recommendations component for sidebar/dashboard use
     };
   });
 
-  async function loadRecommendations() {
+  async function loadRecommendations(): Promise<any> {
     if (isLoading) return;
     isLoading = true;
     try {

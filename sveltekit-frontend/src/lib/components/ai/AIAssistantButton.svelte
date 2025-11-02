@@ -30,9 +30,9 @@
     onclick,
   }: Props = $props();
   // AI Assistant state
-  let isActive = $state(false);
-  let isListening = $state(false);
-  let unreadCount = $state(3); // Mock unread suggestions
+  let isActive = $state<boolean>(false);
+  let isListening = $state<boolean>(false);
+  let unreadCount = $state<number>(3); // Mock unread suggestions
   let aiStatus = $state<'idle' | 'processing' | 'listening' | 'connected'>('connected');
   // Tooltip for compact variants
   // const tooltipBuilder = variant === 'compact' ? createTooltip({

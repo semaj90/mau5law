@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   /**
    * 🧪 Hybrid RAG + SIMD Pipeline Demo
    *
@@ -12,13 +13,13 @@
   import { Upload, Search, Zap, Database } from 'lucide-svelte';
 
   // State management using Svelte 5 runes
-  let query = $state('');
+  let query = $state<string>('');
   let documents = $state<any[]>([]);
   let results = $state<any[]>([]);
-  let isProcessing = $state(false);
-  let processingStage = $state('');
+  let isProcessing = $state<boolean>(false);
+  let processingStage = $state<string>('');
   let timing = $state<any>(null);
-  let error = $state('');
+  let error = $state<string>('');
 
   // Sample documents for testing
   const sampleDocuments = $state([
@@ -77,7 +78,7 @@
   }
 
   // Process documents through RAG pipeline
-  async function processDocuments() {
+  async function processDocuments(): Promise<any> {
     if (documents.length === 0) {
       error = 'No documents to process';
       return;
@@ -136,7 +137,7 @@
   }
 
   // Search existing knowledge base
-  async function searchKnowledgeBase() {
+  async function searchKnowledgeBase(): Promise<any> {
     if (!query.trim()) {
       error = 'Please enter a search query';
       return;

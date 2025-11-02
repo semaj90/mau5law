@@ -9,14 +9,15 @@
   NO DATA LEAVES THE BROWSER!
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { browserRAG } from '$lib/ai/browser-rag-chain';
   import { onMount } from 'svelte';
   import { Database, Lock, Zap, FileText, MessageSquare, AlertCircle } from 'lucide-svelte';
 
   // State
-  let isInitialized = $state(false);
-  let isLoading = $state(false);
-  let currentStep = $state('');
+  let isInitialized = $state<boolean>(false);
+  let isLoading = $state<boolean>(false);
+  let currentStep = $state<string>('');
   let error = $state<string | null>(null);
 
   // Demo documents
@@ -39,14 +40,14 @@
   ]);
 
   // Query input
-  let query = $state('What are the requirements for employment contracts in California?');
-  let answer = $state('');
+  let query = $state<string>('What are the requirements for employment contracts in California?');
+  let answer = $state<string>('');
   let sources = $state<any[]>([]);
-  let confidence = $state(0);
-  let duration = $state(0);
+  let confidence = $state<number>(0);
+  let duration = $state<number>(0);
 
   // Streaming
-  let isStreaming = $state(false);
+  let isStreaming = $state<boolean>(false);
 
   onMount(async () => {
     try {
@@ -71,7 +72,7 @@
     }
   });
 
-  async function handleQuery() {
+  async function handleQuery(): Promise<any> {
     if (!query.trim() || !isInitialized) return;
 
     try {
@@ -99,7 +100,7 @@
     }
   }
 
-  async function handleStreamQuery() {
+  async function handleStreamQuery(): Promise<any> {
     if (!query.trim() || !isInitialized) return;
 
     try {

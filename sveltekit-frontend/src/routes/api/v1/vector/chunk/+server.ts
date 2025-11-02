@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * RAG Chunking API - Optimized text chunking for legal documents
  * Handles semantic chunking, paragraph-aware splitting, and CUDA-accelerated processing

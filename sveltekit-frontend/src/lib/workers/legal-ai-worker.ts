@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /// <reference types="node" />
 /**
  * 🧠 RabbitMQ Worker for Legal AI Document Processing
@@ -45,7 +46,7 @@ async function processIncomingJob(jobData: LegalAIJobData): Promise<GoServerResp
 /* -------------------------------------------------------------------------- */
 /* 🔹 Worker Consumer                                                         */
 /* -------------------------------------------------------------------------- */
-export async function createLegalAIWorker() {
+export async function createLegalAIWorker(): Promise<any> {
   const conn = await amqp.connect(RABBITMQ_URL);
   const ch = await conn.createChannel();
   await ch.assertQueue(QUEUE_NAME, { durable: true });

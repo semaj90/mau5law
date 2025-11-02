@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { goto } from "$app/navigation";
   import { Button } from '$lib/components/ui/enhanced-bits.svelte';
@@ -52,12 +53,12 @@ https://svelte.dev/e/js_parse_error -->
     requiredFields: ["title", "description", "priority"],
   }
   let formApi: any;
-  let isSubmitting = $state(false);
+  let isSubmitting = $state<boolean>(false);
   // Store form state
   let formValues = $state<{ [key: string]: any }('') >( );
   let formErrors = $state<Record<string, string>('') >( );
-  let isFormValid = $state(false);
-  let isFormDirty = $state(false);
+  let isFormValid = $state<boolean>(false);
+  let isFormDirty = $state<boolean>(false);
   // Handle form changes
   function handleFormChange(_event: CustomEvent) {
     const { values } = e(vent as CustomEvent).detail;
@@ -69,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
   // TODO: Convert to $derived: if (formApi) {
     // You can access formApi methods here if needed
   }
-  async function handleSubmit(_event: CustomEvent) {
+  async function handleSubmit(_event: CustomEvent): Promise<any> {
     const { values, isValid } = e(vent as CustomEvent).detail
     if (!isValid) {
       return;

@@ -6,7 +6,7 @@
   import { vscodeIntegration, errorNavigator } from '$lib/vite/vscode-extension';
   let errorLog: any[] = $state([]);
   let errorStats = $state({ total: 0, errors: 0, warnings: 0, info: 0 });
-  let isWatching = $state(false);
+  let isWatching = $state<boolean>(false);
   // Demo error generators
   const demoErrors = [
     {
@@ -83,7 +83,7 @@
   function stopWatching() {
     if (isWatching) {
       vscodeIntegration.stopWatching();
-      isWatching = $state(false);
+      isWatching = false;
       console.log('⏹️ Stopped watching for error log changes');
     }
   }
@@ -150,7 +150,7 @@
           🧹 Clear Errors
         </button>
         <button
-          class="px-4 py-2 {isWatching
+          class="px-4" py-2 {isWatching
             ? 'bg-yellow-600 hover:bg-yellow-700'
             : 'bg-purple-600 hover:bg-purple-700'} text-white rounded-md transition-colors"
           onclick={isWatching ? stopWatching : startWatching}
@@ -224,7 +224,7 @@
                       </p>
                       <div class="flex items-center space-x-2">
                         <span
-                          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {getErrorColor(
+                          class="inline-flex" items-center px-2.5 py-0.5 rounded-full text-xs font-medium {getErrorColor(
                             error.level
                           )} border"
                         >

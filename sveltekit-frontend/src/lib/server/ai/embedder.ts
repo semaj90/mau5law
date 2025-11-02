@@ -233,8 +233,8 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
  * Get embedding service status
  */
 export async function getEmbeddingServiceStatus(): Promise<any> {
-  let localAvailable = $state(false);
-  let nomicAvailable = $state(false);
+  let localAvailable = $state<boolean>(false);
+  let nomicAvailable = $state<boolean>(false);
 
   // Local (Ollama) health check
   if (EMBEDDING_CONFIG.useLocal) {
@@ -290,7 +290,7 @@ const embeddings = new OpenAIEmbeddings({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function embeddingFunction(text: string) {
+export async function embeddingFunction(text: string): Promise<any> {
   const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 1024, chunkOverlap: 128 });
   const chunks = await splitter.splitText(text);
   const vectors = await embeddings.embedDocuments(chunks);

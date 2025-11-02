@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { createMachine, assign, interpret } from 'xstate';
   import { slide } from 'svelte/transition';
   import { writable } from 'svelte/store';

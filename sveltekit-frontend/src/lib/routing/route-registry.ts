@@ -189,7 +189,7 @@ export class RouteRegistry {
    * Unregister a route
    */
   public unregisterRoute(id: string): boolean {
-    let removed = $state(false);
+    let removed = $state<boolean>(false);
     this.state.update(state => {
       const newRoutes = new Map(state.routes);
       const newDynamicRoutes = new Map(state.dynamicRoutes);

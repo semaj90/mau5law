@@ -1,11 +1,13 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { Case } from '$lib/types';
   import type { PageData } from './$types';
 
   // Load ReportEditor dynamically to avoid TS: "no default export" error
   // Make EditorComponent reactive using Svelte 5 runes ($state) so updates are reflected in the UI
   let EditorComponent: any = $state<any>(null);
 
-  async function loadEditor() {
+  async function loadEditor(): Promise<any> {
     try {
       // Cast the dynamic import to any to avoid TypeScript errors about .default / named exports
       const mod = (await import('$lib/components/editor/ReportEditor.svelte')) as any;
@@ -67,8 +69,8 @@
   let evidence = $state<LocalEvidence[]>([]);
   let citationPoints = $state<LocalCitationPoint[]>([]);
   let activeTab: 'editor' | 'canvas' = $state('editor');
-  let isLoading = $state(false);
-  let error = $state('');
+  let isLoading = $state<boolean>(false);
+  let error = $state<string>('');
 
   // $props() provides an object with a `data` property (page load data).
   // Declare the outer shape so TypeScript knows `data` exists (optional).
@@ -86,7 +88,7 @@
       loadDemoData();
     }
   });
-  async function loadDemoData() {
+  async function loadDemoData(): Promise<any> {
     try {
       isLoading = true;
       // Load sample citation points
@@ -197,7 +199,7 @@
       isLoading = false;
     }
   }
-  async function handleReportSave(report: Report) {
+  async function handleReportSave(report: Report): Promise<void> {
     try {
       currentReport = report;
       console.log('Report saved:', report);
@@ -206,7 +208,7 @@
       error = 'Failed to save report';
     }
   }
-  async function handleCanvasSave(data: { objects: any[] }) {
+  async function handleCanvasSave(data: { objects: any[] }): Promise<void> {
     try {
       const now = new Date().toISOString();
       let stateToSave: CanvasState;

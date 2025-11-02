@@ -124,7 +124,7 @@ function generateExampleCopilotContent(): string {
 // Example Svelte 5 component
 export function MyComponent() {
   let { data = [] } = $props()
-  let count = $state(0)
+  let count = $state<number>(0)
   let doubled = $derived(count * 2)
   $effect(() => {
     console.log('Count changed:', count)

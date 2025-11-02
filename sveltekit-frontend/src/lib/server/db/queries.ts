@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // @ts-nocheck
 import { users } from "$lib/server/db/schema-postgres";
 import { eq } from "drizzle-orm";

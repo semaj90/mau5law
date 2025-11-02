@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte runes are auto-imported - removed unused onMount import
   import Button from '$lib/components/ui/button/Button.svelte';
   import Card from '$lib/components/ui/card/Card.svelte';
@@ -78,11 +80,11 @@
 
   // Svelte 5 runes - proper syntax
   let messages = $state<LocalChatMessage[]>([]);
-  let currentMessage = $state('');
-  let isStreaming = $state(false);
-  let error = $state('');
+  let currentMessage = $state<string>('');
+  let isStreaming = $state<boolean>(false);
+  let error = $state<string>('');
   let conversationId = $state<string | null>(null);
-  let userId = $state('mock-user-id');
+  let userId = $state<string>('mock-user-id');
 
   // Use the LocalSystemStatus type so `gpu` is allowed and avoid type mismatch
   let systemStatus = $state<LocalSystemStatus>({
@@ -107,9 +109,9 @@
   // POI Timeline State
   let poiTimelineData = $state<POI[]>([]);
   let selectedPOI = $state<POI | null>(null);
-  let showPOIDialog = $state(false);
-  let timelineLoading = $state(false);
-  let showTimeline = $state(false);
+  let showPOIDialog = $state<boolean>(false);
+  let timelineLoading = $state<boolean>(false);
+  let showTimeline = $state<boolean>(false);
   let evidenceReports = $state<EvidenceReport[]>([]);
   type RagPerson = {
     id: string;
@@ -128,7 +130,7 @@
 
   // User Activity Timeline State
   let userActivityTimeline = $state<UserActivity[]>([]);
-  let activityLoading = $state(false);
+  let activityLoading = $state<boolean>(false);
   let focusMetrics = $state<FocusMetrics>({
     sessionsToday: 0,
     totalTime: 0,
@@ -248,7 +250,7 @@
 
               if (!dataLines) continue;
               if (dataLines === '[DONE]') {
-                isStreaming = $state(false);
+                isStreaming = false;
                 break;
               }
 
@@ -269,14 +271,14 @@
                   case 'complete':
                     aiMessage.content = eventData.fullResponse ?? aiMessage.content;
                     messages = [...messages];
-                    isStreaming = $state(false);
+                    isStreaming = false;
                     break;
                   case 'error':
                     error = eventData.error ?? 'Unknown error';
-                    isStreaming = $state(false);
+                    isStreaming = false;
                     break;
                   case 'close':
-                    isStreaming = $state(false);
+                    isStreaming = false;
                     break;
                 }
               } catch (parseError) {
@@ -454,7 +456,7 @@
 
   function closePOIDetails(): void {
     selectedPOI = null;
-    showPOIDialog = $state(false);
+    showPOIDialog = false;
   }
 
   $effect(() => {

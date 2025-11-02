@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Evidence Management Global Store - SvelteKit 2 + Svelte 5
  * Practical SPA example with drag & drop, CRUD modals, and AI integration

@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';
 import Fuse from 'fuse.js';

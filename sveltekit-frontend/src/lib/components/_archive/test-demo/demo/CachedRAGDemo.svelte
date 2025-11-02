@@ -3,11 +3,12 @@
   Demonstrates the new caching functionality with embeddinggemma and gemma3:legal-latest
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
-  let query = $state('What constitutes breach of contract?');
-  let loading = $state(false);
+  let query = $state<string>('What constitutes breach of contract?');
+  let loading = $state<boolean>(false);
   let result = $state<any>(null);
-  let error = $state('');
+  let error = $state<string>('');
   let cacheMetrics = $state<any>(null);
   // Sample queries for testing
   const sampleQueries = [
@@ -17,7 +18,7 @@
     'Due process rights under the 14th Amendment',
     'Corporate liability for employee actions'
   ];
-  async function runCachedQuery() {
+  async function runCachedQuery(): Promise<any> {
     if (!query.trim()) return;
     loading = true;
     error = '';
@@ -57,7 +58,7 @@
       loading = false;
     }
   }
-  async function loadCacheMetrics() {
+  async function loadCacheMetrics(): Promise<any> {
     try {
       // removed unused response assignment
       const data = await (response as { json?: any }).json();
@@ -68,7 +69,7 @@
       console.error('Failed to load cache metrics:', err);
     }
   }
-  async function runCacheTest() {
+  async function runCacheTest(): Promise<any> {
     loading = true;
     try {
       // removed unused response assignment
@@ -84,7 +85,7 @@
       loading = false;
     }
   }
-  async function warmupCache() {
+  async function warmupCache(): Promise<any> {
     loading = true;
     try {
       const response = await fetch('/api/v1/rag/cached', {
@@ -169,7 +170,7 @@
             <div class="stat">
               <span class="label">Embedding Cache:</span>
               <span
-                class="value {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any })
+                class="value" {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any })
                   .cacheStats.embeddingCacheHit
                   ? 'hit'
                   : 'miss'}"
@@ -183,7 +184,7 @@
             <div class="stat">
               <span class="label">Query Cache:</span>
               <span
-                class="value {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any })
+                class="value" {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any })
                   .cacheStats.queryCacheHit
                   ? 'hit'
                   : 'miss'}"
@@ -197,7 +198,7 @@
             <div class="stat">
               <span class="label">Response Cache:</span>
               <span
-                class="value {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any })
+                class="value" {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any })
                   .cacheStats.responseCacheHit
                   ? 'hit'
                   : 'miss'}"

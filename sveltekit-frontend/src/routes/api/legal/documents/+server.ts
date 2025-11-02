@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 // Legal Documents API - SvelteKit Server Endpoint
 import { db } from '$lib/server/db/index';

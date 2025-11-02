@@ -3,10 +3,10 @@
   import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter';
   import type { WebAssemblyAIResponse } from '$lib/adapters/webasm-ai-adapter';
 
-  let prompt = $state(''); // Keep $state as per original user code and Svelte 5 runes
-  let output = $state(''); // Keep $state as per original user code and Svelte 5 runes
-  let streaming = $state(false); // Keep $state as per original user code and Svelte 5 runes
-  let adapterInitialized = $state(false); // Use $state for component-local reactive state
+  let prompt = $state<string>(''); // Keep $state as per original user code and Svelte 5 runes
+  let output = $state<string>(''); // Keep $state as per original user code and Svelte 5 runes
+  let streaming = $state<boolean>(false); // Keep $state as per original user code and Svelte 5 runes
+  let adapterInitialized = $state<boolean>(false); // Use $state for component-local reactive state
   let adapterHealth = $state<ReturnType<typeof webAssemblyAIAdapter.getHealthStatus> | null>(null); // Use $state
   let lastResponseMetadata = $state<WebAssemblyAIResponse['metadata'] | null>(null); // Use $state
 
@@ -16,7 +16,7 @@
     adapterHealth = webAssemblyAIAdapter.getHealthStatus();
   });
 
-  async function send() {
+  async function send(): Promise<any> {
     if (!adapterInitialized) {
       console.error('AI Adapter not initialized.');
       return;

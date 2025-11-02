@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
@@ -28,7 +29,7 @@
     ondispatch?: (results: AnalysisResults) => void;
   }
   let { formData = {}, evidenceData = {}, ondispatch } : Props = $props();
-  let isAnalyzing = $state(false);
+  let isAnalyzing = $state<boolean>(false);
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
   let analysisResults = writable<AnalysisResults | null>(null);
@@ -41,7 +42,7 @@
     'Court Loss',
     'Uncertain',
   ];
-  async function startAnalysis() {
+  async function startAnalysis(): Promise<any> {
     if (isAnalyzing) return;
     isAnalyzing = true;
     analysisProgress.set(0);

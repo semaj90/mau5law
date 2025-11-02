@@ -499,7 +499,7 @@ class RedisGPUChatOptimizationService {
 export const redisGPUChatOptimization = new RedisGPUChatOptimizationService();
 
 // --- helper to wire config from server entrypoints or API routes (call early on startup) ---
-export async function initRedisGPUChatOptimization(config?: ServiceConfig) {
+export async function initRedisGPUChatOptimization(config?: ServiceConfig): Promise<void> {
   // apply config and ensure redis connects if configured
   await redisGPUChatOptimization.setConfig(config ?? {});
   return redisGPUChatOptimization;

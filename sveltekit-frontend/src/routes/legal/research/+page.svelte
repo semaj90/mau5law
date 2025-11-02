@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
@@ -124,12 +125,12 @@
     })();
   });
 
-  async function initializeResearchSession() {
+  async function initializeResearchSession(): Promise<void> {
     researchSession.id = `research_${Date.now()}`;
     console.log('🔍 Legal Research Session Started:', researchSession.id);
   }
 
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     isSearching = true;
     // record query with correct property names and commas
@@ -237,7 +238,7 @@
       }
     ];
   }
-  async function generateAISuggestions(results: DocumentResult[]) {
+  async function generateAISuggestions(results: DocumentResult[]): Promise<any> {
     // Extract key terms and generate related search suggestions
     const topics = results.flatMap((r) => r.keyTopics || []);
     const uniqueTopics = [...new Set(topics)];
@@ -248,7 +249,7 @@
       `Practical applications and precedent analysis`
     ];
   }
-  async function loadSavedCitations() {
+  async function loadSavedCitations(): Promise<any> {
     try {
       const response = await fetch('/api/legal/research/citations');
       if (response.ok) {
@@ -269,7 +270,7 @@
       ];
     }
   }
-  async function loadAISuggestions() {
+  async function loadAISuggestions(): Promise<any> {
     aiSuggestions = [
       'Recent Supreme Court decisions on constitutional law',
       'Trending legal issues in technology and privacy',
@@ -277,7 +278,7 @@
       'Evidence standards in federal court'
     ];
   }
-  async function saveCitation(document: DocumentResult) {
+  async function saveCitation(document: DocumentResult): Promise<void> {
     try {
       const response = await fetch('/api/legal/research/citations/save', {
         method: 'POST',
@@ -423,7 +424,7 @@
                 {@const Icon = mode.icon}
                 <button
                   onclick={() => searchMode = mode.id}
-                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-colors
+                  class="inline-flex" items-center px-3 py-1 rounded-full text-xs font-medium transition-colors
                          {searchMode === mode.id ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
                 >
                   <Icon class="h-3 w-3 mr-1" />

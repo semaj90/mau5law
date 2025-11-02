@@ -3,6 +3,7 @@
 </svelte:head>
 
 <script lang="ts">
+import type { Message } from '$lib/types';
   import { onDestroy } from 'svelte';
   // Replace named imports that caused TS errors with a namespace import
   import * as Lucide from 'lucide-svelte';
@@ -127,8 +128,8 @@
   ];
 
   let testResults = $state<TestResult[]>([]);
-  let isRunning = $state(false);
-  let autoRefresh = $state(false);
+  let isRunning = $state<boolean>(false);
+  let autoRefresh = $state<boolean>(false);
   let filter = $state<'all' | 'success' | 'error'>('all');
   let refreshTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -160,7 +161,7 @@
     if (refreshTimer) clearInterval(refreshTimer);
   });
 
-  async function runAllTests() {
+  async function runAllTests(): Promise<any> {
     if (isRunning) return;
     isRunning = true;
     try {
@@ -172,7 +173,7 @@
     }
   }
 
-  async function runEndpoint(endpoint: ApiEndpoint) {
+  async function runEndpoint(endpoint: ApiEndpoint): Promise<any> {
     const startedAt = performance.now();
     const runId = `${endpoint.id}-${Date.now()}`;
     const result: TestResult = {

@@ -1,4 +1,4 @@
-export async function upsertEmbedding(evidenceId: string, vector: number[], meta: Record<string, any>) {
+export async function upsertEmbedding(evidenceId: string, vector: number[], meta: Record<string, any>): Promise<any> {
   // Minimal stub: write to local folder /data/embeddings as JSON files for debugging
   try {
     const fs = await import('fs');

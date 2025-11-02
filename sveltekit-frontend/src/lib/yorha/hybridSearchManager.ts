@@ -4,7 +4,7 @@ import type { LocalLegalDoc } from './localSearch.js';
 let lokiDb: any = null;
 let lokiCollection: any = null;
 let lastRefresh = 0;
-let refreshing = $state(false);
+let refreshing = $state<boolean>(false);
 
 export interface HybridInitOptions {
   refreshIntervalMs?: number;

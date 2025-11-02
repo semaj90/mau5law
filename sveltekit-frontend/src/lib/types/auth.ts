@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Authentication Types
  * Standardized types for user sessions and authentication

@@ -16,8 +16,8 @@
   let { caseId, onEvidenceDrop = () => {} }: Props = $props();
   // State using Svelte 5 runes
   let evidenceList = $state<LocalEvidence[]>([]);
-  let isUploading = $state(false);
-  async function fetchEvidence() {
+  let isUploading = $state<boolean>(false);
+  async function fetchEvidence(): Promise<Response> {
     try {
       const res = await fetch(`/api/evidence?caseId=${caseId}`);
       if (res.ok) {
@@ -30,7 +30,7 @@
       console.error('Error fetching evidence:', error);
     }
   }
-  async function handleUpload(e: Event) {
+  async function handleUpload(e: Event): Promise<any> {
     const input = e.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
     isUploading = true;

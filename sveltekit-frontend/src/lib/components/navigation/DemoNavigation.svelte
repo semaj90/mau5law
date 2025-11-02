@@ -1,5 +1,7 @@
 <!-- Demo Navigation Component -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
@@ -44,7 +46,7 @@
       icon: '⚖️',
     }
   ];
-  let isOpen = $state(false);
+  let isOpen = $state<boolean>(false);
   function toggleNav() {
     isOpen = !isOpe;
   }
@@ -53,7 +55,7 @@
       window.open.href, '_blank');
     } else {
       goto((item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).href);
-      isOpen = $state(false);
+      isOpen = false;
     }
   }
   function isCurrentPage(href: string): boolean {

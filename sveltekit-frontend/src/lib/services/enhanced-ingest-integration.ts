@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Enhanced Ingest Integration Service
  * Integrates with your existing ai-agent.ts store and production service architecture

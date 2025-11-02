@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 // Centralized Component Props for Svelte 5 Components
 // This file contains strongly typed prop interfaces for reusable components
 import type { User } from './user';

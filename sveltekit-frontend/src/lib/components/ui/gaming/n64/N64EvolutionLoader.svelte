@@ -19,8 +19,8 @@
   }: Props = $props();
   // Evolution stages
   const stages = ['nes', 'snes', 'n64', 'modern'] as const;
-  let currentStageIndex = $state(0);
-  let animationPhase = $state(0); // 0-100 for smooth transitions
+  let currentStageIndex = $state<number>(0);
+  let animationPhase = $state<number>(0); // 0-100 for smooth transitions
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
   let animationId: number;
@@ -103,8 +103,8 @@
     [0, 3, 7, 4], // Left
     [1, 2, 6, 5]  // Right
   ];
-  let rotation = $state(0);
-  let evolutionProgress = $state(0);
+  let rotation = $state<number>(0);
+  let evolutionProgress = $state<number>(0);
   $effect(() => {
     if (!headless && canvas) {
       ctx = canvas.getContext('2d')!;

@@ -7,15 +7,15 @@
   import { onMount, onDestroy } from 'svelte';
   import { createWSClient, type WSConnectionStatus } from '$lib/utils/websocket-client';
 
-  let uploadCount = $state(0);
+  let uploadCount = $state<number>(0);
   let lastUpload = $state<any>(null);
   let wsError = $state<string | null>(null);
-  let connectionAttempts = $state(0);
+  let connectionAttempts = $state<number>(0);
 
   let wsClient: ReturnType<typeof createWSClient> | null = null;
   let connectionStatus = $state<WSConnectionStatus>('disconnected');
   let messages = $state<any[]>([]);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
 
   function handleSuccess(result: any) {
     uploadCount++;

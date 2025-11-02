@@ -1,3 +1,5 @@
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Unified API Endpoint
  * Orchestrates embed, vector, cache, shader, evidence, file document upload storage
@@ -833,7 +835,7 @@ async function safeGetNeo4jHealth(): Promise<{ connected?: boolean }> {
 }
 
 // === ANALYTICS HELPERS ===
-async function getSearchAnalytics(_timeRange: string) {
+async function getSearchAnalytics(_timeRange: string): Promise<any> {
   // Would implement search analytics from query_analytics table
   return {
     totalQueries: Math.floor(Math.random() * 1000) + 500,
@@ -847,7 +849,7 @@ async function getSearchAnalytics(_timeRange: string) {
     },
   };
 }
-async function getCacheStats() {
+async function getCacheStats(): Promise<any> {
   // Would get Redis cache statistics
   return {
     hitRate: Math.random() * 0.2 + 0.8,
@@ -856,7 +858,7 @@ async function getCacheStats() {
     evictionRate: Math.random() * 0.1,
   };
 }
-async function getPerformanceMetrics(_timeRange: string) {
+async function getPerformanceMetrics(_timeRange: string): Promise<any> {
   return {
     averageLatency: Math.floor(Math.random() * 100) + 25,
     throughput: Math.floor(Math.random() * 500) + 200,

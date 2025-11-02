@@ -33,16 +33,16 @@
     updatedAt: string;
   }
   // State
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let viewMode = $state<'grid' | 'list' | 'cards'>('cards');
-  let showFilters = $state(false);
+  let showFilters = $state<boolean>(false);
   let selectedThreatLevel = $state<string>('');
   let selectedStatus = $state<string>('');
   let selectedRelationship = $state<string>('');
   let sortBy = $state<'name' | 'updated' | 'created' | 'threat'>('updated');
   let sortOrder = $state<'asc' | 'desc'>('desc');
-  let isLoading = $state(false);
-  let showAddModal = $state(false);
+  let isLoading = $state<boolean>(false);
+  let showAddModal = $state<boolean>(false);
   // Mock data - replace with API calls (fixed object literal syntax)
   let persons = $state<PersonOfInterest[]>([
     {

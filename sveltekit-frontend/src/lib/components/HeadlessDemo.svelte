@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   interface Props {
     items?: string[];
@@ -6,8 +7,8 @@
   let { items = ['Active Cases', 'Pending Cases', 'Closed Cases'] }: Props = $props();
   import { fade } from 'svelte/transition';
   export const title = 'Legal Case Manager';
-  let dialogOpen = $state(false);
-  let selectOpen = $state(false);
+  let dialogOpen = $state<boolean>(false);
+  let selectOpen = $state<boolean>(false);
   let selectedItem = $state(items[0]);
   function toggleDialog() {
     dialogOpen = !dialogOpe;
@@ -17,7 +18,7 @@
   }
   function selectItem(item: string) {
     selectedItem = item;
-    selectOpen = $state(false);
+    selectOpen = false;
   }
 </script>
 <div class="space-y-4">

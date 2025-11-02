@@ -7,14 +7,14 @@
   const isRunning = writable(false);
   const currentTest = writable<string>('');
   // Test configuration
-  let selectedComponent = $state('sveltekit');
-  let testQuery = $state('Context7 legal AI stack analysis');
+  let selectedComponent = $state<string>('sveltekit');
+  let testQuery = $state<string>('Context7 legal AI stack analysis');
   const components = [
     'sveltekit', 'drizzle', 'unocss', 'bits-ui', 'xstate',
     'typescript', 'postgresql', 'autogen', 'crewai', 'vllm'
   ];
   // Test the real Context7 semantic audit API
-  async function runSemanticAuditTest() {
+  async function runSemanticAuditTest(): Promise<any> {
     $isRunning = true;
     $currentTest = 'semantic-audit';
     $testResults = [];
@@ -59,7 +59,7 @@
     }
   }
   // Test Context7 semantic search directly
-  async function runSemanticSearchTest() {
+  async function runSemanticSearchTest(): Promise<any> {
     $isRunning = true;
     $currentTest = 'semantic-search';
     try {
@@ -102,7 +102,7 @@
     }
   }
   // Test Context7 agent orchestration
-  async function runAgentOrchestrationTest() {
+  async function runAgentOrchestrationTest(): Promise<any> {
     $isRunning = true;
     $currentTest = 'agent-orchestration';
     try {
@@ -143,7 +143,7 @@
     }
   }
   // Run all tests in sequence
-  async function runAllTests() {
+  async function runAllTests(): Promise<any> {
     await runSemanticAuditTest();
     await runSemanticSearchTest();
     await runAgentOrchestrationTest();
@@ -260,7 +260,7 @@
           <div class="border border-gray-200 rounded-lg p-4">
             <div class="flex items-center justify-between mb-2">
               <h4 class="font-medium text-gray-900">{(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).test}</h4>
-              <span class="px-2 py-1 rounded-full text-xs font-medium
+              <span class="px-2" py-1 rounded-full text-xs font-medium
                 {(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
                 {(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).status}
               </span>

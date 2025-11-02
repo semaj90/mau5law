@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Legal Citations Management System
  * AI-powered citation extraction, validation, and relationship mapping

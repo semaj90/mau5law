@@ -215,7 +215,7 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
  */
 export async function embedAudioBuffer(buffer: Buffer, tempPath?: string): Promise<EmbeddingResult> {
   let audioPath = tempPath;
-  let shouldCleanup = $state(false);
+  let shouldCleanup = $state<boolean>(false);
   try {
     if (!audioPath) {
       // Write to temp file

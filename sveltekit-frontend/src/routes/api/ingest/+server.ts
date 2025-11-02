@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
@@ -15,7 +16,7 @@ type IngestResponse = {
 
 const optional: any = { loaded: false };
 
-async function ensureOptionalLoaded() {
+async function ensureOptionalLoaded(): Promise<any> {
   if (optional.loaded) return;
   optional.loaded = true;
   try {
@@ -29,7 +30,7 @@ function generateAnonId() {
   return `anon_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 }
 
-async function proxyToGo(path: string, init?: RequestInit) {
+async function proxyToGo(path: string, init?: RequestInit): Promise<any> {
   const url = `http://localhost:8080${path}`;
   try {
     const res = await fetch(url, init);

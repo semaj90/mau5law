@@ -4,6 +4,7 @@ https://svelte.dev/e/props_duplicate -->
 <!-- Comprehensive AI Summary Engine - End-to-End Integration Component -->
 <!-- Features: Local LLM + Enhanced RAG + Loki.js + Fuse.js + XState + Service Workers -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
@@ -57,15 +58,15 @@ https://svelte.dev/e/props_duplicate -->
     confidenceScore: 0,
   });
   // Service Worker integration
-  let serviceWorker = $state(null);
-  let isLoading = $state(false);
-  let swRegistration = $state(null);
+  let serviceWorker = $state<any>(null);
+  let isLoading = $state<boolean>(false);
+  let swRegistration = $state<any>(null);
   // UI state
-  let isProcessing = $state(false);
-  let currentStep = $state('');
-  let errorMessage = $state('');
-  let showAdvancedOptions = $state(false);
-  let exportFormat = $state('json');
+  let isProcessing = $state<boolean>(false);
+  let currentStep = $state<string>('');
+  let errorMessage = $state<string>('');
+  let showAdvancedOptions = $state<boolean>(false);
+  let exportFormat = $state<string>('json');
   // Advanced configuration
   let config = $state({
     chunkSize: 2000,
@@ -102,7 +103,7 @@ https://svelte.dev/e/props_duplicate -->
       serviceWorker.removeEventListener('message', handleServiceWorkerMessage);
     }
   });
-  async function initializeServiceWorker() {
+  async function initializeServiceWorker(): Promise<void> {
     if ('serviceWorker' in navigator) {
       try {
         swRegistration = await navigator.serviceWorker.register('/workers/summaries-sw.js');
@@ -147,7 +148,7 @@ https://svelte.dev/e/props_duplicate -->
         break;
     }
   }
-  async function startComprehensiveSummary() {
+  async function startComprehensiveSummary(): Promise<any> {
     if (isProcessing) return;
     isProcessing = true;
     errorMessage = '';
@@ -185,10 +186,10 @@ https://svelte.dev/e/props_duplicate -->
     } catch (error) {
       console.error('Summary generation failed:', error);
       errorMessage = (error as Error).message;
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
-  async function handleStreamingSummary(request) {
+  async function handleStreamingSummary(request): Promise<any> {
     const response = await fetch('/api/summaries', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -221,7 +222,7 @@ https://svelte.dev/e/props_duplicate -->
       }
     }
   }
-  async function handleBatchSummary(request) {
+  async function handleBatchSummary(request): Promise<any> {
     currentStep = 'Processing comprehensive summary...';
     const response = await fetch('/api/summaries', {
       method: 'POST',
@@ -277,7 +278,7 @@ https://svelte.dev/e/props_duplicate -->
         ).error || 'Unknown error'
       );
     }
-    isProcessing = $state(false);
+    isProcessing = false;
   }
   function handleStreamingChunk(data) {
     switch (
@@ -323,7 +324,7 @@ https://svelte.dev/e/props_duplicate -->
         synthesisResult.set((data as any).result);
         summaryProgress.set(100);
         currentStep = 'Summary completed successfully';
-        isProcessing = $state(false);
+        isProcessing = false;
         break;
       case 'error':
         errorMessage = (
@@ -338,7 +339,7 @@ https://svelte.dev/e/props_duplicate -->
             summary?: any;
           }
         ).error;
-        isProcessing = $state(false);
+        isProcessing = false;
         break;
     }
   }
@@ -381,7 +382,7 @@ https://svelte.dev/e/props_duplicate -->
   }
   function handleSummaryCompletion(data) {
     synthesisResult.set((data as any).summary);
-    isProcessing = $state(false);
+    isProcessing = false;
     summaryProgress.set(100);
     currentStep = 'Summary completed successfully';
     // Show notification if enabled
@@ -406,7 +407,7 @@ https://svelte.dev/e/props_duplicate -->
           summary?: any;
         }
       ).error || 'Unknown processing error';
-    isProcessing = $state(false);
+    isProcessing = false;
   }
   function updateMetrics(data) {
     metrics = { ...metrics, ...data };
@@ -420,30 +421,30 @@ https://svelte.dev/e/props_duplicate -->
       currentStep = stateValue;
     }
   }
-  async function pauseProcessing() {
+  async function pauseProcessing(): Promise<any> {
     if (serviceWorker) {
       serviceWorker.postMessage({ type: 'PAUSE_PROCESSING' });
     }
     send({ type: 'PAUSE' });
   }
-  async function resumeProcessing() {
+  async function resumeProcessing(): Promise<any> {
     if (serviceWorker) {
       serviceWorker.postMessage({ type: 'RESUME_PROCESSING' });
     }
     send({ type: 'RESUME' });
   }
-  async function stopProcessing() {
+  async function stopProcessing(): Promise<any> {
     if (serviceWorker) {
       serviceWorker.postMessage({ type: 'STOP_PROCESSING' });
     }
     send({ type: 'STOP' });
-    isProcessing = $state(false);
+    isProcessing = false;
   }
   function preloadRequiredData() {
     // Preload user activity data from Loki.js
     enhancedLokiStore.preloadUserActivity(targetId);
   }
-  async function exportSummary() {
+  async function exportSummary(): Promise<any> {
     const result = $synthesisResult;
     if (!result) return;
     const exportData = {

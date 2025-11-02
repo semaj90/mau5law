@@ -6,7 +6,7 @@ import { cudaServiceWorker } from '$lib/ai/cuda-service-worker'; // Corrected im
 let pipe: any | null = null;
 
 /** Initialize once and reuse */
-export async function initWebGPUPipeline() {
+export async function initWebGPUPipeline(): Promise<void> {
   if (pipe) return pipe;
   console.log('🧠 Loading Gemma-270M with WebGPU...');
   pipe = await pipeline('text-generation', '/models/gemma-270m', {
@@ -36,7 +36,7 @@ export async function runWebGPUInference(prompt: string): Promise<string> {
  *  Short prompts → local WebGPU
  *  Long/legal prompts → TensorRT backend
  */
-export async function hybridGenerate(prompt: string) {
+export async function hybridGenerate(prompt: string): Promise<any> {
   if (prompt.length < 500) {
     return { source: 'webgpu', text: await runWebGPUInference(prompt) };
   }

@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // DEPRECATION WARNING:
 // This legacy camelCase schema is retained temporarily for non-auth code paths.
 // Do NOT import from '$lib/database/schema' for authentication/session logic.

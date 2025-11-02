@@ -1,15 +1,15 @@
 <script lang="ts">
   import { speak } from './speak';
-  let isSupported = $state(false);
-  let isListening = $state(false);
-  let finalTranscript = $state('');
-  let interimTranscript = $state('');
-  let currentTranscript = $state('');
+  let isSupported = $state<boolean>(false);
+  let isListening = $state<boolean>(false);
+  let finalTranscript = $state<string>('');
+  let interimTranscript = $state<string>('');
+  let currentTranscript = $state<string>('');
   let recognition = $state<any | null>(null);
   $effect(() => {
     const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
     if (!SpeechRecognition) {
-      isSupported = $state(false);
+      isSupported = false;
       return;
     }
     isSupported = true;
@@ -41,13 +41,13 @@
       currentTranscript = final + interim;
     };
     recognition.onend = () => {
-      isListening = $state(false);
+      isListening = false;
       if (!finalTranscript) {
         speak('No speech detected. Please try again.');
       }
     };
     recognition.onerror = (ev: any) => {
-      isListening = $state(false);
+      isListening = false;
       const err = ev?.error ?? 'unknown';
       if (err === 'no-speech') {
         speak('No speech detected. Please try again.');
@@ -80,7 +80,7 @@
       onclick={() => {
         if (isListening) {
           recognition?.stop();
-          isListening = $state(false);
+          isListening = false;
         } else {
           try {
             recognition?.start();

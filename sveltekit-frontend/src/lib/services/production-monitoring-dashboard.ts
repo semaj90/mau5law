@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Production Monitoring Dashboard - Enterprise Legal AI Operations
  *

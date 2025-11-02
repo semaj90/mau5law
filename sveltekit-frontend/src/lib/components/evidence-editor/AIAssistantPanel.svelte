@@ -15,9 +15,9 @@
     evidenceList = [],
     ondispatch = undefined
   }: Props = $props();
-  let isProcessing = $state(false);
-  let processingStatus = $state('');
-  let searchQuery = $state('');
+  let isProcessing = $state<boolean>(false);
+  let processingStatus = $state<string>('');
+  let searchQuery = $state<string>('');
   let searchResults = $state<any[]>([]);
   let fuse = $state<Fuse<any> | null>(null);
 
@@ -66,7 +66,7 @@
     searchQuery = '';
     searchResults = [];
   }
-  async function analyzeWithAI() {
+  async function analyzeWithAI(): Promise<any> {
     if (!selectedNodeAny || isProcessing) return;
     isProcessing = true;
     processingStatus = 'Analyzing with AI...';
@@ -107,7 +107,7 @@
       setTimeout(() => processingStatus = '', 3000);
     }
   }
-  async function generateInsights() {
+  async function generateInsights(): Promise<any> {
     if (!caseId || isProcessing) return;
     isProcessing = true;
     processingStatus = 'Generating insights...';

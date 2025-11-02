@@ -52,14 +52,14 @@
   let localContentJson = $state(contentJson);
   let localIsOpen = $state(isOpen);
   // Props
-  let isSaved = $state(false);
+  let isSaved = $state<boolean>(false);
   let editedContent = content;
   let editedTitle = titl;
   let editedTags: string[] = [...tags];
   let newTag = "";
   // Reactive display HTML from html or markdown
   // TODO: Convert to $derived: displayHtml = html || (markdown ? marked.parse(markdown) : "")
-  async function handleSaveForLater() {
+  async function handleSaveForLater(): Promise<void> {
     try {
       await saveNoteForLater({
         id: noteId
@@ -79,7 +79,7 @@
       console.error("Failed to save note:", error);
     }
   }
-  async function handleRemoveFromSaved() {
+  async function handleRemoveFromSaved(): Promise<void> {
     try {
       await removeSavedNote(noteId);
       isSaved = false;
@@ -138,7 +138,7 @@
     editedTags = [...tags];
   }
   function closeModal() {
-    localIsOpen = $state(false);
+    localIsOpen = false;
   }
 </script>
 {#if localIsOpen}

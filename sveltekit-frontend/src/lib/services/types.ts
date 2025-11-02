@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // src/lib/services/types.ts
 export interface AuthCredentials {
   email: string;

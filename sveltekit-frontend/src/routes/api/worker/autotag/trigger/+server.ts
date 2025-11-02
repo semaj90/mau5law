@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 /*
  * PostgreSQL-First Worker Trigger API

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * PgVector Indexing Service
  * Advanced vector search and similarity operations using PostgreSQL pgvector extension

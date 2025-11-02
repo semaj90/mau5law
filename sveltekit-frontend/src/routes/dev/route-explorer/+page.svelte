@@ -47,14 +47,14 @@
     }
   }
   let routeData: RouteData | null = $state(null);
-  let loading = $state(true);
+  let loading = $state<boolean>(true);
   let error = $state<string | null>(null);
   // Filter state
-  let searchTerm = $state('');
-  let selectedCategory = $state('all');
-  let selectedStatus = $state('all');
-  let selectedTag = $state('all');
-  let showAnalytics = $state(false);
+  let searchTerm = $state<string>('');
+  let selectedCategory = $state<string>('all');
+  let selectedStatus = $state<string>('all');
+  let selectedTag = $state<string>('all');
+  let showAnalytics = $state<boolean>(false);
   let viewMode = $state<'grid' | 'table' | 'tree'>('grid');
   // Derived filtered data
   let filteredRoutes = $derived.by(() => {
@@ -126,7 +126,7 @@ if (!browser) return;
     selectedStatus = 'all';
     selectedTag = 'all';
   }
-  async function refreshData() {
+  async function refreshData(): Promise<any> {
     loading = true;
     error = null;
     await onMount();

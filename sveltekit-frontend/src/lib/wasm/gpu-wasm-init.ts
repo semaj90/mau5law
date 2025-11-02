@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // @ts-nocheck - Complex experimental service with external dependencies
 /**
  * WebAssembly GPU Initialization System

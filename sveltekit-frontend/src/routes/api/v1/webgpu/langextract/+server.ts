@@ -158,7 +158,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 /**
  * Handle single document processing with WebGPU optimization
  */
-async function handleSingleDocumentProcessing(request: WebGPULangExtractRequest) {
+async function handleSingleDocumentProcessing(request: WebGPULangExtractRequest): Promise<any> {
   if (!request.text) {
     throw new Error('Text is required for single document processing');
   }
@@ -213,7 +213,7 @@ async function handleSingleDocumentProcessing(request: WebGPULangExtractRequest)
 /**
  * Handle batch document processing with parallel optimization
  */
-async function handleBatchDocumentProcessing(request: WebGPULangExtractRequest) {
+async function handleBatchDocumentProcessing(request: WebGPULangExtractRequest): Promise<any> {
   if (!request.documents || request.documents.length === 0) {
     throw new Error('Documents array is required for batch processing');
   }
@@ -319,7 +319,7 @@ async function handleBatchDocumentProcessing(request: WebGPULangExtractRequest) 
 /**
  * Handle performance benchmark testing
  */
-async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
+async function handleBenchmarkTesting(request: WebGPULangExtractRequest): Promise<any> {
   const iterations = request.benchmark?.iterations || 10;
   const compareStandard = request.benchmark?.compareStandard || false;
   // Sample legal documents for benchmarking
@@ -399,7 +399,7 @@ async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
 /**
  * Handle configuration updates
  */
-async function handleConfigurationUpdate(request: WebGPULangExtractRequest) {
+async function handleConfigurationUpdate(request: WebGPULangExtractRequest): Promise<any> {
   if (!request.config) {
     throw new Error('Configuration object is required');
   }

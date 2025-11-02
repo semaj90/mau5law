@@ -1,5 +1,6 @@
 <!-- Fixed: ContentSection component with proper Svelte 5 render syntax -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { cn } from '$lib/utils';
   interface Props {

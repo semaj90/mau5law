@@ -15,7 +15,7 @@
   }
   export function close() {
     if (open) {
-      open = $state(false);
+      open = false;
       dispatch('close');
     }
   }

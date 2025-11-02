@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { EventEmitter } from 'events';
 // lib/server/ai/streaming-service.ts
 // Real-time streaming service for AI synthesis with progressive updates
@@ -593,7 +594,7 @@ export class OllamaStreamingAdapter {
       const reader = response.body!.getReader();
       const decoder = new TextDecoder();
       let fullResponse = '';
-      let done = $state(false);
+      let done = $state<boolean>(false);
       while (!done) {
         const { done: d, value } = await reader.read();
         done = d;

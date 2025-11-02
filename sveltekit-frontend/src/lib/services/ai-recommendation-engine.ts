@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /*
   NOTE: This module contained many complex implementations that caused parse errors during
   automated fixes. For now we've replaced the file with a compact, well-typed stub that

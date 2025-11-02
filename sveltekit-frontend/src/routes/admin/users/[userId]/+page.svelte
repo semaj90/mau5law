@@ -1,15 +1,16 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { enhance } from '$app/forms';
   import { page } from '$app/state';
   import type { PageData, ActionData } from './$types';
   import { goto } from '$app/navigation';
   let { data }: { data: PageData } = $props();
-  let showProfileModal = $state(false);
-  let showPasswordModal = $state(false);
-  let showSessionModal = $state(false);
+  let showProfileModal = $state<boolean>(false);
+  let showPasswordModal = $state<boolean>(false);
+  let showSessionModal = $state<boolean>(false);
   let selectedSession = $state<any>(null);
-  let formLoading = $state(false);
+  let formLoading = $state<boolean>(false);
   // Profile form
   let profileForm = $state({
     firstName: (data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.firstName || '',
@@ -60,7 +61,7 @@
   }
   function closeSessionModal() {
     selectedSession = null;
-    showSessionModal = $state(false);
+    showSessionModal = false;
   }
   function validatePasswordForm() {
     if (passwordForm.newPassword.length < 8) {
@@ -417,12 +418,12 @@
         use:enhance={() => {
           formLoading = true;
           return ({ result }) => {
-            formLoading = $state(false);
+            formLoading = false;
             if (
               (result as { type?: any; status?: any }).type === 'success' ||
               (result as { type?: any; status?: any }).status === 200
             ) {
-              showProfileModal = $state(false);
+              showProfileModal = false;
             }
           };
         }}
@@ -491,12 +492,12 @@
           if (!validatePasswordForm()) return false;
           formLoading = true;
           return ({ result }) => {
-            formLoading = $state(false);
+            formLoading = false;
             if (
               (result as { type?: any; status?: any }).type === 'success' ||
               (result as { type?: any; status?: any }).status === 200
             ) {
-              showPasswordModal = $state(false);
+              showPasswordModal = false;
               passwordForm.newPassword = '';
               passwordForm.confirmPassword = '';
             }
@@ -571,7 +572,7 @@
           use:enhance={() => {
             formLoading = true;
             return ({ result }) => {
-              formLoading = $state(false);
+              formLoading = false;
               if (
                 (result as { type?: any; status?: any }).type === 'success' ||
                 (result as { type?: any; status?: any }).status === 200

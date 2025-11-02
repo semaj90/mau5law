@@ -1,3 +1,7 @@
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Enhanced Error Handler Store for Legal AI Platform
  *

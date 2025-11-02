@@ -1,5 +1,7 @@
 <!-- Smart Document Form with OCR Auto-Population -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, createEventDispatcher } from "svelte";
   // keep local Button component
@@ -32,9 +34,9 @@
   let fileInput = $state<HTMLInputElement | null>(null);
   let uploadedFile = $state<File | null>(null);
   let populatedFields = $state<FormField[]>([...formSchema]);
-  let isProcessing = $state(false);
-  let showPreview = $state(false);
-  let selectedDocumentType = $state('auto');
+  let isProcessing = $state<boolean>(false);
+  let showPreview = $state<boolean>(false);
+  let selectedDocumentType = $state<string>('auto');
   // OCR stores
   let processing = $derived(ocrService.processing$);
   let progress = $derived(ocrService.progress$);
@@ -42,7 +44,7 @@
   let extractedFields = $derived(ocrService.extractedFields$);
   // Form validation
   const formErrors = writable<Record<string, string>>({});
-  let isFormValid = $state(false);
+  let isFormValid = $state<boolean>(false);
   // Smart suggestions
   let activeSuggestions = $state<Record<string, string[]>>({});
   let suggestionLoading = $state<Record<string, boolean>>({});

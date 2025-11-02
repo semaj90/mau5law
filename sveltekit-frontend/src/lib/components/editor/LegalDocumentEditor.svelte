@@ -1,17 +1,19 @@
 <!-- Enhanced Legal Document Editor with UnoCSS + bits-ui -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade } from "svelte/transition";
   // Bits-UI components
-  import * as Dialog from '$lib/components/ui/dialog.svelte'";
-  import * as DropdownMenu from '$lib/components/ui/dropdown-menu.svelte'";
-  import * as Tooltip from '$lib/components/ui/tooltip.svelte'";
-  import { Button } from '$lib/components/ui/button.svelte'";
-  import { Input } from '$lib/components/ui/input.svelte'";
-  import { Label } from '$lib/components/ui/label.svelte'";
-  import { Textarea } from '$lib/components/ui/textarea.svelte'";
+  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu.svelte';
+  import * as Tooltip from '$lib/components/ui/tooltip.svelte';
+  import { Button } from '$lib/components/ui/button.svelte';
+  import { Input } from '$lib/components/ui/input.svelte';
+  import { Label } from '$lib/components/ui/label.svelte';
+  import { Textarea } from '$lib/components/ui/textarea.svelte';
   import {
     AlertCircle,
     BookOpen,
@@ -34,13 +36,13 @@
   let { title = "Legal Document" }: { title?: string } = $props();
   let { readonly = false }: { readonly?: boolean } = $props();
   // Component state
-  let content = $state("");
-  let query = $state("");
-  let isLoading = $state(false);
-  let isProcessingAI = $state(false);
-  let error = $state("");
-  let loadingDocument = $state(false);
-  let documentLoadError = $state("");
+  let content = $state<string>("");
+  let query = $state<string>("");
+  let isLoading = $state<boolean>(false);
+  let isProcessingAI = $state<boolean>(false);
+  let error = $state<string>("");
+  let loadingDocument = $state<boolean>(false);
+  let documentLoadError = $state<string>("");
   interface Citation {
     id: string;
     text: string;
@@ -50,10 +52,10 @@
   let citations = $state<Citation[]>([]);
   // Auto-save state
   let autoSaveTimer = $state<ReturnType<typeof setTimeout> | null>(null);
-  let lastSaved = $state("");
-  let isSaving = $state(false);
-  let saveError = $state("");
-  let hasUnsavedChanges = $state(false);
+  let lastSaved = $state<string>("");
+  let isSaving = $state<boolean>(false);
+  let saveError = $state<string>("");
+  let hasUnsavedChanges = $state<boolean>(false);
   // Document type definitions
   interface DocumentData {
     id: string;
@@ -65,7 +67,7 @@
     updatedAt: string;
     citations?: Citation[];
   }
-  async function handleAIRequest() {
+  async function handleAIRequest(): Promise<any> {
     if (!query.trim()) return;
     isProcessingAI = true;
     error = "";
@@ -114,7 +116,7 @@
     }, 2000);
   }
   // Function to auto-save document
-  async function autoSaveDocument() {
+  async function autoSaveDocument(): Promise<void> {
     if (!documentId || readonly || isSaving) return;
     isSaving = true;
     saveError = "";
@@ -135,7 +137,7 @@
       const result = await response.json();
       if (result.success) {
         lastSaved = new Date().toLocaleTimeString();
-        hasUnsavedChanges = $state(false);
+        hasUnsavedChanges = false;
         console.log("Document auto-saved successfully");
       } else {
         throw new Error(result.error || "Auto-save failed");
@@ -148,7 +150,7 @@
     }
   }
   // Function to manually save document
-  async function manualSaveDocument() {
+  async function manualSaveDocument(): Promise<void> {
     if (!documentId || readonly || isSaving) return;
     isSaving = true;
     saveError = "";
@@ -169,7 +171,7 @@
       const result = await response.json();
       if (result.success) {
         lastSaved = new Date().toLocaleTimeString();
-        hasUnsavedChanges = $state(false);
+        hasUnsavedChanges = false;
         console.log("Document saved successfully");
       } else {
         throw new Error(result.error || "Save failed");
@@ -223,7 +225,7 @@
   // Reactive statement to update save status
   let saveStatus = $derived(getSaveStatus());
   // Function to load document from API
-  async function loadDocument() {
+  async function loadDocument(): Promise<any> {
     if (!documentId) return;
     loadingDocument = true;
     documentLoadError = "";
@@ -248,7 +250,7 @@
       }
       // Set initial save status
       lastSaved = new Date(documentData.updatedAt).toLocaleTimeString();
-      hasUnsavedChanges = $state(false);
+      hasUnsavedChanges = false;
       console.log("Document loaded successfully:", documentData.title);
     } catch (err) {
       documentLoadError =

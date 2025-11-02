@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 
 /**
  * K-Means Clustering Implementation for Legal Document Analysis

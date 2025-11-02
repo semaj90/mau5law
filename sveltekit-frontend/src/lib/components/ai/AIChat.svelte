@@ -8,7 +8,7 @@
   // Use the XState machine through the store
   const actor = useChatActor();
   const stateStore = actor.state;
-  let userInput = $state('');
+  let userInput = $state<string>('');
   let chatContainer: HTMLElement | null = null;
   // Send message handler
   function handleSubmit() {

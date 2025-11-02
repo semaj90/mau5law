@@ -5,6 +5,9 @@ https: //svelte.dev/e/attribute_duplicate -->
 https://svelte.dev/e/js_parse_error -->
 <!-- Enhanced Vector Search Interface with Ranking, Analytics, and Real-time Results -->
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Updated to use bits-ui components
   import { Button } from '$lib/components/ui/bitsbutton.svelte';
@@ -196,7 +199,7 @@ https://svelte.dev/e/js_parse_error -->
   // ============================================================================
   // SEARCH FUNCTIONALITY
   // ============================================================================
-  async function performSearch(query?: string) {
+  async function performSearch(query?: string): Promise<any> {
     const searchTerm = query || get(searchQuery);
     if (!searchTerm.trim()) return;
     isSearching.set(true);
@@ -301,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
     sortOrder: string
   ): SearchResult[] {
     return [...results].sort((a, b) => {
-  let comparison = $state(0);
+  let comparison = $state<number>(0);
       switch (sortBy) {
         case "similarity":
           comparison = b.similarity - a.similarity;
@@ -407,7 +410,7 @@ https://svelte.dev/e/js_parse_error -->
       localStorage.setItem("vector-search-history", JSON.stringify(history));
     });
   });
-  async function loadAnalytics() {
+  async function loadAnalytics(): Promise<any> {
     try {
       // removed unused response assignment
       if ((response as { ok?: any; statusText?: any; json?: any }).ok) {

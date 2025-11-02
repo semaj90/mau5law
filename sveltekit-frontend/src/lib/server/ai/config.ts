@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // lib/server/ai/config.ts
 // Configuration and utility functions for the RAG pipeline
 import { z } from "zod";

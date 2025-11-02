@@ -25,10 +25,10 @@ https://svelte.dev/e/attribute_invalid_name -->
     open?: boolean;
   } = $props();
   let form = $state<any >(null);
-  let title = $state('');
-  let description = $state('');
-  let tagsString = $state('');
-  let type = $state('');
+  let title = $state<string>('');
+  let description = $state<string>('');
+  let tagsString = $state<string>('');
+  let type = $state<string>('');
   // XState machine for tag/type grouping
   const evidenceMachine = createMachine({
     id: 'evidence',
@@ -69,11 +69,11 @@ form = await superValidate(zod(evidenceSchema), { initialValues: item
         : [];
     }
     state = evidenceMachine.transition(state, { type: 'SAVE' });
-    open = $state(false);
+    open = false;
   }
   function handleCancel() {
     state = evidenceMachine.transition(state, { type: 'CANCEL' });
-    open = $state(false);
+    open = false;
   }
 </script>
 <Dialog.Root bind:open={open}>

@@ -6,6 +6,10 @@ Enhanced Legal AI Chat with Input Synthesis and LegalBERT Integration
 Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipeline, and streaming
 -->
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import type { SystemStatus } from "$lib/types/global";
   import type { Props } from "$lib/types/global";
@@ -76,22 +80,22 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   }
   // State management
   let messages = writable<EnhancedMessage[]>([]);
-  let currentInput = $state('');
-  let isProcessing = $state(false);
-  let showAdvancedAnalysis = $state(false);
-  let showSettings = $state(false);
+  let currentInput = $state<string>('');
+  let isProcessing = $state<boolean>(false);
+  let showAdvancedAnalysis = $state<boolean>(false);
+  let showSettings = $state<boolean>(false);
   // Database integration state
   let currentSessionId = $state<string | null>(null);
   let relatedReports = $state<any[]>([]);
-  let isSavingToDatabase = $state(false);
+  let isSavingToDatabase = $state<boolean>(false);
   let lastSyncTime = $state<Date | null>(null);
   // Streaming typewriter effect state
   let streamingMessageId = $state<string | null>(null);
-  let streamingContent = $state('');
-  let isStreaming = $state(false);
+  let streamingContent = $state<string>('');
+  let isStreaming = $state<boolean>(false);
   let streamingChunks = $state<string[]>([]);
-  let currentChunkIndex = $state(0);
-  let typewriterSpeed = $state(30); // milliseconds per character
+  let currentChunkIndex = $state<number>(0);
+  let typewriterSpeed = $state<number>(30); // milliseconds per character
   // Advanced settings
   let settings = $state({
     enableLegalBERT: true
@@ -158,7 +162,7 @@ if (browser) {
     })();
   });
   // System status check using production health endpoint
-  async function checkSystemStatus() {
+  async function checkSystemStatus(): Promise<any> {
     try {
       // removed unused response assignment
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -178,7 +182,7 @@ if (browser) {
   /**
    * Initialize or load existing chat session from database
    */
-  async function initializeChatSession() {
+  async function initializeChatSession(): Promise<void> {
     if (!persistConversation || !browser) return;
     try {
       const sessionData = {
@@ -213,7 +217,7 @@ if (browser) {
   /**
    * Load chat history from database
    */
-  async function loadChatHistory() {
+  async function loadChatHistory(): Promise<any> {
     if (!currentSessionId || !persistConversation) return;
     try {
       // removed unused response assignment
@@ -242,7 +246,7 @@ if (browser) {
   /**
    * Save message to database with vector embedding
    */
-  async function saveMessageToDatabase(message: EnhancedMessage) {
+  async function saveMessageToDatabase(message: EnhancedMessage): Promise<any> {
     if (!currentSessionId || !persistConversation || !browser) return;
     try {
       isSavingToDatabase = true;
@@ -274,7 +278,7 @@ if (browser) {
   /**
    * Load related reports using vector similarity
    */
-  async function loadRelatedReports() {
+  async function loadRelatedReports(): Promise<any> {
     if (!reportId) return;
     try {
       // removed unused response assignment
@@ -289,7 +293,7 @@ if (browser) {
   /**
    * Link current chat session to a report
    */
-  async function linkChatToReport(sessionId: string) {
+  async function linkChatToReport(sessionId: string): Promise<any> {
     if (!reportId || !sessionId) return;
     try {
       await fetch('/api/v1/reports/chat-associations', {
@@ -309,7 +313,7 @@ if (browser) {
   /**
    * Search similar conversations using vector search
    */
-  async function findSimilarConversations(query: string) {
+  async function findSimilarConversations(query: string): Promise<any> {
     try {
       const response = await fetch('/api/v1/chat/search', {
         method: 'POST',
@@ -343,7 +347,7 @@ if (browser) {
   /**
    * Start typewriter streaming effect
    */
-  async function startTypewriterStream(messageId: string, content: string) {
+  async function startTypewriterStream(messageId: string, content: string): Promise<any> {
     if (!settings.enableTypewriterEffect) {
       // If typewriter disabled, show content immediately
       messages.update((msgs) =>
@@ -362,10 +366,10 @@ if (browser) {
   /**
    * Stream next chunk with typewriter effect
    */
-  async function streamNextChunk() {
+  async function streamNextChunk(): Promise<any> {
     if (currentChunkIndex >= streamingChunks.length) {
       // Streaming complete
-      isStreaming = $state(false);
+      isStreaming = false;
       streamingMessageId = null;
       streamingContent = '';
       streamingChunks = [];
@@ -393,7 +397,7 @@ if (browser) {
   /**
    * Enhanced AI query processing with streaming support
    */
-  async function processAIQueryWithStreaming(query: string, context: any) {
+  async function processAIQueryWithStreaming(query: string, context: any): Promise<any> {
     const startTime = Date.now();
     if (settings.enableStreamingResponse && settings.enableTypewriterEffect) {
       // Use streaming endpoint
@@ -406,7 +410,7 @@ if (browser) {
   /**
    * Process streaming response from Ollama
    */
-  async function processStreamingResponse(query: string, context: any) {
+  async function processStreamingResponse(query: string, context: any): Promise<any> {
     const startTime = Date.now();
     const enhancedPrompt = `You are an advanced legal AI assistant specialized in ${userRole} work.
   ${caseId ? `Working on caseItem: ${caseId}` : ''}
@@ -498,7 +502,7 @@ if (browser) {
     }
   }
   // Enhanced message sending with full pipeline integration
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!currentInput.trim() || isProcessing) return;
     const userMessage: EnhancedMessage = {
       id: generateId(),
@@ -518,7 +522,7 @@ if (browser) {
     // Check for commands
     if (query.startsWith('/')) {
       await handleCommand(query);
-      isProcessing = $state(false);
+      isProcessing = false;
       return;
     }
     try {
@@ -591,7 +595,7 @@ if (browser) {
     }
   }
   // Enhanced AI query processing using direct Ollama
-  async function processAIQuery(query: string, context: any) {
+  async function processAIQuery(query: string, context: any): Promise<any> {
     const startTime = Date.now();
     // Enhanced legal prompt for better responses
     const enhancedPrompt = `You are an advanced legal AI assistant specialized in ${userRole} work.
@@ -657,7 +661,7 @@ if (browser) {
     }
   }
   // Command handling
-  async function handleCommand(command: string) {
+  async function handleCommand(command: string): Promise<any> {
     const cmd = command.toLowerCase();
     if (cmd === '/settings') {
       showSettings = !showSetting;
@@ -696,7 +700,7 @@ if (browser) {
   - \`/settings\` - Toggle settings panel`);
   }
   // Deep analysis command using direct Ollama analysis
-  async function performDeepAnalysis(text: string) {
+  async function performDeepAnalysis(text: string): Promise<any> {
     isProcessing = true;
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
@@ -745,7 +749,7 @@ if (browser) {
     }
   }
   // Legal research command using direct Ollama knowledge
-  async function performLegalResearch(topic: string) {
+  async function performLegalResearch(topic: string): Promise<any> {
     isProcessing = true;
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
@@ -797,7 +801,7 @@ if (browser) {
     }
   }
   // Show related reports command using PostgreSQL vector search
-  async function showRelatedReports() {
+  async function showRelatedReports(): Promise<any> {
     isProcessing = true;
     try {
       // Reload related reports
@@ -827,7 +831,7 @@ if (browser) {
     }
   }
   // Add system message
-  async function addSystemMessage(content: string) {
+  async function addSystemMessage(content: string): Promise<any> {
     const systemMessage: EnhancedMessage = {
       id: generateId(),
       role: 'system',
@@ -875,7 +879,7 @@ if (browser) {
     navigator.clipboard.writeText(text);
   }
   // Enhanced AI processing with streaming support
-  async function processAIQueryWithStreaming(query: string, options: any) {
+  async function processAIQueryWithStreaming(query: string, options: any): Promise<any> {
     const startTime = Date.now();
     let synthesizedInput = null;
     let legalAnalysis = null;
@@ -1163,7 +1167,7 @@ if (browser) {
         <div class="flex items-start gap-3">
           <!-- Message Icon -->
           <div
-            class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center {message.role ===
+            class="flex-shrink-0" w-8 h-8 rounded-full flex items-center justify-center {message.role ===
             'user'
               ? 'bg-blue-500'
               : message.role === 'assistant'
@@ -1194,7 +1198,7 @@ if (browser) {
             </div>
             <!-- Main Content -->
             <div
-              class="prose prose-sm max-w-none {message.role === 'user'
+              class="prose" prose-sm max-w-none {message.role === 'user'
                 ? 'bg-blue-50 dark:bg-blue-900/20'
                 : 'bg-white dark:bg-gray-800'} p-3 rounded-lg">
               {#if streamingMessageId === message.id && isStreaming && settings.enableTypewriterEffect}
@@ -1208,7 +1212,7 @@ if (browser) {
                   autoStart={true}
                   oncomplete={() => {
                     // Handle streaming completion
-                    isStreaming = $state(false);
+                    isStreaming = false;
                     streamingMessageId = null;
                     // Final update of message content
                     messages.update(msgs =>

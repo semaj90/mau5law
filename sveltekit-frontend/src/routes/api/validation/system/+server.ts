@@ -21,7 +21,7 @@ import { json } from '@sveltejs/kit';
  */
 // Cache for validation reports (in production, use Redis)
 let lastValidationReport: IntegrationValidationReport | null = null;
-let validationInProgress = $state(false);
+let validationInProgress = $state<boolean>(false);
 export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   const action = url.searchParams.get('action') || 'health';
   const clientIP = getClientAddress();

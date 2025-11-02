@@ -27,7 +27,7 @@ export async function getClusterModelSnapshot(): Promise<ClusterModelSnapshot | 
     return null;
   }
 }
-export async function storeClusterModelSnapshot(snapshot: ClusterModelSnapshot, ttlSeconds?: number) {
+export async function storeClusterModelSnapshot(snapshot: ClusterModelSnapshot, ttlSeconds?: number): Promise<any> {
   await redis.set(CLUSTER_MODEL_KEY, JSON.stringify(snapshot));
   if (typeof ttlSeconds === 'number' && ttlSeconds > 0) {
     await redis.expire(CLUSTER_MODEL_KEY, ttlSeconds);
@@ -53,7 +53,7 @@ export function selectNearestCentroid(snapshot: ClusterModelSnapshot, vector: nu
 }
 // --- ADDED: small runtime-safe adapters to avoid TS errors when client typings differ ---
 const _r = redis as unknown as Record<string, unknown>;
-async function redisHSet(key: string, obj: Record<string, unknown> | Record<string, string> | string) {
+async function redisHSet(key: string, obj: Record<string, unknown> | Record<string, string> | string): Promise<any> {
 	// prefer modern camelCase, fallback to lowercase or hmset; final fallback stores JSON string
 	// use any calls to avoid strict typing issues across redis clients
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,7 +65,7 @@ async function redisHSet(key: string, obj: Record<string, unknown> | Record<stri
 	if (typeof anyR.set === 'function') return await anyR.set(key, JSON.stringify(obj));
 	return null;
 }
-async function redisSAdd(key: string, member: string) {
+async function redisSAdd(key: string, member: string): Promise<any> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const anyR = _r as any;
 	if (typeof anyR.sAdd === 'function') return await anyR.sAdd(key, member);
@@ -103,7 +103,7 @@ async function redisSMembers(key: string): Promise<string[] | null> {
 	return null;
 }
 // --- end adapters ---
-export async function addClusterMember(clusterId: string, personId: string, metadata: Record<string, unknown> = {}) {
+export async function addClusterMember(clusterId: string, personId: string, metadata: Record<string, unknown> = {}): Promise<any> {
   const personKey = `foaf:person:${personId}`;
   const clusterKey = `foaf:cluster:${clusterId}:members`;
   // use node-redis v4 style method names (runtime-adapted via helpers above)
@@ -114,7 +114,7 @@ export async function addClusterMember(clusterId: string, personId: string, meta
   });
   await redisSAdd(clusterKey, personId);
 }
-export async function assignCluster(personId: string, clusterId: string) {
+export async function assignCluster(personId: string, clusterId: string): Promise<any> {
   await addClusterMember(clusterId, personId);
 }
 export async function getClusterMembers(clusterId: string, options: { exclude?: string } = {}): Promise<string[]> {

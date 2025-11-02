@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎯 Recommendation Engine API Client
  * Client-side functions for accessing recommendation APIs

@@ -168,11 +168,12 @@ export const ollamaClient = new OllamaClient();
  *
  * // In a Svelte component:
  * <script lang="ts">
+import type { User } from '$lib/types';
  *   import { ollamaClient } from '$lib/ai/ollama-client';
  *
- *   let response = $state('');
+ *   let response = $state<string>('');
  *
- *   async function ask(question: string) {
+ *   async function ask(question: string): Promise<any> {
  *     const result = await ollamaClient.generate(question, {
  *       temperature: 0.7,
  *       maxTokens: 300

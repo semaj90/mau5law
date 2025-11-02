@@ -690,7 +690,7 @@ export class OllamaService {
     // launch concurrency slots
     const workers: Promise<void>[] = [];
     for (let slot = 0; slot < concurrency && i < texts.length; slot++) {
-      const cur = (async function loop() {
+      const cur = (async function loop(): Promise<any> {
         while (i < texts.length) {
           const idx = i++;
           // eslint-disable-next-line no-await-in-loop
@@ -887,7 +887,7 @@ export class OllamaService {
     } else if (input && typeof (input as any).getReader === 'function') {
       // WHATWG ReadableStream
       const reader = (input as any).getReader();
-      let readerDone = $state(false);
+      let readerDone = $state<boolean>(false);
       while (!readerDone) {
         // eslint-disable-next-line no-await-in-loop
         const { value, done: d } = await reader.read();

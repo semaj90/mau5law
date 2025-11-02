@@ -4,6 +4,8 @@
   Uses Svelte 5 runes and event handling syntax
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
@@ -11,15 +13,15 @@
   // Case scoring state
   let cases = $state<CaseScore[]>([]);
   let selectedCase = $state<CaseScore | null>(null);
-  let isLoading = $state(false);
-  let errorMessage = $state('');
+  let isLoading = $state<boolean>(false);
+  let errorMessage = $state<string>('');
   let scoringInProgressIds = $state(new Set<string>());
-  let showScoreDetails = $state(false);
-  let useMockData = $state(true); // Toggle for demo mode
+  let showScoreDetails = $state<boolean>(false);
+  let useMockData = $state<boolean>(true); // Toggle for demo mode
   // Filters and sorting
   let scoreFilter = $state<'all' | 'high' | 'medium' | 'low'>('all');
   let sortBy = $state<'score' | 'priority' | 'date'>('score');
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   interface CaseScore {
     id: string;
     title: string;
@@ -301,13 +303,13 @@
       // Load mock data for demonstration
       setTimeout(() => {
         cases = generateMockCases();
-        isLoading = $state(false);
+        isLoading = false;
       }, 1000); // Simulate API delay
     } else {
       loadCaseScores();
     }
   });
-  async function loadCaseScores() {
+  async function loadCaseScores(): Promise<any> {
     isLoading = true;
     try {
       if (useMockData) {
@@ -340,7 +342,7 @@
       isLoading = false;
     }
   }
-  async function scoreCase(caseId: string, options: Partial<ScoringRequest> = {}) {
+  async function scoreCase(caseId: string, options: Partial<ScoringRequest> = {}): Promise<any> {
     // mark this case as in-progress
     scoringInProgressIds.add(caseId);
     try {

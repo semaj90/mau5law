@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // Move/import Drizzle pg-core symbols near the top of the file
 import {
   pgTable,

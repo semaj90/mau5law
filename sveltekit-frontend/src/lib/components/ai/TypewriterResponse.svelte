@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { quintOut, elasticOut } from 'svelte/easing';
@@ -40,18 +41,18 @@
     showControls = false,
   }: Props = $props();
   // State
-  let displayedText = $state('');
-  let currentIndex = $state(0);
-  let isTyping = $state(false);
-  let isPaused = $state(false);
-  let cursorVisible = $state(true);
+  let displayedText = $state<string>('');
+  let currentIndex = $state<number>(0);
+  let isTyping = $state<boolean>(false);
+  let isPaused = $state<boolean>(false);
+  let cursorVisible = $state<boolean>(true);
   let thinkingState = $state<ThinkingState>({
     phase: 'analyzing',
     progress: 0,
   });
   // Activity replay state
-  let isReplayingActivity = $state(false);
-  let activityIndex = $state(0);
+  let isReplayingActivity = $state<boolean>(false);
+  let activityIndex = $state<number>(0);
   let replaySpeed = $state(1.0);
   // Thinking phrases for different phases
   const thinkingPhrases = {
@@ -91,7 +92,7 @@
     clearAllIntervals();
   });
   // Main typewriter function
-  async function startTypewriter() {
+  async function startTypewriter(): Promise<any> {
     if (isTyping) return;
     isTyping = true;
     currentIndex = 0;
@@ -142,7 +143,7 @@
           index++;
           typingInterval = setTimeout(type, currentSpeed + Math.random() * 20 - 10);
         } else {
-          isTyping = $state(false);
+          isTyping = false;
           thinkingState.phase = 'complete';
           resolve();
         }
@@ -191,7 +192,7 @@
     return new Promise(resolve => {
       const replayNext = () => {
         if (activityIndex >= userActivity.length) {
-          isReplayingActivity = $state(false);
+          isReplayingActivity = false;
           resolve();
           return;
         }
@@ -235,13 +236,13 @@
     isPaused = true;
   }
   function resume() {
-    isPaused = $state(false);
+    isPaused = false;
   }
   function stop() {
     clearAllIntervals();
-    isTyping = $state(false);
-    isPaused = $state(false);
-    isReplayingActivity = $state(false);
+    isTyping = false;
+    isPaused = false;
+    isReplayingActivity = false;
   }
   function restart() {
     stop();
@@ -255,7 +256,7 @@
   function setReplaySpeed(newSpeed: number) {
     replaySpeed = Math.max(0.1, Math.min(5.0, newSpeed));
   }
-  async function loadCachedActivity() {
+  async function loadCachedActivity(): Promise<any> {
     if (cacheKey) {
       const cached = await advancedCache.get<UserActivity[]>(`activity_${cacheKey}`);
       if (cached) {
@@ -263,7 +264,7 @@
       }
     }
   }
-  async function cacheCurrentActivity() {
+  async function cacheCurrentActivity(): Promise<any> {
     if (cacheKey && userActivity.length > 0) {
       await advancedCache.set(`activity_${cacheKey}`, userActivity, {
         priority: 'medium',

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * ONNX API Client
  * Provides a simple interface to test and interact with the Legal-BERT ONNX endpoints

@@ -4,6 +4,7 @@
   Shows practical usage of priority-based memory banking and cache warming
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
@@ -23,11 +24,11 @@
   import { LegalCacheWarmer, WARMING_STRATEGIES, type UserProfile, type CaseContext } from '$lib/services/cache-warmer';
   // Demo data
   let cacheWarmer: LegalCacheWarmer;
-  let isInitialized = $state(false);
+  let isInitialized = $state<boolean>(false);
   let registryStats: any = {}
   let warmingStats: any = {}
   let memoryBankData: any = {}
-  let isWarming = $state(false);
+  let isWarming = $state<boolean>(false);
   let lastWarmingResult: any = null;
   // Sample legal documents for demo
   const sampleDocuments: LegalDocument[] = [
@@ -153,7 +154,7 @@
       }
     });
   }
-  async function triggerCacheWarming(strategyName: string) {
+  async function triggerCacheWarming(strategyName: string): Promise<any> {
     if (!cacheWarmer || isWarming) return;
     isWarming = true;
     try {

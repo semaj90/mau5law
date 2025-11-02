@@ -4,6 +4,7 @@ https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Cannot subscribe to stores that are not declared at the top level of the component;
 https://svelte.dev/e/store_invalid_scoped_subscription -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
@@ -32,21 +33,21 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   let prefetcher: PredictivePrefetcher;
   // Simplified reactive UI state (avoid complex $derived expressions that had mismatched parens)
   // remove generic args from the rune calls and use TS assertions instead
-  let currentStateDescription = $state('') as string;
-  let aiSuggestions = $state([]) as string[];
-  let progressPercentage = $state(0) as number;
-  let possibleActions = $state([]) as string[];
-  let aiConfidence = $state(0) as number;
+  let currentStateDescription = $state<string>('') as string;
+  let aiSuggestions = $state<any[]>([]) as string[];
+  let progressPercentage = $state<number>(0) as number;
+  let possibleActions = $state<any[]>([]) as string[];
+  let aiConfidence = $state<number>(0) as number;
   // Form data
   let fileInput: HTMLInputElement;
-  let caseTitle = $state('') as string;
-  let caseDescription = $state('') as string;
-  let selectedPriority = $state('medium') as: 'low' | 'medium' | 'high' | 'critical';
-  let selectedEvidenceType = $state('digital') as: 'digital' | 'physical' | 'testimony' | 'forensic';
+  let caseTitle = $state<string>('') as string;
+  let caseDescription = $state<string>('') as string;
+  let selectedPriority = $state<string>('medium') as: 'low' | 'medium' | 'high' | 'critical';
+  let selectedEvidenceType = $state<string>('digital') as: 'digital' | 'physical' | 'testimony' | 'forensic';
   // AI-aware UI state
-  let aiRecommendations = $state([]) as any[];
-  let showAIPanel = $state(false) as boolean;
-  let matrixUINodes = $state([]) as MatrixUINode[];
+  let aiRecommendations = $state<any[]>([]) as any[];
+  let showAIPanel = $state<boolean>(false) as boolean;
+  let matrixUINodes = $state<any[]>([]) as MatrixUINode[];
   // initialize async resources with onMount to avoid returning a Promise from reactive effects
   onMount(async () => {
     // Initialize Phase 8 components

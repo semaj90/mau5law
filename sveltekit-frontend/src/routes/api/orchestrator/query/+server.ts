@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // Legal AI Orchestrator Query Processing API
 // Nintendo-Style Multi-Model Query Router
 import { json } from '@sveltejs/kit'

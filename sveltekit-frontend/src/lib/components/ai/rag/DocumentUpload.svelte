@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // RAG Document Upload Component
   // Handles file uploads for knowledge base integration
   import { onMount } from 'svelte';
@@ -22,8 +23,8 @@
   }: Props = $props();
   // Component state using Svelte 5 runes
   let files = $state<File[]>([]);
-  let dragOver = $state(false);
-  let uploading = $state(false);
+  let dragOver = $state<boolean>(false);
+  let uploading = $state<boolean>(false);
   let uploadProgress = $state<{ [key: string]: number }>({});
   let uploadResults = $state<any[]>([]);
   let errors = $state<string[]>([]);
@@ -81,7 +82,7 @@
   }
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     addFiles(droppedFiles);
   }
@@ -90,9 +91,9 @@
     dragOver = true;
   }
   function handleDragLeave() {
-    dragOver = $state(false);
+    dragOver = false;
   }
-  async function uploadFiles() {
+  async function uploadFiles(): Promise<any> {
     if (!canUpload) return;
     uploading = true;
     uploadResults = [];
@@ -159,7 +160,7 @@
     uploadResults = [];
   }
   // Auto-generate embedding and process text content
-  async function processUploadedFile(fileResult: any) {
+  async function processUploadedFile(fileResult: any): Promise<any> {
     try {
       // Extract text content based on file type
       const response = await fetch('/api/rag/process', {

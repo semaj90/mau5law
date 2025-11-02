@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import type { LegalDocument } from './types/legal.js';
 /**
  * RAG Pipeline Integration Service
@@ -100,14 +101,14 @@ export class RAGPipelineIntegrator {
       }));
       // Step 3: Cross-encoder reranking for improved relevance
       let rerankedResults = searchResults;
-      let rerankingApplied = $state(false);
+      let rerankingApplied = $state<boolean>(false);
       if (this.config.enableCrossEncoderReranking) {
         rerankedResults = await this.applyCrossEncoderReranking(query, searchResults);
         rerankingApplied = true;
       }
       // Step 4: MMR-based summarization with diversity optimization
       let summary = '';
-      let summaryGenerated = $state(false);
+      let summaryGenerated = $state<boolean>(false);
       if (this.config.enableMMRSummarization) {
         const topDocuments = rerankedResults
           .filter((result) => result.score >= this.config.rerankThreshold)

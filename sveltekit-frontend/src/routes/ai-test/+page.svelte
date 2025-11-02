@@ -24,14 +24,14 @@
     HardDrive,
   } from 'lucide-svelte';
   // State using Svelte 5 runes
-  let systemStatus = $state(null);
-  let chatOpen = $state(false);
-  let isLoading = $state(true);
+  let systemStatus = $state<any>(null);
+  let chatOpen = $state<boolean>(false);
+  let isLoading = $state<boolean>(true);
   // Check system status on mount
   $effect(() => {
     checkSystemStatus();
   });
-  async function checkSystemStatus() {
+  async function checkSystemStatus(): Promise<any> {
     try {
       isLoading = true;
       // removed unused response assignment

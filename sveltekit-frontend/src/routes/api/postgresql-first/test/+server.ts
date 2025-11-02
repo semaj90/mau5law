@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit';

@@ -20,7 +20,7 @@
     onFileHover,
   }: Props = $props();
   let fileInput: HTMLInputElement;
-  let isDragOver = $state(false);
+  let isDragOver = $state<boolean>(false);
   let errors = $state<string[]>([]);
   const allowedTypes = {
     'image/*': { icon Image, label: 'Images' },
@@ -38,15 +38,15 @@
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     if (disabled) return;
-    isDragOver = $state(false);
-    dragActive = $state(false);
+    isDragOver = false;
+    dragActive = false;
     onFileHover?.(false);
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     if (disabled) return;
-    isDragOver = $state(false);
-    dragActive = $state(false);
+    isDragOver = false;
+    dragActive = false;
     onFileHover?.(false);
     const files = Array.from(e.dataTransfer?.files || []);
     processFiles(files);

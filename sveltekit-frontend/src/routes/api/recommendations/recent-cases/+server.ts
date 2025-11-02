@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * 🎯 Recent Cases Recommendation API
  * Returns the most recent 5 cases with priority scoring

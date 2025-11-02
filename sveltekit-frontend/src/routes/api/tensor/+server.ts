@@ -143,8 +143,8 @@ interface PutRequestBody {
 }
 
 // Initialize tensor service connection
-let isInitialized = $state(false);
-async function ensureInitialized() {
+let isInitialized = $state<boolean>(false);
+async function ensureInitialized(): Promise<void> {
   if (!isInitialized) {
     try {
       await goTensorService.init();

@@ -13,7 +13,7 @@ interface CustomDbClient {
 
 let db: CustomDbClient | null = null
 let dbStatus = 'disconnected'
-async function initializeDatabase() {
+async function initializeDatabase(): Promise<void> {
   try {
     // Try to import the database connection
     const { db: dbConnection } = await import('$lib/server/db/index.js')

@@ -98,8 +98,8 @@ https://svelte.dev/e/attribute_duplicate -->
    }: Props = $props();
   // Events now handled via props in Svelte 5
   //
-  let isVisible = $state(false);
-  let isAnimating = $state(false);
+  let isVisible = $state<boolean>(false);
+  let isAnimating = $state<boolean>(false);
   let dialogElement = $state<HTMLElement | null>(null);
   let backdropElement = $state<HTMLElement | null>(null);
   let portalContainer = $state<HTMLElement | null>(null);
@@ -196,7 +196,7 @@ https://svelte.dev/e/attribute_duplicate -->
       }
     }
     setTimeout(() => {
-      isAnimating = $state(false);
+      isAnimating = false;
     }, 400);
     // ondispatch removed;
   }
@@ -205,8 +205,8 @@ https://svelte.dev/e/attribute_duplicate -->
     isAnimating = true;
     await playDialogSound('close');
     setTimeout(() => {
-      isVisible = $state(false);
-      isAnimating = $state(false);
+      isVisible = false;
+      isAnimating = false;
       // Restore focus
       if (previousFocusedElement) {
         previousFocusedElement.focus();

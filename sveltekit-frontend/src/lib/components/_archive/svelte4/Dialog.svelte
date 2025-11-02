@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { aiStore  } from '$lib/stores/unified";
   	import { onMount  } from "svelte";
@@ -30,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
   	let response = $derived($aiStore.response);
   	let isGenerating = $derived($aiStore.isGenerating);
   	let history = $derived($aiStore.history);
-  let currentPrompt = $state('');
+  let currentPrompt = $state<string>('');
   	$effect(() => {
   		if (open) {
   			focusInput();
@@ -55,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
   	function handleVibeChange(vibeId: string) {
   		aiStore.update(state => ({ ...state, selectedVibe: vibeId }));
   	}
-  	async function handleSubmit() {
+  	async function handleSubmit(): Promise<any> {
   		if (!currentPrompt.trim() || isGenerating) return;
   		const userMessage = {
   			id: crypto.randomUUID(),

@@ -7,7 +7,7 @@ import { getRedisClient } from '$lib/server/cache/redis';
  * Handles POST requests for enhanced search, combining fuzzy and semantic search.
  * It generates embeddings, performs vector search, and caches results.
  */
-export async function POST({ request }) {
+export async function POST({ request }): Promise<any> {
   try {
     const { query } = await request.json();
 

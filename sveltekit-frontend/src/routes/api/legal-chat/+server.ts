@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Legal Chat API Endpoint
  * Demonstrates Redis List-based chat history with legal AI integration
@@ -454,7 +455,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     // Prefer using the typed memory service if available
     const memory = legalChatMemory as LegalChatMemoryLike;
 
-    let cleared = $state(false);
+    let cleared = $state<boolean>(false);
 
     // Try memory-level clearing APIs first (safe optional calls)
     if (typeof memory.clearHistory === 'function') {

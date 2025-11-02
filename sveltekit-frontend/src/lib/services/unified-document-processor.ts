@@ -1,3 +1,5 @@
+import type { TextChunk } from '$lib/types';
+import type { Document } from '$lib/types';
 /* Unified Document Processor - simplified, fixed syntax version */
 import { legalNLP } from '$lib/services/sentence-transformer';
 import { EventEmitter } from 'events';

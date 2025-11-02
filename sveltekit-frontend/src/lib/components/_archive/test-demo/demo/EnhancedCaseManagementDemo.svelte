@@ -8,12 +8,12 @@
   import { onMount, onDestroy } from 'svelte';
   import { enhancedCaseManagementMachine, type EnhancedCaseManagementContext } from '../../machines/enhanced-case-machine-with-cognitive-cache';
   import Button from '../ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+  import { Card, CardContent, CardHeader, CardTitle } from '../ui/Card';
   // Machine actor
   const actor = createActor(enhancedCaseManagementMachine);
   // Reactive state
   let machineState = $state(actor.getSnapshot());
-  let isConnected = $state(false);
+  let isConnected = $state<boolean>(false);
   // Form data for case creation
   let newCaseData = $state({
     title: '',
@@ -21,8 +21,8 @@
     priority: 'medium' as const,
     status: 'open' as const
   });
-  let searchQuery = $state('');
-  let userId = $state('demo-user-123');
+  let searchQuery = $state<string>('');
+  let userId = $state<string>('demo-user-123');
   // Subscribe to state changes
   $effect(() => {
     const subscription = actor.subscribe((snapshot) => {

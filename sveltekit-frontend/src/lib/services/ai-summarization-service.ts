@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * AI Summarization Service with Embeddings Generation
  * Comprehensive document processing and analysis pipeline

@@ -12,6 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   - XState machine integration for reliable state management
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   let { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null  }: { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null : any } = $props();
   import { onMount } from "svelte";
@@ -83,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
       console.log('🚀 SSR QLoRA Chat Interface initialized');
     })();
   });
-  async function loadSSRContext() {
+  async function loadSSRContext(): Promise<any> {
     try {
       // removed unused response assignment
       const data = await response.json();
@@ -98,7 +99,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('❌ Failed to load SSR context:', error);
     }
   }
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     const message = $currentMessage.trim();
     if (!message || $isStreaming) return;
     // Add user message immediately
@@ -146,7 +147,7 @@ https://svelte.dev/e/js_parse_error -->
       isStreaming.set(false);
     }
   }
-  async function startStreaming(message: string, aiMessage: any) {
+  async function startStreaming(message: string, aiMessage: any): Promise<any> {
     // Close existing event source
     if (eventSource) {
       eventSource.close();
@@ -185,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
       reader.releaseLock();
     }
   }
-  async function handleStreamData(data: any, aiMessage: any) {
+  async function handleStreamData(data: any, aiMessage: any): Promise<any> {
     switch (data.type) {
       case 'instant':
         // Instant response from NES memory

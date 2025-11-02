@@ -8,6 +8,7 @@
   - Real-time embedding progress
 -->
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/Button.svelte';
@@ -94,18 +95,18 @@
     search: false,
     stats: false,
   });
-  let searchQuery = $state('');
-  let showSearchResults = $state(false);
+  let searchQuery = $state<string>('');
+  let showSearchResults = $state<boolean>(false);
   let uploadProgress = $state<string>('');
   let error = $state<string>('');
   // File upload
   let fileInput: HTMLInputElement;
-  let dragActive = $state(false);
+  let dragActive = $state<boolean>(false);
   $effect(() => {
     loadEvidenceFiles();
     loadEmbeddingStats();
   });
-  async function loadEvidenceFiles() {
+  async function loadEvidenceFiles(): Promise<any> {
     loading.files = true;
     try {
       // Declare response variable
@@ -126,7 +127,7 @@
       loading.files = false;
     }
   }
-  async function loadEmbeddingStats() {
+  async function loadEmbeddingStats(): Promise<any> {
     loading.stats = true;
     try {
       // Declare response variable
@@ -144,7 +145,7 @@
       loading.stats = false;
     }
   }
-  async function handleFileUpload(files: FileList) {
+  async function handleFileUpload(files: FileList): Promise<any> {
     if (!files.length) return;
     loading.upload = true;
     uploadProgress = '';
@@ -183,7 +184,7 @@
     // Clear progress after delay
     setTimeout(() => { uploadProgress = ''; }, 3000);
   }
-  async function triggerEmbeddingBackfill() {
+  async function triggerEmbeddingBackfill(): Promise<any> {
     loading.backfill = true;
     error = '';
     try {
@@ -206,7 +207,7 @@
       loading.backfill = false;
     }
   }
-  async function performSemanticSearch() {
+  async function performSemanticSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     loading.search = true;
     error = '';
@@ -263,14 +264,14 @@
   }
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
   }
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     if (e.dataTransfer?.files) {
       handleFileUpload(e.dataTransfer.files);
     }

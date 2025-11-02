@@ -11,6 +11,9 @@ Usage:
 <CudaSearch bind:results {onSearchComplete} />
 -->
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
   import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
   import { createEventDispatcher, onMount } from 'svelte';
 
@@ -54,7 +57,7 @@ Usage:
 
   // State
   let query = '';
-  let isSearching = $state(false);
+  let isSearching = $state<boolean>(false);
   let searchTime = 0;
   let cudaCapabilities: CudaCapabilities | null = null;
   let errorMessage = '';
@@ -96,7 +99,7 @@ Usage:
   });
 
   // Perform CUDA-accelerated search
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!query.trim()) return;
     isSearching = true;
     errorMessage = '';

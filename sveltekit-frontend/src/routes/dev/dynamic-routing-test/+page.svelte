@@ -6,6 +6,7 @@ https://svelte.dev/e/attribute_duplicate -->
   Basic route testing without complex imports
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -17,8 +18,8 @@ https://svelte.dev/e/attribute_duplicate -->
   // State management
   const testResults = writable<string[]>([]);
   const routeStats = writable<any>({});
-  let isLoading = $state(false);
-  let currentPath = $state('');
+  let isLoading = $state<boolean>(false);
+  let currentPath = $state<string>('');
   // Provide a typed, const category list so TS knows the exact union type
   const categoryList = ['main', 'demo', 'ai', 'legal', 'dev', 'admin'] as const;
   type Category = (typeof categoryList)[number];
@@ -118,7 +119,7 @@ https://svelte.dev/e/attribute_duplicate -->
     };
     routeStats.set(stats);
   }
-  async function runAllTests() {
+  async function runAllTests(): Promise<any> {
     isLoading = true;
     testResults.set([]);
     try {
@@ -137,7 +138,7 @@ https://svelte.dev/e/attribute_duplicate -->
       isLoading = false;
     }
   }
-  async function navigateToRoute(route: string) {
+  async function navigateToRoute(route: string): Promise<any> {
     try {
       await goto(route);
       testResults.update(results => [

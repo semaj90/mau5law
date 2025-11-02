@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import { writable, derived, get } from 'svelte/store';
 import { createMachine, assign, createActor, fromPromise } from 'xstate';
 import type { StateFrom } from 'xstate';
@@ -513,7 +515,7 @@ export async function unifiedSearch(query: string, systems: ('citations' | 'repo
   }, {} as { [key: string]: any });
 }
 // Entity Relationship Mapping
-export async function mapEntityRelationships(entityIds: string[], types: string[]) {
+export async function mapEntityRelationships(entityIds: string[], types: string[]): Promise<any> {
   const response = await fetch('/api/platform/relationships', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -525,7 +527,7 @@ export async function mapEntityRelationships(entityIds: string[], types: string[
   return await response.json();
 }
 // AI-Powered Case Recommendations
-export async function generateCaseRecommendations(caseId: string) {
+export async function generateCaseRecommendations(caseId: string): Promise<any> {
   const response = await fetch(`/api/cases/${caseId}/recommendations`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' }
@@ -536,7 +538,7 @@ export async function generateCaseRecommendations(caseId: string) {
   return await response.json();
 }
 // Bulk Operations Across Systems
-export async function bulkCrossSystemOperation(operation: string, entities: Array<{ type: string; id: string }>) {
+export async function bulkCrossSystemOperation(operation: string, entities: Array<{ type: string; id: string }>): Promise<any> {
   const response = await fetch('/api/platform/bulk', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

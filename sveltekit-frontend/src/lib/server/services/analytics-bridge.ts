@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 const BASE = process.env.PUBLIC_ANALYTICS_API || 'http://localhost:8001';
-export async function postAnalytics(event: any) {
+export async function postAnalytics(event: any): Promise<any> {
   const res = await fetch(`${BASE}/analytics`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -8,7 +8,7 @@ export async function postAnalytics(event: any) {
   });
   return res.json();
 }
-export async function fetchIntent(userId: string) {
+export async function fetchIntent(userId: string): Promise<Response> {
   const res = await fetch(`${BASE}/intent/${encodeURIComponent(userId)}`);
   if (!res.ok) return null;
   return res.json();

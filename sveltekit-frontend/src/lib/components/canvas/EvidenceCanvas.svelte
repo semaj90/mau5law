@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Enhanced Evidence Canvas with NES.css styling and interactive features
   import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';

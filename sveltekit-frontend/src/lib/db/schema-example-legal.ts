@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Drizzle ORM Schema Example - Legal AI Platform
  *

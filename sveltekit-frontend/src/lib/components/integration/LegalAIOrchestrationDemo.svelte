@@ -4,6 +4,7 @@
   Shows complete workflow from user input to AI-powered results
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { workflowOrchestrator, workflowStore, currentWorkflowStore, healthStore, isSystemHealthy } from '$lib/services/end-to-end-api-integration.js';
   import type { LegalResearchWorkflowRequest, DocumentProcessingWorkflowRequest, CaseCreationWorkflowRequest } from '$lib/services/end-to-end-api-integration.js';
@@ -16,7 +17,7 @@
   import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   // Svelte 5 runes for state management
   let selectedWorkflow = $state<'legal-research' | 'document-processing' | 'case-creation'>('legal-research');
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   let workflowResult = $state<any>(null);
   let errorMessage = $state<string | null>(null);
   // Form state for different workflows
@@ -87,7 +88,7 @@
     }
   }
   // Execute selected workflow
-  async function executeWorkflow() {
+  async function executeWorkflow(): Promise<any> {
     isProcessing = true;
     workflowResult = null;
     errorMessage = null;

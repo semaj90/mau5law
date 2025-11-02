@@ -6,11 +6,11 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
   import { onMount } from 'svelte';
   import type { SemanticAuditResult } from '$lib/ai/types';
   let auditResults: SemanticAuditResult[] = $state([]);
-  let loading = $state(true);
-  let isLoading = $state(false);
+  let loading = $state<boolean>(true);
+  let isLoading = $state<boolean>(false);
   let error: string | null = $state(null);
   // Fetch audit results from backend
-  async function fetchAuditResults() {
+  async function fetchAuditResults(): Promise<Response> {
     loading = true;
     error = null;
     try {

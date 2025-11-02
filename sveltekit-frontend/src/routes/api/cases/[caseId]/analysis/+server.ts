@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import { caseActivities, cases } from '$lib/server/db/schema-postgres';
 import db from '$lib/server/db/index'; // Changed to default import

@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 import { dev } from "$app/environment";
 /**
  * Advanced Logging & Performance Monitoring System

@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * RabbitMQ Service Worker API Endpoint
  * Manages the RabbitMQ background processing worker

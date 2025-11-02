@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * App-wide Formatting Utilities
  * Consistent formatting functions for timestamps, text truncation, and file display

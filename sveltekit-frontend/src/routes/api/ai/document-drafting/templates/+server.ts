@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *

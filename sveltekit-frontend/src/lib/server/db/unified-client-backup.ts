@@ -54,7 +54,7 @@ if (process.env.QDRANT_URL) {
 // ============================================================================
 // DATABASE INITIALIZATION
 // ============================================================================
-let initialized = $state(false);
+let initialized = $state<boolean>(false);
 async function initialize(): Promise<void> {
   if (initialized) return;
   try {

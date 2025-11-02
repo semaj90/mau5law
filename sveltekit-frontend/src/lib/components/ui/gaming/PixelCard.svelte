@@ -72,8 +72,8 @@
     ...restProps
   }: Props = $props();
   let card: HTMLElement;
-  let isHovered = $state(false);
-  let scanlinePosition = $state(0);
+  let isHovered = $state<boolean>(false);
+  let scanlinePosition = $state<number>(0);
   // Retro gaming color palettes
   const pixelPalettes = {
     classic: {
@@ -228,7 +228,7 @@ ${scanlinePosition}%;
   }
   function handleMouseLeave() {
     if (interactive) {
-      isHovered = $state(false);
+      isHovered = false;
     }
   }
   onMount(() => {

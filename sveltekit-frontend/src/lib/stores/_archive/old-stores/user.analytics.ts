@@ -30,7 +30,7 @@ try {
   console.warn('analyticsService.start() failed or is not required in this environment', e);
 }
 
-export async function logUserEvent(event: UserEvent) {
+export async function logUserEvent(event: UserEvent): Promise<any> {
   userEvents.update(e => [...e, event]);
   try {
     const response = await fetch('/api/analyze', {

@@ -1,5 +1,6 @@
 
 <script lang="ts">
+import type { Case } from '$lib/types';
   import * as ContextMenu from 'bits-ui';
   import { fly, scale } from 'svelte/transition';
   import {

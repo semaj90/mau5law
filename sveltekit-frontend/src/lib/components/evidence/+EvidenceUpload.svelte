@@ -7,7 +7,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   // optional callback prop (keeps compatibility with existing callers)
   const { ondispatch } = $props<{ ondispatch: ((payload: any) }>()
   const dispatch = createEventDispatcher();
-  let dragActive = $state(false);
+  let dragActive = $state<boolean>(false);
   let files: FileList | null = null;
   let uploadProgress = 0;
   function handleDragEnter(e: DragEvent) {
@@ -15,11 +15,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     dragActive = true;
   }
   function handleDragLeave() {
-    dragActive = $state(false);
+    dragActive = false;
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     if (e.dataTransfer?.files) {
       files = e.dataTransfer.files;
       handleUpload();
@@ -32,7 +32,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     files = target?.files ?? null;
     handleUpload();
   }
-  async function handleUpload() {
+  async function handleUpload(): Promise<any> {
     if (!files?.length) return;
     const formData = new FormData();
     Array.from(files).forEach((file: File) => {

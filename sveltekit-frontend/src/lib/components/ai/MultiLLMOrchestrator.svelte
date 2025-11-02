@@ -3,6 +3,7 @@ Multi-LLM Orchestration Component
 Provides UI for managing multiple AI workers and orchestrating parallel processing
 -->
 <script lang="ts">
+import type { AIResponse } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { derived, writable } from 'svelte/store';
@@ -56,8 +57,8 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     enabledProviders = ['ollama', 'autogen', 'crewai']
   : any } = $props();
   // Component state
-  let isInitialized = $state(false);
-  let isProcessing = $state(false);
+  let isInitialized = $state<boolean>(false);
+  let isProcessing = $state<boolean>(false);
   let workerStatus = $state<WorkerStatus | null>(null);
   let workerPool = $state<WorkerPool | null>(null);
   let processingMetrics = $state<ProcessingMetrics[]>([]);
@@ -66,7 +67,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   let taskErrors = $state<Map<string, Error>('')>(new Map());
   // UI state
   let selectedTask = $state<string | null>(null);
-  let showSettings = $state(false);
+  let showSettings = $state<boolean>(false);
   let statusRefreshInterval: number | null = null;
   // Provider configurations
   let providerConfigs = $state([
@@ -122,7 +123,7 @@ if (autoStart) {
       clearInterval(statusRefreshInterval);
     }
   });
-  async function initializeOrchestrator() {
+  async function initializeOrchestrator(): Promise<void> {
     try {
       isProcessing = true;
       await aiWorkerManager.initialize();
@@ -135,7 +136,7 @@ if (autoStart) {
       isProcessing = false;
     }
   }
-  async function refreshStatus() {
+  async function refreshStatus(): Promise<any> {
     try {
       [workerStatus, workerPool] = await Promise.all([
         aiWorkerManager.getStatus(),
@@ -148,7 +149,7 @@ if (autoStart) {
       console.error('Failed to refresh status:', error);
     }
   }
-  async function checkProviderHealth() {
+  async function checkProviderHealth(): Promise<any> {
     for (const provider of providerConfigs) {
       try {
         const response = await fetch(`${provider.endpoint}/health`, {
@@ -181,7 +182,7 @@ if (autoStart) {
   function handleStatusUpdate(status: WorkerStatus) {
     workerStatus = statu;
   }
-  async function submitTestTask(providerId: string) {
+  async function submitTestTask(providerId: string): Promise<any> {
     const testTask: AITask = {
       taskId: crypto.randomUUID(),
       type: 'generate',
@@ -204,7 +205,7 @@ if (autoStart) {
       taskErrors.set(testTask.taskId, error as Error);
     }
   }
-  async function cancelTask(taskId: string) {
+  async function cancelTask(taskId: string): Promise<any> {
     try {
       await aiWorkerManager.cancelTask(taskId);
       activeTasks.delete(taskId);
@@ -213,7 +214,7 @@ if (autoStart) {
       console.error('Failed to cancel task:', error);
     }
   }
-  async function clearCompletedTasks() {
+  async function clearCompletedTasks(): Promise<any> {
     completedTasks.clear();
     taskErrors.clear();
     completedTasks = new Map();

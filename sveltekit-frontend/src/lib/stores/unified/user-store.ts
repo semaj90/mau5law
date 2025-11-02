@@ -273,7 +273,7 @@ function createUserStore() {
      * Get authentication status synchronously
      */
     isAuthenticated(): boolean {
-      let authed = $state(false);
+      let authed = $state<boolean>(false);
       subscribe(s => {
         authed = s.isAuthenticated;
       })();
@@ -284,7 +284,7 @@ function createUserStore() {
      * Get loading state synchronously
      */
     isLoading(): boolean {
-      let loading = $state(false);
+      let loading = $state<boolean>(false);
       subscribe(s => {
         loading = s.isLoading;
       })();

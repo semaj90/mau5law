@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { claudeAgent } from '$lib/ai/claude-agent';
@@ -178,8 +179,8 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
     const results: AgentResult[] = []; // was any[]
-    let context7Enhanced = $state(false);
-    let autoFixApplied = $state(false);
+    let context7Enhanced = $state<boolean>(false);
+    let autoFixApplied = $state<boolean>(false);
     // Apply Context7 analysis and auto-fix if requested
     if (options.includeContext7) {
       const analysis = await context7Service.analyzeComponent('agent-orchestrator', 'legal-ai');

@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   interface Props {
@@ -7,10 +8,10 @@
     showLabel?: boolean;
   }
   let { variant = 'secondary', size = 'md', showLabel = true }: Props = $props();
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
   let selectedRole = $state<'user' | 'admin'>('user');
-  async function handleDemoLogin(role: 'user' | 'admin') {
+  async function handleDemoLogin(role: 'user' | 'admin'): Promise<any> {
     try {
       isLoading = true;
       error = null;

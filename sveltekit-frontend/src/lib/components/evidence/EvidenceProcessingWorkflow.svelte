@@ -104,7 +104,7 @@
   }
   let rabbitClient: any = null;
   let rabbitSubscription unknown = null;
-  async function connectRabbitMQ() {
+  async function connectRabbitMQ(): Promise<void> {
     if (!useRabbitMQ || typeof window === 'undefined') return;
     try {
       const { Client } = await import('@stomp/stompjs');
@@ -143,13 +143,13 @@
       rabbitClient.onWebSocketClose = () => {
         if (!eventSource) {
           console.warn('RabbitMQ closed, falling back to SSE');
-          useRabbitMQ = $state(false);
+          useRabbitMQ = false;
         }
       }
       rabbitClient.activate();
     } catch (e) {
       console.warn('RabbitMQ unavailable, using SSE only:', e);
-      useRabbitMQ = $state(false);
+      useRabbitMQ = false;
     }
   }
   function disconnectRabbitMQ() {
@@ -165,7 +165,7 @@
     window.addEventListener('beforeunload', disconnectRabbitMQ);
   }
   // UI state
-  let dragOver = $state(false);
+  let dragOver = $state<boolean>(false);
   let selectedFile: File | null = null;
   let neuralSpriteConfig = {
     enable_compression neuralSpriteEnabled
@@ -177,11 +177,11 @@
   // Derived replacements
   let progress = 0;
   let currentStepName: string = 'idle';
-  let isProcessing = $state(false);
-  let canCancel = $state(false);
-  let hasError = $state(false);
-  let isCompleted = $state(false);
-  let isCancelled = $state(false);
+  let isProcessing = $state<boolean>(false);
+  let canCancel = $state<boolean>(false);
+  let hasError = $state<boolean>(false);
+  let isCompleted = $state<boolean>(false);
+  let isCancelled = $state<boolean>(false);
   function recomputeDerived() {
     try {
       progress = getProcessingProgress(currentState.context) || 0;
@@ -244,7 +244,7 @@
   }
   function handleFileDrop(_event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     const files = event.dataTransfer?.file;
     if (files && files.length > 0) {
       selectedFile = files[0];
@@ -256,10 +256,10 @@
   }
   function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
   }
   // Streaming connection management
-  async function startProcessing() {
+  async function startProcessing(): Promise<any> {
     if (!selectedFile) return;
     try {
       // Start streaming API connection
@@ -334,7 +334,7 @@
       eventSource = null;
     }
   }
-  async function cancelProcessing() {
+  async function cancelProcessing(): Promise<any> {
     try {
       await fetch(`${endpoint}?evidenceId=${encodeURIComponent(evidenceId)}`, {
         method: 'DELETE',
@@ -345,7 +345,7 @@
       console.error('Failed to cancel processing:', error);
     }
   }
-  async function retryProcessing() {
+  async function retryProcessing(): Promise<any> {
     actor.send({ type: 'RETRY_CURRENT_STEP' });
     if (selectedFile) {
       setTimeout(() => startProcessing(), 500);

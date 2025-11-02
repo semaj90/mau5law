@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import SelfPromptingDemo from '$lib/components/dev/SelfPromptingDemo.svelte';
 </script>
 

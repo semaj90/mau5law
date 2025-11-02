@@ -1,5 +1,7 @@
 <!-- MinIO Upload Component with SvelteKit 2 + Superforms + PostgreSQL Integration -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { superForm } from 'sveltekit-superforms/client';
   import { fileUploadSchema, type FileUploadData } from '$lib/schemas/upload';
@@ -75,10 +77,10 @@
     }
   });
   // Upload state
-  let uploadProgress = $state(0);
+  let uploadProgress = $state<number>(0);
   let uploadStatus: 'idle' | 'uploading' | 'processing' | 'completed' | 'error' = $state('idle');
   let fileInput: HTMLInputElement;
-  let dragOver = $state(false);
+  let dragOver = $state<boolean>(false);
   let previewUrl = $state<string | null>(null);
   // Set default caseId if provided
   $effect(() => {
@@ -97,7 +99,7 @@
   }
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       $form.file = files[0];
@@ -109,7 +111,7 @@
     dragOver = true;
   }
   function handleDragLeave() {
-    dragOver = $state(false);
+    dragOver = false;
   }
   function generatePreview(file: File) {
     if (file.type.startsWith('image/')) {

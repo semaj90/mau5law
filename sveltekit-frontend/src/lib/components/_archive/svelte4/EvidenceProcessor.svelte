@@ -32,8 +32,8 @@
   let isProcessing = $derived(currentState === 'processing');
   let isComplete = $derived(fileProgress.status === 'done');
   // Local state
-  let showDetails = $state(false);
-  let showLogs = $state(false);
+  let showDetails = $state<boolean>(false);
+  let showLogs = $state<boolean>(false);
   let processingLogs = $state<Array() >([]);
   $effect(() => {
     uploadActor.start();
@@ -75,7 +75,7 @@
       }
     ].slice(-50); // Keep last 50 logs
   }
-  async function startProcessing() {
+  async function startProcessing(): Promise<any> {
     try {
       addLog('Starting evidence processing...', 'info');
       // Make API call to start processing
@@ -290,7 +290,7 @@ https://svelte.dev/e/js_parse_error -->
               {@const isCurrentStep = fileProgress.step === step}
               {@const isCompleted = steps.indexOf(fileProgress.step || '') > index}
               <div
-                class="flex items-center space-x-3 p-3 rounded-lg {isCurrentStep
+                class="flex" items-center space-x-3 p-3 rounded-lg {isCurrentStep
                   ? 'bg-blue-50 border border-blue-200'
                   : isCompleted
                     ? 'bg-green-50 border border-green-200'
@@ -299,7 +299,7 @@ https://svelte.dev/e/js_parse_error -->
                 <span class="text-xl">{getStepIcon(step)}</span>
                 <div class="flex-1">
                   <div
-                    class="font-medium capitalize {isCurrentStep
+                    class="font-medium" capitalize {isCurrentStep
                       ? 'text-blue-900'
                       : isCompleted
                         ? 'text-green-900'
@@ -361,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="flex items-start space-x-2 mb-1">
                   <span class="text-gray-500">[{log.timestamp}]</span>
                   <span
-                    class="flex-1 {log.type === 'error'
+                    class="flex-1" {log.type === 'error'
                       ? 'text-red-400'
                       : log.type === 'success'
                         ? 'text-green-400'

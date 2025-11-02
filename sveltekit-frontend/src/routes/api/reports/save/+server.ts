@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { aiReports } from '$lib/server/db/schema-postgres';
 import db from '$lib/server/db/index';
 import { and, eq } from 'drizzle-orm';

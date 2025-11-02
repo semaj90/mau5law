@@ -21,8 +21,8 @@
     onRecommendations = () => {},
   }: Props = $props();
   let recommendations = $state<unknown[]>([]);
-  let loading = $state(false);
-  async function fetchRecommendations() {
+  let loading = $state<boolean>(false);
+  async function fetchRecommendations(): Promise<Response> {
     loading = true;
     analyticsLog({ event: 'ai_recommendations_requested', userContext, timestamp: Date.now() });
     try {

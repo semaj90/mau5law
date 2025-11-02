@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import Fuse from 'fuse.js';
   // Use direct component imports to avoid broken barrels
@@ -22,7 +23,7 @@
     compact = false,
   : any } = $props();
   // State
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   type MatchFragment = { key?: string; indices: [number, number][] }
   type SearchResult = {
     item: LegalDocument;
@@ -31,7 +32,7 @@
     matches?: ReadonlyArray<MatchFragment>;
   }
   let searchResults = $state<SearchResult[]>([]);
-  let isSearching = $state(false);
+  let isSearching = $state<boolean>(false);
   // Fuse.js configuration for legal document search
   const fuseOptions = {
     keys: [

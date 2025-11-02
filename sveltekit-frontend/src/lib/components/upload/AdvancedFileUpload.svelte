@@ -66,12 +66,12 @@
   let fileInput: HTMLInputElement;
   let dropZone: HTMLElement;
   let files: FileUploadItem[] = $state([]);
-  let isDragOver = $state(false);
-  let isUploading = $state(false);
-  let totalProgress = $state(0);
+  let isDragOver = $state<boolean>(false);
+  let isUploading = $state<boolean>(false);
+  let totalProgress = $state<number>(0);
   let uploadQueue: FileUploadItem[] = $state([]);
   let mediaRecorder: MediaRecorder | null = $state(null);
-  let isRecording = $state(false);
+  let isRecording = $state<boolean>(false);
   let recordingStream: MediaStream | null = $state(null);
   interface FileUploadItem {
     id: string;
@@ -112,7 +112,7 @@
   }}
   function handleDrop(_event: DragEvent) {
     event.preventDefault();
-    isDragOver = $state(false);
+    isDragOver = false;
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     addFiles(droppedFiles);
   }
@@ -121,7 +121,7 @@
     isDragOver = true;
   }
   function handleDragLeave() {
-    isDragOver = $state(false);
+    isDragOver = false;
   }
   function handlePaste(_event: ClipboardEvent) {
     if (!enablePasteUpload || disabled) return;
@@ -138,7 +138,7 @@
         message: `${files.length} file(s) added from clipboard`,
       });
   }}
-  async function addFiles(newFiles: File[]) {
+  async function addFiles(newFiles: File[]): Promise<any> {
     if (disabled) return;
     // Validate file count
     if (files.length + newFiles.length > maxFiles) {
@@ -261,7 +261,7 @@
       reader.readAsDataURL(file);
     });
   }
-  async function uploadFiles(fileIds?: string[]) {
+  async function uploadFiles(fileIds?: string[]): Promise<any> {
     const filesToUpload = fileIds
       ? files.filter((f) => fileIds.includes(f.id))
       : files.filter((f) => f.status === "pending");
@@ -270,11 +270,11 @@
     for (const fileItem of filesToUpload) {
       await uploadFile(fileItem);
   }
-    isUploading = $state(false);
+    isUploading = false;
     updateTotalProgress();
     ondispatch?.({ files: filesToUpload });
   }
-  async function uploadFile(fileItem: FileUploadItem) {
+  async function uploadFile(fileItem: FileUploadItem): Promise<any> {
     fileItem.status = "uploading";
     fileItem.progress = 0;
     try {
@@ -301,7 +301,7 @@
   }
     updateTotalProgress();
   }
-  async function uploadFileWhole(fileItem: FileUploadItem) {
+  async function uploadFileWhole(fileItem: FileUploadItem): Promise<any> {
     const formData = new FormData();
     formData.append("file", fileItem.file);
     formData.append("filename", fileItem.name);
@@ -316,7 +316,7 @@
     fileItem.url = (result as { url?: any; thumbnailUrl?: any }).url;
     fileItem.thumbnailUrl = (result as { url?: any; thumbnailUrl?: any }).thumbnailUrl;
   }
-  async function uploadFileInChunks(fileItem: FileUploadItem) {
+  async function uploadFileInChunks(fileItem: FileUploadItem): Promise<any> {
     const totalChunks = Math.ceil(fileItem.size / chunkSize);
     fileItem.totalChunks = totalChunk;
     fileItem.uploadedChunks = 0;
@@ -394,7 +394,7 @@
     } else {
       startAudioRecording();
   }}
-  async function startCameraCapture() {
+  async function startCameraCapture(): Promise<any> {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
@@ -419,7 +419,7 @@
         message: "Could not access camera",
       });
   }}
-  async function startAudioRecording() {
+  async function startAudioRecording(): Promise<any> {
     if (isRecording) {
       stopAudioRecording();
       return;
@@ -457,7 +457,7 @@
   function stopAudioRecording() {
     if (mediaRecorder && isRecording) {
       mediaRecorder.stop();
-      isRecording = $state(false);
+      isRecording = false;
       if (recordingStream) {
         recordingStream.getTracks.forEach((track) => track.stop());
         recordingStream = null;
@@ -471,7 +471,7 @@
   function formatFileSize(bytes: number): string {
     const units = ["B", "KB", "MB", "GB"];
     let size = byte;
-  let unitIndex = $state(0);
+  let unitIndex = $state<number>(0);
     while (size >= 1024 && unitIndex < units.length - 1) {
       size /= 1024;
       unitIndex++;

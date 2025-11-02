@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { page } from '$app/stores'; // Changed from '$app/state' to: '$app/stores'
@@ -6,7 +7,7 @@
   import * as Card from '$lib/components/ui/card.svelte';
   import Input from '$lib/components/ui/input/Input.svelte';
   // Svelte 5 Runes - Evidence Board State
-  let isConnecting = $state(false);
+  let isConnecting = $state<boolean>(false);
   let selectedItem: EvidenceCard | null = $state(null);
   let canvasItems = $state<EvidenceCard[]>([]);
   let connections = $state<Array<{ from string; to: string; type: string }>>([]);
@@ -16,8 +17,8 @@
     status: 'active',
     items: [],
   });
-  let isDemoMode = $state(false);
-  let isConnected = $state(true);
+  let isDemoMode = $state<boolean>(false);
+  let isConnected = $state<boolean>(true);
   // Case sidebar data
   let caseDetails = $state([
     { name: 'Corporate Espionage Investigation', status: 'active', color: 'green' },
@@ -130,12 +131,12 @@
         }
         return i;
       });
-      isConnecting = $state(false);
+      isConnecting = false;
       selectedItem = null;
     }
   }
   function cancelConnection() {
-    isConnecting = $state(false);
+    isConnecting = false;
     selectedItem = null;
   }
   // Drag and drop functionality
@@ -288,7 +289,7 @@
             }}
           >
             <Card.Root
-              class="w-60 bg-white border-2 {selectedItem?.id === item.id
+              class="w-60" bg-white border-2 {selectedItem?.id === item.id
                 ? 'border-blue-500'
                 : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all"
             >

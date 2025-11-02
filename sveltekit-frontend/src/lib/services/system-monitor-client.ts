@@ -14,7 +14,7 @@ export function startSystemMonitorClient(opts?: { batchSize?: number; intervalMs
 
 	let timer: number | null = null;
 
-	async function flush() {
+	async function flush(): Promise<any> {
 		if (!queue.length) return;
 		// send up to batchSize entries in one go
 		const batch = queue.splice(0, batchSize);

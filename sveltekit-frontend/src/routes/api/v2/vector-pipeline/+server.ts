@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /*
  * Enhanced Vector Pipeline API Endpoint
  * Integrates MinIO law PDFs with FastEmbed for optimized vector search

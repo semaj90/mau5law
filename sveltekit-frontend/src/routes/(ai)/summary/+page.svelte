@@ -1,14 +1,15 @@
 <!-- AI Summary Demo Page -->
 <!-- File: sveltekit-frontend/src/routes/ai-summary/+page.svelte -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  let caseData = $state(null);
-  let summary = $state('');
-  let isGenerating = $state(false);
-  let summaryType = $state('prosecution');
-  let confidence = $state(0);
-  let ragScore = $state(0);
+  let caseData = $state<any>(null);
+  let summary = $state<string>('');
+  let isGenerating = $state<boolean>(false);
+  let summaryType = $state<string>('prosecution');
+  let confidence = $state<number>(0);
+  let ragScore = $state<number>(0);
   const generateSummary = async () => {
     isGenerating = true;
     try {
@@ -37,7 +38,7 @@
     } catch (error) {
       summary = `Connection Error: ${error.message}`;
     }
-    isGenerating = $state(false);
+    isGenerating = false;
   };
   const loadCaseDemo = async () => {
     caseData = {

@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * 🧠 Comprehensive Case Management Service
  *

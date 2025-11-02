@@ -1,8 +1,9 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
   import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
   // Svelte 5 runes
-  let systemStatus = $state({});
+  let systemStatus = $state<Record<string, any>>({});
   let authStatus = $state<any>(null);
   type TestResult = {
     success?: boolean;
@@ -14,7 +15,7 @@
   };
   // typed testResults to avoid unknown/indexing issues
   let testResults = $state<Record<string, TestResult>>({});
-  let isRunning = $state(false);
+  let isRunning = $state<boolean>(false);
 
   // helper to safely format unknown timestamps (prevents TS Date overload issues)
   function formatTimestamp(ts: any): string {
@@ -69,7 +70,7 @@
       description: 'Server-Sent Events streaming test',
     }
   ];
-  async function runTest(test: TestConfig) {
+  async function runTest(test: TestConfig): Promise<any> {
     try {
       const options: RequestInit = {
         method: test.method || 'GET',
@@ -103,16 +104,16 @@
     // Trigger reactivity
     testResults = { ...testResults }
   }
-  async function runAllTests() {
+  async function runAllTests(): Promise<any> {
     isRunning = true;
     testResults = {}
     for (const test of tests) {
       await runTest(test);
       await new Promise(resolve => setTimeout(resolve, 300));
     }
-    isRunning = $state(false);
+    isRunning = false;
   }
-  async function checkAuthStatus() {
+  async function checkAuthStatus(): Promise<any> {
     try {
       const response = await fetch('/api/auth/me');
       authStatus = await response.json();
@@ -120,7 +121,7 @@
       console.error('Auth status check failed:', error);
     }
   }
-  async function createDevSession() {
+  async function createDevSession(): Promise<any> {
     try {
       const response = await fetch('/api/dev-auth?seed=true');
       const result = await response.json();
@@ -132,7 +133,7 @@
       console.error('Dev session creation failed:', error);
     }
   }
-  async function clearSession() {
+  async function clearSession(): Promise<any> {
     try {
       const response = await fetch('/api/dev-auth', { method: 'DELETE' });
       const result = await response.json();

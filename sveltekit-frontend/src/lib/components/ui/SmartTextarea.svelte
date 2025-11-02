@@ -37,9 +37,9 @@ https://svelte.dev/e/js_parse_error -->
   // make DOM refs reactive using Svelte 5 $state to avoid non-reactive update errors
   let textarea = $state<HTMLTextAreaElement | null>(null);
   let commandMenu = $state<any>(null);
-  let showCommandMenu = $state(false);
+  let showCommandMenu = $state<boolean>(false);
   let commandMenuPosition = $state({ x: 0, y: 0 });
-  let lastCursorPosition = $state(0);
+  let lastCursorPosition = $state<number>(0);
   function handleInput(e: Event) {
     const target = e.target as HTMLTextAreaElement;
     if (!target) return;
@@ -102,17 +102,17 @@ https://svelte.dev/e/js_parse_error -->
       const pos = trimmedBefore.length + text.length;
       textarea.setSelectionRange(pos, pos);
     });
-    showCommandMenu = $state(false);
+    showCommandMenu = false;
     onCommandInsert?.({ text });
   }
   function closeCommandMenu() {
-    showCommandMenu = $state(false);
+    showCommandMenu = false;
   }
   function handleBlur(e: FocusEvent) {
     // Don't close command menu immediately to allow clicking on it
     setTimeout(() => {
       if (!document.activeElement?.closest(".command-menu")) {
-        showCommandMenu = $state(false);
+        showCommandMenu = false;
       }
     }, 150);
     onBlur?.(e);

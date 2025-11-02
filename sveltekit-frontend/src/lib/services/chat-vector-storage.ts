@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Chat Vector Storage with Temporal Indexing
  * Stores user chats in pgvector with timestamp-based semantic search

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import from 'svelte';
   interface Props {
@@ -43,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
     associate: 'bg-orange-100 text-orange-800',
     unknown: 'bg-gray-100 text-gray-800',
   }
-  let showDetails = $state(false);
+  let showDetails = $state<boolean>(false);
 </script>
 <div class="w-full max-w-4xl nes-container">
   <div class="yorha-panel-header">

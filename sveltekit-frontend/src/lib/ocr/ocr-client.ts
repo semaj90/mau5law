@@ -34,7 +34,7 @@ const DEFAULT_TIMEOUT = 30_000;
 const DEFAULT_RETRIES = 2;
 const memoryCache = new Map<string, OCRResult>();
 const isServer = typeof window === 'undefined';
-async function resolveRedis() {
+async function resolveRedis(): Promise<any> {
   if (!isServer) return null;
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -118,7 +118,7 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: str
     if (timeout) clearTimeout(timeout);
   }
 }
-async function loadTesseract() {
+async function loadTesseract(): Promise<any> {
   if (isServer) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires

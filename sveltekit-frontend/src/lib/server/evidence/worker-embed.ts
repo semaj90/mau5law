@@ -3,7 +3,7 @@ import { consume } from './rabbitmq';
 import { embedText } from './services/embedding';
 import { upsertEmbedding } from './services/drizzle-stub';
 const EMBED_QUEUE = 'evidence.embed';
-async function start() {
+async function start(): Promise<any> {
   console.log('Starting Embed worker - listening on', EMBED_QUEUE);
   await consume(EMBED_QUEUE, async job => {
     const { evidenceId, text } = job;

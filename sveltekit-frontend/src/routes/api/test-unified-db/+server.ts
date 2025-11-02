@@ -31,7 +31,7 @@ export const GET: RequestHandler = async () => {
     }
     // Test 5: Qdrant Connection Check
     const qdrant = unifiedDb.qdrant();
-    let qdrantSupport = $state(false);
+    let qdrantSupport = $state<boolean>(false);
     if (qdrant) {
       try {
         await qdrant.getCollections();

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Integration Tests for Recommendation Routing Machine
  * Tests XState v5 state machine for recommendation workflow orchestration

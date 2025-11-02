@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import { cacheManager } from '$lib/services/cache-layer-manager';
 import type { RequestHandler } from './$types';
@@ -59,7 +60,7 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
     );
   }
 };
-async function generateEnhancedComponent(slug: string, variant: string, searchParams: URLSearchParams) {
+async function generateEnhancedComponent(slug: string, variant: string, searchParams: URLSearchParams): Promise<any> {
   switch (slug) {
     case 'evidence-board':
       return await generateEvidenceBoard(variant, searchParams);
@@ -75,7 +76,7 @@ async function generateEnhancedComponent(slug: string, variant: string, searchPa
       throw new Error(`Unknown enhanced component: ${slug}`);
   }
 }
-async function generateEvidenceBoard(variant: string, searchParams: URLSearchParams) {
+async function generateEvidenceBoard(variant: string, searchParams: URLSearchParams): Promise<any> {
   // Import database and vector search capabilities
   const { db } = await import('$lib/server/database/connection');
   const { evidenceTable } = await import('$lib/server/database/schema');
@@ -152,7 +153,7 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
     },
   };
 }
-async function generateLegalTimeline(variant: string, searchParams: URLSearchParams) {
+async function generateLegalTimeline(variant: string, searchParams: URLSearchParams): Promise<any> {
   const { db } = await import('$lib/server/database/connection');
   const { timelineEventsTable } = await import('$lib/server/database/schema');
   const { desc, eq } = await import('drizzle-orm');
@@ -177,7 +178,7 @@ async function generateLegalTimeline(variant: string, searchParams: URLSearchPar
     },
   };
 }
-async function generateSemanticSearch(variant: string, searchParams: URLSearchParams) {
+async function generateSemanticSearch(variant: string, searchParams: URLSearchParams): Promise<any> {
   const query = searchParams.get('q') || '';
   const limit = parseInt(searchParams.get('limit') || '10');
   // Semantic search using pgvector
@@ -209,7 +210,7 @@ async function generateSemanticSearch(variant: string, searchParams: URLSearchPa
     },
   };
 }
-async function generateCaseAnalysis(variant: string, searchParams: URLSearchParams) {
+async function generateCaseAnalysis(variant: string, searchParams: URLSearchParams): Promise<any> {
   const caseId = searchParams.get('case_id');
   if (!caseId) {
     return {
@@ -239,7 +240,7 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
     },
   };
 }
-async function generateDocumentInsights(variant: string, searchParams: URLSearchParams) {
+async function generateDocumentInsights(variant: string, searchParams: URLSearchParams): Promise<any> {
   const docId = searchParams.get('doc_id');
   if (!docId) {
     return {
@@ -273,29 +274,29 @@ type EvidenceItem = {
   // ...add other known columns if needed...
 };
 // Helper functions (would be implemented based on your specific needs)
-async function generateRelatedInsights(_evidenceItems: EvidenceItem[]) {
+async function generateRelatedInsights(_evidenceItems: EvidenceItem[]): Promise<any> {
   // Vector similarity analysis (placeholder)
   return [];
 }
-async function generateEmbedding(_text: string) {
+async function generateEmbedding(_text: string): Promise<any> {
   // OpenAI or local embedding generation (placeholder)
   return new Array(1536).fill(0.1); // Placeholder
 }
-async function generateSearchSuggestions(_query: string) {
+async function generateSearchSuggestions(_query: string): Promise<any> {
   // Fuse.js powered suggestions (placeholder)
   return [];
 }
-async function getCaseData(caseId: string) {
+async function getCaseData(caseId: string): Promise<any> {
   const { db } = await import('$lib/server/database/connection');
   const { casesTable } = await import('$lib/server/database/schema');
   const { eq } = await import('drizzle-orm');
   return await db.select().from(casesTable).where(eq(casesTable.id, caseId));
 }
-async function getRelatedCases(_caseId: string) {
+async function getRelatedCases(_caseId: string): Promise<any> {
   // Vector similarity search for related cases (placeholder)
   return [];
 }
-async function generateCaseInsights(_caseId: string) {
+async function generateCaseInsights(_caseId: string): Promise<any> {
   // AI-powered case analysis (placeholder)
   return {
     key_points: [],
@@ -303,7 +304,7 @@ async function generateCaseInsights(_caseId: string) {
     recommendations: [],
   };
 }
-async function calculateRiskScore(_caseId: string) {
+async function calculateRiskScore(_caseId: string): Promise<any> {
   // Risk assessment algorithm (placeholder)
   return {
     score: 0.5,
@@ -312,7 +313,7 @@ async function calculateRiskScore(_caseId: string) {
   };
 }
 
-async function analyzeDocument(_docId: string) {
+async function analyzeDocument(_docId: string): Promise<any> {
   // Document analysis with NLP and vector search (placeholder)
   return {
     summary: '',

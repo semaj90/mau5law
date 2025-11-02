@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import type { PageServerLoad, Actions } from './$types.js';
 import { error, fail, json } from '@sveltejs/kit';
 import { getUserId } from '$lib/server/auth/utils';
@@ -110,7 +111,7 @@ export const actions: Actions = {
     }
   },
 };
-async function getGPUSystemInfo() {
+async function getGPUSystemInfo(): Promise<any> {
   // Mock GPU info - replace with actual CUDA/GPU detection
   return {
     gpuAvailable: true,
@@ -131,7 +132,7 @@ async function getGPUSystemInfo() {
     },
   };
 }
-async function getStreamingStats() {
+async function getStreamingStats(): Promise<any> {
   return {
     activeSessions: 3,
     totalSessionsToday: 47,
@@ -144,7 +145,7 @@ async function getStreamingStats() {
     memoryUsage: 8.4, // GB,
   };
 }
-async function getRecentProcessingResults() {
+async function getRecentProcessingResults(): Promise<any> {
   return [
     {
       sessionId: 'stream_1234567890',
@@ -178,7 +179,7 @@ async function getRecentProcessingResults() {
     },
   ];
 }
-async function initializeCudaStream(sessionId: string, options: any) {
+async function initializeCudaStream(sessionId: string, options: any): Promise<void> {
   // Mock streaming initialization - replace with actual CUDA implementation
   return {
     sessionId,
@@ -188,12 +189,12 @@ async function initializeCudaStream(sessionId: string, options: any) {
     queuePosition: 1,
   };
 }
-async function terminateCudaStream(sessionId: string) {
+async function terminateCudaStream(sessionId: string): Promise<any> {
   // Mock termination - replace with actual CUDA cleanup
   console.log(`Terminating CUDA stream: ${sessionId}`);
   return { terminated: true };
 }
-async function processCudaDocument(documentData: string, options: any) {
+async function processCudaDocument(documentData: string, options: any): Promise<any> {
   // Mock CUDA document processing - replace with actual implementation
   const simulatedProcessingTime = Math.random() * 1000 + 200;
   await new Promise(resolve => setTimeout(resolve, simulatedProcessingTime));

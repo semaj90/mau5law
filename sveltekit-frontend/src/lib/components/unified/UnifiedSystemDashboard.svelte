@@ -3,6 +3,8 @@ Unified System Dashboard
 Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
@@ -119,7 +121,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
        clearInterval(statusInterval);
      }
    });
-   async function refreshSystemStatus() {
+   async function refreshSystemStatus(): Promise<any> {
      try {
       const res = await fetch('/api/unified/status');
       if (res.ok) {
@@ -148,7 +150,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
        console.error('Failed to refresh system status:', error);
      }
    }
-   async function processDocument() {
+   async function processDocument(): Promise<any> {
      isProcessing.set(true);
      try {
        const response = await fetch('/api/unified/process', {

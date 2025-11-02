@@ -1,12 +1,13 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import NierThemeShowcase from '$lib/components/NierThemeShowcase.svelte';
   import NierHeader from '$lib/components/NierHeader.svelte';
   import NierAIAssistant from '$lib/components/ai/NierAIAssistant.svelte';
   import type { User } from '$lib/types/user'; // Changed import path for User type
 
-  let isDarkMode = $state(false);
-  let showAIAssistant = $state(false);
+  let isDarkMode = $state<boolean>(false);
+  let showAIAssistant = $state<boolean>(false);
 
   // Dynamic imports for components that might not have default exports
   let CaseCard = $state<any>(null);

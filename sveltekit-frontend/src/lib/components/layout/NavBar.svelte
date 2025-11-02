@@ -1,5 +1,6 @@
 <!-- Gaming-Themed Navigation Bar with Console Theme Switching -->
 <script lang="ts">
+import type { User } from '$lib/types';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { toastStore } from '$lib/stores/toast';
@@ -18,13 +19,13 @@
   let { user, sidebarOpen = false, onToggleSidebar }: Props = $props();
   // Gaming theme state
   let selectedTheme = $state<ConsolePaletteName>('legal');
-  let showThemeDropdown = $state(false);
+  let showThemeDropdown = $state<boolean>(false);
   // Reactive values
   let isAuthenticated = $derived(!!user);
   let currentRoute = $derived($page.url.pathname);
   let isAdmin = $derived(user?.role === 'admin');
   // Signed-in badge lifecycle
-  let showSignInBadge = $state(false);
+  let showSignInBadge = $state<boolean>(false);
   $effect(() => {
     if (isAuthenticated && user) {
       showSignInBadge = true;
@@ -36,7 +37,7 @@
   function switchTheme(theme: ConsolePaletteName) {
     selectedTheme = theme;
     applyConsolePalette(theme);
-    showThemeDropdown = $state(false);
+    showThemeDropdown = false;
     // Store in localStorage
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('legal-ai-theme', theme);
@@ -55,7 +56,7 @@
   function handleNavigation(path: string) {
     goto(path);
   }
-  async function handleLogout() {
+  async function handleLogout(): Promise<any> {
     try {
       // Call the logout endpoint to invalidate session
       const response = await fetch('/logout', { method: 'POST' });

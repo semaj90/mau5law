@@ -1,5 +1,6 @@
 <!-- Test page for Simple File Upload with RAG integration -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
   interface ServiceStatus { healthy: boolean; [key: string]: any }
@@ -68,7 +69,7 @@
       await fetchStatus(); // initial attempt, sets systemStatus on success
 
       // background loop
-      (async function pollLoop() {
+      (async function pollLoop(): Promise<any> {
         while (pollActive) {
           await new Promise(r => setTimeout(r, POLL_INTERVAL_MS));
           if (document.hidden) continue;
@@ -78,14 +79,14 @@
     })();
 
     const onBeforeUnload = () => {
-      pollActive = $state(false);
+      pollActive = false;
       currentController?.abort();
     };
     addEventListener('beforeunload', onBeforeUnload);
 
     // cleanup when effect re-runs / component unmounts
     return () => {
-      pollActive = $state(false);
+      pollActive = false;
       currentController?.abort();
       removeEventListener('beforeunload', onBeforeUnload);
     };

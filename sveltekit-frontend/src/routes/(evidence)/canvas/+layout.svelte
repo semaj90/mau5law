@@ -4,7 +4,7 @@
   import { browser } from '$app/environment';
   import type { Snippet } from 'svelte';
   // Add any layout-specific state or logic here
-  let mounted = $state(false);
+  let mounted = $state<boolean>(false);
   if (browser) {
     mounted = true;
   }

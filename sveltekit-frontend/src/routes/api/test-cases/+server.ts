@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 import { json, error } from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import { db } from '$lib/server/db';
@@ -22,7 +24,7 @@ function isHttpError(e: any): e is { status: number } {
   );
 }
 // Authentication helper
-async function getAuthenticatedUser(locals: App.Locals) {
+async function getAuthenticatedUser(locals: App.Locals): Promise<any> {
   const user = locals.user;
   const session = locals.session;
   if (!user || !session) {

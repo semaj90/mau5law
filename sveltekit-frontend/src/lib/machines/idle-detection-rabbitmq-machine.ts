@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * XState Idle Detection Machine with RabbitMQ Self-Prompting Integration
  * Detects user idle states and triggers autonomous background processing

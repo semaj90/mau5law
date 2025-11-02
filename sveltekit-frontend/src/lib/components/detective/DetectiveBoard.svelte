@@ -1,5 +1,7 @@
 <!-- DetectiveBoard.svelte - enhanced-bits + bits-ui + nes.css integration -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 	import { onMount } from 'svelte';
 
 	// UI libraries
@@ -30,9 +32,9 @@
 	// Svelte 5 runes (assumes project configured for runes)
 	let evidenceStoreState = $state<any>({ evidence: [], isLoading: false, error: null, isConnected: false });
 	let allEvidence = $derived(evidenceStoreState.evidence || []);
-	let caseId = $state('case-001');
+	let caseId = $state<string>('case-001');
 	let viewMode = $state<'columns' | 'canvas'>('columns');
-	let showAIAssistant = $state(true);
+	let showAIAssistant = $state<boolean>(true);
 	let selectedEvidenceIds = $state<string[]>([]);
 	let aiHighlightedEvidence = $state<string[]>([]);
 	let canvasContainer = $state<HTMLDivElement | undefined>();
@@ -41,8 +43,8 @@
 		{ id: 'processing', title: 'Processing', items: [] },
 		{ id: 'verified', title: 'Verified', items: [] }
 	]);
-	let canvasEvidence = $state([]);
-	let activeUsers = $state([]);
+	let canvasEvidence = $state<any[]>([]);
+	let activeUsers = $state<any[]>([]);
 	let systemStatus = $state({
 		rabbitMQ: { connected: false, health: 'unknown' },
 		postgreSQL: { connected: false, vectorCount: 0 },
@@ -72,7 +74,7 @@
 		})();
 	});
 
-	async function initializeEnhancedSystems() {
+	async function initializeEnhancedSystems(): Promise<void> {
 		try {
 			await rabbitMQService.connect();
 			systemStatus.rabbitMQ.connected = true;
@@ -211,7 +213,7 @@
 		}
 	}
 
-	async function analyzeSelectedEvidence() {
+	async function analyzeSelectedEvidence(): Promise<any> {
 		if (selectedEvidenceIds.length === 0) return;
 		try {
 			if (selectedEvidenceIds.length === 1) {
@@ -244,7 +246,7 @@
 		}
 	}
 
-	async function saveTo(target: string, item: any) {
+	async function saveTo(target: string, item: any): Promise<void> {
 		if (!item) return;
 		try {
 			await fetch('/api/user-activity', {

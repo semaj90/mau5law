@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * N64-Inspired Level of Detail Manager for Legal AI Platform
  * Manages texture streaming with NES-style memory constraints

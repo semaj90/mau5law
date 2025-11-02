@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // src/routes/api/cases/[id]/analyze/+server.ts
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';

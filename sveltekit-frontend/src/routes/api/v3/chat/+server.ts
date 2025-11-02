@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 // Production-ready Enhanced Chat API v3
 // Features: Rate limiting, structured logging, vector embeddings, service worker support
 import type { RequestHandler } from './$types.js';
@@ -84,8 +85,8 @@ interface RateLimitResult {
 }
 
 // Initialize database on startup (attempt to create embeddings table once)
-let chatDbInitialized = $state(false);
-async function ensureDbInitialized() {
+let chatDbInitialized = $state<boolean>(false);
+async function ensureDbInitialized(): Promise<void> {
   // Run once
   if (chatDbInitialized) return Promise.resolve();
   try {
@@ -541,7 +542,7 @@ export const POST: RequestHandler = async ({ request }) => {
       conversationLogger.info('Starting non-streaming response', 'chat-api-v3');
       let fullResponse = '';
       let sources: VectorSearchResult[] = [];
-      let vectorSearchUsed = $state(false);
+      let vectorSearchUsed = $state<boolean>(false);
       const streamGenerator = ollamaChatStream()({
         message: userMessage,
         model,

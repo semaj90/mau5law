@@ -1,5 +1,6 @@
 <!-- Component exported by default -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Avoid: "Cannot use namespace: 'BitsDemoProps' as a type" by declaring a local prop type
   // that matches the shape used by this component.
   interface BitsDemoProps {
@@ -67,7 +68,7 @@
     toasts = toasts.filter(t => t.id !== id);
   }
   // Notification functions with actual API calls
-  async function showSuccessNotification() {
+  async function showSuccessNotification(): Promise<any> {
     try {
       const response = await fetch('/api/cases', {
         method: 'POST',
@@ -101,7 +102,7 @@
       });
     }
   }
-  async function showWarningNotification() {
+  async function showWarningNotification(): Promise<any> {
     try {
       const response = await fetch('/api/comprehensive-integration', {
         method: 'GET',
@@ -128,7 +129,7 @@
       });
     }
   }
-  async function showErrorNotification() {
+  async function showErrorNotification(): Promise<any> {
     try {
       // perform a real check for upload service health
       const response = await fetch('/api/upload/health', { method: 'GET' });
@@ -153,7 +154,7 @@
       });
     }
   }
-  async function showInfoNotification() {
+  async function showInfoNotification(): Promise<any> {
     try {
       const response = await fetch('/api/v1/quic/metrics', {
         method: 'GET',
@@ -275,7 +276,7 @@
             class="text-danger"
             onclick={() => {
               showErrorNotification();
-              alertOpen = $state(false);
+              alertOpen = false;
             }}
           >
             Delete Permanently

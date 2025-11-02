@@ -65,14 +65,14 @@ https://svelte.dev/e/js_parse_error -->
   // Component state
   let canvasElement = $state<HTMLCanvasElement | null >(null);
   let gpuContext = $state<GPUCanvasContext | null >(null);
-  let isInitialized = $state(false);
-  let isLoading = $state(false);
-  let hasError = $state(false);
-  let errorMessage = $state('');
+  let isInitialized = $state<boolean>(false);
+  let isLoading = $state<boolean>(false);
+  let hasError = $state<boolean>(false);
+  let errorMessage = $state<string>('');
   // Cache state
   let cacheEntry: TextureCacheEntry | null = $state(null);
-  let cacheHitRate = $state(0);
-  let textureLoadTime = $state(0);
+  let cacheHitRate = $state<number>(0);
+  let textureLoadTime = $state<number>(0);
   let currentFilteringType = $state<'bilinear' | 'trilinear' | 'anisotropic'>('bilinear');
   // Performance metrics
   let performanceMetrics = $state({
@@ -85,8 +85,8 @@ https://svelte.dev/e/js_parse_error -->
   });
   // Animation state
   let animationId = $state<number | null >(null);
-  let lastFrameTime = $state(0);
-  let frameCount = $state(0);
+  let lastFrameTime = $state<number>(0);
+  let frameCount = $state<number>(0);
   // Texture filtering presets
   const filteringPresets = {
     performance: {
@@ -282,7 +282,7 @@ https://svelte.dev/e/js_parse_error -->
    * Start performance monitoring loop
    */
   function startPerformanceMonitoring(): void {
-  let frameCount = $state(0);
+  let frameCount = $state<number>(0);
     let lastTime = performance.now();
     const updateMetrics = () => {
       const now = performance.now();

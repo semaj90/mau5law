@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * API Client for Legal AI Platform
  * Provides type-safe client-side API access with Lucia v3 authentication

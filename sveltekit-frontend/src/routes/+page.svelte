@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
 	// Replace broken named imports with safe namespace import + fallbacks
 	import { browser } from '$app/environment';
 	import { derived, writable } from 'svelte/store';
@@ -12,7 +13,7 @@
 		const events: Record<string, Function[]> = {};
 		const files: UploadFile[] = [];
 
-		async function uploadImpl(file: File) {
+		async function uploadImpl(file: File): Promise<any> {
 			try {
 				const formData = new FormData();
 				formData.append('file', file);
@@ -105,9 +106,9 @@
 	};
 
 	let stats = $state({ totalCases: 0, totalEvidence: 0, processingJobs: 0 });
-	let loading = $state(true);
-	let userQuery = $state('');
-	let registerOpen = $state(false);
+	let loading = $state<boolean>(true);
+	let userQuery = $state<string>('');
+	let registerOpen = $state<boolean>(false);
   // ---------------------------------------------------------------
 
   function openRegister() {
@@ -123,7 +124,7 @@
 		}
 	});
 
-	async function checkSystemHealth() {
+	async function checkSystemHealth(): Promise<any> {
 		try {
 			// Check database
 			const dbCheck = await fetch('/api/health/database').catch(() => ({ ok: false }));
@@ -362,7 +363,7 @@
           </div>
 
           <div
-            class="nes-container is-dark worker-card-custom {workerDetails.embedding.healthy
+            class="nes-container" is-dark worker-card-custom {workerDetails.embedding.healthy
               ? 'is-success'
               : 'is-error'}"
           >

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * MCP GPU Orchestrator - Advanced Multi-Protocol AI Task Dispatcher
  * Coordinates GPU processing, RAG analysis, and autosolve remediation

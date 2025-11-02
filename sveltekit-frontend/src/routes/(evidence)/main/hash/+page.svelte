@@ -1,11 +1,12 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { page } from '$app/state';
-  let hashInput = $state('81d9c48f998f9025eb8f72e28a6c4f921ed407dd75891a9e9a8778c9ad5711bd');
+  let hashInput = $state<string>('81d9c48f998f9025eb8f72e28a6c4f921ed407dd75891a9e9a8778c9ad5711bd');
   let searchResult: any = $state(null);
-  let loading = $state(false);
-  let error = $state('');
+  let loading = $state<boolean>(false);
+  let error = $state<string>('');
   $effect(() => {
     // Check if hash was provided in URL
     const urlHash = page.url.searchParams.get('hash');
@@ -14,7 +15,7 @@
       searchByHash();
     }
   });
-  async function searchByHash() {
+  async function searchByHash(): Promise<any> {
     if (!hashInput || hashInput.length !== 64) {
       error = 'Please enter a valid 64-character SHA256 hash';
       return;
@@ -36,7 +37,7 @@
       loading = false;
     }
   }
-  async function verifyIntegrity(evidenceId: string) {
+  async function verifyIntegrity(evidenceId: string): Promise<any> {
     if (!evidenceId) return;
     loading = true;
     error = '';

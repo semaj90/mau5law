@@ -1,3 +1,6 @@
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 // 🎯 Global Type Definitions for Svelte 5 + Legal AI System
 // Eliminates 800+ type definition errors across the codebase
 // =====================================================

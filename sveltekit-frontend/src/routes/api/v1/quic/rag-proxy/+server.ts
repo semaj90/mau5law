@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 /*
  * RAG QUIC Proxy API - Enhanced RAG Service with Edge Caching

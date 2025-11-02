@@ -34,7 +34,7 @@
     easing: cubicOut;
   });
   let startTime = Date.now();
-  let elapsedTime = $state(0);
+  let elapsedTime = $state<number>(0);
   let intervalId: ReturnType<typeof setInterval> | null = null;
   $effect(() => { progressTween.set(progress), });
   let sizeClasses = $derived({
@@ -161,7 +161,7 @@
                     </div>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                       <div
-                        class="h-2 rounded-full transition-all duration-300 {operation === 'ai'
+                        class="h-2" rounded-full transition-all duration-300 {operation === 'ai'
                           ? 'bg-blue-500'
                           : operation === 'gpu'
                             ? 'bg-purple-500'
@@ -191,7 +191,7 @@
                 {#if operation && status === 'loading'}
                   <div class="mt-2">
                     <span
-                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
+                      class="inline-flex" items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
                       {operation === 'ai'
                         ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                         : operation === 'gpu'
@@ -252,7 +252,7 @@
                   </div>
                   <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div
-                      class="h-2 rounded-full transition-all duration-300 {operation === 'ai'
+                      class="h-2" rounded-full transition-all duration-300 {operation === 'ai'
                         ? 'bg-blue-500'
                         : operation === 'gpu'
                           ? 'bg-purple-500'
@@ -282,7 +282,7 @@
               {#if operation && status === 'loading'}
                 <div class="mt-2">
                   <span
-                    class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
+                    class="inline-flex" items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
                     {operation === 'ai'
                       ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                       : operation === 'gpu'
@@ -339,7 +339,7 @@
                 </div>
                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                   <div
-                    class="h-2 rounded-full transition-all duration-300 {operation === 'ai'
+                    class="h-2" rounded-full transition-all duration-300 {operation === 'ai'
                       ? 'bg-blue-500'
                       : operation === 'gpu'
                         ? 'bg-purple-500'
@@ -369,7 +369,7 @@
             {#if operation && status === 'loading'}
               <div class="mt-2">
                 <span
-                  class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
+                  class="inline-flex" items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
                   {operation === 'ai'
                     ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                     : operation === 'gpu'

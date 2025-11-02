@@ -22,8 +22,8 @@
     oncancel?: () => void;
   } = $props();
   let file: File | null = $state(null);
-  let percent = $state(0);
-  let uploading = $state(false);
+  let percent = $state<number>(0);
+  let uploading = $state<boolean>(false);
   let controller: AbortController | null = $state(null);
   function onFileChange(e: Event) {
     const input = e.target as HTMLInputElement;
@@ -45,16 +45,16 @@
     if (allowedExtensions.length && !allowedExtensions.includes(ext)) return `Invalid file extension: '.${ext}'`;
     return null;
   }
-  async function cancelUpload() {
+  async function cancelUpload(): Promise<any> {
     if (controller) {
       controller.abort();
       controller = null;
-      uploading = $state(false);
+      uploading = false;
       percent = 0;
       oncancel?.();
     }
   }
-  async function startUpload() {
+  async function startUpload(): Promise<any> {
     const err = validateFile(file);
     if (err) {
       onerror?.({ message: err });
@@ -76,13 +76,13 @@
         },
         controller.signal
       );
-      uploading = $state(false);
+      uploading = false;
       controller = null;
       const ok = res.status >= 200 && res.status < 300;
       percent = ok ? 100 : percent;
       ondone?.({ ok, status: res.status, response: res.responseText });
     } catch (err) {
-      uploading = $state(false);
+      uploading = false;
       controller = null;
       onerror?.({ message: String(err) });
     }

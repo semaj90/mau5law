@@ -4,6 +4,7 @@
   Shows how to integrate N64LODManager with CHR-ROM caching and WebGPU
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import SSRWebGPULoader from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';
@@ -61,7 +62,7 @@
     }, 1000);
     return () => clearInterval(interval);
   });
-  async function processDocument() {
+  async function processDocument(): Promise<any> {
     const startTime = performance.now();
     try {
       // Simulate document processing through the pipeline
@@ -79,7 +80,7 @@
       processingTime = performance.now() - startTime;
     }
   }
-  async function preloadAllLODs() {
+  async function preloadAllLODs(): Promise<any> {
     console.log(`🎮 Preloading all LOD levels for ${currentDoc.title}...`);
     const startTime = performance.now();
     const promises = [];

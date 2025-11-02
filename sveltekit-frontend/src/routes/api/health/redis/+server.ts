@@ -49,7 +49,7 @@ export const GET: RequestHandler = async () => {
         );
       }
 
-      isAvailable = $state(false);
+      isAvailable = false;
     } finally {
       // Quit the short-lived client if possible to avoid leaking connections
       try {

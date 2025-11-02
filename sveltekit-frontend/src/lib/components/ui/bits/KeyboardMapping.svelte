@@ -1,6 +1,8 @@
 <!-- Enhanced Bits UI: Keyboard Mapping Component -->
 <!-- Centralized keyboard shortcut management with legal domain focus -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';

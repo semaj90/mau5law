@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 <!-- @migration-task Error while migrating Svelte code: Expected token }
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
@@ -231,7 +232,7 @@ function updateFPS() {
     performanceMetrics.maxFrameTime = 0;
   }
 }
-async function processTestDocument() {
+async function processTestDocument(): Promise<any> {
   console.log('🧪 Processing test document with RTX acceleration...');
   const testDocument = new ArrayBuffer(1024 * 1024); // 1MB test document
   const result = await rtxTensorUpscaler.processLegalDocument(testDocument, {

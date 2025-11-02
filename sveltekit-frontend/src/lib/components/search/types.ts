@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 // Types for legal search components
 export interface SearchResult {
   id: string;

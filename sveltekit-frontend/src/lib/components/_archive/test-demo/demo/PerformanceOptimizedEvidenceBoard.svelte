@@ -3,6 +3,7 @@
   Demonstrates Redis caching, tree-shaking, and component optimization
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import { createRedisBackedState, getCacheStats  } from '$lib/stores/unified';
   import {
@@ -27,8 +28,8 @@
     totalAnalysisCached: 0,
     bundleSize: 0,
   });
-  let isLoading = $state(true);
-  let loadingProgress = $state(0);
+  let isLoading = $state<boolean>(true);
+  let loadingProgress = $state<number>(0);
   interface Evidence {
     id: string;
     title: string;
@@ -62,7 +63,7 @@
     },
   ];
   // Performance-optimized component loading
-  async function loadComponents() {
+  async function loadComponents(): Promise<any> {
     const startTime = performance.now();
     try {
       // Load components in parallel with different priorities
@@ -98,7 +99,7 @@
     }
   }
   // Optimized evidence analysis with caching
-  async function analyzeEvidence(evidence: Evidence) {
+  async function analyzeEvidence(evidence: Evidence): Promise<any> {
     const startTime = performance.now();
     try {
       // Check cache first
@@ -134,7 +135,7 @@
     }
   }
   // Bulk evidence analysis with batch optimization
-  async function analyzeAllEvidence() {
+  async function analyzeAllEvidence(): Promise<any> {
     const startTime = performance.now();
     const analysisPromises = $evidenceList.map(evidence => analyzeEvidence(evidence));
     await Promise.allSettled(analysisPromises);
@@ -144,7 +145,7 @@
     evidenceList.update(list => [...list]);
   }
   // Update performance metrics
-  async function updatePerformanceMetrics() {
+  async function updatePerformanceMetrics(): Promise<any> {
     const cacheStats = await getCacheStats();
     const usage = componentMetadataCache.getUsageAnalytics();
     performanceMetrics = {

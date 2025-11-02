@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { databaseOrchestrator } from '$lib/server/db/database-orchestrator'; // Added import for databaseOrchestrator

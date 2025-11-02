@@ -44,7 +44,7 @@
   let hoveredEvidence = $state<any>(null);
   let viewMode = $state<'3d' | 'network' | 'timeline'>('3d');
   let filterType = $state<string>('all');
-  let isLoading = $state(true);
+  let isLoading = $state<boolean>(true);
   // Evidence visualization objects
   let evidenceNodes = $state<Map<string, THREE.Object3D>>(new Map());
   let relationshipLines = $state<THREE.Group>(new THREE.Group());
@@ -63,10 +63,10 @@ if (!browser) return;
       if (collaborativeMode) {
         setupCollaboration();
       }
-      isLoading = $state(false);
+      isLoading = false;
     } catch (error) {
       console.error('Failed to initialize 3D visualization', error);
-      isLoading = $state(false);
+      isLoading = false;
     }
     })();
   });
@@ -83,7 +83,7 @@ if (!browser) return;
     }
     controls?.dispose();
   });
-  async function initializeVisualization() {
+  async function initializeVisualization(): Promise<void> {
     // Create scene
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a0a);
@@ -189,7 +189,7 @@ if (!browser) return;
     renderer.domElement.addEventListener('mousemove', onMouseMove);
     renderer.domElement.addEventListener('click', onClick);
   }
-  async function loadEvidenceData() {
+  async function loadEvidenceData(): Promise<any> {
     scene.clear();
     evidenceNodes.clear();
     // Create evidence visualization based on view mode
@@ -208,7 +208,7 @@ if (!browser) return;
       createRelationshipVisualization();
     }
   }
-  async function create3DEvidenceMap() {
+  async function create3DEvidenceMap(): Promise<any> {
     const positions = generateSpatialLayout(evidenceData);
     evidenceData.forEach((evidence, index) => {
       const node = createEvidenceNode(evidence, positions[index]);
@@ -216,7 +216,7 @@ if (!browser) return;
       scene.add(node);
     });
   }
-  async function createNetworkVisualization() {
+  async function createNetworkVisualization(): Promise<any> {
     // Force-directed layout for network visualization
     const positions = generateNetworkLayout(evidenceData);
     evidenceData.forEach((evidence, index) => {
@@ -225,7 +225,7 @@ if (!browser) return;
       scene.add(node);
     });
   }
-  async function createTimelineVisualization() {
+  async function createTimelineVisualization(): Promise<any> {
     if (!showTimeline) return;
     // Sort evidence by date
     const sortedEvidence = [...evidenceData].sort((a, b) =>

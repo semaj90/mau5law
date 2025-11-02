@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { ThemeProvider } from './ThemeProvider.svelte';
   import { ThemeToggle } from './ThemeToggle.svelte';
   import { Sidebar } from './Sidebar.svelte'; // Changed to named import
@@ -10,8 +11,8 @@
   let {
     theme = 'default'
   }: SidebarDemoProps = $props();
-  let currentPage = $state('dashboard');
-  // let sidebarCollapsed = $state(true); // Removed as it's unused
+  let currentPage = $state<string>('dashboard');
+  // let sidebarCollapsed = $state<boolean>(true); // Removed as it's unused
   // Sample navigation items
   const navigationItems = [
     {

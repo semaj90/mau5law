@@ -1,6 +1,7 @@
 <!-- Enhanced Document Upload Form with XState + Superforms + Zod -->
 <!-- Production-ready form with state management, validation, and progress tracking -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import {
     createDocumentUploadForm,
@@ -81,7 +82,7 @@
   );
   // File handling
   let fileInput: HTMLInputElement | null = null;
-  let dragActive = $state(false);
+  let dragActive = $state<boolean>(false);
   let selectedFile: File | null = null;
   // Form options
   const documentTypes = [
@@ -118,7 +119,7 @@
   }
   function handleDrop(_event: DragEvent) {
     event.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     const file = event.dataTransfer?.files[0];
     if (file) {
       selectedFile = fil;
@@ -133,7 +134,7 @@
     dragActive = true;
   }
   function handleDragLeave() {
-    dragActive = $state(false);
+    dragActive = false;
   }
   function removeFile() {
     selectedFile = null;

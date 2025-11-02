@@ -9,11 +9,11 @@
   // Svelte 5 props with event handlers
   let { caseId, maxFileSize = 50 * 1024 * 1024, onuploaded }: Props = $props();
   let files: FileList | null = $state(null);
-  let dragActive = $state(false);
+  let dragActive = $state<boolean>(false);
   let componentError = $state<Error | null>(null);
-  let uploading = $state(false);
-  let uploadProgress = $state(0);
-  let uploadStatus = $state('');
+  let uploading = $state<boolean>(false);
+  let uploadProgress = $state<number>(0);
+  let uploadStatus = $state<string>('');
   // File type categories for validation and UI
   const allowedTypes = {
     images: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'],
@@ -29,11 +29,11 @@
   }
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     // use .files (DataTransfer.files) not .file
     const droppedFiles = e.dataTransfer?.files;
     if (droppedFiles && droppedFiles.length > 0) {
@@ -49,7 +49,7 @@
       handleFileUpload();
     }
   }
-  async function handleFileUpload() {
+  async function handleFileUpload(): Promise<any> {
     if (!files || files.length === 0) return;
     uploading = true;
     uploadStatus = 'Preparing upload...';

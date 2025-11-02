@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /*
  * Gallery Upload API - File Upload Handler
  * Handles file uploads for all media types in the gallery system
@@ -266,7 +267,7 @@ async function triggerBackgroundProcessing(
     needsEmbedding: boolean;
     needsThumbnail: boolean;
   }
-) {
+): Promise<any> {
   try {
     // TODO: Integrate with Redis or NATS for background job processing
     // For now, we'll just log the processing request

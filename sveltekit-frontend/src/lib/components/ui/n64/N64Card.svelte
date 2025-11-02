@@ -78,21 +78,21 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   //
   let cardElement: HTMLElement;
   let container: HTMLDivElement;
-  let isHovered = $state(false);
-  let isPressed = $state(false);
+  let isHovered = $state<boolean>(false);
+  let isPressed = $state<boolean>(false);
   let audioContext: AudioContext | null = null;
   let spatialPanner: PannerNode | null = null;
   // Performance state
   let webglContext: WebGLRenderingContext | null = null;
   let webgpuDevice: GPUDevice | null = null;
-  let frameCount = $state(0);
-  let lastFrameTime = $state(0);
+  let frameCount = $state<number>(0);
+  let lastFrameTime = $state<number>(0);
   // 3D transformation state
-  let rotationX = $state(0);
-  let rotationY = $state(0);
-  let translateZ = $state(0);
-  let mouseX = $state(0);
-  let mouseY = $state(0);
+  let rotationX = $state<number>(0);
+  let rotationY = $state<number>(0);
+  let translateZ = $state<number>(0);
+  let mouseX = $state<number>(0);
+  let mouseY = $state<number>(0);
   // Generate unique IDs
   const componentId = `n64-card-${Math.random.toString-substr(2, 9)}`;
   // Dynamic CSS classes based on props
@@ -177,7 +177,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
     })();
   });
-  async function initializeGPUContext() {
+  async function initializeGPUContext(): Promise<void> {
     if (webgpuMode && 'gpu' in navigator) {
       try {
         const adapter = await navigator.gpu.requestAdapter();
@@ -241,7 +241,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   function handleMouseLeave() {
     if (!hoverable) return;
-    isHovered = $state(false);
+    isHovered = false;
     rotationX = 0;
     rotationY = 0;
     translateZ = 0;
@@ -256,7 +256,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   function handleMouseUp() {
     if (!clickable) return;
-    isPressed = $state(false);
+    isPressed = false;
     playSpatialSound('release', 440, 0.05);
   }
   function handleClick(_event: MouseEvent) {

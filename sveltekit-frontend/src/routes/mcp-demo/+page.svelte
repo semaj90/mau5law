@@ -22,7 +22,7 @@
   let error: string | null = null
   let servers: RegistryServer[] = []
 
-  async function loadServers() {
+  async function loadServers(): Promise<any> {
     try {
       const res = await fetch('/api/mcp/registry')
       if (!res.ok) throw new Error('Failed to load MCP registry')
@@ -36,7 +36,7 @@
     }
   }
 
-  async function fetchMcp() {
+  async function fetchMcp(): Promise<Response> {
     loading = true
     error = null
     result = null

@@ -31,15 +31,15 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Reactive state (Svelte 5 runes)
-  let searchQuery = $state('');
-  let selectedOperation = $state('');
+  let searchQuery = $state<string>('');
+  let selectedOperation = $state<string>('');
   let selectedShaderType = $state<'webgpu' | 'webgl' | 'all'>('all');
   let selectedTags = $state<string[]>([]);
   let sortBy = $state<'relevance' | 'performance' | 'usage' | 'recent'>('relevance');
-  let limit = $state(20);
+  let limit = $state<number>(20);
   let searchResults = $state<ShaderSearchResult[]>([]);
   let searchMetadata = $state<SearchResponse['metadata'] | null>(null);
-  let isSearching = $state(false);
+  let isSearching = $state<boolean>(false);
   let stats = $state<ShaderStats | null>(null);
   let selectedShader = $state<ShaderSearchResult | null>(null);
   let availableTags = $state<string[]>([]);
@@ -54,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
     })();
   });
 
-  async function loadStats() {
+  async function loadStats(): Promise<any> {
     try {
       const response = await fetch('/api/shaders/stats');
       if (!response.ok) throw new Error(`Stats fetch failed: ${response.status}`);
@@ -76,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function loadAvailableFilters() {
+  async function loadAvailableFilters(): Promise<any> {
     try {
       const response = await fetch('/api/shaders/unified', {
         method: 'POST',
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     isSearching = true;
     try {
       const query: ShaderSearchQuery = {

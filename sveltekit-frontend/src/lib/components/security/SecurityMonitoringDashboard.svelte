@@ -3,6 +3,7 @@
   Displays security events, system health, and security metrics
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { notifications  } from '$lib/stores/unified';
@@ -32,11 +33,11 @@
   import { writable } from 'svelte/store';
   let securityEvents = $state<SecurityEvent[]>([]);
   let filteredEvents = $state<SecurityEvent[]>([]);
-  let selectedSeverity = $state('');
-  let selectedType = $state('');
+  let selectedSeverity = $state<string>('');
+  let selectedType = $state<string>('');
   let showDetails = new Set<number>();
   let refreshInterval = $state<number | null>(null);
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   // Security metrics
   // runtime helpers like $derived are provided by the runes compiler; don't import them.
   const criticalEvents = $derived(() => securityEvents.filter(e => e.severity === 'critical').length);

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * PTX Compiler Configuration for Ampere+ Architectures
  * Optimized for RTX 30/40 series and modern NVIDIA GPUs

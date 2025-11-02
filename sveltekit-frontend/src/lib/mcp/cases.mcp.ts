@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * MCP Tools Layer - Cases Management
  * Thin adapters wrapping Drizzle ORM queries for XState machine services

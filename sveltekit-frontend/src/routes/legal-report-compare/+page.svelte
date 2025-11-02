@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   /**
    * Legal Report Comparison - PDF Upload & NLP Similarity Analysis
    *
@@ -22,8 +24,8 @@
   // ============================================================================
 
   let uploadFile = $state<File | null>(null);
-  let isUploading = $state(false);
-  let uploadProgress = $state(0);
+  let isUploading = $state<boolean>(false);
+  let uploadProgress = $state<number>(0);
 
   // Form data
   let formData = $state({
@@ -197,7 +199,7 @@
     }
   }
 
-  async function submitReport() {
+  async function submitReport(): Promise<any> {
     if (!uploadFile) return;
 
     isUploading = true;

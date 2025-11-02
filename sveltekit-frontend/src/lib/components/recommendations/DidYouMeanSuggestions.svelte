@@ -66,7 +66,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   let suggestions = $state<Suggestion[]>([]);
   let taskSuggestions = $state<TaskSuggestion[]>([]);
   let userProfile = $state<UserProfile | null>(null);
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let error = $state<string | null>(null);
   let metadata = $state( );
   let debounceTimer = $state<NodeJS.Timeout | null>(null);
@@ -99,7 +99,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       if (debounceTimer) clearTimeout(debounceTimer);
     }
   });
-  async function performSearch(searchQuery: string) {
+  async function performSearch(searchQuery: string): Promise<any> {
     if (!searchQuery || searchQuery.length < 2) {
       suggestions = [];
       taskSuggestions = [];
@@ -342,7 +342,7 @@ https://svelte.dev/e/attribute_invalid_name -->
                   <span class="text-xs {getConfidenceColor(task.confidence)}">
                     {Math.round(task.confidence * 100)}%
                   </span>
-                  <span class="px-1.5 py-0.5 text-xs rounded-full {
+                  <span class="px-1.5" py-0.5 text-xs rounded-full {
                     task.priority === 'high'
                       ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
                       : task.priority === 'medium'

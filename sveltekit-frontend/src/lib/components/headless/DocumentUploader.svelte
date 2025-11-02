@@ -1,6 +1,7 @@
 <!-- Headless Document Uploader Component
      Provides upload functionality without UI, perfect for integration with custom interfaces -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { minioService, type MinIOFile, type UploadProgress } from '$lib/services/minio-service';
   interface ProcessingOptions {
@@ -62,19 +63,19 @@
     children
   }: DocumentUploaderProps = $props();
   // State using Svelte 5 runes
-  let isUploading = $state(false);
+  let isUploading = $state<boolean>(false);
   let uploadQueue = $state<File[]>([]);
   let completedUploads = $state<MinIOFile[]>([]);
   let uploadProgress = $state(new Map<string, UploadProgress>());
   let currentUploads = $state(new Set<string>());
-  let mounted = $state(false);
+  let mounted = $state<boolean>(false);
   // File input reference (headless)
   let fileInput: HTMLInputElement = $state(undefined as any);
   // Mount effect
   $effect(() => {
     mounted = true;
     return () => {
-      mounted = $state(false);
+      mounted = false;
       // Cleanup any ongoing uploads
       currentUploads.clear();
     }
@@ -111,7 +112,7 @@
     uploadProgress.clear();
     uploadQueue = [];
     currentUploads.clear();
-    isUploading = $state(false);
+    isUploading = false;
   }
   // Handle file selection
   async function handleFileSelection(_event: Event): Promise<void> {

@@ -62,7 +62,7 @@ async function checkRedisHealth(): Promise<ServiceHealth> {
     }
   }
 }
-async function getMemoryBankStatus() {
+async function getMemoryBankStatus(): Promise<any> {
   // Simulate memory bank readings - in production, you'd get actual metrics
   return {
     L1_GPU_VRAM: {

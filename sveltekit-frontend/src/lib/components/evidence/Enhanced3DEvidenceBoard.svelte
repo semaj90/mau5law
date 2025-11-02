@@ -32,16 +32,16 @@
   let hoveredNode = $state<EvidenceNode | null>(null);
   let camera = spring({ x: 0, y: 0, z: 500 }, { stiffness: 0.1, damping: 0.8 });
   let rotation = spring({ x: 0, y: 0 }, { stiffness: 0.05, damping: 0.9 });
-  let showNodeDetails = $state(false);
-  let isProcessing = $state(false);
-  let cacheHitRate = $state(0);
+  let showNodeDetails = $state<boolean>(false);
+  let isProcessing = $state<boolean>(false);
+  let cacheHitRate = $state<number>(0);
   // N64-style rendering constraints
   const MAX_VISIBLE_NODES = 64;  // N64 polygon limit simulation
   const LOD_DISTANCES = [100, 300, 600, 1000];
   const TEXTURE_CACHE_SIZE = 1024; // 1KB per node texture
   let animationFrame: number;
   let mousePos = { x: 0, y: 0 }
-  let isDragging = $state(false);
+  let isDragging = $state<boolean>(false);
   let lastMousePos = { x: 0, y: 0 }
   onMount(async () => {
     await initializeBoard();
@@ -53,7 +53,7 @@
       cancelAnimationFrame(animationFrame);
     }
   });
-  async function initializeBoard() {
+  async function initializeBoard(): Promise<void> {
     // Initialize WebGPU systems
     await n64TextureLOD.initialize();
     await yorhaMipmapShaders.initializeHeadless();
@@ -95,7 +95,7 @@
       lastMousePos = { x: mousePos.x, y: mousePos.y }
     });
     canvas.addEventListener('mouseup', () => {
-      isDragging = $state(false);
+      isDragging = false;
     });
     canvas.addEventListener('click', () => {
       if (hoveredNode) {
@@ -187,7 +187,7 @@
     }
     return LOD_DISTANCES.length - 1;
   }
-  async function loadSampleData() {
+  async function loadSampleData(): Promise<any> {
     isProcessing = true;
     // Generate sample evidence nodes
     const sampleNodes: EvidenceNode[] = [
@@ -303,7 +303,7 @@
     connections = sampleConnections; // Fixed typo
     // Cache the state
     await multiLayerCache.set('evidence-board-state', { nodes, connections }, 1800, 200);
-    isProcessing = $state(false);
+    isProcessing = false;
   }
   function startRendering() {
     function render() {

@@ -4,7 +4,7 @@ import { getRedisClient, closeRedisClient } from '$lib/server/cache/redis';
 import { getRabbitMQChannel, closeRabbitMQConnection } from '$lib/server/messaging/rabbitmq';
 
 // Initialize services on server startup
-async function initializeServices() {
+async function initializeServices(): Promise<void> {
   try {
     // Initialize Drizzle DB client
     createRuntimeConnection();

@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({ error: String(error) }, { status: 500 });
   }
 };
-async function getScalingOverview() {
+async function getScalingOverview(): Promise<any> {
   return {
     title: '🚀 FAISS 100K+ Scaling Architecture Demo',
     description: 'Enterprise-scale vector search performance demonstration',
@@ -83,7 +83,7 @@ async function getScalingOverview() {
     ],
   };
 }
-async function performScalingAnalysis(targetCount: number) {
+async function performScalingAnalysis(targetCount: number): Promise<any> {
   const startTime = Date.now();
   // Determine optimal architecture for target document count
   const recommendation = getArchitectureRecommendation(targetCount);
@@ -122,7 +122,7 @@ async function performScalingAnalysis(targetCount: number) {
     processing_time_ms: Date.now() - startTime,
   };
 }
-async function comparePerformanceAtScale(documentCount: number) {
+async function comparePerformanceAtScale(documentCount: number): Promise<any> {
   const scenarios = [
     { name: 'pgvector_only', description: 'PostgreSQL pgvector (baseline)' },
     { name: 'hybrid_cached', description: 'pgvector + Redis cache' },
@@ -180,7 +180,7 @@ async function comparePerformanceAtScale(documentCount: number) {
           },
   };
 }
-async function demonstrateFAISSTraining(documentCount: number) {
+async function demonstrateFAISSTraining(documentCount: number): Promise<any> {
   // Use Date.now() for server-safe timing
   const startTime = Date.now();
   if (documentCount < 100000) {
@@ -226,7 +226,7 @@ async function demonstrateFAISSTraining(documentCount: number) {
     processing_time_ms: Date.now() - startTime,
   };
 }
-async function assessEnterpriseReadiness(documentCount: number) {
+async function assessEnterpriseReadiness(documentCount: number): Promise<any> {
   const readinessScore = calculateEnterpriseReadiness(documentCount);
   return {
     title: `🏢 Enterprise Readiness Assessment`,

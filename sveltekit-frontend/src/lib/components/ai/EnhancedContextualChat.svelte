@@ -8,10 +8,12 @@
   - Entity extraction visualization
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import { chatMessageSchema } from '$lib/forms/contextual-chat-schema';
-  import * as Dialog from 'bits-ui/dialog'; // Corrected import
+  import * as Dialog from 'bits-ui/Dialog'; // Corrected import
   import * as Accordion from 'bits-ui/accordion'; // Corrected import
   import * as Tooltip from 'bits-ui/tooltip'; // Corrected import
   import type {
@@ -77,8 +79,8 @@
   let contextualState = $state<ContextualState | null>(null);
   let predictions = $state<NextStepPrediction[]>([]);
   let entities = $state<LegalEntity[]>([]);
-  let showSettings = $state(false);
-  let showEntityDetails = $state(false);
+  let showSettings = $state<boolean>(false);
+  let showEntityDetails = $state<boolean>(false);
   let selectedEntity = $state<LegalEntity | null>(null);
   // Derived
   const stateNames = {
@@ -114,7 +116,7 @@
   /**
    * Fetch contextual state
    */
-  async function fetchContextualState() {
+  async function fetchContextualState(): Promise<Response> {
     try {
       const response = await fetch(
         `/api/contextual/state?sessionId=${sessionId}&userId=${userId}`
@@ -131,7 +133,7 @@
   /**
    * Fetch predictions
    */
-  async function fetchPredictions() {
+  async function fetchPredictions(): Promise<Response> {
     try {
       const response = await fetch(
         `/api/contextual/predictions?sessionId=${sessionId}&userId=${userId}`
@@ -154,7 +156,7 @@
   /**
    * Clear conversation
    */
-  async function clearConversation() {
+  async function clearConversation(): Promise<any> {
     try {
       const response = await fetch(
         `/api/contextual/state?sessionId=${sessionId}`,

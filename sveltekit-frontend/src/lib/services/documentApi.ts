@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Document API Service
  * Handles document processing, upload, and management operations

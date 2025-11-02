@@ -11,6 +11,8 @@ https://svelte.dev/e/js_parse_error -->
   - AI-powered insights
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { caseManagementService } from '$lib/services/case-management-service.js';
@@ -52,12 +54,12 @@ https://svelte.dev/e/js_parse_error -->
   let detectiveInsights: any = null;
   let connectionMap: any[] = [];
   // UI state - Svelte 5 runes
-  let searchQuery = $state('');
-  let filterType = $state('all');
+  let searchQuery = $state<string>('');
+  let filterType = $state<string>('all');
   let viewMode = $state<'grid' | 'timeline' | 'network'>('grid');
-  let showFilters = $state(false);
-  let showInsights = $state(false);
-  let loadingAnalysis = $state(false);
+  let showFilters = $state<boolean>(false);
+  let showInsights = $state<boolean>(false);
+  let loadingAnalysis = $state<boolean>(false);
   let draggedEvidence = $state<string | null>(null);
   // Evidence filters
   const evidenceTypes = [
@@ -82,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
   let ctx: CanvasRenderingContext2D | null = null;
   // new: auth/session + search/upload state
   let userSession any = null;
-  let authChecked = $state(false);
+  let authChecked = $state<boolean>(false);
   let searchProvider: 'pgvector' | 'qdrant' = 'pgvector';
   let tagSearchResults: any[] = [];
   let lastSearchQuery = '';
@@ -99,12 +101,12 @@ https://svelte.dev/e/js_parse_error -->
     })();
   });
   // Check session via backend (Lucia v3 / SvelteKit server endpoint)
-  async function checkSession() {
+  async function checkSession(): Promise<any> {
     try {
       const res = await apiFetch('/api/auth/session'); // expects { user: { id, username, ... } } or null
       if (res?.user) {
         userSession = res.user;
-        readOnly = $state(false);
+        readOnly = false;
       } else {
         userSession = null;
         readOnly = true;
@@ -118,7 +120,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Semantic search wrapper (select pgvector or qdrant on server)
-  async function performSemanticSearch(query: string) {
+  async function performSemanticSearch(query: string): Promise<any> {
     try {
       lastSearchQuery = query;
       const endpoint = searchProvider === 'pgvector' ? '/api/search/pgvector' : '/api/search/qdrant';
@@ -133,7 +135,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Upload helper using MinIO presigned URL endpoint
-  async function uploadToMinio(file: File) {
+  async function uploadToMinio(file: File): Promise<any> {
     try {
       const presign = await apiFetch('/api/storage/presign', {
         method: 'POST',
@@ -153,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Load evidence for the case with fallbacks
-  async function loadEvidence() {
+  async function loadEvidence(): Promise<any> {
     try {
       const caseData = await caseManagementService.getCaseById(caseId, {
         includeEvidence: true,
@@ -205,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Load detective insights if in detective mode with fallbacks
-  async function loadDetectiveInsights() {
+  async function loadDetectiveInsights(): Promise<any> {
     try {
       loadingAnalysis = true;
       const insights = await caseManagementService.generateDetectiveInsights(caseId);
@@ -315,7 +317,7 @@ https://svelte.dev/e/js_parse_error -->
     });
   });
   // Toggle detective mode
-  async function toggleDetectiveMode() {
+  async function toggleDetectiveMode(): Promise<any> {
     detectiveMode = !detectiveMode;
     if (detectiveMode) {
       await caseManagementService.enableDetectiveMode(caseId, detectiveConfig);
@@ -323,7 +325,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Analyze selected evidence
-  async function analyzeSelectedEvidence() {
+  async function analyzeSelectedEvidence(): Promise<any> {
     if (selectedEvidence.length === 0) return;
     loadingAnalysis = true;
     try {
@@ -364,7 +366,7 @@ https://svelte.dev/e/js_parse_error -->
     draggedEvidence = null;
   }
   // Create connection between evidence items
-  async function createEvidenceConnection(sourceId: string, targetId: string) {
+  async function createEvidenceConnection(sourceId: string, targetId: string): Promise<any> {
     try {
       console.log(`Creating connection ${sourceId} -> ${targetId}`);
       connectionMap = [

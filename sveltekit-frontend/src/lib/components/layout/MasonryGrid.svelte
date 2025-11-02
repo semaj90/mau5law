@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   let container: HTMLElement;
   let masonry: any;
-  let isInitialized = $state(false);
+  let isInitialized = $state<boolean>(false);
   // Masonry configuration
   let masonryOptions = $derived({
     itemSelector,

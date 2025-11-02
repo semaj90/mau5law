@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 import { aiAnalyticsService } from './ai-analytics-service';
 import { predictWithRouter } from './router-inference';
 import { CONFIG } from '$lib/config/env.server';

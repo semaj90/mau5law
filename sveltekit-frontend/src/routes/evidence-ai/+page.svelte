@@ -10,13 +10,13 @@
 
   // WebSocket connection state
   let ws = $state<WebSocket | null>(null);
-  let wsConnected = $state(false);
-  let wsReconnecting = $state(false);
+  let wsConnected = $state<boolean>(false);
+  let wsReconnecting = $state<boolean>(false);
 
   // File upload state
   let selectedFile = $state<File | null>(null);
-  let isDragging = $state(false);
-  let uploadProgress = $state(0);
+  let isDragging = $state<boolean>(false);
+  let uploadProgress = $state<number>(0);
   let currentFileId = $state<string | null>(null);
 
   // Workflow state
@@ -45,17 +45,17 @@
 
   // AI streaming state
   let streamingTokens = $state<string>('');
-  let isStreaming = $state(false);
+  let isStreaming = $state<boolean>(false);
   let aiSource = $state<'ollama' | 'tensorrt' | 'typescript-fallback' | null>(null);
 
   // Auto-tags state
   let extractedTags = $state<string[]>([]);
 
   // Search state
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults = $state<any[]>([]);
   let aiSuggestions = $state<any[]>([]);
-  let isSearching = $state(false);
+  let isSearching = $state<boolean>(false);
 
   // File metadata
   let fileMetadata = $state<{
@@ -120,7 +120,7 @@
 
       ws.onclose = () => {
         console.log('🔌 WebSocket disconnected');
-        wsConnected = $state(false);
+        wsConnected = false;
         ws = null;
 
         // Exponential backoff reconnect
@@ -134,7 +134,7 @@
       };
     } catch (error) {
       console.error('Failed to create WebSocket:', error);
-      wsConnected = $state(false);
+      wsConnected = false;
     }
   }
 
@@ -155,7 +155,7 @@
 
       case 'COMPLETE':
         // Streaming complete
-        isStreaming = $state(false);
+        isStreaming = false;
         console.log('✅ AI streaming complete');
 
         // Cache the final analysis
@@ -232,12 +232,12 @@
 
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    isDragging = $state(false);
+    isDragging = false;
   }
 
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    isDragging = $state(false);
+    isDragging = false;
 
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
@@ -252,7 +252,7 @@
     }
   }
 
-  async function uploadFile() {
+  async function uploadFile(): Promise<any> {
     if (!selectedFile) return;
 
     const formData = new FormData();
@@ -340,7 +340,7 @@
   // Use a platform-independent timeout type (works with DOM and Node types)
   let searchTimeout: ReturnType<typeof setTimeout> | undefined;
 
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchQuery.trim()) {
       searchResults = [];
       aiSuggestions = [];
@@ -434,7 +434,7 @@
     }, 30000);
 
     return () => {
-      mounted = $state(false);
+      mounted = false;
       clearInterval(heartbeat);
       if (ws) ws.close();
       if (searchTimeout) clearTimeout(searchTimeout);

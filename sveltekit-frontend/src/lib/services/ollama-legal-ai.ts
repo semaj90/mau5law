@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Ollama Legal AI Service
  * Production-grade integration with Gemma3 for legal document analysis

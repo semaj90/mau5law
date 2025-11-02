@@ -1,9 +1,11 @@
+import type { Document } from '$lib/types';
 /**
  * Unified llama.cpp Bridge
- * Intelligently routes inference across 3 execution paths:
+ * Intelligently routes inference across 4 execution paths:
  * 1. Browser WASM (llama-cpp-engine.ts) - Offline, private, ~20-35 tok/s
  * 2. Node Native (@llama-node/llama-cpp) - Local dev, ~80-120 tok/s
- * 3. Remote gRPC/QUIC (TensorRT) - Heavy inference, ~250-500 tok/s
+ * 3. Remote gRPC (TensorRT) - Heavy inference, ~250-500 tok/s
+ * 4. Remote QUIC/HTTP3 (TensorRT streaming) - Ultra-low latency, ~300-600 tok/s
  */
 
 import { browser } from '$app/environment';
@@ -12,8 +14,9 @@ import type { InferenceRequest, InferenceResponse } from '$lib/webgpu/unified-ru
 // Lazy imports for tree-shaking
 let llamaWasmEngine: any = null;
 let clientWasmLlama: any = null;
+let quicTransport: any = null;
 
-export type LlamaMode = 'auto' | 'wasm' | 'native' | 'remote';
+export type LlamaMode = 'auto' | 'wasm' | 'native' | 'remote' | 'quic';
 
 export interface UnifiedLlamaConfig {
 	mode?: LlamaMode;
@@ -25,6 +28,8 @@ export interface UnifiedLlamaConfig {
 	remoteFallbackLength?: number;
 	/** Enable GPU acceleration */
 	useGPU?: boolean;
+	/** QUIC endpoint override (default: https://localhost:8003) */
+	quicEndpoint?: string;
 }
 
 export interface GenerateOptions extends UnifiedLlamaConfig {
@@ -56,6 +61,7 @@ export async function generate(
 		stream: options.stream ?? false,
 		remoteFallbackLength: options.remoteFallbackLength ?? 2000,
 		useGPU: options.useGPU ?? true,
+		quicEndpoint: options.quicEndpoint ?? 'https://localhost:8003',
 	};
 
 	const startTime = performance.now();
@@ -68,6 +74,8 @@ export async function generate(
 		method = 'wasm';
 	} else if (config.mode === 'native') {
 		method = 'native';
+	} else if (config.mode === 'quic') {
+		method = 'remote'; // QUIC uses remote with streaming
 	} else {
 		method = 'remote';
 	}
@@ -85,7 +93,12 @@ export async function generate(
 				result = await generateWithNative(prompt, config, options.onToken, options.signal);
 				break;
 			case 'remote':
-				result = await generateWithRemote(prompt, config, options.onToken, options.signal);
+				// Use QUIC if explicitly requested or streaming enabled
+				if (config.mode === 'quic' || (config.stream && await checkQuicAvailable(config.quicEndpoint))) {
+					result = await generateWithQuic(prompt, config, options.onToken, options.signal);
+				} else {
+					result = await generateWithRemote(prompt, config, options.onToken, options.signal);
+				}
 				break;
 			default:
 				throw new Error(`Unknown method: ${method}`);
@@ -296,6 +309,131 @@ async function generateWithRemote(
 }
 
 /**
+ * Check QUIC/WebTransport availability
+ */
+async function checkQuicAvailable(endpoint: string): Promise<boolean> {
+	if (!browser || !('WebTransport' in window)) {
+		return false;
+	}
+
+	try {
+		// Test QUIC connection with timeout
+		const transport = new (window as any).WebTransport(endpoint);
+		await Promise.race([
+			transport.ready,
+			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2000))
+		]);
+		transport.close();
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * QUIC/HTTP3 inference with progressive token streaming
+ * Uses WebTransport API in browser or QUIC library in Node
+ */
+async function generateWithQuic(
+	prompt: string,
+	config: Required<UnifiedLlamaConfig>,
+	onToken?: (token: string) => void,
+	_signal?: AbortSignal
+): Promise<GenerateResult> {
+	const endpoint = config.quicEndpoint;
+	console.log(`[QUIC] Connecting to ${endpoint}...`);
+
+	let transport: any;
+	let totalTokens = 0;
+	let fullText = '';
+	const startTime = performance.now();
+
+	try {
+		// Initialize WebTransport (browser) or QUIC client (Node)
+		if (browser && 'WebTransport' in window) {
+			transport = new (window as any).WebTransport(endpoint);
+			await transport.ready;
+			console.log('[QUIC] WebTransport connection established');
+		} else {
+			// Node QUIC client (future implementation)
+			const module = await import('@fails-components/webtransport');
+			transport = new module.Http3WebTransport(endpoint);
+			await transport.ready;
+			console.log('[QUIC] Node QUIC connection established');
+		}
+
+		// Open bidirectional stream
+		const stream = await transport.createBidirectionalStream();
+		const writer = stream.writable.getWriter();
+		const reader = stream.readable.getReader();
+
+		// Build protobuf InferenceRequest
+		const request = {
+			model: config.model,
+			prompt,
+			temperature: config.temperature,
+			maxTokens: config.maxTokens,
+			stream: true,
+			priority: 'high',
+		};
+
+		// Send request as JSON (or protobuf if available)
+		const requestData = new TextEncoder().encode(JSON.stringify(request));
+		await writer.write(requestData);
+		await writer.close();
+
+		// Read streaming response tokens
+		while (true) {
+			const { value, done } = await reader.read();
+			if (done) break;
+
+			// Decode token from response
+			const chunk = new TextDecoder().decode(value);
+
+			try {
+				const response = JSON.parse(chunk);
+				if (response.token) {
+					fullText += response.token;
+					totalTokens++;
+					if (onToken) {
+						onToken(response.token);
+					}
+				}
+				if (response.done) break;
+			} catch {
+				// Handle partial chunks or non-JSON responses
+				fullText += chunk;
+				totalTokens++;
+				if (onToken) {
+					onToken(chunk);
+				}
+			}
+		}
+
+		transport.close();
+
+		const processingTime = performance.now() - startTime;
+		return {
+			text: fullText,
+			tokensGenerated: totalTokens,
+			processingTime,
+			method: 'remote',
+			modelUsed: config.model,
+			tokensPerSecond: totalTokens / (processingTime / 1000),
+		};
+	} catch (error) {
+		console.error('[QUIC] Streaming failed:', error);
+		if (transport) {
+			try { transport.close(); } catch { /* ignore */ }
+		}
+
+		// Fallback to HTTP/2 gRPC
+		console.log('[QUIC] Falling back to gRPC...');
+		return generateWithRemote(prompt, config, onToken, _signal);
+	}
+}
+
+/**
  * Check WebGPU availability (browser)
  */
 async function checkWebGPU(): Promise<boolean> {
@@ -408,4 +546,25 @@ Please analyze this document.<|end|>
 		riskFactors: lines.filter(l => l.includes('risk') || l.includes('concern')).slice(0, 3),
 		recommendations: lines.filter(l => l.includes('recommend') || l.includes('suggest')).slice(0, 3),
 	};
+}
+
+/**
+ * Test QUIC connection and measure round-trip latency
+ * Returns latency in milliseconds
+ */
+export async function testQuicConnection(endpoint: string = 'https://localhost:8003'): Promise<number> {
+	const start = performance.now();
+	try {
+		const available = await checkQuicAvailable(endpoint);
+		if (!available) {
+			throw new Error('QUIC not available or connection failed');
+		}
+		const latency = performance.now() - start;
+		console.log(`✅ QUIC connection test passed: ${latency.toFixed(2)}ms`);
+		return latency;
+	} catch (error) {
+		const elapsed = performance.now() - start;
+		console.error(`❌ QUIC connection test failed after ${elapsed.toFixed(2)}ms:`, error);
+		throw error;
+	}
 }

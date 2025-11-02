@@ -3,15 +3,15 @@
 	import { onMount, onDestroy } from 'svelte';
 	import '../lib/components/yorha/ps1.css';
 	let container;
-	let surfaceType = $state('wireframe');
-	let animationSpeed = $state(1);
-	let polygonCount = $state(500);
-	let vertexPrecision = $state(8);
-	let enableZBuffer = $state(true);
-	let enableBackfaceCulling = $state(true);
-	let enableDithering = $state(true);
-	let lightingModel = $state('flat');
-	let textureQuality = $state('low');
+	let surfaceType = $state<string>('wireframe');
+	let animationSpeed = $state<number>(1);
+	let polygonCount = $state<number>(500);
+	let vertexPrecision = $state<number>(8);
+	let enableZBuffer = $state<boolean>(true);
+	let enableBackfaceCulling = $state<boolean>(true);
+	let enableDithering = $state<boolean>(true);
+	let lightingModel = $state<string>('flat');
+	let textureQuality = $state<string>('low');
 	let animationId: number | null = null;
 	// PS1 surface configurations (cleaned labels)
 	let surfaceConfigs = [
@@ -48,8 +48,8 @@
 		frameTime: 0,
 		lastFrameTime: 0
 	});
-	let vertices = [];
-	let faces = [];
+	let vertices: any[] = [];
+	let faces: any[] = [];
 	$effect(() => {
 		generateSurfaceMesh();
 		startRenderLoop();

@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   // removed static uploadStore import because the module has no exported member: 'uploadStore'
   import { writable, type Writable } from 'svelte/store';
@@ -69,7 +71,7 @@
     cleanupAttentionTracking();
   });
   // WebSocket initialization and handlers
-  async function initializeWebSocket() {
+  async function initializeWebSocket(): Promise<void> {
     connectionStatus.set('connecting');
     // dynamic import so SSR won't try to load socket.io-client
     const mod = await import('socket.io-client');

@@ -6,6 +6,9 @@ Vector Intelligence Demo Component
 Comprehensive showcase of Phase 4 Vector Intelligence capabilities
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import {
@@ -23,9 +26,9 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     VectorIntelligenceState
   } from '$lib/services/vector-intelligence-service.js';
   // Component state
-  let searchQuery = $state('');
-  let analysisContent = $state('');
-  let recommendationContext = $state('');
+  let searchQuery = $state<string>('');
+  let analysisContent = $state<string>('');
+  let recommendationContext = $state<string>('');
   let selectedMode = $state<'search' | 'recommendations' | 'analysis'>('search');
   let selectedUserRole = $state<'prosecutor' | 'detective' | 'admin' | 'user'>('prosecutor');
   let selectedCaseType = $state<'criminal' | 'civil' | 'corporate' | 'general'>('criminal');
@@ -35,10 +38,10 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
   let semanticAnalysis = $state<SemanticAnalysisResult | null>(null);
   let systemHealth = $state<VectorIntelligenceState | null>(null);
   // UI state
-  let isProcessing = $state(false);
-  let processingStage = $state('');
+  let isProcessing = $state<boolean>(false);
+  let processingStage = $state<string>('');
   let activeTab = $state<'search' | 'recommendations' | 'analysis' | 'health'>('search');
-  let showAdvancedOptions = $state(false);
+  let showAdvancedOptions = $state<boolean>(false);
   // Demo data
   const demoSearchQueries = [
     {
@@ -117,14 +120,14 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 await loadSystemHealth();
     })();
   });
-  async function loadSystemHealth() {
+  async function loadSystemHealth(): Promise<any> {
     try {
       systemHealth = await vectorIntelligenceService.getSystemHealth();
     } catch (error) {
       console.error('Failed to load system health:', error);
     }
   }
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchQuery.trim() || isProcessing) return;
     isProcessing = true;
     processingStage = 'Performing semantic search...';
@@ -148,7 +151,7 @@ await loadSystemHealth();
       isProcessing = false;
     }
   }
-  async function generateRecommendations() {
+  async function generateRecommendations(): Promise<any> {
     if (!recommendationContext.trim() || isProcessing) return;
     isProcessing = true;
     processingStage = 'Generating intelligent recommendations...';
@@ -181,7 +184,7 @@ await loadSystemHealth();
       isProcessing = false;
     }
   }
-  async function performSemanticAnalysis() {
+  async function performSemanticAnalysis(): Promise<any> {
     if (!analysisContent.trim() || isProcessing) return;
     isProcessing = true;
     processingStage = 'Performing semantic analysis...';

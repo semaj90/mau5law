@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 import { json } from '@sveltejs/kit';
 
 import type { RequestHandler } from './$types';

@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { writable } from 'svelte/store';
 export interface Dialog<T = unknown> {
   id: string;

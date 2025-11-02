@@ -15,7 +15,7 @@ https://svelte.dev/e/js_parse_error -->
   let { content = [], height = '400px', placeholder = 'Start writing...', onchange }: Props = $props();
   let editorElement: HTMLElement;
   let editor: any;
-  let isInitialized = $state(false);
+  let isInitialized = $state<boolean>(false);
   // Convert ContentNode array to markdown
   function contentToMarkdown(nodes: ContentNode[]): string {
     const nodeToMd = (node: ContentNode): string => {
@@ -176,7 +176,7 @@ https://svelte.dev/e/js_parse_error -->
       if (editor) {
         editor.destroy();
         editor = null;
-        isInitialized = $state(false);
+        isInitialized = false;
       }
     };
   });

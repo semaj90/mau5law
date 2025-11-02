@@ -29,18 +29,18 @@ https://svelte.dev/e/js_parse_error -->
   let aiActor = $state<any>(null);
   let currentComputation = $state<any>(null);
   let recommendations = $state<any>(null);
-  let isProcessing = $state(false);
-  let processingTime = $state(0);
-  let webgpuSupported = $state(false);
-  let currentModule = $state('dimensional-arrays');
+  let isProcessing = $state<boolean>(false);
+  let processingTime = $state<number>(0);
+  let webgpuSupported = $state<boolean>(false);
+  let currentModule = $state<string>('dimensional-arrays');
   let computationHistory = $state<any[]>([]);
   // Input data
-  let inputData = $state('1,2,3,4,5,6,7,8');
-  let attentionWeights = $state('0.8,0.6,0.9,0.7,0.5,0.8,0.6,0.9');
-  let kernelSize = $state(4);
-  let useT5 = $state(false);
-  let t5Task = $state('summarize');
-  let t5Text = $state('This is sample text for T5 processing');
+  let inputData = $state<string>('1,2,3,4,5,6,7,8');
+  let attentionWeights = $state<string>('0.8,0.6,0.9,0.7,0.5,0.8,0.6,0.9');
+  let kernelSize = $state<number>(4);
+  let useT5 = $state<boolean>(false);
+  let t5Task = $state<string>('summarize');
+  let t5Text = $state<string>('This is sample text for T5 processing');
   // Results
   let results = $state<any>(null);
   let error = $state<string | null>(null);
@@ -79,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
     // Load initial recommendations
     loadRecommendations();
   });
-  async function processComputation() {
+  async function processComputation(): Promise<any> {
     if (isProcessing) return;
     const data = inputData.split(',').map(Number);
     const weights = attentionWeights.split(',').map(Number);
@@ -137,7 +137,7 @@ https://svelte.dev/e/js_parse_error -->
       });
     }
   }
-  async function loadRecommendations() {
+  async function loadRecommendations(): Promise<any> {
     aiActor.send({
       type: 'GET_RECOMMENDATIONS',
       context: initialContext,
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
     switch (moduleName) {
       case 'dimensional-arrays':
         initialContext = 'dimensional array processing';
-        useT5 = $state(false);
+        useT5 = false;
         break;
       case 't5-transformer':
         initialContext = 'T5 transformer processing';
@@ -168,7 +168,7 @@ https://svelte.dev/e/js_parse_error -->
         break;
       case 'kernel-attention':
         initialContext = 'kernel attention splicing';
-        useT5 = $state(false);
+        useT5 = false;
         break;
       case 'webgpu-compute':
         initialContext = 'WebGPU compute shaders';
@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex flex-wrap gap-2">
         {#each Array.isArray(['dimensional-arrays', 't5-transformer', 'kernel-attention', 'webgpu-compute']) ? ['dimensional-arrays', 't5-transformer', 'kernel-attention', 'webgpu-compute'] : [] as module}
           <button
-            class="px-4 py-2 rounded-lg border transition-colors {currentModule === module
+            class="px-4" py-2 rounded-lg border transition-colors {currentModule === module
               ? 'bg-blue-600 text-white border-blue-600'
               : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}"
             onclick={() => switchModule(module)}
@@ -310,7 +310,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         onclick={processComputation}
         disabled={isProcessing}
-        class="w-full mt-6 px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold
+        class="w-full" mt-6 px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold
                disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
       >
         {#if isProcessing}
@@ -347,7 +347,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="space-y-1">
                 {#each Array.isArray(results.recommendations) ? results.recommendations : [] as rec}
                   <button
-                    class="block w-full text-left p-2 text-sm bg-blue-50 hover:bg-blue-100
+                    class="block" w-full text-left p-2 text-sm bg-blue-50 hover:bg-blue-100
                            rounded border border-blue-200 transition-colors"
                     onclick={() => applyRecommendation(rec)}
                   >

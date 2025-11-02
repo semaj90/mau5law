@@ -11,7 +11,7 @@ const RABBITMQ_MGMT_HOST = process.env.RABBITMQ_MGMT_HOST ?? 'http://localhost:1
 const RABBITMQ_USER = process.env.RABBITMQ_USER ?? process.env.RABBIT_USER;
 const RABBITMQ_PASS = process.env.RABBITMQ_PASS ?? process.env.RABBIT_PASS;
 
-async function fetchWithTimeout(input: RequestInfo, init: RequestInit = {}, ms = 4000) {
+async function fetchWithTimeout(input: RequestInfo, init: RequestInit = {}, ms = 4000): Promise<Response> {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), ms);
   try {

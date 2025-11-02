@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * XState Integration Service - Complete Component Wiring
  * Connects all XState machines with Svelte components for comprehensive state management

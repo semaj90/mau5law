@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * API Endpoint: Context-Aware AI Chat
  * Phase 4 - AI Memory Integration

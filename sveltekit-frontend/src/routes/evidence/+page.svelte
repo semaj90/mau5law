@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   /**
    * Evidence Manager - Full Stack Integration
    *
@@ -20,11 +22,11 @@
   // Svelte 5 state management
   let caseId = $derived($page.url.searchParams.get('caseId') || 'demo-case-' + Math.random().toString(36).substr(2, 9));
   let uploadFile = $state<File | null>(null);
-  let isUploading = $state(false);
-  let uploadProgress = $state(0);
+  let isUploading = $state<boolean>(false);
+  let uploadProgress = $state<number>(0);
   let uploadResult = $state<any>(null);
   let uploadError = $state<string | null>(null);
-  let comparing = $state(false);
+  let comparing = $state<boolean>(false);
   let compareError = $state<string | null>(null);
   let compareResult = $state<any>(null);
 
@@ -62,7 +64,7 @@
     }
   }
 
-  async function submitEvidence() {
+  async function submitEvidence(): Promise<any> {
     if (!uploadFile) return;
 
     isUploading = true;
@@ -131,7 +133,7 @@
     uploadError = null;
     compareResult = null;
     compareError = null;
-    comparing = $state(false);
+    comparing = false;
     uploadProgress = 0;
     formData = {
       title: '',
@@ -142,7 +144,7 @@
     };
   }
 
-  async function runCompare() {
+  async function runCompare(): Promise<any> {
     if (!uploadFile && !uploadResult) return;
     try {
       comparing = true;

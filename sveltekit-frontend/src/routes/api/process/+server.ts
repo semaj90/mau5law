@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 const GO_MICROSERVICE_URL = 'http://localhost:8080';

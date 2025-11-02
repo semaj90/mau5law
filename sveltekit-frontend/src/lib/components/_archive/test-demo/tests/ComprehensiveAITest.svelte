@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { aiAssistant  } from '$lib/stores/unified';
   import { browserLocalAI, legalLocalAI } from '$lib/ai/browser-local-ai.js';
@@ -6,9 +7,9 @@
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
   // Test state
   let selectedTest = $state<'local' | 'cuda' | 'unified' | 'all'>('unified');
-  let testQuery = $state('Analyze the liability clauses in this employment contract');
+  let testQuery = $state<string>('Analyze the liability clauses in this employment contract');
   let testResults = $state<any[]>([]);
-  let isRunning = $state(false);
+  let isRunning = $state<boolean>(false);
   // System status
   let localAIStatus = $state<'checking' | 'available' | 'unavailable'>('checking');
   let cudaServiceStatus = $state<'checking' | 'available' | 'unavailable'>('checking');
@@ -23,7 +24,7 @@
   $effect(() => {
     checkSystemCapabilities();
   });
-  async function checkSystemCapabilities() {
+  async function checkSystemCapabilities(): Promise<any> {
     console.log('🔍 Checking AI system capabilities...');
     // Check browser-local AI
     try {
@@ -47,7 +48,7 @@
     }
     console.log('✅ System capability check complete');
   }
-  async function runTest(testType: 'local' | 'cuda' | 'unified' | 'all') {
+  async function runTest(testType: 'local' | 'cuda' | 'unified' | 'all'): Promise<any> {
     if (isRunning) return;
     isRunning = true;
     testResults = [];
@@ -64,7 +65,7 @@
       isRunning = false;
     }
   }
-  async function runAllTests() {
+  async function runAllTests(): Promise<any> {
     console.log('🚀 Running comprehensive AI comparison...');
     const tests = [
       { type: 'local', name: 'Browser-Local AI (gemma3:270m)' },
@@ -82,7 +83,7 @@
     }
     console.log('✅ All tests completed');
   }
-  async function runSingleTest(testType: 'local' | 'cuda' | 'unified') {
+  async function runSingleTest(testType: 'local' | 'cuda' | 'unified'): Promise<any> {
     const startTime = performance.now();
     try {
       let result: any;
@@ -145,7 +146,7 @@
       testResults = [testResult, ...testResults];
     }
   }
-  async function testLocalAI() {
+  async function testLocalAI(): Promise<any> {
     if (localAIStatus !== 'available') {
       throw new Error('Browser-local AI not available');
     }
@@ -167,7 +168,7 @@
       }
     }
   }
-  async function testCUDAService() {
+  async function testCUDAService(): Promise<any> {
     if (cudaServiceStatus !== 'available') {
       throw new Error('CUDA service not available');
     }
@@ -200,7 +201,7 @@
       acceleration: 'cuda-tensorrt',
     }
   }
-  async function testUnifiedAssistant() {
+  async function testUnifiedAssistant(): Promise<any> {
     const testCaseId = `comprehensive-test-${Date.now()}`;
     aiAssistant.initializeCase(testCaseId, 'Comprehensive AI Test Case');
     const result = await aiAssistant.sendMessage(testCaseId, testQuery, undefined, {
@@ -259,7 +260,7 @@
         <CardContent>
           <div class="flex items-center gap-2">
             <span
-              class="w-3 h-3 rounded-full {localAIStatus === 'available'
+              class="w-3" h-3 rounded-full {localAIStatus === 'available'
                 ? 'bg-green-500'
                 : localAIStatus === 'unavailable'
                   ? 'bg-red-500'
@@ -277,7 +278,7 @@
         <CardContent>
           <div class="flex items-center gap-2">
             <span
-              class="w-3 h-3 rounded-full {cudaServiceStatus === 'available'
+              class="w-3" h-3 rounded-full {cudaServiceStatus === 'available'
                 ? 'bg-green-500'
                 : cudaServiceStatus === 'unavailable'
                   ? 'bg-red-500'
@@ -447,7 +448,7 @@
       <h2 class="text-2xl font-semibold">🧪 Test Results</h2>
       {#each Array.isArray(testResults) ? testResults : [] as result}
         <Card.Root
-          class="border-l-4 {result.success
+          class="border-l-4" {result.success
             ? result.type === 'local'
               ? 'border-l-green-500'
               : result.type === 'cuda'
@@ -466,7 +467,7 @@
               </div>
               <div class="text-right">
                 <span
-                  class="px-2 py-1 rounded text-xs {result.acceleration === 'browser-local'
+                  class="px-2" py-1 rounded text-xs {result.acceleration === 'browser-local'
                     ? 'bg-green-100 text-green-800'
                     : result.acceleration === 'cuda-tensorrt'
                       ? 'bg-purple-100 text-purple-800'

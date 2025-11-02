@@ -44,11 +44,11 @@
   // Fabric.js canvas instance
   let fabricCanvas = $state<any>(null);
   let canvasElement: HTMLCanvasElement | undefined;
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let selectedObject = $state<any>(null);
   let canvasObjects = $state<any[]>([]);
-  let zoomLevel = $state(1);
-  let showDeleteConfirmModal = $state(false); // State for delete confirmation modal
+  let zoomLevel = $state<number>(1);
+  let showDeleteConfirmModal = $state<boolean>(false); // State for delete confirmation modal
 
   // Evidence management
   interface EvidenceItem {
@@ -115,7 +115,7 @@
     })();
 
     return () => {
-      mounted = $state(false);
+      mounted = false;
     };
   });
 
@@ -189,7 +189,7 @@
     });
   }
 
-  async function checkMinIOStatus() {
+  async function checkMinIOStatus(): Promise<any> {
     try {
       const response = await fetch('/api/v1/minio/status');
       minioStatus = response.ok ? 'connected' : 'disconnected';
@@ -198,7 +198,7 @@
     }
   }
 
-  async function loadCanvasData() {
+  async function loadCanvasData(): Promise<any> {
     const safeCaseId = (caseId || '').toString().trim();
     if (!safeCaseId) {
       // No caseId: keep canvas empty (demo mode) and avoid calling the API with empty params
@@ -252,7 +252,7 @@
     return evidence.url || '';
   }
 
-  async function addEvidenceToCanvas(evidence: EvidenceItem) {
+  async function addEvidenceToCanvas(evidence: EvidenceItem): Promise<any> {
     if (!fabricCanvas) return;
     try {
       const fabric = await getFabric();
@@ -318,7 +318,7 @@
     }
   }
 
-  async function handleFileUpload(event: Event) {
+  async function handleFileUpload(event: Event): Promise<any> {
     const input = event.target as HTMLInputElement;
     const files = input?.files;
     if (!files || files.length === 0) return;
@@ -327,7 +327,7 @@
     input.value = '';
   }
 
-  async function uploadEvidence(file: File) {
+  async function uploadEvidence(file: File): Promise<any> {
     const progressKey = `${Date.now()}-${Math.random().toString(36).substring(2)}`;
     try {
       isLoading = true;
@@ -424,7 +424,7 @@
     }
     selectedObject = null;
     updateCanvasObjects();
-    showDeleteConfirmModal = $state(false); // Close modal after deletion
+    showDeleteConfirmModal = false; // Close modal after deletion
   }
 
   function zoomIn() {

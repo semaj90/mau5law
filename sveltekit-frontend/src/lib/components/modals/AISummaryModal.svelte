@@ -24,10 +24,10 @@ https://svelte.dev/e/js_parse_error -->
   // Destructure expected stores / helpers from aiService (adjust if aiService exports differently)
   // removed unused `model`
   const { summary, isLoading, error, lastSummarizedContent, reset } = aiService as any;
-  let copied = $state(false);
+  let copied = $state<boolean>(false);
   // reactive derived open state
   const isOpen = $derived($isLoading || $summary != null || $error != null);
-  async function copyToClipboard() {
+  async function copyToClipboard(): Promise<any> {
     if ($summary) {
       try {
         await navigator.clipboard.writeText($summary);

@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
   import type { Snippet } from 'svelte';
   import { Button } from '$lib/components/ui/Button.svelte';
   import { Input } from '$lib/components/ui/Input.svelte';
@@ -55,9 +56,9 @@
   }: Props = $props();
   // State using Svelte 5 runes
   let messages = $state<Message[]>([]);
-  let inputMessage = $state('');
-  let isLoading = $state(false);
-  let isDragging = $state(false);
+  let inputMessage = $state<string>('');
+  let isLoading = $state<boolean>(false);
+  let isDragging = $state<boolean>(false);
   let attachedFiles = $state<File[]>([]);
   let connectionStatus = $state<ConnectionStatus>({
     chat: false,
@@ -84,7 +85,7 @@
       scrollToBottom();
     }
   });
-  async function testConnections() {
+  async function testConnections(): Promise<void> {
     try {
       // Test Chat API
       const chatResponse = await fetch('/api/ai/chat', {
@@ -121,7 +122,7 @@
       console.error('Connection test failed:', error);
     }
   }
-  async function handleSend() {
+  async function handleSend(): Promise<any> {
     if (!inputMessage.trim() && attachedFiles.length === 0) return;
     if (isLoading) return;
     const userMessage: Message = {
@@ -242,7 +243,7 @@
       attachedFiles = [];
     }
   }
-  async function uploadFiles(files: File[]) {
+  async function uploadFiles(files: File[]): Promise<any> {
     const formData = new FormData();
     files.forEach(file => {
       formData.append('files', file);
@@ -273,11 +274,11 @@
   }
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    isDragging = $state(false);
+    isDragging = false;
   }
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    isDragging = $state(false);
+    isDragging = false;
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       attachedFiles = [...attachedFiles, ...Array.from(files)];

@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { mergePromptCluster, mergeTransition } from '$lib/server/graph-service';
 
-export async function POST({ request }) {
+export async function POST({ request }): Promise<any> {
   const body = await request.json().catch(() => ({}));
   if (body.action === 'mergePrompt') {
     const res = await mergePromptCluster(String(body.prompt || ''), String(body.cluster || ''), body.userId);

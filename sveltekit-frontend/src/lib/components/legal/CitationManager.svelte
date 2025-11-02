@@ -127,14 +127,14 @@
       byJurisdiction: {}
     }
   });
-  let searchTerm = $state('');
+  let searchTerm = $state<string>('');
   let filterType = $state<string>('all');
   let filterJurisdiction = $state<string>('all');
   let sortBy = $state<'relevance' | 'date' | 'usage' | 'accuracy'>('relevance');
   let selectedCitations = $state<Set<string>>(new Set());
-  let showAddForm = $state(false);
-  let isVerifying = $state(false);
-  let bulkOperations = $state(false);
+  let showAddForm = $state<boolean>(false);
+  let isVerifying = $state<boolean>(false);
+  let bulkOperations = $state<boolean>(false);
   // Calculate statistics
   $effect(() => {
     const stats = {
@@ -193,7 +193,7 @@
     });
     return filtered;
   });
-  async function verifyCitation(citationId: string) {
+  async function verifyCitation(citationId: string): Promise<any> {
     if (!onVerify) return;
     isVerifying = true;
     try {
@@ -210,7 +210,7 @@
       isVerifying = false;
     }
   }
-  async function searchCitations() {
+  async function searchCitations(): Promise<any> {
     if (!onSearch || !searchTerm) return;
     try {
       const results = await onSearch(searchTerm);
@@ -269,7 +269,7 @@
       dateAdded: new Date().toISOString(),
     }
     citationData.citations.unshift(newCitation);
-    showAddForm = $state(false);
+    showAddForm = false;
   }
   function deleteCitation(citationId: string) {
     citationData.citations = citationData.citations.filter(c => c.id !== citationId);

@@ -26,7 +26,7 @@ export async function createEmbedding(prompt: string, model = 'embeddinggemma:la
     return Array(384).fill(0);
   }
 }
-export async function chat(messages: ChatMessage[], opts: ChatCompletionOptions = {}) {
+export async function chat(messages: ChatMessage[], opts: ChatCompletionOptions = {}): Promise<any> {
   const model = opts.model || 'gemma3-legal:latest';
   try {
     const res = await fetch(`${OLLAMA_URL}/v1/chat/completions`, {

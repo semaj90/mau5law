@@ -1,3 +1,6 @@
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 // @ts-nocheck
 import { pgTable, text, timestamp, uuid, boolean, integer, real, jsonb } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';

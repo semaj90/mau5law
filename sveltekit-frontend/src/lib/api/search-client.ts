@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 export type SearchResult = {
   id: string;
   title: string;

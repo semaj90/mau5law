@@ -18,10 +18,10 @@
     showReportButton = true,
     showRefreshButton = true
   }: Props = $props();
-  let hasError = $state(false);
+  let hasError = $state<boolean>(false);
   let errorDetails = $state<string | null>(null);
   let errorStack = $state<string | null>(null);
-  let currentPath = $state('');
+  let currentPath = $state<string>('');
   $effect(() => {
     if (browser) {
       currentPath = window.location.pathnam;
@@ -71,7 +71,7 @@
     }
   }
   function reset() {
-    hasError = $state(false);
+    hasError = false;
     errorDetails = null;
     errorStack = null;
   }

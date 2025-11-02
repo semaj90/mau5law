@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Global Session Store - Lucia v3 Integration (Svelte 5)
  * Provides app-wide session management with persistent storage and fallback mechanisms

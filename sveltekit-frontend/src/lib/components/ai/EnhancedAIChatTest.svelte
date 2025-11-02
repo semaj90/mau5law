@@ -1,5 +1,8 @@
 <!-- Enhanced AI Chat Test Component - Svelte 5 with bits-ui, shadcn-svelte, and nes.css -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { browser } from '$app/environment';
   import { onMount, tick } from 'svelte';
@@ -39,9 +42,9 @@
   } = $props();
   // State using Svelte 5 runes
   let messages = $state<ChatMessage[]>([]); // Fixed array type
-  let currentMessage = $state('');
-  let isLoading = $state(false);
-  let isConnected = $state(false);
+  let currentMessage = $state<string>('');
+  let isLoading = $state<boolean>(false);
+  let isConnected = $state<boolean>(false);
   let connectionStatus = $state<'checking' | 'connected' | 'error'>('checking');
   let messagesContainer: HTMLElement = $state(undefined as any);
   let inputElement: HTMLInputElement = $state(undefined as any);
@@ -72,7 +75,7 @@
     }
   });
   // Check system health
-  async function checkSystemHealth() {
+  async function checkSystemHealth(): Promise<any> {
     try {
       connectionStatus = 'checking';
       // First, try the SvelteKit API health endpoint
@@ -88,7 +91,7 @@
           isConnected = true;
           connectionStatus = 'connected';
         } else {
-          isConnected = $state(false);
+          isConnected = false;
           connectionStatus = 'error';
         }
       }
@@ -105,12 +108,12 @@
         }
       } catch (fallbackError) {
         connectionStatus = 'error';
-        isConnected = $state(false);
+        isConnected = false;
       }
     }
   }
   // Send message to AI
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!currentMessage.trim() || isLoading) return;
     const userMessage: ChatMessage = { // Explicitly type
       id: crypto.randomUUID(),
@@ -363,7 +366,7 @@
                   <Bot class="h-4 w-4 nes-text is-primary" /> <!-- Adjusted color -->
                 {/if}
               <div
-                class="max-w-[80%] p-3 {message.role === 'user'
+                class="max-w-[80%]" p-3 {message.role === 'user'
                   ? 'nes-container is-primary' // Changed to nes-container primary
                   : message.error
                     ? 'nes-container is-error' // Changed to nes-container error

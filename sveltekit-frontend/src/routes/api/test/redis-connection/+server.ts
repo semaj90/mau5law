@@ -47,7 +47,7 @@ const REDIS_CONNECT_TIMEOUT = 5000;
 // Utility function to wait for Redis to be ready
 async function waitForRedisReady(redis: Redis, timeoutMs: number): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    let settled = $state(false);
+    let settled = $state<boolean>(false);
     const timeoutId = setTimeout(() => {
       if (!settled) {
         settled = true;
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     // Test RedisJSON support (if available)
-    let jsonSupported = $state(false);
+    let jsonSupported = $state<boolean>(false);
     try {
       // Attempt to use a RedisJSON command, e.g., JSON.SET
       // This requires Redis Stack. If it fails, it means JSON module is not loaded or not Redis Stack.
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async ({ url }) => {
     } catch (jsonError) {
       // JSON commands not supported or failed, this is expected for vanilla Redis
       console.warn('RedisJSON commands not supported or failed:', (jsonError as Error).message);
-      jsonSupported = $state(false);
+      jsonSupported = false;
     }
 
     // Get Redis server info

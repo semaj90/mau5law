@@ -11,8 +11,8 @@
   let { analysis, relatedAnalyses = [] }: Props = $props();
   let canvas: HTMLCanvasElement;
   let graph: WebGPUEvidenceGraph;
-  let isWebGPUSupported = $state(false);
-  let isInitialized = $state(false);
+  let isWebGPUSupported = $state<boolean>(false);
+  let isInitialized = $state<boolean>(false);
   let error: string | null = null;
   // Graph layout settings
   let layoutType: 'force' | 'circular' | 'hierarchical' = 'force';

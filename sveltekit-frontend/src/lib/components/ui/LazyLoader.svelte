@@ -18,9 +18,9 @@
     props: componentProps = {},
   }: Props = $props();
   let Component = $state<any>(null);
-  let isLoading = $state(true);
+  let isLoading = $state<boolean>(true);
   let error = $state<Error | null>(null);
-  async function loadComponent() {
+  async function loadComponent(): Promise<any> {
     try {
       isLoading = true;
       error = null;

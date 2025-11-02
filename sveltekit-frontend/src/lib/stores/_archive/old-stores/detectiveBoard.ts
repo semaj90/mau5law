@@ -291,33 +291,33 @@ function buildAIPrompt(userMessage: string, context: AIContext, evidenceIds: str
   return prompt;
 }
 // Specialized AI functions
-export async function analyzeEvidence(caseId: string, evidenceId: string) {
+export async function analyzeEvidence(caseId: string, evidenceId: string): Promise<any> {
   return sendToAI(
     caseId,
     `Please analyze this piece of evidence for key insights, connections to other evidence, and potential investigative leads.`,
     [evidenceId]
   );
 }
-export async function findConnections(caseId: string, evidenceIds: string[]) {
+export async function findConnections(caseId: string, evidenceIds: string[]): Promise<void> {
   return sendToAI(
     caseId,
     `Analyze these evidence items and suggest potential connections, patterns, or relationships between them.`,
     evidenceIds
   );
 }
-export async function suggestInvestigation(caseId: string) {
+export async function suggestInvestigation(caseId: string): Promise<any> {
   return sendToAI(
     caseId,
     `Based on the current evidence and case context, what are the next investigative steps or areas that need attention?`
   );
 }
-export async function identifyGaps(caseId: string) {
+export async function identifyGaps(caseId: string): Promise<any> {
   return sendToAI(
     caseId,
     `Review the current evidence collection and identify any gaps, missing information, or areas that need additional investigation.`
   );
 }
-export async function timelineAnalysis(caseId: string, evidenceIds: string[]) {
+export async function timelineAnalysis(caseId: string, evidenceIds: string[]): Promise<any> {
   return sendToAI(
     caseId,
     `Analyze the timeline of events based on these evidence items. Identify any inconsistencies, gaps, or patterns.`,

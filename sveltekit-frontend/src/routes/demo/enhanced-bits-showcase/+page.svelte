@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import {
     Button,
     LinkButton,
@@ -17,11 +18,11 @@
     EvidenceBoard,
     Toolbar,
   } from '$lib/components/ui/enhanced-bits.svelte';
-  let activeDemo = $state('overview');
-  let searchQuery = $state('');
-  let showYoRHaModal = $state(false);
-  let showNESModal = $state(false);
-  let showEvidenceBoard = $state(false);
+  let activeDemo = $state<string>('overview');
+  let searchQuery = $state<string>('');
+  let showYoRHaModal = $state<boolean>(false);
+  let showNESModal = $state<boolean>(false);
+  let showEvidenceBoard = $state<boolean>(false);
   const demoSections = [
     { id: 'overview', title: 'Overview', icon: '🏠' },
     { id: 'buttons', title: 'Buttons', icon: '🔘' },

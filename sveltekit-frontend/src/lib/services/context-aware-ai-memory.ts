@@ -1,3 +1,6 @@
+import type { AIResponse } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import { CONFIG } from '$lib/config/env.server';
 import { redis } from '$lib/server/redis';
 import { VectorSearchService } from '$lib/server/db/drizzle-vector-config';

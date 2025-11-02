@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Advanced Cache Manager - Legal AI Platform
  * Enterprise-grade caching with intelligent eviction, legal document optimization,
@@ -409,18 +410,18 @@ class AdvancedCacheManager {
       let matches = true;
 
       if (query.document_type && item.document_type !== query.document_type) {
-        matches = $state(false);
+        matches = false;
       }
       if (query.confidentiality_level && item.confidentiality_level !== query.confidentiality_level) {
-        matches = $state(false);
+        matches = false;
       }
       if (query.tags && !query.tags.some(tag => item.tags.includes(tag))) {
-        matches = $state(false);
+        matches = false;
       }
       if (query.content_search) {
         const dataStr = JSON.stringify(item.data).toLowerCase();
         if (!dataStr.includes(query.content_search.toLowerCase())) {
-          matches = $state(false);
+          matches = false;
         }
       }
 

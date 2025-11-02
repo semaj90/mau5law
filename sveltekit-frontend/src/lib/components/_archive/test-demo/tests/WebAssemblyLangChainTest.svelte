@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { aiAssistant  } from '$lib/stores/unified';
   import { webAssemblyLangChainBridge } from '$lib/services/webasm-langchain-bridge.js';
@@ -7,9 +9,9 @@
   import { legalSimilarityWebGPU } from '$lib/webgpu/legal-similarity-compute.js';
   import { simdVectorProcessor } from '$lib/simd/vector-simd.js';
   // Test state
-  let testQuery = $state('What are the key legal risks in a standard employment contract?');
+  let testQuery = $state<string>('What are the key legal risks in a standard employment contract?');
   let testResults = $state<any[]>([]);
-  let showHealthStatus = $state(false);
+  let showHealthStatus = $state<boolean>(false);
   // Test methods including new SIMD + WebGPU acceleration
   const testMethods = [
     {
@@ -44,7 +46,7 @@
     }
   ];
   // Run test with specific method including acceleration
-  async function runTest(method: typeof testMethods[0]) {
+  async function runTest(method: typeof testMethods[0]): Promise<any> {
     if (!testQuery.trim()) {
       alert('Please enter a test query');
       return;
@@ -96,7 +98,7 @@
     }
   }
   // Run accelerated test using SIMD + WebGPU
-  async function runAcceleratedTest(query: string, options: any) {
+  async function runAcceleratedTest(query: string, options: any): Promise<any> {
     // Generate mock legal documents for testing
     const mockCaseDocuments = Array.from({ length: 5 }, (_, i) => ({
       id: `case_${i}`,
@@ -128,7 +130,7 @@
     }
   }
   // Run all tests sequentially
-  async function runAllTests() {
+  async function runAllTests(): Promise<any> {
     if (!testQuery.trim()) {
       alert('Please enter a test query');
       return;
@@ -145,7 +147,7 @@
     testResults = [];
   }
   // Get health status including acceleration systems
-  async function getHealthStatus() {
+  async function getHealthStatus(): Promise<any> {
     try {
       const webAsmHealth = webAssemblyAIAdapter.getHealthStatus();
       const bridgeHealth = webAssemblyLangChainBridge.getHealthStatus();
@@ -307,7 +309,7 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
     {#each Array.isArray(testMethods) ? testMethods : [] as method}
       <div
-        class="border rounded-lg p-4 {method.options.useAcceleration
+        class="border" rounded-lg p-4 {method.options.useAcceleration
           ? 'border-green-300 bg-green-50'
           : 'border-gray-200'}"
       >
@@ -337,7 +339,7 @@
         <button
           onclick={() => runTest(method)}
           disabled={aiAssistant.isLoading}
-          class="w-full px-3 py-2 rounded text-sm transition-colors
+          class="w-full" px-3 py-2 rounded text-sm transition-colors
             {method.options.useAcceleration
             ? 'bg-green-600 text-white hover:bg-green-700'
             : 'bg-blue-600 text-white hover:bg-blue-700'}
@@ -366,7 +368,7 @@
       <h2 class="text-2xl font-semibold">Test Results</h2>
       {#each Array.isArray(testResults) ? testResults : [] as result}
         <div
-          class="border rounded-lg p-4 {(
+          class="border" rounded-lg p-4 {(
             result as {
               success?: any;
               method?: any;
@@ -384,7 +386,7 @@
           <div class="flex justify-between items-start mb-3">
             <div>
               <h3
-                class="font-semibold {(
+                class="font-semibold" {(
                   result as {
                     success?: any;
                     method?: any;
@@ -547,7 +549,7 @@
                     <span class="font-medium">Acceleration:</span>
                     <br />
                     <span
-                      class="px-1 py-0.5 rounded text-white text-xs
+                      class="px-1" py-0.5 rounded text-white text-xs
                       {(result as { accelerationMetrics?: { accelerationUsed?: any } }).accelerationMetrics
                         ?.accelerationUsed === 'hybrid'
                         ? 'bg-green-600'

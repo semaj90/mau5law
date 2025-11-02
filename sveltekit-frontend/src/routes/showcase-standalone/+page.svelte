@@ -5,6 +5,7 @@
 =================================================================
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Using bits-ui + NES.css + UnoCSS; removed melt-ui & unused imports
   import 'nes.css/css/nes.min.css';
   import 'uno.css';
@@ -16,8 +17,8 @@
   import Modal from '$lib/components/ui/Modal.svelte';
 
   // State for demonstrations
-  let modalOpen = $state(false);
-  let searchQuery = $state('');
+  let modalOpen = $state<boolean>(false);
+  let searchQuery = $state<string>('');
   // --- Added typed shape for vector search results ---
   type VectorResult = {
     metadata?: {
@@ -31,7 +32,7 @@
   };
   // typed array to avoid any[] inference
   let vectorResults = $state<VectorResult[]>([]);
-  let isSearching = $state(false);
+  let isSearching = $state<boolean>(false);
   // Demo data
   let layoutData = $state({
     user: { name: 'James', email: 'james@example.com' },
@@ -43,7 +44,7 @@
     ],
   });
   // Vector search integration (updated parsing to typed results)
-  async function performVectorSearch() {
+  async function performVectorSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     isSearching = true;
     try {

@@ -61,7 +61,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
       query = db.select().from(aiReports);
     } catch (error: any) {
       // Changed: 'any' to: 'unknown'
-      useAiReports = $state(false);
+      useAiReports = false;
       console.warn('aiReports table not found, using reports table');
       query = db.select().from(reports);
     }
@@ -237,11 +237,11 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
     if (data.content) {
       const textContent = data.content.replace(/<[^>]*>/g, '').trim();
       // Stream through content to count words efficiently
-      let inWord = $state(false);
+      let inWord = $state<boolean>(false);
       for (let i = 0; i < textContent.length; i++) {
         const char = textContent[i];
         if (/\s/.test(char)) {
-          inWord = $state(false);
+          inWord = false;
         } else if (!inWord) {
           wordCount++;
           inWord = true;

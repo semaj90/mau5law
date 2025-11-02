@@ -1,5 +1,6 @@
 <!-- Evidence CRUD Modal - SPA-style with Svelte 5 + Drizzle + PostgreSQL -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { evidenceStore  } from '$lib/stores/unified';
@@ -51,19 +52,19 @@
     y: 100,
   });
   let originalEvidence = $state<Evidence | null>(null);
-  let isLoading = $state(false);
-  let isSaving = $state(false);
-  let isDeleting = $state(false);
-  let isAnalyzing = $state(false);
+  let isLoading = $state<boolean>(false);
+  let isSaving = $state<boolean>(false);
+  let isDeleting = $state<boolean>(false);
+  let isAnalyzing = $state<boolean>(false);
   let uploadedFile = $state<File | null>(null);
-  let tagInput = $state('');
+  let tagInput = $state<string>('');
   let errors = $state<Record<string, string>( );
   // File upload state
-  let uploadProgress = $state(0);
-  let dragOver = $state(false);
+  let uploadProgress = $state<number>(0);
+  let dragOver = $state<boolean>(false);
   // Modal management
   let modalElement = $state<HTMLDivElement>();
-  let isClosing = $state(false);
+  let isClosing = $state<boolean>(false);
   // Load evidence when modal opens
   $effect(() => {
     if (isOpen && mode !== 'create' && evidenceId) {
@@ -72,7 +73,7 @@
       resetForm();
     }
   });
-  async function loadEvidence() {
+  async function loadEvidence(): Promise<any> {
     if (!evidenceId) return;
     isLoading = true;
     try {
@@ -132,13 +133,13 @@
   }
   function handleFileDrop(_event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     const file = event.dataTransfer?.files[0];
     if (file) {
       processFile(file);
     }
   }
-  async function processFile(file: File) {
+  async function processFile(file: File): Promise<any> {
     uploadedFile = fil;
     uploadProgress = 0;
     // Auto-detect evidence type
@@ -180,7 +181,7 @@
     }
   }
   // AI Analysis
-  async function analyzeEvidence() {
+  async function analyzeEvidence(): Promise<any> {
     if (isAnalyzing) return;
     isAnalyzing = true;
     try {
@@ -201,7 +202,7 @@
     }
   }
   // CRUD operations
-  async function handleSave() {
+  async function handleSave(): Promise<void> {
     if (!validateForm()) {
       showError('Please fix validation errors');
       return;
@@ -273,7 +274,7 @@
       isSaving = false;
     }
   }
-  async function handleDelete() {
+  async function handleDelete(): Promise<void> {
     if (!evidenceId || mode === 'create') return;
     const confirmed = confirm('Are you sure you want to delete this evidence? This action cannot be undone.');
     if (!confirmed) return;
@@ -300,8 +301,8 @@
     if (isSaving || isDeleting) return;
     isClosing = true;
     setTimeout(() => {
-      isOpen = $state(false);
-      isClosing = $state(false);
+      isOpen = false;
+      isClosing = false;
       onClose();
     }, 200);
   }

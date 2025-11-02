@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import * as orchestrator from '$lib/services/unified-legal-orchestrator';
 import { contextualMemoryChatService } from '$lib/services/contextual-memory-chat-service';
@@ -319,7 +320,7 @@ async function handleParallelChatExecution({
   options: ParallelOptions;
   clientIP: string;
   startTime: number;
-}) {
+}): Promise<any> {
   try {
     // Create parallel request for ALL services to execute concurrently
     // Build as a raw object first to avoid excess-property checks against ParallelRequest,

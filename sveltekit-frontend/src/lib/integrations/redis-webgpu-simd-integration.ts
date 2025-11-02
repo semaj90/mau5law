@@ -832,7 +832,7 @@ if (typeof window !== 'undefined') {
 export async function processLegalDocumentOptimized(
   documentJson: string,
   options?: Parameters<RedisWebGPUSIMDIntegration['processLegalDocument']>[1]
-) {
+): Promise<any> {
   // Updated options type
   return redisWebGPUIntegration.processLegalDocument(documentJson, options);
 }
@@ -840,14 +840,14 @@ export async function computeVectorSimilarityOptimized(
   query: number[],
   candidates: number[][],
   options?: Parameters<RedisWebGPUSIMDIntegration['processVectorSimilarity']>[2]
-) {
+): Promise<any> {
   // Updated options type
   return redisWebGPUIntegration.processVectorSimilarity(query, candidates, options);
 }
 export async function generateIntelligentTodosOptimized(
   npmOutput: string,
   options?: Parameters<RedisWebGPUSIMDIntegration['processIntelligentTodos']>[1]
-) {
+): Promise<any> {
   // Updated options type
   return redisWebGPUIntegration.processIntelligentTodos(npmOutput, options);
 }

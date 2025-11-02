@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const startTime = performance.now();
     // Check cache first if enabled
     const cacheKey = `attention:${type}:${Buffer.from(text).toString('base64').slice(0, 32)}`;
-    let cached = $state(false);
+    let cached = $state<boolean>(false);
     let result: any = null;
     if (useCache) {
       try {
@@ -239,7 +239,7 @@ export const GET: RequestHandler = async () => {
   }
 };
 // Helper functions for different attention types
-async function processKernelSplicingAttention(text: string, options: any) {
+async function processKernelSplicingAttention(text: string, options: any): Promise<any> {
   // Simulate kernel splicing attention with <1ms processing
   const processTime = Math.random() * 0.001;
   return {
@@ -251,7 +251,7 @@ async function processKernelSplicingAttention(text: string, options: any) {
     kernelSplicing: true,
   };
 }
-async function processFlashAttention(text: string, options: any) {
+async function processFlashAttention(text: string, options: any): Promise<any> {
   // Simulate flash attention processing
   const processTime = Math.random() * 0.005;
   return {
@@ -263,7 +263,7 @@ async function processFlashAttention(text: string, options: any) {
     flashAttention: true,
   };
 }
-async function processMultiHeadAttention(text: string, options: any) {
+async function processMultiHeadAttention(text: string, options: any): Promise<any> {
   // Simulate multi-head attention processing
   const processTime = Math.random() * 0.01;
   const heads = options.heads || 8;
@@ -277,7 +277,7 @@ async function processMultiHeadAttention(text: string, options: any) {
     heads: 8,
   };
 }
-async function processBasicAttention(text: string, options: any) {
+async function processBasicAttention(text: string, options: any): Promise<any> {
   // Simulate basic attention processing
   const processTime = Math.random() * 0.015;
   return {

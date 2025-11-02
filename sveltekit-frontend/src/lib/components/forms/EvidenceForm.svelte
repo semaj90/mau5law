@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import type { Props } from "$lib/types/global";
   let {
     evidence = null,

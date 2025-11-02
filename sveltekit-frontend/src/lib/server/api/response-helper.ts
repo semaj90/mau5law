@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Standardized API Response Helper for Legal AI Platform
  * Ensures proper HTTP status codes and consistent response format

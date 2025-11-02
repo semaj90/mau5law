@@ -6,10 +6,10 @@
   // import { Textarea } from '$lib/components/ui/textarea.svelte'; // Replaced with native HTML textarea
   import { AIAnalysisService } from '$lib/services/ai-analysis';
   let files = $state<File[]>([]);
-  let analysis = $state('');
-  let isAnalyzing = $state(false);
+  let analysis = $state<string>('');
+  let isAnalyzing = $state<boolean>(false);
   // Use the event parameter (not the global/deprecated `event`) and safe casts
-  async function handleFileUpload(event: Event) {
+  async function handleFileUpload(event: Event): Promise<any> {
     // Prefer currentTarget (safer for input change) and fallback to target
     const input = (event.currentTarget as HTMLInputElement | null) ?? (event.target as HTMLInputElement | null);
     const fileList = input?.files ?? null;
@@ -18,7 +18,7 @@
       await analyzeEvidence();
     }
   }
-  async function analyzeEvidence() {
+  async function analyzeEvidence(): Promise<any> {
     if (!files.length) return;
     isAnalyzing = true;
     try {

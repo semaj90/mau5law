@@ -92,7 +92,7 @@
   // Performance state
   let webglContext: WebGLRenderingContext | null = null;
   let webgpuDevice: GPUDevice | null = null;
-  let frameCount = $state(0);
+  let frameCount = $state<number>(0);
   let fogDensity = $state(0.5);
   // Focus trap elements
   let focusableElements: HTMLElement[] = [];
@@ -190,7 +190,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
     })();
   });
-  async function initializeGPUContext() {
+  async function initializeGPUContext(): Promise<void> {
     if (webgpuMode && 'gpu' in navigator) {
       try {
         const adapter = await navigator.gpu.requestAdapter();
@@ -234,7 +234,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
     return intensityMap[effect] || 0.5;
   }
-  async function openDialog() {
+  async function openDialog(): Promise<any> {
     if (!dialogElement) return;
     // Store previously focused element for restoration
     if (restoreFocus) {
@@ -317,7 +317,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
   }
   function handleClose() {
-    open = $state(false);
+    open = false;
   }
   function playSpatialSound(type: string, frequency: number, volume: number) {
     if (!spatialAudio || !audioContext || !spatialPanner || reducedMotion) return;

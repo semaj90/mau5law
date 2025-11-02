@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * High-Performance JSON Utilities for Legal AI
  *

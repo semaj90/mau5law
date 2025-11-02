@@ -18,10 +18,10 @@ https://svelte.dev/e/js_parse_error -->
   // State
   let state: ObservabilityState | null = $state(null);
   let alerts: Alert[] = $state([]);
-  let isConnected = $state(false);
+  let isConnected = $state<boolean>(false);
   let ws = $state<WebSocket | null >(null);
-  let autoScroll = $state(true);
-  let showDetails = $state(false);
+  let autoScroll = $state<boolean>(true);
+  let showDetails = $state<boolean>(false);
   // Computed values
   let p99Badge = $derived(() => {
     if (!state) return { count: 0, status: 'normal' }
@@ -60,7 +60,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
   // Functions
-  async function loadState() {
+  async function loadState(): Promise<any> {
     try {
       // removed unused response assignment
       if (response.ok) {
@@ -109,14 +109,14 @@ https://svelte.dev/e/js_parse_error -->
         }
       }
       ws.onclose=() => {
-        isConnected = $state(false);
+        isConnected = false;
         console.log('[observability-panel] WebSocket disconnected');
         // Reconnect after 5 seconds
         setTimeout(connectWebSocket, 5000);
       }
       ws.onerror = (error) => {
         console.error('[observability-panel] WebSocket error:', error);
-        isConnected = $state(false);
+        isConnected = false;
       }
     } catch (error) {
       console.error('[observability-panel] Failed to connect WebSocket:', error);

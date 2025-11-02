@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Removed superForm / zod / Zod types imports (client-side superforms caused invalid bindings)
   import { Search, Upload, Tag, FileText, Database } from 'lucide-svelte';
   import Button from '$lib/components/ui/button/Button.svelte';
@@ -8,24 +9,24 @@
   const { data } = $props<{ data: any }>()
 
   // client state (explicitly declared to avoid undefined accesses)
-  let submitting = $state(false);
-  let loadingDocuments = $state(false);
+  let submitting = $state<boolean>(false);
+  let loadingDocuments = $state<boolean>(false);
   let documents: Array<any> = [];
   let selectedFile: File | null = null;
   let tags = '';
-  let uploading = $state(false);
+  let uploading = $state<boolean>(false);
   let uploadResult: any = null;
   let searchQuery = '';
   let searchTags = '';
   let searchType: 'hybrid' | 'vector' | 'fuzzy' = 'hybrid';
-  let searching = $state(false);
+  let searching = $state<boolean>(false);
   let searchResults: Array<any> = [];
   let systemStatus: any = null;
   let activeTab: 'upload' | 'documents' | 'search' = 'upload';
   let deletingId: string | null = null;
 
   // Load documents on mount
-  async function loadDocuments() {
+  async function loadDocuments(): Promise<any> {
     loadingDocuments = true;
     try {
       const res = await fetch('/api/rag/documents?limit=50');
@@ -45,7 +46,7 @@
   }
 
   // Delete a document
-  async function deleteDocument(id: string) {
+  async function deleteDocument(id: string): Promise<void> {
     if (!confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
       return;
     }
@@ -69,7 +70,7 @@
   }
 
   // Check system status on mount
-  async function checkStatus() {
+  async function checkStatus(): Promise<any> {
     try {
       const res = await fetch('/api/rag/status');
       const json = await res.json();
@@ -91,7 +92,7 @@
   }
 
   // Upload file to RAG system
-  async function uploadFile() {
+  async function uploadFile(): Promise<any> {
     if (!selectedFile) return;
 
     uploading = true;
@@ -132,7 +133,7 @@
   }
 
   // Search documents
-  async function searchDocuments() {
+  async function searchDocuments(): Promise<any> {
     if (!searchQuery.trim()) return;
 
     searching = true;

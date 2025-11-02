@@ -9,7 +9,7 @@ type ScikitKMeans = {
   labels?: Iterable<number>;
   clusterCenters?: ArrayLike<ArrayLike<number>>;
 };
-export async function computeKMeansPlusPlus(vectors: number[][], k = 32) {
+export async function computeKMeansPlusPlus(vectors: number[][], k = 32): Promise<any> {
   if (!Array.isArray(vectors) || vectors.length === 0) {
     throw new Error("computeKMeansPlusPlus requires a non-empty vector set");
   }
@@ -362,7 +362,7 @@ export class NeuralMemoryManager extends EventEmitter {
           (_, dim) => pts.reduce((s, p) => s + (p[dim] || 0), 0) / pts.length
         );
         if (this.euclideanDistance(newCentroid, centroids[i]) > 0.001) {
-          converged = $state(false);
+          converged = false;
         }
         centroids[i] = newCentroid;
         clusters[i].centroid = newCentroid;

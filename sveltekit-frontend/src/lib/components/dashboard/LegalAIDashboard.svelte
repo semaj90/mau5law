@@ -3,6 +3,7 @@
   Comprehensive dashboard showing cases, evidence, reports, and real-time processing
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { apiClient } from '$lib/services/enhanced-api-client';
   import { toast } from 'svelte-sonner';
@@ -11,9 +12,9 @@
   let evidence = $state<any[]>([]);
   let reports = $state<any[]>([]);
   let personsOfInterest = $state<any[]>([]);
-  let loading = $state(true);
+  let loading = $state<boolean>(true);
   let error = $state<string | null>(null);
-  let selectedTab = $state('overview');
+  let selectedTab = $state<string>('overview');
   let refreshInterval = $state<ReturnType<typeof setInterval> | null>(null);
   // Statistics
   let stats = $state({
@@ -404,14 +405,14 @@
                           </div>
                           <div class="flex items-center space-x-2">
                             <span
-                              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getPriorityColor(
+                              class="inline-flex" items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getPriorityColor(
                                 caseItem?.priority || 'medium'
                               )}"
                             >
                               {caseItem?.priority || 'medium'}
                             </span>
                             <span
-                              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getStatusColor(
+                              class="inline-flex" items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getStatusColor(
                                 caseItem?.status || 'open'
                               )}"
                             >
@@ -516,7 +517,7 @@
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <span
-                          class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getStatusColor(
+                          class="inline-flex" px-2 py-1 text-xs font-semibold rounded-full {getStatusColor(
                             caseItem?.status || 'open'
                           )}"
                         >
@@ -525,7 +526,7 @@
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <span
-                          class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getPriorityColor(
+                          class="inline-flex" px-2 py-1 text-xs font-semibold rounded-full {getPriorityColor(
                             caseItem?.priority || 'medium'
                           )}"
                         >

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // Modern authentication store using Svelte 5 runes
 // Integrates with Lucia, MCP GPU orchestrator, and legal AI features
 import { browser } from '$app/environment';

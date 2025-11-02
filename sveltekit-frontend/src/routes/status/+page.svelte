@@ -8,7 +8,7 @@
   // System status state
   let systemHealth = $state<any>(null);
   let integrationTests = $state<any>({});
-  let isLoading = $state(true);
+  let isLoading = $state<boolean>(true);
   let lastUpdated = $state<string>('');
   $effect(() => {
     if (!browser) return;
@@ -25,7 +25,7 @@
       clearInterval(intervalId);
     };
   });
-  async function loadSystemStatus() {
+  async function loadSystemStatus(): Promise<any> {
     try {
       isLoading = true;
       // Load health data
@@ -48,7 +48,7 @@
       isLoading = false;
     }
   }
-  async function testGPUCacheIntegration() {
+  async function testGPUCacheIntegration(): Promise<any> {
     try {
       // Check CSS custom properties
       const computedStyle = getComputedStyle(document.documentElement);
@@ -79,7 +79,7 @@
       };
     }
   }
-  async function testGamingComponents() {
+  async function testGamingComponents(): Promise<any> {
     try {
       // Test gaming constants availability
       const { NES_COLOR_PALETTE, N64_TEXTURE_PRESETS } = await import(
@@ -117,7 +117,7 @@
       };
     }
   }
-  async function testPostgreSQLIntegration() {
+  async function testPostgreSQLIntegration(): Promise<any> {
     try {
       // Use systemHealth if available for DB status; otherwise try a lightweight endpoint
       let pgStatus = 'unknown';
@@ -162,7 +162,7 @@
       };
     }
   }
-  async function testAPIEndpoints() {
+  async function testAPIEndpoints(): Promise<any> {
     try {
       const endpoints = ['/api/v1/vector/search', '/api/v1/rag', '/api/v1/gpu-cache', '/api/v1/cluster'];
       let successCount = 0;
@@ -285,7 +285,7 @@
           </div>
           <div class="yorha-panel-content">
             <p
-              class="text-sm {getStatusColor(
+              class="text-sm" {getStatusColor(
                 (result as { status?: any; message?: any; details?: any }).status
               )} mb-2"
             >

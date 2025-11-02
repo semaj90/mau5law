@@ -34,11 +34,11 @@
   }
   let { open = $bindable() }: Props = $props();
   let workHistory = $state<WorkItem[]>([]);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let selectedWork = $state<WorkItem | null>(null);
   let statusFilter = $state<WorkItem['status'] | 'all'>('all');
   let typeFilter = $state<WorkItem['type'] | 'all'>('all');
-  let isRecordingTime = $state(false);
+  let isRecordingTime = $state<boolean>(false);
   let activeTimer = $state<{ itemId: string; startTime: number } | null>(null);
   // Filtered work results
   let filteredWork = $derived(() => {
@@ -76,9 +76,9 @@
       await loadWorkHistory();
     }
   });
-  async function loadWorkHistory() {
+  async function loadWorkHistory(): Promise<any> {
     isLoading = true;
-    let usingMockData = $state(false);
+    let usingMockData = $state<boolean>(false);
     try {
       // removed unused response assignment
       const result = await response.json();
@@ -155,7 +155,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       }
     }
   }
-  async function recordActivity(itemId: string, action WorkActivity['action'], duration number = 0, description?: string) {
+  async function recordActivity(itemId: string, action WorkActivity['action'], duration number = 0, description?: string): Promise<any> {
     try {
       const response = await fetch('/api/recommendations/last-worked', {
         method: 'POST',
@@ -211,7 +211,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       recordActivity(activeTimer.itemId, 'edited', duration, 'Timed work session');
       activeTimer = null;
     }
-    isRecordingTime = $state(false);
+    isRecordingTime = false;
   }
   function getTypeIcon(type: WorkItem['type']): string {
     switch (type) {
@@ -268,7 +268,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     if (diffDays <= 7) return 'medium';
     return 'low';
   }
-  async function openWorkItem(workItem: WorkItem) {
+  async function openWorkItem(workItem: WorkItem): Promise<any> {
     try {
       // Record opening activity
       await recordActivity(workItem.id, 'opened', 0, 'Opened from work history');
@@ -285,7 +285,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Mock behavior - close modal anyway
-      open = $state(false);
+      open = false;
     }
   }
 </script>

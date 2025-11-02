@@ -271,8 +271,8 @@ export const browserRAG = new BrowserRAGChain();
  *   import { browserRAG } from '$lib/ai/browser-rag-chain';
  *   import { onMount } from 'svelte';
  *
- *   let answer = $state('');
- *   let isReady = $state(false);
+ *   let answer = $state<string>('');
+ *   let isReady = $state<boolean>(false);
  *
  *   onMount(async () => {
  *     // Initialize RAG system
@@ -295,7 +295,7 @@ export const browserRAG = new BrowserRAGChain();
  *     isReady = true;
  *   });
  *
- *   async function ask(question: string) {
+ *   async function ask(question: string): Promise<any> {
  *     const result = await browserRAG.query(question, {
  *       topK: 3,
  *       temperature: 0.7,
@@ -307,7 +307,7 @@ export const browserRAG = new BrowserRAGChain();
  *     console.log('Confidence:', result.confidence);
  *   }
  *
- *   async function askStreaming(question: string) {
+ *   async function askStreaming(question: string): Promise<any> {
  *     answer = '';
  *     for await (const chunk of browserRAG.queryStream(question)) {
  *       answer += chunk.text;

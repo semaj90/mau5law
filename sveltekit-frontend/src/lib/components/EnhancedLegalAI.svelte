@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Updated to use bits-ui components
   import { Button } from '$lib/components/ui/button.svelte';
@@ -117,7 +119,7 @@
     { value: 'gemma2:2b', label: 'Gemma2 2B', description: 'Fast, lightweight model' }
   ];
   // Enhanced service functions
-  async function checkServiceHealth() {
+  async function checkServiceHealth(): Promise<any> {
     try {
       serviceStatus.loading = true;
       const response = await fetch(`${API_BASE}/health`);
@@ -144,7 +146,7 @@
       }
     }
   }
-  async function processDocument() {
+  async function processDocument(): Promise<any> {
     if (!documentContent.trim()) {
       alert("Please enter document content");
       return;
@@ -181,7 +183,7 @@
     }
     showProcessDialog = true;
   }
-  async function performVectorSearch() {
+  async function performVectorSearch(): Promise<any> {
     if (!searchQuery || !searchQuery.trim()) {
       alert("Please enter a search query");
       return;

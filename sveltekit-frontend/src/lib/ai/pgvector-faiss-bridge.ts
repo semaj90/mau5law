@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * 🚀 PostgreSQL pgvector + FAISS GPU Bridge
  * Ultimate vector search performance combining:

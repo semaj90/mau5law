@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Integrated Search Endpoint
  * Semantic search across pgvector + Qdrant with recommendations

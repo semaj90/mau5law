@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { cuidSchema } from '$lib/server/z-schemas';
 import { z } from "zod";
 // Allowed file types for evidence upload

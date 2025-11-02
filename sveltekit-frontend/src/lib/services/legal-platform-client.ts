@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Legal AI Platform Client Service
  * TypeScript client for interacting with the centralized Legal Platform API v2

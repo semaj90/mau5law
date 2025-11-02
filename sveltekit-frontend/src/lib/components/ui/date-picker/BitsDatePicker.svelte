@@ -3,6 +3,7 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!-- Date Picker Component for Legal AI App -->
 <script lang="ts">
+import type { Message } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { DatePicker } from 'bits-ui';
   import { Calendar, ChevronLeft, ChevronRight } from 'lucide-svelte';

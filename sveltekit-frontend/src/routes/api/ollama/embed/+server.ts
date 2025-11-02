@@ -9,7 +9,7 @@ type EmbeddingRequest = {
   model: string;
 };
 
-export async function POST({ request }: RequestEvent) {
+export async function POST({ request }: RequestEvent): Promise<any> {
   try {
     const { text, model } = (await request.json()) as EmbeddingRequest;
 

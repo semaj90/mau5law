@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 
 /**
  * User Workflow XState Machine

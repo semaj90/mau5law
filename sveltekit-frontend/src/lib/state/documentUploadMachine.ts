@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import crypto from 'crypto';
 /**
  * XState State Machine for Document Upload Workflow

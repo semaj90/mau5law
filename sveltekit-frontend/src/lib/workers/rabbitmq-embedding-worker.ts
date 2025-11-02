@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * RabbitMQ Embedding Worker - Server-side Background Job Processing
  * Processes embedding generation jobs via RabbitMQ message queues

@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Demonstrates instant UI rendering with pre-computed patterns
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { slide } from 'svelte/transition';
   import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader.js';

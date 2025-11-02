@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * RTX Tensor Core Upscaler Service
  * Revolutionary Neural Sprite Auto-Encoder with RTX 3060 Ti Optimization

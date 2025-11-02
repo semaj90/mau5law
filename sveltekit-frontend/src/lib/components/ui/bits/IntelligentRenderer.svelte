@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   // Separate runtime import from type-only imports to avoid TS namespace/type conflicts
   import { LegalAILogic } from '$lib/core/logic/legal-ai-logic';
   import type { LegalDocument } from '$lib/core/logic/legal-ai-logic';

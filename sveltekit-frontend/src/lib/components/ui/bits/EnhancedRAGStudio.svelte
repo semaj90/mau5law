@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import type { Snippet } from 'svelte';
   import { Search, Database, Activity, FileText, Settings, Upload, RefreshCw } from 'lucide-svelte';
   interface Props {
@@ -15,11 +16,11 @@
     ...restProp
   }: Props = $props();
   let activeTab = $state<'search' | 'upload' | 'settings'>('search');
-  let searchQuery = $state('');
-  let isLoading = $state(false);
+  let searchQuery = $state<string>('');
+  let isLoading = $state<boolean>(false);
   let searchResults = $state<any[]>([]);
   let uploadFile = $state<File | null>(null);
-  async function handleSearch() {
+  async function handleSearch(): Promise<any> {
     if (!searchQuery.trim() || !onSearch) return;
     isLoading = true;
     try {
@@ -32,7 +33,7 @@
       isLoading = false;
     }
   }
-  async function handleUpload() {
+  async function handleUpload(): Promise<any> {
     if (!uploadFile || !onUpload) return;
     isLoading = true;
     try {

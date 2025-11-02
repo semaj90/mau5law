@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Node.js Multi-Core Orchestration Service - Gemma3-Legal GGUF Only
  * Manages worker clusters with ONLY gemma3-legal and nomic-embed-text models
@@ -437,8 +438,8 @@ export class NodeJSOrchestrator {
       // ${config.type} Worker - ${config.id} - Model: ${config?.model || "unknown"}
       let workerConfig = null;
       let tasksProcessed = 0;
-      let processingTimes = [];
-      let modelLoaded = $state(false);
+      let processingTimes: any[] = [];
+      let modelLoaded = $state<boolean>(false);
       // Model validation
       function validateModel(requestedModel) {
         const allowedModels = ['gemma3-legal', 'nomic-embed-text'];
@@ -529,7 +530,7 @@ export class NodeJSOrchestrator {
     switch (type) {
       case 'GEMMA3_LEGAL_GGUF':
         return `
-          async function processTask(data) {
+          async function processTask(data): Promise<any> {
             const { prompt, maxTokens, temperature, model } = data;
             // Enforce gemma3-legal only
             if (model !== 'gemma3-legal') {
@@ -567,7 +568,7 @@ export class NodeJSOrchestrator {
         `;
       case 'NOMIC_EMBED':
         return `
-          async function processTask(data) {
+          async function processTask(data): Promise<any> {
             const { text, model } = data;
             // Enforce nomic-embed-text only
             if (model !== 'nomic-embed-text') {
@@ -596,7 +597,7 @@ export class NodeJSOrchestrator {
         `;
       case 'WEB_GPU_RTX3060':
         return `
-          async function processTask(data) {
+          async function processTask(data): Promise<any> {
             const { operation, errorData, codeContext, config } = data;
             if (operation === 'ERROR_ANALYSIS_FLASHATTENTION') {
               // Simulate FlashAttention2 error processing
@@ -628,7 +629,7 @@ export class NodeJSOrchestrator {
         `;
       case 'DOCUMENT_PROCESSING':
         return `
-          async function processTask(data) {
+          async function processTask(data): Promise<any> {
             const { document, operation, model } = data;
             // Use gemma3-legal for document analysis
             if (operation === 'LEGAL_ANALYSIS') {
@@ -653,7 +654,7 @@ export class NodeJSOrchestrator {
           }
         `;
       default: return `
-          async function processTask(data) {
+          async function processTask(data): Promise<any> {
             await new Promise(resolve => setTimeout(resolve, 100));
             return { processed: true, data, model: 'gemma3-legal' };
           }

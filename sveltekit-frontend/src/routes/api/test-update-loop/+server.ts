@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 import type { RequestHandler } from './$types'; // changed from './$types.js' to: './$types'
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/db';

@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
@@ -16,23 +18,23 @@
       : undefined;
   // State management
   let messages = $state<GPUChatMessage[]>([]);
-  let inputMessage = $state('');
-  let isConnected = $state(false);
-  let isTyping = $state(false);
+  let inputMessage = $state<string>('');
+  let isConnected = $state<boolean>(false);
+  let isTyping = $state<boolean>(false);
   let gpuStatus = $state<GPUProcessingStatus | null>(null);
   let ws = $state<WebSocket | null>(null);
-  let isWebTransport = $state(false);
+  let isWebTransport = $state<boolean>(false);
   let wt = $state<any | null>(null);
   let reconnectTimeout: NodeJS.Timeout;
   let healthCheckInterval: NodeJS.Timeout;
   let currentRoom = $state<string | null>(null);
   let uploadedFiles = $state<File[]>([]);
-  let isSpeaking = $state(false);
-  let batchMode = $state(false);
+  let isSpeaking = $state<boolean>(false);
+  let batchMode = $state<boolean>(false);
   let batchItems = $state<string[]>([]);
   // Voice/TTS configuration
-  let voiceEnabled = $state(false);
-  let selectedVoice = $state('neural');
+  let voiceEnabled = $state<boolean>(false);
+  let selectedVoice = $state<string>('neural');
   // Multi-user support
   let clientId = $state<string>('');
   let connectedUsers = $state<number>(0);
@@ -40,7 +42,7 @@
   let gpuCudaVersion = $state<string | null>(null);
   let tensorRTEnabled = $state<boolean | null>(null);
   // Initialize realtime transport (WebTransport preferred → WebSocket → HTTP fallback)
-  async function connectRealtime() {
+  async function connectRealtime(): Promise<void> {
     // Try to detect available port
     const availablePort = await detectAvailablePort();
     currentPort = availablePort;
@@ -103,16 +105,16 @@
         wt.closed
           .then(() => {
             console.log('WebTransport closed');
-            isConnected = $state(false);
-            isWebTransport = $state(false);
+            isConnected = false;
+            isWebTransport = false;
             wt = null;
             // Attempt reconnect
             reconnectTimeout = setTimeout(connectRealtime, 3000);
           })
           .catch((err: any) => {
             console.warn('WebTransport closed with error', err);
-            isConnected = $state(false);
-            isWebTransport = $state(false);
+            isConnected = false;
+            isWebTransport = false;
             wt = null;
             reconnectTimeout = setTimeout(connectRealtime, 3000);
           });
@@ -120,7 +122,7 @@
       } catch (err) {
         console.warn('WebTransport connection failed, falling back to WebSocket:', err);
         wt = null;
-        isWebTransport = $state(false);
+        isWebTransport = false;
       }
     }
     // Fallback to WebSocket (respect DEV overrides)
@@ -149,7 +151,7 @@
       };
       ws.onclose = () => {
         console.log('WebSocket disconnected');
-        isConnected = $state(false);
+        isConnected = false;
         // Attempt reconnection
         reconnectTimeout = setTimeout(() => {
           console.log('Attempting to reconnect...');
@@ -158,11 +160,11 @@
       };
     } catch (error) {
       console.error('Failed to connect WebSocket:', error);
-      isConnected = $state(false);
+      isConnected = false;
     }
   }
   // Generic send helper: WebTransport -> WebSocket -> HTTP POST
-  async function sendRealtimeMessage(payload: any) {
+  async function sendRealtimeMessage(payload: any): Promise<any> {
     const data = JSON.stringify(payload);
     // Prefer WebTransport
     if (isWebTransport && wt) {
@@ -259,7 +261,7 @@
             metadata: payload.metadata as any,
           };
           messages = [...messages, message];
-          isTyping = $state(false);
+          isTyping = false;
           if (voiceEnabled && content) {
             speakText(content as string);
           }
@@ -281,17 +283,17 @@
         break;
       case 'batch_complete':
         handleBatchResults(payload.results as any[]);
-        batchMode = $state(false);
+        batchMode = false;
         break;
       case 'error':
         console.error(payload.error);
         showNotification('Error: ' + payload.error, 'error');
-        isTyping = $state(false);
+        isTyping = false;
         break;
     }
   }
   // Send message
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!inputMessage.trim()) return;
     const userMessage: GPUChatMessage = {
       id: crypto.randomUUID(),
@@ -344,7 +346,7 @@
     }
   }
   // Handle document upload
-  async function handleFileUpload(_event: Event) {
+  async function handleFileUpload(_event: Event): Promise<any> {
     const input = (event?.target ?? _event?.target) as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
     const file = input.files[0];
@@ -382,7 +384,7 @@
     }
   }
   // Text-to-Speech
-  async function speakText(text: string) {
+  async function speakText(text: string): Promise<any> {
     if (!voiceEnabled || isSpeaking) return;
     isSpeaking = true;
     // Use Web Speech API as fallback
@@ -391,7 +393,7 @@
       utterance.rate = 1.0;
       utterance.pitch = 1.0;
       utterance.onend = () => {
-        isSpeaking = $state(false);
+        isSpeaking = false;
       };
       speechSynthesis.speak(utterance);
     } else {
@@ -406,7 +408,7 @@
       inputMessage = '';
     }
   }
-  async function processBatch() {
+  async function processBatch(): Promise<any> {
     if (batchItems.length === 0) return;
     const sent = await sendRealtimeMessage({ type: 'batch', items: batchItems });
     if (sent) {
@@ -417,11 +419,11 @@
     }
   }
   // Join/Leave room for multi-user
-  async function joinRoom(roomId: string) {
+  async function joinRoom(roomId: string): Promise<any> {
     currentRoom = roomId;
     await sendRealtimeMessage({ type: 'join_room', room: roomId });
   }
-  async function leaveRoom() {
+  async function leaveRoom(): Promise<any> {
     if (currentRoom) {
       await sendRealtimeMessage({ type: 'leave_room' });
     }
@@ -488,7 +490,7 @@
     ];
   }
   // Resume a previous request from Redis Streams (token replay)
-  async function resumeLastRequest(requestId?: string) {
+  async function resumeLastRequest(requestId?: string): Promise<any> {
     const id = requestId || sessionStorage.getItem('lastRequestId') || sessionStorage.getItem('sessionId');
     if (!id) {
       showNotification('No requestId available to resume', 'warning');
@@ -532,7 +534,7 @@
     }
   }
   // Check GPU status
-  async function checkGPUStatus() {
+  async function checkGPUStatus(): Promise<any> {
     try {
       const response = await fetch(`http://localhost:${currentPort}/api/gpu-status`);
       if (response.ok) {
@@ -545,7 +547,7 @@
     }
   }
   // Health check
-  async function performHealthCheck() {
+  async function performHealthCheck(): Promise<any> {
     try {
       const response = await fetch(`http://localhost:${currentPort}/api/health`);
       const health = (await response.json()) as any;

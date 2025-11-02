@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Documents Schema with pgvector for Legal AI Platform
  * Supports vector embeddings for semantic search and RAG

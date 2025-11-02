@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { webgpuRedisOptimizer, optimizedCache } from '$lib/server/webgpu-redis-optimizer.js';
@@ -309,7 +310,7 @@ async function benchmarkCacheThroughput(testTensors: Float32Array[]): Promise<Be
 /**
  * Demonstrate tensor operations with embeddings
  */
-async function demonstrateTensorOperations(data: any, options: any) {
+async function demonstrateTensorOperations(data: any, options: any): Promise<any> {
   const textSamples = (
     data as {
       iterations?: any;
@@ -380,7 +381,7 @@ function cosineSimilarity(a: Float32Array, b: Float32Array): number {
 /**
  * Demonstrate batch processing capabilities
  */
-async function demonstrateBatchProcessing(data: any, options: any) {
+async function demonstrateBatchProcessing(data: any, options: any): Promise<any> {
   const batchSize =
     (
       data as {
@@ -455,7 +456,7 @@ async function demonstrateBatchProcessing(data: any, options: any) {
 /**
  * Get detailed system statistics
  */
-async function getDetailedStatistics() {
+async function getDetailedStatistics(): Promise<any> {
   const stats = await webgpuRedisOptimizer.getOptimizationStats();
   const cacheStats = await embeddingCache.getCacheStats();
   return {
@@ -473,7 +474,7 @@ async function getDetailedStatistics() {
 /**
  * Run stress test with high concurrency
  */
-async function runStressTest(data: any, options: any) {
+async function runStressTest(data: any, options: any): Promise<any> {
   const concurrency =
     (
       data as {

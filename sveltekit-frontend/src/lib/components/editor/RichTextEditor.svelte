@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Removed rune imports ($props, $effect, $state) - they are provided by the Svelte compiler and must not be imported
   import { onDestroy } from 'svelte';
@@ -18,8 +20,8 @@
   }: Props = $props();
   // Enhanced state management for AI-powered features
   let editorInstance: any;
-  let isInitialized = $state(false);
-  let isProcessingSummary = $state(false);
+  let isInitialized = $state<boolean>(false);
+  let isProcessingSummary = $state<boolean>(false);
   let currentSummary = $state<string>('');
   let lastProcessedText = $state<string>('');
   let autoSaveStatus = $state<'saving' | 'saved' | 'error' | 'idle'>('idle');
@@ -172,7 +174,7 @@
   /**
    * 2. LOCAL AUTO-SAVE - Loki.js + IndexedDB for instant drafts
    */
-  async function performLocalAutoSave(content: string) {
+  async function performLocalAutoSave(content: string): Promise<void> {
     if (!browser) return;
     try {
       autoSaveStatus = 'saving';
@@ -203,7 +205,7 @@
   /**
    * 3. AI PROCESSING - Go microservice with Redis caching
    */
-  async function processContentChange(content: string) {
+  async function processContentChange(content: string): Promise<any> {
     if (!content || content.length < MIN_TEXT_LENGTH) return;
     if (content === lastProcessedText) return; // Avoid duplicate processing
     const textHash = await generateTextHash(content);
@@ -221,7 +223,7 @@
         if (cached.summary) {
           // Cache hit - instant response!
           currentSummary = cached.summary;
-          isProcessingSummary = $state(false);
+          isProcessingSummary = false;
           return;
         }
       }
@@ -244,7 +246,7 @@
       }
     } catch (error) {
       console.error('AI processing failed:', error);
-      isProcessingSummary = $state(false);
+      isProcessingSummary = false;
     }
   }
   /**
@@ -267,13 +269,13 @@
             // Cache result in Redis for future requests
             await cacheResult((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).textHash, (result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).summary);
             // Cleanup
-            isProcessingSummary = $state(false);
+            isProcessingSummary = false;
             jobId = null;
             clearInterval(pollingInterval!);
             pollingInterval = null;
           } else if ((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).status === 'failed') {
             console.error(error);
-            isProcessingSummary = $state(false);
+            isProcessingSummary = false;
             jobId = null;
             clearInterval(pollingInterval!);
             pollingInterval = null;
@@ -287,7 +289,7 @@
   /**
    * 5. VECTOR EMBEDDINGS - PostgreSQL/pg_vector storage
    */
-  async function storeVectorEmbedding(embedding: number[], text: string) {
+  async function storeVectorEmbedding(embedding: number[], text: string): Promise<any> {
     try {
       await fetch('/api/v1/vector/store', {
         method: 'POST',
@@ -318,7 +320,7 @@
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map.padStart(2, '0')).join('');
   }
-  async function cacheResult(textHash: string, summary: string) {
+  async function cacheResult(textHash: string, summary: string): Promise<any> {
     try {
       await fetch('/api/v1/ai/cache-result', {
         method: 'POST',

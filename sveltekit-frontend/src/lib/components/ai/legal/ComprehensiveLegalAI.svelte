@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import { enhancedUploadStore  } from '$lib/stores/unified';
   import { recommendationStore } from '$lib/machines/recommendation-routing-machine';
@@ -22,9 +24,9 @@
   } from 'lucide-svelte';
   // Component state
   let selectedFiles = $state<FileList | null>(null);
-  let caseId = $state('case_' + Date.now());
+  let caseId = $state<string>('case_' + Date.now());
   let documentType = $state<'evidence' | 'contract' | 'brief' | 'deposition'>('evidence');
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   let systemStats = $state<any>({});
   let recommendations = $state<any[]>([]);
   let processedResults = $state<any>({});
@@ -47,9 +49,9 @@
     gpuUtilization: 0,
     averageResponseTime: 0,
   });
-  let contextualPrompt = $state('');
+  let contextualPrompt = $state<string>('');
   let contextualResponse = $state<string | null>(null);
-  let contextualLoading = $state(false);
+  let contextualLoading = $state<boolean>(false);
   let contextualError = $state<string | null>(null);
   // declare interval handle in outer scope so cleanup can synchronously access it
   let statsInterval: ReturnType<typeof setInterval> | undefined;
@@ -118,7 +120,7 @@
       }
     }
   }
-  async function handleFileUpload() {
+  async function handleFileUpload(): Promise<any> {
     if (!selectedFiles || selectedFiles.length === 0) return;
     isProcessing = true;
     const startTime = performance.now();
@@ -141,12 +143,12 @@
             performanceMetrics.totalProcessingTime = endTime - startTime;
             // Process results with workers and SIMD
             await processResults(s.context);
-            isProcessing = $state(false);
+            isProcessing = false;
             unsubscribe();
           })();
         } else if (s.matches('error')) {
           console.error('Upload failed:', s.context?.error);
-          isProcessing = $state(false);
+          isProcessing = false;
           unsubscribe();
         }
       });
@@ -158,10 +160,10 @@
       });
     } catch (error) {
       console.error('Processing failed:', error);
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
-  async function processResults(context: any) {
+  async function processResults(context: any): Promise<any> {
     if (!workerPool || !simdCache) return;
     try {
       // Process OCR results with SIMD JSON
@@ -216,7 +218,7 @@
       console.error('Result processing failed:', error);
     }
   }
-  async function handleContextualChat(promptOverride?: string) {
+  async function handleContextualChat(promptOverride?: string): Promise<any> {
     const question = (promptOverride ?? contextualPrompt)?.trim();
     if (!question) return;
     contextualLoading = true;
@@ -249,7 +251,7 @@
     const input = event.currentTarget as HTMLInputElement;
     selectedFiles = input.files;
   }
-  async function testSIMDPerformance() {
+  async function testSIMDPerformance(): Promise<any> {
     if (!simdCache) return;
     const testData = {
       legal: {

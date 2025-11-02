@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * XState Machine for AI Summary Reading and Analysis
  * Handles evidence reports, document summaries, and synthesis workflows

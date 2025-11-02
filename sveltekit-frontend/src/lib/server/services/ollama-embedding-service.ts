@@ -22,7 +22,7 @@ export const OllamaEmbeddingService: IOllamaEmbeddingService = {
 };
 
 // Dynamically load optional local helper
-async function loadLocalOllamaClient() {
+async function loadLocalOllamaClient(): Promise<any> {
   try {
     const mod = await import('../helpers/local-ollama-client.js'); // optional helper
     if (mod?.default) return mod.default;

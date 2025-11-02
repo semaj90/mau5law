@@ -3,6 +3,7 @@ https://svelte.dev/e/bindable_invalid_location -->
 <!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration -->
 <!-- LazyAIAnalysis.svelte - Lazy loading wrapper for AI analysis components -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { LazyLoader } from '../LazyLoader.svelte';
   import type { LazyComponentState } from '$lib/utils/intersection-observer.js';
@@ -33,13 +34,13 @@ https://svelte.dev/e/bindable_invalid_location -->
   // Dynamic import and analysis state
   let analysisComponent: any = $state(null);
   let analysisResult: any = $state(null);
-  let isAnalyzing = $state(false);
+  let isAnalyzing = $state<boolean>(false);
   let loadError: Error | null = $state(null);
   // Progress tracking
-  let analysisProgress = $state(0);
-  let analysisStep = $state('Initializing...');
+  let analysisProgress = $state<number>(0);
+  let analysisStep = $state<string>('Initializing...');
   // Load AI analysis component when visible
-  async function loadAnalysisComponent() {
+  async function loadAnalysisComponent(): Promise<any> {
     try {
       isAnalyzing = true;
       updateProgress(10, 'Loading AI model...');
@@ -98,7 +99,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     analysisStep = step;
   }
   // Mock AI analysis function - replace with your actual AI integration
-  async function performAnalysis() {
+  async function performAnalysis(): Promise<any> {
     // Simulate different analysis types
     const baseResult = {
       analysisId: `analysis_${Date.now()}`,

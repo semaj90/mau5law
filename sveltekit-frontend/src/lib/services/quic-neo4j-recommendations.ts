@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // QUIC Neo4j Recommendation Engine Client - 5-15ms Ultra-Fast Integration
 // Connects to running QUIC Tensor Server (port 4433) for GPU recommendations
 import { QuicTensorClient } from './quic-tensor-client.js';

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { clsx, type ClassValue } from 'clsx';
 /**
  * Utility function to merge CSS classes

@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Search and Vector Types
  * Core types for pgvector search, embeddings, and retrieval

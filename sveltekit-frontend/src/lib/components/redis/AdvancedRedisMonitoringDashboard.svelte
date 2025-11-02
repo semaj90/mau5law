@@ -22,7 +22,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   const alertsLog = writable([]);
   let updateInterval: NodeJS.Timeout;
   let wsConnection WebSocket;
-  let isConnected = $state(false);
+  let isConnected = $state<boolean>(false);
   // Nintendo-style color scheme
   const nintendoColors = {
     primary: '#00d800',
@@ -57,7 +57,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     if (updateInterval) clearInterval(updateInterval);
     if (wsConnection) wsConnection.close();
   });
-  async function initializeRealTimeMonitoring() {
+  async function initializeRealTimeMonitoring(): Promise<void> {
     try {
       // Initialize WebSocket for real-time updates
       wsConnection = new WebSocket('ws://localhost:5173/websocket/redis-monitor')
@@ -70,20 +70,20 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
         updateLiveMetrics(data);
       }
       wsConnection.onerror = () => {
-        isConnected = $state(false);
+        isConnected = false;
         console.warn('⚠️ WebSocket connection failed, falling back to polling');
       }
     } catch (error) {
       console.warn('WebSocket not available, using polling mode');
-      isConnected = $state(false);
+      isConnected = false;
     }
   }
-  async function startPerformancePolling() {
+  async function startPerformancePolling(): Promise<any> {
     updateInterval = setInterval(async () => {
       await updateMetrics();
     }, 1000); // Update every second for Nintendo-level responsiveness
   }
-  async function updateMetrics() {
+  async function updateMetrics(): Promise<any> {
     try {
       // Get Redis stats
       const redisData = await redisOrchestratorClient.getSystemHealth();
@@ -134,7 +134,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       console.error('Error updating metrics:', error);
     }
   }
-  async function getGPUMetrics() {
+  async function getGPUMetrics(): Promise<any> {
     try {
       // Simulate GPU metrics - replace with actual NVIDIA-ML or GPU monitoring
       return {
@@ -146,7 +146,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       return { utilization 0, memory_used_mb: 0, temperature: 0 }
     }
   }
-  async function getMCPStats() {
+  async function getMCPStats(): Promise<any> {
     try {
       const response = await fetch('http://localhost:3002/mcp/metrics')
       if ((response as { ok?: any; json?: any }).ok) {

@@ -38,7 +38,7 @@
   let hoveredNode = $state<any>(null);
   let networkMetrics = $state<any>({});
   let clusterData = $state<any[]>([]);
-  let isLoading = $state(true);
+  let isLoading = $state<boolean>(true);
   let analysisMode = $state<'relationships' | 'importance' | 'timeline' | 'similarity'>('relationships');
   // Network data
   let nodes = $state<any[]>([]);
@@ -74,17 +74,17 @@
         if (realTimeUpdates) {
           setupRealTimeUpdates();
         }
-        isLoading = $state(false);
+        isLoading = false;
       } catch (error) {
         console.error('Failed to initialize network analysis:', error);
-        isLoading = $state(false);
+        isLoading = false;
       }
     })();
   });
   onDestroy(() => {
     simulation?.stop();
   });
-  async function initializeNetwork() {
+  async function initializeNetwork(): Promise<void> {
     // Create SVG container - append to the bound container element
     svg = d3.select(containerElement || document.body).append('svg')
       .attr('width', width)
@@ -101,7 +101,7 @@
     // Create container for network elements
     svg.append('g').attr('class', 'network-container');
   }
-  async function processNetworkData() {
+  async function processNetworkData(): Promise<any> {
     // Process evidence data into nodes
     nodes = evidenceData.map(evidence => ({
       id: evidence.id,

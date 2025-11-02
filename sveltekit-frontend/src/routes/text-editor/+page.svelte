@@ -6,6 +6,7 @@ https://svelte.dev/e/expected_token -->
   Legal AI Platform - Text Editor
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   // Some lucide-svelte installations/types export icons differently.
   // Import the single working icon and use simple fallbacks for others.
@@ -51,7 +52,7 @@ https://svelte.dev/e/expected_token -->
   function handleSave() {
     console.log('Saving document:', { title: documentTitle, content: editorValue });
     lastSaved = new Date();
-    isModified = $state(false);
+    isModified = false;
   }
   function handleDownload() {
     const blob = new Blob([editorValue], { type: 'text/plain' });

@@ -1,6 +1,7 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
+import type { Message } from '$lib/types';
   import { browser } from '$app/environment';
   import { slide } from 'svelte/transition';
   let {
@@ -25,10 +26,10 @@
     showSources?: boolean;
     showMetadata?: boolean;
   } = $props();
-  let formattedTime = $state('');
-  let isLoading = $state(false);
-  let isSourcesExpanded = $state(false);
-  let isMetadataExpanded = $state(false);
+  let formattedTime = $state<string>('');
+  let isLoading = $state<boolean>(false);
+  let isSourcesExpanded = $state<boolean>(false);
+  let isMetadataExpanded = $state<boolean>(false);
   // Format timestamp
   $effect(() => {
     if (browser) {
@@ -39,7 +40,7 @@
     }
   });
   // Copy message content to clipboard
-  async function copyToClipboard() {
+  async function copyToClipboard(): Promise<any> {
     if (!browser) return;
     try {
       await navigator.clipboard.writeText(message.content);

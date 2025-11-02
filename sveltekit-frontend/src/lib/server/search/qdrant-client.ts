@@ -4,7 +4,7 @@ const COLLECTION = process.env.QDRANT_COLLECTION ?? 'citations';
  * Minimal vector search against Qdrant HTTP API.
  * Provide embedding (array of numbers) and receive top-K point ids with scores.
  */
-export async function qdrantSearch(embedding: number[], topK = 10) {
+export async function qdrantSearch(embedding: number[], topK = 10): Promise<any> {
   const url = `${QDRANT_URL}/collections/${COLLECTION}/points/search`;
   const body = {
     vector: embedding,

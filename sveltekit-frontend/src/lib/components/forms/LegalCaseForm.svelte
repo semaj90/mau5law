@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Import local UI components (paths updated during migration)
   import { ButtonBitsRaw } from '$lib/components/ui/button/Button.svelte';
   import { CardBitsRaw } from '$lib/components/ui/Card.svelte';
@@ -24,8 +25,8 @@
     deadline: '',
   });
   let formErrors = $state<Record<string, string>>({});
-  let isSubmitting = $state(false);
-  let activeTab = $state('basic');
+  let isSubmitting = $state<boolean>(false);
+  let activeTab = $state<string>('basic');
   // Form validation
   function validateForm(): boolean {
     const errors: Record<string, string> = {};
@@ -48,7 +49,7 @@
     return Object.keys(errors).length === 0;
   }
   // Form submission
-  async function handleSubmit() {
+  async function handleSubmit(): Promise<any> {
     if (!validateForm()) {
       addToast({
         variant: 'warning',

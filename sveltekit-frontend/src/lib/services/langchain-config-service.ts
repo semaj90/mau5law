@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import { ollamaCudaService, type ModelMetrics } from './ollama-cuda-service.js';
 /**
  * LangChain Configuration Service

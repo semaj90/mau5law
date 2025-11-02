@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Vector Search WebASM Integration
  * Integrates WebASM inference with existing vector search pipeline

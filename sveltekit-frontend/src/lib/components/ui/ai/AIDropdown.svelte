@@ -17,7 +17,7 @@
 	} = $props();
 
 	// Local UI state stays as $state
-	let isOpen = $state(false);
+	let isOpen = $state<boolean>(false);
 	let highlighted = $state<number | null>(null);
 
 	// Keep a default highlight when opening

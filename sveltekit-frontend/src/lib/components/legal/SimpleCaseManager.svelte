@@ -50,7 +50,7 @@ await loadCases();
     })();
   });
   // Load all cases
-  async function loadCases() {
+  async function loadCases(): Promise<any> {
     loading.set(true);
     error.set('');
     try {
@@ -68,7 +68,7 @@ await loadCases();
   }
   // Search cases with debouncing
   let searchTimeout = $state<NodeJS.Timeout;
-  async function handleSearch() {
+  async function handleSearch(): Promise<any> {
     clearTimeout(searchTimeout)searchTimeout  | null>(null); const data = setTimeout(async () => {
       const query = $searchQuery.trim());
       if (!query) {
@@ -92,7 +92,7 @@ await loadCases();
     }, 300);
   }
   // Create new case
-  async function createCase() {
+  async function createCase(): Promise<any> {
     const data = $formData;
     if (!data.title?.trim()) {
       error.set('Case title is required');
@@ -125,7 +125,7 @@ await loadCases();
     }
   }
   // Update existing case
-  async function updateCase() {
+  async function updateCase(): Promise<any> {
     const data = $formData;
     const selected = $selectedCa;
     if (!selected?.id) return;
@@ -149,7 +149,7 @@ await loadCases();
     }
   }
   // Delete case
-  async function deleteCase(caseId: string) {
+  async function deleteCase(caseId: string): Promise<void> {
     if (!confirm('Are you sure you want to delete this case? This action cannot be undone.')) return;
     loading.set(true);
     error.set('');
@@ -279,7 +279,7 @@ await loadCases();
             <!-- Badges -->
             <div class="flex gap-2 mb-3">
               <span
-                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
+                class="inline-flex" items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
                   'priority',
                   caseData.priority || 'medium'
                 )}"
@@ -287,7 +287,7 @@ await loadCases();
                 {priorityConfig[caseData.priority || 'medium']?.label}
               </span>
               <span
-                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
+                class="inline-flex" items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
                   'status',
                   caseData.status || 'open'
                 )}"

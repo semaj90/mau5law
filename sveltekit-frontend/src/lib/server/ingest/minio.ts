@@ -125,7 +125,7 @@ export function parseMinioUrl(url: string): { bucket: string; key: string } {
 /**
  * Fetches an object from MinIO using its URL and returns its contents and metadata.
  */
-export async function fetchMinioObject(url: string) {
+export async function fetchMinioObject(url: string): Promise<Response> {
   const { bucket, key } = parseMinioUrl(url);
   const client = getS3Client();
   const res = await client.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
@@ -196,7 +196,7 @@ export async function uploadMinioObject(
 /**
  * Performs a health check on the MinIO service by attempting to list buckets.
  */
-export async function healthCheck() {
+export async function healthCheck(): Promise<any> {
   try {
     const client = getS3Client();
     await client.send(new ListBucketsCommand({}));

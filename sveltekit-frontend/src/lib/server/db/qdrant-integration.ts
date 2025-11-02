@@ -376,7 +376,7 @@ export class QdrantPostgreSQLService {
           .limit(batchSize)
           .offset(offset);
         if (!batch || (batch as any[]).length === 0) {
-          hasMore = $state(false);
+          hasMore = false;
           break;
         }
         // Process batch
@@ -402,8 +402,8 @@ export class QdrantPostgreSQLService {
   // HEALTH CHECK AND MONITORING
   // ============================================================================
   async healthCheck(): Promise<any> {
-    let postgresql = $state(false);
-    let qdrant = $state(false);
+    let postgresql = $state<boolean>(false);
+    let qdrant = $state<boolean>(false);
     let collections: string[] = [];
     // Check PostgreSQL
     try {

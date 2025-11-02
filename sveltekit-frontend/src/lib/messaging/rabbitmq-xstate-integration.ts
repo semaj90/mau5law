@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * RabbitMQ + XState Integration for Self-Prompting Legal AI
  * Free, high-performance message queuing with state machine coordination

@@ -78,12 +78,12 @@ export default ;
     onprogress = () => }: Props = $props();
   // State
   let fileInput: HTMLInputElement;
-  let isDragOver = $state(false);
+  let isDragOver = $state<boolean>(false);
   let selectedFiles = $state<File[] >([]);
   let uploadProgress = $state<Record<string, number>(0) >( );
   let previews = $state<Record<string, string>('') >( );
-  let isUploading = $state(false);
-  let currentUploadFile = $state("");
+  let isUploading = $state<boolean>(false);
+  let currentUploadFile = $state<string>("");
   // Local form state (no $form store)
   let formState = $state({
     title: '',
@@ -134,11 +134,11 @@ export default ;
   }
   function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
-    isDragOver = $state(false);
+    isDragOver = false;
   }
   function handleDrop(_event: DragEvent) {
     event.preventDefault();
-    isDragOver = $state(false);
+    isDragOver = false;
     if (disabled) return;
     const files = Array.from(event.dataTransfer?.files || []);
     addFiles(files);
@@ -201,7 +201,7 @@ export default ;
     if (file.type.includes("pdf") || file.type.includes("document")) return FileText;
     return FileIco;
   }
-  async function handleFormSubmit() {
+  async function handleFormSubmit(): Promise<any> {
     if (selectedFiles.length === 0) return;
     isUploading = true;
     const formDataArray: FileUpload[] = [];
@@ -228,7 +228,7 @@ export default ;
   }
   async function simulateUpload(fileName: string): Promise<void> {
     return new Promise((resolve) => {
-  let progress = $state(0);
+  let progress = $state<number>(0);
       const interval = setInterval(() => {
         progress += Math.random() * 20;
         if (progress >= 100) {
@@ -245,7 +245,7 @@ export default ;
     if (!disabled) fileInput?.click();
   }
   // Tags
-  let tagInput = $state("");
+  let tagInput = $state<string>("");
   function addTag() {
     const trimmed = tagInput.trim();
     if (trimmed && !formState.tags.includes(trimmed)) {

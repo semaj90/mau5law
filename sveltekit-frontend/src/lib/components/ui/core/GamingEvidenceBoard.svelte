@@ -1,5 +1,6 @@
 <!-- Gaming Evidence Board Recreation - Enhanced-Bits + WebGPU -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   import { fade, scale, fly } from 'svelte/transition';
   import { browser } from '$app/environment';
@@ -63,8 +64,8 @@
     ];
   });
   let selectedEvidence = $state<string | null>(null);
-  let isConnected = $state(false);
-  let zoom = $state(100);
+  let isConnected = $state<boolean>(false);
+  let zoom = $state<number>(100);
   // Enhanced-Bits builders for different evidence types
   let evidenceBuilders = $derived(() => {
     return evidenceItems.reduce((builders, item) => {

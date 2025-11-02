@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Supercharged Legal AI API
  * Demonstrates the complete Redis + WebGPU + SIMD JSON integration

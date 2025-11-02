@@ -34,12 +34,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   	let pannerNode: PannerNod;
   	let gainNode: GainNod;
   	let oscillator: OscillatorNode | null = null;
-  	let isInteracting = $state(false);
-  	let mounted = $state(false);
+  	let isInteracting = $state<boolean>(false);
+  	let mounted = $state<boolean>(false);
   	// N64-style visual effects
   	let vertexJitter = $state({ x: 0, y: 0 });
-  	let pixelDrift = $state(0);
-  	let colorBleed = $state(1);
+  	let pixelDrift = $state<number>(0);
+  	let colorBleed = $state<number>(1);
   	// Audio configuration
   	const audioConfig = {
   		baseFrequency: 440,
@@ -53,7 +53,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   	let percentage = $derived(((value - min) / (max - min)) * 100);
   	let normalizedValue = $derived((value - min) / (max - min));
   	// Initialize spatial audio system
-  	async function initializeAudio() {
+  	async function initializeAudio(): Promise<void> {
   		if (!audioEnabled || !mounted) return;
   		try {
   			audioContext = new AudioContext();
@@ -143,7 +143,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   	}
   	// Handle interaction end
   	function handleInteractionEnd() {
-  		isInteracting = $state(false);
+  		isInteracting = false;
   		if (oscillator) {
   			try {
   				oscillator.stop();
@@ -209,7 +209,7 @@ mounted = true;
     })();
   });
   	onDestroy(() => {
-  		mounted = $state(false);
+  		mounted = false;
   		if (animationFrame) {
   			cancelAnimationFrame(animationFrame);
   		}

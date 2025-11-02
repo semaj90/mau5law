@@ -11,14 +11,14 @@ export const GET: RequestHandler = async () => {
       userCount = usersResult.length;
       sample = usersResult[0] || null;
     } catch (e: any) {
-      joinOk = $state(false);
+      joinOk = false;
       joinError = 'users select failed: ' + (e instanceof Error ? e.message : String(e));
     }
     try {
       const sessionsResult = await db.select({ id: sessions.id }).from(sessions).limit(1);
       sessionCount = sessionsResult.length;
     } catch (e: any) {
-      joinOk = $state(false);
+      joinOk = false;
       joinError = (joinError || '') + ' | sessions select failed: ' + (e instanceof Error ? e.message : String(e));
     }
     return json({

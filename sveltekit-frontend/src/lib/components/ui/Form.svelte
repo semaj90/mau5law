@@ -49,7 +49,7 @@
       onchange?.({ values: $form.values });
     }
   });
-  async function handleSubmit(_event: SubmitEvent) {
+  async function handleSubmit(_event: SubmitEvent): Promise<any> {
     _event.preventDefault();
     const isValid = await form.submit();
     if (!isValid) {

@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Protocol Buffer Vector Search Client
  * High-performance client for vector search operations using binary protocol buffers

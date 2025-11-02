@@ -58,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Load all cases
-  async function loadCases() {
+  async function loadCases(): Promise<any> {
     loading.set(true);
     error.set('');
     try {
@@ -77,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Search cases
-  async function searchCases(query: string) {
+  async function searchCases(query: string): Promise<any> {
     if (!query || !query.trim()) {
       await loadCases();
       return;
@@ -99,7 +99,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Create new case
-  async function createCase() {
+  async function createCase(): Promise<any> {
     const data = $formData;
     if (!data.title?.trim()) {
       error.set('Case title is required');
@@ -131,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Update existing case
-  async function updateCase() {
+  async function updateCase(): Promise<any> {
     const data = $formData;
     const selected = $selectedCase;
     if (!selected?.id) return;
@@ -154,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Delete case
-  async function deleteCase(caseId: string) {
+  async function deleteCase(caseId: string): Promise<void> {
     if (!confirm('Are you sure you want to delete this case?')) return;
     loading.set(true);
     error.set('');

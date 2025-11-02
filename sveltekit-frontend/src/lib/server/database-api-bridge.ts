@@ -1,3 +1,5 @@
+import type { Message } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Database API Bridge - Connects PostgreSQL schema with API endpoints
  * Provides type-safe database operations for the legal AI platform

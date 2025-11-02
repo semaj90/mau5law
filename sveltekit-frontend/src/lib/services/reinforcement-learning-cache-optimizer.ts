@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Reinforcement Learning Cache Optimizer
  * Uses Q-Learning and Deep Q-Networks for GPU cache optimization

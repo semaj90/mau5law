@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import { getOllamaEndpoint } from '$lib/server/helpers/ollama';
 /**
  * Gemma3 Legal Model Configuration

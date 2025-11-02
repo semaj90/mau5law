@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Production-Ready Sora & Moogle Integration
  * Native Windows deployment with existing stack compatibility

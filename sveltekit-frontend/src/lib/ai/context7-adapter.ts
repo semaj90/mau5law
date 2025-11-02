@@ -2,7 +2,7 @@
 // This file provides performContext7Search, context7AgentOrchestrator, and context7SemanticAuditor
 // as small wrappers that work with the real WASM binding or the mock implementation.
 import context7 from '$lib/integrations/context7-wasm';
-export async function ensureContext7Ready(opts?: any) {
+export async function ensureContext7Ready(opts?: any): Promise<any> {
   try {
     const impl = await context7;
     if (impl && typeof impl.initialize === 'function') {
@@ -20,7 +20,7 @@ export async function performContext7Search(_options: {
   confidenceThreshold?: number;
   includeCode?: boolean;
   includeDocs?: boolean;
-}) {
+}): Promise<any> {
   const impl = await ensureContext7Ready();
   if (!impl || typeof (impl as { performSearch?: (...args: any[]) => unknown }).performSearch !== 'function') {
     // mock fallback: do a trivial in-memory search stub

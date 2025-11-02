@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { json } from "@sveltejs/kit"
 import { db } from "$lib/server/db/index"
 import { caseActivities, cases, evidence, statutes } from "$lib/server/db/schema" // Changed import path

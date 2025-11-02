@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // Case Service - Production Implementation for Legal AI Platform
 import { getAuthHeaders } from './auth-service.js';
 export interface LegalCase {

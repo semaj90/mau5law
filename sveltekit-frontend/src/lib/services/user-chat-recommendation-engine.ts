@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * User Chat Recommendation Engine with Reinforcement Learning
  * Features: XState management, RabbitMQ queuing, Neo4j storage, IndexedDB caching

@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Cleaned and fixed Neo4j Transformers Summarization pipeline.
  * - Valid TypeScript, fixed imports / signatures / typos.

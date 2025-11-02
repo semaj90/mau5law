@@ -3,6 +3,7 @@
   Integrates: Fuse.js + MinIO + PostgreSQL + pgvector + Qdrant + Loki.js
 -->
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, tick } from 'svelte';
   import { goto } from '$app/navigation';
@@ -21,10 +22,10 @@
     className = ""
   }: Props = $props();
   // Search state
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults = $state<SearchResult[]>([]);
-  let showDropdown = $state(false);
-  let isLoading = $state(false);
+  let showDropdown = $state<boolean>(false);
+  let isLoading = $state<boolean>(false);
   let selectedIndex = $state(-1);
   // Filter state
   let selectedFilters = $state({
@@ -67,7 +68,7 @@ await initializeSearchServices();
     setupKeyboardNavigation();
     })();
   });
-  async function initializeSearchServices() {
+  async function initializeSearchServices(): Promise<void> {
     console.log('🔍 Initializing unified search services...');
     try {
       // Initialize Fuse.js with evidence data
@@ -145,10 +146,10 @@ await initializeSearchServices();
     ];
   }
   // Unified search across all data stores
-  async function performSearch(query: string) {
+  async function performSearch(query: string): Promise<any> {
     if (!query.trim() || query.length < 2) {
       searchResults = [];
-      showDropdown = $state(false);
+      showDropdown = false;
       return;
     }
     // Check cache first
@@ -301,7 +302,7 @@ await initializeSearchServices();
   }
   function handleResultClick(result: SearchResult) {
     searchQuery = (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).titl;
-    showDropdown = $state(false);
+    showDropdown = false;
     goto(`/evidence/${(result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).id}`);
   }
   function handleKeydown(_event: KeyboardEvent) {
@@ -324,7 +325,7 @@ await initializeSearchServices();
         }
         break;
       case 'Escape':
-        showDropdown = $state(false);
+        showDropdown = false;
         selectedIndex = -1;
         searchInput.blur();
         break;
@@ -333,7 +334,7 @@ await initializeSearchServices();
   function setupKeyboardNavigation() {
     document.addEventListener('click', (event) => {
       if (!dropdownContainer?.contains(event.target as Node)) {
-        showDropdown = $state(false);
+        showDropdown = false;
         selectedIndex = -1;
       }
     });

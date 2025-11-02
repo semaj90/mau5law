@@ -20,7 +20,7 @@
     showPercentage = true,
     size = 'md',
     retro = true,
-    sparkle = $state(false);
+    sparkle = false;
   }: Props = $props();
   let percentage = $derived(Math.min((value / max) * 100, 100));
   // N64 Controller inspired color themes

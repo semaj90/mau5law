@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 
 // Complete Vector Search Service - Production Ready
 // Combines PostgreSQL pgvector + Qdrant + Local caching + Loki.js + Fuse.js

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Test file for Enhanced Caching Integration
  * Validates embedding cache, query cache, and pgvector integration

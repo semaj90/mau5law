@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import crypto from "crypto";
 // XState Legal Form Machine for AI-Aware Browser States
 // Integrates with Phase 8 Matrix UI System and Context7 MCP

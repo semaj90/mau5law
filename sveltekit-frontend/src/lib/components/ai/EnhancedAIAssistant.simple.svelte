@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Brain, Loader2, Quote, Search, Settings, Trash2, Mic, MicOff } from 'lucide-svelte';
-  import * as Dialog from 'bits-ui/components/dialog'; // Import Bits UI Dialog components
+  import * as Dialog from 'bits-ui/components/Dialog'; // Import Bits UI Dialog components
   // Exported props (Svelte 5)
   const { caseId } = $props<{ caseId: string | undefined }>()
   const { evidenceIds } = $props<{ evidenceIds: string[] }>()
@@ -11,19 +11,19 @@
   const { enableVoiceInput } = $props<{ enableVoiceInput: boolean }>()
   const { ondispatch } = $props<{ ondispatch: ((citation: string) }>()
   // State
-  let query = $state('');
-  let isLoading = $state(false);
+  let query = $state<string>('');
+  let isLoading = $state<boolean>(false);
   let messages = $state<any[]>([]);
-  let showSettings = $state(false);
-  let showCitationDialog = $state(false);
-  let selectedCitation = $state('');
-  let selectedModel = $state('gemma3-legal:latest'); // Default to an Ollama model
+  let showSettings = $state<boolean>(false);
+  let showCitationDialog = $state<boolean>(false);
+  let selectedCitation = $state<string>('');
+  let selectedModel = $state<string>('gemma3-legal:latest'); // Default to an Ollama model
   let searchThreshold = $state(0.7);
-  let maxResults = $state(5);
+  let maxResults = $state<number>(5);
   let temperature = $state(0.7);
   let enabledSources = $state(['cases', 'statutes', 'regulations', 'secondary']);
   // Voice input support
-  let isListening = $state(false);
+  let isListening = $state<boolean>(false);
   let recognition: SpeechRecognition | null = null;
   $effect(() => {
     // Initialize speech recognition if available and enabled
@@ -36,18 +36,18 @@
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         query = transcript;
-        isListening = $state(false);
+        isListening = false;
       };
       recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
-        isListening = $state(false);
+        isListening = false;
       };
       recognition.onend = () => {
-        isListening = $state(false);
+        isListening = false;
       };
     }
   });
-  async function handleSubmit(event: SubmitEvent) {
+  async function handleSubmit(event: SubmitEvent): Promise<any> {
     event.preventDefault();
     if (!query.trim() || isLoading) return;
     isLoading = true;
@@ -115,7 +115,7 @@
   }
   function insertCitation() {
     ondispatch?.(selectedCitation);
-    showCitationDialog = $state(false);
+    showCitationDialog = false;
   }
   function clearMessages() {
     messages = [];

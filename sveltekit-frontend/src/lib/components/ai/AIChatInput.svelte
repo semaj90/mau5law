@@ -1,5 +1,6 @@
 <!-- AI Chat Input Component -->
 <script lang="ts">
+import type { Message } from '$lib/types';
   import { debounce } from '$lib/utils/debounce';
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
@@ -16,7 +17,7 @@
   }>();
   // Elements / state
   let textarea: HTMLTextAreaElement | null = null;
-  let isMultiline = $state(false); // Changed to use $state rune
+  let isMultiline = $state<boolean>(false); // Changed to use $state rune
   // Debounced input handler
   const debouncedHandleInput = debounce((event: Event) => handleInput(event), 300);
   // Auto-focus on mount and initialize textarea height

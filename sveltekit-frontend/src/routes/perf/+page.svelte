@@ -162,7 +162,7 @@
   let profilingSnapshot: ProfilingSnapshot | null = $state(null);
   let profilingHistory: ProfilingHistoryEntry[] = $state([]);
   let lastProfilingFetched: number | null = $state(null);
-  async function fetchCudaEndpoint(path: string) {
+  async function fetchCudaEndpoint(path: string): Promise<Response> {
     try {
       const r = await fetch(`/api/cuda${path}`);
       if (r.ok) return await r.json();
@@ -171,7 +171,7 @@
     }
     return null;
   }
-  async function refreshEnginesWorkersProfiling() {
+  async function refreshEnginesWorkersProfiling(): Promise<any> {
     const [eng, wrk, prof, profHist] = await Promise.all([
       fetchCudaEndpoint('/metrics/gpu/engines'),
       fetchCudaEndpoint('/metrics/workers'),
@@ -213,7 +213,7 @@
     return `${secs}s`;
   }
   // Load comprehensive caching metrics
-  async function loadCacheMetrics() {
+  async function loadCacheMetrics(): Promise<any> {
     try {
       // Try multiple cache endpoints
       const endpoints = ['/api/v1/cache/stats', '/api/cache/metrics', '/api/perf/cache'];
@@ -264,7 +264,7 @@
     }
   }
   // Load WebAssembly performance metrics
-  async function loadWasmMetrics() {
+  async function loadWasmMetrics(): Promise<any> {
     try {
       const res = await fetch('/api/wasm/metrics');
       if (res.ok) {
@@ -320,7 +320,7 @@
     }
   }
   // Load Node.js event loop and performance metrics
-  async function loadNodeMetrics() {
+  async function loadNodeMetrics(): Promise<any> {
     try {
       const res = await fetch('/api/node/metrics');
       if (res.ok) {
@@ -368,7 +368,7 @@
     }
   }
   // Load service health metrics
-  async function loadServiceHealth() {
+  async function loadServiceHealth(): Promise<any> {
     try {
       const res = await fetch('/api/v1/cluster/health');
       if (res.ok) {
@@ -389,7 +389,7 @@
     }
   }
   // Load all enhanced metrics
-  async function loadAllEnhancedMetrics() {
+  async function loadAllEnhancedMetrics(): Promise<any> {
     // fetch enhanced metrics from cuda-service proxy (assumes reverse proxy /api/cuda)
     try {
       const res = await fetch('/api/cuda/metrics/enhanced');
@@ -474,7 +474,7 @@
       console.error('Failed to fetch anomaly stats', e);
     }
   }
-  async function load() {
+  async function load(): Promise<any> {
     try {
   loading.set(true);
       const res = await fetch('/api/perf');
@@ -1179,14 +1179,14 @@
     <h2 class="font-medium mb-3">🏥 Service Health Matrix</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
       {#each Array.isArray($serviceHealth) ? $serviceHealth : [] as service}
-      <div class="p-3 bg-gray-50 rounded border-l-4 {
+      <div class="p-3" bg-gray-50 rounded border-l-4 {
         service.health === 'excellent' ? 'border-green-500' :
         service.health === 'good' ? 'border-blue-500' :
         service.health === 'fair' ? 'border-yellow-500' : 'border-red-500'
       }">
         <div class="flex items-center justify-between mb-2">
           <span class="font-medium text-sm">{service.name}</span>
-          <span class="text-xs px-2 py-1 rounded {
+          <span class="text-xs" px-2 py-1 rounded {
             service.status === 'running' ? 'bg-green-100 text-green-800' :
             'bg-red-100 text-red-800'
           }">

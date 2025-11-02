@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * Anonymous Chat API - Production Ready
  *

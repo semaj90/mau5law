@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /// <reference types="vite/client" />
 import crypto from 'crypto';
 import { json, error } from '@sveltejs/kit';

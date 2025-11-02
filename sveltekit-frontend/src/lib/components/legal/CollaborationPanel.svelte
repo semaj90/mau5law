@@ -61,12 +61,12 @@ Real-time collaboration interface for multiple investigators working on evidence
     collaborationSession = initialCollaborationSession;
   });
   // Local state (Svelte 5 runes)
-  let newMessage = $state('');
-  let newAnnotation = $state('');
-  let showAnnotationInput = $state(false);
+  let newMessage = $state<string>('');
+  let newAnnotation = $state<string>('');
+  let showAnnotationInput = $state<boolean>(false);
   let annotationPosition = $state<Position>({ x: 0, y: 0 });
   let chatContainer: HTMLDivElement;
-  let isTyping = $state(false);
+  let isTyping = $state<boolean>(false);
   let typingUsers = $state<string[]>([]);
   // Auto-scroll chat to bottom when new messages arrive
   $effect(() => {
@@ -144,7 +144,7 @@ Real-time collaboration interface for multiple investigators working on evidence
       chatHistory: [...collaborationSession.chatHistory, message]
     };
     newMessage = '';
-    isTyping = $state(false);
+    isTyping = false;
   }
   function handleTyping() {
     if (!wsConnection || !collaborationSession) return;
@@ -180,7 +180,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     };
     onAddAnnotation(newAnnotation.trim(), annotationPosition);
     newAnnotation = '';
-    showAnnotationInput = $state(false);
+    showAnnotationInput = false;
   }
   function formatTimestamp(timestamp: string) {
     const date = new Date(timestamp);

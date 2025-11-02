@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /// <reference types="vite/client" />
 import type { RequestHandler } from './$types.js'
 /*

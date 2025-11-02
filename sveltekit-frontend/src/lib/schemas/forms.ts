@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 import { z } from 'zod';
 // Case creation form schema
 export const caseFormSchema = z.object({

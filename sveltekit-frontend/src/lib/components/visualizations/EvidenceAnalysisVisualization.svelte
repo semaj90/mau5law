@@ -21,7 +21,7 @@
     // Guard for SSR/build-time: only run in browser
     if (typeof window === 'undefined') return;
 
-    let cancelled = $state(false);
+    let cancelled = $state<boolean>(false);
     (async () => {
       if (!Chart) {
         // dynamic import so TS doesn't require: 'chart.js/auto' at build-time

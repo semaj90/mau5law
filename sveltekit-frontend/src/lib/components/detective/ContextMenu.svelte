@@ -36,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
   import type { Case, Evidence } from "$lib/types/index";
   // --- Phase 10: Context7 Evidence Actions ---
   // Trigger semantic audit, agent review, or vector search for this evidence
-  async function auditEvidence() {
+  async function auditEvidence(): Promise<any> {
     if (!item) return;
     try {
       const res = await fetch('/api/audit/semantic', {
@@ -53,7 +53,7 @@ https://svelte.dev/e/js_parse_error -->
     }
     closeMenu();
   }
-  async function triggerAgentReview() {
+  async function triggerAgentReview(): Promise<any> {
     if (!item) return;
     try {
       const res = await fetch('/api/agent/trigger', {
@@ -65,13 +65,13 @@ https://svelte.dev/e/js_parse_error -->
     closeMenu();
   }
   let cases = $state<Case[]>([]);
-  let menuOpen = $state(true);
+  let menuOpen = $state<boolean>(true);
     }
     closeMenu();
   }
   }
   let cases = $state<Case[] >([]);
-  let menuOpen = $state(true);
+  let menuOpen = $state<boolean>(true);
   $effect(() => {
     (async () => {
 // Load available cases
@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
     closeMenu();
   }
   function closeMenu() {
-    menuOpen = $state(false);
+    menuOpen = false;
     onclose?.();
   }
 </script>

@@ -301,11 +301,11 @@ https://svelte.dev/e/js_parse_error -->
   let settingsModalContentRef: HTMLDivElement | null = null;
   // Unified close helpers
   function closeEvidenceModal() {
-    showEvidenceModal = $state(false);
+    showEvidenceModal = false;
     selectedEvidence = null;
   }
   function closeSettingsModal() {
-    showSettingsModal = $state(false);
+    showSettingsModal = false;
   }
   // Keyboard handlers for overlay and content
   function handleOverlayKeydown(e: KeyboardEvent, closeFn: () => void) {

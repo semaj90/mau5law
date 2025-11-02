@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
   let { data, form  }: { data, form : any } = $props();
-  let isAutoLoggingIn = $state(false);
+  let isAutoLoggingIn = $state<boolean>(false);
   // Check for registration success message
   let showRegistrationSuccess = $derived($page.url.searchParams.get('registered') === 'true');
   // Auto-fill demo user credentials
@@ -34,7 +34,7 @@ https://svelte.dev/e/js_parse_error -->
     autoLoginDemo();
   }
   // Auto-login with demo user (skip form submission)
-  async function quickDemoLogin() {
+  async function quickDemoLogin(): Promise<any> {
     console.log('⚡ Quick demo login clicked');
     isAutoLoggingIn = true;
     try {

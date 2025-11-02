@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Dimensional Tensor Store - WebGPU Memory Management
  *

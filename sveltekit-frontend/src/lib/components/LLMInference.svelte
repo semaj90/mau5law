@@ -1,11 +1,11 @@
 <script lang="ts">
   import { getAvailableModels, runInference } from '$lib/llm/tauri-llm';
   let models: string[] = $state([]);
-  let selectedModel = $state('');
-  let prompt = $state('');
-  let result = $state('');
-  let loading = $state(false);
-  let error = $state('');
+  let selectedModel = $state<string>('');
+  let prompt = $state<string>('');
+  let result = $state<string>('');
+  let loading = $state<boolean>(false);
+  let error = $state<string>('');
   $effect(() => {
     (async () => {
       try {
@@ -16,7 +16,7 @@
       }
     })();
   });
-  async function handleInference() {
+  async function handleInference(): Promise<any> {
     if (!selectedModel || !prompt.trim()) return;
     loading = true;
     error = '';

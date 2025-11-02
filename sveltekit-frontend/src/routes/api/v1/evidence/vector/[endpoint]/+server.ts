@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Minimal Vector Evidence API - Simplified for error reduction
  */

@@ -1,3 +1,6 @@
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Service Integration Types - SvelteKit 2 + Svelte 5 Compatible
  * Following FULL_STACK_INTEGRATION_COMPLETE.md architecture

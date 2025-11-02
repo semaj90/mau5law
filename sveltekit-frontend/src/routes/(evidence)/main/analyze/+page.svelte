@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { goto } from '$app/navigation';
   // Badge replaced with span - not available in enhanced-bits
   import Button from '$lib/components/ui/Button.svelte';
@@ -53,19 +55,19 @@
   }
 
   // Svelte 5 runes - reactive state
-  let analyzing = $state(false);
+  let analyzing = $state<boolean>(false);
   let results = $state<AnalysisResults | null>(null);
-  let error = $state('');
-  let progress = $state(0);
-  let showResults = $state(false);
+  let error = $state<string>('');
+  let progress = $state<number>(0);
+  let showResults = $state<boolean>(false);
 
   // Form data
-  let caseId = $state('');
-  let evidenceContent = $state('');
+  let caseId = $state<string>('');
+  let evidenceContent = $state<string>('');
   let evidenceFile = $state(null as File | null);
-  let evidenceType = $state('police_report');
-  let priority = $state('medium');
-  let sessionId = $state('');
+  let evidenceType = $state<string>('police_report');
+  let priority = $state<string>('medium');
+  let sessionId = $state<string>('');
 
   // Analysis pipeline steps with enhanced metadata
   let steps = $state([
@@ -131,7 +133,7 @@
   ];
 
   // Current step tracking (derived from progress) - use $state + $effect to update
-  let currentStep = $state(0);
+  let currentStep = $state<number>(0);
   $effect(() => {
     const total = steps.length || 1;
     const perStep = 100 / total;
@@ -213,7 +215,7 @@
 
       // Handle real AI response directly (no polling needed)
       updateProgress(4);
-      analyzing = $state(false);
+      analyzing = false;
       showResults = true;
 
       // Transform API response to expected format
@@ -236,7 +238,7 @@
       };
     } catch (err) {
       console.error('Evidence analysis error:', err);
-      analyzing = $state(false);
+      analyzing = false;
 
       // Production error handling
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
@@ -292,11 +294,11 @@
     evidenceFile = null;
     evidenceType = 'police_report';
     priority = 'medium';
-    analyzing = $state(false);
+    analyzing = false;
     results = null;
     error = '';
     progress = 0;
-    showResults = $state(false);
+    showResults = false;
     sessionId = '';
     // Reset steps - need to create new array to trigger reactivity
     steps = steps.map(step => ({ ...step, status: 'pending' as const }));

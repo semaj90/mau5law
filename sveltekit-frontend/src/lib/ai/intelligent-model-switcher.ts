@@ -184,7 +184,7 @@ class IntelligentModelSwitcher {
         optimizationResult
       );
       // Step 4: Execute switch if beneficial
-      let switchExecuted = $state(false);
+      let switchExecuted = $state<boolean>(false);
       let finalModel = currentModel;
       if (switchDecision.shouldSwitch) {
         const switchResult = await this.executeModelSwitch(currentModel, switchDecision.targetModel, userContext);

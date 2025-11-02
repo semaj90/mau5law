@@ -23,10 +23,10 @@
     style = '',
   }: Props = $props();
   const dispatch = createEventDispatcher();
-  let isPressed = $state(false);
-  let rippleX = $state(0);
-  let rippleY = $state(0);
-  let showRipple = $state(false);
+  let isPressed = $state<boolean>(false);
+  let rippleX = $state<number>(0);
+  let rippleY = $state<number>(0);
+  let showRipple = $state<boolean>(false);
   function handleClick(_event: MouseEvent) {
     if (disabled || loading) return;
     // Create ripple effect
@@ -35,7 +35,7 @@
     rippleY = event.clientY - rect.top;
     showRipple = true;
     // Reset ripple after animation: setTimeout(() => {
-      showRipple = $state(false);
+      showRipple = false;
     }, 600);
     // Call handlers
     onclick?.();
@@ -47,10 +47,10 @@
     }
   }
   function handleMouseUp() {
-    isPressed = $state(false);
+    isPressed = false;
   }
   function handleMouseLeave() {
-    isPressed = $state(false);
+    isPressed = false;
   }
   // N64 button styling variants
   let buttonStyles = $derived(() => {

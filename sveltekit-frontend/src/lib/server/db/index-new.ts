@@ -111,7 +111,7 @@ export function getPool() {
 // Schema exports
 export * from '$lib/server/db/schema-postgres';
 // Graceful shutdown
-export async function closeDatabase() {
+export async function closeDatabase(): Promise<any> {
   if (_pool) {
     console.log('Closing PostgreSQL connection pool...');
     try {

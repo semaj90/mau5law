@@ -401,7 +401,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       nextScores.set(nodeId, 0);
     }
     let iterations = 0;
-    let convergence = $state(false);
+    let convergence = $state<boolean>(false);
     while (iterations < this.config.maxIterations && !convergence) {
       // Reset next scores
       for (const nodeId of nodeIds) {

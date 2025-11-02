@@ -56,7 +56,7 @@ self.onmessage = async (e: MessageEvent) => {
     (self as unknown as Worker).postMessage({ type: 'worker_error', error: msg });
   }
 };
-async function performInference(prompt: string) {
+async function performInference(prompt: string): Promise<any> {
   // Simulated processing delay
   await new Promise(r => setTimeout(r, 5));
   return {

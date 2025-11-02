@@ -1,5 +1,5 @@
 import { registerBackend } from '$lib/services/providers/ollama/config';
-let initialized = $state(false);
+let initialized = $state<boolean>(false);
 function env(name: string, fallback?: string): string {
   if (typeof process !== 'undefined' && process.env[name]) return String(process.env[name]);
   if (typeof import.meta !== 'undefined' && (import.meta as any).env?.[name] !== undefined) {

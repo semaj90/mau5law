@@ -29,12 +29,12 @@
     errors: { total: 0, rate: 0 },
   });
   let workerMetrics = $state<WorkerMetrics[]>([]);
-  let isConnected = $state(false);
+  let isConnected = $state<boolean>(false);
   let lastUpdate = $state<string>('');
   // Control state
-  let isScaling = $state(false);
-  let isRestarting = $state(false);
-  let targetWorkers = $state(4);
+  let isScaling = $state<boolean>(false);
+  let isRestarting = $state<boolean>(false);
+  let targetWorkers = $state<number>(4);
   // Real-time updates
   let updateInterval = $state<NodeJS.Timeout | null>(null);
   let eventSource = $state<EventSource | null>(null);
@@ -45,7 +45,7 @@
     if (updateInterval) clearInterval(updateInterval);
     if (eventSource) eventSource.close();
   });
-  async function initializeClusterMonitoring() {
+  async function initializeClusterMonitoring(): Promise<void> {
     try {
       // Initial data load
       await fetchClusterStatus();
@@ -65,7 +65,7 @@
         lastUpdate = new Date().toLocaleTimeString();
       };
       eventSource.onerror = () => {
-        isConnected = $state(false);
+        isConnected = false;
         console.error('❌ Cluster monitoring connection lost');
       };
       // Fallback polling
@@ -74,7 +74,7 @@
       console.error('Failed to initialize cluster monitoring:', error);
     }
   }
-  async function fetchClusterStatus() {
+  async function fetchClusterStatus(): Promise<Response> {
     try {
       // removed unused response assignment
       if (response.ok) {
@@ -87,7 +87,7 @@
       console.error('Failed to fetch cluster status:', error);
     }
   }
-  async function scaleCluster(workers: number) {
+  async function scaleCluster(workers: number): Promise<any> {
     if (isScaling) return;
     isScaling = true;
     try {
@@ -109,7 +109,7 @@
       setTimeout(() => (isScaling = false), 3000);
     }
   }
-  async function rollingRestart() {
+  async function rollingRestart(): Promise<any> {
     if (isRestarting) return;
     if (!confirm('Are you sure you want to perform a rolling restart? This will restart all workers one by one.')) {
       return;
@@ -275,7 +275,7 @@
             class:bg-green-100={errorRateStatus === 'low'}
           >
             <AlertTriangle
-              class="h-5 w-5 {errorRateStatus === 'high'
+              class="h-5" w-5 {errorRateStatus === 'high'
                 ? 'text-red-600'
                 : errorRateStatus === 'medium'
                   ? 'text-yellow-600'

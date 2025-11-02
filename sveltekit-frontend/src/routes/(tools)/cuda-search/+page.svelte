@@ -1,5 +1,6 @@
 <!-- Test page for CUDA Search integration -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   import SearchBox from '$lib/components/SearchBox.svelte';
   // Handle search results
   function handleResults(data) {

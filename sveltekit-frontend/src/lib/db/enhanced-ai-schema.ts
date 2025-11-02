@@ -1,3 +1,5 @@
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
 // Enhanced AI Schema with GRPO-thinking, recommendation engine, and temporal scoring
 // Extends existing chat-schema.ts with advanced AI reasoning pipeline support
 import { pgTable, uuid, text, timestamp, jsonb, boolean, integer, decimal, real, vector } from 'drizzle-orm/pg-core';

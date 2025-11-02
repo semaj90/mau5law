@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import { writable, type Writable, get } from 'svelte/store';
 import type { LLMProvider } from '$lib/types/llm';
 

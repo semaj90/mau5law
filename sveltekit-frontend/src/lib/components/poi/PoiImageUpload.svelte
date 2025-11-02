@@ -8,12 +8,12 @@
     onUploadComplete?: (data: { imageUrl: string; [key: string]: any }) => void;
   }
   let { poiId, poiName = 'Person of Interest', currentImage, onUploadComplete }: Props = $props();
-  let uploading = $state(false);
-  let message = $state('');
+  let uploading = $state<boolean>(false);
+  let message = $state<string>('');
   let messageType = $state<'success' | 'error'>('success');
   let fileInput: HTMLInputElement | undefined;
   let preview = $state(currentImage || '');
-  async function handleFileSelect(event: Event) {
+  async function handleFileSelect(event: Event): Promise<any> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
@@ -38,7 +38,7 @@
     // Upload file
     await uploadImage(file);
   }
-  async function uploadImage(file: File) {
+  async function uploadImage(file: File): Promise<any> {
     try {
       uploading = true;
       message = '';

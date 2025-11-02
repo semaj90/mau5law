@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { goto } from '$app/navigation';
   // Badge replaced with span - not available in enhanced-bits
@@ -21,18 +23,18 @@ https://svelte.dev/e/js_parse_error -->
   import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValue } from '$lib/components/ui/select.svelte';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   // Reactive state with Svelte 5 syntax
-  let analyzing = $state(false);
-  let results = $state(null);
-  let error = $state('');
-  let progress = $state(0);
-  let showResults = $state(false);
+  let analyzing = $state<boolean>(false);
+  let results = $state<SearchResult[]>(null);
+  let error = $state<string>('');
+  let progress = $state<number>(0);
+  let showResults = $state<boolean>(false);
   // Form data
-  let caseId = $state('');
-  let evidenceContent = $state('');
-  let evidenceFile = $state(null);
-  let evidenceType = $state('police_report');
-  let priority = $state('medium');
-  let sessionId = $state('');
+  let caseId = $state<string>('');
+  let evidenceContent = $state<string>('');
+  let evidenceFile = $state<any>(null);
+  let evidenceType = $state<string>('police_report');
+  let priority = $state<string>('medium');
+  let sessionId = $state<string>('');
   // Analysis pipeline steps with enhanced metadata
   const steps = [
     {
@@ -111,7 +113,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Start analysis
-  async function startAnalysis() {
+  async function startAnalysis(): Promise<any> {
     if (!caseId || !evidenceContent) {
       error = 'Please provide a case ID and evidence content';
       return;
@@ -136,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
       }
       const data = await response.json();
       // Handle real AI response directly (no polling needed)
-      analyzing = $state(false);
+      analyzing = false;
       progress = 100;
       showResults = true;
 
@@ -168,7 +170,7 @@ https://svelte.dev/e/js_parse_error -->
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Generate mock analysis results
-      analyzing = $state(false);
+      analyzing = false;
       progress = 100;
       showResults = true;
       results = {
@@ -206,11 +208,11 @@ https://svelte.dev/e/js_parse_error -->
     evidenceFile = null;
     evidenceType = 'police_report';
     priority = 'medium';
-    analyzing = $state(false);
+    analyzing = false;
     results = null;
     error = '';
     progress = 0;
-    showResults = $state(false);
+    showResults = false;
     sessionId = '';
     // Reset steps
     steps.forEach(step => (step.status = 'pending'));

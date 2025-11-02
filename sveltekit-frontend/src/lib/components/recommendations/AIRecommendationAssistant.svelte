@@ -1,5 +1,7 @@
 <!-- 🤖 AI Recommendation Assistant with Gemma3 Integration -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import { fade, slide, fly } from 'svelte/transition';
   import { elasticOut } from 'svelte/easing';
@@ -40,16 +42,16 @@
   }: Props = $props();
   let recommendations = $state<AIRecommendation[]>([]);
   let suggestedActions = $state<AIAction[]>([]);
-  let aiReasoning = $state('');
-  let confidence = $state(0);
+  let aiReasoning = $state<string>('');
+  let confidence = $state<number>(0);
   let relatedTopics = $state<string[]>([]);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let selectedType = $state<'case-analysis' | 'search-suggestion' | 'workflow-optimization' | 'precedent-discovery'>('case-analysis');
-  let customQuery = $state('');
-  let isProcessing = $state(false);
+  let customQuery = $state<string>('');
+  let isProcessing = $state<boolean>(false);
   // AI Assistant state
-  let isThinking = $state(false);
-  let thinkingMessage = $state('Analyzing your legal context...');
+  let isThinking = $state<boolean>(false);
+  let thinkingMessage = $state<string>('Analyzing your legal context...');
   let processingSteps = $state<string[]>([]);
   const AI_ANALYSIS_TYPES = [
     {
@@ -78,11 +80,11 @@
       await generateRecommendations();
     }
   });
-  async function generateRecommendations() {
+  async function generateRecommendations(): Promise<any> {
     isLoading = true;
     isThinking = true;
     processingSteps = [];
-    let usingMockData = $state(false);
+    let usingMockData = $state<boolean>(false);
     try {
       // Simulate AI thinking process
       await simulateAIThinking();
@@ -149,7 +151,7 @@
       relatedTopics = ['Employment Law', 'Wrongful Termination', 'Precedent Analysis'];
     } finally {
       isLoading = false;
-      isThinking = $state(false);
+      isThinking = false;
       // Display fallback notice if using mock data
       if (usingMockData) {
         const notice = document.createElement('div');
@@ -161,7 +163,7 @@
       }
     }
   }
-  async function simulateAIThinking() {
+  async function simulateAIThinking(): Promise<any> {
     const steps = [
       'Connecting to Gemma3:legal-latest model...',
       'Analyzing legal context and case patterns...',
@@ -178,7 +180,7 @@
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
-  async function executeAction(action: AIAction) {
+  async function executeAction(action: AIAction): Promise<any> {
     isProcessing = true;
     try {
       const response = await fetch('/api/ai/execute-action', {

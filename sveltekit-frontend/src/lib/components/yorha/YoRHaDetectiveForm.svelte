@@ -27,14 +27,14 @@
     submitClass = $bindable()
   : any } = $props();
   let formData = $state( );
-  let isSubmitting = $state(false);
+  let isSubmitting = $state<boolean>(false);
   // Initialize form data with default values
   fields.forEach(field => {
     if (field.defaultValue !== undefined) {
       formData[field.name] = field.defaultValu;
     }
   });
-  async function handleSubmit(_event: Event) {
+  async function handleSubmit(_event: Event): Promise<any> {
     event.preventDefault();
     if (isSubmitting) return;
     try {

@@ -4,6 +4,7 @@
 </svelte:head>
 
 <script lang="ts">
+import type { Case } from '$lib/types';
 
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
@@ -108,7 +109,7 @@
   const { data } = $props<{ data: DetectiveData }>()
 
   let selectedSection: SectionId = 'command-center';
-  let showNewCaseModal = $state(false);
+  let showNewCaseModal = $state<boolean>(false);
   let statusMessage: string | null = null;
 
   let newCaseData = {
@@ -137,7 +138,7 @@
     if (section === 'terminal') goto('/yorha/terminal');
   }
 
-  async function handleCreateCase(event: SubmitEvent) {
+  async function handleCreateCase(event: SubmitEvent): Promise<any> {
     event.preventDefault();
     statusMessage = 'Creating case…';
 
@@ -154,7 +155,7 @@
 
       const payload = await response.json();
       statusMessage = `Case "${payload?.title ?? newCaseData.title}" created.`;
-      showNewCaseModal = $state(false);
+      showNewCaseModal = false;
       newCaseData = { title: '', description: '', priority: 'medium' };
       if (browser) {
         await goto(window.location.pathname, { invalidateAll: true });
@@ -165,7 +166,7 @@
   }
 
   function cancelNewCase() {
-    showNewCaseModal = $state(false);
+    showNewCaseModal = false;
     newCaseData = { title: '', description: '', priority: 'medium' };
   }
 

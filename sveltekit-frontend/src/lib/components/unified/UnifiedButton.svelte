@@ -64,8 +64,8 @@ https://svelte.dev/e/js_parse_error -->
     glow: null
   });
   let animationFrame = $state<number | null>(null);
-  let isHovered = $state(false);
-  let isPressed = $state(false);
+  let isHovered = $state<boolean>(false);
+  let isPressed = $state<boolean>(false);
   // reactive spring for confidence (smooth transitions)
   const confidenceSpring = spring(legalContext?.confidence ?? 0, {
     stiffness: 0.3,

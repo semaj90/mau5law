@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   /**
    * AI Service Status Component with localStorage Fallback
    * Shows service availability and switches to offline mode gracefully
@@ -8,10 +9,10 @@
   import { CheckCircle, XCircle, AlertCircle, RefreshCw } from 'lucide-svelte';
   // State
   let serviceStatus = $state<ServiceStatus | null>(null);
-  let isChecking = $state(false);
+  let isChecking = $state<boolean>(false);
   let lastUpdate = $state<Date | null>(null);
-  let offlineQueueCount = $state(0);
-  let autoRefreshEnabled = $state(true);
+  let offlineQueueCount = $state<number>(0);
+  let autoRefreshEnabled = $state<boolean>(true);
   let refreshInterval: ReturnType<typeof setInterval> | null = null;
   // Check services on mount
   onMount(async () => {
@@ -28,7 +29,7 @@
       if (refreshInterval) clearInterval(refreshInterval);
     };
   });
-  async function checkServices() {
+  async function checkServices(): Promise<any> {
     isChecking = true;
     try {
       serviceStatus = await checkAIServices();

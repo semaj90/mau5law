@@ -23,7 +23,7 @@
   }: NESModalProps = $props();
   const dispatch = createEventDispatcher();
   let modalElement: HTMLDivElement;
-  let isClosing = $state(false);
+  let isClosing = $state<boolean>(false);
   const sizeClasses = {
     sm: 'max-w-sm',
     md: 'max-w-md',
@@ -41,8 +41,8 @@
     if (!closable) return;
     isClosing = true;
     setTimeout(() => {
-      open = $state(false);
-      isClosing = $state(false);
+      open = false;
+      isClosing = false;
       dispatch('close');
     }, 150);
   }

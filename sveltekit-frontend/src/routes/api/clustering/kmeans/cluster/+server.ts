@@ -53,7 +53,7 @@ async function qdrantRetrievePoints(client: any, collection: string, ids: Array<
 }
 
 // Ensure Redis instance is available
-async function ensureRedisInstance() {
+async function ensureRedisInstance(): Promise<any> {
   // Return existing instance if available
   if (redis) return redis;
 
@@ -161,7 +161,7 @@ async function getRabbitChannel(): Promise<any | null> {
 
 // add helper to safely set Redis hashes without using `any`
 // TTL policy: job hashes are set to expire after 1 hour (3600 seconds) to ensure cleanup of completed/failed jobs.
-async function setRedisHash(redisInstance: Redis, key: string, obj: Record<string, unknown>, ttlSeconds = 3600) {
+async function setRedisHash(redisInstance: Redis, key: string, obj: Record<string, unknown>, ttlSeconds = 3600): Promise<any> {
   // Convert all values to strings for Redis storage
   const flattened: string[] = [];
   for (const [k, v] of Object.entries(obj)) {

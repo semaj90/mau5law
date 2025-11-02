@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * LangChain RAG Integration for Legal AI
  * Connects LangChain Ollama service to API endpoints

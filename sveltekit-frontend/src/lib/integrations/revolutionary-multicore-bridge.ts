@@ -604,13 +604,13 @@ export async function processLegalQueryWithFullOptimization(
     },
   });
 }
-export async function getComprehensiveSystemMetrics() {
+export async function getComprehensiveSystemMetrics(): Promise<any> {
   return {
     revolutionaryMulticore: revolutionaryMulticoreBridge.getSystemMetrics(),
     timestamp: Date.now(),
     systemStatus: 'operational',
   };
 }
-export async function optimizeEntireSystem() {
+export async function optimizeEntireSystem(): Promise<any> {
   await revolutionaryMulticoreBridge.optimizeAllSystems();
 }

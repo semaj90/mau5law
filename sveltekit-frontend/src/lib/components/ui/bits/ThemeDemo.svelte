@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { ThemeProvider } from './ThemeProvider.svelte';
   import { ThemeToggle } from './ThemeToggle.svelte';
   import { DocumentCard } from './DocumentCard.svelte';
@@ -64,8 +65,8 @@
     { value: 'shared', label: 'Shared', icon: '👥' },
     { value: 'archived', label: 'Archived', icon: '📦' }
   ];
-  let selectedFilter = $state('all');
-  let currentTab = $state('documents');
+  let selectedFilter = $state<string>('all');
+  let currentTab = $state<string>('documents');
   function handleDocumentAction(action string, doc: any) {
     console.log(`${action} action for:`, doc.title);
   }

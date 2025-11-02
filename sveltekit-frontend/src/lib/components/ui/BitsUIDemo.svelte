@@ -1,5 +1,6 @@
 <!-- Comprehensive Bits-UI Demo for Legal AI App -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { BitsDialog } from './dialog/BitsDialog.svelte';
   import { BitsSelect } from './select/BitsSelect.svelte';
@@ -7,11 +8,11 @@
   import { Button } from './button/Button.svelte';
   import { Search, FileText, Users, Scale, Plus, Edit, Eye } from 'lucide-svelte';
   // Demo state
-  let showDialog = $state(false);
-  let selectedCaseType = $state('');
-  let caseName = $state('');
-  let clientName = $state('');
-  let searchQuery = $state('');
+  let showDialog = $state<boolean>(false);
+  let selectedCaseType = $state<string>('');
+  let caseName = $state<string>('');
+  let clientName = $state<string>('');
+  let searchQuery = $state<string>('');
   // Sample data for legal app
   const caseTypes = [
     { value: 'criminal', label: 'Criminal Law' },
@@ -28,7 +29,7 @@
   ];
   function handleCreateCase() {
     console.log('Creating caseItem:', { caseName, clientName, selectedCaseType });
-    showDialog = $state(false);
+    showDialog = false;
     // Reset form
     caseName = '';
     clientName = '';

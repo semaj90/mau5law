@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 
 import { WebSocketServer } from "ws";
 import type { IncomingMessage } from "http";

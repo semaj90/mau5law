@@ -6,7 +6,7 @@ import { createHash } from 'crypto'; // Import createHash for hashing
 
 // Defensive Redis client wrapper: try to create a real client, but fall back to a no-op proxy
 let redisClient: IORedis | null = null;
-let redisAvailable = $state(false);
+let redisAvailable = $state<boolean>(false);
 
 try {
   // createRedisInstance may throw if environment is not configured or Redis is unavailable

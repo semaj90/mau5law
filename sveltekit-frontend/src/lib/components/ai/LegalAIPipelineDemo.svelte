@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount } from 'svelte';
@@ -36,7 +37,7 @@ https://svelte.dev/e/expected_token -->
     }
   }, null, 2);
   let processingResult: any = null;
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   let processingLog: string[] = [];
   let processingTime = 0;
   let lastProcessedDoc = '';
@@ -49,7 +50,7 @@ https://svelte.dev/e/expected_token -->
     { id: 'doc-5', content: 'Precedent from District Court 17 C.F.R. § 240.10b-5' }
   ];
   let bulkResults: any[] = [];
-  let isBulkProcessing = $state(false);
+  let isBulkProcessing = $state<boolean>(false);
   // Performance monitoring
   let performanceChart: { time: number; throughput: number }[] = [];
   $effect(() => {
@@ -60,7 +61,7 @@ https://svelte.dev/e/expected_token -->
     const timestamp = new Date().toLocaleTimeString();
     processingLog = [...processingLog, `[${timestamp}] ${message}`];
   }
-  async function processSingleDocument() {
+  async function processSingleDocument(): Promise<any> {
     if (!$pipelineReady) {
       addLog('❌ Pipeline not ready');
       return;
@@ -95,7 +96,7 @@ https://svelte.dev/e/expected_token -->
       isProcessing = false;
     }
   }
-  async function processBulkDocuments() {
+  async function processBulkDocuments(): Promise<any> {
     if (!$pipelineReady) {
       addLog('❌ Pipeline not ready');
       return;

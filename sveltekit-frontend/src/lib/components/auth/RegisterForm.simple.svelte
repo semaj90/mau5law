@@ -3,6 +3,7 @@
   Basic registration without complex dependencies
 -->
 <script lang="ts">
+import type { Message } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
@@ -41,11 +42,11 @@
   }
   let { data, redirectTo = '/dashboard', showLogin = true }: Props = $props();
   // Form state
-  let showPassword = $state(false);
-  let showConfirmPassword = $state(false);
-  let isLoading = $state(false);
-  let errorMessage = $state('');
-  let successMessage = $state('');
+  let showPassword = $state<boolean>(false);
+  let showConfirmPassword = $state<boolean>(false);
+  let isLoading = $state<boolean>(false);
+  let errorMessage = $state<string>('');
+  let successMessage = $state<string>('');
   // Form data
   let formData = $state({
     email: '',
@@ -261,13 +262,13 @@
     fd.append('uploadData', JSON.stringify(uploadData));
     xhr.send(fd);
   }
-  async function uploadAllPending() {
+  async function uploadAllPending(): Promise<any> {
     for (const entry of files.filter(f => f.status === 'pending')) {
       // don't block; start each upload concurrently but small delay to allow UI update
       uploadFile(entry);
     }
   }
-  async function reattachFile(id: string) {
+  async function reattachFile(id: string): Promise<any> {
     // Create a temporary input to let the user pick the file to reattach
     const input = document.createElement('input');
     input.type = 'file';
@@ -330,7 +331,7 @@
         errorMessage = '';
         successMessage = '';
         return async ({ result }) => {
-          isLoading = $state(false);
+          isLoading = false;
           if ((result as { type?: any; data?: any }).type === 'success') {
             successMessage = 'Registration successful! Redirecting to dashboard...';
             setTimeout(() => {

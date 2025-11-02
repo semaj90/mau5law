@@ -28,8 +28,8 @@
   const progressiveForm = createProgressiveForm(config);
   // Form state
   let formState = $state(progressiveForm.createFormState(initialData));
-  let isSubmitting = $state(false);
-  let submitMessage = $state('');
+  let isSubmitting = $state<boolean>(false);
+  let submitMessage = $state<string>('');
   let submitMessageType = $state<'success' | 'error' | ''>('');
   // Generate field IDs for accessibility
   const fieldIds = {
@@ -90,7 +90,7 @@
       const error = validateField(fieldName, formState.data[fieldName]);
       if (error) {
         formState.errors[fieldName] = error;
-        isValid = $state(false);
+        isValid = false;
       } else {
         delete formState.errors[fieldName];
       }
@@ -118,7 +118,7 @@
       onsubmit(formData);
     }
     return async ({ result, update }) => {
-      isSubmitting = $state(false);
+      isSubmitting = false;
       if ((result as { type?: any; data?: any }).type === 'success') {
         submitMessage = 'Form submitted successfully!';
         submitMessageType = 'success';

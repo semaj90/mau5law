@@ -2,8 +2,8 @@
 <script lang="ts">
   import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInterface.svelte';
   import { fade } from 'svelte/transition';
-  let isBooting = $state(true);
-  let bootProgress = $state(0);
+  let isBooting = $state<boolean>(true);
+  let bootProgress = $state<number>(0);
   let bootMessages = $state<string[]>([]);
   const bootSequence = [
     'Initializing YoRHa OS...',
@@ -22,7 +22,7 @@
       } else {
         clearInterval(bootInterval);
         setTimeout(() => {
-          isBooting = $state(false);
+          isBooting = false;
         }, 1000);
       }
     }, 800);

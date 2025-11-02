@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import debounce from 'lodash-es/debounce';
   interface Props {
     placeholder?: string;
@@ -23,9 +25,9 @@
     }
   });
   // Filter state using $state
-  let selectedType = $state('');
-  let dateFrom = $state('');
-  let dateTo = $state('');
+  let selectedType = $state<string>('');
+  let dateFrom = $state<string>('');
+  let dateTo = $state<string>('');
   function handleFilterChange() {
     onfilter?.({
       type: selectedType || undefined,

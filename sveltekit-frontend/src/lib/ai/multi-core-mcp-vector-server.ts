@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Multi-Core MCP Vector Server with SIMD JSON Parsing

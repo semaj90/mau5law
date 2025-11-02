@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { goto } from '$app/navigation';
   import type { PageData } from './$types';
 
@@ -20,7 +21,7 @@
 
   // Svelte 5 runes - initialize from server data
   let cases = $state<CaseSummary[]>(initialCases);
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let error = $state<string | null>(data.error || null);
 
   // Development mode indicator
@@ -77,7 +78,7 @@
     })
   );
 
-  async function loadCases() {
+  async function loadCases(): Promise<any> {
     try {
       loading = true;
       const response = await fetch('/api/cases');

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * OCR Service with Auto-Population
  * Handles document OCR, field extraction, and form auto-population

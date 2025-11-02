@@ -1,3 +1,7 @@
+import type { SearchResult } from '$lib/types';
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Unified Store Barrel Export with Type Compatibility
  *

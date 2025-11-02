@@ -4,6 +4,8 @@
   Features: Lucia auth integration, persisted stores, TypeScript, Drizzle ORM
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   // keep only what we actually use
   import { goto } from '$app/navigation';
   import {
@@ -43,13 +45,13 @@
     className = ''
   }: Props = $props();
   // Component state using Svelte 5 runes
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let selectedCategory = $state<'all' | 'cases' | 'evidence' | 'reports' | 'citations'>('all');
   let sortBy = $state<'date' | 'name' | 'priority' | 'status'>('date');
   let sortOrder = $state<'asc' | 'desc'>('desc');
   let expandedFolders = $state<Set<string>>(new Set(['recent', 'cases']));
   let selectedItems = $state<Set<string>>(new Set());
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
   // User-specific data
   let userCases = $state<Array<CaseItem>>([]);
@@ -253,7 +255,7 @@
     }
     expandedFolders = new Set(expandedFolders);
   }
-  async function loadUserData() {
+  async function loadUserData(): Promise<any> {
     if (!authenticated || !user) return;
     isLoading = true;
     error = null;

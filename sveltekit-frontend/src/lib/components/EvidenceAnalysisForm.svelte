@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Button } from 'bits-ui';
   import { fade, slide } from 'svelte/transition';
@@ -29,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   let ocrResults: OCRResult[] = ocrResultsProp ?? [];
 
   // simple boolean (avoid $state rune to prevent migration parse issues)
-  let isAnalyzing = $state(false);
+  let isAnalyzing = $state<boolean>(false);
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
 
@@ -44,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
     'Employment Law', 'Criminal Law', 'Family Law', 'Corporate Law',
     'Intellectual Property', 'Administrative Law', 'Other'
   ];
-  async function performAutomatedAnalysis() {
+  async function performAutomatedAnalysis(): Promise<any> {
     if (!ocrResults || ocrResults.length === 0) {
       alert('No documents available for analysis. Please upload documents first.');
       return;

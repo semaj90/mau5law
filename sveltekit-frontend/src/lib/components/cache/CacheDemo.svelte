@@ -27,11 +27,11 @@
   const isLoading = writable(false);
   const testResults = writable<unknown[]>([]);
   // Form state
-  let cacheKey = $state('');
-  let cacheValue = $state('');
-  let selectedTTL = $state('300'); // 5 minutes default
-  let selectedPriority = $state('medium');
-  let selectedTags = $state('');
+  let cacheKey = $state<string>('');
+  let cacheValue = $state<string>('');
+  let selectedTTL = $state<string>('300'); // 5 minutes default
+  let selectedPriority = $state<string>('medium');
+  let selectedTags = $state<string>('');
   // Demo data
   const ttlOptions = [
     { value: '60', label: '1 minute' },
@@ -48,7 +48,7 @@
   // ============================================================================
   // CACHE OPERATIONS
   // ============================================================================
-  async function loadCacheStats() {
+  async function loadCacheStats(): Promise<any> {
     try {
       // removed unused response assignment
       const data = await (response as { json?: any }).json();
@@ -59,7 +59,7 @@
       console.error('Failed to load cache stats:', error);
     }
   }
-  async function loadHealthStatus() {
+  async function loadHealthStatus(): Promise<any> {
     try {
       // removed unused response assignment
       const data = await (response as { json?: any }).json();
@@ -70,7 +70,7 @@
       console.error('Failed to load health status:', error);
     }
   }
-  async function setCacheValue() {
+  async function setCacheValue(): Promise<any> {
     if (!cacheKey.trim() || !cacheValue.trim()) {
       addTestResult('error', 'Key and value are required');
       return;
@@ -106,7 +106,7 @@
       await refreshStats();
     }
   }
-  async function getCacheValue() {
+  async function getCacheValue(): Promise<any> {
     if (!cacheKey.trim()) {
       addTestResult('error', 'Key is required');
       return;
@@ -131,7 +131,7 @@
       await refreshStats();
     }
   }
-  async function deleteCacheValue() {
+  async function deleteCacheValue(): Promise<void> {
     if (!cacheKey.trim()) {
       addTestResult('error', 'Key is required');
       return;
@@ -155,7 +155,7 @@
       await refreshStats();
     }
   }
-  async function clearCache() {
+  async function clearCache(): Promise<any> {
     if (!confirm('Are you sure you want to clear all cache?')) return;
     isLoading.set(true);
     try {
@@ -178,7 +178,7 @@
   // ============================================================================
   // DEMO OPERATIONS
   // ============================================================================
-  async function runPerformanceTest() {
+  async function runPerformanceTest(): Promise<any> {
     isLoading.set(true);
     addTestResult('info', 'Starting performance test...');
     try {
@@ -221,7 +221,7 @@
       await refreshStats();
     }
   }
-  async function testCacheHitMiss() {
+  async function testCacheHitMiss(): Promise<any> {
     isLoading.set(true);
     addTestResult('info', 'Testing cache hit/miss patterns...');
     try {
@@ -270,7 +270,7 @@
       ...results.slice(0, 49) // Keep last 50 results
     ]);
   }
-  async function refreshStats() {
+  async function refreshStats(): Promise<any> {
     await Promise.all([
       loadCacheStats(),
       loadHealthStatus()
@@ -484,7 +484,7 @@ testResults.set([])}
           <div class="yorha-panel-content">
             <div class="space-y-2 max-h-80 overflow-y-auto">
               {#each Array.isArray($testResults) ? $testResults : [] as result}
-                <div class="flex items-start gap-2 p-2 rounded border-l-4
+                <div class="flex" items-start gap-2 p-2 rounded border-l-4
                            {(result as { success?: any; summary?: any; type?: any; timestamp?: any; message?: any }).type === 'success' ? 'border-green-500 bg-green-50' :
                             (result as { success?: any; summary?: any; type?: any; timestamp?: any; message?: any }).type === 'error' ? 'border-red-500 bg-red-50' :
                             (result as { success?: any; summary?: any; type?: any; timestamp?: any; message?: any }).type === 'warning' ? 'border-yellow-500 bg-yellow-50' :

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { rabbitMQService } from '../services/rabbitmq-service.js';
 import { db } from '$lib/server/db';
 import * as schema from '$lib/server/db/schema-postgres';

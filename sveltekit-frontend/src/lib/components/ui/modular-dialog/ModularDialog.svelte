@@ -88,7 +88,7 @@
     }
   }
   // Load data when dialog opens or component mounts
-  async function loadData(force = false) {
+  async function loadData(force = false): Promise<any> {
     if (!entityType || !entityId) return;
     // Skip if data is fresh and not forcing
     if (!force && cacheData && data && lastFetch && Date.now() - lastFetch < 60000) {
@@ -140,7 +140,7 @@
     }
   }
   // Refresh data
-  async function refresh() {
+  async function refresh(): Promise<any> {
     await loadData(true);
   }
   // Handle open/close (kept for explicit actions)

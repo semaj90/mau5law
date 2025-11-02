@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -11,9 +13,9 @@
   let evidenceItems = writable<EvidenceItem[]>([]);
   let selectedEvidence = writable<EvidenceItem | null>(null);
   let currentAnalysis = writable<EvidenceAnalysis | null>(null);
-  let isAnalyzing = $state(false);
+  let isAnalyzing = $state<boolean>(false);
   let uploadedFile: File | null = null;
-  let dropZoneActive = $state(false);
+  let dropZoneActive = $state<boolean>(false);
   // Sample evidence types for demo
   const evidenceTypes = [
     { value: 'document', label: '📄 Document', icon: '📄' },
@@ -103,7 +105,7 @@
     ];
     evidenceItems.set(sampleEvidence);
   }
-  async function analyzeEvidence(evidence: EvidenceItem) {
+  async function analyzeEvidence(evidence: EvidenceItem): Promise<any> {
     isAnalyzing.set(true);
     selectedEvidence.set(evidence);
     try {
@@ -116,22 +118,22 @@
       isAnalyzing.set(false);
     }
   }
-  async function handleFileUpload(_event: Event) {
+  async function handleFileUpload(_event: Event): Promise<any> {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       uploadedFile = input.files[0];
       await processUploadedFile(uploadedFile);
     }
   }
-  async function handleDrop(_event: DragEvent) {
+  async function handleDrop(_event: DragEvent): Promise<any> {
     event.preventDefault();
-    dropZoneActive = $state(false);
+    dropZoneActive = false;
     if (event.dataTransfer?.files && event.dataTransfer.files[0]) {
       uploadedFile = event.dataTransfer.files[0];
       await processUploadedFile(uploadedFile);
     }
   }
-  async function processUploadedFile(file: File) {
+  async function processUploadedFile(file: File): Promise<any> {
     // Create evidence item from uploaded file
     const newEvidence: EvidenceItem = {
       id: crypto.randomUUID(),
@@ -173,7 +175,7 @@
   }
   function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
-    dropZoneActive = $state(false);
+    dropZoneActive = false;
   }
   function getEvidenceIcon(type: EvidenceItem['type']) {
     return evidenceTypes.find(t => t.value === type)?.icon || '📁';

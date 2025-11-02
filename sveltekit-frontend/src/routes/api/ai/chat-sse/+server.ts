@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -155,7 +156,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
 
       let buffer = '';
       let tokens = 0;
-      let finished = $state(false);
+      let finished = $state<boolean>(false);
 
       const persist = async (incomplete = false) => {
         if (!buffer) return;

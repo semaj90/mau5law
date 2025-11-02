@@ -74,7 +74,7 @@ https://svelte.dev/e/js_parse_error -->
     });
     document.addEventListener('click', (e) => {
       if (!nodeElement.contains(e.target as Node)) {
-        isSelected = $state(false);
+        isSelected = false;
   }
     });
   });

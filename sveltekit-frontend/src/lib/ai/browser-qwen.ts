@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Browser-based Qwen 0.5B LLM using Transformer.js v3
  *

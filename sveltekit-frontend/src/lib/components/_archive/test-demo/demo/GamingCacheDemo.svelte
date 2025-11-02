@@ -22,7 +22,7 @@ and performance monitoring across N64 and YoRHa gaming components
   import CachePerformanceMonitor from '$lib/components/dashboard/CachePerformanceMonitor.svelte';
   // Demo state
   let activeDemo = $state<'overview' | 'n64' | 'yorha' | 'performance' | 'wasm' | 'analytics'>('overview');
-  let demoStarted = $state(false);
+  let demoStarted = $state<boolean>(false);
   let cacheMetrics = $state<CachePerformanceTracker>({
     textureHitRate: 0,
     shaderHitRate: 0,
@@ -32,7 +32,7 @@ and performance monitoring across N64 and YoRHa gaming components
     cacheEfficiency: 0
   });
   // Demo scenarios
-  let currentScenario = $state(0);
+  let currentScenario = $state<number>(0);
   let scenarios = $state([
     {
       name: 'N64 Texture Filtering Showcase',
@@ -79,11 +79,11 @@ and performance monitoring across N64 and YoRHa gaming components
     memoryUsedMB: 0
   });
   // Live demo controls
-  let autoRunScenarios = $state(false);
-  let scenarioInterval = $state(5000); // 5 seconds
-  let enableWasmAcceleration = $state(true);
-  let enableRealTimeMetrics = $state(true);
-  let stressTestMode = $state(false);
+  let autoRunScenarios = $state<boolean>(false);
+  let scenarioInterval = $state<number>(5000); // 5 seconds
+  let enableWasmAcceleration = $state<boolean>(true);
+  let enableRealTimeMetrics = $state<boolean>(true);
+  let stressTestMode = $state<boolean>(false);
   let demoTimer = $state<number | null >(null);
   let metricsTimer = $state<number | null >(null);
   $effect(() => {
@@ -98,7 +98,7 @@ and performance monitoring across N64 and YoRHa gaming components
   /**
    * Initialize demo data and test scenarios
    */
-  async function initializeDemoData() {
+  async function initializeDemoData(): Promise<void> {
     try {
       // Generate test texture data
       textureTestData = await generateTestTextures();
@@ -333,7 +333,7 @@ and performance monitoring across N64 and YoRHa gaming components
   /**
    * Start demo scenarios
    */
-  async function startDemo() {
+  async function startDemo(): Promise<any> {
     demoStarted = true;
     currentScenario = 0;
     try {
@@ -346,14 +346,14 @@ and performance monitoring across N64 and YoRHa gaming components
       }
     } catch (error) {
       console.error('[Gaming Cache Demo] Demo start failed:', error);
-      demoStarted = $state(false);
+      demoStarted = false;
     }
   }
   /**
    * Stop demo scenarios
    */
   function stopDemo() {
-    demoStarted = $state(false);
+    demoStarted = false;
     if (demoTimer) {
       clearInterval(demoTimer);
       demoTimer = null;
@@ -362,7 +362,7 @@ and performance monitoring across N64 and YoRHa gaming components
   /**
    * Run current scenario
    */
-  async function runCurrentScenario() {
+  async function runCurrentScenario(): Promise<any> {
     const scenario = scenarios[currentScenario];
     console.log(`[Gaming Cache Demo] Running scenario: ${scenario.name}`);
     try {
@@ -389,7 +389,7 @@ and performance monitoring across N64 and YoRHa gaming components
   /**
    * Run N64 texture filtering scenario
    */
-  async function runN64Scenario(scenario: any) {
+  async function runN64Scenario(scenario: any): Promise<any> {
     for (const texture of textureTestData) {
       for (const filterType of scenario.filters) {
         const renderingOptions: N64RenderingOptions = {
@@ -427,7 +427,7 @@ and performance monitoring across N64 and YoRHa gaming components
   /**
    * Run YoRHa anti-aliasing scenario
    */
-  async function runYoRHaScenario(scenario: any) {
+  async function runYoRHaScenario(scenario: any): Promise<any> {
     for (const shader of shaderTestData) {
       for (const quality of scenario.qualities) {
         const aaConfig: AntiAliasingConfig = {
@@ -465,7 +465,7 @@ and performance monitoring across N64 and YoRHa gaming components
   /**
    * Run WASM acceleration scenario
    */
-  async function runWasmScenario(scenario: any) {
+  async function runWasmScenario(scenario: any): Promise<any> {
     for (const operation of scenario.operations) {
       for (const dataset of scenario.datasets) {
         const startTime = performance.now();
@@ -510,7 +510,7 @@ and performance monitoring across N64 and YoRHa gaming components
   /**
    * Run performance analysis scenario
    */
-  async function runPerformanceScenario(scenario: any) {
+  async function runPerformanceScenario(scenario: any): Promise<any> {
     // Trigger cache analytics
     const cacheEntries = Array.from({ length: 100 }, (_, i) => ({
       key: `entry-${i}`,
@@ -529,7 +529,7 @@ and performance monitoring across N64 and YoRHa gaming components
   /**
    * Trigger stress test
    */
-  async function runStressTest() {
+  async function runStressTest(): Promise<any> {
     stressTestMode = true;
     const stressOperations = 1000;
     const batchSize = 10;
@@ -543,13 +543,13 @@ and performance monitoring across N64 and YoRHa gaming components
         await tick(); // Allow UI updates
       }
     }
-    stressTestMode = $state(false);
+    stressTestMode = false;
     console.log('[Gaming Cache Demo] Stress test completed');
   }
   /**
    * Clear all caches
    */
-  async function clearAllCaches() {
+  async function clearAllCaches(): Promise<any> {
     await enhancedGPUCacheService.clearCache();
     await gpuCacheInvalidationSystem.clearAll('demo-manual-clear');
     // Reset demo stats
@@ -602,7 +602,7 @@ and performance monitoring across N64 and YoRHa gaming components
       <div class="flex space-x-8 overflow-x-auto">
         {#each Array.isArray(['overview', 'n64', 'yorha', 'performance', 'wasm', 'analytics']) ? ['overview', 'n64', 'yorha', 'performance', 'wasm', 'analytics'] : [] as tab}
           <button
-            class="py-4 px-2 border-b-2 transition-colors whitespace-nowrap {
+            class="py-4" px-2 border-b-2 transition-colors whitespace-nowrap {
               activeDemo === tab
                 ? 'border-cyan-400 text-cyan-300'
                 : 'border-transparent text-slate-400 hover:text-slate-300';

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Real-Time UI Orchestration with Fabric.js + Loki.js + RabbitMQ + XState
  * Live progress visualization and collaborative legal document analysis

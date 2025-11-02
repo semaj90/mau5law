@@ -3,6 +3,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
 <!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here -->
 {#snippet default}
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { yorhaWebGPU } from '$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath.svelte';
@@ -16,8 +17,8 @@ https://svelte.dev/e/unexpected_reserved_word -->
     CardContent
   } from '$lib/components/ui/enhanced-bits.svelte';
   // Reactive state using Svelte 5 runes
-  let isInitialized = $state(false);
-  let isProcessing = $state(false);
+  let isInitialized = $state<boolean>(false);
+  let isProcessing = $state<boolean>(false);
   let processingResults = $state<any[]>([]);
   let systemStats = $state<any>(null);
   let mipmapConfig = $state({
@@ -66,7 +67,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     rtxAccelerationUsage: 0
   });
   // Initialize WebGPU systems
-  async function initializeSystem() {
+  async function initializeSystem(): Promise<void> {
     isProcessing = true;
     try {
       console.log('🔥 Initializing YoRHa WebGPU mipmap optimization system');
@@ -112,7 +113,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     }
   }
   // Process single legal document with mipmap optimization
-  async function processDocument(docIndex: number) {
+  async function processDocument(docIndex: number): Promise<any> {
     if (!isInitialized || isProcessing) return;
     isProcessing = true;
     const document = legalDocuments[docIndex];
@@ -155,7 +156,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     }
   }
   // Batch process all documents
-  async function batchProcessDocuments() {
+  async function batchProcessDocuments(): Promise<any> {
     if (!isInitialized || isProcessing) return;
     isProcessing = true;
     try {
@@ -203,7 +204,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     }
   }
   // Generate single mipmap chain demonstration
-  async function generateMipmapDemo() {
+  async function generateMipmapDemo(): Promise<any> {
     if (!isInitialized || isProcessing) return;
     isProcessing = true;
     try {

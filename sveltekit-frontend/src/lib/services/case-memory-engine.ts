@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 import { analytics } from '../server/database/connection.js';
 import { qdrant } from '../server/vector/qdrant-manager.js';
 // removed static rabbitmq import to avoid: "not a module" TS errors

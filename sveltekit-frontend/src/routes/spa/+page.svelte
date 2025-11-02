@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   /**
    * Single Page App Demo Route
@@ -20,16 +21,16 @@
   // reactive state for the data and flags
   let legalData = $state<typeof initialLegalData>(initialLegalData);
   let currentView = $state<'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases'>('dashboard');
-  let isLoading = $state(true);
+  let isLoading = $state<boolean>(true);
 
   $effect(() => {
     (async () => {
       // Simulate loading legal data
       await loadSampleData();
-      isLoading = $state(false);
+      isLoading = false;
     })();
   });
-  async function loadSampleData() {
+  async function loadSampleData(): Promise<any> {
     // Generate sample legal documents
     legalData.documents = Array.from({ length: 150 }, (_, i) => ({
       id: `doc-${i}`,
@@ -184,7 +185,7 @@
     }
   }
 
-  async function simulateAIResponse() {
+  async function simulateAIResponse(): Promise<any> {
     // Simulate gemma3:legal-latest processing time
     await new Promise(resolve => setTimeout(resolve, 800));
     const aiResponses = [

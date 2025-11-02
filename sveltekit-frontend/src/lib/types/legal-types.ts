@@ -1,3 +1,7 @@
+import type { SearchResult } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // Legal AI System Type Definitions - Extended for Evidence and Case Management
 export * from './legal';
 // Additional Evidence Types

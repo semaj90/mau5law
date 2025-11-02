@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { X, Download, Trash2, Clock, FileText, Zap } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/button/Button.svelte';
   interface Document {
@@ -20,12 +21,12 @@
     open?: boolean;
   }
   let { document, open = false }: Props = $props();
-  let deleting = $state(false);
-  let downloading = $state(false);
-  let message = $state('');
+  let deleting = $state<boolean>(false);
+  let downloading = $state<boolean>(false);
+  let message = $state<string>('');
   let messageType = $state<'success' | 'error'>('success');
   function closeModal() {
-    open = $state(false);
+    open = false;
   }
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -37,7 +38,7 @@
   function formatDate(dateString: string): string {
     return new Date(dateString).toLocaleString();
   }
-  async function downloadDocument() {
+  async function downloadDocument(): Promise<any> {
     if (!document) return;
     try {
       downloading = true;
@@ -52,7 +53,7 @@
       downloading = false;
     }
   }
-  async function deleteDocument() {
+  async function deleteDocument(): Promise<void> {
     if (!document || !confirm('Are you sure you want to delete this document?')) return;
     try {
       deleting = true;

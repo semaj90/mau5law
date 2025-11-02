@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Service Graph Dashboard Page Server
  * src/routes/admin/service-graph/+page.server.ts

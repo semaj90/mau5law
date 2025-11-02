@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 /*
  * Legal AI Platform API Router v2
@@ -95,7 +96,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         dbHealthy = true;
       } catch (e) {
         console.error('Database health check failed:', e);
-        dbHealthy = $state(false);
+        dbHealthy = false;
       }
       const healthChecks = await Promise.allSettled([
         callGoService('enhanced_rag', '/api/health'),
@@ -477,14 +478,14 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<Response> 
 }
 // Health Check endpoint
 export const OPTIONS: RequestHandler = async () => {
-  let dbHealthy = $state(false);
+  let dbHealthy = $state<boolean>(false);
   try {
     // Simple query to check database connectivity
     await db.execute(sql`SELECT 1`);
     dbHealthy = true;
   } catch (e) {
     console.error('Database health check failed:', e);
-    dbHealthy = $state(false);
+    dbHealthy = false;
   }
   const healthChecks = await Promise.allSettled([
     callGoService('enhanced_rag', '/api/health'),

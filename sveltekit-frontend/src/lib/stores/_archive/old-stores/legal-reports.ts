@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Legal Reports Generation and Management System
  * AI-powered report generation with templates, automation, and collaboration

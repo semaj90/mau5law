@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { EventEmitter } from 'events';
 import { OLLAMA_CONFIG, isLegalTask } from './ollama-config';
 import type {

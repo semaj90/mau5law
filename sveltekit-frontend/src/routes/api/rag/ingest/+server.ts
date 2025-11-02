@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { cuidSchema } from '$lib/server/z-schemas';
 /**
  * Batch Document Ingestion Pipeline

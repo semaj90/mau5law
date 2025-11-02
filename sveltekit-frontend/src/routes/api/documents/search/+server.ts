@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 // Enhanced Document Search API with PostgreSQL + pgvector + Cognitive Cache
@@ -436,7 +437,7 @@ export const GET: RequestHandler = async () => {
       console.warn('[Search] Failed to count documents:', err);
     }
     // Test cognitive cache
-    let cacheStatus = $state(false);
+    let cacheStatus = $state<boolean>(false);
     try {
       await cognitiveCacheManager.get({ key: 'health_check', type: 'legal-data', context: { action: 'health-test' } });
       cacheStatus = true;

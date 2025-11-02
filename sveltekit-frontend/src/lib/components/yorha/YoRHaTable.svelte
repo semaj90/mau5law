@@ -52,8 +52,8 @@
   let selectedRows = $state<Set<string | number>>(new Set());
   let sortColumn = $state<string | null>(null);
   let sortDirection = $state<'asc' | 'desc'>('asc');
-  let currentPage = $state(1);
-  let searchQuery = $state('');
+  let currentPage = $state<number>(1);
+  let searchQuery = $state<string>('');
   const filteredData = $derived.by(() => {
     let filtered = data;
     if (searchQuery) {

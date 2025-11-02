@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { writable } from "svelte/store";
 import { browser } from "$app/environment";
 }

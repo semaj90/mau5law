@@ -25,7 +25,7 @@ export function createLLMStreamActor({
             if (!res.body) return;
             const reader = res.body.getReader();
             const decoder = new TextDecoder();
-            let done = $state(false);
+            let done = $state<boolean>(false);
             while (!done) {
               const { value, done: d } = await reader.read();
               if (value) {

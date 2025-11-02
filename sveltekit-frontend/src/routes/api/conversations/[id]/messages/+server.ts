@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /*
  * Conversation Messages API - POST new messages to conversation
  */

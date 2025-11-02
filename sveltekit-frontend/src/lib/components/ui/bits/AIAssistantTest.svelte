@@ -29,10 +29,10 @@
       references: [],
     },
   ]);
-  let searchQuery = $state('');
-  let testStatus = $state('ready');
+  let searchQuery = $state<string>('');
+  let testStatus = $state<string>('ready');
   // Local replacement state for the search bar
-  let aiSearchTerm = $state('');
+  let aiSearchTerm = $state<string>('');
   function handleAISearch(query: string) {
     const q = (query ?? '').trim();
     if (!q) {

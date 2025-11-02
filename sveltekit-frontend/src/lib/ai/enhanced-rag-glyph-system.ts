@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Enhanced RAG from Compressed Glyphs System
  *

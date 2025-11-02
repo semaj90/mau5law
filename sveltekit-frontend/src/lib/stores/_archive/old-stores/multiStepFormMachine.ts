@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import * as crypto from 'crypto';
 import { z } from 'zod';
 // src/lib/stores/multiStepFormMachine.ts - XState v5 Multi-step Forms with Superforms & Zod
@@ -233,7 +234,7 @@ export type MultiStepFormContext = {
 };
 
 // --- Database operations (replace fromPromise wrapper with plain async helper) ---
-async function saveToDatabaseActor(input: SaveToDbInput) {
+async function saveToDatabaseActor(input: SaveToDbInput): Promise<void> {
   const { formType, data } = input;
   const base = {
     ...data,
@@ -267,7 +268,7 @@ async function saveToDatabaseActor(input: SaveToDbInput) {
 }
 
 // --- Embedding generation helper (replace fromPromise with async function) ---
-async function generateEmbeddingsActor(input: GenEmbeddingsInput) {
+async function generateEmbeddingsActor(input: GenEmbeddingsInput): Promise<any> {
   const { formType, data, id } = input;
   try {
     const d = data as Record<string, unknown>;

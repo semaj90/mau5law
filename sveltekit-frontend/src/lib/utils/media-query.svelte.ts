@@ -9,7 +9,7 @@ import { browser } from '$app/environment';
  */
 export function createMediaQuery(query: string) {
 	// reactive boolean state
-	let matches = $state(false);
+	let matches = $state<boolean>(false);
 	let mediaQuery: MediaQueryList | null = null;
 
 	if (browser) {

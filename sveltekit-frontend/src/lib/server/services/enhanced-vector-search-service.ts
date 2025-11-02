@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // This is a mock service. In a real scenario, this would integrate with Drizzle ORM,
 // pgvector (PostgreSQL) and Qdrant for actual vector search operations.
 export const enhancedVectorSearchService = {

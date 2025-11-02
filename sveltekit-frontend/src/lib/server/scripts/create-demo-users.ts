@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Create demo users for testing authentication
  * Demo Credentials:
@@ -5,7 +6,7 @@
  * - user@example.com / User@123456
  */
 import { AuthService } from '../auth';
-export async function createDemoUsers() {
+export async function createDemoUsers(): Promise<any> {
   const authService = new AuthService();
   try {
     console.log('🔐 Creating demo users...');

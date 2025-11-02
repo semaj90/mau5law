@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * RabbitMQ Legal AI Message Queue Integration
  *
@@ -269,7 +270,7 @@ export class RabbitMQLegalQueue {
       // Deserialize document from FlatBuffer
       const document = await this.deserializeBinaryMessage(message.payload);
       let result: any = null;
-      let gpuUsed = $state(false);
+      let gpuUsed = $state<boolean>(false);
       let bankId: number | undefined;
       switch (message.operation) {
         case 'process':

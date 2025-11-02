@@ -5,7 +5,7 @@ import { json } from '@sveltejs/kit';
  * Accepts a JSON payload describing a canvas and returns a saved record placeholder.
  * TODO: Replace the in-memory/save-placeholder with real persistence (Postgres/MinIO/etc.)
  */
-export async function POST({ request }) {
+export async function POST({ request }): Promise<any> {
   try {
     const body = await request.json();
 

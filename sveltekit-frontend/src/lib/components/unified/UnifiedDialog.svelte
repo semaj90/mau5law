@@ -13,6 +13,7 @@ https://svelte.dev/e/js_parse_error -->
   - Legal AI context integration
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import { fade, scale } from 'svelte/transition';
   import { cubicInOut } from 'svelte/easing';
@@ -83,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   function closeDialog() {
-    open = $state(false);
+    open = false;
     onClose?.();
     onOpenChange?.(false);
   }
@@ -100,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Minimal WebGPU init: try to request device, but do not compile heavy shaders here.
-  async function initWebGPU() {
+  async function initWebGPU(): Promise<void> {
     if (!webgpuEffects) return;
     // graceful fallback if not supported
     if (!canvas || typeof (navigator as any).gpu === 'undefined') {

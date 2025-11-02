@@ -2,23 +2,24 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Debounce + streaming support
-  let debounceMs = $state(400);
-  let autoSearch = $state(true);
+  let debounceMs = $state<number>(400);
+  let autoSearch = $state<boolean>(true);
   let lastTimer = $state<any>(null);
-  let useStreaming = $state(true);
-  let streaming = $state(false);
-  let streamedCount = $state(0);
-  let query = $state('');
+  let useStreaming = $state<boolean>(true);
+  let streaming = $state<boolean>(false);
+  let streamedCount = $state<number>(0);
+  let query = $state<string>('');
   let mode = $state<'simple' | 'enhanced'>('simple');
-  let limit = $state(8);
+  let limit = $state<number>(8);
   let threshold = $state<number | null>(null);
-  let model = $state('');
-  let caseId = $state('');
-  let autoFocus = $state(true);
-  let loading = $state(false);
+  let model = $state<string>('');
+  let caseId = $state<string>('');
+  let autoFocus = $state<boolean>(true);
+  let loading = $state<boolean>(false);
   let controller = $state<AbortController | null>(null);
   let results = $state<any[]>([]);
   let responseMeta = $state<any>(null);
@@ -36,7 +37,7 @@ https://svelte.dev/e/js_parse_error -->
       if (query.trim()) runSearch();
     }, debounceMs);
   }
-  async function runSearch() {
+  async function runSearch(): Promise<any> {
     if (!query.trim()) return;
     reset();
     loading = true;
@@ -70,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
       loading = false;
     }
   }
-  async function runStreaming(body: any) {
+  async function runStreaming(body: any): Promise<any> {
     streaming = true;
     try {
       const params = new URLSearchParams({
@@ -119,7 +120,7 @@ https://svelte.dev/e/js_parse_error -->
       if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
     } finally {
       streaming = false;
-      loading = $state(false);
+      loading = false;
     }
   }
   function handleStreamEvent(_event: string, data: any) {
@@ -140,8 +141,8 @@ https://svelte.dev/e/js_parse_error -->
   }
   function abort() {
     controller?.abort();
-    loading = $state(false);
-    streaming = $state(false);
+    loading = false;
+    streaming = false;
   }
   $effect(() => {
     if (autoFocus) {

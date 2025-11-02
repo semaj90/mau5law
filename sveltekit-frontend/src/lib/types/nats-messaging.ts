@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Message } from '$lib/types';
 /**
  * Type definitions for NATS Messaging Service
  */

@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Vector Search API - pgvector with CUDA acceleration for legal document search
  * Handles semantic search, similarity queries, and parallel processing

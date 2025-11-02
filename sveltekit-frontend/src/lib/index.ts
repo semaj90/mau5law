@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Legal AI Platform - Comprehensive Library Exports
  * SvelteKit 2 + Svelte 5 + TypeScript

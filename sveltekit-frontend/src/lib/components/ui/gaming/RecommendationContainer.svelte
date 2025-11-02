@@ -5,7 +5,7 @@
   import { fly, fade } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
   import * as Collapsible from 'bits-ui/collapsible';
-  import * as Card from 'bits-ui/card';
+  import * as Card from 'bits-ui/Card';
   import * as Badge from 'bits-ui/badge';
   import * as Tooltip from 'bits-ui/tooltip';
   import { RetroRecommendationModal } from './modals/RetroRecommendationModal.svelte';
@@ -40,9 +40,9 @@
     enableEnhancedMode = true
   }: Props = $props();
   // State management
-  let isOpen = $state(false);
-  let showModal = $state(false);
-  let selectedRecommendations = $state([]);
+  let isOpen = $state<boolean>(false);
+  let showModal = $state<boolean>(false);
+  let selectedRecommendations = $state<any[]>([]);
   let containerRef: HTMLDivElement;
   let hideTimer: number;
   // Recommendation categories with icons
@@ -83,9 +83,9 @@
   );
   // Feedback tracking
   let feedbackCooldown = $state(new Set<string>());
-  let processingFeedback = $state(false);
-  let enhancedModeActive = $state(false);
-  let loadingEnhancedRecommendations = $state(false);
+  let processingFeedback = $state<boolean>(false);
+  let enhancedModeActive = $state<boolean>(false);
+  let loadingEnhancedRecommendations = $state<boolean>(false);
   let recommendationError = $state<string | null>(null);
   function openModal(type?: string) {
     selectedRecommendations = type
@@ -94,7 +94,7 @@
     showModal = true;
   }
   function closeModal() {
-    showModal = $state(false);
+    showModal = false;
     selectedRecommendations = [];
   }
   function toggleContainer() {
@@ -110,7 +110,7 @@
   function handleMouseLeave() {
     if (autoHide && isOpen) {
       hideTimer = setTimeout(() => {
-        isOpen = $state(false);
+        isOpen = false;
       }, 2000);
     }
   }
@@ -137,7 +137,7 @@
     }
   });
   // Enhanced Recommendation Generation
-  async function generateEnhancedRecommendations() {
+  async function generateEnhancedRecommendations(): Promise<any> {
     if (!enableEnhancedMode || !enhancedRecommendationIntegration || !documents || !query) {
       return;
     }
@@ -181,7 +181,7 @@
     recommendationId: string
     feedback: 'positive' | 'negative',
     recommendation EnhancedRecommendation
-  ) {
+  ): Promise<any> {
     if (feedbackCooldown.has(recommendationId) || processingFeedback) {
       return;
     }
@@ -294,7 +294,7 @@
       generateEnhancedRecommendations();
     }
   }
-  async function updateRecommendationContext(newContext: Partial<RecommendationContext>) {
+  async function updateRecommendationContext(newContext: Partial<RecommendationContext>): Promise<any> {
     if (enableEnhancedMode && enhancedRecommendationIntegration) {
       recommendationContext = { ...recommendationContext, ...newContext }
       await enhancedRecommendationIntegration.updateRecommendationContext(
@@ -307,7 +307,7 @@
       }
     }
   }
-  async function predictRecommendationNeeds() {
+  async function predictRecommendationNeeds(): Promise<any> {
     if (enableEnhancedMode && enhancedRecommendationIntegration && query) {
       try {
         const prediction = await enhancedRecommendationIntegration.predictRecommendationNeeds(

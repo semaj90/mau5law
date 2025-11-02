@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types'; // Changed from './$types.js'
 // Remove direct imports of embedDocument, embedVision as they will be dynamically loaded

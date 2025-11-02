@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Glyph Shader Cache Bridge
  * Optimizes glyph rendering with GPU shader caching for legal AI visualization

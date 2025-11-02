@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import type { SearchResults } from "$lib/types/global";
   import { onMount } from 'svelte';
@@ -17,7 +18,7 @@
   import { context7Service, type VectorIntelligence } from '$lib/services/context7Service';
   // Reactive state from Context7 service
   const { vectorResults, isAnalyzing } = context7Servic;
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let selectedFilters = $state<string[] >([]);
   let searchResults = $state<VectorIntelligence | null >(null);
   let searchHistory = $state<string[] >([]);
@@ -46,7 +47,7 @@ await context7Service.initialize();
   $effect(() => {
     searchResults = $vectorResult;
   });
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     await context7Service.vectorSearch(searchQuery, {
       filters: selectedFilters;

@@ -1,5 +1,6 @@
 <!-- YoRHa Detective Interface - Enhanced-Bits Gaming UI -->
 <script lang="ts">
+import type { User } from '$lib/types';
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { browser } from '$app/environment';
@@ -39,12 +40,12 @@
       timestamp: '19:02:57',
     },
   ]);
-  let currentInput = $state('');
-  let isTyping = $state(false);
-  let systemStatus = $state('Online');
-  let currentTime = $state('19:02');
+  let currentInput = $state<string>('');
+  let isTyping = $state<boolean>(false);
+  let systemStatus = $state<string>('Online');
+  let currentTime = $state<string>('19:02');
   let sessionId: string | null = $state(null);
-  let isTestMode = $state(false);
+  let isTestMode = $state<boolean>(false);
   // Sidebar navigation items
   let sidebarItems: SidebarItem[] = $state([
     { icon: '🏠', label: 'COMMAND CENTER', active: true },
@@ -75,7 +76,7 @@
       }, 100);
     }
   });
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!currentInput.trim() || isTyping) return;
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
@@ -140,7 +141,7 @@
                 .map(line => line.replace(/^data:\s*/, ''))
                 .join('\n');
               if (!dataLines || dataLines === '[DONE]') {
-                isTyping = $state(false);
+                isTyping = false;
                 break;
               }
               try {
@@ -159,11 +160,11 @@
                   case 'complete':
                     aiMessage.content = eventData.fullResponse;
                     messages = [...messages];
-                    isTyping = $state(false);
+                    isTyping = false;
                     break;
                   case 'error':
                     console.error('Stream error:', eventData.error);
-                    isTyping = $state(false);
+                    isTyping = false;
                     break;
                 }
               } catch (parseError) {
@@ -191,7 +192,7 @@
         timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0'),
       };
       messages = [...messages, errorMessage];
-      isTyping = $state(false);
+      isTyping = false;
     }
   }
   function clearChat() {
@@ -211,7 +212,7 @@
       },
     ];
     sessionId = null;
-    isTestMode = $state(false);
+    isTestMode = false;
   }
   function selectSidebarItem(index: number) {
     sidebarItems = sidebarItems.map((item, i) => ({

@@ -570,7 +570,7 @@ export class HierarchicalCacheIndex {
     const batch = this.prefetchQueue.splice(0, batchSize);
     for (const key of batch) {
       // Check if key is already cached
-      let found = $state(false);
+      let found = $state<boolean>(false);
       for (const cache of this.caches.values()) {
         if (cache.has(key)) {
           found = true;

@@ -69,7 +69,7 @@ export function startLatencyLogger(opts?: { intervalMs?: number; remoteUrl?: str
 }
 
 // Simple programmatic capture API for external modules (e.g., WebGPU graph)
-export async function captureLatency(entry: LatencyEntry) {
+export async function captureLatency(entry: LatencyEntry): Promise<any> {
   // Best-effort persist: idb first, then localStorage; non-blocking
   const key = `${STORE_PREFIX}${entry.ts ?? Date.now()}`;
   try {
@@ -101,7 +101,7 @@ export async function captureLatency(entry: LatencyEntry) {
   }
 }
 
-async function idbSetSafe(key: string, value: any) {
+async function idbSetSafe(key: string, value: any): Promise<any> {
   try {
     await set(key, value);
   } catch (e) {
@@ -139,7 +139,7 @@ export async function exportLatencyJSONL(): Promise<string> {
   return out.join('\n');
 }
 
-export async function downloadLatencyDataset(filename = 'latency_dataset.jsonl') {
+export async function downloadLatencyDataset(filename = 'latency_dataset.jsonl'): Promise<any> {
   const payload = await exportLatencyJSONL();
   const blob = new Blob([payload], { type: 'application/jsonl' });
   const url = URL.createObjectURL(blob);

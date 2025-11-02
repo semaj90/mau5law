@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Props for customization
@@ -18,11 +19,11 @@
     rightPanel?: any;
   } = $props();
   // Connection status (matching Evidence Board)
-  let isConnected = $state(false);
+  let isConnected = $state<boolean>(false);
   $effect(() => {
     // Simulate connection status
     setTimeout(() => {
-      isConnected = $state(false); // Keep as: "Demo Mode - Server Not Connected" to match screenshot
+      isConnected = false; // Keep as: "Demo Mode - Server Not Connected" to match screenshot
     }, 1000);
   });
 </script>

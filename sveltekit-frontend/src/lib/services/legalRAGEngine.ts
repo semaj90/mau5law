@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Advanced Legal RAG Engine with Custom Reranker
  * Integrates with Context7 MCP, Qdrant, PGVector, and Ollama

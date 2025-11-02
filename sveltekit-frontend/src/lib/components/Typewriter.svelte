@@ -7,8 +7,8 @@ https: //svelte.dev/e/js_parse_error -->
     speed: number;
   }
   let { text = '', speed = 50 }: Props = $props();
-  let output = $state('');
-  let i = $state(0);
+  let output = $state<string>('');
+  let i = $state<number>(0);
   let intervalId = $state<NodeJS.Timeout | null>(null);
   $effect(() => {
     if (text) {

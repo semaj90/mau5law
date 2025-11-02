@@ -55,19 +55,19 @@
   }
 
   // State
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let viewMode = $state<'grid' | 'list'>('grid');
-  let showFilters = $state(false);
-  let showCreateDialog = $state(false);
-  let showEditDialog = $state(false);
+  let showFilters = $state<boolean>(false);
+  let showCreateDialog = $state<boolean>(false);
+  let showEditDialog = $state<boolean>(false);
   let selectedPoi = $state<Poi | null>(null); // Use Poi interface
-  let isLoading = $state(false);
-  let isSubmitting = $state(false);
+  let isLoading = $state<boolean>(false);
+  let isSubmitting = $state<boolean>(false);
 
   // Filter state
-  let statusFilter = $state('all');
-  let priorityFilter = $state('all');
-  let threatLevelFilter = $state('all');
+  let statusFilter = $state<string>('all');
+  let priorityFilter = $state<string>('all');
+  let threatLevelFilter = $state<string>('all');
 
   // POI data
   let pois = $state<Poi[]>([]); // Use Poi interface
@@ -103,7 +103,7 @@
   });
 
   // Load POIs from API
-  async function loadPois() {
+  async function loadPois(): Promise<any> {
     isLoading = true;
     try {
       const params = new URLSearchParams();
@@ -130,7 +130,7 @@
   }
 
   // Create POI
-  async function createPoi() {
+  async function createPoi(): Promise<any> {
     isSubmitting = true;
     try {
       const response = await fetch('/api/poi', {
@@ -143,7 +143,7 @@
 
       if (result.success) {
         (toast as any).success('POI created successfully');
-        showCreateDialog = $state(false);
+        showCreateDialog = false;
         resetForm();
         await loadPois();
       } else {
@@ -158,7 +158,7 @@
   }
 
   // Update POI
-  async function updatePoi() {
+  async function updatePoi(): Promise<any> {
     if (!selectedPoi) return;
 
     isSubmitting = true;
@@ -173,7 +173,7 @@
 
       if (result.success) {
         (toast as any).success('POI updated successfully');
-        showEditDialog = $state(false);
+        showEditDialog = false;
         selectedPoi = null;
         resetForm();
         await loadPois();
@@ -189,7 +189,7 @@
   }
 
   // Delete POI
-  async function deletePoi(poi: Poi) { // Explicitly type poi
+  async function deletePoi(poi: Poi): Promise<void> { // Explicitly type poi
     if (!confirm(`Are you sure you want to delete ${poi.name}?`)) return;
 
     try {

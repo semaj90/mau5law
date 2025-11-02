@@ -179,7 +179,7 @@ export const vectorSearch = new VectorSearchManager();
 export const queryCache = new QueryCacheManager();
 export const analytics = new AnalyticsManager();
 // Database health check
-export async function checkDatabaseHealth() {
+export async function checkDatabaseHealth(): Promise<any> {
   try {
     await client`SELECT 1`;
     // Check pgvector extension

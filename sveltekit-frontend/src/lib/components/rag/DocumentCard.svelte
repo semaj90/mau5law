@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { FileText, Trash2, Eye, Clock } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/button/Button.svelte';
   interface Document {
@@ -21,7 +22,7 @@
     onDelete?: (docId: string) => void;
   }
   let { document, onView, onDelete }: Props = $props();
-  let deleting = $state(false);
+  let deleting = $state<boolean>(false);
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -46,7 +47,7 @@
     if (days < 7) return `${days}d ago`;
     return date.toLocaleDateString();
   }
-  async function handleDelete(e: Event) {
+  async function handleDelete(e: Event): Promise<void> {
     e.stopPropagation();
     if (!confirm('Delete this document?')) return;
     try {

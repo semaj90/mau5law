@@ -1,3 +1,5 @@
+import type { AIResponse } from '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * AI Assistant Types - Complete type definitions for multi-backend AI system
  */

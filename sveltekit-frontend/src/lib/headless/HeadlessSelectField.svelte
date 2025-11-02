@@ -45,7 +45,7 @@
   }: HeadlessSelectFieldProps = $props();
   // Internal state for current selection
   let current = $state<string | null>(selected ?? value ?? null);
-  let mounted = $state(false);
+  let mounted = $state<boolean>(false);
   // Normalize options to consistent format
   let normalized = $derived(
     options.map(o =>
@@ -72,7 +72,7 @@
   $effect(() => {
     mounted = true;
     return () => {
-      mounted = $state(false);
+      mounted = false;
     }
   });
   function updateValue(v: string | null) {

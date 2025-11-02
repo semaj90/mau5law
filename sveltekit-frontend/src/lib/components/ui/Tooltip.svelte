@@ -8,7 +8,7 @@
     children?: import('svelte').Snippet;
   }
   let { content = '', placement = 'top', disabled = false, children }: Props = $props();
-  let showTooltip = $state(false);
+  let showTooltip = $state<boolean>(false);
   let timeoutId = $state<ReturnType<typeof setTimeout> | null>(null);
   function handleMouseEnter() {
     if (disabled) return;
@@ -18,7 +18,7 @@
   }
   function handleMouseLeave() {
     if (timeoutId) clearTimeout(timeoutId);
-    showTooltip = $state(false);
+    showTooltip = false;
   }
 </script>
 <div class="tooltip-wrapper" role="tooltip" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>

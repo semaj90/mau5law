@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * Dead Letter Queue Monitor and Retry Service
  * Handles failed jobs with exponential backoff retry logic

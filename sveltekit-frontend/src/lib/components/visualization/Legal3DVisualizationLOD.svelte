@@ -82,12 +82,12 @@
   let canvasElement: HTMLCanvasElement = $state(undefined as any);
   let gpuDevice = $state<GPUDevice | null>(null);
   let context = $state<GPUCanvasContext | null>(null);
-  let isWebGPUReady = $state(false);
+  let isWebGPUReady = $state<boolean>(false);
   let allEntities = $state<Legal3DEntity[]>([]);
   let visibleEntities = $state<Legal3DEntity[]>([]);
   let allConnections = $state<Legal3DConnection[]>([]);
   let visibleConnections = $state<Legal3DConnection[]>([]);
-  let currentLOD = $state(1);
+  let currentLOD = $state<number>(1);
   let camera = $state<Camera3D>(initialCamera || {
     position: { x: 0, y: 5, z: 15 },
     target: { x: 0, y: 0, z: 0 },
@@ -96,15 +96,15 @@
     near: 0.1,
     far: 100,
   });
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let selectedEntity = $state<Legal3DEntity | null>(null);
   let hoveredEntity = $state<Legal3DEntity | null>(null);
-  let isDragging = $state(false);
+  let isDragging = $state<boolean>(false);
   let lastMousePos = $state({ x: 0, y: 0 });
   // Camera controls
-  let cameraDistance = $state(15);
+  let cameraDistance = $state<number>(15);
   let cameraRotation = $state({ horizontal: 0, vertical: 20 });
-  let autoRotate = $state(false);
+  let autoRotate = $state<boolean>(false);
   // Rendering state
   let meshBuffers = $state<Map<string, Map<number, GPUBuffer>>>(new Map());
   let renderPipeline = $state<GPURenderPipeline | null>(null);
@@ -655,7 +655,7 @@ if (!browser) return;
     lastMousePos = { x: event.clientX, y: event.clientY };
   }
   function handleMouseUp(): void {
-    isDragging = $state(false);
+    isDragging = false;
   }
   function handleWheel(event: WheelEvent): void {
     event.preventDefault();

@@ -1,5 +1,7 @@
 <!-- Real-time RAG Interface Component -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { useMachine } from '@xstate/svelte';
@@ -21,11 +23,11 @@
     services: ragQueryService;
   });
   // Local component state
-  let query = $state('');
-  let showAdvancedOptions = $state(false);
-  let maxResults = $state(5);
+  let query = $state<string>('');
+  let showAdvancedOptions = $state<boolean>(false);
+  let maxResults = $state<number>(5);
   let confidenceThreshold = $state(0.7);
-  let selectedDocumentTypes = $state([]);
+  let selectedDocumentTypes = $state<any[]>([]);
   // Reactive state from stores
   let documents = $derived(ragStore.documents);
   let ragHistory = $derived(ragStore.ragHistory);
@@ -40,7 +42,7 @@
   onDestroy(() => {
     ragStore.disconnect();
   });
-  async function loadDocuments() {
+  async function loadDocuments(): Promise<any> {
     try {
       // removed unused response assignment
       if (response.ok) {

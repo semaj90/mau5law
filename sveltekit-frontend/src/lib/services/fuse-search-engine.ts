@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
 import Fuse from 'fuse.js'; // Changed to default import
 import type { IFuseOptions, FuseResult } from 'fuse.js'; // Added type imports separately
 import * as orchestrator from './unified-legal-orchestrator.js';

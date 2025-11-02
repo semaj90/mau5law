@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Qdrant Vector Database Service with Scalar Quantization
  * Integrates: Qdrant + embeddinggemma (768-dim) + Scalar Quantization + Auto-tagging

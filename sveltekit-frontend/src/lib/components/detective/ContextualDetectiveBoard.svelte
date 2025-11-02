@@ -32,9 +32,9 @@
   }: Props = $props();
   // Event dispatcher
   // State
-  let userInput = $state('');
+  let userInput = $state<string>('');
   let connectionMap = $state<any>(null);
-  let isGeneratingMap = $state(false);
+  let isGeneratingMap = $state<boolean>(false);
   let currentTypingState = $state<TypingState>('idle');
   let typingContext: TypingContext = $state(undefined as any);
   let contextualPrompts = $state<string[]>([]);
@@ -42,7 +42,7 @@
   let evidenceList = $state(initialEvidence);
   // WebSocket collaboration state
   let wsManager: DetectiveWebSocketManager | null = null;
-  let isConnectedToCollaboration = $state(false);
+  let isConnectedToCollaboration = $state<boolean>(false);
   let collaborativeUsers = $state<CollaborativeUser[]>([]);
   let collaborationStats = $state({ connectedUsers: 0, typingUsers: 0, focusDistribution { evidence: 0, connections: 0, analysis: 0 } });
   // Typing behavior element binding
@@ -76,7 +76,7 @@
   /**
    * Load case evidence from API
    */
-  async function loadCaseEvidence() {
+  async function loadCaseEvidence(): Promise<any> {
     try {
       // removed unused response assignment
       if ((response as { ok?: any; json?: any }).ok) {
@@ -90,7 +90,7 @@
   /**
    * Initialize WebSocket collaboration
    */
-  async function initializeCollaboration() {
+  async function initializeCollaboration(): Promise<void> {
     try {
       // Create WebSocket manager (mock user ID for now)
       const userId = `user_${Math.random.toString-substr(2, 9)}`;
@@ -188,7 +188,7 @@
   /**
    * Trigger detective analysis using Gemma embeddings
    */
-  async function triggerDetectiveAnalysis() {
+  async function triggerDetectiveAnalysis(): Promise<any> {
     if (!userInput.trim()) return;
     try {
       // Use MCP server for semantic analysis of user input
@@ -216,7 +216,7 @@
   /**
    * Generate detective connection map
    */
-  async function generateConnectionMap() {
+  async function generateConnectionMap(): Promise<void> {
     if (!caseId) return;
     isGeneratingMap = true;
     try {
@@ -276,7 +276,7 @@
   /**
    * Handle contextual prompt selection
    */
-  async function selectContextualPrompt(prompt: string) {
+  async function selectContextualPrompt(prompt: string): Promise<any> {
     // Clear current prompts
     contextualPrompts = [];
     // Execute the selected prompt action

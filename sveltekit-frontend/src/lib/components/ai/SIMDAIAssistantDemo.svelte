@@ -23,13 +23,13 @@
   // XState machine (keep simple integration to avoid compile-time issues)
   const { state, send } = useMachine(aiAssistantMachine);
   // rune-based state
-  let queryInput = $state('');
-  let compressionTarget = $state(109);
-  let qualityTier = $state('nes');
+  let queryInput = $state<string>('');
+  let compressionTarget = $state<number>(109);
+  let qualityTier = $state<string>('nes');
   let useWorker = $state(useWebWorker);
-  let simdResults = $state(null);
-  let liveComponents = $state([]);
-  let processingLogs = $state([]);
+  let simdResults = $state<any>(null);
+  let liveComponents = $state<any[]>([]);
+  let processingLogs = $state<any[]>([]);
   // Sample queries
   const sampleQueries = [
     'Analyze the key terms in a software license agreement for potential risks.',
@@ -43,7 +43,7 @@
   let context = $derived(() => state.context ?? {});
   let isProcessing = $derived(() => state.value === 'processing' || (context && context.isProcessing));
   let hasResponse = $derived(() => !!(context && context.response));
-  async function submitQuery() {
+  async function submitQuery(): Promise<any> {
     if (!queryInput?.trim() || isProcessing) return;
     try {
       addLog(`🚀 Processing query with SIMD: "${queryInput.slice(0, 50)}..."`);
@@ -108,7 +108,7 @@
       });
     }
   }
-  async function generateLiveComponents(simdData: any) {
+  async function generateLiveComponents(simdData: any): Promise<any> {
     if (!simdData?.instant_ui_components) return;
     const components = simdData.instant_ui_components.map((comp: any) => ({
       ...comp,

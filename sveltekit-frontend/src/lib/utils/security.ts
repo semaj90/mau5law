@@ -268,8 +268,8 @@ export interface FileSecurityResult {
 export function checkFileSecurityAI(file: File): FileSecurityResult {
   const issues: string[] = [];
   let risk: "low" | "medium" | "high" = "low";
-  let isLegalDocument = $state(false);
-  let requiresPrivilegedAccess = $state(false);
+  let isLegalDocument = $state<boolean>(false);
+  let requiresPrivilegedAccess = $state<boolean>(false);
   // File size check
   if (file.size > DEFAULT_SECURITY_CONFIG.maxFileSize) {
     issues.push("File size exceeds maximum allowed");

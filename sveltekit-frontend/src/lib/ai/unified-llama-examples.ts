@@ -12,13 +12,15 @@
 // src/routes/cases/[id]/+page.svelte
 /*
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { generate } from '$lib/ai/unified-llama';
   import { page } from '$app/stores';
 
-  let caseAnalysis = $state('');
-  let isAnalyzing = $state(false);
+  let caseAnalysis = $state<string>('');
+  let isAnalyzing = $state<boolean>(false);
 
-  async function analyzeCaseWithAI() {
+  async function analyzeCaseWithAI(): Promise<any> {
     isAnalyzing = true;
     try {
       const result = await generate(
@@ -87,9 +89,9 @@ export const POST: RequestHandler = async ({ request }) => {
 <script lang="ts">
   import { generate } from '$lib/ai/unified-llama';
 
-  let editorContent = $state('');
+  let editorContent = $state<string>('');
   let suggestions = $state<string[]>([]);
-  let isLoadingSuggestions = $state(false);
+  let isLoadingSuggestions = $state<boolean>(false);
 
   // Debounced suggestion generator
   let suggestionTimeout: ReturnType<typeof setTimeout>;
@@ -103,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }, 1000);
   }
 
-  async function generateSuggestions() {
+  async function generateSuggestions(): Promise<any> {
     if (editorContent.length < 50) return;
 
     isLoadingSuggestions = true;
@@ -389,8 +391,8 @@ Identify 2-4 major themes and group evidence accordingly.<|end|>
 <script lang="ts">
   import { generate, getCapabilities } from '$lib/ai/unified-llama';
 
-  let fieldValue = $state('');
-  let aiSuggestion = $state('');
+  let fieldValue = $state<string>('');
+  let aiSuggestion = $state<string>('');
   let capabilities = $state<Awaited<ReturnType<typeof getCapabilities>> | null>(null);
 
   $effect(() => {
@@ -399,7 +401,7 @@ Identify 2-4 major themes and group evidence accordingly.<|end|>
     })();
   });
 
-  async function suggestValue(fieldType: 'address' | 'date' | 'name') {
+  async function suggestValue(fieldType: 'address' | 'date' | 'name'): Promise<any> {
     if (!capabilities) return;
 
     // Use fastest available method

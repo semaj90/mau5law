@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Button } from '$lib/components/ui/Button.svelte';
   // Use existing lowercase: 'card' folder to avoid casing conflicts on disk
@@ -36,12 +37,12 @@
     onActionTrigger,
   }: Props = $props();
   // Svelte 5 state
-  let userInput = $state('');
-  let isLoading = $state(false);
+  let userInput = $state<string>('');
+  let isLoading = $state<boolean>(false);
   let currentContext = $state<'general' | 'analysis' | 'connection' | 'investigation'>('general');
-  let showInsights = $state(true);
-  let showSuggestions = $state(true);
-  let useAcceleration = $state(false);
+  let showInsights = $state<boolean>(true);
+  let showSuggestions = $state<boolean>(true);
+  let useAcceleration = $state<boolean>(false);
   let accelerationStatus = $state<'initializing' | 'ready' | 'error' | 'disabled'>('disabled');
   let lastAccelerationResults = $state<any>(null);
   // Reactive values using Svelte 5 $derived - properly connected to unified store
@@ -62,7 +63,7 @@
     }
   });
   // Initialize WebGPU + SIMD acceleration
-  async function initializeAcceleration() {
+  async function initializeAcceleration(): Promise<void> {
     accelerationStatus = 'initializing';
     try {
       const success = await acceleratedLegalAssistant.initialize();
@@ -76,7 +77,7 @@
     }
   }
   // Handle user input submission with optional acceleration
-  async function handleSendMessage() {
+  async function handleSendMessage(): Promise<any> {
     if (!userInput.trim() || isLoading) return;
     const prompt = userInput.trim();
     userInput = '';
@@ -95,7 +96,7 @@
     }
   }
   // Quick action handlers using unified store
-  async function analyzeSelectedEvidence() {
+  async function analyzeSelectedEvidence(): Promise<any> {
     if (selectedEvidenceIds.length === 0) return;
     isLoading = true;
     try {
@@ -113,7 +114,7 @@
       isLoading = false;
     }
   }
-  async function suggestNextSteps() {
+  async function suggestNextSteps(): Promise<any> {
     isLoading = true;
     try {
       const prompt = 'Based on the current evidence, what should be the next steps in this investigation?';
@@ -172,7 +173,7 @@
           <!-- Acceleration Toggle -->
           <button
             type="button"
-            class="acceleration-toggle {useAcceleration && accelerationStatus === 'ready'
+            class="acceleration-toggle" {useAcceleration && accelerationStatus === 'ready'
               ? 'enabled'
               : ''} {accelerationStatus === 'initializing' ? 'initializing' : ''} {accelerationStatus === 'error'
               ? 'error'

@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import Button from '$lib/components/ui/Button.svelte';
@@ -11,13 +12,13 @@
   const logs = writable([]);
 
   // Component state
-  let availableTasks = [];
-  let completedTasks = [];
+  let availableTasks: any[] = [];
+  let completedTasks: any[] = [];
   let stats = { totalTasks: 0, completedCount: 0, failedCount: 0, pendingCount: 0 };
   let currentPatch = null;
 
   // Agent simulation state
-  let isAgentRunning = $state(false);
+  let isAgentRunning = $state<boolean>(false);
   let currentAgentTask = null;
   let agentProgress = 0;
 
@@ -25,7 +26,7 @@
     await initializeDemo();
   });
 
-  async function initializeDemo() {
+  async function initializeDemo(): Promise<void> {
     addLog('🚀 Initializing Agent Demo...', 'info');
 
     try {
@@ -49,7 +50,7 @@
     addLog('🎯 Agent Demo ready - Select a task to begin', 'info');
   }
 
-  async function createDemoTasks() {
+  async function createDemoTasks(): Promise<any> {
     // Create some demo tasks for testing
     const demoTasks = [
       {
@@ -85,7 +86,7 @@
     addLog('📝 Created demo tasks for testing', 'info');
   }
 
-  async function assignTaskToAgent(task) {
+  async function assignTaskToAgent(task): Promise<any> {
     if (isAgentRunning) {
       addLog('⚠️ Agent is already running a task', 'warning');
       return;
@@ -102,7 +103,7 @@
     await simulateAgentProgress(task);
   }
 
-  async function simulateAgentProgress(task) {
+  async function simulateAgentProgress(task): Promise<any> {
     const steps = [
       { progress: 10, message: 'Analyzing codebase structure...', duration 1000 },
       { progress: 50, message: 'Creating diff patches...', duration 1500 },
@@ -124,7 +125,7 @@
     }
   }
 
-  async function createDemoPatches(task) {
+  async function createDemoPatches(task): Promise<any> {
     const demoPatch = {
       id: `patch-${task.id}-${Date.now()}`,
       filePath: task.files[0] || 'src/lib/components/Navigation.svelte',
@@ -142,19 +143,19 @@
     addLog(`📄 Created patch: ${demoPatch.description}`, 'success');
   }
 
-  async function completeAgentTask(task) {
+  async function completeAgentTask(task): Promise<any> {
     availableTasks = availableTasks.filter(t => t.id !== task.id);
     completedTasks = [{ ...task, status: 'completed', completedAt: new Date().toISOString() }, ...completedTasks];
 
     stats.pendingCount--;
     stats.completedCount++;
 
-    isAgentRunning = $state(false);
+    isAgentRunning = false;
     agentStatus.set('idle');
     addLog(`✅ Task: "${task.title}" completed successfully!`, 'success');
   }
 
-  async function applyPatch(patch) {
+  async function applyPatch(patch): Promise<any> {
     addLog(`🔧 Applying patch: ${patch.description}`, 'info');
 
     try {
@@ -292,7 +293,7 @@
           <div class="flex justify-between items-center mb-2">
             <span class="font-semibold">Status:</span>
             <span
-              class="px-2 py-1 rounded text-xs {$agentStatus === 'working'
+              class="px-2" py-1 rounded text-xs {$agentStatus === 'working'
                 ? 'text-blue-600 bg-blue-50'
                 : 'text-green-600 bg-green-50'}"
             >
@@ -386,7 +387,7 @@
             <div class="log-entry flex items-start gap-2 py-1 text-sm">
               <span class="text-gray-400 text-xs">{log.timestamp}</span>
               <span
-                class="flex-1 {log.type === 'error'
+                class="flex-1" {log.type === 'error'
                   ? 'text-red-600'
                   : log.type === 'success'
                     ? 'text-green-600'

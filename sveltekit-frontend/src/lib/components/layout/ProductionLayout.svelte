@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
@@ -114,10 +116,10 @@
     },
   ];
   // State (Svelte 5 runes)
-  let isSidebarOpen = $state(true);
-  let isMobileMenuOpen = $state(false);
-  let showNotifications = $state(false);
-  let showClientChat = $state(false);
+  let isSidebarOpen = $state<boolean>(true);
+  let isMobileMenuOpen = $state<boolean>(false);
+  let showNotifications = $state<boolean>(false);
+  let showClientChat = $state<boolean>(false);
   let currentTime = $state(new Date());
   let systemStatus = $state({ ai: true, database: true, search: true, gpu: false });
   // Derived stores

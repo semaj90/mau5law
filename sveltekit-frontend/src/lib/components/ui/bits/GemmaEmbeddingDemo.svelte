@@ -52,10 +52,10 @@
     useWorker = false // WASM as fallback only
   }: Props = $props();
   // Component state using Svelte 5 runes
-  let content = $state('');
-  let searchQuery = $state('');
-  let isGenerating = $state(false);
-  let isSearching = $state(false);
+  let content = $state<string>('');
+  let searchQuery = $state<string>('');
+  let isGenerating = $state<boolean>(false);
+  let isSearching = $state<boolean>(false);
   let result = $state<GemmaEmbeddingResult | null>(null);
   let searchResults = $state<EmbeddingSearchResult[]>([]);
   let error = $state<string>('');
@@ -76,7 +76,7 @@
         embeddingWorker.onerror = handleWorkerError;
       } catch (err) {
         console.warn('Could not initialize embeddings worker:', err);
-        useWorker = $state(false);
+        useWorker = false;
       }
     }
     return () => {
@@ -103,12 +103,12 @@
           timestamp: new Date().toISOString();
         }
       }
-      isGenerating = $state(false);
+      isGenerating = false;
     }
   }
   function handleWorkerError(_event: ErrorEvent) {
     error = `Worker error: ${event.message}`;
-    isGenerating = $state(false);
+    isGenerating = false;
   }
   // Validate form data
   function validateForm(): boolean {
@@ -126,7 +126,7 @@
     }
   }
   // Generate embedding with Gemma API primary, WASM fallback
-  async function generateEmbedding() {
+  async function generateEmbedding(): Promise<any> {
     if (!validateForm()) {
       return;
     }
@@ -205,7 +205,7 @@
     }
   }
   // Search similar embeddings
-  async function searchEmbeddings() {
+  async function searchEmbeddings(): Promise<any> {
     if (!searchQuery.trim()) return;
     isSearching = true;
     searchResults = [];
@@ -241,7 +241,7 @@
     }
   }
   // Load system stats
-  async function loadStats() {
+  async function loadStats(): Promise<any> {
     try {
       // removed unused response assignment
       const data = await response.json();

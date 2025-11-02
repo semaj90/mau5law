@@ -27,7 +27,7 @@ export function throttle<T extends (...args: any[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
-  let inThrottle = $state(false);
+  let inThrottle = $state<boolean>(false);
   return function executedFunction(this: any, ...args: Parameters<T>) {
     if (!inThrottle) {
       func.apply(this, args);

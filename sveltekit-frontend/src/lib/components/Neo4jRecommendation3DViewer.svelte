@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Real-time 3D legal knowledge graph with GPU-accelerated rendering and progress animations
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   let {
     nodeId = '',
@@ -39,14 +40,14 @@ https://svelte.dev/e/js_parse_error -->
   let gpuDevice: GPUDevice | null = null;
   let context: GPUCanvasContext | null = null;
   let animationFrame: number | null = null;
-  let mounted = $state(false); // Use $state for reactive primitive
-  let initialLoadDone = $state(false); // New state to track initial load
+  let mounted = $state<boolean>(false); // Use $state for reactive primitive
+  let initialLoadDone = $state<boolean>(false); // New state to track initial load
   // Reactive state
   let currentGraph: RecommendationGraph | null = $state(null);
-  let isLoading = $state(false);
-  let progress = $state(0);
+  let isLoading = $state<boolean>(false);
+  let progress = $state<number>(0);
   let error = $state<string | null>(null);
-  let streamingActive = $state(false);
+  let streamingActive = $state<boolean>(false);
   let renderStats = $state({
     fps: 0,
     vertices: 0,
@@ -79,7 +80,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Initialize WebGPU and canvas context
    */
-  async function initializeWebGPU() {
+  async function initializeWebGPU(): Promise<void> {
     if (!canvasRef || !mounted) return;
     try {
       // Request WebGPU adapter
@@ -133,7 +134,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Load Neo4j recommendations with progress tracking
    */
-  async function loadRecommendations() {
+  async function loadRecommendations(): Promise<any> {
     if (!nodeId || isLoading) return;
     isLoading = true;
     progress = 0;
@@ -201,7 +202,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Cache graph in WebGPU SOM cache for enhanced performance
    */
-  async function cacheGraphInSOM(graph: RecommendationGraph) {
+  async function cacheGraphInSOM(graph: RecommendationGraph): Promise<any> {
     try {
       const cacheEntry = {
         id: `neo4j_3d_${graph.centerNode}_${Date.now()}`,
@@ -381,7 +382,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
   onDestroy(() => {
-    mounted = $state(false);
+    mounted = false;
     // Cleanup
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);

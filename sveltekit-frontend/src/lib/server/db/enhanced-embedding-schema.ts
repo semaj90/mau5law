@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // Enhanced Embedding Pipeline Schema for Production Legal AI
 // Comprehensive schema supporting: document ingestion, chunking, embeddings, search, Neo4j sync
 import {

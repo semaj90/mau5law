@@ -46,11 +46,11 @@
     loadDashboardData();
   }
   export function close() {
-    isOpen = $state(false);
+    isOpen = false;
   }
-  async function loadDashboardData() {
+  async function loadDashboardData(): Promise<any> {
     stats.loading = true;
-    let usingMockData = $state(false);
+    let usingMockData = $state<boolean>(false);
     try {
       // Load parallel stats from all APIs
       const [casesRes, searchRes, workRes] = await Promise.all([
@@ -206,7 +206,7 @@
   title="🎯 Recommendation Engine"
   size="large"
   onclose={() => {
-    isOpen = $state(false);
+    isOpen = false;
   }}
 >
   <div class="space-y-6">

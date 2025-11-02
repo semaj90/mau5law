@@ -1,6 +1,6 @@
 // Minimal Neo4j/Graph scaffold
 // In production, replace with official neo4j-driver and connection pooling
-export async function mergePromptCluster(promptText: string, clusterId: string, userId?: string) {
+export async function mergePromptCluster(promptText: string, clusterId: string, userId?: string): Promise<any> {
   // stub: log and return a lightweight graph node summary
   return {
     prompt: { text: promptText.slice(0, 256) },
@@ -9,7 +9,7 @@ export async function mergePromptCluster(promptText: string, clusterId: string, 
   };
 }
 
-export async function mergeTransition(clusterfrom string, clusterTo: string) {
+export async function mergeTransition(clusterfrom string, clusterTo: string): Promise<any> {
   // stub: return simple ok
   return { ok: true, from clusterFrom, to: clusterTo };
 }

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   /**
    * Enhanced MCP Integration Demo Page
@@ -39,16 +40,16 @@ https://svelte.dev/e/js_parse_error -->
     source: string;
   };
   const systemLogs = writable<SystemLog[]>([]);
-  let selectedCaseId = $state('demo-case-001');
-  let enableRealtimeUpdates = $state(true);
-  let showMetrics = $state(true);
-  let enableClusterMode = $state(true);
+  let selectedCaseId = $state<string>('demo-case-001');
+  let enableRealtimeUpdates = $state<boolean>(true);
+  let showMetrics = $state<boolean>(true);
+  let enableClusterMode = $state<boolean>(true);
   $effect(() => {
     checkSystemStatus();
     startSystemMonitoring();
     logMessage('info', 'Enhanced MCP Integration Demo loaded', 'system');
   });
-  async function checkSystemStatus() {
+  async function checkSystemStatus(): Promise<any> {
     logMessage('info', 'Checking system status...', 'health-check');
     // Check MCP Server
     try {
@@ -128,7 +129,7 @@ https://svelte.dev/e/js_parse_error -->
   function logMessage(level: 'info' | 'success' | 'warning' | 'error', message: string, source: string) {
     systemLogs.update(logs => [{ timestamp: new Date(), level, message, source }, ...logs.slice(0, 49)]); // Keep last 50 logs
   }
-  async function runSystemDiagnostics() {
+  async function runSystemDiagnostics(): Promise<any> {
     logMessage('info', 'Running comprehensive system diagnostics...', 'diagnostics');
     const diagnostics = [
       {

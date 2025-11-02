@@ -31,7 +31,7 @@
   let fabric: any = null; // fabric.js is often used as a global or UMD module
   let fileInput: HTMLInputElement | null = null;
 
-  let analyzing = $state(false);
+  let analyzing = $state<boolean>(false);
   let error: string | null = null;
 
   // Define types for API responses and data structures
@@ -54,8 +54,8 @@
   };
 
   // Drag & upload state
-  let dragOver = $state(false);
-  let uploading = $state(false);
+  let dragOver = $state<boolean>(false);
+  let uploading = $state<boolean>(false);
   let uploadProgress = 0;
 
   interface AnchorPoint {
@@ -169,7 +169,7 @@
 
   // Lifecycle: init fabric
   onMount(() => {
-    let cancelled = $state(false);
+    let cancelled = $state<boolean>(false);
     (async () => {
       const fabricModule = await import('fabric');
       fabric = (fabricModule as any).fabric;
@@ -240,7 +240,7 @@
     return objs;
   }
 
-  async function analyzeCanvas() {
+  async function analyzeCanvas(): Promise<any> {
     analyzing = true;
     error = null;
     result = null;
@@ -271,13 +271,13 @@
             status: 'success'
           };
           unsubscribe?.();
-          analyzing = $state(false);
+          analyzing = false;
         }
         const failedResult = snapshot?.context?.results?.find?.((r: any) => r.taskId === analysisTaskId && !r.success);
         if (failedResult) {
           error = failedResult.error ?? 'Analysis failed';
           unsubscribe?.();
-          analyzing = $state(false);
+          analyzing = false;
         }
       }) ?? (() => { /* noop */ });
 
@@ -285,7 +285,7 @@
       const timeout = setTimeout(() => {
         if (analyzing) {
           error = 'Analysis timed out';
-          analyzing = $state(false);
+          analyzing = false;
           unsubscribe?.();
         }
       }, 30000);
@@ -294,7 +294,7 @@
       if (!analyzing) clearTimeout(timeout);
     } catch (e: any) {
       error = e instanceof Error ? e.message : String(e);
-      analyzing = $state(false);
+      analyzing = false;
     }
   }
 
@@ -316,13 +316,13 @@
     const x = event.clientX;
     const y = event.clientY;
     if (x < rect.left || x > rect.right || y < rect.top || y < rect.bottom) { // Corrected y < rect.bottom
-      dragOver = $state(false);
+      dragOver = false;
     }
   }
 
   function handleCanvasDrop(event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     if (uploading) return;
     const droppedFiles = Array.from(event.dataTransfer?.files ?? []);
     if (!canvasEl) return;
@@ -339,7 +339,7 @@
     processDroppedFiles(selectedFiles, { x: 400, y: 300 });
   }
 
-  async function processDroppedFiles(droppedFiles: File[], position: { x: number; y: number }) {
+  async function processDroppedFiles(droppedFiles: File[], position: { x: number; y: number }): Promise<any> {
     error = null;
     // Validate files
     const validFiles = droppedFiles.filter(file => {
@@ -405,7 +405,7 @@
     // ... any other properties from result.data[0]
   };
 
-  async function uploadFilesToMinIO(uploadFiles: UploadedFile[], position: { x: number; y: number }) {
+  async function uploadFilesToMinIO(uploadFiles: UploadedFile[], position: { x: number; y: number }): Promise<any> {
     uploading = true;
     uploadProgress = 0;
     const startTime = Date.now();
@@ -562,7 +562,7 @@
     };
   }
 
-  async function addFileToCanvas(uploadFile: UploadedFile, position: { x: number; y: number }, _uploadResult: UploadResult) {
+  async function addFileToCanvas(uploadFile: UploadedFile, position: { x: number; y: number }, _uploadResult: UploadResult): Promise<any> {
     if (!fabricCanvas) return;
     const file = uploadFile.file;
     if (file.type.startsWith('image/')) {
@@ -690,7 +690,7 @@
     }
   }
 
-  async function processEnhancedIngestion(uploadFile: UploadedFile) {
+  async function processEnhancedIngestion(uploadFile: UploadedFile): Promise<any> {
     if (!ingestionPipeline) {
       ingestionPipeline = new MockEnhancedIngestionPipeline();
       await ingestionPipeline.initialize();
@@ -737,7 +737,7 @@
     }
   }
 
-  async function addDetectiveInsightsToCanvas(uploadFile: UploadedFile, detectiveResult: DetectiveAnalysisResult) { // Typed detectiveResult
+  async function addDetectiveInsightsToCanvas(uploadFile: UploadedFile, detectiveResult: DetectiveAnalysisResult): Promise<any> { // Typed detectiveResult
     if (!fabricCanvas || !detectiveResult.analysis.detectedPatterns.length) return;
     // Find the uploaded file's canvas object
     const canvasObjects = fabricCanvas.getObjects();
@@ -843,7 +843,7 @@
     }
   }
   // Monitor processing jobs and update UI
-  async function monitorUnifiedProcessingJobs(jobIds: string[], jobStatuses: { [key: string]: any }) {
+  async function monitorUnifiedProcessingJobs(jobIds: string[], jobStatuses: { [key: string]: any }): Promise<any> {
     const monitoringPromises = jobIds.map(async (jobId) => {
       const endpoint = jobStatuses[jobId].subscriptionEndpoint;
       // Poll job status every 2 seconds
@@ -927,7 +927,7 @@
   }
 
   // Trigger unified processing when evidence is added to canvas
-  async function triggerUnifiedProcessing() {
+  async function triggerUnifiedProcessing(): Promise<any> {
     if (uploadedFiles.length === 0) return;
     const evidenceItems = uploadedFiles.map((file: UploadedFile) => ({ // Typed file
       id: file.id,
@@ -950,7 +950,7 @@
     const obj = fabricCanvas.getObjects().find((o: FabricObjectWithId) => o.id === objectId); // Typed o as FabricObjectWithId
     return obj ? { x: obj.left ?? 0, y: obj.top ?? 0 } : null; // Add nullish coalescing for left/top
   }
-  async function addAnchorPointsToCanvas(uploadFile: UploadedFile, anchorPoints: AnchorPoint[]) { // Typed anchorPoints
+  async function addAnchorPointsToCanvas(uploadFile: UploadedFile, anchorPoints: AnchorPoint[]): Promise<any> { // Typed anchorPoints
     if (!fabricCanvas || !anchorPoints?.length) return;
     // Find the uploaded file's canvas object
     const canvasObjects = fabricCanvas.getObjects();

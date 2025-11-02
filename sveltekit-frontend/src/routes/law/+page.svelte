@@ -16,9 +16,9 @@ https://svelte.dev/e/js_parse_error -->
 
   // 2. Update laws type
   let laws: Law[] = $state([]);
-  let loading = $state(true);
+  let loading = $state<boolean>(true);
   let error: string | null = $state(null);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
 
   // 3. Fix data fetching with onMount
   onMount(async () => {

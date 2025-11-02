@@ -134,7 +134,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     // Wait for parallel processing to complete
     const [taggingResult, analysisResult] = await Promise.all([taggingPromise, analysisPromise]);
     // Stage 4: Vector Similarity Search
-    let vectorMatches = [];
+    let vectorMatches: any[] = [];
     if (pipeline.stages.embedding.status === 'complete') {
       try {
         pipeline.stages.vectorSearch.status = 'processing';
@@ -160,7 +160,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       }
     }
     // Stage 5: Graph Relationship Discovery
-    let relationships = [];
+    let relationships: any[] = [];
     try {
       pipeline.stages.graphDiscovery.status = 'processing';
       const graphResponse = await fetch(`/api/graph/discover/${evidence.id}`, {

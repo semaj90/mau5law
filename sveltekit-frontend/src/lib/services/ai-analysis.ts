@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // AI Analysis Service for Legal Evidence Processing
 export interface AnalysisResult {
   summary: string;

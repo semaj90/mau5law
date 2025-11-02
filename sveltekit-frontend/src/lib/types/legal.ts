@@ -1,3 +1,6 @@
+import type { SearchResult } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 // Legal AI System Type Definitions
 export interface LegalCase {
   id: string;

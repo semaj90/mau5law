@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 
-  async function loadAvailableTags() {
+  async function loadAvailableTags(): Promise<any> {
     try {
       const evidence = (loki?.evidence?.getAll && loki.evidence.getAll()) || [];
       const allTags = evidence.flatMap((e: any) => e.tags || []);

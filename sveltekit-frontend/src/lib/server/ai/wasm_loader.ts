@@ -1,6 +1,6 @@
 import { spawnSync } from 'child_process';
 import fs from 'fs';
-export async function runNativeEncoder(binaryPath: string, modelPath: string, input: number[]) {
+export async function runNativeEncoder(binaryPath: string, modelPath: string, input: number[]): Promise<any> {
   // Simple synchronous bridge: call binary with model path and base64-encoded input
   if (!fs.existsSync(binaryPath)) throw new Error('Native encoder binary not found');
   const payload = Buffer.from(JSON.stringify({ input })).toString('base64');
@@ -14,7 +14,7 @@ export async function runNativeEncoder(binaryPath: string, modelPath: string, in
     return (res.stdout || '').trim().split(/\s+/).map(Number);
   }
 }
-export async function loadWasmStub(wasmPath: string) {
+export async function loadWasmStub(wasmPath: string): Promise<any> {
   if (!fs.existsSync(wasmPath)) throw new Error('WASM file not found');
   // placeholder: real WASM loader would use WebAssembly APIs or @wasmer/wasm
   return { path: wasmPath, loadedAt: new Date().toISOString() };

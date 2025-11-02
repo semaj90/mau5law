@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /// <reference types="vite/client" />
 import Redis, { RedisOptions } from 'ioredis';
@@ -116,7 +117,7 @@ export class EnhancedVectorEmbeddingService {
     try {
       // Use a guarded call wrapper for clients that expose a raw: 'call' API.
       const callFn = (this.redis as unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
-      let indexExists = $state(false);
+      let indexExists = $state<boolean>(false);
       if (typeof callFn === 'function') {
         const raw = await callFn.call(this.redis, 'FT._LIST');
         if (Array.isArray(raw)) {

@@ -11,10 +11,10 @@ https://svelte.dev/e/expected_token -->
   let scanlineOpacity = $state(0.05);
   let chromaticAberration = $state(0.2);
   let glowIntensity = $state(0.4);
-  let frameRate = $state(60);
-  let isPerformanceMode = $state(false);
-  let effectsEnabled = $state(true);
-  let currentVariant = $state('ps1-crt');
+  let frameRate = $state<number>(60);
+  let isPerformanceMode = $state<boolean>(false);
+  let effectsEnabled = $state<boolean>(true);
+  let currentVariant = $state<string>('ps1-crt');
   const crtVariants = [
     { id: 'ps1-crt', name: 'Standard CRT', className: 'ps1-crt' },
     { id: 'ps1-crt-curved', name: 'Curved CRT', className: 'ps1-crt ps1-crt-curved' },

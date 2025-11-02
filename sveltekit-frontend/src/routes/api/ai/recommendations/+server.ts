@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log(`💡 Generating recommendations for ${type}:${entityId}`);
 
-    let recommendations = [];
+    let recommendations: any[] = [];
 
     switch (type) {
       case 'case-similar':

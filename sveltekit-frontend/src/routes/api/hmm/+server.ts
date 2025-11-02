@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import { hmmTransitionPredictor } from '$lib/server/ai/hmm-transition-predictor';
 import { emitClusterEvent } from '$lib/server/ai/cluster-stream';
 
-export async function POST({ request }) {
+export async function POST({ request }): Promise<any> {
   const body = await request.json().catch(() => ({}));
   const seq = Array.isArray(body.sequence) ? body.sequence.map(String) : [];
   const topK = typeof body.topK === 'number' ? body.topK : 3;

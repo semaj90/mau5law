@@ -10,11 +10,11 @@
   import { onMount } from 'svelte';
   import { Activity, Cpu, Database, Lock, Zap } from 'lucide-svelte';
 
-  let isInitialized = $state(false);
+  let isInitialized = $state<boolean>(false);
   let status = $state<{ ollama: boolean; browser: boolean; recommended: string } | null>(null);
 
   // Demo inputs
-  let inputText = $state('Contract for the sale of property located at 123 Main Street');
+  let inputText = $state<string>('Contract for the sale of property located at 123 Main Street');
   let similarDocuments = $state([
     { text: 'Real estate purchase agreement for 456 Oak Avenue', metadata: { type: 'contract' } },
     { text: 'Employment contract for software engineer position', metadata: { type: 'contract' } },
@@ -26,12 +26,12 @@
   // Results
   let embeddingResult = $state<{ embedding: number[]; strategy: string; duration number; model: string } | null>(null);
   let similarityResults = $state<Array<{ text: string; score: number; metadata?: any }>>([]);
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   let error = $state<string | null>(null);
 
   // Strategy selection
   let selectedStrategy: 'auto' | 'ollama' | 'browser' = $state('auto');
-  let privacyMode = $state(false);
+  let privacyMode = $state<boolean>(false);
 
   onMount(async () => {
     console.log('🚀 Initializing Hybrid ML Demo...');
@@ -47,7 +47,7 @@
     }
   });
 
-  async function generateEmbedding() {
+  async function generateEmbedding(): Promise<any> {
     if (!inputText) {
       error = 'Please enter some text';
       return;
@@ -76,7 +76,7 @@
     }
   }
 
-  async function findSimilarDocuments() {
+  async function findSimilarDocuments(): Promise<any> {
     if (!inputText) {
       error = 'Please enter a search query';
       return;

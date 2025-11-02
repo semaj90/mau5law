@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // @ts-nocheck - Advanced experimental service
 /**
  * Self-Organizing Map (SOM) Implementation for Legal Document Clustering

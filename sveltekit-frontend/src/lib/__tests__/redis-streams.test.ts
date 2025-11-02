@@ -8,7 +8,7 @@ describe('redis-streams helpers', () => {
   });
   // Helper to install a fake redis client via spying on the exported redisClient getter
   type RedisClient = { call?: (...a: any[]) => Promise<unknown> };
-  async function useFakeRedisClient(fake: RedisClient) {
+  async function useFakeRedisClient(fake: RedisClient): Promise<any> {
     // dynamic import works with Vitest/Esm
     const mod = await import('../server/redis-streams');
     // Spy on the exported binding (module export) and stub the getter to return our fake client

@@ -4,12 +4,13 @@
   Uses Svelte 5 runes and Service Workers for optimal performance
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { ocrTensorProcessor, type ProcessingResult } from '$lib/client/ocr-tensor-processor.js';
   // Svelte 5 runes for reactive state
-  let initialized = $state(false);
-  let processing = $state(false);
+  let initialized = $state<boolean>(false);
+  let processing = $state<boolean>(false);
   let uploadedFile: File | null = $state(null);
   let results: ProcessingResult[] = $state([]);
   let logs: string[] = $state([]);
@@ -57,7 +58,7 @@ try {
   /**
    * Process uploaded image
    */
-  async function processImage() {
+  async function processImage(): Promise<any> {
     if (!uploadedFile || !initialized) return;
     processing = true;
     addLog('🔄 Starting image processing...');
@@ -97,7 +98,7 @@ try {
   /**
    * Store results in database
    */
-  async function storeResults(resultsToStore: ProcessingResult[]) {
+  async function storeResults(resultsToStore: ProcessingResult[]): Promise<any> {
     try {
       addLog('💾 Storing results in database...');
       await ocrTensorProcessor.storeResults(resultsToStore, {
@@ -113,7 +114,7 @@ try {
   /**
    * Process batch of sample images
    */
-  async function processBatchDemo() {
+  async function processBatchDemo(): Promise<any> {
     if (!initialized) return;
     processing = true;
     addLog('🔄 Running batch processing demo...');

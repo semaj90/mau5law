@@ -5,7 +5,7 @@ import { consume, publish } from './rabbitmq';
 import { runOcrFromFile } from './services/ocr';
 const OCR_QUEUE = 'evidence.ocr';
 const EMBED_QUEUE = 'evidence.embed';
-async function start() {
+async function start(): Promise<any> {
   console.log('Starting OCR worker - listening on', OCR_QUEUE);
   await consume(OCR_QUEUE, async job => {
     const { filePath, evidenceId } = job;

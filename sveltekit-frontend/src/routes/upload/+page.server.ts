@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /// <reference types="vite/client" />
 import type { PageServerLoad } from './$types.js';

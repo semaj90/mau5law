@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Integration Test Setup
  * Global setup and mocks for integration tests

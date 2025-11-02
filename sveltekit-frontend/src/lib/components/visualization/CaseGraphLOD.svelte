@@ -13,6 +13,8 @@
   - Real-time collaboration cursors
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 
   import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
@@ -84,7 +86,7 @@
   // State
   let canvasElement: HTMLCanvasElement | null = null;
   let gpuDevice: GPUDevice | null = null;
-  let isWebGPUReady = $state(false);
+  let isWebGPUReady = $state<boolean>(false);
   let allNodes: GraphNode[] = [];
   let allEdges: GraphEdge[] = [];
   let visibleNodes: GraphNode[] = [];
@@ -94,7 +96,7 @@
   let cameraPosition = { x: 0, y: 0, z: cameraDistance };
   let zoomLevel = 1.0;
   let rotation = 0;
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let selectedNode: GraphNode | null = null;
   let hoveredNode: GraphNode | null = null;
   // Physics simulation state
@@ -184,7 +186,7 @@
   });
   onDestroy(() => {
     // Cleanup WebGPU resources and physics simulation
-    physicsEnabled = $state(false);
+    physicsEnabled = false;
     // release GPU resources if needed
     gpuDevice = null;
   });
@@ -209,7 +211,7 @@
   }
   async function initializeCanvas2DFallback(): Promise<void> {
     // Mark as ready to use 2D rendering path
-    isWebGPUReady = $state(false);
+    isWebGPUReady = false;
     console.warn('[CaseGraphLOD] Falling back to 2D canvas rendering');
   }
   async function loadGraphData(): Promise<void> {

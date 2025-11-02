@@ -20,8 +20,8 @@ Automatically handles server upload with localStorage fallback
   const { onerror } = $props<{ onerror: ((event: { error: string }) }>()
   const { onprogress } = $props<{ onprogress: ((event: { completed: number }>() total: number; file: string }) => void) | undefined;
   // State (plain let)
-  let isDragOver = $state(false);
-  let isUploading = $state(false);
+  let isDragOver = $state<boolean>(false);
+  let isUploading = $state<boolean>(false);
   let uploadProgress = 0;
   let currentFile = '';
   let uploadResults: UploadResponse[] = [];
@@ -52,7 +52,7 @@ Automatically handles server upload with localStorage fallback
   /**
    * Handle file selection
    */
-  async function handleFileSelect(files: FileList | null) {
+  async function handleFileSelect(files: FileList | null): Promise<any> {
     if (!files || files.length === 0) return;
     // Validate files
     const validFiles: File[] = [];
@@ -69,7 +69,7 @@ Automatically handles server upload with localStorage fallback
   /**
    * Upload files with progress tracking
    */
-  async function uploadFiles(files: File[]) {
+  async function uploadFiles(files: File[]): Promise<any> {
     isUploading = true;
     uploadProgress = 0;
     currentFile = '';
@@ -108,7 +108,7 @@ Automatically handles server upload with localStorage fallback
    */
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    isDragOver = $state(false);
+    isDragOver = false;
     const files = e.dataTransfer?.files ?? null;
     if (files) handleFileSelect(files);
   }
@@ -117,7 +117,7 @@ Automatically handles server upload with localStorage fallback
     isDragOver = true;
   }
   function handleDragLeave() {
-    isDragOver = $state(false);
+    isDragOver = false;
   }
   /**
    * Open file selector

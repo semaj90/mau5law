@@ -232,7 +232,7 @@ export class ProductionServiceClient {
    */
   private async executeWebSocket<T>(endpoint: string, operation: string, data?: any): Promise<T> {
     return new Promise((resolve, reject) => {
-      let settled = $state(false);
+      let settled = $state<boolean>(false);
       const ws = new WebSocket(endpoint);
       const timeout = setTimeout(() => {
         if (!settled) {

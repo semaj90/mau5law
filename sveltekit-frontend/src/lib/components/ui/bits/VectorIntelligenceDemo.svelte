@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   interface Props {
     class?: string;
@@ -17,13 +18,13 @@
   import { cn } from '$lib/utils/cn';
   import { Search, Brain, FileText, Users, MapPin, Calendar, Scale, Zap } from 'lucide-svelte';
   // Vector Intelligence Demo State (Svelte 5 runes)
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults = $state<VectorSearchResult[]>([]);
   let semanticEntities = $state<SemanticEntity[]>([]);
-  let isSearching = $state(false);
-  let selectedSearchType = $state('semantic');
-  let selectedConfidence = $state('all');
-  let analysisDepth = $state('standard');
+  let isSearching = $state<boolean>(false);
+  let selectedSearchType = $state<string>('semantic');
+  let selectedConfidence = $state<string>('all');
+  let analysisDepth = $state<string>('standard');
   // Mock vector search configuration
   const searchTypes: SelectOption[] = [
     {
@@ -180,7 +181,7 @@
     return safe.replace(pattern, '<span class="vector-highlight">$1</span>');
   }
   // Search functionality
-  async function performVectorSearch() {
+  async function performVectorSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     isSearching = true;
     try {

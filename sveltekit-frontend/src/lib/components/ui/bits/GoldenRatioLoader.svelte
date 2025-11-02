@@ -76,8 +76,8 @@
   		}
   	});
   	// Typewriter effect for AI output
-  	let displayedOutput = $state('');
-  	let typewriterIndex = $state(0);
+  	let displayedOutput = $state<string>('');
+  	let typewriterIndex = $state<number>(0);
   	$effect(() => {
   		if (status === 'success' && aiOutput) {
   			const interval = setInterval(() => {

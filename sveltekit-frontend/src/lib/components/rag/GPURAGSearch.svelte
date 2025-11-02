@@ -1,21 +1,22 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   /**
    * GPU-Accelerated RAG Search Component
    * For homepage integration with QUIC/HTTP fallback
    */
   import { Search, Loader2, Sparkles, Zap } from 'lucide-svelte';
-  let query = $state('');
+  let query = $state<string>('');
   let results = $state<any[]>([]);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
   let searchTime = $state<string | null>(null);
-  let gpuAccelerated = $state(false);
-  async function performSearch() {
+  let gpuAccelerated = $state<boolean>(false);
+  async function performSearch(): Promise<any> {
     if (!query.trim()) return;
     isLoading = true;
     error = null;
     searchTime = null;
-    gpuAccelerated = $state(false);
+    gpuAccelerated = false;
     const startTime = Date.now();
     try {
       const response = await fetch('/api/rag/search', {

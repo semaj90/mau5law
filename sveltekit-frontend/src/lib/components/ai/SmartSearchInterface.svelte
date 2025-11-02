@@ -12,13 +12,13 @@
     CardContent
   } from '$lib/components/ui/enhanced-bits.svelte';
   	// State management with Svelte 5
-  	let query = $state('');
-  	let isSearching = $state(false);
-  	let results = $state(null);
+  	let query = $state<string>('');
+  	let isSearching = $state<boolean>(false);
+  	let results = $state<SearchResult[]>(null);
   	let searchHistory = $state<string[]>([]);
   	let contextMode = $state<'legal' | 'technical' | 'general'>('legal');
-  	let useG0llama = $state(true);
-  	let useSIMD = $state(true);
+  	let useG0llama = $state<boolean>(true);
+  	let useSIMD = $state<boolean>(true);
   	// System stats
   	let systemStats = $state<any>(null);
   	$effect(() => {
@@ -31,7 +31,7 @@
   		return () => clearInterval(interval);
     })();
   });
-  	async function initializeSampleData() {
+  	async function initializeSampleData(): Promise<void> {
   		const sampleDocs = [
   			{
   				text: "Contract formation requires offer, acceptance, consideration, and legal capacity. The statute of frauds requires certain contracts to be in writing.",
@@ -54,7 +54,7 @@
   			await frontendRAG.addDocument(doc.text, doc.metadata);
   		}
   	}
-  	async function performSearch() {
+  	async function performSearch(): Promise<any> {
   		if (!query.trim() || isSearching) return;
   		isSearching = true;
   		try {

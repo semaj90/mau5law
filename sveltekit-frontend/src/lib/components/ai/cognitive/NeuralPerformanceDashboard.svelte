@@ -36,10 +36,10 @@
   });
   const connectionStatus = writable<'connected' | 'disconnected' | 'error'>('disconnected');
   // Dashboard state
-  let isMonitoring = $state(false);
+  let isMonitoring = $state<boolean>(false);
   let monitoringInterval: ReturnType<typeof setInterval> | null = null;
   let lastUpdate = $state(Date.now());
-  let selectedTimeRange = $state('5min');
+  let selectedTimeRange = $state<string>('5min');
   // Derived performance indicators
   const overallGrade = derived(currentMetrics, ($metrics) => {
     if (!$metrics) return { grade: 'N/A', color: 'text-gray-400', bg: 'bg-gray-500/20' };
@@ -118,7 +118,7 @@
   }
   function stopMonitoring() {
     if (!isMonitoring) return;
-    isMonitoring = $state(false);
+    isMonitoring = false;
     connectionStatus.set('disconnected');
     if (monitoringInterval) {
       clearInterval(monitoringInterval);
@@ -160,7 +160,7 @@
       <h2>🧠 Neural Performance Dashboard</h2>
       <div class="connection-status">
         <span
-          class="status-dot {$connectionStatus === 'connected'
+          class="status-dot" {$connectionStatus === 'connected'
             ? 'connected'
             : $connectionStatus === 'error'
               ? 'error'
@@ -261,7 +261,7 @@
         </div>
         <div class="metric-value">{formatNumber($currentMetrics.neuralEfficiency)}%</div>
         <div
-          class="efficiency-indicator {$currentMetrics.neuralEfficiency >= 85
+          class="efficiency-indicator" {$currentMetrics.neuralEfficiency >= 85
             ? 'excellent'
             : $currentMetrics.neuralEfficiency >= 70
               ? 'good'

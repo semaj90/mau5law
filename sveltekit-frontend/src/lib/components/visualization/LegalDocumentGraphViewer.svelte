@@ -181,7 +181,7 @@ try {
    */
   function setupEventListeners(): void {
     if (!canvas) return;
-  let isDragging = $state(false);
+  let isDragging = $state<boolean>(false);
   let lastMousePos = $state({ x: 0, y: 0 });
     // Mouse events
     canvas.addEventListener('mousedown', (e) => {
@@ -206,7 +206,7 @@ try {
     });
     canvas.addEventListener('mouseup', (e) => {
       if (isDragging) {
-        isDragging = $state(false);
+        isDragging = false;
         canvas.style.cursor = 'grab';
       } else {
         // Handle node click when not dragging

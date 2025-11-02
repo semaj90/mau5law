@@ -24,7 +24,7 @@
   const dispatch = createEventDispatcher();
   let buttonElement: HTMLButtonElement;
   let isPressed = $state(pressed);
-  let isHovered = $state(false);
+  let isHovered = $state<boolean>(false);
   const sizeClasses = {
     sm: 'px-3 py-1 text-xs',
     md: 'px-4 py-2 text-sm',
@@ -42,7 +42,7 @@
     // Visual press effect
     isPressed = true;
     setTimeout(() => {
-      isPressed = $state(false);
+      isPressed = false;
     }, 150);
     dispatch('click');
     onclick?.();

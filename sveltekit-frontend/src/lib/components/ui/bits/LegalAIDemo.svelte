@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import {
     Card,
@@ -92,7 +94,7 @@
     }
   ]);
   // Search state
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults: VectorSearchResult[] = $state([]);
   // Search filters
   let searchFilters = $state([
@@ -102,7 +104,7 @@
     { label: 'High Priority', value: 'high_priority', active: true }
   ]);
   let selectedEvidence = $state<EvidenceItem | null>(null);
-  let showAnalysis = $state(false);
+  let showAnalysis = $state<boolean>(false);
   // Event handlers
   function handleEvidenceSelect(evidence: EvidenceItem) {
     selectedEvidence = evidenc;

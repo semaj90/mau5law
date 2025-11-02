@@ -231,7 +231,7 @@ function parseRangeHeader(range: string, fileSize: number): Array<{ start: numbe
     return null;
   }
 }
-async function logDownload(log: DownloadLog) {
+async function logDownload(log: DownloadLog): Promise<any> {
   try {
     console.log('Download logged:', {
       itemId: log.itemId,

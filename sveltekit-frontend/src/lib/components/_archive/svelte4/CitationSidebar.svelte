@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Replace problematic import/namespace usage with a local type alias
   import type { Citation } from '$lib/types/api';
   type CitationType = Citation;
@@ -50,7 +51,7 @@ https://svelte.dev/e/js_parse_error -->
   function deleteCitation(citation: CitationType) {
     ondispatch?.(citation, 'delete');
   }
-  async function copyCitation(citation: CitationType) {
+  async function copyCitation(citation: CitationType): Promise<any> {
     try {
       const citationText = `${citation.content ?? ''}\n\nSource: ${citation.source ?? ''}`;
       await navigator.clipboard.writeText(citationText);

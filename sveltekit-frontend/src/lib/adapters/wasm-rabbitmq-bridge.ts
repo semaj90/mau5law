@@ -8,7 +8,7 @@ import type { MessageHandler } from '$lib/server/messaging/rabbitmq-service';
 import { enhanceRabbitMQMessage, parseVectorData } from '$lib/simd/simd-json-integration.js';
 // WebAssembly module cache
 let wasmModule: WebAssembly.WebAssemblyInstantiatedSource | null = null;
-let wasmReady = $state(false);
+let wasmReady = $state<boolean>(false);
 /**
  * Initialize WebAssembly module for RabbitMQ operations
  */ export async function initializeWASMBridge(): Promise<boolean> {
@@ -23,7 +23,7 @@ let wasmReady = $state(false);
     return true;
   } catch (error) {
     console.error('❌ Failed to initialize WASM-RabbitMQ Bridge:', error);
-    wasmReady = $state(false);
+    wasmReady = false;
     return false;
   }
 }

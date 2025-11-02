@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * POST /api/v1/legal/rag
  *

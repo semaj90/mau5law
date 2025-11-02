@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Legal Cache Warmer - Proactive preloading for legal assets
  */

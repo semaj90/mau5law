@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 // API Service Registry and Route Mapper
 // Maps all your existing API routes and provides service discovery
 import { existsSync, readdirSync, statSync } from 'fs';

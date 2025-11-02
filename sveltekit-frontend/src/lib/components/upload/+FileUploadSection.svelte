@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { SelectBits } from '$lib/components/ui/select/SelectBits.svelte';
   import { Checkbox } from '$lib/components/ui/checkbox/Checkbox.svelte';
@@ -38,8 +39,8 @@
         selectedCase = '';
         selectedPoi = '';
         file = null;
-        summarize = $state(false);
-        tag = $state(false);
+        summarize = false;
+        tag = false;
       } else {
         const errorData = await response.json();
         alert(`Upload failed: ${errorData.message || response.statusText}`);

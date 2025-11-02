@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Comprehensive validation utilities for the Detective Mode app
  * Provides type-safe validation, sanitization, and error handling

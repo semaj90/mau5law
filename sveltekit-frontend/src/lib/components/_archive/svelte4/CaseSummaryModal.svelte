@@ -1,5 +1,6 @@
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   // Badge replaced with span - not available in enhanced-bits
@@ -66,10 +67,10 @@
   let { caseData = $bindable(null) } = $props<{ caseData?: CaseItem | null }>();
   let { useDrawer = $bindable(false) } = $props<{ useDrawer?: boolean }>();
 
-  let isGeneratingSummary = $state(false);
+  let isGeneratingSummary = $state<boolean>(false);
   let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" >("overview");
 
-  async function generateSummary() {
+  async function generateSummary(): Promise<any> {
     if (!caseData) return;
     isGeneratingSummary = true;
     try {

@@ -1,11 +1,12 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
 
-  let query = $state('');
+  let query = $state<string>('');
   let results = $state<any[]>([]);
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
 
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!query.trim()) return;
 
     loading = true;

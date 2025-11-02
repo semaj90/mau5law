@@ -8,6 +8,8 @@
 -->
 // Svelte 5 runes are auto-imported
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // add props via Svelte 5 $props()
   let {
     open = false,
@@ -50,9 +52,9 @@
     }
   });
   let selectedCaseForAnalysis = $state<string | null>(null);
-  let analysisProgress = $state(0);
+  let analysisProgress = $state<number>(0);
   let analysisStatus = $state<'idle' | 'analyzing' | 'complete' | 'error'>('idle');
-  async function handleAnalysis() {
+  async function handleAnalysis(): Promise<any> {
     if (!selectedCaseForAnalysis) return;
     analysisStatus = 'analyzing';
     analysisProgress = 0;

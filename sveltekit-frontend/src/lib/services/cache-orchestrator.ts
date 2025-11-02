@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Cache Orchestrator Service
  * Coordinates Redis + WebGPU + SIMD + SOM cache warming and synchronization

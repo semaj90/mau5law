@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Unified Legal SIMD + PGVector Integration
  * (Corrected/trimmed sections for compilation and basic behavior)
@@ -588,7 +589,7 @@ export class UnifiedLegalSIMDPGVector {
     legalTerms.forEach(add);
 
     const map = new Map<string, number[]>();
-    let ok = $state(false);
+    let ok = $state<boolean>(false);
 
     if (allInputs.length) {
       try {

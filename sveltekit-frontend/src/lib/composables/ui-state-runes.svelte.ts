@@ -13,7 +13,7 @@ export function useModal(initialOpen = false) {
     isOpen = true;
   }
   function close(): void {
-    isOpen = $state(false);
+    isOpen = false;
     data = null;
     onConfirm = null;
     onCancel = null;
@@ -104,7 +104,7 @@ export function useForm<T extends Record<string, any>>(initialValues: T) {
   let values = $state<T>({ ...initialValues });
   let errors = $state<Partial<Record<keyof T, string>>>({});
   let touched = $state<Partial<Record<keyof T, boolean>>>({});
-  let isSubmitting = $state(false);
+  let isSubmitting = $state<boolean>(false);
   let isValid = $derived(() => Object.keys(errors).length === 0);
   let isDirty = $derived(() => Object.keys(values).some(key => (values as any)[key] !== (initialValues as any)[key]));
   function setValue<K extends keyof T>(field: K, value: T[K]): void {
@@ -135,11 +135,11 @@ export function useForm<T extends Record<string, any>>(initialValues: T) {
     values = { ...initialValues, ...newValues } as T;
     errors = {} as Partial<Record<keyof T, string>>;
     touched = {} as Partial<Record<keyof T, boolean>>;
-    isSubmitting = $state(false);
+    isSubmitting = false;
   }
   function validate(validators: Partial<Record<keyof T, (_value: any) => string | null>>): boolean {
     const newErrors: Partial<Record<keyof T, string>> = {};
-    let hasErrors = $state(false);
+    let hasErrors = $state<boolean>(false);
     Object.keys(validators).forEach(field => {
       const key = field as keyof T;
       const validator = validators[key];

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Context7 MCP Integration Service
  * Provides legal AI best practices and MCP-enhanced recommendations

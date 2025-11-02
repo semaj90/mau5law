@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import Fuse from 'fuse.js';
 
 export interface LocalDoc {
@@ -185,11 +186,11 @@ export class LocalSearchPipeline {
 
 export const localSearchPipeline = new LocalSearchPipeline();
 
-export async function searchLocal(query: string, limit = 5) {
+export async function searchLocal(query: string, limit = 5): Promise<any> {
   return localSearchPipeline.search(query, limit);
 }
 
-export async function addLocalDocuments(docs: LocalDoc[]) {
+export async function addLocalDocuments(docs: LocalDoc[]): Promise<any> {
   return localSearchPipeline.addDocuments(docs);
 }
 

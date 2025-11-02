@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
@@ -76,12 +77,12 @@
   }
 
   // Svelte 5 runes
-  let caseId = $state('');
-  let caseTitle = $state('');
+  let caseId = $state<string>('');
+  let caseTitle = $state<string>('');
   let theories = $state<Theory[]>([]);
   let currentTheory = $state<Theory | null>(null);
-  let isBuilding = $state(false);
-  let showTheoryDialog = $state(false);
+  let isBuilding = $state<boolean>(false);
+  let showTheoryDialog = $state<boolean>(false);
   let newTheoryForm = $state<NewTheoryForm>({
     name: '',
     type: 'prosecution',
@@ -124,7 +125,7 @@
       await loadExistingTheories();
     })();
   });
-  async function loadCaseData() {
+  async function loadCaseData(): Promise<any> {
     try {
       const response = await fetch(`/api/cases/${caseId}`);
       if (response.ok) {
@@ -141,7 +142,7 @@
       precedents = generateMockPrecedents();
     }
   }
-  async function loadCaseEvidence() {
+  async function loadCaseEvidence(): Promise<any> {
     try {
       const response = await fetch(`/api/cases/${caseId}/evidence`);
       if (response.ok) {
@@ -153,7 +154,7 @@
       evidenceItems = generateMockEvidence();
     }
   }
-  async function loadCasePrecedents() {
+  async function loadCasePrecedents(): Promise<any> {
     try {
       const response = await fetch(`/api/legal/research/search`, {
         method: 'POST',
@@ -176,7 +177,7 @@
       precedents = generateMockPrecedents();
     }
   }
-  async function loadExistingTheories() {
+  async function loadExistingTheories(): Promise<any> {
     try {
       const response = await fetch(`/api/cases/${caseId}/theories`);
       if (response.ok) {
@@ -202,7 +203,7 @@
       ];
     }
   }
-  async function buildTheoryWithAI(theoryData: Omit<NewTheoryForm, 'errors'>) {
+  async function buildTheoryWithAI(theoryData: Omit<NewTheoryForm, 'errors'>): Promise<any> {
     isBuilding = true;
     try {
       // Store theory building request in CHR-ROM for fast processing
@@ -251,7 +252,7 @@
       currentTheory = mockTheory;
     } finally {
       isBuilding = false;
-      showTheoryDialog = $state(false);
+      showTheoryDialog = false;
     }
   }
   async function generateMockTheoryAnalysis(
@@ -297,7 +298,7 @@
       updatedAt: new Date()
     };
   }
-  async function loadTheoryAnalysis(theory: Theory) {
+  async function loadTheoryAnalysis(theory: Theory): Promise<any> {
     legalArguments = theory.legalArguments || [];
     counterarguments = theory.counterarguments || [];
     logicalChain = theory.logicalChain || [];
@@ -314,7 +315,7 @@
       }
     };
   }
-  async function submitTheory(event: SubmitEvent) {
+  async function submitTheory(event: SubmitEvent): Promise<any> {
     event.preventDefault();
     if (!newTheoryForm.name.trim()) {
       newTheoryForm.errors = { name: ['Theory name is required'] };
@@ -455,12 +456,12 @@
   }
 
   // Svelte 5 runes
-  let caseId = $state('');
-  let caseTitle = $state('');
+  let caseId = $state<string>('');
+  let caseTitle = $state<string>('');
   let theories = $state<Theory[]>([]);
   let currentTheory = $state<Theory | null>(null);
-  let isBuilding = $state(false);
-  let showTheoryDialog = $state(false);
+  let isBuilding = $state<boolean>(false);
+  let showTheoryDialog = $state<boolean>(false);
   let newTheoryForm = $state<NewTheoryForm>({
     name: '',
     type: 'prosecution',
@@ -503,7 +504,7 @@
       await loadExistingTheories();
     })();
   });
-  async function loadCaseData() {
+  async function loadCaseData(): Promise<any> {
     try {
       const response = await fetch(`/api/cases/${caseId}`);
       if (response.ok) {
@@ -520,7 +521,7 @@
       precedents = generateMockPrecedents();
     }
   }
-  async function loadCaseEvidence() {
+  async function loadCaseEvidence(): Promise<any> {
     try {
       const response = await fetch(`/api/cases/${caseId}/evidence`);
       if (response.ok) {
@@ -532,7 +533,7 @@
       evidenceItems = generateMockEvidence();
     }
   }
-  async function loadCasePrecedents() {
+  async function loadCasePrecedents(): Promise<any> {
     try {
       const response = await fetch(`/api/legal/research/search`, {
         method: 'POST',
@@ -555,7 +556,7 @@
       precedents = generateMockPrecedents();
     }
   }
-  async function loadExistingTheories() {
+  async function loadExistingTheories(): Promise<any> {
     try {
       const response = await fetch(`/api/cases/${caseId}/theories`);
       if (response.ok) {
@@ -581,7 +582,7 @@
       ];
     }
   }
-  async function buildTheoryWithAI(theoryData: Omit<NewTheoryForm, 'errors'>) {
+  async function buildTheoryWithAI(theoryData: Omit<NewTheoryForm, 'errors'>): Promise<any> {
     isBuilding = true;
     try {
       // Store theory building request in CHR-ROM for fast processing
@@ -630,7 +631,7 @@
       currentTheory = mockTheory;
     } finally {
       isBuilding = false;
-      showTheoryDialog = $state(false);
+      showTheoryDialog = false;
     }
   }
   async function generateMockTheoryAnalysis(
@@ -676,7 +677,7 @@
       updatedAt: new Date()
     };
   }
-  async function loadTheoryAnalysis(theory: Theory) {
+  async function loadTheoryAnalysis(theory: Theory): Promise<any> {
     legalArguments = theory.legalArguments || [];
     counterarguments = theory.counterarguments || [];
     logicalChain = theory.logicalChain || [];
@@ -693,7 +694,7 @@
       }
     };
   }
-  async function submitTheory(event: SubmitEvent) {
+  async function submitTheory(event: SubmitEvent): Promise<any> {
     event.preventDefault();
     if (!newTheoryForm.name.trim()) {
       newTheoryForm.errors = { name: ['Theory name is required'] };

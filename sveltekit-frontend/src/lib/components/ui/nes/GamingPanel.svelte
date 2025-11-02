@@ -28,8 +28,8 @@
   		closable = false,
   		children
   	: any } = $props();
-  	let isMinimized = $state(false);
-  	let isClosed = $state(false);
+  	let isMinimized = $state<boolean>(false);
+  	let isClosed = $state<boolean>(false);
   	function toggleMinimize() {
   		isMinimized = !isMinimized;
   	}

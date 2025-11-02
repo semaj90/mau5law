@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { createHash } from 'crypto';
@@ -62,7 +63,7 @@ if (redisClient) {
 const QDRANT_URL = 'http://localhost:6333';
 const QDRANT_COLLECTION = 'legal_documents';
 
-async function initializeQdrantCollection() {
+async function initializeQdrantCollection(): Promise<void> {
   // Check if collection exists
   try {
     const response = await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}`, {
@@ -88,7 +89,7 @@ async function initializeQdrantCollection() {
   }
 }
 
-async function initializeRAGServices() {
+async function initializeRAGServices(): Promise<void> {
   try {
     // Try Redis connection if client was created
     if (redisClient) {
@@ -148,7 +149,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 
 type QdrantMetadata = Record<string, unknown>;
 
-async function storeInQdrant(id: string, embedding: number[], metadata: QdrantMetadata, tags: string[]) {
+async function storeInQdrant(id: string, embedding: number[], metadata: QdrantMetadata, tags: string[]): Promise<any> {
   try {
     const response = await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}/points`, {
       method: 'PUT',
@@ -351,7 +352,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const minioObject = `${timestamp}-${file.name}`;
     const buffer = Buffer.from(arrayBuffer);
 
-    let minioSuccess = $state(false);
+    let minioSuccess = $state<boolean>(false);
     let storedUri: string | null = null;
     try {
       const result = await putObject('legal-documents', minioObject, buffer, {
@@ -362,7 +363,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (typeof result === 'string' && result.startsWith('file://')) {
         // local fallback path
         storedUri = result;
-        minioSuccess = $state(false); // stored locally instead of MinIO
+        minioSuccess = false; // stored locally instead of MinIO
         console.log(`ℹ️ Stored locally (MinIO fallback): ${result}`);
       } else {
         minioSuccess = true;

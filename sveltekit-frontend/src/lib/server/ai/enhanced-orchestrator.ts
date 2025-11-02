@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // Enhanced AI Synthesis Orchestrator with Full Stack Integration
 // Connects Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama, and Go services
 import { logger } from './logger.js';

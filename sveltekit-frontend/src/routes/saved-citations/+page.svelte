@@ -1,4 +1,5 @@
 <script module lang="ts">
+import type { Case } from '$lib/types';
 // Enable SSR for this page (SvelteKit 2) and control prerender behavior
 export const ssr = true;
 export const prerender = $state(false); // adjust if this page should be prerendered
@@ -149,7 +150,7 @@ import '$lib/styles/bits-ui.css';
   });
 
   // CRUD helpers
-  async function saveCitation() {
+  async function saveCitation(): Promise<void> {
     try {
       const tagsArray: string[] =
         typeof newCitation.tags === 'string'
@@ -183,13 +184,13 @@ import '$lib/styles/bits-ui.css';
         tags: '',
         notes: '',
       };
-      showAddDialog = $state(false);
+      showAddDialog = false;
     } catch (error) {
       console.error('Error saving citation', error);
     }
   }
 
-  async function deleteCitation(citationId: string) {
+  async function deleteCitation(citationId: string): Promise<void> {
     try {
       savedCitations = savedCitations.filter((c) => c.id !== citationId);
     } catch (error) {
@@ -197,7 +198,7 @@ import '$lib/styles/bits-ui.css';
     }
   }
 
-  async function toggleFavorite(citation: any) {
+  async function toggleFavorite(citation: any): Promise<any> {
     try {
       citation.isFavorite = !citation.isFavorite;
       // trigger reactivity
@@ -221,7 +222,7 @@ import '$lib/styles/bits-ui.css';
     editingTagsInput = Array.isArray(citation.tags) ? citation.tags.join(', ') : (citation.tags as string | undefined) ?? '';
   }
 
-  async function updateCitation() {
+  async function updateCitation(): Promise<any> {
     try {
       if (!editingCitation) return;
       // Use editingTagsInput for parsing

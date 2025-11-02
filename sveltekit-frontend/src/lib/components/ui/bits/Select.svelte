@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { Select as SelectPrimitive } from 'bits-ui';
   // Re-export the Bits UI Select components
   export const Root = SelectPrimitive.Root;

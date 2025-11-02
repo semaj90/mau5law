@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -21,14 +22,14 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   // State management
   let editorElement: HTMLDivElement;
-  let isFullscreen = $state(false);
-  let isFocusMode = $state(false);
-  let showShortcuts = $state(false);
+  let isFullscreen = $state<boolean>(false);
+  let isFocusMode = $state<boolean>(false);
+  let showShortcuts = $state<boolean>(false);
   let lastSaved = new Date();
-  let wordCount = $state(0);
-  let charCount = $state(0);
-  let readingTime = $state(0);
-  let hasUnsavedChanges = $state(false);
+  let wordCount = $state<number>(0);
+  let charCount = $state<number>(0);
+  let readingTime = $state<number>(0);
+  let hasUnsavedChanges = $state<boolean>(false);
   // Auto-save functionality
   // use a cross-environment compatible timer type
   let autoSaveTimer: ReturnType<typeof setInterval> | null = null;
@@ -48,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   function saveDocument() {
     // dispatch save event hook if provided
-    hasUnsavedChanges = $state(false);
+    hasUnsavedChanges = false;
     lastSaved = new Date();
   }
   // Document statistics

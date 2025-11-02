@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Enhanced Feedback Loop Service with PostgreSQL + pgvector
  * Collects user ratings, trains on interactions, and provides adaptive AI responses with semantic analysis

@@ -1,5 +1,6 @@
 <!-- Brief Editor - Enhanced-Bits Legal Component -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { fade, scale, fly } from 'svelte/transition';
   import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte';
   import {
@@ -101,8 +102,8 @@
     ]
   });
   let selectedSection = $state<string>('intro');
-  let isAutoSaving = $state(false);
-  let citationPanel = $state(false);
+  let isAutoSaving = $state<boolean>(false);
+  let citationPanel = $state<boolean>(false);
   let wordCount = $derived(() =>
     briefData.sections.reduce((total, section) => total + section.wordCount, 0)
   );
@@ -115,7 +116,7 @@
   let currentSection = $derived(() =>
     briefData.sections.find(s => s.id === selectedSection)
   );
-  async function saveBrief() {
+  async function saveBrief(): Promise<void> {
     if (!onSave) return;
     isAutoSaving = true;
     try {
@@ -127,7 +128,7 @@
       isAutoSaving = false;
     }
   }
-  async function checkCitations() {
+  async function checkCitations(): Promise<any> {
     if (!onCitationCheck || !currentSection) return;
     try {
       const verifiedCitations = await onCitationCheck(currentSection.citations);
@@ -139,7 +140,7 @@
       console.error('Citation check failed:', error);
     }
   }
-  async function getAISuggestions(sectionId: string) {
+  async function getAISuggestions(sectionId: string): Promise<any> {
     if (!onAISuggestion) return;
     const section = briefData.sections.find(s => s.id === sectionId);
     if (!section) return;

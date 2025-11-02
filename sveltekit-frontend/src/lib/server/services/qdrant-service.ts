@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import type { Schemas } from '@qdrant/js-client-rest';
 import { QDRANT_HOST, QDRANT_PORT, QDRANT_API_KEY } from '$env/static/private';

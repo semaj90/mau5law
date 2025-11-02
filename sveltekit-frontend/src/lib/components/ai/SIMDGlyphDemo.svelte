@@ -12,11 +12,11 @@ https://svelte.dev/e/expected_token -->
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits.svelte';
-  let isGenerating = $state(false);
-  let results = $state([]);
-  let selectedFormat = $state('webgpu');
-  let selectedTier = $state('n64');
-  let compressionTarget = $state(50);
+  let isGenerating = $state<boolean>(false);
+  let results = $state<SearchResult[]>([]);
+  let selectedFormat = $state<string>('webgpu');
+  let selectedTier = $state<string>('n64');
+  let compressionTarget = $state<number>(50);
   const demoPrompts = [
     { text: 'Contract analysis for merger agreement', style: 'corporate', evidence_id: 1001 },
     { text: 'Criminal evidence forensic examination', style: 'forensic', evidence_id: 1002 },
@@ -30,7 +30,7 @@ https://svelte.dev/e/expected_token -->
     bestCompressionRatio: 0,
     cumulativeStats: []
   });
-  async function generateSIMDGlyph(prompt, customSettings = ) {
+  async function generateSIMDGlyph(prompt, customSettings = ): Promise<any> {
     try {
       isGenerating = true;
       const request = {
@@ -106,7 +106,7 @@ https://svelte.dev/e/expected_token -->
     const processingTimes = processingStats.cumulativeStats.map(r => r.processing_time);
     processingStats.averageProcessingTime = processingTimes.reduce((a, b) => a + b, 0) / processingTimes.length;
   }
-  async function generateBatchDemo() {
+  async function generateBatchDemo(): Promise<any> {
     console.log('🚀 Starting SIMD batch generation demo...');
     for (const prompt of demoPrompts) {
       if (!isGenerating) break; // Allow cancellation
@@ -115,7 +115,7 @@ https://svelte.dev/e/expected_token -->
     }
     console.log('🎯 Batch demo complete');
   }
-  async function testCompressionLevels() {
+  async function testCompressionLevels(): Promise<any> {
     console.log('📊 Testing compression levels...');
     const testPrompt = demoPrompts[0];
     const compressionLevels = [10, 25, 50, 100];

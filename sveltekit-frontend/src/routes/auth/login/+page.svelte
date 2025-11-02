@@ -25,8 +25,8 @@
         : null;
   });
 
-  let isLoading = $state(false);
-  let showPassword = $state(false);
+  let isLoading = $state<boolean>(false);
+  let showPassword = $state<boolean>(false);
   // Auto-fill demo credentials
   function fillDemoCredentials() {
     const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -57,7 +57,7 @@
         use:enhance={({ formData, cancel }) => {
           isLoading = true;
           return async ({ result }) => {
-            isLoading = $state(false);
+            isLoading = false;
             if ((result as { type?: any }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }

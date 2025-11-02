@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Drizzle ORM Usage Examples - Legal AI Platform
  *
@@ -21,14 +22,14 @@ import { eq, and, or, sql, desc, asc, like, inArray, gt, lt } from 'drizzle-orm'
 // ==================================================
 // 1. Basic CRUD Operations
 // ==================================================
-export async function createLegalDocument(data: NewLegalDocument) {
+export async function createLegalDocument(data: NewLegalDocument): Promise<any> {
   const result = await db
     .insert(legalDocuments)
     .values(data)
     .returning();
   return result[0];
 }
-export async function getLegalDocument(id: string) {
+export async function getLegalDocument(id: string): Promise<any> {
   const result = await db
     .select()
     .from(legalDocuments)
@@ -38,7 +39,7 @@ export async function getLegalDocument(id: string) {
 export async function updateLegalDocument(
   id: string,
   updates: Partial<NewLegalDocument>
-) {
+): Promise<any> {
   const result = await db
     .update(legalDocuments)
     .set({ ...updates, updatedAt: new Date() })
@@ -46,7 +47,7 @@ export async function updateLegalDocument(
     .returning();
   return result[0];
 }
-export async function deleteLegalDocument(id: string) {
+export async function deleteLegalDocument(id: string): Promise<void> {
   await db
     .delete(legalDocuments)
     .where(eq(legalDocuments.id, id));
@@ -55,7 +56,7 @@ export async function deleteLegalDocument(id: string) {
 // 2. JSONB Queries (Fast with GIN index)
 // ==================================================
 // Find documents by jurisdiction
-export async function findDocumentsByJurisdiction(jurisdiction: string) {
+export async function findDocumentsByJurisdiction(jurisdiction: string): Promise<any> {
   return db
     .select()
     .from(legalDocuments)
@@ -64,7 +65,7 @@ export async function findDocumentsByJurisdiction(jurisdiction: string) {
     );
 }
 // Find documents by document type (using JSONB containment)
-export async function findDocumentsByType(documentType: string) {
+export async function findDocumentsByType(documentType: string): Promise<any> {
   return db
     .select()
     .from(legalDocuments)
@@ -75,7 +76,7 @@ export async function findDocumentsByType(documentType: string) {
     );
 }
 // Find high-risk documents
-export async function findHighRiskDocuments() {
+export async function findHighRiskDocuments(): Promise<any> {
   return db
     .select()
     .from(legalDocuments)
@@ -85,7 +86,7 @@ export async function findHighRiskDocuments() {
     .orderBy(desc(legalDocuments.createdAt));
 }
 // Find documents with specific parties
-export async function findDocumentsByParty(partyName: string) {
+export async function findDocumentsByParty(partyName: string): Promise<any> {
   return db
     .select()
     .from(legalDocuments)
@@ -97,7 +98,7 @@ export async function findDocumentsByParty(partyName: string) {
 export async function findDocumentsByPracticeAreaAndConfidence(
   practiceArea: string,
   minConfidence: number
-) {
+): Promise<any> {
   return db
     .select()
     .from(legalDocuments)
@@ -116,7 +117,7 @@ export async function semanticSearch(
   queryEmbedding: number[],
   limit: number = 10,
   minSimilarity: number = 0.7
-) {
+): Promise<any> {
   return db.execute(sql`
     SELECT
       id,
@@ -136,7 +137,7 @@ export async function hybridSearch(
   queryEmbedding: number[],
   caseId: string,
   limit: number = 10
-) {
+): Promise<any> {
   return db.execute(sql`
     SELECT
       id,
@@ -155,7 +156,7 @@ export async function hybridSearch(
 export async function findSimilarDocuments(
   documentId: string,
   limit: number = 5
-) {
+): Promise<any> {
   // First, get the embedding of the source document
   const sourceDoc = await db
     .select({ embedding: legalDocuments.embedding })
@@ -182,7 +183,7 @@ export async function findSimilarDocuments(
 // 4. Joins and Relationships
 // ==================================================
 // Get documents with case information
-export async function getDocumentsWithCaseInfo(caseId: string) {
+export async function getDocumentsWithCaseInfo(caseId: string): Promise<any> {
   return db
     .select({
       document: legalDocuments,
@@ -193,7 +194,7 @@ export async function getDocumentsWithCaseInfo(caseId: string) {
     .where(eq(legalDocuments.caseId, caseId));
 }
 // Get case with all documents
-export async function getCaseWithDocuments(caseId: string) {
+export async function getCaseWithDocuments(caseId: string): Promise<any> {
   const caseData = await db
     .select()
     .from(legalCases)
@@ -214,7 +215,7 @@ export async function getCaseWithDocuments(caseId: string) {
 export async function uploadAndQueueDocument(
   documentData: NewLegalDocument,
   taskTypes: string[]
-) {
+): Promise<any> {
   return db.transaction(async (tx) => {
     // Insert document
     const document = await tx
@@ -242,7 +243,7 @@ export async function uploadAndQueueDocument(
 // 6. Aggregations and Analytics
 // ==================================================
 // Get document statistics by case
-export async function getCaseStatistics(caseId: string) {
+export async function getCaseStatistics(caseId: string): Promise<any> {
   return db.execute(sql`
     SELECT
       COUNT(*) as total_documents,
@@ -255,7 +256,7 @@ export async function getCaseStatistics(caseId: string) {
   `);
 }
 // Get processing queue statistics
-export async function getQueueStatistics() {
+export async function getQueueStatistics(): Promise<any> {
   return db.execute(sql`
     SELECT
       task_type,
@@ -279,7 +280,7 @@ export async function getPaginatedDocuments(
     documentType?: string;
     searchQuery?: string;
   }
-) {
+): Promise<any> {
   const offset = (page - 1) * pageSize;
   let query = db
     .select()
@@ -328,7 +329,7 @@ export async function getPaginatedDocuments(
 // Batch insert documents
 export async function batchInsertDocuments(
   documents: NewLegalDocument[]
-) {
+): Promise<any> {
   return db
     .insert(legalDocuments)
     .values(documents)
@@ -338,7 +339,7 @@ export async function batchInsertDocuments(
 export async function batchUpdateAdmissibility(
   documentIds: string[],
   isAdmissible: boolean
-) {
+): Promise<any> {
   return db
     .update(legalDocuments)
     .set({ isAdmissible, updatedAt: new Date() })
@@ -349,7 +350,7 @@ export async function batchUpdateAdmissibility(
 // 9. Cache Management
 // ==================================================
 // Get cached search results
-export async function getCachedSearch(queryHash: string) {
+export async function getCachedSearch(queryHash: string): Promise<any> {
   const result = await db
     .select()
     .from(vectorSearchCache)
@@ -372,7 +373,7 @@ export async function getCachedSearch(queryHash: string) {
   return result[0];
 }
 // Clean expired cache entries
-export async function cleanExpiredCache() {
+export async function cleanExpiredCache(): Promise<any> {
   return db
     .delete(vectorSearchCache)
     .where(lt(vectorSearchCache.expiresAt, new Date()));
@@ -389,7 +390,7 @@ export async function completeDocumentUpload(params: {
   fileUrl: string;
   fileSize: number;
   fileHash: string;
-}) {
+}): Promise<any> {
   return db.transaction(async (tx) => {
     // 1. Create document
     const document = await tx

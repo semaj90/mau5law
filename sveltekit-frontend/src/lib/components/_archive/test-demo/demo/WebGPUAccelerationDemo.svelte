@@ -1,5 +1,7 @@
 <!-- WebGPU Client-Side Acceleration Demo -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { webGPUAccelerator, type WebGPUCapabilities } from '$lib/services/webgpu-accelerator';
@@ -12,24 +14,24 @@
   } from '$lib/components/ui/enhanced-bits.svelte';
   // Reactive state using Svelte 5 runes
   let capabilities = $state<WebGPUCapabilities | null>(null);
-  let isInitializing = $state(true);
+  let isInitializing = $state<boolean>(true);
   let activeDemo = $state<'similarity' | 'clustering' | 'matrix' | null>(null);
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   let results = $state<any>(null);
   let performanceMetrics = $state<any>(null);
   // Demo configuration
-  let vectorDimensions = $state(384); // Default embedding dimensions
-  let numDataPoints = $state(1000);
-  let numClusters = $state(5);
-  let matrixSize = $state(256);
+  let vectorDimensions = $state<number>(384); // Default embedding dimensions
+  let numDataPoints = $state<number>(1000);
+  let numClusters = $state<number>(5);
+  let matrixSize = $state<number>(256);
   // Generated test data
-  let testVectors = $state(null);
+  let testVectors = $state<any>(null);
   let testDataPoints = $state<Float32Array | null>(null);
-  let testMatrices = $state(null);
+  let testMatrices = $state<any>(null);
   /**
    * Initialize WebGPU and generate test data
    */
-  async function initializeWebGPU() {
+  async function initializeWebGPU(): Promise<void> {
     isInitializing = true;
     try {
       const caps = await webGPUAccelerator.initialize();
@@ -120,7 +122,7 @@
   /**
    * Run vector similarity demo
    */
-  async function runSimilarityDemo() {
+  async function runSimilarityDemo(): Promise<any> {
     if (!capabilities?.available || !testVectors) return;
     isProcessing = true;
     activeDemo = 'similarity';
@@ -159,7 +161,7 @@
   /**
    * Run K-means clustering demo
    */
-  async function runClusteringDemo() {
+  async function runClusteringDemo(): Promise<any> {
     if (!capabilities?.available || !testDataPoints) return;
     isProcessing = true;
     activeDemo = 'clustering';
@@ -193,7 +195,7 @@
   /**
    * Run matrix multiplication demo
    */
-  async function runMatrixDemo() {
+  async function runMatrixDemo(): Promise<any> {
     if (!capabilities?.available || !testMatrices) return;
     isProcessing = true;
     activeDemo = 'matrix';
@@ -209,7 +211,7 @@
       const gpuTime = performance.now() - startTime;
       // CPU comparison for smaller matrices
   let cpuTime = 0;
-  let speedup = $state(0);
+  let speedup = $state<number>(0);
       if (matrixSize <= 128) {
         const cpuStartTime = performance.now();
         computeCPUMatrixMultiply(testMatrices.matrixA, testMatrices.matrixB, matrixSize);
@@ -239,9 +241,9 @@
    * CPU vector similarity for comparison
    */
   function computeCPUSimilarity(vectorA: Float32Array, vectorB: Float32Array): number {
-  let dotProduct = $state(0);
-  let normA = $state(0);
-  let normB = $state(0);
+  let dotProduct = $state<number>(0);
+  let normA = $state<number>(0);
+  let normB = $state<number>(0);
     for (let i = 0; i < vectorA.length; i++) {
       dotProduct += vectorA[i] * vectorB[i];
       normA += vectorA[i] * vectorA[i];
@@ -260,7 +262,7 @@
     const result = new Float32Array(size * size);
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
-  let sum = $state(0);
+  let sum = $state<number>(0);
         for (let k = 0; k < size; k++) {
           sum += matrixA[i * size + k] * matrixB[k * size + j];
         }

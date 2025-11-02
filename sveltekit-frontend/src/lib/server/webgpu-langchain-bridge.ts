@@ -390,6 +390,6 @@ export async function processBatchDocumentsWithWebGPU(
 ): Promise<ProcessingResult[]> {
   return webgpuLangChainBridge.processBatchDocuments(documents, options);
 }
-export async function getLangChainWebGPUStats() {
+export async function getLangChainWebGPUStats(): Promise<any> {
   return webgpuLangChainBridge.getProcessingStats();
 }
