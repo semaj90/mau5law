@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * 🎯 Recommendation Engine API Client
  * Client-side functions for accessing recommendation APIs
@@ -7,13 +7,13 @@ import type { Document } from '$lib/types';
 interface RecentCaseResponse { success: boolean;, data: RecentCase[];
   fromCache: boolean;
   timestamp: string;
-  meta?: {, totalCases: number;, returnedCases: number;
+  meta?: { totalCases: number;, returnedCases: number;
     highestPriority: number;
     algorithm: string;
     cacheExpiry: number;
   };
-}
-interface RecentCase {, id: string;, title: string;
+} }
+interface RecentCase { id: string;, title: string;
   status: 'active' | 'pending' | 'closed';
   lastAccessed: string;
   confidence: number;
@@ -21,12 +21,12 @@ interface RecentCase {, id: string;, title: string;
   caseType: string;
   urgency: 'low' | 'normal' | 'high' | 'critical';
   glyphSignature?: string;
-  metadata: {, clientName: string;, practiceArea: string;
+  metadata: { clientName: string;, practiceArea: string;
     daysOpen: number;
     documentCount: number;
    , lastActivity: string;
   };
-}
+} }
 /**
  * Fetch recent cases from recommendation engine
  */
@@ -35,21 +35,20 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
     const response = await fetch(`/api/recommendations/recent-cases?limit=${limit}`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json' }'` });'`
+        'Content-Type': 'application/json' } }` });'`
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    } }
     const result: RecentCaseResponse = await response.json();
     if (!result.success) {
       throw new Error('API returned error status');
-    }
+    } }
     return result.data;
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to fetch recent cases:', error);
     // Return fallback data to prevent UI from breaking
     return [
-      {,
-        id: 'fallback-1',
+      { id: 'fallback-1',
         title: 'Sample Case #1',
         status: 'active',
         lastAccessed: new Date().toISOString(),
@@ -58,16 +57,15 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
         caseType: 'litigation',
         urgency: 'high',
         glyphSignature: 'fb001',
-        metadata: {
-         , clientName: 'Sample Client',
+        metadata: { clientName: 'Sample Client',
           practiceArea: 'General Practice',
           daysOpen: 30,
           documentCount: 25,
-          lastActivity: 'Document review` }'`
+          lastActivity: 'Document review` } }`
       },
     ];
-  }
-}
+  } }
+} }
 /**
  * Update case recommendation data
  */
@@ -87,14 +85,14 @@ export async function updateCaseRecommendation(
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    } }
     const result = await response.json();
     return result.success;
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to update case recommendation:', error);
     return false;
-  }
-}
+  } }
+} }
 /**
  * Search cases using fuzzy search
  */
@@ -111,14 +109,14 @@ export async function searchCases(query: string, limit: number = 10): Promise<Re
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    } }
     const result = await response.json();
     return result.success ? result.data : [];
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to search cases:', error);
     return [];
-  }
-}
+  } }
+} }
 /**
  * Get recommendations based on user context
  */
@@ -137,11 +135,12 @@ export async function getContextualRecommendations(context: {
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    } }
     const result = await response.json();
     return result.success ? result.data : [];
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to get contextual recommendations:', error);
     return [];
-  }
-}
+  } }
+} }
+

@@ -12,7 +12,7 @@
 const getEnv = (key: string, defaultValue: string) => {
   if (typeof process !== 'undefined' && process.env) {
     return process.env[key] || defaultValue;
-  }
+  } }
   return defaultValue;
 };
 
@@ -31,42 +31,42 @@ export interface QdrantSearchRequest {
   filter?: QdrantFilter;
   with_payload?: boolean;
   with_vector?: boolean;
-}
+} }
 
 export interface QdrantFilter {
   must?: QdrantCondition[];
   should?: QdrantCondition[];
   must_not?: QdrantCondition[];
-}
+} }
 
 export interface QdrantCondition {
   key: string;
   match?: { value: string | number | boolean };
   range?: { gt?: number; gte?: number; lt?: number; lte?: number };
-}
+} }
 
-export interface QdrantSearchResult {, id: string | number;, score: number;
+export interface QdrantSearchResult { id: string | number;, score: number;
   payload?: Record<string, any>;
   vector?: number[];
-}
+} }
 
 export interface QdrantPoint { id: string | number;, vector: number[];
   payload?: Record<string, any>;
-}
+} }
 
 export interface QdrantUpsertRequest {
   points: QdrantPoint[];
-}
+} }
 
-export interface QdrantCollectionInfo {, status: string;, vectors_count: number;
+export interface QdrantCollectionInfo { status: string;, vectors_count: number;
   indexed_vectors_count: number;
   points_count: number;
   segments_count: number;
-  config: {, params: {, vectors: {, size: number;, distance: string;
+  config: { params: { vectors: { size: number;, distance: string;
       };
     };
   };
-}
+} }
 
 /**
  * HTTP/REST API Client (Fallback)
@@ -78,7 +78,7 @@ export class QdrantHTTPClient {
   constructor(baseUrl = QDRANT_HTTP_URL, collectionName = QDRANT_COLLECTION) {
     this.baseUrl = baseUrl;
     this.collectionName = collectionName;
-  }
+  } }
 
   /**
    * Search vectors using HTTP REST API
@@ -88,8 +88,7 @@ export class QdrantHTTPClient {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/search`, {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },'`'`
-        body: JSON.stringify({
-         , vector: request.query_vector,
+        body: JSON.stringify({ vector: request.query_vector,
           limit: request.limit || 10,
           score_threshold: request.score_threshold || 0.7,
           filter: request.filter,
@@ -100,7 +99,7 @@ export class QdrantHTTPClient {
 
       if (!response.ok) {
         throw new Error(`Qdrant HTTP search failed: ${response.status}`);
-      }
+      } }
 
       const data = await response.json();
       return data.result.map((item: any) => ({
@@ -109,11 +108,11 @@ export class QdrantHTTPClient {
         payload: item.payload,
         vector: item.vector
       }));
-    } catch (error) {
-      console.error('Qdrant HTTP search error:', error);'
+    } }catch (error) {
+      console.error('Qdrant HTTP search error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Upsert vectors using HTTP REST API
@@ -123,20 +122,20 @@ export class QdrantHTTPClient {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points`, {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },'`'`
-        body: JSON.stringify({, points: request.points })
+        body: JSON.stringify({ points: request.points })
       });
 
       if (!response.ok) {
         throw new Error(`Qdrant HTTP upsert failed: ${response.status}`);
-      }
+      } }
 
       const data = await response.json();
       return { status: data.status };
-    } catch (error) {
-      console.error('Qdrant HTTP upsert error:', error);'
+    } }catch (error) {
+      console.error('Qdrant HTTP upsert error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Create collection if not exists
@@ -147,38 +146,36 @@ export class QdrantHTTPClient {
       const checkResponse = await fetch(`${this.baseUrl}/collections/${this.collectionName}`);
 
       if (checkResponse.ok) {
-        console.log(`Qdrant collection: '${this.collectionName}' already exists`);
+        console.log(`Qdrant collection: '${this.collectionName} } already exists`);
         return;
-      }
+      } }
 
       // Create collection
       const createResponse = await fetch(`${this.baseUrl}/collections/${this.collectionName}`, {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({, vectors: {, size: VECTOR_DIMENSIONS,
+        body: JSON.stringify({ vectors: { size: VECTOR_DIMENSIONS,
             distance: `Cosine` },'`'`
-          optimizers_config: {
-           , default_segment_number: 4,
+          optimizers_config: { default_segment_number: 4,
             indexing_threshold: 10000
           },
-          hnsw_config: {
-           , m: 16,
+          hnsw_config: { m: 16,
             ef_construct: 100,
             full_scan_threshold: 10000
-          }
+          } }
         })
       });
 
       if (!createResponse.ok) {
         throw new Error(`Failed to create collection: ${createResponse.status}`);
-      }
+      } }
 
-      console.log(`Qdrant collection: '${this.collectionName}' created successfully`);
-    } catch (error) {
-      console.error('Qdrant collection creation error:', error);'
+      console.log(`Qdrant collection: '${this.collectionName} } created successfully`);
+    } }catch (error) {
+      console.error('Qdrant collection creation error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Get collection info
@@ -189,15 +186,15 @@ export class QdrantHTTPClient {
 
       if (!response.ok) {
         throw new Error(`Failed to get collection info: ${response.status}`);
-      }
+      } }
 
       const data = await response.json();
       return data.result;
-    } catch (error) {
-      console.error('Qdrant collection info error:', error);'
+    } }catch (error) {
+      console.error('Qdrant collection info error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Health check
@@ -206,11 +203,11 @@ export class QdrantHTTPClient {
     try {
       const response = await fetch(`${this.baseUrl}/healthz`);
       return response.ok;
-    } catch (error) {
+    } }catch (error) {
       return false;
-    }
-  }
-}
+    } }
+  } }
+} }
 
 /**
  * WebTransport/QUIC Client (High Performance)
@@ -224,7 +221,7 @@ export class QdrantQUICClient {
   constructor(quicUrl = QDRANT_QUIC_URL, collectionName = QDRANT_COLLECTION) {
     this.quicUrl = quicUrl;
     this.collectionName = collectionName;
-  }
+  } }
 
   /**
    * Initialize WebTransport connection
@@ -233,17 +230,17 @@ export class QdrantQUICClient {
     if (typeof WebTransport === 'undefined') {
       console.warn('WebTransport not available, falling back to HTTP');
       return;
-    }
+    } }
 
     try {
       this.transport = new (WebTransport as: any)(this.quicUrl);
       await this.transport.ready;
       console.log('Qdrant QUIC/WebTransport connection established');
-    } catch (error) {
+    } }catch (error) {
       console.error('WebTransport connection failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Stream search results using QUIC
@@ -251,7 +248,7 @@ export class QdrantQUICClient {
   async *searchStream(request: QdrantSearchRequest): AsyncGenerator<QdrantSearchResult> {
     if (!this.transport) {
       await this.connect();
-    }
+    } }
 
     try {
       const stream = await this.transport.createBidirectionalStream();
@@ -270,18 +267,18 @@ export class QdrantQUICClient {
 
       // Read streaming results
       while (true) {
-        const { done, value } = await reader.read();
+        const { done, value } }= await reader.read();
         if (done) break;
 
         const resultText = new TextDecoder().decode(value);
         const result = JSON.parse(resultText);
         yield result;
-      }
-    } catch (error) {
-      console.error('QUIC search stream error:', error);'
+      } }
+    } }catch (error) {
+      console.error('QUIC search stream error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Close WebTransport connection
@@ -290,9 +287,9 @@ export class QdrantQUICClient {
     if (this.transport) {
       await this.transport.close();
       this.transport = null;
-    }
-  }
-}
+    } }
+  } }
+} }
 
 /**
  * Unified Qdrant Client with Protocol Selection
@@ -306,7 +303,7 @@ export class QdrantClient {
     this.httpClient = new QdrantHTTPClient();
     this.quicClient = new QdrantQUICClient();
     this.preferredProtocol = protocol;
-  }
+  } }
 
   /**
    * Search with automatic protocol fallback
@@ -317,53 +314,54 @@ export class QdrantClient {
         const results: QdrantSearchResult[] = [];
         for await (const result of this.quicClient.searchStream(request)) {
           results.push(result);
-        }
+        } }
         return results;
-      } catch (error) {
+      } }catch (error) {
         console.warn('QUIC search failed, falling back to HTTP:', error);
         return this.httpClient.search(request);
-      }
-    }
+      } }
+    } }
 
     return this.httpClient.search(request);
-  }
+  } }
 
   /**
    * Upsert vectors
    */
   async upsert(request: QdrantUpsertRequest): Promise<{ status: string }> {
     return this.httpClient.upsert(request);
-  }
+  } }
 
   /**
    * Initialize collection
    */
   async ensureCollection(): Promise<void> {
     return this.httpClient.ensureCollection();
-  }
+  } }
 
   /**
    * Get collection info
    */
   async getCollectionInfo(): Promise<QdrantCollectionInfo> {
     return this.httpClient.getCollectionInfo();
-  }
+  } }
 
   /**
    * Health check
    */
   async healthCheck(): Promise<boolean> {
     return this.httpClient.healthCheck();
-  }
+  } }
 
   /**
    * Cleanup
    */
   async cleanup(): Promise<void> {
     await this.quicClient.close();
-  }
-}
+  } }
+} }
 
 // Export singleton instance
 export const qdrantClient = new QdrantClient('http'); // Default to HTTP, upgrade to QUIC when available
 export default qdrantClient;
+

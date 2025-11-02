@@ -1,39 +1,39 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Citations API with Rich Text Editor Integration
  *
  * Provides comprehensive citation management for legal cases
  * Integrates with detective mode and case management system
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db/index.js';
-import { eq, and, or, ilike, count, desc } from 'drizzle-orm';
-import { citations } from '$lib/server/db/schemas/cases-schema.js';
-import { caseManagementService } from '$lib/services/case-management-service.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { db } }from '$lib/server/db/index.js';
+import { eq, and, or, ilike, count, desc } }from 'drizzle-orm';
+import { citations } }from '$lib/server/db/schemas/cases-schema.js';
+import { caseManagementService } }from '$lib/services/case-management-service.js';
 // Sample citations for when database is not available or for demo data
 
 // Define a minimal interface for CaseDetails based on its usage in this file
 interface CaseDetails { id: string;, detectiveMode: boolean;
   // Add other properties as needed if they are used elsewhere from caseDetails
-}
+} }
 
 // Define a minimal interface for TimelineEvent based on its usage
-interface TimelineEvent {, eventType: string;, title: string;
+interface TimelineEvent { eventType: string;, title: string;
   description: string;
   relatedEntityId: string;
   relatedEntityType: string;
- , eventData: Record<string, any>;
+  eventData: Record<string, any>;
   importance: 'low' | 'medium' | 'high';
- , eventDate: Date;
-}
+  eventDate: Date;
+} }
 
 // Define a minimal interface for CaseManagementService based on its usage
 interface ICaseManagementService {
   getCaseById(caseId: string): Promise<CaseDetails | null>;
   addTimelineEvent(caseId: string, event: TimelineEvent): Promise<void>;
   // Add other methods as needed if they are used elsewhere from caseManagementService
-}
+} }
 
 // Type assertion for caseManagementService to resolve compilation errors.
 // The ideal fix would be to update the actual $lib/services/case-management-service.ts file
@@ -41,8 +41,7 @@ interface ICaseManagementService {
 const typedCaseManagementService: ICaseManagementService = caseManagementService, as: any;
 
 const sampleCitations = [
-  {,
-    id: '1',
+  { id: '1',
     title: 'Miranda v. Arizona',
     content:
       'The Court held that both inculpatory and exculpatory statements made in response to interrogation by a defendant in police custody will be admissible at trial only if the prosecution can show that the defendant was informed of the right to consult with an attorney.',
@@ -83,10 +82,10 @@ const sampleCitations = [
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function isValidUUID(uuid: string): boolean {
   return UUID_REGEX.test(uuid);
-}
+} }
 function isDemoCase(caseId: string): boolean {
   return caseId === 'demo-case-123' || caseId.startsWith('demo-');
-}
+} }
 
 // Helper to convert: unknown errors to, a: string message
 function getErrorMessage(err: any): string {
@@ -94,10 +93,10 @@ function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
-  } catch {
+  } }catch {
     return, 'Unknown error';
-  }
-}
+  } }
+} }
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -113,17 +112,17 @@ export const GET: RequestHandler = async ({ url }) => {
           success: false,
           error: 'caseId parameter is required'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Build where conditions
     const whereConditions: any[] = [eq(citations.caseId, caseId)];
     if (citationType) {
       whereConditions.push(eq(citations.citationType, citationType));
-    }
+    } }
     if (verified !== null && verified !== undefined) {
       whereConditions.push(eq(citations.verified, verified === 'true'));
-    }
+    } }
     if (search) {
       whereConditions.push(
         or(
@@ -134,7 +133,7 @@ export const GET: RequestHandler = async ({ url }) => {
           ilike(citations.abstract, `%${search}%`)
         )
       );
-    }
+    } }
     // Get citations with pagination
     const citationsQuery = db
       .select()
@@ -149,9 +148,9 @@ export const GET: RequestHandler = async ({ url }) => {
       .select({ count: count() })
       .from(citations)
       .where(and(...whereConditions)); // Added closing parenthesis
-    const [{ count: totalCount }] = await totalQuery;
+    const [{ count: totalCount } } = await totalQuery;
     return json({
-     , success: true,
+  success: true,
       citations: citationResults,
       pagination: {
         limit,
@@ -159,34 +158,34 @@ export const GET: RequestHandler = async ({ url }) => {
         total: totalCount,
         totalPages: Math.ceil(totalCount / limit)
       },
-      filters: { caseId, citationType, search, verified }
+      filters: { caseId, citationType, search, verified } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const msg = getErrorMessage(error);
-    console.error('Citations fetch error:', msg);'
+    console.error('Citations fetch error:', msg);
     return json(
       {
         success: false,
         error: msg, // Use the extracted message
         citations: []
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const citationData = await request.json();
     // Validate required fields
-    const { caseId, title, citationType } = citationData;
+    const { caseId, title, citationType } }= citationData;
     if (!caseId || !title || !citationType) {
       return json(
         {
           success: false,
           error: `caseId, title, and citationType are required` },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Verify case exists
     const caseDetails = await typedCaseManagementService.getCaseById(caseId);
     if (!caseDetails) {
@@ -194,9 +193,9 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: `Case not found` },
-        { status: 404 }
+        { status: 404 } }
       );
-    }
+    } }
     // Create citation record
     const [newCitation] = await db
       .insert(citations)
@@ -227,8 +226,8 @@ export const POST: RequestHandler = async ({ request }) => {
     if (caseDetails.detectiveMode) {
       await typedCaseManagementService.addTimelineEvent(caseId, {
         eventType: 'citation_added',
-        title: `Citation;, added: ${title}`,
-        description: `New ${citationType} citation added to case`,
+        title: `Citation; added: ${title}`,
+        description: `New ${citationType} }citation added to case`,
         relatedEntityId: newCitation.id, as: string,
         relatedEntityType: 'citation',
         eventData: {
@@ -239,38 +238,38 @@ export const POST: RequestHandler = async ({ request }) => {
         importance: 'medium',
         eventDate: new Date()
       });
-    }
+    } }
     return json(
       {
         success: true,
         citation: newCitation
       },
-      { status: 201 }
+      { status: 201 } }
     );
-  } catch (error: any) {
+  } }catch (error: any) {
     const msg = getErrorMessage(error);
-    console.error('Citation creation error:', msg);'
+    console.error('Citation creation error:', msg);
     return json(
       {
         success: false,
         error: msg, // Use the extracted message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const PUT: RequestHandler = async ({ request }) => {
   try {
-    const { id, ...updateData } = await request.json();
+    const { id, ...updateData } }= await request.json();
     if (!id) {
       return json(
         {
           success: false,
           error: 'Citation ID is required'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Check if citation exists
     const existingCitation = await db
       .select()
@@ -283,9 +282,9 @@ export const PUT: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Citation not found'
         },
-        { status: 404 }
+        { status: 404 } }
       );
-    }
+    } }
     // Update citation
     const [updatedCitation] = await db
       .update(citations)
@@ -299,29 +298,29 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       citation: updatedCitation
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const msg = getErrorMessage(error);
-    console.error('Citation update error:', msg);'
+    console.error('Citation update error:', msg);
     return json(
       {
         success: false,
         error: msg, // Use the extracted message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
-    const { id } = await request.json();
+    const { id } }= await request.json();
     if (!id) {
       return json(
         {
           success: false,
           error: 'Citation ID is required` },'`
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Check if citation exists
     const existingCitation = await db.select().from(citations).where(eq(citations.id, id)).limit(1);
     if (!existingCitation.length) {
@@ -329,23 +328,24 @@ export const DELETE: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: `Citation not found` },
-        { status: 404 }
+        { status: 404 } }
       );
-    }
+    } }
     // Delete the citation
     await db.delete(citations).where(eq(citations.id, id));
     return json({
       success: true,
-      message: `Citation deleted successfully` });
-  } catch (error: any) {
+      message: 'Citation deleted successfully' });
+  } }catch (error: any) {
     const msg = getErrorMessage(error);
-    console.error('Citation deletion error:', msg);'
+    console.error('Citation deletion error:', msg);
     return json(
       {
         success: false,
         error: msg, // Use the extracted message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

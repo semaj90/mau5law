@@ -1,8 +1,8 @@
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { db } from, '$lib/server/db';
-import { evidence } from, '$lib/server/db/schema';
-import { eq } from, 'drizzle-orm';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { db } }from '$lib/server/db';
+import { evidence } }from '$lib/server/db/schema';
+import { eq } }from 'drizzle-orm';
 
 /**
  * PUT /api/v1/evidence/[id]/ocr - Save OCR processing results
@@ -15,7 +15,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // --- Claim workflow & security notes ---
     // Anonymous uploads may be allowed in non-strict mode. When allowed we:
     //  - issue a short-lived anon_id cookie so the client can later claim/claimable uploads
-    //  - store minimal metadata: {, anon: true, anonId, anonExpiry, claimable?, claimToken? }
+    //  - store minimal metadata: { anon: true, anonId, anonExpiry, claimable?, claimToken? } }
     //  - if STRICT_UPLOADS === 'true', anonymous uploads are rejected (401)
     // Security: real production should use server-side CAPTCHA verification, Redis-based rate-limits,
     // and signed/HttpOnly cookies set only over HTTPS. This file implements a best-effort demo flow.
@@ -29,7 +29,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Enforce strict uploads if configured
     if (isAnonymous && process.env.STRICT_UPLOADS === 'true') {
       throw error(401, 'Authentication required to upload evidence');
-    }
+    } }
 
     // Read incoming cookies (for anon id)
     const cookieHeader = request.headers.get('cookie');
@@ -39,7 +39,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (!anonId && isAnonymous) {
       anonId = generateAnonId();
       setAnonCookie = true;
-    }
+    } }
 
     // Basic rate-limiting (per anonId or IP)
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown-ip';
@@ -47,12 +47,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const rlKey = rateLimitKey(isAnonymous ? `anon:${anonId ?? ip}` : `user:${userId ?? ip}`);
     if (!checkRateLimit(rlKey)) {
       throw error(429, 'Too many requests, slow down');
-    }
+    } }
 
     const evidenceId = parseInt(params.id);
     if (isNaN(evidenceId)) {
       throw error(400, 'Invalid evidence ID');
-    }
+    } }
 
     // Parse request body
     // Define a typed shape for the OCR request payload (avoid `any`)
@@ -82,7 +82,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       ocrMetadata,
       processedAt,
       captchaToken
-    } = body;
+    } }= body;
 
     // --- Modified anonymous handling: support client-side fallback & consent flow ---
     let consentFlow = $state<boolean>(false);
@@ -101,9 +101,9 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
             anonId,
             processingTime: Math.round(processingTime)
           },
-          { status: 202, headers: { 'Content-Type': 'application/json', 'X-Client-Fallback': `save-local` } }'`'`
+          { status: 202, headers: { 'Content-Type': 'application/json', 'X-Client-Fallback': `save-local` } }} }`'`
         );
-      }
+      } }
 
       // Allow a lightweight, "consent" token for temporary anonymous uploads (client UX flow)
       // The client may use captchaToken === 'consent' to indicate user accepted terms (no external captcha).
@@ -113,37 +113,37 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         claimToken = generateClaimToken();
         // create a claim URL the frontend can show (frontend will call a claim endpoint)
         claimUrl = `/evidence/claim/${encodeURIComponent(claimToken)}`;
-      } else {
+      } }else {
         // Otherwise enforce real captcha verification
         const ok = await verifyCaptcha(captchaToken);
         if (!ok) {
           throw error(403, 'CAPTCHA required for unauthenticated submissions');
-        }
-      }
-    }
+        } }
+      } }
+    } }
 
     // Anti-abuse: file/text size cap
     const MAX_OCR_TEXT_LENGTH = 500_000; // 500k chars
     if (ocrText && String(ocrText).length > MAX_OCR_TEXT_LENGTH) {
       throw error(413, 'OCR payload too large');
-    }
+    } }
 
     // Anti-abuse: virus scan (placeholder)
     const infected = await scanForViruses(typeof ocrText === 'string' ? ocrText : null);
     if (infected) {
       throw error(415, 'Uploaded content failed virus scan');
-    }
+    } }
 
     // Validate required fields (guard against: undefined confidence)
     if (!ocrText && (ocrConfidence === undefined || Number(ocrConfidence) < 0.1)) {
       throw error(400, 'OCR text or high confidence result required');
-    }
+    } }
 
     // Verify evidence exists
     const existingEvidence = await db.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
     if (existingEvidence.length === 0) {
       throw error(404, 'Evidence not found');
-    }
+    } }
     const evidenceRecord = existingEvidence[0];
 
     // Authorization behavior:
@@ -151,9 +151,9 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // - If, anonymous: create/assign anon id and prevent overwriting evidence uploaded by another user
     if (!isAnonymous) {
       if (evidenceRecord.uploadedBy && evidenceRecord.uploadedBy !== userId) {
-        console.warn(`User ${userId} updating evidence ${evidenceId} not owned by them`);
-      }
-    } else {
+        console.warn(`User ${userId} }updating evidence ${evidenceId} }not owned by them`);
+      } }
+    } }else {
       // anonymous update allowed only if record is already anonymous or unowned or owned by same anonId
       // Narrow type for the DB row to avoid `any`
       type EvidenceRow = { uploadedBy?: string | null };
@@ -162,21 +162,21 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       if (owner && anonymousOwner && anonymousOwner !== anonId) {
         // If the record is already assigned to a different anon session, deny to avoid cross-user overwrite
         throw error(401, 'Cannot update evidence uploaded by a different anonymous session');
-      }
+      } }
       if (owner && !anonymousOwner) {
         // owned by authenticated user
         throw error(401, 'Authentication required to update this evidence');
-      }
-    }
+      } }
+    } }
 
     // Define update shape
     type OCRUpdateData = Partial<{ updatedAt: Date;, ocrText: string;
       ocrConfidence: number;
-     , ocrRegions: Array<Record<string, unknown>> | null;
+  ocrRegions: Array<Record<string, unknown>> | null;
       ocrEmbedding: string | null;
       tensorProcessed: boolean;
       processingMethod: string;
-     , ocrMetadata: Record<string, unknown> | string | null;
+  ocrMetadata: Record<string, unknown> | string | null;
       processedAt: Date | null;
       //, optional: uploadedBy, metadata
       uploadedBy?: string | null;
@@ -185,7 +185,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
     // Build update data
     const updateData: OCRUpdateData = {
-     , updatedAt: new Date()
+  updatedAt: new Date()
     };
     if (ocrText) updateData.ocrText = String(ocrText);
     if (ocrConfidence !== undefined) updateData.ocrConfidence = Number(ocrConfidence);
@@ -193,7 +193,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       updateData.ocrRegions = Array.isArray(ocrRegions) ? (ocrRegions as Array<Record<string, unknown>>) : undefined;
     if (ocrEmbedding) {
       updateData.ocrEmbedding = typeof ocrEmbedding === 'string' ? ocrEmbedding : JSON.stringify(ocrEmbedding);
-    }
+    } }
     if (tensorProcessed !== undefined) updateData.tensorProcessed = Boolean(tensorProcessed);
     if (processingMethod) updateData.processingMethod = String(processingMethod);
     if (ocrMetadata)
@@ -201,7 +201,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (processedAt) {
       const parsed = new Date(processedAt);
       updateData.processedAt = isNaN(parsed.getTime()) ? null : parsed;
-    }
+    } }
 
     // If anonymous, ensure uploadedBy is set to anonId and add TTL metadata
     if (isAnonymous && anonId) {
@@ -220,7 +220,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
           [key: string]: any;
         };
 
-        const metaObj: OCRMetadata = {, anon: true, anonId, anonExpiry: expiry, ingestQueued: false };
+        const metaObj: OCRMetadata = { anon: true, anonId, anonExpiry: expiry, ingestQueued: false };
 
         // If consent flow, mark as claimable and attach claim token + extended expiry
         if (consentFlow && claimToken) {
@@ -230,15 +230,15 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
           metaObj.claimExpiry = claimExpiry;
           // Provide minimal claim info to client in ocrMetadata if not set
           updateData.ocrMetadata = updateData.ocrMetadata ?? JSON.stringify({ claimUrl });
-        }
+        } }
 
         updateData.metadata = JSON.stringify(metaObj);
         // also prefer to set ocrMetadata if present to include last updater info
         updateData.ocrMetadata = updateData.ocrMetadata ?? JSON.stringify(metaObj);
-      } catch {
+      } }catch {
         // ignore
-      }
-    }
+      } }
+    } }
 
     // Persist update
     // Narrow the dynamic partial shape without using `any`.
@@ -259,7 +259,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       localsParam: any
     ): Promise<boolean> => {
       try {
-        const localsObj = (localsParam as LocalsWithPool) ?? ({} as LocalsWithPool);
+        const localsObj = (localsParam as LocalsWithPool) ?? ({} }as LocalsWithPool);
         const pool = localsObj.sharedWorkerPool;
         const jobMetadata = parseMetadata(metadataRaw);
         if (pool && typeof pool.enqueue === 'function') {
@@ -269,20 +269,20 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
             metadata: {
               ...jobMetadata,
               anon: jobMetadata.anon ?? Boolean(isAnonymousFlag)
-            }
+            } }
           };
           await pool.enqueue(job);
           console.log(`Enqueued ingestion via sharedWorkerPool for evidence ${id}`);
           return true;
-        } else {
+        } }else {
           console.log(`(fallback) proxy enqueue vector ingestion for evidence ${id}`);
           // TODO: production: call productionServiceClient.makeRequest('/ingest/evidence', { id })
           return true;
-        }
-      } catch (e) {
+        } }
+      } }catch (e) {
         console.warn('enqueueVectorIngestion failed:', e);
         return false;
-      }
+      } }
     };
 
     if (!updateData.tensorProcessed) {
@@ -293,20 +293,20 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
           if (updatedEvidence) {
             const metaObj = parseMetadata((updatedEvidence as: unknown as { metadata?: any }).metadata);
             metaObj.ingestQueued = true;
-            const metaUpdate: { metadata: string } = {, metadata: JSON.stringify(metaObj) };
+            const metaUpdate: { metadata: string } }= { metadata: JSON.stringify(metaObj) };
             await db.update(evidence).set(metaUpdate).where(eq(evidence.id, evidenceId));
-          }
-        } catch (e) {
+          } }
+        } }catch (e) {
           // non-fatal
-        }
-      } catch (e) {
+        } }
+      } }catch (e) {
         console.warn('Failed to enqueue ingestion pipeline (non-fatal):', e);
-      }
-    }
+      } }
+    } }
 
     const processingTime = performance.now() - startTime;
 
-    console.log(`✅ OCR results saved for evidence ${evidenceId} (${processingMethod})`);
+    console.log(`✅ OCR results saved for evidence ${evidenceId} }(${processingMethod})`);
 
     // Prepare headers; set anon cookie when we created one
     const headers: Record<string, string> = {
@@ -316,23 +316,23 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       // short TTL cookie (3600s). Only set Secure if request appears to be HTTPS (x-forwarded-proto)
       const isHttps = (request.headers.get('x-forwarded-proto') || '').toLowerCase() === 'https';
       headers['Set-Cookie'] = `anon_id=${encodeURIComponent(anonId)}; Path=/; HttpOnly; Max-Age=3600; SameSite=Lax${`
-        isHttps ? '; Secure' : `` }`;` }
+        isHttps ? '; Secure' : `` }`;` } }
 
     // when returning response, include claim info if present
     return json(
       {
         success: true,
-        evidence: updatedEvidence ?? {, id: evidenceId },
+        evidence: updatedEvidence ?? { id: evidenceId },
         anonId: isAnonymous ? anonId : undefined,
         claim: consentFlow
           ? {
               claimToken,
               claimUrl,
               expiresInHours: 24,
-              message: `Temporary upload — claim this evidence after signing in.` }'`'`
+              message: 'Temporary upload — claim this evidence after signing in.' } }`'`
           : undefined,
         ocrProcessing: {
-         , method: processingMethod,
+  method: processingMethod,
           confidence: updateData.ocrConfidence ?? null,
           textLength: updateData.ocrText ? (updateData.ocrText, as: string).length : 0,
           regionsDetected: Array.isArray(updateData.ocrRegions) ? updateData.ocrRegions.length : 0,
@@ -344,11 +344,11 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       {
         status: 200,
         headers
-      }
+      } }
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Evidence OCR update error:', err);'
+    console.error('Evidence OCR update error:', err);
 
     // Normalize: unknown error into a safe shape
     type ErrLike = { status?: number; body?: { message?: string }; message?: string };
@@ -358,7 +358,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const extractedMessage = e.body?.message ?? e.message ?? 'Internal server error';
 
     const errorResponse = {
-     , error: statusCode !== 500 ? extractedMessage : 'Internal server error',
+  error: statusCode !== 500 ? extractedMessage : 'Internal server error',
       message: process.env.NODE_ENV === 'development' ? extractedMessage : undefined,
       processingTime: Math.round(processingTime)
     };
@@ -368,8 +368,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true' }'` });'`
-  }
+        'X-Error': 'true' } }` });'`
+  } }
 };
 
 // --- Added helpers for anon id, rate limiting, scanning, captcha ---
@@ -388,17 +388,17 @@ function parseCookies(cookieHeader: string | null) {
       acc[k] = decodeURIComponent((v || []).join('=') || '');
       return acc;
     }, {});
-}
+} }
 
 function generateAnonId() {
   // Use a narrow typed access to globalThis.crypto to avoid `any`
-  const g = globalThis as: unknown as { crypto?: { randomUUID?: () => string } };
+  const g = globalThis as: unknown as { crypto?: { randomUUID?: () => string } }};
   const uuid =
     typeof g.crypto !== 'undefined' && typeof g.crypto.randomUUID === 'function'
       ? g.crypto.randomUUID()
       : Math.random().toString(36).slice(2, 10) + '-' + Date.now();
   return `anon-${uuid}`;
-}
+} }
 
 async function verifyCaptcha(token?: string): Promise<any> {
   // Placeholder: wire to real CAPTCHA provider (reCAPTCHA, hCaptcha, Turnstile) in production
@@ -406,7 +406,7 @@ async function verifyCaptcha(token?: string): Promise<any> {
   if (process.env.NODE_ENV === 'development') return token === 'dev-valid-captcha';
   // call external verify API here
   return false;
-}
+} }
 
 async function scanForViruses(payload: string | null): Promise<any> {
   // Placeholder: integrate with ClamAV/third-party virus scanner
@@ -414,13 +414,13 @@ async function scanForViruses(payload: string | null): Promise<any> {
   if (!payload) return false;
   // extremely naive check (do NOT rely on this)
   if (payload.includes('<script>'
-import type { User } from, '$lib/types';evil</script>')) return true;'
+import type { User } }from '$lib/types';evil</script>')) return true;'
   return false;
-}
+} }
 
 function rateLimitKey(eventKey: string) {
   return `rl:${eventKey}`;
-}
+} }
 function checkRateLimit(key: string, max = RATE_LIMIT_MAX, windowMs = RATE_LIMIT_WINDOW_MS): boolean {
   // Try Redis if available in future via locals.redis (not implemented here)
   const now = Date.now();
@@ -430,15 +430,15 @@ function checkRateLimit(key: string, max = RATE_LIMIT_MAX, windowMs = RATE_LIMIT
   filtered.push(now);
   inMemoryRateMap.set(key, filtered);
   return filtered.length <= max;
-}
+} }
 
 function generateClaimToken() {
   // Use the same safe typed access pattern
-  const g = globalThis as: unknown as { crypto?: { randomUUID?: () => string } };
+  const g = globalThis as: unknown as { crypto?: { randomUUID?: () => string } }};
   return typeof g.crypto !== 'undefined' && typeof g.crypto.randomUUID === 'function'
     ? g.crypto.randomUUID()
     : Math.random().toString(36).slice(2, 10) + '-' + Date.now();
-}
+} }
 
 // Add small types and helpers to avoid `any`
 type SharedWorkerPool = { enqueue: (job: any) => Promise<void> | void };
@@ -450,11 +450,12 @@ function parseMetadata(raw: any): Record<string, unknown> {
   if (!raw) return {};
   if (typeof raw === 'string') {
     try {
-      return JSON.parse(raw || '{}');
-    } catch {
+      return JSON.parse(raw || '{} });
+    } }catch {
       return {};
-    }
-  }
+    } }
+  } }
   if (typeof raw === 'object') return raw as Record<string, unknown>;
   return {};
-}
+} }
+

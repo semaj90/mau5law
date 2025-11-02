@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { masterServiceCoordinator } from '$lib/services/master-service-coordinator.js';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { masterServiceCoordinator } }from '$lib/services/master-service-coordinator.js';
 
 // Add narrow types to avoid `any`
 type ServiceStatus = {
@@ -24,7 +24,7 @@ type CoordinatorError = {
 };
 
 type CoordinatorStatus = {
- , services: Map<string, ServiceStatus>;
+  services: Map<string, ServiceStatus>;
   systemHealth?: SystemHealth;
   activeErrors?: CoordinatorError[];
   performance?: Record<string, unknown>;
@@ -57,29 +57,29 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (typeof coordinator.getSystemStatus === 'function') {
       systemStatus = coordinator.getSystemStatus();
-    } else {
+    } }else {
       const servicesSrc = coordinator.services;
       let servicesMap: Map<string, ServiceStatus>;
 
       if (servicesSrc instanceof Map) {
         servicesMap = servicesSrc;
-      } else if (Array.isArray(servicesSrc)) {
+      } }else if (Array.isArray(servicesSrc)) {
         servicesMap = new Map((servicesSrc || []).map((s: ServiceStatus) => [s.id, s]));
-      } else {
+      } }else {
         servicesMap = new Map<string, ServiceStatus>();
-      }
+      } }
 
       systemStatus = {
         services: servicesMap,
-        systemHealth: coordinator.systemHealth ?? {, status: 'unknown' },'`'`
+        systemHealth: coordinator.systemHealth ?? { status: 'unknown' },'`'`
         activeErrors: Array.isArray(coordinator.activeErrors) ? coordinator.activeErrors : [],
-        performance: coordinator.performance ?? {}
+        performance: coordinator.performance ?? {} }
       };
-    }
+    } }
 
     if (action === 'status') {
       return json({ success: true, data: systemStatus, timestamp: new Date().toISOString() });
-    }
+    } }
 
     if (action === 'health') {
       const healthyServices = Array.from(systemStatus.services.values()).filter(s => s.status === 'healthy');
@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         data: {
-         , systemHealth: systemStatus.systemHealth,
+  systemHealth: systemStatus.systemHealth,
           healthyServices: healthyServices.length,
           totalServices: systemStatus.services.size,
           criticalErrors: activeErrors.filter(e => e.priority === 'critical').length,
@@ -96,7 +96,7 @@ export const GET: RequestHandler = async ({ url }) => {
         },
         timestamp: new Date().toISOString()
       });
-    }
+    } }
 
     if (action === 'services') {
       if (serviceId) {
@@ -104,41 +104,41 @@ export const GET: RequestHandler = async ({ url }) => {
         if (!serviceStatus) {
           return json(
             { success: false, error: 'Service, '${serviceId}` not found`, timestamp: new Date().toISOString() },
-            { status: 404 }
+            { status: 404 } }
           );
-        }
+        } }
         return json({ success: true, data: serviceStatus, timestamp: new Date().toISOString() });
-      }
+      } }
       const services = Array.from(systemStatus.services.entries()).map(([id, status]) => {
         // use a: "$"-prefixed unused variable name to satisfy lint rules for allowed unused vars
-        const {, id: $id, ...rest } = status as ServiceStatus;
+        const { id: $id, ...rest } }= status as ServiceStatus;
         return { id, ...rest };
       });
       return json({ success: true, data: services, timestamp: new Date().toISOString() });
-    }
+    } }
 
     if (action === 'metrics') {
       return json({ success: true, data: systemStatus.performance, timestamp: new Date().toISOString() });
-    }
+    } }
 
     if (action === 'errors') {
       return json({ success: true, data: systemStatus.activeErrors ?? [], timestamp: new Date().toISOString() });
-    }
+    } }
 
     return json(
       {
         success: false,
-        error: `Unknown;, action: ${action}`,
+        error: `Unknown; action: ${action}`,
         availableActions: ['status', 'health', 'services', 'metrics', 'errors'],
         timestamp: new Date().toISOString()
       },
-      { status: 400 }
+      { status: 400 } }
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error('Coordinator GET error:', err);'
+    console.error('Coordinator GET error:', err);
     return json({ success: false, error: msg, timestamp: new Date().toISOString() }, { status: 500 });
-  }
+  } }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -162,33 +162,33 @@ export const POST: RequestHandler = async ({ request }) => {
     if (action === 'start_all') {
       await coordinator.startAllServices?.();
       return json({ success: true, message: 'All services startup initiated', timestamp: new Date().toISOString() });
-    }
+    } }
 
     if (action === 'stop_all') {
       await coordinator.stopAllServices?.();
       return json({ success: true, message: 'All services shutdown initiated', timestamp: new Date().toISOString() });
-    }
+    } }
 
     if (action === 'restart_service') {
       if (!target)
         return json(
           { success: false, error: 'Service target required for restart action', timestamp: new Date().toISOString() },
-          { status: 400 }
+          { status: 400 } }
         );
       const service = findServiceById(target as: string);
       if (!service)
         return json(
           { success: false, error: 'Service, '${target}` not found`, timestamp: new Date().toISOString() },
-          { status: 404 }
+          { status: 404 } }
         );
       // Note: actual restart logic omitted for safety in frontend code
       return json({
-       , success: true,
+  success: true,
         message: `Service restart initiated for ${service.displayName || service.id}`,
         serviceId: target,
         timestamp: new Date().toISOString()
       });
-    }
+    } }
 
     if (action === 'force_health_check') {
       coordinator.forceHealthCheck?.();
@@ -197,25 +197,26 @@ export const POST: RequestHandler = async ({ request }) => {
         message: 'Forced health check initiated for all services',
         timestamp: new Date().toISOString()
       });
-    }
+    } }
 
     if (action === 'clear_errors') {
       coordinator.clearNonCriticalErrors?.();
       return json({ success: true, message: 'Non-critical errors cleared', timestamp: new Date().toISOString() });
-    }
+    } }
 
     return json(
       {
         success: false,
-        error: `Unknown;, action: ${action}`,
+        error: `Unknown; action: ${action}`,
         availableActions: ['start_all', 'stop_all', 'restart_service', 'force_health_check', 'clear_errors'],
         timestamp: new Date().toISOString()
       },
-      { status: 400 }
+      { status: 400 } }
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error('Coordinator POST error:', err);'
+    console.error('Coordinator POST error:', err);
     return json({ success: false, error: msg, timestamp: new Date().toISOString() }, { status: 500 });
-  }
+  } }
 };
+

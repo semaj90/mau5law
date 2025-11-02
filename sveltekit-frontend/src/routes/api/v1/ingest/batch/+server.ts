@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { INGEST_SERVICE_URL } from '$env/static/private';
-import { env } from '$env/dynamic/private';
+import type { Document } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { INGEST_SERVICE_URL } }from '$env/static/private';
+import { env } }from '$env/dynamic/private';
 
 // Configurable service URL and batch size with safe defaults
 const SERVICE_URL = INGEST_SERVICE_URL || 'http://localhost:8227';
@@ -31,14 +31,14 @@ export type IngestResult = {
 
 export interface BatchIngestRequest {
   documents: IngestDocument[];
-}
-export interface BatchIngestResponse {, results: IngestResult[];, processed: number;
+} }
+export interface BatchIngestResponse { results: IngestResult[];, processed: number;
   total: number;
   timestamp: string;
   errors?: string[];
-}
+} }
 
-export const, POST: RequestHandler = async ({ request, fetch }) => {
+export const POST: RequestHandler = async ({ request, fetch }) => {
   const startTime = Date.now();
   try {
     // Read and validate request body
@@ -47,18 +47,18 @@ export const, POST: RequestHandler = async ({ request, fetch }) => {
     // Validate request structure
     if (!requestData.documents || !Array.isArray(requestData.documents)) {
       return json({ error: 'Missing required, field: documents array is required' }, { status: 400 });
-    }
+    } }
 
     // Validate batch size
     if (requestData.documents.length > BATCH_SIZE_LIMIT) {
       return json(
         {
-          error: `Batch size ${requestData.documents.length} exceeds maximum of ${BATCH_SIZE_LIMIT}`,
+          error: `Batch size ${requestData.documents.length} }exceeds maximum of ${BATCH_SIZE_LIMIT}`,
           max_batch_size: BATCH_SIZE_LIMIT
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Validate each document
     const validationErrors: string[] = [];
@@ -72,9 +72,9 @@ export const, POST: RequestHandler = async ({ request, fetch }) => {
           error: 'Document validation failed',
           validation_errors: validationErrors
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Normalize headers early (safe to access before/after body consumption)
     const userAgent = request.headers?.get?.('user-agent') ?? 'unknown';
@@ -91,7 +91,7 @@ export const, POST: RequestHandler = async ({ request, fetch }) => {
 
     // Transform to Go service format with enhanced metadata
     const batchRequest = {
-     , documents: requestData.documents.map((doc, index) => ({
+  documents: requestData.documents.map((doc, index) => ({
         title: doc.title,
         content: doc.content,
         case_id: doc.case_id,
@@ -105,7 +105,7 @@ export const, POST: RequestHandler = async ({ request, fetch }) => {
           api_version: 'v1',
           timestamp: new Date().toISOString(),
           user_agent: userAgent
-        }
+        } }
       }))
     };
 
@@ -125,14 +125,14 @@ export const, POST: RequestHandler = async ({ request, fetch }) => {
       if (!response.ok) {
         const errorText = await response.text();
         return json(
-          { error: `Batch ingest service, error: ${response.status} - ${errorText}`,
+          { error: `Batch ingest service, error: ${response.status} }- ${errorText}`,
             service: 'ingest-service',
             port: '8227',
             batch_size: requestData.documents.length
           },
-          { status: response.status }
+          { status: response.status } }
         );
-      }
+      } }
 
       const result: BatchIngestResponse = await response.json();
       const processingTime = Date.now() - startTime;
@@ -149,12 +149,12 @@ export const, POST: RequestHandler = async ({ request, fetch }) => {
       return json({
         ...result,
         performance: {
-         , total_processing_time_ms: processingTime,
+  total_processing_time_ms: processingTime,
           average_document_time_ms: averageDocumentTimeMs,
           documents_per_second: documentsPerSecond
         },
         service_info: {
-         , go_service: 'ingest-service',
+  go_service: 'ingest-service',
           port: '8227',
           proxy: 'sveltekit-batch-api',
           architecture: 'multi-protocol',
@@ -163,15 +163,15 @@ export const, POST: RequestHandler = async ({ request, fetch }) => {
         success: true,
         api_version: 'v1',
         batch_summary: {
-         , requested: requestData.documents.length,
+  requested: requestData.documents.length,
           processed: result.processed || 0,
           failed: result.errors?.length || 0,
           success_rate:
             result.processed && requestData.documents.length > 0
               ? `${((result.processed / requestData.documents.length) * 100).toFixed(1)}%`
-              : `0%` }
+              : `0%` } }
       });
-    } catch (fetchError: any) {
+    } }catch (fetchError: any) {
       clearTimeout(timeoutId);
 
       // Safely detect an AbortError (fetch may throw an: object with a `name` property)
@@ -184,22 +184,22 @@ export const, POST: RequestHandler = async ({ request, fetch }) => {
         return json(
           {
             error: 'Batch processing timeout',
-            message: `Processing ${requestData.documents.length} documents took longer than ${TIMEOUT / 1000} seconds`,
+            message: `Processing ${requestData.documents.length} }documents took longer than ${TIMEOUT / 1000} }seconds`,
             batch_size: requestData.documents.length,
             timeout_ms: TIMEOUT
           },
-          { status: 504 }
+          { status: 504 } }
         );
-      }
+      } }
 
       // Re-throw other errors, preserving Error instances
       if (fetchError instanceof Error) throw fetchError;
       throw new Error(typeof fetchError === 'string' ? fetchError : 'Unknown fetch error');
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     const processingTime = Date.now() - startTime;
     // Log a safe, readable message
-    console.error('Batch ingest API error:', error instanceof Error ? error.message : String(error));'
+    console.error('Batch ingest API error:', error instanceof Error ? error.message : String(error));
     return json(
       {
         error: 'Internal server error during batch processing',
@@ -207,9 +207,9 @@ export const, POST: RequestHandler = async ({ request, fetch }) => {
         service: 'sveltekit-batch-ingest-proxy',
         processing_time_ms: processingTime
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // Batch status endpoint
@@ -219,25 +219,26 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       service: 'batch-ingest',
       capabilities: {
-       , max_batch_size: BATCH_SIZE_LIMIT,
+  max_batch_size: BATCH_SIZE_LIMIT,
         timeout_ms: TIMEOUT,
         supported_formats: ['json'],
         endpoints: {
-         , batch_ingest: '/api/v1/ingest/batch',
+  batch_ingest: '/api/v1/ingest/batch',
           single_ingest: '/api/v1/ingest',
-          health: '/api/v1/ingest` }'`
+          health: '/api/v1/ingest` } }`
       },
       architecture: {
-       , frontend: 'sveltekit-2',
+  frontend: 'sveltekit-2',
         backend: 'go-gin-microservice',
         database: 'postgresql-pgvector',
-        embeddings: `ollama-nomic-embed-text` }
+        embeddings: `ollama-nomic-embed-text` } }
     });
-  }
+  } }
 
   // Future: implement batch status tracking with Redis/PostgreSQL integration
   return json({
-   , batch_id: batchId,
+  batch_id: batchId,
     status: 'not_implemented',
-    message: `Batch status tracking will be implemented with Redis/PostgreSQL integration` });
+    message: 'Batch status tracking will be implemented with Redis/PostgreSQL integration' });
 };
+

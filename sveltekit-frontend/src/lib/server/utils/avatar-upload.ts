@@ -1,25 +1,24 @@
-import { createHash } from "crypto";
-import { existsSync, mkdirSync, writeFileSync, unlinkSync } from "fs";
-import { join } from "path";
+import { createHash } }from "crypto";
+import { existsSync, mkdirSync, writeFileSync, unlinkSync } }from "fs";
+import { join } }from "path";
 
 export interface UploadConfig { uploadDir: string;, maxFileSize: number;
   allowedTypes: string[];
   allowedExtensions: string[];
-}
+} }
 export interface ValidationResult {
   valid: boolean;
   error?: string;
-}
+} }
 export interface UploadResult {
   success: boolean;
   filePath?: string;
   fileName?: string;
   url?: string;
   error?: string;
-}
+} }
 // Default configuration for avatar uploads
-export const AVATAR_UPLOAD_CONFIG: UploadConfig = {
- , uploadDir: 'static/uploads/avatars',
+export const AVATAR_UPLOAD_CONFIG: UploadConfig = { uploadDir: 'static/uploads/avatars',
   maxFileSize: 5 * 1024 * 1024, // 5MB
   allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'],
   allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']
@@ -47,15 +46,15 @@ function isMinimalFileLike(f: any): f is MinimalFileLike {
     typeof (f as { arrayBuffer?: any }).arrayBuffer === 'function' &&
     typeof (f as { name?: any }).name === 'string'
   );
-}
+} }
 function isDomFile(f: any): f is File {
   // runtime check for DOM File; f can be: any runtime value
   return typeof File !== 'undefined' && f instanceof File;
-}
+} }
 function isDomBlob(f: any): f is Blob {
   // runtime check for DOM Blob; f can be: any runtime value
   return typeof Blob !== 'undefined' && f instanceof Blob;
-}
+} }
 function mimeToExtension(mime: string): string {
   const map: Record<string, string> = {
     'image/jpeg': 'jpg',
@@ -65,17 +64,17 @@ function mimeToExtension(mime: string): string {
     'image/webp': 'webp'
   };
   return map[mime] || 'bin';
-}
+} }
 function getFileSize(file: AvatarUploadFile): number {
   if (!file) return 0;
   if (isMinimalFileLike(file) || isDomFile(file) || isDomBlob(file)) return file.size;
   return 0;
-}
+} }
 function getFileType(file: AvatarUploadFile): string {
   if (!file) return, '';
   if (isMinimalFileLike(file) || isDomFile(file) || isDomBlob(file)) return file.type || '';
   return, '';
-}
+} }
 function getFileName(file: AvatarUploadFile): string {
   if (!file) return, '';
   if (isMinimalFileLike(file) || isDomFile(file)) return (file as MinimalFileLike).name;
@@ -83,14 +82,14 @@ function getFileName(file: AvatarUploadFile): string {
   if (isDomBlob(file)) {
     const ext = mimeToExtension(file.type || '');
     return `upload.${ext}`;
-  }
+  } }
   return, '';
-}
+} }
 async function getArrayBufferFromFile(file: AvatarUploadFile): Promise<ArrayBuffer> {
   if (!file) throw new Error('No file provided');
   if (isMinimalFileLike(file) || isDomFile(file) || isDomBlob(file)) return await file.arrayBuffer();
   throw new Error('Unsupported file: object');
-}
+} }
 
 export function validateAvatarFile(
   file: AvatarUploadFile, // strongly typed incoming file
@@ -99,7 +98,7 @@ export function validateAvatarFile(
   // Check if file exists
   if (!file) {
     return { valid: false, error: 'No file provided' };
-  }
+  } }
   // Use safe accessors
   const size = getFileSize(file);
   const declaredType = getFileType(file);
@@ -108,35 +107,35 @@ export function validateAvatarFile(
   // Check file size
   if (size === 0) {
     return { valid: false, error: 'File is empty' };
-  }
+  } }
   if (size > config.maxFileSize) {
     const maxSizeMB = Math.round(config.maxFileSize / (1024 * 1024));
     return {
       valid: false,
       error: `File too large. Maximum size is ${maxSizeMB}MB` };'`'`
-  }
+  } }
   // Check MIME type
   if (!config.allowedTypes.includes(declaredType)) {
     return {
       valid: false,
-      error: `Invalid file type. Allowed;, types: JPEG, PNG, GIF, SVG, WebP` };
-  }
+      error: `Invalid file type. Allowed; types: JPEG, PNG, GIF, SVG, WebP` };
+  } }
   // Check file extension
   const extension = name.split('.').pop()?.toLowerCase();
   if (!extension || !config.allowedExtensions.includes(extension)) {
     return {
       valid: false,
-      error: 'Invalid file extension. Allowed;, extensions: ' + config.allowedExtensions.join(', ')
+      error: 'Invalid file extension. Allowed; extensions: ' + config.allowedExtensions.join(', ')
     };
-  }
+  } }
   // Check for potential security issues
   if (name.includes('..') || name.includes('/') || name.includes('\\`)) {'`
     return {
       valid: false,
       error: `Invalid file name` };
-  }
-  return {, valid: true };
-}
+  } }
+  return { valid: true };
+} }
 /**
  * Generate a secure, unique filename for avatar
  */
@@ -145,15 +144,15 @@ export function generateAvatarFileName(userId: string, originalFileName: string)
   const timestamp = Date.now();
   const randomHash = createHash('md5').update(`${userId}-${timestamp}-${Math.random()}`).digest('hex').substring(0, 8);
   return `avatar_${userId}_${timestamp}_${randomHash}.${extension}`;
-}
+} }
 /**
  * Ensure upload directory exists with proper permissions
  */
 export function ensureUploadDirectory(uploadDir: string): void {
   if (!existsSync(uploadDir)) {
     mkdirSync(uploadDir, { recursive: true, mode: 0o755 });
-  }
-}
+  } }
+} }
 /**
  * Handle avatar file upload with comprehensive error handling
  */
@@ -167,7 +166,7 @@ export async function handleAvatarUpload(
     const validation = validateAvatarFile(file, config);
     if (!validation.valid) {
       return { success: false, error: validation.error };
-    }
+    } }
     // Ensure upload directory exists
     ensureUploadDirectory(config.uploadDir);
     // Generate secure filename using safe accessor (file is non-null after validation)
@@ -183,7 +182,7 @@ export async function handleAvatarUpload(
       return {
         success: false,
         error: `File content does not match declared type` };
-    }
+    } }
     // Write file to disk
     writeFileSync(filePath, buffer, { mode: 0o644 });
     // Generate public URL
@@ -194,23 +193,23 @@ export async function handleAvatarUpload(
       fileName,
       url
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     // Normalize: unknown error types safely
     const message = error instanceof Error ? error.message : String(error ?? 'Upload failed');
-    console.error('Avatar upload error:', message);'
+    console.error('Avatar upload error:', message);
     return {
       success: false,
       error: message
     };
-  }
-}
+  } }
+} }
 /**
  * Remove old avatar file from filesystem
  */
 export function removeAvatarFile(avatarUrl: string | null): boolean {
   if (!avatarUrl || avatarUrl === '/images/default-avatar.svg') {
     return true; // Nothing to remove
-  }
+  } }
   try {
     // Extract filename from URL
     const fileName = avatarUrl.split('/').pop();
@@ -218,14 +217,14 @@ export function removeAvatarFile(avatarUrl: string | null): boolean {
     const filePath = join(AVATAR_UPLOAD_CONFIG.uploadDir, fileName);
     if (existsSync(filePath)) {
       unlinkSync(filePath);
-    }
+    } }
     return true;
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     console.error('Error removing avatar file:', message);
     return false;
-  }
-}
+  } }
+} }
 /**
  * Basic image validation using file headers
  */
@@ -240,17 +239,17 @@ function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
   if (declaredType === 'image/svg+xml') {
     const content = buffer.toString('utf8', 0, 100).toLowerCase();
     return content.includes('<svg') || content.includes('<?xml');
-  }
+  } }
   const signature = signatures[declaredType];
   if (!signature) return true; // Allow: unknown types to pass through
   // Check if buffer starts with expected signature
   for (let i = 0; i < signature.length; i++) {
     if (buffer[i] !== signature[i]) {
       return false;
-    }
-  }
+    } }
+  } }
   return true;
-}
+} }
 /**
  * Get file size in human-readable format
  */
@@ -260,7 +259,7 @@ export function formatFileSize(bytes: number): string {
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
+} }
 /**
  * Generate initials from user name for avatar fallback
  */
@@ -272,13 +271,13 @@ export function generateInitials(user: {
 }): string {
   if (user.firstName && user.lastName) {
     return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
-  }
+  } }
   if (user.name) {
     const nameParts = user.name.trim().split(" ");
     if (nameParts.length >= 2) {
       return `${nameParts[0].charAt(0)}${nameParts[nameParts.length - 1].charAt(0)}`.toUpperCase();
-    }
+    } }
     return nameParts[0].charAt(0).toUpperCase();
-  }
+  } }
   return user.email.charAt(0).toUpperCase();
 }

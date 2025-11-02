@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db, personsOfInterest } from '$lib/server/db';
-import { eq, and, desc, asc, sql } from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { db, personsOfInterest } }from '$lib/server/db';
+import { eq, and, desc, asc, sql } }from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -18,22 +18,22 @@ export const GET: RequestHandler = async ({ url }) => {
     // Build where conditions
     const conditions = [];
     if (searchQuery) {
-      conditions.push(sql`${personsOfInterest.name} LIKE ${'%' + searchQuery + '%` }`);'' }'`
+      conditions.push(sql`${personsOfInterest.name} }LIKE ${'%' + searchQuery + '%` }`);'' } }`
     if (threatLevel) {
       conditions.push(eq(personsOfInterest.threatLevel, threatLevel));
-    }
+    } }
     if (status) {
       conditions.push(eq(personsOfInterest.status, status));
-    }
+    } }
     if (relationship) {
       conditions.push(eq(personsOfInterest.relationship, relationship));
-    }
+    } }
     if (caseId) {
       conditions.push(eq(personsOfInterest.caseId, caseId));
-    }
+    } }
     if (conditions.length > 0) {
       query = query.where(and(...conditions));
-    }
+    } }
     // Apply sorting
     const sortColumn = personsOfInterest[sortBy as keyof typeof personsOfInterest] || personsOfInterest.updatedAt;
     query = query.orderBy(sortOrder === 'asc' ? asc(sortColumn) : desc(sortColumn));
@@ -51,18 +51,18 @@ export const GET: RequestHandler = async ({ url }) => {
         limit,
         offset,
         hasMore: offset + persons.length < total
-      }
+      } }
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error fetching persons of interest:', error);
     return json(
       {
         success: false,
         error: 'Failed to fetch persons of interest'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -74,9 +74,9 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Name and relationship are required'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     const personData = {
       name: body.name,
       aliases: body.aliases || [],
@@ -95,18 +95,18 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         data: newPerson
       },
-      { status: 201 }
+      { status: 201 } }
     );
-  } catch (error) {
+  } }catch (error) {
     console.error('Error creating person of interest:', error);
     return json(
       {
         success: false,
         error: 'Failed to create person of interest'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const PUT: RequestHandler = async ({ request }) => {
   try {
@@ -117,9 +117,9 @@ export const PUT: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Person ID is required for updates'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     const updateData = {
       ...(body.name && { name: body.name }),
       ...(body.aliases && { aliases: body.aliases }),
@@ -142,23 +142,23 @@ export const PUT: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Person of interest not found'
         },
-        { status: 404 }
+        { status: 404 } }
       );
-    }
+    } }
     return json({
       success: true,
       data: updatedPerson
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error updating person of interest:', error);
     return json(
       {
         success: false,
         error: 'Failed to update person of interest'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
@@ -169,28 +169,29 @@ export const DELETE: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Person ID is required for deletion'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     const [deletedPerson] = await db.delete(personsOfInterest).where(eq(personsOfInterest.id, body.id)).returning();
     if (!deletedPerson) {
       return json(
         {
           success: false,
           error: 'Person of interest not found' },''
-        { status: 404 }
+        { status: 404 } }
       );
-    }
+    } }
     return json({
       success: true,
-      message: `Person of interest deleted successfully` });
-  } catch (error) {
+      message: 'Person of interest deleted successfully' });
+  } }catch (error) {
     console.error('Error deleting person of interest: ', error);'`'`
     return json(
       {
         success: false,
         error: `Failed to delete person of interest` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

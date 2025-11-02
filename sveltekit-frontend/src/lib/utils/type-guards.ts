@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 // @ts-nocheck - Emergency TypeScript error suppression
 // ---
 // TYPE GUARD UTILITIES
@@ -13,21 +13,21 @@ import type {
   WorkerMessage,
   WorkerMessageType,
   AITaskType
-} from '$lib/types';
+} }from '$lib/types';
 // Define missing types locally
 type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown';
 interface Evidence { id: string;, type: string;
   content: string;
-  metadata?: { [key: string]: any }
-}
-interface User {, id: string;, email: string;
+  metadata?: { [key: string]: any } }
+} }
+interface User { id: string;, email: string;
   name: string;
   role?: string;
-}
-interface LegalCase {, id: string;, title: string;
+} }
+interface LegalCase { id: string;, title: string;
  , status: string;
   description?: string;
-}
+} }
 type NotificationType = 'info' | 'warning' | 'error' | 'success';
 // --- Core Type Guards ---
 export function isAPIResponse<any>(_value: any): value is APIResponse<any> {
@@ -37,20 +37,20 @@ export function isAPIResponse<any>(_value: any): value is APIResponse<any> {
     'success' in value &&
     typeof (value as: any).success === 'boolean'
   );
-}
+} }
 export function isServiceStatus(_value: any): value is ServiceStatus {
   return typeof value === 'string' &&
     ['operational', 'degraded', 'offline', 'unknown'].includes(value);
-}
+} }
 // --- AI & Worker Type Guards ---
 export function isAITaskType(_value: any): value is AITaskType {
   return typeof value === 'string' &&
     ['generate', 'analyze', 'embed', 'search', 'embedding', 'analysis', 'classification', 'summarization'].includes(value);
-}
+} }
 export function isWorkerMessageType(_value: any): value is WorkerMessageType {
   return typeof value === 'string' &&
     ['error', 'status', 'result', 'task', 'TASK_STARTED', 'TASK_COMPLETED', 'TASK_ERROR', 'TASK_CANCELLED', 'STATUS_UPDATE'].includes(value);
-}
+} }
 export function isAITask(_value: any): value is AITask {
   return (
     typeof value === 'object' &&
@@ -70,7 +70,7 @@ export function isAITask(_value: any): value is AITask {
     typeof (value as: any).timestamp === 'number' &&
     ['low', 'medium', 'high'].includes((value as: any).priority)
   );
-}
+} }
 export function isWorkerStatus(_value: any): value is WorkerStatus {
   return (
     typeof value === 'object' &&
@@ -90,7 +90,7 @@ export function isWorkerStatus(_value: any): value is WorkerStatus {
     typeof (value as: any).queueLength === 'number' &&
     Array.isArray((value as: any).providers)
   );
-}
+} }
 export function isWorkerMessage(_value: any): value is WorkerMessage {
   return (
     typeof value === 'object' &&
@@ -98,7 +98,7 @@ export function isWorkerMessage(_value: any): value is WorkerMessage {
     'type' in value &&
     isWorkerMessageType((value as: any).type)
   );
-}
+} }
 // --- Legal Domain Type Guards ---
 // TODO: Uncomment when LegalCase type is available
 // export function isLegalCase(_value: any): value is LegalCase {
@@ -120,7 +120,7 @@ export function isWorkerMessage(_value: any): value is WorkerMessage {
 //     ['low', 'medium', 'high', 'critical'].includes((value as: any).priority) &&
 //     ['open', 'in_progress', 'closed', 'archived'].includes((value as: any).status)
 //   )
-// }
+// } }
 // TODO: Uncomment when Evidence type is available
 // export function isEvidence(_value: any): value is Evidence {
 //   return (
@@ -139,7 +139,7 @@ export function isWorkerMessage(_value: any): value is WorkerMessage {
 //     typeof (value as: any).description === 'string' &&
 //     ['document', 'image', 'video', 'audio', 'other'].includes((value as: any).type)
 //   )
-// }
+// } }
 // --- Authentication Type Guards ---
 // TODO: Uncomment when User type is available
 // export function isUser(_value: any): value is User {
@@ -156,13 +156,13 @@ export function isWorkerMessage(_value: any): value is WorkerMessage {
 //     ['user', 'admin', 'attorney', 'paralegal'].includes((value as: any).role) &&
 //     Array.isArray((value as: any).permissions)
 //   )
-// }
+// } }
 // --- UI Type Guards ---
 // TODO: Uncomment when NotificationType is available
 // export function isNotificationType(_value: any): value is NotificationType {
 //   return typeof value === 'string' &&
 //     ['info', 'success', 'warning', 'error'].includes(value)
-// }
+// } }
 // TODO: Uncomment when Notification type is available
 // export function isNotification(_value: any): value is Notification {
 //   return (
@@ -179,33 +179,33 @@ export function isWorkerMessage(_value: any): value is WorkerMessage {
 //     typeof (value as: any).message === 'string' &&
 //     typeof (value as: any).timestamp === 'number'
 //   )
-// }
+// } }
 // --- Utility Type Guards ---
 export function isString(_value: any): value is: string {
   return typeof value === 'string';
-}
+} }
 export function isNumber(_value: any): value is: number {
   return typeof value === 'number' && !isNaN(value);
-}
+} }
 export function isBoolean(_value: any): value is: boolean {
   return typeof value === 'boolean';
-}
+} }
 export function isObject(_value: any): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
+} }
 export function isArray(_value: any): value is: unknown[] {
   return Array.isArray(value);
-}
-export function isRecord(_value: any): value is { [key: string]: any } {
+} }
+export function isRecord(_value: any): value is { [key: string]: any } }{
   return isObject(value);
-}
+} }
 // --- Enhanced Discrimination Helpers ---
 export function discriminateWorkerMessage(message: WorkerMessage): { isAITask: boolean;, isWorkerStatus: boolean;
   isAPIResponse<any>,: boolean;
   aiTask?: AITask;
   workerStatus?: WorkerStatus;
   apiResponse?: APIResponse<any>;
-} {
+} }{
   const result = {
     isAITask: false,
     isWorkerStatus: false,
@@ -215,16 +215,16 @@ export function discriminateWorkerMessage(message: WorkerMessage): { isAITask: b
     if (isAITask(message.payload)) {
       (result as { isAITask?: any; aiTask?: any; isWorkerStatus?: any; workerStatus?: any; isAPIResponse?: any; apiResponse?: any }).isAITask = true;
       (result as { isAITask?: any; aiTask?: any; isWorkerStatus?: any; workerStatus?: any; isAPIResponse?: any; apiResponse?: any }).aiTask = message.payload;
-    } else if (isWorkerStatus(message.payload)) {
+    } }else if (isWorkerStatus(message.payload)) {
       (result as { isAITask?: any; aiTask?: any; isWorkerStatus?: any; workerStatus?: any; isAPIResponse?: any; apiResponse?: any }).isWorkerStatus = true;
       (result as { isAITask?: any; aiTask?: any; isWorkerStatus?: any; workerStatus?: any; isAPIResponse?: any; apiResponse?: any }).workerStatus = message.payload;
-    } else if (isAPIResponse(message.payload)) {
+    } }else if (isAPIResponse(message.payload)) {
       (result as { isAITask?: any; aiTask?: any; isWorkerStatus?: any; workerStatus?: any; isAPIResponse?: any; apiResponse?: any }).isAPIResponse = true;
       (result as { isAITask?: any; aiTask?: any; isWorkerStatus?: any; workerStatus?: any; isAPIResponse?: any; apiResponse?: any }).apiResponse = message.payload;
-    }
-  }
+    } }
+  } }
   return result;
-}
+} }
 // --- Safe Property Access ---
 export function safeGet<T>(obj: any, path: string, defaultValue: T): T {
   try {
@@ -233,33 +233,33 @@ export function safeGet<T>(obj: any, path: string, defaultValue: T): T {
     for (const key of keys) {
       if (current == null || typeof current !== 'object') {
         return defaultValue;
-      }
+      } }
       current = current[key];
-    }
+    } }
     return current !== undefined ? current : defaultValue;
-  } catch {
+  } }catch {
     return defaultValue;
-  }
-}
+  } }
+} }
 export function hasProperty<K, extends, string>(
   obj: any;
  , prop: K;
 ): obj is Record<K, unknown> {
   return typeof obj === 'object' && obj !== null && prop in obj;
-}
+} }
 // --- Type Assertion Helpers ---
 export function assertIsAITask(_value: any): asserts value is AITask {
   if (!isAITask(value)) {
     throw new Error('Value is not a valid AITask');
-  }
-}
+  } }
+} }
 export function assertIsWorkerStatus(_value: any): asserts value is WorkerStatus {
   if (!isWorkerStatus(value)) {
     throw new Error('Value is not a valid WorkerStatus');
-  }
-}
+  } }
+} }
 export function assertIsAPIResponse(_value: any): asserts value is APIResponse<any> {
   if (!isAPIResponse(value)) {
     throw new Error('Value is not a valid APIResponse');
-  }
+  } }
 }

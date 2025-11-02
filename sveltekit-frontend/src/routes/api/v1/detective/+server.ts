@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
+import type { Case } }from '$lib/types';
+import { cuidSchema } }from '$lib/server/z-schemas';
 /**
  * Detective Mode API Routes
  *
@@ -7,9 +7,9 @@ import { cuidSchema } from '$lib/server/z-schemas';
  * GET    /api/v1/detective - Get detective insights for cases
  * POST   /api/v1/detective - Run detective analysis
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { db, sql } from '$lib/server/db';
-import { z } from 'zod';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { db, sql } }from '$lib/server/db';
+import { z } }from 'zod';
 // Detective analysis schema
 const DetectiveAnalysisSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
@@ -23,7 +23,7 @@ const DetectiveAnalysisSchema = z.object({
   evidenceIds: z.array(cuidSchema).optional(),
   options: z
     .object({
-     , confidenceThreshold: z.number().min(0).max(1).default(0.7),
+  confidenceThreshold: z.number().min(0).max(1).default(0.7),
       includeHypotheses: z.boolean().default(true),
       maxInsights: z.number().min(1).max(50).default(10)
     })
@@ -35,18 +35,18 @@ type DetectiveAnalysis = z.infer<typeof, DetectiveAnalysisSchema>;
  * Detective Mode Service
  */
 class DetectiveModeService {
-  constructor(private userId: string) {}
+  constructor(private userId: string) {} }
   // use the named type for clarity
   async runAnalysis(data: DetectiveAnalysis) {
-    const { caseId, analysisType, evidenceIds, options } = data;
+    const { caseId, analysisType, evidenceIds, options } }= data;
     // Get case details first
     // Replace `any` cast with a typed assertion and runtime guard
     const caseResult = (await db.execute(sql`
-      SELECT * FROM cases WHERE id = ${caseId} LIMIT, 1
+      SELECT * FROM cases WHERE id = ${caseId} }LIMIT, 1
     `)) as Array<Record<string, unknown>> | undefined;`
     if (!Array.isArray(caseResult) || caseResult.length === 0) {
       throw new Error('Case not found');
-    }
+    } }
     // Generate AI-powered insights
     const insights = await this.generateInsights(analysisType, caseId, evidenceIds, options);
     return {
@@ -57,7 +57,7 @@ class DetectiveModeService {
       processingTime: Date.now(),
       options
     };
-  }
+  } }
   // Rename unused args to start with underscore and type options properly
   private async generateInsights(
     analysisType: DetectiveAnalysis['analysisType'],
@@ -69,56 +69,51 @@ class DetectiveModeService {
     // For now, return sample insights
     const sampleInsights = {
       pattern_detection: [
-        {,
-          title: 'Recurring Location Pattern',
+        { title: 'Recurring Location Pattern',
           description: 'Multiple evidence pieces reference the same location',
           confidence: 0.85,
           priority: 'high'
         },
       ],
       anomaly_detection: [
-        {,
-          title: 'Timeline Inconsistency',
+        { title: 'Timeline Inconsistency',
           description: "Evidence timestamps don't align with witness statements",'
           confidence: 0.78,
           priority: 'high'
         },
       ],
       connection_analysis: [
-        {,
-          title: 'Person of Interest Connection',
+        { title: 'Person of Interest Connection',
           description: 'Multiple POIs share common associates',
           confidence: 0.92,
-          priority: `critical` }'`'`
+          priority: `critical` } }`'`
       ],
       timeline_gap: [
-        {,
-          title: 'Missing Evidence Window',
+        { title: 'Missing Evidence Window',
           description: '30-day gap in evidence collection',
           confidence: 0.88,
-          priority: `medium` }
+          priority: `medium` } }
       ],
       risk_assessment: [
-        {,
-          title: 'High-Stakes Case Risk',
+        { title: 'High-Stakes Case Risk',
           description: 'Case contains indicators requiring immediate attention',
           confidence: 0.94,
-          priority: `critical` }
+          priority: `critical` } }
       ]
     };
     return sampleInsights[analysisType as keyof typeof sampleInsights] || [];
-  }
-}
+  } }
+} }
 // -- add helper to extract user id safely from locals
 function getUserId(locals: any): string {
   // locals shape may vary between adapters; handle common shapes
-  const l = locals as { user?: { id?: string }; session?: { user?: { id?: string } } } | undefined;
+  const l = locals as { user?: { id?: string }; session?: { user?: { id?: string } }} }} }| undefined;
   if (!l) return, 'unknown';
   // use the typed variable directly (no `any` casts)
   if (l.user?.id && typeof l.user.id === 'string') return l.user.id;
   if (l.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
   return, 'unknown';
-}
+} }
 
 // -- add helper to normalize: unknown errors, to: string
 function getErrorMessage(err: any): string {
@@ -126,10 +121,10 @@ function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(JSON.stringify(err));
-  } catch {
+  } }catch {
     return String(err);
-  }
-}
+  } }
+} }
 /**
  * GET /api/v1/detective
  * Get detective insights with filtering
@@ -137,12 +132,11 @@ function getErrorMessage(err: any): string {
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.session || !locals.user) {
-      return json({ success: false, message: 'Authentication required' }, { status: 401 });'` }'`
+      return json({ success: false, message: 'Authentication required' }, { status: 401 });'` } }`
     const caseId = url.searchParams.get('caseId');
     // Return sample insights for now
     const insights = [
-      {,
-        id: crypto.randomUUID(),
+      { id: crypto.randomUUID(),
         caseId,
         type: 'pattern_detection',
         title: 'Evidence clustering detected',
@@ -156,15 +150,15 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       success: true,
       data: insights,
       meta: {
-       , userId: getUserId(locals),
+  userId: getUserId(locals),
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const errMsg = getErrorMessage(err);
     console.error('Error fetching detective insights:', errMsg);
     return json({ success: false, message: 'Failed to fetch insights', details: errMsg }, { status: 500 });
-  }
+  } }
 };
 /**
  * POST /api/v1/detective
@@ -173,8 +167,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.session || !locals.user) {
-      return json({ success: false, message: `Authentication required` }, { status: 401 });
-    }
+      return json({ success: false, message: 'Authentication required' }, { status: 401 });
+    } }
     const body = await request.json();
     const validatedData = DetectiveAnalysisSchema.parse(body);
     const detectiveService = new DetectiveModeService(getUserId(locals));
@@ -184,26 +178,27 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         success: true,
         data: result,
         meta: {
-         , userId: getUserId(locals),
+  userId: getUserId(locals),
           timestamp: new Date().toISOString()
-        }
+        } }
       },
-      { status: 201 }
+      { status: 201 } }
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     const errMsg = getErrorMessage(err);
     console.error('Error running detective analysis:', errMsg);
 
     // z.ZodError detection and response
     if (err instanceof z.ZodError) {
       return json({ success: false, message: 'Invalid analysis request', details: err.errors }, { status: 400 });
-    }
+    } }
 
     // Domain-specific error checks
     if (errMsg === 'Case not found') {
-      return json({ success: false, message: `Case not found` }, { status: 404 });
-    }
+      return json({ success: false, message: 'Case not found' }, { status: 404 });
+    } }
 
     return json({ success: false, message: 'Analysis failed', details: errMsg }, { status: 500 });
-  }
+  } }
 };
+

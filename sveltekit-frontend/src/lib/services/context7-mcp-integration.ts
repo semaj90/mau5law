@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Context7 MCP Integration Service
  * Provides legal AI best practices and MCP-enhanced recommendations
  */
-import { writable, get } from "svelte/store";
+import { writable, get } }from "svelte/store";
 // Types and Interfaces
 export interface Context7BestPractice { id: string;, category: 'performance' | 'security' | 'accessibility' | 'maintainability';
   title: string;
@@ -15,50 +15,48 @@ export interface Context7BestPractice { id: string;, category: 'performance' | 
   dependencies: string[];
   tags: string[];
   legalSpecific: boolean;
-}
+} }
 
-export interface Context7Integration {, component: string;, context: string;
+export interface Context7Integration { component: string;, context: string;
   bestPractices: Context7BestPractice[];
   integrationGuide: string;
-  performance_metrics?: {, load_time: number;, bundle_size: number;
+  performance_metrics?: { load_time: number;, bundle_size: number;
   lighthouse_score: number;
-  }
-}
+  } }
+} }
 
 export interface AIRecommendation {
   type?: string;
   category?: 'speed' | 'safety' | 'a11y' | string;
   confidence?: number;
   [key: string]: any;
-}
+} }
 
-export interface MCPEnhancedRecommendation {, originalRecommendation: AIRecommendation;, context7Enhancement: Context7BestPractice;
+export interface MCPEnhancedRecommendation { originalRecommendation: AIRecommendation;, context7Enhancement: Context7BestPractice;
   combinedConfidence: number;
   implementationPlan: string[];
   riskMitigation: string[];
-}
+} }
 
 export interface RecommendationContext {
   component?: string;
   userBehavior?: any;
   performanceMetrics?: any;
   legalContext?: any;
-}
+} }
 // Mock services to resolve import issues
-const aiRecommendationEngine = {
- , generateRecommendations: async (_context: RecommendationContext): Promise<AIRecommendation[]> => []
+const aiRecommendationEngine = { generateRecommendations: async (_context: RecommendationContext): Promise<AIRecommendation[]> => []
 };
 function recordStageLatency(stage: string, delta: number): void {
-  console.debug(`Stage ${stage} took ${delta}ms`);
-}
+  console.debug(`Stage ${stage} }took ${delta}ms`);
+} }
 class Context7MCPIntegration {
   private bestPracticesStore = writable<Context7BestPractice[]>([]);
   private integrationsStore = writable<Context7Integration[]>([]);
   private mcpConnectionStatus = writable<'connected' | 'disconnected' | 'error'>('connected');
   // Predefined best practices for legal AI applications
   private legalAIBestPractices: Context7BestPractice[] = [
-    {
-     , id: 'legal-cache-strategy',
+    { id: 'legal-cache-strategy',
       category: 'performance',
       title: 'Legal Document Caching',
       description: 'Implement specialized caching for legal documents with confidentiality controls',
@@ -81,8 +79,7 @@ await advancedCache.set('doc_' + documentId, document, {
       description: 'Integrate AI-powered recommendation system for legal workflows',
       implementation: 'Connect recommendation engine with legal context and user behavior',
       codeExample: '// Generate legal recommendations'
-const recommendations = await aiRecommendationEngine.generateRecommendations({
- , component: 'legal-search',
+const recommendations = await aiRecommendationEngine.generateRecommendations({ component: 'legal-search',
   userBehavior: userActivity,
   legalContext: caseData
 });`,`
@@ -103,8 +100,8 @@ const observer = new IntersectionObserver(async (entries) => {
   for (const entry of entries) {
     if (entry.isIntersecting) {
       const data = await fetch('/api/legal/documents/' + documentId);
-      await advancedCache.set(cacheKey, data, { priority: 'high' });'' }
-  }
+      await advancedCache.set(cacheKey, data, { priority: 'high' });'' } }
+  } }
 });`,`
       priority: 'medium',
       estimatedEffort: '3-5 hours',
@@ -148,7 +145,7 @@ await advancedCache.set(cacheKey, encryptedData, {
 >
   <h1, aria-level="1">{document.title}</h1>
   <section, aria-label="Document, content">
-    {document.content}
+    {document.content} }
   </section>
 </div>`,`
       priority: 'high',
@@ -156,11 +153,11 @@ await advancedCache.set(cacheKey, encryptedData, {
       dependencies: ['aria-utils', 'keyboard-navigation', 'contrast-checker'],
       tags: ['accessibility', 'compliance', 'screen-reader'],
       legalSpecific: true
-    }
+    } }
   ];
   constructor() {
     this.initializeIntegration();
-  }
+  } }
   private async initializeIntegration(): Promise<void> {
     try {
       console.log('🔗 Initializing Context7 MCP Integration...');
@@ -169,11 +166,11 @@ await advancedCache.set(cacheKey, encryptedData, {
       // Set connection status
       this.mcpConnectionStatus.set('connected');
       console.log('✅ Context7 MCP Integration initialized');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Context7 MCP Integration failed:', error);
       this.mcpConnectionStatus.set('error');
-    }
-  }
+    } }
+  } }
   /**
    * Get best practices for a specific component
    */
@@ -183,7 +180,7 @@ await advancedCache.set(cacheKey, encryptedData, {
     return allPractices.filter(practice =>
       practice.tags.some(tag => tag.toLowerCase().includes(component.toLowerCase()))
     );
-  }
+  } }
   /**
    * Generate enhanced recommendations using MCP and Context7
    */
@@ -215,15 +212,15 @@ await advancedCache.set(cacheKey, encryptedData, {
             implementationPlan: this.generateImplementationPlan(aiRec, relevantPractice),
             riskMitigation: this.generateRiskMitigation(relevantPractice)
           });
-        }
-      }
+        } }
+      } }
       recordStageLatency('enhanced-recommendations', Date.now() - startTime);
       return enhancedRecommendations;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Enhanced recommendations failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Create Context7 integration for a component
    */
@@ -237,51 +234,50 @@ await advancedCache.set(cacheKey, encryptedData, {
       context,
       bestPractices,
       integrationGuide: this.generateIntegrationGuide(component, bestPractices),
-      performance_metrics: {
-       , load_time: Math.random() * 100 + 50, // Mock metrics
+      performance_metrics: { load_time: Math.random() * 100 + 50, // Mock metrics
         bundle_size: Math.random() * 50 + 20,
         lighthouse_score: Math.random() * 20 + 80
-      }
+      } }
     };
     // Store integration
     this.integrationsStore.update(integrations => [...integrations, integration]);
     return integration;
-  }
+  } }
   /**
    * Get all stored integrations
    */
   getIntegrations() {
     return this.integrationsStore;
-  }
+  } }
   /**
    * Get best practices store
    */
   getBestPractices() {
     return this.bestPracticesStore;
-  }
+  } }
   /**
    * Get MCP connection status
    */
   getConnectionStatus() {
     return this.mcpConnectionStatus;
-  }
+  } }
   // Helper methods
   private categorizeRecommendation(recommendation: AIRecommendation): Context7BestPractice['category'] {
     if (recommendation.type?.includes('performance') || recommendation.category === 'speed') {
       return, 'performance';
-    }
+    } }
     if (recommendation.type?.includes('security') || recommendation.category === 'safety') {
       return, 'security';
-    }
+    } }
     if (recommendation.type?.includes('accessibility') || recommendation.category === 'a11y') {
       return, 'accessibility';
-    }
+    } }
     return, 'maintainability';
-  }
+  } }
   private matchesRecommendation(recommendation: AIRecommendation, tag: string): boolean {
     const recText = JSON.stringify(recommendation).toLowerCase();
     return recText.includes(tag.toLowerCase());
-  }
+  } }
   private calculateCombinedConfidence(aiRec: AIRecommendation, practice: Context7BestPractice): number {
     const aiConfidence = aiRec.confidence || 0.7;
     const practiceRelevance =
@@ -293,17 +289,17 @@ await advancedCache.set(cacheKey, encryptedData, {
         ? 0.6
         : 0.4;
     return (aiConfidence + practiceRelevance) / 2;
-  }
+  } }
   private generateImplementationPlan(_aiRec: AIRecommendation, practice: Context7BestPractice): string[] {
     return [
-      `Review ${practice.title} best practice`,
+      `Review ${practice.title} }best practice`,
       `Analyze current implementation`,
       `Apply ${practice.implementation}`,
       `Test implementation`,
       `Monitor performance impact`,
       `Document changes`
     ];
-  }
+  } }
   private generateRiskMitigation(practice: Context7BestPractice): string[] {
     const baseMitigation = [
       'Create backup before implementation',
@@ -317,14 +313,14 @@ await advancedCache.set(cacheKey, encryptedData, {
         'Check attorney-client privilege protection',
         'Validate data security measures'
       );
-    }
+    } }
     return baseMitigation;
-  }
+  } }
   private generateIntegrationGuide(component: string, practices: Context7BestPractice[]): string {
     return `
-# Context7 Integration Guide for ${component}
+# Context7 Integration Guide for ${component} }
 ## Best Practices Applied:
-${practices.map(p => `- ${p.title}: ${p.description}`).join('\n')}
+${practices.map(p => `- ${p.title}: ${p.description}`).join('\n')} }
 ## Implementation Steps:
 1. Review component requirements
 2. Apply relevant best practices
@@ -332,8 +328,8 @@ ${practices.map(p => `- ${p.title}: ${p.description}`).join('\n')}
 4. Monitor performance
 5. Document integration
 ## Legal, Considerations:
-${practices.filter(p => p.legalSpecific).map(p => `- ${p.title}`).join('\n')}
-    `.trim();' }'`
+${practices.filter(p => p.legalSpecific).map(p => `- ${p.title}`).join('\n')} }
+    `.trim();' } }`
   /**
    * Search best practices by criteria
    */
@@ -353,7 +349,7 @@ ${practices.filter(p => p.legalSpecific).map(p => `- ${p.title}`).join('\n')}
       const matchesLegalFilter = legalSpecific === undefined || practice.legalSpecific === legalSpecific;
       return matchesQuery && matchesCategory && matchesLegalFilter;
     });
-  }
+  } }
   /**
    * Get system status
    */
@@ -366,8 +362,8 @@ ${practices.filter(p => p.legalSpecific).map(p => `- ${p.title}`).join('\n')}
       legalSpecificPractices: get(this.bestPracticesStore).filter(item => item.legalSpecific)
         .length
     };
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const context7MCPIntegration = new Context7MCPIntegration();
 // Export derived stores for easy access
@@ -377,11 +373,11 @@ export const mcpConnectionStatus = context7MCPIntegration.getConnectionStatus();
 // Export utility functions
 export async function getEnhancedRecommendations(context: RecommendationContext): Promise<MCPEnhancedRecommendation[]> {
   return context7MCPIntegration.generateEnhancedRecommendations(context);
-}
+} }
 export async function createComponentIntegration(component: string, context: string): Promise<Context7Integration> {
   return context7MCPIntegration.createIntegration(component, context);
-}
+} }
 export function searchLegalBestPractices(query: string) {
   return context7MCPIntegration.searchBestPractices(query, undefined, true);
-}
+} }
 export default context7MCPIntegration;

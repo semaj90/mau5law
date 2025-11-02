@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } }from 'zod';
 
 export const DocumentUploadSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -7,3 +7,4 @@ export const DocumentUploadSchema = z.object({
 });
 
 export type UploadData = z.infer<typeof, DocumentUploadSchema>;
+

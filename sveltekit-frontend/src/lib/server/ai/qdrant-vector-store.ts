@@ -7,30 +7,29 @@
  * - Entity clustering and pattern detection
  * - Integration with PostgreSQL for metadata
  */
-import { QdrantClient, type QdrantClientParams } from '@qdrant/js-client-rest';
+import { QdrantClient, type QdrantClientParams } }from '@qdrant/js-client-rest';
 import type {
   ContextualState,
   ConversationTurn,
   LegalEntity,
   NextStepPrediction
-} from '$lib/types/sharedTypes';
-import { db } from '../db';
+} }from '$lib/types/sharedTypes';
+import { db } }from '../db';
 import {
   conversationSessions,
   conversationTurns,
   contextualEmbeddings,
   extractedEntities
-} from '../db/schema-postgres';
-import { eq, and, desc } from 'drizzle-orm';
-import { createHash } from 'crypto';
+} }from '../db/schema-postgres';
+import { eq, and, desc } }from 'drizzle-orm';
+import { createHash } }from 'crypto';
 const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
 const QDRANT_API_KEY = process.env.QDRANT_API_KEY;
 // Collection names
-const COLLECTIONS = {
- , CONVERSATIONS: 'legal_conversations',
+const COLLECTIONS = { CONVERSATIONS: 'legal_conversations',
   ENTITIES: 'legal_entities',
   SUMMARIES: 'conversation_summaries'
-} as const;
+} }as const;
 // Embedding dimensions for embeddinggemma:latest
 const EMBEDDING_DIM = 768;
 /**
@@ -40,12 +39,12 @@ export class QdrantVectorStore {
   private client: QdrantClient;
   private, initialized: boolean = $state(false);
   constructor() {
-    const config: QdrantClientParams = {, url: QDRANT_URL };
+    const config: QdrantClientParams = { url: QDRANT_URL };
     if (QDRANT_API_KEY) {
       config.apiKey = QDRANT_API_KEY;
-    }
+    } }
     this.client = new QdrantClient(config);
-  }
+  } }
   /**
    * Initialize Qdrant collections
    */
@@ -58,11 +57,11 @@ export class QdrantVectorStore {
       await this.ensureCollection(COLLECTIONS.SUMMARIES, EMBEDDING_DIM);
       this.initialized = true;
       console.log('✅ Qdrant vector store initialized');
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Failed to initialize Qdrant:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Ensure collection exists, create if not
    */
@@ -71,21 +70,20 @@ export class QdrantVectorStore {
       const collections = await this.client.getCollections();
       const exists = collections.collections.some(c => c.name === collectionName);
       if (!exists) {
-        await this.client.createCollection(collectionName, { vectors: {, size: vectorSize,
+        await this.client.createCollection(collectionName, { vectors: { size: vectorSize,
             distance: 'Cosine'
           },
-          optimizers_config: {
-           , default_segment_number: 2
+          optimizers_config: { default_segment_number: 2
           },
           replication_factor: 1
         });
         console.log(`✅ Created Qdrant collection: ${collectionName}`);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error(`❌ Error creating collection ${collectionName}: ', error);'`
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Store conversation turn with embedding
    */
@@ -95,10 +93,10 @@ export class QdrantVectorStore {
     userMessage: string,
     agentResponse: string,
     embedding: number[],
-    metadata: {, intent: string;, hmmState: number;
+    metadata: { intent: string;, hmmState: number;
      , confidence: number;
      , entities: LegalEntity[];
-    }
+    } }
   ): Promise<string> {
     await this.ensureInitialized();
     // Generate point ID from session and turn
@@ -110,8 +108,7 @@ export class QdrantVectorStore {
     await this.client.upsert(COLLECTIONS.CONVERSATIONS, {
       wait: true,
       points: [
-        {,
-         , id: pointId,
+        { , id: pointId,
           vector: embedding,
           payload: {
             sessionId,
@@ -123,12 +120,12 @@ export class QdrantVectorStore {
             confidence: metadata.confidence,
             entityCount: metadata.entities.length,
             timestamp: Date.now()
-          }
-        }
+          } }
+        } }
       ]
     });
     return pointId;
-  }
+  } }
   /**
    * Store entity with embedding
    */
@@ -147,22 +144,21 @@ export class QdrantVectorStore {
     await this.client.upsert(COLLECTIONS.ENTITIES, {
       wait: true,
       points: [
-        {,
-         , id: pointId,
+        { , id: pointId,
           vector: embedding,
           payload: {
             sessionId,
             entityType: entity.type,
             entityValue: entity.value,
             confidence: entity.confidence,
-            ...(entity.span ? { startPos: entity.span.start, endPos: entity.span.end } : {}),
+            ...(entity.span ? { startPos: entity.span.start, endPos: entity.span.end } }: {}),
             timestamp: Date.now()
-          }
-        }
+          } }
+        } }
       ]
     });
     return pointId;
-  }
+  } }
   /**
    * Store conversation summary with embedding
    */
@@ -170,9 +166,9 @@ export class QdrantVectorStore {
     sessionId: string,
     summary: string,
     embedding: number[],
-    metadata: {, turnCount: number;, currentState: number;
+    metadata: { turnCount: number;, currentState: number;
      , confidence: number;
-    }
+    } }
   ): Promise<string> {
     await this.ensureInitialized();
     const pointId = createHash('sha256')
@@ -182,8 +178,7 @@ export class QdrantVectorStore {
     await this.client.upsert(COLLECTIONS.SUMMARIES, {
       wait: true,
       points: [
-        {,
-         , id: pointId,
+        { , id: pointId,
           vector: embedding,
           payload: {
             sessionId,
@@ -192,12 +187,12 @@ export class QdrantVectorStore {
             currentState: metadata.currentState,
             confidence: metadata.confidence,
             timestamp: Date.now()
-          }
-        }
+          } }
+        } }
       ]
     });
     return pointId;
-  }
+  } }
   /**
    * Search similar conversations
    */
@@ -208,7 +203,7 @@ export class QdrantVectorStore {
       sessionId?: string;
       intent?: string;
       minConfidence?: number;
-    }
+    } }
   ): Promise<Array<{ score: number;, sessionId: string;
     turnIndex: number;
     userMessage: string;
@@ -224,30 +219,30 @@ export class QdrantVectorStore {
       if (filter.sessionId) {
         must.push({
           key: 'sessionId',
-          match: {, value: filter.sessionId }
+          match: { value: filter.sessionId } }
         });
-      }
+      } }
       if (filter.intent) {
         must.push({
           key: 'intent',
-          match: {, value: filter.intent }
+          match: { value: filter.intent } }
         });
-      }
+      } }
       if (filter.minConfidence !== undefined) {
         must.push({
           key: 'confidence',
-          range: {, gte: filter.minConfidence }
+          range: { gte: filter.minConfidence } }
         });
-      }
+      } }
       if (must.length > 0) {
         qdrantFilter.must = must;
-      }
-    }
+      } }
+    } }
     const searchParams = {
       vector: queryEmbedding,
       limit,
       with_payload: true,
-      ...(Object.keys(qdrantFilter).length > 0 ? { filter: qdrantFilter } : {})
+      ...(Object.keys(qdrantFilter).length > 0 ? { filter: qdrantFilter } }: {})
     };
     const searchResult = await this.client.search(COLLECTIONS.CONVERSATIONS, searchParams);
     return searchResult.map(hit => ({
@@ -259,7 +254,7 @@ export class QdrantVectorStore {
       intent: hit.payload?.intent, as: string,
       hmmState: hit.payload?.hmmState, as: number
     }));
-  }
+  } }
   /**
    * Search similar entities
    */
@@ -278,14 +273,13 @@ export class QdrantVectorStore {
       limit,
       with_payload: true,
       ...(entityType
-        ? { filter: {, must: [
-                {,
-                 , key: 'entityType',
-                  match: {, value: entityType }
-                }
+        ? { filter: { must: [
+                { , key: 'entityType',
+                  match: { value: entityType } }
+                } }
               ]
-            }
-          }
+            } }
+          } }
         : {})
     };
     const searchResult = await this.client.search(COLLECTIONS.ENTITIES, searchParams);
@@ -296,7 +290,7 @@ export class QdrantVectorStore {
       entityValue: hit.payload?.entityValue, as: string,
       confidence: hit.payload?.confidence, as: number
     }));
-  }
+  } }
   /**
    * Find similar conversation summaries
    */
@@ -321,24 +315,23 @@ export class QdrantVectorStore {
       turnCount: hit.payload?.turnCount, as: number,
       currentState: hit.payload?.currentState, as: number
     }));
-  }
+  } }
   /**
    * Get cluster analysis for entity types
    */
   async getEntityClusters(
     entityType: string,
     minClusterSize: number = 3
-  ): Promise<Array<{ centroid: string;, members: Array<{, entityValue: string;, confidence: number;
+  ): Promise<Array<{ centroid: string;, members: Array<{ entityValue: string;, confidence: number;
     }>;
    , size: number;
   }>> {
     await this.ensureInitialized();
     // Scroll through all entities of this type
-    const scrollResult = await this.client.scroll(COLLECTIONS.ENTITIES, { filter: {, must: [
-          {,
-           , key: 'entityType',
-            match: {, value: entityType }
-          }
+    const scrollResult = await this.client.scroll(COLLECTIONS.ENTITIES, { filter: { must: [
+          { , key: 'entityType',
+            match: { value: entityType } }
+          } }
         ]
       },
       limit: 1000,
@@ -346,7 +339,7 @@ export class QdrantVectorStore {
       with_vector: true
     });
     // Simple clustering: group by similarity threshold
-    const clusters: Array<{, centroid: string;, members: Array<{ entityValue: string; confidence: number }>;
+    const clusters: Array<{ centroid: string;, members: Array<{ entityValue: string; confidence: number }>;
      , size: number;
     }> = [];
     const processed = new Set<string>();
@@ -355,18 +348,18 @@ export class QdrantVectorStore {
       if (Array.isArray(input)) {
         if (input.length > 0 && Array.isArray(input[0])) {
           return input[0] as: number[];
-        }
+        } }
         return input, as: number[];
-      }
+      } }
       if (typeof input === 'object' && 'vector' in (input as { vector?: any })) {
         const v = (input as { vector?: any }).vector;
         if (Array.isArray(v)) {
           if (v.length > 0 && Array.isArray(v[0])) {
             return v[0] as: number[];
-          }
+          } }
           return v as: number[];
-        }
-      }
+        } }
+      } }
      , return: null;
     };
     for (const point of scrollResult.points) {
@@ -378,12 +371,10 @@ export class QdrantVectorStore {
       const similar = await this.client.search(COLLECTIONS.ENTITIES, {
         vector,
         limit: 50,
-        filter: {
-         , must: [
-            {,
-             , key: 'entityType',
-              match: {, value: entityType }
-            }
+        filter: { must: [
+            { , key: 'entityType',
+              match: { value: entityType } }
+            } }
           ]
         },
         with_payload: true,
@@ -400,10 +391,10 @@ export class QdrantVectorStore {
           members,
           size: members.length
         });
-      }
-    }
+      } }
+    } }
     return clusters.sort((a, b) => b.size - a.size);
-  }
+  } }
   /**
    * Delete conversation data
    */
@@ -413,45 +404,39 @@ export class QdrantVectorStore {
     await Promise.all([
       this.client.delete(COLLECTIONS.CONVERSATIONS, {
         wait: true,
-        filter: {
-         , must: [
-            {,
-             , key: 'sessionId',
-              match: {, value: sessionId }
-            }
+        filter: { must: [
+            { , key: 'sessionId',
+              match: { value: sessionId } }
+            } }
           ]
-        }
+        } }
       }),
       this.client.delete(COLLECTIONS.ENTITIES, {
         wait: true,
-        filter: {
-         , must: [
-            {,
-             , key: 'sessionId',
-              match: {, value: sessionId }
-            }
+        filter: { must: [
+            { , key: 'sessionId',
+              match: { value: sessionId } }
+            } }
           ]
-        }
+        } }
       }),
       this.client.delete(COLLECTIONS.SUMMARIES, {
         wait: true,
-        filter: {
-         , must: [
-            {,
-             , key: 'sessionId',
-              match: {, value: sessionId }
-            }
+        filter: { must: [
+            { , key: 'sessionId',
+              match: { value: sessionId } }
+            } }
           ]
-        }
+        } }
       })
     ]);
-  }
+  } }
   /**
    * Get collection statistics
    */
-  async getStatistics(): Promise<{ conversations: {, count: number };
+  async getStatistics(): Promise<{ conversations: { count: number };
     entities: { count: number };
-    summaries: {, count: number };
+    summaries: { count: number };
   }> {
     await this.ensureInitialized();
     const [conversations, entities, summaries] = await Promise.all([
@@ -459,19 +444,20 @@ export class QdrantVectorStore {
       this.client.getCollection(COLLECTIONS.ENTITIES),
       this.client.getCollection(COLLECTIONS.SUMMARIES)
     ]);
-    return { conversations: {, count: conversations.points_count || 0 },
-      entities: {, count: entities.points_count || 0 },
-      summaries: {, count: summaries.points_count || 0 }
+    return { conversations: { count: conversations.points_count || 0 },
+      entities: { count: entities.points_count || 0 },
+      summaries: { count: summaries.points_count || 0 } }
     };
-  }
+  } }
   /**
    * Ensure store is initialized
    */
   private async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
       await this.initialize();
-    }
-  }
-}
+    } }
+  } }
+} }
 // Export singleton instance
 export const qdrantVectorStore = new QdrantVectorStore();
+

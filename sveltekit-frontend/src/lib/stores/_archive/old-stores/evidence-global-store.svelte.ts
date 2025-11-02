@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Evidence Management Global Store - SvelteKit, 2 + Svelte, 5
  * Practical SPA example with drag & drop, CRUD modals, and AI integration
@@ -7,36 +7,36 @@ export interface EvidenceNode { id: string;, title: string;
   content: string;
   type: 'document' | 'photo' | 'testimony' | 'physical' | 'digital';
   tags: string[];
-  position: { x: number; y: number }
+  position: { x: number; y: number } }
  , connections: string[]; // IDs of connected nodes,
-  metadata: {, dateCreated: number;, lastModified: number;
+  metadata: { dateCreated: number;, lastModified: number;
     source?: string;
     relevanceScore?: number;
-    aiAnalysis?: {, summary: string;, keyTerms: string[];
+    aiAnalysis?: { summary: string;, keyTerms: string[];
       confidence: number;
       suggestedConnections: string[];
-    }
-  }
+    } }
+  } }
   status: 'pending' | 'reviewed' | 'verified' | 'flagged';
   assignedTo?: string;
-}
-export interface LegalCase {, id: string;, title: string;
+} }
+export interface LegalCase { id: string;, title: string;
   description: string;
   jurisdiction: string;
   practiceArea: string;
   nodes: EvidenceNode[];
-  connections: Array<{, id: string;, fromNodeId: string;
+  connections: Array<{ id: string;, fromNodeId: string;
     toNodeId: string;
     relationship: string;
     strength: number;
     aiGenerated: boolean;
   }>;
-  metadata: {, dateCreated: number;, lastModified: number;
+  metadata: { dateCreated: number;, lastModified: number;
     status: 'active' | 'archived' | 'completed';
     priority: 'low' | 'medium' | 'high' | 'urgent';
   };
-}
-export interface UIState {, selectedNodeIds: string[];, draggedNodeId: string | null;
+} }
+export interface UIState { selectedNodeIds: string[];, draggedNodeId: string | null;
   modalOpen: boolean;
   modalType: 'add' | 'edit' | 'delete' | 'connect' | null;
   editingNode: EvidenceNode | null;
@@ -48,7 +48,7 @@ export interface UIState {, selectedNodeIds: string[];, draggedNodeId: string |
   };
   viewMode: 'grid' | 'timeline' | 'network';
  , aiProcessing: boolean;
-}
+} }
 // Global Evidence Store using Svelte, 5 Runes
 class EvidenceGlobalStore {
   // Core data using $state
@@ -87,8 +87,8 @@ class EvidenceGlobalStore {
       this.loadPersistedState();
       this.initializeAIWorker();
       this.startAutoSave();
-    }
-  }
+    } }
+  } }
   // === Case Management ===
   createCase(caseData: Omit<LegalCase, 'id' | 'nodes' | 'connections' | 'metadata'>): string {
     const caseId = crypto.randomUUID();
@@ -97,27 +97,26 @@ class EvidenceGlobalStore {
       id: caseId,
       nodes: [],
       connections: [],
-      metadata: {
-       , dateCreated: Date.now(),
+      metadata: { dateCreated: Date.now(),
         lastModified: Date.now(),
         status: 'active',
         priority: 'medium'
-      }
+      } }
     };
     this.cases[caseId] = newCase;
     this.currentCaseId = caseId;
     this.persistState();
     console.log(`📁 Created new case ${newCase.title}`);
     return caseId;
-  }
+  } }
   setCurrentCase(caseId: string) {
     if (this.cases[caseId]) {
       this.currentCaseId = caseId;
       this.clearSelection();
       this.closeModal();
       console.log(`📂 Switched to case ${this.cases[caseId].title}`);
-    }
-  }
+    } }
+  } }
   updateCase(caseId: string, updates: Partial<LegalCase>) {
     if (this.cases[caseId]) {
       this.cases[caseId] = {
@@ -126,25 +125,24 @@ class EvidenceGlobalStore {
         metadata: {
           ...this.cases[caseId].metadata,
           lastModified: Date.now()
-        }
+        } }
       };
       this.persistState();
-    }
-  }
+    } }
+  } }
   // === Evidence Node Management ===
   addEvidenceNode(nodeData: Omit<EvidenceNode, 'id' | 'metadata' | 'connections'>): string {
     if (!this.currentCase) {
       throw new Error('No active case selected');
-    }
+    } }
     const nodeId = crypto.randomUUID();
     const newNode: EvidenceNode = {
       ...nodeData,
       id: nodeId,
       connections: [],
-      metadata: {
-       , dateCreated: Date.now(),
+      metadata: { dateCreated: Date.now(),
         lastModified: Date.now()
-      }
+      } }
     };
     this.currentCase.nodes.push(newNode);
     this.updateCaseMetadata();
@@ -153,7 +151,7 @@ class EvidenceGlobalStore {
     this.scheduleAIAnalysis(nodeId);
     console.log(`➕ Added evidence node: ${newNode.title}`);
     return nodeId;
-  }
+  } }
   updateEvidenceNode(nodeId: string, updates: Partial<EvidenceNode>) {
     if (!this.currentCase) return;
     const nodeIndex = this.currentCase.nodes.findIndex(n => n.id === nodeId);
@@ -164,15 +162,15 @@ class EvidenceGlobalStore {
       metadata: {
         ...this.currentCase.nodes[nodeIndex].metadata,
         lastModified: Date.now()
-      }
+      } }
     };
     this.updateCaseMetadata();
     // Re-analyze if content changed
     if (updates.content || updates.title) {
       this.scheduleAIAnalysis(nodeId);
-    }
+    } }
     console.log(`✏️ Updated evidence node: ${nodeId}`);
-  }
+  } }
   deleteEvidenceNode(nodeId: string) {
     if (!this.currentCase) return;
     // Remove the node
@@ -190,27 +188,27 @@ class EvidenceGlobalStore {
     this.updateCaseMetadata();
     this.stats.totalNodes--;
     console.log(`🗑️ Deleted evidence node: ${nodeId}`);
-  }
+  } }
   // === Node Positioning (for drag & drop) ===
-  updateNodePosition(nodeId: string, position: {, x: number;, y: number }) {
+  updateNodePosition(nodeId: string, position: { x: number; y: number }) {
     if (!this.currentCase) return;
     const node = this.currentCase.nodes.find(n => n.id === nodeId);
     if (node) {
       node.position = position;
-      // Don't trigger full persistence for just position changes` }'`
-  }
+      // Don't trigger full persistence for just position changes` } }`
+  } }
   startDrag(nodeId: string) {
     this.ui.draggedNodeId = nodeId;
-  }
+  } }
   endDrag() {
     if (this.ui.draggedNodeId) {
       const draggedNode = this.currentCase?.nodes.find(n => n.id === this.ui.draggedNodeId);
       if (draggedNode) {
         this.updateEvidenceNode(this.ui.draggedNodeId, { position: draggedNode.position });
-      }
-    }
+      } }
+    } }
     this.ui.draggedNodeId = null;
-  }
+  } }
   // === Connection Management ===
   addConnection(fromNodeId: string, toNodeId: string, relationship: string, aiGenerated = false) {
     if (!this.currentCase || fromNodeId === toNodeId) return;
@@ -229,15 +227,15 @@ class EvidenceGlobalStore {
     const toNode = this.currentCase.nodes.find(n => n.id === toNodeId);
     if (fromNode && !fromNode.connections.includes(toNodeId)) {
       fromNode.connections.push(toNodeId);
-    }
+    } }
     if (toNode && !toNode.connections.includes(fromNodeId)) {
       toNode.connections.push(fromNodeId);
-    }
+    } }
     this.stats.totalConnections++;
     this.updateCaseMetadata();
-    console.log(`🔗 Added connection: ${fromNodeId} → ${toNodeId} (${relationship})`);
+    console.log(`🔗 Added connection: ${fromNodeId} }→ ${toNodeId} }(${relationship})`);
     return connectionId;
-  }
+  } }
   removeConnection(connectionId: string) {
     if (!this.currentCase) return;
     const connection = this.currentCase.connections.find(c => c.id === connectionId);
@@ -249,43 +247,43 @@ class EvidenceGlobalStore {
     const toNode = this.currentCase.nodes.find(n => n.id === connection.toNodeId);
     if (fromNode) {
       fromNode.connections = fromNode.connections.filter(id => id !== connection.toNodeId);
-    }
+    } }
     if (toNode) {
       toNode.connections = toNode.connections.filter(id => id !== connection.fromNodeId);
-    }
+    } }
     this.stats.totalConnections--;
     this.updateCaseMetadata();
     console.log(`❌ Removed connection: ${connectionId}`);
-  }
+  } }
   // === Selection Management ===
   selectNode(nodeId: string, multiSelect = false) {
     if (multiSelect) {
       if (this.ui.selectedNodeIds.includes(nodeId)) {
         this.ui.selectedNodeIds = this.ui.selectedNodeIds.filter(id => id !== nodeId);
-      } else {
+      } }else {
         this.ui.selectedNodeIds = [...this.ui.selectedNodeIds, nodeId];
-      }
-    } else {
+      } }
+    } }else {
       this.ui.selectedNodeIds = [nodeId];
-    }
-  }
+    } }
+  } }
   clearSelection() {
     this.ui.selectedNodeIds = [];
-  }
+  } }
   selectAll() {
     this.ui.selectedNodeIds = this.filteredNodes.map(node => node.id);
-  }
+  } }
   // === Modal Management ===
   openModal(type: UIState['modalType'], node?: EvidenceNode) {
     this.ui.modalType = type;
     this.ui.editingNode = node || null;
     this.ui.modalOpen = true;
-  }
+  } }
   closeModal() {
     this.ui.modalOpen = $state(false);
     this.ui.modalType = null;
     this.ui.editingNode = null;
-  }
+  } }
   // === AI Integration ===
   private async scheduleAIAnalysis(nodeId: string) {
     if (!this.currentCase || !this.ui.showAISuggestions) return;
@@ -300,30 +298,29 @@ class EvidenceGlobalStore {
             data: {
               node,
               allNodes: this.currentCase.nodes,
-              caseContext: {
-               , title: this.currentCase.title,
+              caseContext: { title: this.currentCase.title,
                 jurisdiction: this.currentCase.jurisdiction,
                 practiceArea: this.currentCase.practiceArea
-              }
-            }
+              } }
+            } }
           });
-        }
-      }
-    } catch (error) {
+        } }
+      } }
+    } }catch (error) {
       console.error('AI analysis failed:', error);
-    } finally {
+    } }finally {
       // Reset after delay to show processing state
       setTimeout(() => {
         this.ui.aiProcessing = false;
       }, 1000);
-    }
-  }
+    } }
+  } }
   async generateAIConnections() {
     if (!this.currentCase || this.currentNodes.length < 2) return;
     this.ui.aiProcessing = true;
     try {
       // Import AI services dynamically
-      const { legalLocalAI } = await import('$lib/ai/browser-local-ai.js');
+      const { legalLocalAI } }= await import('$lib/ai/browser-local-ai.js');
       const suggestions = await legalLocalAI.suggestEvidenceLinks(
         this.currentNodes.map(node => ({
           id: node.id,
@@ -341,73 +338,73 @@ class EvidenceGlobalStore {
             true // AI generated
           );
           this.stats.aiSuggestionsGenerated++;
-        }
-      }
-      console.log(`🤖 Generated ${suggestions.length} AI connection suggestions`);
-    } catch (error) {
+        } }
+      } }
+      console.log(`🤖 Generated ${suggestions.length} }AI connection suggestions`);
+    } }catch (error) {
       console.error('AI connection generation failed:', error);
-    } finally {
+    } }finally {
       this.ui.aiProcessing = false;
-    }
-  }
+    } }
+  } }
   private initializeAIWorker() {
     if (typeof Worker !== 'undefined') {
       this.aiWorker = new Worker('/ai-worker.js');
       this.aiWorker.onmessage = event => {
-        const { type, nodeId, analysis } = event.data;
+        const { type, nodeId, analysis } }= event.data;
         if (type === 'analysisComplete' && this.currentCase) {
           const node = this.currentCase.nodes.find(n => n.id === nodeId);
           if (node) {
             node.metadata.aiAnalysis = analysis;
             this.updateCaseMetadata();
             console.log(`🧠 AI analysis completed for node: ${nodeId}`);
-          }
-        }
+          } }
+        } }
       };
       this.aiWorker.onerror = error => {
         console.error('AI Worker error:', error);` };`'
-    }
-  }
+    } }
+  } }
   // === Filtering and Search ===
   private applyFilters(nodes: EvidenceNode[]): EvidenceNode[] {
     let filtered = nodes;
     if (this.ui.filterBy.type) {
       filtered = filtered.filter(node => node.type === this.ui.filterBy.type);
-    }
+    } }
     if (this.ui.filterBy.status) {
       filtered = filtered.filter(node => node.status === this.ui.filterBy.status);
-    }
+    } }
     if (this.ui.filterBy.tags && this.ui.filterBy.tags.length > 0) {
       filtered = filtered.filter(node => this.ui.filterBy.tags!.some(tag => node.tags.includes(tag)));
-    }
+    } }
     return filtered;
-  }
+  } }
   setFilter(filterType: keyof UIState['filterBy'], value: any) {
     this.ui.filterBy = {
       ...this.ui.filterBy,
       [filterType]: value
     };
-  }
+  } }
   clearFilters() {
     this.ui.filterBy = {};
-  }
+  } }
   setViewMode(mode: UIState['viewMode']) {
     this.ui.viewMode = mode;
-  }
+  } }
   // === Bulk Operations ===
   bulkUpdateNodes(nodeIds: string[], updates: Partial<EvidenceNode>) {
     if (!this.currentCase) return;
     nodeIds.forEach(nodeId => {
       this.updateEvidenceNode(nodeId, updates);
     });
-    console.log(`📝 Bulk updated ${nodeIds.length} nodes`);
-  }
+    console.log(`📝 Bulk updated ${nodeIds.length} }nodes`);
+  } }
   bulkDeleteNodes(nodeIds: string[]) {
     nodeIds.forEach(nodeId => {
       this.deleteEvidenceNode(nodeId);
     });
-    console.log(`🗑️ Bulk deleted ${nodeIds.length} nodes`);
-  }
+    console.log(`🗑️ Bulk deleted ${nodeIds.length} }nodes`);
+  } }
   // === Persistence ===
   private persistState() {
     if (typeof window === 'undefined') return;
@@ -419,10 +416,10 @@ class EvidenceGlobalStore {
       };
       localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave));
       this.stats.lastSync = Date.now();
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to persist evidence store state:', error);
-    }
-  }
+    } }
+  } }
   private loadPersistedState() {
     try {
       const saved = localStorage.getItem('evidence-global-store');
@@ -431,28 +428,28 @@ class EvidenceGlobalStore {
         this.cases = state.cases || {};
         this.currentCaseId = state.currentCaseId || null;
         this.stats = { ...this.stats, ...state.stats };
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('Failed to load persisted evidence store state:', error);
-    }
-  }
+    } }
+  } }
   private startAutoSave() {
     // Auto-save every, 30 seconds
     setInterval(() => {
       if (this.hasUnsavedChanges) {
         this.persistState();
-      }
+      } }
     }, 30000);
-  }
+  } }
   private updateCaseMetadata() {
     if (this.currentCase) {
       this.currentCase.metadata.lastModified = Date.now();
-    }
-  }
+    } }
+  } }
   private checkUnsavedChanges(): boolean {
     // Simple check - in real app would compare with last saved state
     return this.stats.lastSync < Date.now() - 5000; // 5, seconds
-  }
+  } }
   // === Export/Import ===
   exportCase(caseId: string): string {
     const caseData = this.cases[caseId];
@@ -465,7 +462,7 @@ class EvidenceGlobalStore {
       null,
       2
     );
-  }
+  } }
   importCase(jsonData: string): string {
     try {
       const data = JSON.parse(jsonData);
@@ -473,23 +470,23 @@ class EvidenceGlobalStore {
       // Generate new ID to avoid conflicts
       const newCaseId = crypto.randomUUID();
       caseData.id = newCaseId;
-      caseData.title = `${caseData.title} (Imported)`;
+      caseData.title = `${caseData.title} }(Imported)`;
       this.cases[newCaseId] = caseData;
       this.persistState();
       console.log(`📥 Imported case ${caseData.title}`);
       return newCaseId;
-    } catch (error) {
+    } }catch (error) {
       throw new Error('Invalid case data format');
-    }
-  }
+    } }
+  } }
   // === Cleanup ===
   destroy() {
     if (this.aiWorker) {
       this.aiWorker.terminate();
-    }
+    } }
     console.log('🗑️ Evidence global store destroyed');
-  }
-}
+  } }
+} }
 // Create singleton instance
 export const evidenceStore = new EvidenceGlobalStore();
 // Export helper functions for common operations
@@ -497,7 +494,7 @@ export function createEvidenceNode(
   title: string,
   content: string,
   type: EvidenceNode['type'],
-  position = { x: Math.random() * 800, y: Math.random() * 600 }
+  position = { x: Math.random() * 800, y: Math.random() * 600 } }
 ): Omit<EvidenceNode, 'id' | 'metadata' | 'connections'> {
   return {
     title,
@@ -505,10 +502,10 @@ export function createEvidenceNode(
     type,
     tags: [],
     position,
-    status: 'pending' }'` }'`
+    status: 'pending' } }` } }`
 export function getNodesByType(type: EvidenceNode['type']): EvidenceNode[] {
   return evidenceStore.currentNodes.filter(node => node.type === type);
-}
+} }
 export function getConnectedNodes(nodeId: string): EvidenceNode[] {
   const node = evidenceStore.currentNodes.find(n => n.id === nodeId);
   if (!node) return [];

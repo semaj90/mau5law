@@ -1,15 +1,15 @@
 // Enhanced Frontend RAG Pipeline with Loki.js, SIMD, and Semantic Synthesis
 // Lightweight text generation with g0llama microservice integration
 import Loki from 'lokijs';
-import { pipeline, env } from '@xenova/transformers';
-import type { Pipeline } from '@xenova/transformers';
-import { browser } from '$app/environment';
+import { pipeline, env } }from '@xenova/transformers';
+import type { Pipeline } }from '@xenova/transformers';
+import { browser } }from '$app/environment';
 // Configure for frontend use
 if (browser) {
   env.allowRemoteModels = $state(false);
   env.allowLocalModels = true;
   env.useBrowserCache = true;
-}
+} }
 // Small utility to safely stringify: unknown errors
 function getErrorMessage(error: any): string {
   // Prefer Error.message when available
@@ -19,10 +19,10 @@ function getErrorMessage(error: any): string {
   // Try JSON stringify for objects, fall back to String()
   try {
     return JSON.stringify(error);
-  } catch {
+  } }catch {
     return String(error);
-  }
-}
+  } }
+} }
 // Introduce a safer, generic query type for Loki collections
 type LokiQuery<T> = Partial<Record<keyof T, unknown>> | ((obj: T) => boolean) | Record<string, unknown>;
 // Add a minimal local typing for Loki collections used in this file.
@@ -33,23 +33,22 @@ type LokiCollection<T> = { find: (query?: LokiQuery<T>) => T[];, count: () => n
   where?: (fn: (obj: T) => boolean) => T[];
   [key: string]: any;
 };
-export interface SemanticChunk {, id: string;, text: string;
+export interface SemanticChunk { id: string;, text: string;
   // Accept either a typed Float32Array or a plain: number[] as Loki may store arrays;
   embedding: Float32Array | number[];
-  metadata: {, timestamp: number;, source: string;
+  metadata: { timestamp: number;, source: string;
     relevance: number;
     semanticGroup: string;
   };
-}
+} }
 // New helper type for scored results
 type ScoredChunk = SemanticChunk & { score: number };
-export interface SIMDTensor {, data: Float32Array;, shape: number[];
-  simdOps: {
-   , dotProduct: (a: Float32Array, b: Float32Array) => number;
+export interface SIMDTensor { data: Float32Array;, shape: number[];
+  simdOps: { dotProduct: (a: Float32Array, b: Float32Array) => number;
     cosineDistance: (a: Float32Array, b: Float32Array) => number;
     normalize: (vec: Float32Array) => Float32Array;
   };
-}
+} }
 class FrontendRAGPipeline {
   private lokiDb: InstanceType<typeof Loki> | null = null;
   private semanticCollection: LokiCollection<SemanticChunk> | null = null;
@@ -64,7 +63,7 @@ class FrontendRAGPipeline {
     this.simdProcessor = new SIMDProcessor();
     this.g0llamaService = new G0llamaService();
     this.initializePipelines();
-  }
+  } }
   private initializeLoki() {
     // Create DB instance and ensure typed collection
     // Avoid using: 'any' by not referencing LokiMemoryAdapter and, use: unknown casts
@@ -76,19 +75,19 @@ class FrontendRAGPipeline {
         const maybeCollection = this.lokiDb?.getCollection('semantic_chunks');
         if (maybeCollection) {
           this.semanticCollection = maybeCollection as: unknown as LokiCollection<SemanticChunk>;
-        } else {
+        } }else {
           // Provide options, as: unknown to avoid strict keyof checks for nested keys
           const coll = this.lokiDb?.addCollection('semantic_chunks', {
             indices: ['metadata.semanticGroup', 'metadata.relevance', 'metadata.timestamp'],
             unique: ['id']
           }, as: unknown as Record<string, unknown>);
           this.semanticCollection = coll as: unknown as LokiCollection<SemanticChunk> | null;
-        }
+        } }
       },
       autosave: true,
       autosaveInterval: 2000
     });
-  }
+  } }
   private async initializePipelines() {
     try {
       // Initialize lightweight embedding pipeline
@@ -99,15 +98,15 @@ class FrontendRAGPipeline {
       // Initialize text generation pipeline (lightweight)
       this.generationPipeline = await pipeline('text-generation', 'Xenova/gpt2', { device: 'cpu', dtype: 'fp16' });
       console.log('✅ Frontend RAG pipelines initialized');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('Pipeline initialization failed, using fallbacks:', getErrorMessage(error));
-    }
-  }
+    } }
+  } }
   // SIMD-optimized embedding generation
   async generateEmbedding(text: string): Promise<SIMDTensor> {
     if (!this.embeddingPipeline) {
       throw new Error('Embedding pipeline not initialized');
-    }
+    } }
     try {
       const result = await this.embeddingPipeline(text);
       const parsed = result as: unknown as EmbeddingResult;
@@ -115,32 +114,32 @@ class FrontendRAGPipeline {
       let, numericArray: number[] = [];
       if (Array.isArray(parsed.data)) {
         numericArray = (parsed.data as: number[]).map(Number);
-      } else if (parsed.data && typeof (parsed.data as ArrayLike<number>).length === 'number') {
+      } }else if (parsed.data && typeof (parsed.data as ArrayLike<number>).length === 'number') {
         numericArray = Array.from(parsed.data as ArrayLike<number>, Number);
-      } else {
+      } }else {
         // Fallback: empty embedding
         numericArray = [];
-      }
+      } }
       const embedding = new Float32Array(numericArray);
       // Normalize dims into: number[]
       let, shapeArr: number[] = [];
       if (Array.isArray(parsed.dims)) {
         shapeArr = parsed.dims.map(Number);
-      } else if (typeof parsed.dims === 'number') {
+      } }else if (typeof parsed.dims === 'number') {
         shapeArr = [parsed.dims];
-      } else {
+      } }else {
         shapeArr = [embedding.length];
-      }
+      } }
       return {
         data: this.simdProcessor.optimize(embedding),
         shape: shapeArr,
         simdOps: this.simdProcessor.getOperations()
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Frontend embedding generation failed:', getErrorMessage(error));
       throw new Error(getErrorMessage(error));
-    }
-  }
+    } }
+  } }
   // Context-switched semantic search
   async semanticSearch(
     query: string,
@@ -151,7 +150,7 @@ class FrontendRAGPipeline {
     const contextWeights = this.contextSwitcher.getWeights(context);
     // Ensure typed candidate list
     const candidates = (this.semanticCollection?.find({
-      // query shape depends on Loki usage; using metadata key for clarity: 'metadata.semanticGroup': { $in: contextWeights.groups }
+      // query shape depends on Loki usage; using metadata key for clarity: 'metadata.semanticGroup': { $in: contextWeights.groups } }
     }) ?? []) as SemanticChunk[];
     // SIMD-accelerated similarity computation with proper typing
     const scoredResults: ScoredChunk[] = candidates.map((chunk: SemanticChunk) => {
@@ -164,107 +163,104 @@ class FrontendRAGPipeline {
       return { ...chunk, score: finalScore };
     });
     return scoredResults.sort((a: ScoredChunk, b: ScoredChunk) => b.score - a.score).slice(0, limit);
-  }
+  } }
   // Get system statistics
   getStats(): { documentsIndexed: number;, memoryUsage: number;
-    pipelineStatus: {, embedding: boolean;, generation: boolean;
+    pipelineStatus: { embedding: boolean;, generation: boolean;
     };
    , simdOptimizations: boolean;
-  } {
+  } }{
     // Use a typed assertion instead of `any`
     const perf = performance as PerformanceWithMemory;
     const usedHeap = browser ? (perf.memory?.usedJSHeapSize ?? 0) : 0;
     return {
       documentsIndexed: this.semanticCollection?.count() || 0,
       memoryUsage: usedHeap,
-      pipelineStatus: {
-       , embedding: !!this.embeddingPipeline,
+      pipelineStatus: { embedding: !!this.embeddingPipeline,
         generation: !!this.generationPipeline
       },
       simdOptimizations: this.simdProcessor.isOptimized()
     };
-  }
+  } }
   /**
    * Public helper to generate text using the configured G0llama service.
    * This ensures the g0llamaService property is actually used (no unused-value linter warning).
    */
-  async generateFromG0(query: string, context: string, options: { maxTokens?: number; temperature?: number } = {}) {
+  async generateFromG0(query: string, context: string, options: { maxTokens?: number; temperature?: number } }= {}) {
     return this.g0llamaService.generate(query, context, options);
-  }
-}
+  } }
+} }
 // Context switching for different domains
 class ContextSwitcher {
-  private contexts: Record<'legal' | 'technical' | 'general', { groups: string[];, boost: Record<string, number> }> = { legal: {, groups: ['legal', 'regulatory', 'compliance'],
-      boost: {, legal: 1.5, regulatory: 1.2, compliance: 1.3, general: 0.8 }
+  private contexts: Record<'legal' | 'technical' | 'general', { groups: string[]; boost: Record<string, number> }> = { legal: { groups: ['legal', 'regulatory', 'compliance'],
+      boost: { legal: 1.5, regulatory: 1.2, compliance: 1.3, general: 0.8 } }
     },
-    technical: {
-     , groups: ['technical', 'development', 'documentation'],
-      boost: {, technical: 1.5, development: 1.3, documentation: 1.2, general: 0.8 }
+    technical: { groups: ['technical', 'development', 'documentation'],
+      boost: { technical: 1.5, development: 1.3, documentation: 1.2, general: 0.8 } }
     },
-    general: {
-     , groups: ['general', 'legal', 'technical'],
-      boost: {, general: 1.0, legal: 1.0, technical: 1.0 }
-    }
+    general: { groups: ['general', 'legal', 'technical'],
+      boost: { general: 1.0, legal: 1.0, technical: 1.0 } }
+    } }
   };
   getWeights(context: keyof typeof this.contexts) {
     return this.contexts[context] || this.contexts.general;
-  }
-}
+  } }
+} }
 // SIMD processor for optimized tensor operations
 class SIMDProcessor {
   private useSimd: boolean;
   constructor() {
     this.useSimd = this.detectSIMDSupport();
-  }
+  } }
   private detectSIMDSupport(): boolean {
     try {
       // Check for SIMD support in browser
       return typeof WebAssembly !== 'undefined' && typeof Float32Array !== 'undefined';
-    } catch {
+    } }catch {
       return false;
-    }
-  }
+    } }
+  } }
   optimize(tensor: Float32Array): Float32Array {
     if (!this.useSimd) return tensor;
     // SIMD optimization would go here
     // For now, return normalized tensor
     return this.normalize(tensor);
-  }
+  } }
   getOperations() {
     return {
       dotProduct: this.dotProduct.bind(this),
       cosineDistance: this.cosineDistance.bind(this),
       normalize: this.normalize.bind(this)
     };
-  }
+  } }
   private dotProduct(a: Float32Array, b: Float32Array): number {
     let sum = 0;
     const len = Math.min(a.length, b.length);
     for (let i = 0; i < len; i++) {
       sum += a[i] * b[i];
-    }
+    } }
     return sum;
-  }
+  } }
   private cosineDistance(a: Float32Array, b: Float32Array): number {
     const dotProd = this.dotProduct(a, b);
     const normA = Math.sqrt(this.dotProduct(a, a));
     const normB = Math.sqrt(this.dotProduct(b, b));
     if (normA === 0 || normB === 0) return 0;
     return dotProd / (normA * normB);
-  }
+  } }
   private normalize(vec: Float32Array): Float32Array {
     const norm = Math.sqrt(this.dotProduct(vec, vec));
     if (norm === 0) return vec;
     const normalized = new Float32Array(vec.length);
     for (let i = 0; i < vec.length; i++) {
       normalized[i] = vec[i] / norm;
-    }
+    } }
     return normalized;
-  }
+  } }
   isOptimized(): boolean {
     return this.useSimd;
-  }
-}
+  } }
+} }
 // G0llama microservice integration
 class G0llamaService {
   private baseUrl: string;
@@ -272,7 +268,7 @@ class G0llamaService {
   constructor() {
     this.baseUrl = 'http://localhost:8085'; // g0llama microservice
     this.checkAvailability();
-  }
+  } }
   private async checkAvailability() {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
@@ -281,27 +277,26 @@ class G0llamaService {
       });
       // Use the standard Fetch Response type and read .ok directly (no `any`)
       this.isAvailable = (response as Response).ok === true;
-    } catch {
+    } }catch {
       this.isAvailable = false;
-    }
-  }
+    } }
+  } }
   async generate(
     query: string,
     context: string,
     options: {
       maxTokens?: number;
       temperature?: number;
-    }
+    } }
   ): Promise<string> {
     if (!this.isAvailable) {
       throw new Error('G0llama service not available');
-    }
+    } }
     try {
       const response = await fetch(`${this.baseUrl}/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({
-         , prompt: `Context: ${context}\n\nQuery: ${query}\n\nResponse:`,
+        body: JSON.stringify({ prompt: `Context: ${context}\n\nQuery: ${query}\n\nResponse:`,
           max_tokens: options.maxTokens || 150,
           temperature: options.temperature || 0.7
         }),
@@ -314,13 +309,14 @@ class G0llamaService {
         text?: string;
       };
       return data.text ?? '';
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('G0llama generation failed:', getErrorMessage(error));
       throw new Error(getErrorMessage(error));
-    }
-  }
-}
+    } }
+  } }
+} }
 // Add a small local type for the Performance.memory shape we read.
-type PerformanceWithMemory = Performance & { memory?: { usedJSHeapSize?: number } };
+type PerformanceWithMemory = Performance & { memory?: { usedJSHeapSize?: number } }};
 // Export singleton instance
 export const frontendRAG = new FrontendRAGPipeline();
+

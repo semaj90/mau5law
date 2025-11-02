@@ -1,17 +1,17 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Type-safe API Response Schemas for Bits UI SSR
  */
 // Base API Response Structure
 export interface APIResponse<T = unknown> { success: boolean;, data: T;
-  meta: {, timestamp: string;, cached: boolean;
+  meta: { timestamp: string;, cached: boolean;
     source: 'ssr' | 'api';
   };
   error?: string;
-}
+} }
 // User Authentication Schemas
-export interface User {, id: string;, email: string;
+export interface User { id: string;, email: string;
   username?: string;
   firstName: string;
   lastName: string;
@@ -30,67 +30,66 @@ export interface User {, id: string;, email: string;
  , metadata: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
-}
-export interface UserActivity {, totalCases: number;, activeCases: number;
+} }
+export interface UserActivity { totalCases: number;, activeCases: number;
   totalEvidence: number;
-}
-export interface AuthMeResponse {, user: User;, activity: UserActivity;
+} }
+export interface AuthMeResponse { user: User;, activity: UserActivity;
   authenticated: true;
   loadSource: 'cache' | 'database';
-}
+} }
 // System Health Schemas
-export interface SystemHealth {, overall: {, status: 'healthy' | 'degraded' | 'unhealthy';
+export interface SystemHealth { overall: { status: 'healthy' | 'degraded' | 'unhealthy';
     healthScore: number;
     healthyServices: number;
     totalServices: number;
     timestamp: string;
   };
-  services: {
-   , databases: Record<string, ServiceStatus>;
+  services: { databases: Record<string, ServiceStatus>;
     aiServices: Record<string, ServiceStatus>;
     gpuServices: Record<string, GPUServiceStatus>;
     orchestration: Record<string, ServiceStatus>;
     storage: Record<string, ServiceStatus>;
   };
-  performance: {, systemUptime: number;, memoryUsage: MemoryUsage;
+  performance: { systemUptime: number;, memoryUsage: MemoryUsage;
   };
-  architecture: {, platform: string;, version: string;
+  architecture: { platform: string;, version: string;
     gpuArchitecture: string;
     microservices: number;
     protocols: string[];
     features: string[];
   };
-}
-export interface ServiceStatus {, host: string;, port: number;
+} }
+export interface ServiceStatus { host: string;, port: number;
   status: string;
-}
+} }
 export interface GPUServiceStatus {
   status: string;
   vram?: string;
-}
-export interface MemoryUsage {, heapUsed: number;, heapTotal: number;
+} }
+export interface MemoryUsage { heapUsed: number;, heapTotal: number;
   external: number;
   rss: number;
-}
+} }
 // Dashboard Schemas
-export interface DashboardStats {, activeCases: number;, evidenceItems: number;
+export interface DashboardStats { activeCases: number;, evidenceItems: number;
   aiAnalyses: number;
   systemUptime: number;
   cognitive?: CognitiveMetrics;
-}
-export interface CognitiveMetrics {, routingEfficiency: number;, cacheHitRatio: number;
+} }
+export interface CognitiveMetrics { routingEfficiency: number;, cacheHitRatio: number;
   gpuUtilization: number;
   consciousnessLevel: number;
   quantumCoherence: number;
   timestamp: string;
-}
-export interface RecentActivity {, id: string;, type: 'case_created' | 'evidence_uploaded' | 'ai_analysis' | 'document_processed';
+} }
+export interface RecentActivity { id: string;, type: 'case_created' | 'evidence_uploaded' | 'ai_analysis' | 'document_processed';
   title: string;
   timestamp: Date | string;
   priority: 'low' | 'medium' | 'high' | 'urgent';
-}
+} }
 // Case Management Schemas
-export interface Case {, id: string;, title: string;
+export interface Case { id: string;, title: string;
   description?: string;
   status: 'open' | 'active' | 'closed' | 'archived';
   priority: 'low' | 'medium' | 'high' | 'urgent';
@@ -102,8 +101,8 @@ export interface Case {, id: string;, title: string;
  , metadata: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
-}
-export interface Evidence {, id: string;, caseId: string;
+} }
+export interface Evidence { id: string;, caseId: string;
   title: string;
   description?: string;
   type: 'document' | 'image' | 'video' | 'audio' | 'physical' | 'digital';
@@ -117,13 +116,13 @@ export interface Evidence {, id: string;, caseId: string;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
-}
-export interface ChainOfCustodyEntry {, id: string;, action: 'created' | 'accessed' | 'modified' | 'transferred' | 'analyzed';
+} }
+export interface ChainOfCustodyEntry { id: string;, action: 'created' | 'accessed' | 'modified' | 'transferred' | 'analyzed';
   performedBy: string;
   timestamp: string;
   notes?: string;
   location?: string;
-}
+} }
 // AI Analysis Schemas
 export interface AIAnalysis {
   id: string;
@@ -139,22 +138,21 @@ export interface AIAnalysis {
   createdBy: string;
   createdAt: string;
   completedAt?: string;
-}
+} }
 // Search and Query Schemas
-export interface SearchQuery {
- , query: string;
+export interface SearchQuery { query: string;
   filters?: Record<string, unknown>;
   sort?: { field: string;, direction: 'asc' | 'desc';
   };
-  pagination?: {, page: number;, limit: number;
+  pagination?: { page: number;, limit: number;
   };
-}
-export interface SearchResults<T = unknown> {, items: T[];, totalCount: number;
+} }
+export interface SearchResults<T = unknown> { items: T[];, totalCount: number;
   page: number;
   limit: number;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
-}
+} }
 // Page Data Schemas for SSR
 export interface HomePageData {
   userId?: string | null;
@@ -168,50 +166,50 @@ export interface HomePageData {
   metrics?: CognitiveMetrics;
   loadedAt: string;
   error?: string;
-}
-export interface SystemInfo {, platform: string;, arch: string;
+} }
+export interface SystemInfo { platform: string;, arch: string;
   cpus: number;
   gpuInfo: string;
   memoryUsage: string;
   nodeVersion: string;
   uptime: number;
-}
-export interface DashboardPageData {, systemStatus: SystemHealth;, multicoreStatus: MulticoreStatus | null;
+} }
+export interface DashboardPageData { systemStatus: SystemHealth;, multicoreStatus: MulticoreStatus | null;
   graphData: SystemGraphData;
   initialLoad: boolean;
   timestamp: string;
   error?: string;
-}
-export interface MulticoreStatus {, totalWorkers: number;, healthyWorkers: number;
+} }
+export interface MulticoreStatus { totalWorkers: number;, healthyWorkers: number;
   busyWorkers: number;
   queueSize: number;
   activeTasks: number;
   totalTasks: number;
   completedTasks: number;
   failedTasks: number;
-}
-export interface SystemGraphData {, nodes: GraphNode[];, edges: GraphEdge[];
-}
-export interface GraphNode {, id: string;, type: 'database' | 'service' | 'component';
+} }
+export interface SystemGraphData { nodes: GraphNode[];, edges: GraphEdge[];
+} }
+export interface GraphNode { id: string;, type: 'database' | 'service' | 'component';
   label: string;
   position: { x: number; y: number; z: number };
  , metrics: Record<string, unknown>;
   status: 'healthy' | 'degraded' | 'unhealthy';
-}
+} }
 export interface GraphEdge {
   from: string;
   to: string;
   type: 'api' | 'data' | 'grpc';
   traffic: number;
   latency: number;
-}
+} }
 // Error Response Schema
-export interface ErrorResponse {, success: false;, data: null;
-  meta: {, timestamp: string;, cached: false;
+export interface ErrorResponse { success: false;, data: null;
+  meta: { timestamp: string;, cached: false;
     source: 'ssr' | 'api';
   };
  , error: string;
-}
+} }
 // Type Guards for Runtime Validation
 export function isAPIResponse<T>(obj: any): obj is APIResponse<T> {
   if (!obj || typeof obj !== 'object') return false;
@@ -225,7 +223,7 @@ export function isAPIResponse<T>(obj: any): obj is APIResponse<T> {
     typeof meta.cached === 'boolean' &&
     (meta.source === 'ssr' || meta.source === 'api')
   );
-}
+} }
 export function isUser(obj: any): obj is User {
   if (!obj || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
@@ -238,7 +236,7 @@ export function isUser(obj: any): obj is User {
     Array.isArray(o.practiceAreas) &&
     Array.isArray(o.permissions)
   );
-}
+} }
 export function isCase(obj: any): obj is Case {
   if (!obj || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
@@ -250,7 +248,7 @@ export function isCase(obj: any): obj is Case {
     typeof o.createdBy === 'string' &&
     Array.isArray(o.tags)
   );
-}
+} }
 export function isEvidence(obj: any): obj is Evidence {
   if (!obj || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
@@ -263,4 +261,5 @@ export function isEvidence(obj: any): obj is Evidence {
     Array.isArray(o.chainOfCustody) &&
     Array.isArray(o.tags)
   );
-}
+} }
+

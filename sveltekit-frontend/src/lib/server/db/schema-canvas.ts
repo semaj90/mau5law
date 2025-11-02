@@ -12,9 +12,9 @@ import {
   serial,
   uuid,
   real
-} from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
-import { users, cases } from './schema-postgres.js';
+} }from "drizzle-orm/pg-core";
+import { relations } }from "drizzle-orm";
+import { users, cases } }from './schema-postgres.js';
 // === REPORTS & DOCUMENTS ===
 export const reports = pgTable("reports", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -148,7 +148,7 @@ export const canvasAnnotations = pgTable("canvas_annotations", {
   annotationData: jsonb("annotation_data").notNull(),
   annotationType: varchar("annotation_type", { length: 50 }).notNull(), // 'drawing', 'highlight', 'text'
   // Position and bounds
-  bounds: jsonb("bounds").notNull(), // { x, y, width, height }
+  bounds: jsonb("bounds").notNull(), // { x, y, width, height } }
   // Annotation metadata
   title: varchar("title", { length: 255 }),
   description: text("description"),

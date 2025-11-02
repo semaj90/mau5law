@@ -1,16 +1,16 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // Enhanced Legal AI Search Service with LangChain.js, Nomic Embed, and pgvector
 // Implements RAG pattern with vector similarity search and semantic enhancement
-import { MemoryVectorStore } from "@langchain/community/vectorstores/memory";
-import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
-import { Embeddings } from "@langchain/core/embeddings";
-import { OllamaEmbeddings } from "@langchain/ollama";
+import { MemoryVectorStore } }from "@langchain/community/vectorstores/memory";
+import { PGVectorStore } }from "@langchain/community/vectorstores/pgvector";
+import { Embeddings } }from "@langchain/core/embeddings";
+import { OllamaEmbeddings } }from "@langchain/ollama";
 
 // Define the Ollama URL based on environment variable with a localhost fallback
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 
 // Define legal document type
-type LegalDocumentType = {, id: string;, title: string;
+type LegalDocumentType = { id: string;, title: string;
   description: string;
   content: string;
   jurisdiction: string;
@@ -18,17 +18,17 @@ type LegalDocumentType = {, id: string;, title: string;
   code?: string;
   sections?: string[];
   url?: string;
-}
+} }
 // Load legal documents dynamically to avoid top-level await issues
 async function loadLegalDocuments(): Promise<LegalDocumentType[]> {
   try {
     const legalDocsModule = await import("../../data/legal-documents.js");
     return legalDocsModule.legalDocuments || [];
-  } catch (error: any) {
+  } }catch (error: any) {
     console.warn("Legal documents not available, using empty array:", error);
     return [];
-  }
-}
+  } }
+} }
 // Initialize legal documents
 const initializeLegalDocuments = loadLegalDocuments();
 // Embedding generation helper
@@ -40,54 +40,52 @@ async function generateEmbedding(text: string, options?: { model?: string }): Pr
   try {
     const result = await embeddings.embedQuery(text);
     return result;
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Embedding generation failed:', error);
     return new Array(768).fill(0); // Return zero vector as fallback
-  }
-}
+  } }
+} }
 // Custom embeddings class for Gemma Embed integration
 export class GemmaEmbeddings extends Embeddings { // Renamed from NomicEmbeddings
   constructor() {
     super({});
-  }
+  } }
   async embedDocuments(texts: string[]): Promise<number[][]> {
     const embeddings: number[][] = [];
     for (const text of texts) {
       const embedding = await generateEmbedding(text, { model: 'local' });
       embeddings.push(embedding || []);
-    }
+    } }
     return embeddings;
-  }
+  } }
   async embedQuery(text: string): Promise<number[]> {
     const embedding = await generateEmbedding(text, { model: 'local' });
     return embedding || [];
-  }
-}
+  } }
+} }
 // Enhanced Legal Search Configuration
 export interface LegalSearchConfig { useVector: boolean;, useFallback: boolean;
   maxResults: number;
   similarityThreshold: number;
-  boostFactors: {, title: number;, exact_match: number;
+  boostFactors: { title: number;, exact_match: number;
     jurisdiction: number;
     category: number;
     recency: number;
-  }
-}
-const defaultConfig: LegalSearchConfig = {
- , useVector: true,
+  } }
+} }
+const defaultConfig: LegalSearchConfig = { useVector: true,
   useFallback: true,
   maxResults: 10,
   similarityThreshold: 0.7,
-  boostFactors: {
-   , title: 2.0,
+  boostFactors: { title: 2.0,
     exact_match: 3.0,
     jurisdiction: 1.5,
     category: 1.3,
     recency: 1.2
-  }
-}
+  } }
+} }
 // Enhanced Legal Search Result
-export interface LegalSearchResult {, id: string;, title: string;
+export interface LegalSearchResult { id: string;, title: string;
   content: string;
   description?: string;
   jurisdiction: string;
@@ -98,13 +96,13 @@ export interface LegalSearchResult {, id: string;, title: string;
   score: number;
   searchType: 'vector' | 'hybrid' | 'fallback';
   confidence: number;
-  relevanceFactors: {, semantic: number;, exact_match: number;
+  relevanceFactors: { semantic: number;, exact_match: number;
     jurisdiction_match: number;
     category_match: number;
-  }
-  metadata?: { [key: string]: any }
+  } }
+  metadata?: { [key: string]: any } }
   relevance?: string; // Added relevance property
-}
+} }
 // Main Enhanced Legal Search Service
 export class EnhancedLegalSearchService {
   private embeddings: GemmaEmbeddings; // Changed from NomicEmbeddings
@@ -113,62 +111,60 @@ export class EnhancedLegalSearchService {
   private, config: LegalSearchConfig;
   constructor(config: Partial<LegalSearchConfig> = {}) {
     this.embeddings = new GemmaEmbeddings(); // Changed from NomicEmbeddings
-    this.config = { ...defaultConfig, ...config }
+    this.config = { ...defaultConfig, ...config } }
     this.initializeVectorStores();
-  }
+  } }
   private async initializeVectorStores() {
     try {
       // Initialize memory vector store with legal documents
       await this.initializeMemoryVectorStore();
       // Attempt to initialize pgvector store
       await this.initializePgVectorStore();
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('Vector store initialization warning:', error);
-    }
-  }
+    } }
+  } }
   private async initializeMemoryVectorStore() {
     try {
       const legalDocuments = await initializeLegalDocuments;
       const documents = legalDocuments.map((doc) => ({
         pageContent: `${doc.title}\n\n${doc.description}\n\n${doc.content}`,
-        metadata: {
-         , id: doc.id,
+        metadata: { id: doc.id,
           title: doc.title,
           jurisdiction: doc.jurisdiction,
           category: doc.category,
           code: doc.code,
           sections: doc.sections || [],
           url: doc.url
-        }
+        } }
       });
       this.memoryVectorStore = await MemoryVectorStore.fromDocuments(documents, this.embeddings);
-      console.log(`✅ Memory vector store initialized with ${documents.length} documents`);
-    } catch (error: any) {
+      console.log(`✅ Memory vector store initialized with ${documents.length} }documents`);
+    } }catch (error: any) {
       console.error('Memory vector store initialization failed:', error);
-    }
-  }
+    } }
+  } }
   private async initializePgVectorStore() {
     try {
       // Only attempt if database is available
       if (process.env.DATABASE_URL) { // Changed from import.meta.env.DATABASE_URL
-        const pgConfig = { postgresConnectionOptions: {, connectionString: process.env.DATABASE_URL // Changed from import.meta.env.DATABASE_URL
+        const pgConfig = { postgresConnectionOptions: { connectionString: process.env.DATABASE_URL // Changed from import.meta.env.DATABASE_URL
           },
           tableName: 'search_index',
-          columns: {
-           , idColumnName: 'id',
+          columns: { idColumnName: 'id',
             vectorColumnName: 'embedding',
             contentColumnName: 'content',
             metadataColumnName: 'metadata' },'`'`
           distanceStrategy: 'cosine' as: any
-        }
+        } }
         // Initialize PGVector store
         this.pgVectorStore = new (PGVectorStore, as: any)(this.embeddings, pgConfig);
         console.log('✅ PGVector store initialized');
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       console.warn('PGVector store initialization failed (fallback to memory):', error);
-    }
-  }
+    } }
+  } }
   // Main search method with multiple strategies
   async search(
     query: string,
@@ -178,7 +174,7 @@ export class EnhancedLegalSearchService {
       maxResults?: number;
       useAI?: boolean;
       useEnhancedSemanticSearch?: boolean; // New option for enhanced search
-    } = {}
+    } }= {} }
   ): Promise<LegalSearchResult[]> {
     const results: LegalSearchResult[] = [];
     try {
@@ -193,10 +189,9 @@ export class EnhancedLegalSearchService {
               query,
               limit: options.maxResults || this.config.maxResults,
               threshold: this.config.similarityThreshold,
-              filters: {
-               , category: options.category,
+              filters: { category: options.category,
                 jurisdiction: options.jurisdiction
-              }
+              } }
             })
           });
           if (semanticResponse.ok) {
@@ -227,26 +222,26 @@ export class EnhancedLegalSearchService {
                     ...result.metadata,
                     semantic_score: result.semantic_score,
                     distance: result.distance,
-                    source: `enhanced_semantic_search' }'`
+                    source: `enhanced_semantic_search' } }`
                 })
               );
-              console.log(`✅ Enhanced semantic search returned ${enhancedResults.length} results`);
+              console.log(`✅ Enhanced semantic search returned ${enhancedResults.length} }results`);
               return enhancedResults.slice(0, options.maxResults || this.config.maxResults);
-            }
-          }
-        } catch (error) {
+            } }
+          } }
+        } }catch (error) {
           console.warn(
             'Enhanced semantic search failed, falling back to traditional search:',
             error
           );
-        }
-      }
+        } }
+      } }
       // Fallback to original search methods if enhanced semantic search fails
       // 1. Vector similarity search
       if (this.config.useVector) {
         const vectorResults = await this.performVectorSearch(query, options);
         results.push(...vectorResults);
-      }
+      } }
       // 2. Hybrid search (combining vector + traditional)
       const hybridResults = await this.performHybridSearch(query, options);
       results.push(...hybridResults);
@@ -254,15 +249,15 @@ export class EnhancedLegalSearchService {
       if (results.length === 0 && this.config.useFallback) {
         const fallbackResults = await this.performFallbackSearch(query, options);
         results.push(...fallbackResults);
-      }
+      } }
       // 4. Deduplicate, score, and rank results
       const finalResults = this.deduplicateAndRankResults(results, query, options);
       return finalResults.slice(0, options.maxResults || this.config.maxResults);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Enhanced legal search failed:', error);
       return await this.performFallbackSearch(query, options);
-    }
-  }
+    } }
+  } }
   // Vector similarity search using LangChain.js
   private async performVectorSearch(query: string, options: any): Promise<LegalSearchResult[]> {
     const results: LegalSearchResult[] = [];
@@ -271,7 +266,7 @@ export class EnhancedLegalSearchService {
       const vectorStore = this.pgVectorStore || this.memoryVectorStore;
       if (!vectorStore) {
         throw new Error('No vector store available');
-      }
+      } }
       // Perform similarity search
       const metadataFilter = this.buildMetadataFilter(options);
       const searchResults = metadataFilter
@@ -293,8 +288,7 @@ export class EnhancedLegalSearchService {
             score: this.normalizeScore(score),
             searchType: 'vector',
             confidence: this.calculateConfidence(score, 'vector'),
-            relevanceFactors: {
-             , semantic: score,
+            relevanceFactors: { semantic: score,
               exact_match: this.calculateExactMatch(query, doc.pageContent),
               jurisdiction_match: this.calculateJurisdictionMatch(
                 options.jurisdiction,
@@ -302,16 +296,16 @@ export class EnhancedLegalSearchService {
               ),
               category_match: this.calculateCategoryMatch(options.category, doc.metadata?.category)
             },
-            metadata: doc.metadata || {}
+            metadata: doc.metadata || {} }
           });
-        }
-      }
-      console.log(`🔍 Vector search found ${results.length} results`);
-    } catch (error: any) {
+        } }
+      } }
+      console.log(`🔍 Vector search found ${results.length} }results`);
+    } }catch (error: any) {
       console.warn('Vector search failed:', error);
-    }
+    } }
     return results;
-  }
+  } }
   // Hybrid search combining multiple approaches
   private async performHybridSearch(query: string, options: any): Promise<LegalSearchResult[]> {
     const results: LegalSearchResult[] = [];
@@ -322,11 +316,11 @@ export class EnhancedLegalSearchService {
       // Fuzzy matching on static legal documents
       const fuzzyResults = await this.performFuzzySearch(query, options);
       results.push(...fuzzyResults);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('Hybrid search failed:', error);
-    }
+    } }
     return results;
-  }
+  } }
   // Database text search (disabled - no db connection)
   private async performDatabaseTextSearch(
     _query: string,
@@ -335,7 +329,7 @@ export class EnhancedLegalSearchService {
     // Database search disabled for now - returning empty results
     console.log('Database search disabled - using static data only');
     return [];
-  }
+  } }
   // Fuzzy search on static documents
   private async performFuzzySearch(query: string, options: any): Promise<LegalSearchResult[]> {
     const results: LegalSearchResult[] = [];
@@ -358,23 +352,22 @@ export class EnhancedLegalSearchService {
             score: score,
             searchType: 'hybrid',
             confidence: this.calculateConfidence(score, 'fuzzy'),
-            relevanceFactors: {
-             , semantic: score * 0.7,
+            relevanceFactors: { semantic: score * 0.7,
               exact_match: this.calculateExactMatch(query, doc.content),
               jurisdiction_match: this.calculateJurisdictionMatch(
                 options.jurisdiction,
                 doc.jurisdiction
               ),
               category_match: this.calculateCategoryMatch(options.category, doc.category)
-            }
+            } }
           });
-        }
-      }
-    } catch (error: any) {
+        } }
+      } }
+    } }catch (error: any) {
       console.warn('Fuzzy search failed:', error);
-    }
+    } }
     return results;
-  }
+  } }
   // Fallback search for when other methods fail
   private async performFallbackSearch(query: string, options: any): Promise<LegalSearchResult[]> {
     console.log('🔄 Using fallback search');
@@ -404,31 +397,30 @@ export class EnhancedLegalSearchService {
           score: Math.min(score, 1.0),
           searchType: 'fallback',
           confidence: 0.6,
-          relevanceFactors: {
-           , semantic: 0.5,
+          relevanceFactors: { semantic: 0.5,
             exact_match: titleMatch ? 1.0 : 0.0,
             jurisdiction_match: this.calculateJurisdictionMatch(
               options.jurisdiction,
               doc.jurisdiction
             ),
             category_match: this.calculateCategoryMatch(options.category, doc.category)
-          }
+          } }
         });
-      }
-    }
+      } }
+    } }
     return results.sort((a, b) => b.score - a.score);
-  }
+  } }
   // Utility methods
-  private buildMetadataFilter(options: any): { [key: string]: any } | undefined {
-    const, filter: { [key: string]: any } = {}
+  private buildMetadataFilter(options: any): { [key: string]: any } }| undefined {
+    const, filter: { [key: string]: any } }= {} }
     if (options.jurisdiction && options.jurisdiction !== 'all') {
       filter.jurisdiction = options.jurisdiction;
-    }
+    } }
     if (options.category && options.category !== 'all') {
       filter.category = options.category;
-    }
+    } }
     return Object.keys(filter).length > 0 ? filter : undefined;
-  }
+  } }
   private calculateFuzzyScore(query: string, doc: any): number {
     let score = 0;
     const queryTerms = query.split(' ').filter((term) => term.length > 2);
@@ -437,38 +429,38 @@ export class EnhancedLegalSearchService {
       if (doc.description.toLowerCase().includes(term)) score += 0.3;
       if (doc.content.toLowerCase().includes(term)) score += 0.2;
       if (doc.code?.toLowerCase().includes(term)) score += 0.1;
-    }
+    } }
     return Math.min(score, 1.0);
-  }
+  } }
   private calculateExactMatch(query: string, text: string): number {
     const queryLower = query.toLowerCase();
     const textLower = text.toLowerCase();
     if (textLower.includes(queryLower)) {
       return queryLower.length / textLower.length;
-    }
+    } }
     return 0;
-  }
+  } }
   private calculateJurisdictionMatch(queryJurisdiction?: string, docJurisdiction?: string): number {
     if (!queryJurisdiction || queryJurisdiction === 'all') return 0.5;
     return queryJurisdiction === docJurisdiction ? 1.0 : 0.3;
-  }
+  } }
   private calculateCategoryMatch(queryCategory?: string, docCategory?: string): number {
     if (!queryCategory || queryCategory === 'all') return 0.5;
     return queryCategory === docCategory ? 1.0 : 0.3;
-  }
+  } }
   private calculateConfidence(score: number, searchType: string): number {
     const baseConfidence = {
       vector: 0.9,
       hybrid: 0.8,
       fuzzy: 0.7,
       fallback: 0.6
-    }
+    } }
     return Math.min(baseConfidence[searchType] * score, 1.0);
-  }
+  } }
   private normalizeScore(score: number): number {
     // Normalize different scoring systems to 0-1 range
     return Math.max(0, Math.min(1, score)); // Changed from 1 - score, as similaritySearch returns similarity
-  }
+  } }
   private deduplicateAndRankResults(
     results: LegalSearchResult[],
     query: string,
@@ -480,40 +472,40 @@ export class EnhancedLegalSearchService {
       const existing = uniqueResults.get((result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).id);
       if (!existing || (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).score > existing.score) {
         uniqueResults.set((result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).id, result);
-      }
-    }
+      } }
+    } }
     // Apply boosting factors and re-rank
     const boostedResults = Array.from(uniqueResults.values()).map((result) => {
       let boostedScore = result.score;
       // Apply boosts
       if (result.relevanceFactors.exact_match > 0.8) {
         boostedScore *= this.config.boostFactors.exact_match;
-      }
+      } }
       if (result.title.toLowerCase().includes(query.toLowerCase())) {
         boostedScore *= this.config.boostFactors.title;
-      }
+      } }
       if (options.jurisdiction === result.jurisdiction) {
         boostedScore *= this.config.boostFactors.jurisdiction;
-      }
+      } }
       if (options.category === result.category) {
         boostedScore *= this.config.boostFactors.category;
-      }
+      } }
       return {
         ...result,
         score: Math.min(boostedScore, 1.0)
-      }
+      } }
     });
     // Final ranking
     return boostedResults.sort((a, b) => {
       // Primary sort by score
       if (Math.abs(a.score - b.score) > 0.05) {
         return b.score - a.score;
-      }
+      } }
       // Secondary sort by search type preference
-      const typeOrder = { vector: 3, hybrid: 2, fallback: 1 }
+      const typeOrder = { vector: 3, hybrid: 2, fallback: 1 } }
       return typeOrder[b.searchType] - typeOrder[a.searchType];
     });
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const enhancedLegalSearch = new EnhancedLegalSearchService();

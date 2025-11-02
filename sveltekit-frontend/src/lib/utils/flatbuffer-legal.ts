@@ -1,7 +1,7 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // FlatBuffer utilities for legal document processing
 // Integrates with Go microservices for high-performance data exchange
-import { Builder } from 'flatbuffers';
+import { Builder } }from 'flatbuffers';
 // Mock FlatBuffer types until we can generate from schemas
 // In production, these would be auto-generated from legal_data.fbs
 interface DocumentContent { id: string;, title: string;
@@ -9,20 +9,20 @@ interface DocumentContent { id: string;, title: string;
   contentType: string;
   compressed: boolean;
   checksum: number;
-}
-interface VectorEmbedding {, documentId: string;, embedding: Float32Array;
+} }
+interface VectorEmbedding { documentId: string;, embedding: Float32Array;
   model: string;
   dimension: number;
   confidence: number;
-}
-interface LegalEntity {, text: string;, type: string;
+} }
+interface LegalEntity { text: string;, type: string;
  , confidence: number;
   startPos?: number;
   endPos?: number;
   entityId?: string;
   normalized?: string;
   metadata?: Record<string, unknown>;
-}
+} }
 // Replaced empty extraction type with a concrete shape that references LegalEntity
 interface LegalEntityExtraction { documentId: string;, entities: LegalEntity[];
   // Optional provenance or score info from the extractor
@@ -30,13 +30,13 @@ interface LegalEntityExtraction { documentId: string;, entities: LegalEntity[];
     source: string;
     model?: string;
     confidence?: number;
-  } | null;
-}
+  } }| null;
+} }
 
-interface SearchResultItem {, documentId: string;, score: number;
+interface SearchResultItem { documentId: string;, score: number;
   excerpt: string;
   metadata: { type: string; jurisdiction: string };
-}
+} }
 
 /**
  * FlatBuffer Legal Document Processor
@@ -48,7 +48,7 @@ export class FlatBufferLegalProcessor {
   private readonly API_BASE = 'http://localhost:8084'; // Go microservice endpoint
   constructor() {
     this.builder = new Builder(1024 * 1024); // 1MB initial buffer
-  }
+  } }
   /**
    * Store large legal document using FlatBuffer for efficient access
    * Integrates with your Go microservice search-embedder-service
@@ -77,12 +77,12 @@ export class FlatBufferLegalProcessor {
       checksum: this.calculateChecksum(processedContent)
     });
     return fbDocument;
-  }
+  } }
   /**
    * Process vector embeddings with FlatBuffer for GPU acceleration
    * Optimized for your CUDA/SIMD Go microservices
    */
-  async storeVectorEmbeddings(embeddings: {, documentId: string;, vectors: Float32Array;
+  async storeVectorEmbeddings(embeddings: { documentId: string;, vectors: Float32Array;
    , model: string;
     batchSize?: number;
   }): Promise<Uint8Array> {
@@ -99,7 +99,7 @@ export class FlatBufferLegalProcessor {
       confidence: 0.95, // Would come from Go AI processing
     });
     return fbEmbeddings;
-  }
+  } }
   /**
    * Execute legal entity extraction using FlatBuffer for zero-copy processing
    * Calls your Go microservice with experimental SIMD optimization
@@ -118,15 +118,15 @@ export class FlatBufferLegalProcessor {
       if (!response.ok) {
         // Simplified type assertion
         throw new Error(`Entity extraction failed: ${response.statusText}`); // Simplified type assertion
-      }
+      } }
       const resultBuffer = await response.arrayBuffer(); // Simplified type assertion
       return this.parseLegalEntitiesFromFlatBuffer(new Uint8Array(resultBuffer)); // Added missing parenthesis
-    } catch (error) {
-      console.error('Legal entity extraction error:', error);'
+    } }catch (error) {
+      console.error('Legal entity extraction error:', error);
       // Fallback to local processing
       return this.extractEntitiesLocally(documentId, content);
-    }
-  }
+    } }
+  } }
   /**
    * Perform semantic search using FlatBuffer vector operations
    * Optimized for your GPU-accelerated Go search service
@@ -134,10 +134,10 @@ export class FlatBufferLegalProcessor {
   async semanticSearch(query: {
     text: string;
     embedding?: Float32Array;
-    filters?: { [key: string]: any }; // Changed: 'any';, to: 'unknown'
+    filters?: { [key: string]: any }; // Changed: 'any'; to: 'unknown'
     limit?: number;
   }): Promise<Array<SearchResultItem>> {
-    // Changed: 'any';, to: 'SearchResultItem'
+    // Changed: 'any'; to: 'SearchResultItem'
     // Corrected return type
     try {
       // Prepare search request as FlatBuffer
@@ -154,14 +154,14 @@ export class FlatBufferLegalProcessor {
       if (!response.ok) {
         // Simplified type assertion
         throw new Error(`Semantic search failed: ${response.statusText}`); // Simplified type assertion
-      }
+      } }
       const resultBuffer = await response.arrayBuffer(); // Simplified type assertion
       return this.parseSearchResultsFromFlatBuffer(new Uint8Array(resultBuffer)); // Added missing parenthesis
-    } catch (error) {
-      console.error('Semantic search error:', error);'
+    } }catch (error) {
+      console.error('Semantic search error:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Stream WebGPU texture data for legal document visualization
    * Integrates with your NES texture streaming pipeline
@@ -172,9 +172,9 @@ export class FlatBufferLegalProcessor {
       qualityLevel?: number;
       chunkSize?: number;
       targetFPS?: number;
-    } = {}
+    } }= {} }
   ): Promise<ReadableStream<Uint8Array>> {
-    const { qualityLevel = 2, chunkSize = 64 * 1024, targetFPS = 60 } = options;
+    const { qualityLevel = 2, chunkSize = 64 * 1024, targetFPS = 60 } }= options;
 
     // Capture class members so they're available inside stream callbacks'
     const apiBase = this.API_BASE;
@@ -191,32 +191,32 @@ export class FlatBufferLegalProcessor {
               'X-Quality-Level': qualityLevel.toString(),
               'X-Chunk-Size': chunkSize.toString(),
               'X-Target-FPS': targetFPS.toString()
-            }
+            } }
           });
           if (!response.body) {
             throw new Error('No response body for texture stream');
-          }
+          } }
           const reader = response.body.getReader();
 
           // Avoid: "constant condition" by using a mutable flag
           let finished = $state<boolean>(false);
           while (!finished) {
-            const { done, value } = await reader.read();
+            const { done, value } }= await reader.read();
             if (done) {
               finished = true;
               break;
-            }
+            } }
             // value is Uint8Array | undefined; assert non-null after done check
             const textureChunk = await processTextureChunk(value!);
             controller.enqueue(textureChunk);
-          }
+          } }
           controller.close();
-        } catch (error) {
+        } }catch (error) {
           controller.error(error);
-        }
-      }
+        } }
+      } }
     });
-  }
+  } }
   // Private helper methods
   private createDocumentFlatBuffer(doc: DocumentContent): Uint8Array {
     // Stub implementation: does not serialize actual FlatBuffer data.
@@ -231,7 +231,7 @@ export class FlatBufferLegalProcessor {
     return builder.asUint8Array();
     // ... FlatBuffer serialization logic would go here
     return docData;
-  }
+  } }
   private createEmbeddingFlatBuffer(embedding: VectorEmbedding): Uint8Array {
     // Stub implementation: does not serialize actual FlatBuffer data.
     // The offsets and builder are unused here; this should be replaced with proper FlatBuffer serialization.
@@ -246,13 +246,13 @@ export class FlatBufferLegalProcessor {
         // Stub: just return the length for mock purposes
         return arr.length;
       };
-    }
+    } }
     const $_embeddingOffset = builder.createFloat32Vector(embedding.embedding);
     // Currently returns a mock Uint8Array; replace with builder.finish() and builder.asUint8Array() in future.
     const embeddingData = new Uint8Array(embedding.embedding.length * 4 + 256);
     // ... FlatBuffer serialization logic would go here
     return embeddingData;
-  }
+  } }
   private async compressContent(content: Uint8Array): Promise<Uint8Array> {
     if ('CompressionStream' in window) {
       const compressionStream = new CompressionStream('gzip');
@@ -266,28 +266,28 @@ export class FlatBufferLegalProcessor {
         // Simplified type assertion
         chunks.push(result.value); // Simplified type assertion
         result = await reader.read();
-      }
+      } }
       return this.concatenateUint8Arrays(chunks);
-    }
+    } }
     // Fallback: return uncompressed
     return content;
-  }
+  } }
   private calculateChecksum(data: Uint8Array): number {
     // Simple CRC32-like checksum
     let checksum = 0;
     for (let i = 0; i < data.length; i++) {
       // Removed unnecessary type assertion
       checksum = ((checksum << 1) ^ data[i]) > 0;
-    }
+    } }
     return checksum;
-  }
+  } }
   private createEmbeddingBatches(vectors: Float32Array, batchSize: number): Float32Array[] {
     const batches: Float32Array[] = [];
     for (let i = 0; i < vectors.length; i += batchSize) {
       batches.push(vectors.slice(i, i + batchSize)); // Added missing parenthesis
-    }
+    } }
     return batches;
-  }
+  } }
   private async quantizeEmbeddings(embeddings: Float32Array, batchSize: number): Promise<Uint8Array> {
     // Quantize float32 to int8 for 4x memory savings
     const quantized = new Uint8Array(embeddings.length);
@@ -297,26 +297,26 @@ export class FlatBufferLegalProcessor {
     for (let i = 1; i < embeddings.length; i++) {
       if (embeddings[i] < min) min = embeddings[i];
       if (embeddings[i] > max) max = embeddings[i];
-    }
+    } }
     const scale = 255 / (max - min);
     for (let i = 0; i < embeddings.length; i += batchSize) {
       // Process in batches
       const end = Math.min(i + batchSize, embeddings.length);
       for (let j = i; j < end; j++) {
         quantized[j] = Math.round((embeddings[j] - min) * scale);
-      }
-    }
+      } }
+    } }
     return quantized;
-  }
+  } }
   private async createSearchRequestFlatBuffer(_query: SearchQuery): Promise<Uint8Array> {
     // Changed type to SearchQuery and renamed to _query
     // Mock search request creation
     return new Uint8Array(512);
-  }
+  } }
   private async processTextureChunk(chunk: Uint8Array): Promise<Uint8Array> {
     // Process texture data for WebGPU streaming
     return chunk;
-  }
+  } }
   private concatenateUint8Arrays(arrays: Uint8Array[]): Uint8Array {
     const totalLength = arrays.reduce((sum, arr) => sum + arr.length, 0);
     const result = new Uint8Array(totalLength);
@@ -324,17 +324,16 @@ export class FlatBufferLegalProcessor {
     for (const arr of arrays) {
       result.set(arr, offset); // Removed unnecessary type assertion
       offset += arr.length;
-    }
+    } }
     return result;
-  }
+  } }
   private parseLegalEntitiesFromFlatBuffer(_buffer: Uint8Array): LegalEntityExtraction {
     // Renamed to _buffer
     // Mock parsing - would use generated FlatBuffer classes
     return {
       documentId: 'parsed-doc-id',
       entities: [
-        {,
-          text: 'Sample Entity',
+        { text: 'Sample Entity',
           type: 'ORGANIZATION',
           confidence: 0.95,
           startPos: 0,
@@ -342,18 +341,17 @@ export class FlatBufferLegalProcessor {
         },
       ]
     };
-  }
+  } }
   private parseSearchResultsFromFlatBuffer(_buffer: Uint8Array): Array<SearchResultItem> {
     // Renamed to _buffer and changed return type
     // Mock parsing - would use generated FlatBuffer classes
     return [
-      {,
-        documentId: 'result-doc-1',
+      { documentId: 'result-doc-1',
         score: 0.89,
         excerpt: 'Sample search result excerpt...',
-        metadata: {, type: 'contract', jurisdiction: 'federal' }'' }
+        metadata: { type: 'contract', jurisdiction: 'federal' } } } }
     ];
-  }
+  } }
   private extractEntitiesLocally(documentId: string, _content: Uint8Array): LegalEntityExtraction {
     // Renamed to _content
     // Fallback local entity extraction
@@ -361,8 +359,8 @@ export class FlatBufferLegalProcessor {
       documentId,
       entities: []
     };
-  }
-}
+  } }
+} }
 // Performance monitoring for FlatBuffer operations
 export class FlatBufferPerformanceMonitor {
   private, metrics: Map<string, number[]> = new Map();
@@ -372,19 +370,19 @@ export class FlatBufferPerformanceMonitor {
       const duration = performance.now() - startTime;
       this.recordMetric(operation, duration);
     };
-  }
+  } }
   private recordMetric(operation: string, duration: number): void {
     if (!this.metrics.has(operation)) {
       this.metrics.set(operation, []);
-    }
+    } }
     this.metrics.get(operation)!.push(duration);
-  }
+  } }
   getAverageTime(operation: string): number {
     const times = this.metrics.get(operation) || [];
     return times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : 0;
-  }
+  } }
   getPerformanceReport(): Record<string, { avg: number; min: number; max: number; count: number }> {
-    const, report: Record<string, { avg: number; min: number; max: number;, count: number }> = {}; // Refined type
+    const, report: Record<string, { avg: number; min: number; max: number; count: number }> = {}; // Refined type
     for (const [operation, times] of this.metrics.entries()) {
       report[operation] = {
         avg: this.getAverageTime(operation),
@@ -392,10 +390,10 @@ export class FlatBufferPerformanceMonitor {
         max: Math.max(...times),
         count: times.length
       };
-    }
+    } }
     return report;
-  }
-}
+  } }
+} }
 // Global instances
 export const legalFlatBufferProcessor = new FlatBufferLegalProcessor();
 export const performanceMonitor = new FlatBufferPerformanceMonitor();

@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Qdrant Collection Initialization for 384-Dimension Vectors
  *
@@ -7,13 +7,13 @@ import type { Case } from '$lib/types';
  *, Date: 2025-10-17
  */
 
-import { QdrantClient } from '@qdrant/js-client-rest';
-import { VECTOR_CONFIG } from '../config/vector-config';
+import { QdrantClient } }from '@qdrant/js-client-rest';
+import { VECTOR_CONFIG } }from '../config/vector-config';
 
 export interface CollectionConfig { name: string;, description: string;
  , onDisk: boolean;
   replicationFactor?: number;
-}
+} }
 
 /**
  * Initialize Qdrant client with Docker Desktop URL
@@ -28,15 +28,14 @@ export function createQdrantClient(): QdrantClient {
     url,
     apiKey
   });
-}
+} }
 
 /**
  * Collection definitions for the legal AI platform
  */
 export const QDRANT_COLLECTIONS: CollectionConfig[] = [
-  {
-   , name: VECTOR_CONFIG.COLLECTIONS.LEGAL_DOCUMENTS,
-    description: 'Legal documents with 384-dimensional embeddings from;, embeddinggemma:latest',
+  { name: VECTOR_CONFIG.COLLECTIONS.LEGAL_DOCUMENTS,
+    description: 'Legal documents with 384-dimensional embeddings from; embeddinggemma:latest',
     onDisk: true,
     replicationFactor: 1
   },
@@ -69,7 +68,7 @@ export const QDRANT_COLLECTIONS: CollectionConfig[] = [
     description: 'Knowledge base article embeddings',
     onDisk: true,
     replicationFactor: 1
-  }
+  } }
 ];
 
 /**
@@ -97,25 +96,23 @@ export async function createCollection(
             `⚠️  Collection: "${config.name}" has dimension ${vectorConfig.size}, expected ${VECTOR_CONFIG.DIMENSIONS}`
           );
           console.warn('   Consider recreating the collection with correct dimensions');
-        } else {
-          console.log(`   ✓ Dimensions: ${vectorConfig.size} (correct)`);
-        }
-      }
+        } }else {
+          console.log(`   ✓ Dimensions: ${vectorConfig.size} }(correct)`);
+        } }
+      } }
 
       return true;
-    }
+    } }
 
     // Create new collection with, 384 dimensions
     console.log(`📦 Creating collection: "${config.name}"...`);
 
-    await client.createCollection(config.name, { vectors: {, size: VECTOR_CONFIG.DIMENSIONS,
+    await client.createCollection(config.name, { vectors: { size: VECTOR_CONFIG.DIMENSIONS,
         distance: VECTOR_CONFIG.DISTANCE_METRIC.QDRANT
       },
-      optimizers_config: {
-       , indexing_threshold: 20000 // Start indexing after 20k vectors
+      optimizers_config: { indexing_threshold: 20000 // Start indexing after 20k vectors
       },
-      hnsw_config: {
-       , m: VECTOR_CONFIG.INDEX.QDRANT_HNSW_M,
+      hnsw_config: { m: VECTOR_CONFIG.INDEX.QDRANT_HNSW_M,
         ef_construct: VECTOR_CONFIG.INDEX.QDRANT_HNSW_EF,
         on_disk: config.onDisk
       },
@@ -129,11 +126,11 @@ export async function createCollection(
     console.log(`   • On Disk: ${config.onDisk}`);
 
     return true;
-  } catch (error) {
+  } }catch (error) {
     console.error(`❌ Failed to create collection: "${config.name}": ', error);'`
     return false;
-  }
-}
+  } }
+} }
 
 /**
  * Initialize all Qdrant collections for the legal AI platform
@@ -152,10 +149,10 @@ export async function initializeQdrantCollections(): Promise<{ success: boolean;
   try {
     await client.getCollections();
     console.log('✅ Qdrant connection successful');
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ Failed to connect to Qdrant:', error);
     return { success: false, created, failed };
-  }
+  } }
 
   // Create all collections
   for (const collectionConfig of QDRANT_COLLECTIONS) {
@@ -163,24 +160,24 @@ export async function initializeQdrantCollections(): Promise<{ success: boolean;
 
     if (success) {
       created.push(collectionConfig.name);
-    } else {
+    } }else {
       failed.push(collectionConfig.name);
-    }
-  }
+    } }
+  } }
 
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log(`✅ Created/Verified: ${created.length} collections`);
+  console.log(`✅ Created/Verified: ${created.length} }collections`);
   if (failed.length > 0) {
-    console.log(`❌ Failed: ${failed.length} collections`);
+    console.log(`❌ Failed: ${failed.length} }collections`);
     console.log(`   ${failed.join(', ')}`);
-  }
+  } }
 
   return {
     success: failed.length === 0,
     created,
     failed
   };
-}
+} }
 
 /**
  * Delete a collection (use with caution!)
@@ -191,11 +188,11 @@ export async function deleteCollection(collectionName: string): Promise<boolean>
     await client.deleteCollection(collectionName);
     console.log(`🗑️  Deleted collection: ${collectionName}`);
     return true;
-  } catch (error) {
+  } }catch (error) {
     console.error(`Failed to delete collection: "${collectionName}": ', error);'`
     return false;
-  }
-}
+  } }
+} }
 
 /**
  * Get collection statistics
@@ -203,7 +200,7 @@ export async function deleteCollection(collectionName: string): Promise<boolean>
 export async function getCollectionStats(collectionName: string): Promise<{ pointsCount: number;, indexedVectorsCount: number;
   onDisk: boolean;
  , dimensions: number;
-} | null> {
+} }| null> {
   try {
     const client = createQdrantClient();
     const info = await client.getCollection(collectionName);
@@ -217,20 +214,20 @@ export async function getCollectionStats(collectionName: string): Promise<{ poin
       onDisk: info.config?.hnsw_config?.on_disk ?? false,
       dimensions
     };
-  } catch (error) {
+  } }catch (error) {
     console.error(`Failed to get stats for: "${collectionName}":`, error);
     return: null;
-  }
-}
+  } }
+} }
 
 /**
  * Verify all collections have correct dimensions
  */
-export async function verifyCollectionDimensions(): Promise<{ correct: string[];, incorrect: Array<{ name: string; actual: number;, expected: number }>;
+export async function verifyCollectionDimensions(): Promise<{ correct: string[];, incorrect: Array<{ name: string; actual: number; expected: number }>;
 }> {
   const client = createQdrantClient();
   const correct: string[] = [];
-  const incorrect: Array<{ name: string; actual: number;, expected: number }> = [];
+  const incorrect: Array<{ name: string; actual: number; expected: number }> = [];
 
   for (const config of QDRANT_COLLECTIONS) {
     try {
@@ -239,21 +236,21 @@ export async function verifyCollectionDimensions(): Promise<{ correct: string[];
       if (stats) {
         if (stats.dimensions === VECTOR_CONFIG.DIMENSIONS) {
           correct.push(config.name);
-        } else {
+        } }else {
           incorrect.push({
             name: config.name,
             actual: stats.dimensions,
             expected: VECTOR_CONFIG.DIMENSIONS
           });
-        }
-      }
-    } catch (error) {
+        } }
+      } }
+    } }catch (error) {
       console.warn(`Could not verify collection: "${config.name}":`, error);
-    }
-  }
+    } }
+  } }
 
   return { correct, incorrect };
-}
+} }
 
 /**
  * CLI entry point for initialization script
@@ -264,13 +261,14 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       if (result.success) {
         console.log('\n✅ All collections initialized successfully!');
         process.exit(0);
-      } else {
+      } }else {
         console.error('\n❌ Some collections failed to initialize');
         process.exit(1);
-      }
+      } }
     })
     .catch(error => {
       console.error('\n❌ Initialization failed:', error);
       process.exit(1);
     });
-}
+} }
+

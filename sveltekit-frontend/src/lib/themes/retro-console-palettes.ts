@@ -3,7 +3,7 @@
  * Authentic color palettes from classic gaming consoles with legal AI integration
  */
 export interface ConsolePalette { name: string;, era: string;
-  colors: {, primary: string;, secondary: string;
+  colors: { primary: string;, secondary: string;
     tertiary: string;
     success: string;
     warning: string;
@@ -17,22 +17,20 @@ export interface ConsolePalette { name: string;, era: string;
     confidence: string;
     priority: string;
   };
-  gradients: {, main: string;, modal: string;
+  gradients: { main: string;, modal: string;
     card: string;
     evidence: string;
     priority: string;
   };
-  constraints: {, maxColors: number;, bitDepth: number;
+  constraints: { maxColors: number;, bitDepth: number;
     memoryKB: number;
   };
  , cssVariables: Record<string, string>;
-}
+} }
 // NES (Nintendo Entertainment System) - 1985
-export const NES_PALETTE: ConsolePalette = {
- , name: 'NES Classic',
+export const NES_PALETTE: ConsolePalette = { name: 'NES Classic',
   era: '8-bit',
-  colors: {
-   , primary: '#E52521', // Nintendo Red
+  colors: { primary: '#E52521', // Nintendo Red
     secondary: '#0084FF', // Classic Blue
     tertiary: '#4CAF50', // Green
     success: '#5CB85C', // Light Green
@@ -48,15 +46,13 @@ export const NES_PALETTE: ConsolePalette = {
       '#7C7C7C', // Gray: '#0000FC', // Blue: '#BC0000', // Dark Red: '#BC00BC', // Purple: '#00BC00', // Green: '#00BCBC', // Cyan: '#BCBC00', // Yellow: '#BCBCBC', // Light Gray
     ]
   },
-  gradients: {
-   , main: 'linear-gradient(0deg, #000000, #1C1C1C, #383838)',
+  gradients: { main: 'linear-gradient(0deg, #000000, #1C1C1C, #383838)',
     modal: 'linear-gradient(135deg, #000000, #0000FC, #000000)',
     card: 'linear-gradient(45deg, #1C1C1C, #383838)',
     evidence: 'linear-gradient(90deg, #8B4513, #CD853F)',
     priority: 'linear-gradient(45deg, #FF6347, #DC3545)'
   },
-  constraints: {
-   , maxColors: 54,
+  constraints: { maxColors: 54,
     bitDepth: 2,
     memoryKB: 2
   },
@@ -73,14 +69,12 @@ export const NES_PALETTE: ConsolePalette = {
     '--nes-classification': '#6B8E23',
     '--nes-confidence': '#32CD32',
     '--nes-priority': '#FF6347'
-  }
+  } }
 };
 // SNES (Super Nintendo) - 1990
-export const SNES_PALETTE: ConsolePalette = {
- , name: 'SNES Mode 7',
+export const SNES_PALETTE: ConsolePalette = { name: 'SNES Mode 7',
   era: '16-bit',
-  colors: {
-   , primary: '#B266FF', // Purple
+  colors: { primary: '#B266FF', // Purple
     secondary: '#00C8FF', // Cyan
     tertiary: '#FFD700', // Gold
     success: '#00FF00', // Bright Green
@@ -96,15 +90,13 @@ export const SNES_PALETTE: ConsolePalette = {
       '#FF6B9D', // Pink: '#C44569', // Rose: '#524A7B', // Dark Purple: '#2D3561', // Navy: '#0E7490', // Teal: '#FFC857', // Amber: '#119DA4', // Ocean: '#6A0572', // Violet
     ]
   },
-  gradients: {
-   , main: 'linear-gradient(180deg, #1A0033, #524A7B, #B266FF)',
+  gradients: { main: 'linear-gradient(180deg, #1A0033, #524A7B, #B266FF)',
     modal: 'linear-gradient(135deg, #1A0033 0%, #524A7B 50%, #B266FF 100%)',
     card: 'radial-gradient(circle, #524A7B, #1A0033)',
     evidence: 'linear-gradient(135deg, #9C88FF, #706FD3)',
     priority: 'linear-gradient(90deg, #FF5252, #FF0066)'
   },
-  constraints: {
-   , maxColors: 32768,
+  constraints: { maxColors: 32768,
     bitDepth: 15,
     memoryKB: 128
   },
@@ -121,14 +113,12 @@ export const SNES_PALETTE: ConsolePalette = {
     '--snes-classification': '#706FD3',
     '--snes-confidence': '#00D2D3',
     '--snes-priority': '#FF5252'
-  }
+  } }
 };
 // PS1 (PlayStation) - 1994
-export const PS1_PALETTE: ConsolePalette = {
- , name: 'PlayStation Classic',
+export const PS1_PALETTE: ConsolePalette = { name: 'PlayStation Classic',
   era: '32-bit',
-  colors: {
-   , primary: '#003791', // PlayStation Blue
+  colors: { primary: '#003791', // PlayStation Blue
     secondary: '#FF3131', // PSX Red
     tertiary: '#00BF63', // PSX Green
     success: '#00D452', // Success Green
@@ -144,15 +134,13 @@ export const PS1_PALETTE: ConsolePalette = {
       '#2196F3', // Light Blue: '#00BCD4', // Cyan: '#009688', // Teal: '#4CAF50', // Green: '#8BC34A', // Light Green: '#CDDC39', // Lime: '#FFC107', // Amber: '#FF5722', // Deep Orange
     ]
   },
-  gradients: {
-   , main: 'linear-gradient(90deg, #0A0E27, #003791, #2196F3)',
+  gradients: { main: 'linear-gradient(90deg, #0A0E27, #003791, #2196F3)',
     modal: 'linear-gradient(135deg, #003791 0%, #2196F3 50%, #00BCD4 100%)',
     card: 'linear-gradient(180deg, #0A0E27, #003791)',
     evidence: 'linear-gradient(45deg, #8B5CF6, #EC4899)',
     priority: 'linear-gradient(90deg, #F59E0B, #FF1744)'
   },
-  constraints: {
-   , maxColors: 16777216,
+  constraints: { maxColors: 16777216,
     bitDepth: 24,
     memoryKB: 2048
   },
@@ -169,14 +157,12 @@ export const PS1_PALETTE: ConsolePalette = {
     '--ps1-classification': '#EC4899',
     '--ps1-confidence': '#10B981',
     '--ps1-priority': '#F59E0B'
-  }
+  } }
 };
 // N64 (Nintendo 64) - 1996
-export const N64_PALETTE: ConsolePalette = {
- , name: 'N64 Ultra',
+export const N64_PALETTE: ConsolePalette = { name: 'N64 Ultra',
   era: '64-bit',
-  colors: {
-   , primary: '#00AA00', // N64 Green
+  colors: { primary: '#00AA00', // N64 Green
     secondary: '#0055FF', // N64 Blue
     tertiary: '#FF5555', // N64 Red
     success: '#00FF00', // Bright Green
@@ -192,15 +178,13 @@ export const N64_PALETTE: ConsolePalette = {
       '#AA00FF', // Purple: '#FF00AA', // Magenta: '#00AAFF', // Sky Blue: '#FFAA00', // Orange: '#AA5500', // Brown: '#5500AA', // Indigo: '#00AA55', // Sea Green: '#FF55AA', // Pink
     ]
   },
-  gradients: {
-   , main: 'linear-gradient(45deg, #1E1E1E, #00AA00, #0055FF, #FF5555)',
+  gradients: { main: 'linear-gradient(45deg, #1E1E1E, #00AA00, #0055FF, #FF5555)',
     modal: 'conic-gradient(from 180deg, #00AA00, #0055FF, #FF5555, #AA00FF, #00AA00)',
     card: 'linear-gradient(135deg, #1E1E1E, #00AA00, #1E1E1E)',
     evidence: 'linear-gradient(90deg, #CD853F, #D2691E)',
     priority: 'linear-gradient(45deg, #FF6347, #FF0000)'
   },
-  constraints: {
-   , maxColors: 32768,
+  constraints: { maxColors: 32768,
     bitDepth: 15,
     memoryKB: 4096
   },
@@ -217,14 +201,12 @@ export const N64_PALETTE: ConsolePalette = {
     '--n64-classification': '#D2691E',
     '--n64-confidence': '#32CD32',
     '--n64-priority': '#FF6347'
-  }
+  } }
 };
 // PS2 (PlayStation 2) - 2000
-export const PS2_PALETTE: ConsolePalette = {
- , name: 'PS2 Emotion',
+export const PS2_PALETTE: ConsolePalette = { name: 'PS2 Emotion',
   era: '128-bit',
-  colors: {
-   , primary: '#1B3A6B', // PS2 Navy
+  colors: { primary: '#1B3A6B', // PS2 Navy
     secondary: '#3A7BC8', // PS2 Blue
     tertiary: '#67B3CC', // PS2 Cyan
     success: '#4ECDC4', // Teal
@@ -240,15 +222,13 @@ export const PS2_PALETTE: ConsolePalette = {
       '#A55EEA', // Purple: '#8854D0', // Deep Purple: '#3867D6', // Royal Blue: '#2D98DA', // Sky Blue: '#0FB9B1', // Turquoise: '#20BF6B', // Emerald: '#FED330', // Yellow: '#FC5C65', // Red
     ]
   },
-  gradients: {
-   , main: 'linear-gradient(120deg, #0C1929, #1B3A6B, #3A7BC8, #67B3CC)',
+  gradients: { main: 'linear-gradient(120deg, #0C1929, #1B3A6B, #3A7BC8, #67B3CC)',
     modal: 'linear-gradient(45deg, #1B3A6B 0%, #3A7BC8 25%, #67B3CC 50%, #4ECDC4 75%, #A55EEA 100%)',
     card: 'radial-gradient(ellipse at top, #3A7BC8, #1B3A6B, #0C1929)',
     evidence: 'linear-gradient(135deg, #A55EEA, #8854D0)',
     priority: 'linear-gradient(90deg, #FC5C65, #F7B731)'
   },
-  constraints: {
-   , maxColors: 16777216,
+  constraints: { maxColors: 16777216,
     bitDepth: 32,
     memoryKB: 32768
   },
@@ -265,14 +245,12 @@ export const PS2_PALETTE: ConsolePalette = {
     '--ps2-classification': '#8854D0',
     '--ps2-confidence': '#0FB9B1',
     '--ps2-priority': '#FC5C65'
-  }
+  } }
 };
 // Cyberpunk Theme - 2077
-export const CYBERPUNK_PALETTE: ConsolePalette = {
- , name: 'Cyberpunk 2077',
+export const CYBERPUNK_PALETTE: ConsolePalette = { name: 'Cyberpunk 2077',
   era: 'Neo-Noir',
-  colors: {
-   , primary: '#00FFFF', // Electric Cyan
+  colors: { primary: '#00FFFF', // Electric Cyan
     secondary: '#FF00FF', // Hot Pink
     tertiary: '#FFFF00', // Neon Yellow
     success: '#00FF00', // Bright Green
@@ -288,15 +266,13 @@ export const CYBERPUNK_PALETTE: ConsolePalette = {
       '#00FFFF', // Electric Cyan: '#FF00FF', // Hot Pink: '#FFFF00', // Neon Yellow: '#00FF00', // Bright Green: '#FFA500', // Orange: '#FF0000', // Red: '#9400D3', // Dark Violet: '#FF69B4', // Hot Pink
     ]
   },
-  gradients: {
-   , main: 'linear-gradient(135deg, #0A0A0A, #00FFFF, #FF00FF)',
+  gradients: { main: 'linear-gradient(135deg, #0A0A0A, #00FFFF, #FF00FF)',
     modal: 'linear-gradient(45deg, #0A0A0A 0%, #00FFFF 50%, #FF00FF 100%)',
     card: 'linear-gradient(180deg, #0A0A0A, #1A1A1A)',
     evidence: 'linear-gradient(90deg, #9400D3, #FF69B4)',
     priority: 'linear-gradient(45deg, #FF4500, #FF0000)'
   },
-  constraints: {
-   , maxColors: 16777216,
+  constraints: { maxColors: 16777216,
     bitDepth: 32,
     memoryKB: 131072
   },
@@ -313,14 +289,12 @@ export const CYBERPUNK_PALETTE: ConsolePalette = {
     '--cyberpunk-classification': '#FF69B4',
     '--cyberpunk-confidence': '#00CED1',
     '--cyberpunk-priority': '#FF4500'
-  }
+  } }
 };
 // Legal AI Professional Theme
-export const LEGAL_AI_PALETTE: ConsolePalette = {
- , name: 'Legal AI Professional',
+export const LEGAL_AI_PALETTE: ConsolePalette = { name: 'Legal AI Professional',
   era: 'Modern',
-  colors: {
-   , primary: '#1E293B', // Slate, 800
+  colors: { primary: '#1E293B', // Slate, 800
     secondary: '#334155', // Slate, 700
     tertiary: '#00FF88', // Legal AI green
     success: '#10B981', // Emerald, 500
@@ -336,15 +310,13 @@ export const LEGAL_AI_PALETTE: ConsolePalette = {
       '#06B6D4', // Cyan 500: '#8B5CF6', // Violet 500: '#EC4899', // Pink 500: '#10B981', // Emerald 500: '#F59E0B', // Amber 500: '#EF4444', // Red 500: '#6366F1', // Indigo 500: '#84CC16', // Lime, 500
     ]
   },
-  gradients: {
-   , main: 'linear-gradient(135deg, #0F172A, #1E293B, #00FF88)',
+  gradients: { main: 'linear-gradient(135deg, #0F172A, #1E293B, #00FF88)',
     modal: 'linear-gradient(45deg, #1E293B 0%, #334155 50%, #00FF88 100%)',
     card: 'linear-gradient(180deg, #1E293B, #0F172A)',
     evidence: 'linear-gradient(90deg, #8B5CF6, #EC4899)',
     priority: 'linear-gradient(45deg, #F59E0B, #EF4444)'
   },
-  constraints: {
-   , maxColors: 16777216,
+  constraints: { maxColors: 16777216,
     bitDepth: 32,
     memoryKB: 65536
   },
@@ -361,7 +333,7 @@ export const LEGAL_AI_PALETTE: ConsolePalette = {
     '--legal-classification': '#EC4899',
     '--legal-confidence': '#10B981',
     '--legal-priority': '#F59E0B'
-  }
+  } }
 };
 // Console palette collection
 export const CONSOLE_PALETTES = {
@@ -372,7 +344,7 @@ export const CONSOLE_PALETTES = {
   ps2: PS2_PALETTE,
   legal: LEGAL_AI_PALETTE,
   cyberpunk: CYBERPUNK_PALETTE, // Added cyberpunk palette
-} as const;
+} }as const;
 export type ConsolePaletteName = keyof typeof CONSOLE_PALETTES;
 // Helper function to apply console palette to CSS variables
 export function applyConsolePalette(consoleName: ConsolePaletteName): void {
@@ -412,8 +384,8 @@ export function applyConsolePalette(consoleName: ConsolePaletteName): void {
   // Store current palette in localStorage
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem('console-palette', consoleName);
-  }
-}
+  } }
+} }
 // Get color with bit depth constraint simulation
 export function getConstrainedColor(color: string, bitDepth: number): string {
   if (bitDepth >= 24) return color; // No constraint for 24-bit or higher
@@ -430,57 +402,58 @@ export function getConstrainedColor(color: string, bitDepth: number): string {
   const qb = Math.round(Math.round(b / step) * step);
   // Return quantized color
   return `#${qr.toString(16).padStart(2, '0')}${qg.toString(16).padStart(2, '0')}${qb.toString(16).padStart(2, '0')}`;
-}
+} }
 // Generate palette-aware gradient with memory constraints
 export function generateConstrainedGradient(colors: string[], memoryKB: number, angle = 45): string {
   // Reduce colors based on memory constraints
   const maxStops = Math.min(colors.length, Math.floor(memoryKB / 8));
   const selectedColors = colors.slice(0, maxStops);
   return `linear-gradient(${angle}deg, ${selectedColors.join(', ')})`;
-}
+} }
 // Export utility for current palette
 export function getCurrentPalette(): ConsolePalette {
   if (typeof localStorage === 'undefined') return CONSOLE_PALETTES.legal;
   const stored = localStorage.getItem('console-palette') as ConsolePaletteName;
   return CONSOLE_PALETTES[stored] || CONSOLE_PALETTES.legal;
-}
+} }
 // Get all available palette names
 export function getPaletteNames(): ConsolePaletteName[] {
   return Object.keys(CONSOLE_PALETTES) as ConsolePaletteName[];
-}
+} }
 // Get palette by name
 export function getPalette(name: ConsolePaletteName): ConsolePalette {
   return CONSOLE_PALETTES[name];
-}
+} }
 // Create custom theme CSS from palette
 export function createThemeCSS(paletteName: ConsolePaletteName): string {
   const palette = CONSOLE_PALETTES[paletteName];
   return `
-/* ${palette.name} - ${palette.era} Theme */
-:root.theme-${paletteName} {
+/* ${palette.name} }- ${palette.era} }Theme */
+:root.theme-${paletteName} }{
 ${Object.entries(palette.cssVariables)
   .map(([key, value]) => `  ${key}: ${value}`)
-  .join('\n')}
+  .join('\n')} }
   /* Generic console variables */
-  --console-primary: ${palette.colors.primary}
-  --console-secondary: ${palette.colors.secondary}
-  --console-tertiary: ${palette.colors.tertiary}
-  --console-success: ${palette.colors.success}
-  --console-warning: ${palette.colors.warning}
-  --console-error: ${palette.colors.error}
-  --console-bg: ${palette.colors.background}
-  --console-fg: ${palette.colors.foreground}
-  --console-evidence: ${palette.colors.evidence}
-  --console-classification: ${palette.colors.classification}
-  --console-confidence: ${palette.colors.confidence}
-  --console-priority: ${palette.colors.priority}
+  --console-primary: ${palette.colors.primary} }
+  --console-secondary: ${palette.colors.secondary} }
+  --console-tertiary: ${palette.colors.tertiary} }
+  --console-success: ${palette.colors.success} }
+  --console-warning: ${palette.colors.warning} }
+  --console-error: ${palette.colors.error} }
+  --console-bg: ${palette.colors.background} }
+  --console-fg: ${palette.colors.foreground} }
+  --console-evidence: ${palette.colors.evidence} }
+  --console-classification: ${palette.colors.classification} }
+  --console-confidence: ${palette.colors.confidence} }
+  --console-priority: ${palette.colors.priority} }
   /* Gradients */
-  --console-gradient-main: ${palette.gradients.main}
-  --console-gradient-modal: ${palette.gradients.modal}
-  --console-gradient-card: ${palette.gradients.card}
-  --console-gradient-evidence: ${palette.gradients.evidence}
-  --console-gradient-priority: ${palette.gradients.priority}
+  --console-gradient-main: ${palette.gradients.main} }
+  --console-gradient-modal: ${palette.gradients.modal} }
+  --console-gradient-card: ${palette.gradients.card} }
+  --console-gradient-evidence: ${palette.gradients.evidence} }
+  --console-gradient-priority: ${palette.gradients.priority} }
   /* Accent colors */
-${palette.colors.accent.map((color, index) => `  --console-accent-${index}: ${color}`).join('\n')}
-}
-`;' }'`
+${palette.colors.accent.map((color, index) => `  --console-accent-${index}: ${color}`).join('\n')} }
+} }
+`;' } }`
+

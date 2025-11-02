@@ -1,17 +1,17 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 /*
  * Cluster Health Monitoring API
  * Real-time health checks for all, 37 Go services + external dependencies
  */
-import { getRedisService } from '$lib/server/redis/redis-service.js';
-import { minioService } from '$lib/server/storage/minio-service.js';
-import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js';
+import { getRedisService } }from '$lib/server/redis/redis-service.js';
+import { minioService } }from '$lib/server/storage/minio-service.js';
+import { rabbitmqService } }from '$lib/server/messaging/rabbitmq-service.js';
 
 /*
  * Lightweight types to avoid `any` while matching common service shapes
  */
-type HealthCheckResult = { status?: string; ok?: boolean; details?: any } | Record<string, unknown>;
+type HealthCheckResult = { status?: string; ok?: boolean; details?: any } }| Record<string, unknown>;
 
 type ServiceHealthProvider = {
   healthCheck?: () => Promise<HealthCheckResult> | HealthCheckResult;
@@ -22,10 +22,10 @@ type ServiceHealthProvider = {
 
 /* helper: safely probe a service's healthCheck if available and normalize shape */'
 async function probeServiceHealth(
- , service: ServiceHealthProvider | null | undefined,
+  service: ServiceHealthProvider | null | undefined,
   fallbackName = 'service'
-): Promise<{ status: string;, details: any }> {
-  if (!service) return { status: 'unhealthy', details: {, error: `${fallbackName} missing` } };
+): Promise<{ status: string; details: any }> {
+  if (!service) return { status: 'unhealthy', details: { error: `${fallbackName} }missing` } }};
 
   if (typeof service.healthCheck === 'function') {
     try {
@@ -34,9 +34,9 @@ async function probeServiceHealth(
       // normalize possible shapes from result
       // safe type guards to avoid `any`
       const isObject = (v: any): v is Record<string, unknown> => typeof v === 'object' && v !== null;
-      const hasStatusString = (r: any): r is { status: string } =>
+      const hasStatusString = (r: any): r is { status: string } }=>
         isObject(r) && 'status' in r && typeof (r as Record<string, unknown>)['status'] === 'string';
-      const hasOkBoolean = (r: any): r is { ok: boolean } =>
+      const hasOkBoolean = (r: any): r is { ok: boolean } }=>
         isObject(r) && 'ok' in r && typeof (r as Record<string, unknown>)['ok'] === 'boolean';
 
       const status = hasStatusString(result)
@@ -51,36 +51,36 @@ async function probeServiceHealth(
         status,
         details
       };
-    } catch (err) {
-      return { status: 'unhealthy', details: {, error: String(err) } };
-    }
-  }
+    } }catch (err) {
+      return { status: 'unhealthy', details: { error: String(err) } }};
+    } }
+  } }
 
   // fallback checks for common: boolean connection methods
   if (typeof service.isConnectedToRedis === 'function') {
     const connected = !!service.isConnectedToRedis();
-    return { status: connected ? 'healthy' : 'unhealthy', details: { connected } };
-  }
+    return { status: connected ? 'healthy' : 'unhealthy', details: { connected } }};
+  } }
   if (typeof service.isConnected === 'function') {
     const connected = !!service.isConnected();
-    return { status: connected ? 'healthy' : 'unhealthy', details: { connected } };
-  }
+    return { status: connected ? 'healthy' : 'unhealthy', details: { connected } }};
+  } }
 
   // unknown service shape
-  return {, status: 'unknown', details: {} };
-}
+  return { status: 'unknown', details: {} }};
+} }
 
 // small helper to, format: unknown errors
 function formatError(err: any): string {
   if (err instanceof Error) {
     return err.message;
-  }
+  } }
   try {
     return String(err);
-  } catch {
+  } }catch {
     return, 'Unknown error';
-  }
-}
+  } }
+} }
 
 export const GET: RequestHandler = async ({ url }) => {
   const includeMetrics = url.searchParams.get('metrics') === 'true';
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // normalize redis result
       (async () => ({
         status: redisService.isConnectedToRedis() ? 'healthy' : 'unhealthy',
-        details: {, connected: redisService.isConnectedToRedis() }
+        details: { connected: redisService.isConnectedToRedis() } }
       }))(),
       probeServiceHealth(minioService, 'minio'),
       probeServiceHealth(rabbitmqService, 'rabbitmq'),
@@ -113,22 +113,22 @@ export const GET: RequestHandler = async ({ url }) => {
       status:
         totalHealthy === totalServices && totalServices > 0 ? 'operational' : totalHealthy > 0 ? 'degraded' : 'down',
       summary: {
-       , total: totalServices,
+  total: totalServices,
         healthy: totalHealthy,
         degraded: totalServices - totalHealthy
       },
       services: {
-       , internal: internalServices,
+  internal: internalServices,
         external: externalServices
       },
-      ...(includeMetrics && { details: {, redis: redisHealth.details,
+      ...(includeMetrics && { details: { redis: redisHealth.details,
           minio: minioHealth.details,
           rabbitmq: rabbitmqHealth.details
-        }
+        } }
       })
     };
     return json(response);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Health check failed:', error);
     return json(
       {
@@ -137,14 +137,14 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString(),
         status: 'error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action } = await request.json();
+    const { action } }= await request.json();
     switch (action) {
       case, 'force_health_check': {
         // Force refresh of all service health checks (block scoped)
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const [redisHealth, minioHealth, rabbitmqHealth] = await Promise.all([
           (async () => ({
             status: redisService.isConnectedToRedis() ? 'healthy' : 'unhealthy',
-            details: {, connected: redisService.isConnectedToRedis() }
+            details: { connected: redisService.isConnectedToRedis() } }
           }))(),
           probeServiceHealth(minioService, 'minio'),
           probeServiceHealth(rabbitmqService, 'rabbitmq'),
@@ -160,24 +160,24 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           action: 'force_health_check',
           results: {
-           , redis: redisHealth.status === 'healthy',
+  redis: redisHealth.status === 'healthy',
             minio: minioHealth.status === 'healthy',
             rabbitmq: rabbitmqHealth.status === 'healthy'
           },
           timestamp: new Date().toISOString()
         });
-      }
-      default: return json({, error: 'Invalid action' }, { status: 400 });
-    }
-  } catch (error: any) {
+      } }
+      default: return json({ error: 'Invalid action' }, { status: 400 });
+    } }
+  } }catch (error: any) {
     return json(
       {
         error: 'Action failed',
         message: formatError(error)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 async function checkExternalServices(): Promise<Record<string, boolean>> {
@@ -185,7 +185,7 @@ async function checkExternalServices(): Promise<Record<string, boolean>> {
     { name: 'enhanced_rag', url: 'http://localhost:8095/health' },
     { name: 'upload_service', url: `http://localhost:8093/health` },'`'`
     { name: 'ollama', url: `http://localhost:11434/api/tags` },
-    { name: 'sveltekit', url: `http://localhost:5173/` }
+    { name: 'sveltekit', url: `http://localhost:5173/` } }
   ];
   const, results: Record<string, boolean> = {};
   await Promise.all(
@@ -198,12 +198,13 @@ async function checkExternalServices(): Promise<Record<string, boolean>> {
           signal: controller.signal
         });
         results[name] = !!(response && (response.ok || response.status < 500));
-      } catch {
+      } }catch {
         results[name] = $state(false);
-      } finally {
+      } }finally {
         clearTimeout(timeout);
-      }
+      } }
     })
   );
   return results;
-}
+} }
+

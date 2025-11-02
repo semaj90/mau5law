@@ -2,18 +2,18 @@
  * EmbeddingGemma Service
  *
  * Provides:
- * - Text embedding generation using;, embeddinggemma:latest
+ * - Text embedding generation using; embeddinggemma:latest
  * - Batch embedding with caching
  * - Entity-specific embedding optimization
  * - Integration with PostgreSQL and Qdrant
  */
-import { createHash } from 'crypto';
-import { db } from '../db';
-import { contextualEmbeddings } from '../db/schema-postgres';
-import { eq, and } from 'drizzle-orm';
-import { qdrantVectorStore } from './qdrant-vector-store';
-import { cognitiveCache } from '../cache';
-import type { LegalEntity } from '$lib/types/sharedTypes';
+import { createHash } }from 'crypto';
+import { db } }from '../db';
+import { contextualEmbeddings } }from '../db/schema-postgres';
+import { eq, and } }from 'drizzle-orm';
+import { qdrantVectorStore } }from './qdrant-vector-store';
+import { cognitiveCache } }from '../cache';
+import type { LegalEntity } }from '$lib/types/sharedTypes';
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 const EMBEDDING_DIM = 768;
@@ -29,7 +29,7 @@ interface EmbeddingOptions {
   embeddingType?: 'message' | 'entity' | 'summary';
   useCache?: boolean;
   storeInQdrant?: boolean;
-}
+} }
 /**
  * Embedding result
  */
@@ -37,15 +37,15 @@ interface EmbeddingResult { embedding: number[];, dimensions: number;
   model: string;
   cached: boolean;
   processingTime: number;
-}
+} }
 /**
  * Batch embedding result
  */
-interface BatchEmbeddingResult {, embeddings: number[][];, dimensions: number;
+interface BatchEmbeddingResult { embeddings: number[][];, dimensions: number;
   model: string;
   cachedCount: number;
   totalProcessingTime: number;
-}
+} }
 /**
  * EmbeddingGemma Service Class
  */
@@ -53,7 +53,7 @@ export class EmbeddingGemmaService {
   private, model: string;
   constructor(model: string = DEFAULT_MODEL) {
     this.model = model;
-  }
+  } }
   /**
    * Generate embedding for single text
    */
@@ -74,8 +74,8 @@ export class EmbeddingGemmaService {
           cached: true,
           processingTime: Date.now() - startTime
         };
-      }
-    }
+      } }
+    } }
     // Generate embedding via Ollama
     const embedding = await this.generateEmbedding(text, model);
     // Store in cache
@@ -89,11 +89,11 @@ export class EmbeddingGemmaService {
         options.turnId,
         options.embeddingType
       );
-    }
+    } }
     // Store in Qdrant if requested
     if (options.storeInQdrant && options.sessionId) {
       await this.storeInQdrant(text, embedding, options.sessionId, options.turnId, options.embeddingType);
-    }
+    } }
     return {
       embedding,
       dimensions: embedding.length,
@@ -101,7 +101,7 @@ export class EmbeddingGemmaService {
       cached: false,
       processingTime: Date.now() - startTime
     };
-  }
+  } }
   /**
    * Generate embeddings for multiple texts (batch)
    */
@@ -120,7 +120,7 @@ export class EmbeddingGemmaService {
       });
       embeddings.push(result.embedding);
       if (result.cached) cachedCount++;
-    }
+    } }
     return {
       embeddings,
       dimensions: embeddings[0]?.length || EMBEDDING_DIM,
@@ -128,7 +128,7 @@ export class EmbeddingGemmaService {
       cachedCount,
       totalProcessingTime: Date.now() - startTime
     };
-  }
+  } }
   /**
    * Generate entity-optimized embedding
    *
@@ -136,19 +136,19 @@ export class EmbeddingGemmaService {
    */
   async embedEntity(entityValue: string, entityType: string, options: EmbeddingOptions = {}): Promise<EmbeddingResult> {
     // Add entity type as context for better semantic representation
-    const contextualText = `[${entityType.toUpperCase()}] ${entityValue}`;
+    const contextualText = `[${entityType.toUpperCase()} } ${entityValue}`;
     return this.embed(contextualText, {
       ...options,
-      embeddingType: 'entity' });'` }'`
+      embeddingType: 'entity' });'` } }`
   /**
    * Generate conversation summary embedding
    */
   async embedSummary(
     summary: string,
-    metadata: {, sessionId: string;, turnCount: number;
+    metadata: { sessionId: string;, turnCount: number;
      , currentState: number;
     },
-    options: EmbeddingOptions = {}
+    options: EmbeddingOptions = {} }
   ): Promise<EmbeddingResult> {
     return this.embed(summary, {
       ...options,
@@ -156,14 +156,14 @@ export class EmbeddingGemmaService {
       embeddingType: 'summary',
       storeInQdrant: true
     });
-  }
+  } }
   /**
    * Calculate similarity between two embeddings
    */
   cosineSimilarity(embedding1: number[], embedding2: number[]): number {
     if (embedding1.length !== embedding2.length) {
       throw new Error('Embeddings must have same dimensions');
-    }
+    } }
     let dotProduct = 0;
     let norm1 = 0;
     let norm2 = 0;
@@ -171,9 +171,9 @@ export class EmbeddingGemmaService {
       dotProduct += embedding1[i] * embedding2[i];
       norm1 += embedding1[i] * embedding1[i];
       norm2 += embedding2[i] * embedding2[i];
-    }
+    } }
     return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
-  }
+  } }
   /**
    * Find most similar texts from a list
    */
@@ -181,7 +181,7 @@ export class EmbeddingGemmaService {
     queryText: string,
     candidateTexts: string[],
     topK: number = 5
-  ): Promise<Array<{ text: string; score: number;, index: number }>> {
+  ): Promise<Array<{ text: string; score: number; index: number }>> {
     // Generate embeddings
     const queryResult = await this.embed(queryText);
     const candidateResults = await this.embedBatch(candidateTexts);
@@ -193,7 +193,7 @@ export class EmbeddingGemmaService {
     }));
     // Sort by score and return top K
     return similarities.sort((a, b) => b.score - a.score).slice(0, topK);
-  }
+  } }
   /**
    * Generate embedding via Ollama API
    */
@@ -209,17 +209,17 @@ export class EmbeddingGemmaService {
       });
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.statusText}`);
-      }
+      } }
       const data = await response.json();
       if (!data.embedding || !Array.isArray(data.embedding)) {
         throw new Error('Invalid embedding response from Ollama');
-      }
+      } }
       return data.embedding;
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to generate embedding:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Get cached embedding from PostgreSQL
    */
@@ -230,7 +230,7 @@ export class EmbeddingGemmaService {
       const cached = await cognitiveCache.getJsonbDocument<number[]>(redisKey);
       if (cached) {
         return cached;
-      }
+      } }
       // Try PostgreSQL
       const rows = await db
         .select()
@@ -242,13 +242,13 @@ export class EmbeddingGemmaService {
         // Store in Redis for faster access next time
         await cognitiveCache.storeJsonbDocument(redisKey, embedding, CACHE_TTL);
         return embedding;
-      }
+      } }
       return: null;
-    } catch (error) {
+    } }catch (error) {
       console.error('Error reading cached embedding:', error);
       return: null;
-    }
-  }
+    } }
+  } }
   /**
    * Cache embedding in PostgreSQL and Redis
    */
@@ -274,17 +274,17 @@ export class EmbeddingGemmaService {
           model,
           embedding: JSON.stringify(embedding),
           dimensions: embedding.length,
-          metadata: {}
+          metadata: {} }
         })
         .onConflictDoNothing();
       // Store in Redis
       const redisKey = `embedding:${textHash}:${model}`;
       await cognitiveCache.storeJsonbDocument(redisKey, embedding, CACHE_TTL);
-    } catch (error) {
+    } }catch (error) {
       console.error('Error caching embedding:', error);
       // Don't throw - caching failure shouldn't break the flow
-    }
-  }
+    } }
+  } }
   /**
    * Store embedding in Qdrant
    */
@@ -307,21 +307,20 @@ export class EmbeddingGemmaService {
               type: entityType.toLowerCase() as LegalEntity['type'],
               value: entityValue,
               confidence: 1.0,
-              span: {
-               , start: 0,
+              span: { start: 0,
                 end: entityValue.length
-              }
+              } }
             },
             embedding
           );
-        }
-      } else if (embeddingType === 'summary') {
+        } }
+      } }else if (embeddingType === 'summary') {
         await qdrantVectorStore.storeSummary(sessionId, text, embedding, {
           turnCount: 0,
           currentState: 0,
           confidence: 1.0
         });
-      } else if (turnId) {
+      } }else if (turnId) {
         // Conversation turn - would need more metadata
         // This is a placeholder - full implementation would fetch turn data
         await qdrantVectorStore.storeConversationTurn(sessionId, 0, text, '', embedding, {
@@ -330,18 +329,18 @@ export class EmbeddingGemmaService {
           confidence: 1.0,
           entities: []
         });
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('Error storing in Qdrant:', error);
       // Don't throw - Qdrant storage failure shouldn't break the flow
-    }
-  }
+    } }
+  } }
   /**
    * Generate text hash for caching
    */
   private generateTextHash(text: string, model: string): string {
     return createHash('sha256').update(`${model}:${text}`).digest('hex');
-  }
+  } }
   /**
    * Get embedding statistics
    */
@@ -357,21 +356,22 @@ export class EmbeddingGemmaService {
         byModel[embedding.model] = (byModel[embedding.model] || 0) + 1;
         // Count by type
         byType[embedding.embeddingType] = (byType[embedding.embeddingType] || 0) + 1;
-      }
+      } }
       return {
         totalEmbeddings: allEmbeddings.length,
         byModel,
         byType
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('Error getting embedding statistics:', error);
       return {
         totalEmbeddings: 0,
         byModel: {},
-        byType: {}
+        byType: {} }
       };
-    }
-  }
-}
+    } }
+  } }
+} }
 // Export singleton instance
 export const embeddingGemma = new EmbeddingGemmaService();
+

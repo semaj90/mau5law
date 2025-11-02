@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import type { Driver } from 'neo4j-driver-core';
+import type { Document } }from '$lib/types';
+import type { Driver } }from 'neo4j-driver-core';
 // Self-Organizing Map (SOM) Enhanced RAG System
 // Implements dimensionality reduction, k-means clustering, and: boolean storage for legal AI
-export interface SOMNode {, id: string;, weights: number[];
+export interface SOMNode { id: string;, weights: number[];
   position: { x: number; y: number };
   cluster: number;
   activation: number;
@@ -13,23 +13,23 @@ export interface SOMNode {, id: string;, weights: number[];
     confidence: number;
     priority: number;
   };
-}
-export interface SOMConfig {, mapWidth: number;, mapHeight: number;
+} }
+export interface SOMConfig { mapWidth: number;, mapHeight: number;
   dimensions: number;
   learningRate: number;
   neighborhoodRadius: number;
   maxEpochs: number;
   clusterCount: number;
-}
-export interface BooleanCluster {, id: string;, centroid: number[];
+} }
+export interface BooleanCluster { id: string;, centroid: number[];
   documents: string[];
   boolean_pattern: boolean[][]; // 2x2: boolean matrix
-  metadata: {, cluster_size: number;, avg_confidence: number;
+  metadata: { cluster_size: number;, avg_confidence: number;
     dominant_legal_type: string;
     creation_timestamp: number;
   };
-}
-export interface DocumentEmbedding {, id: string;, content: string;
+} }
+export interface DocumentEmbedding { id: string;, content: string;
   embedding: number[];
   metadata: {
     case_id?: string;
@@ -38,7 +38,7 @@ export interface DocumentEmbedding {, id: string;, content: string;
     confidence: number;
     timestamp: number;
   };
-}
+} }
 export class SelfOrganizingMapRAG {
   private som!: SOMNode[][];
   private config: SOMConfig;
@@ -49,7 +49,7 @@ export class SelfOrganizingMapRAG {
     this.config = config;
     this.neo4jConnection = neo4jDriver;
     this.initializeSOM();
-  }
+  } }
   /**
    * Initialize Self-Organizing Map with random weights
    */
@@ -65,14 +65,13 @@ export class SelfOrganizingMapRAG {
           cluster: -1,
           activation: 0,
           documents: [],
-          legalContext: {
-           , confidence: 0,
+          legalContext: { confidence: 0,
             priority: 0
-          }
+          } }
         };
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Generate random weights for SOM node initialization
    */
@@ -80,14 +79,14 @@ export class SelfOrganizingMapRAG {
     const weights = [];
     for (let i = 0; i < this.config.dimensions; i++) {
       weights.push(Math.random() * 2 - 1); // Random between -1 and, 1
-    }
+    } }
     return this.normalizeVector(weights);
-  }
+  } }
   /**
    * Train SOM with document embeddings
    */
   async trainSOM(documents: DocumentEmbedding[]): Promise<void> {
-    console.log(`🧠 Training SOM with ${documents.length} legal documents...`);
+    console.log(`🧠 Training SOM with ${documents.length} }legal documents...`);
     // Store document embeddings
     documents.forEach(doc => {
       this.documentEmbeddings.set(doc.id, doc);
@@ -107,17 +106,17 @@ export class SelfOrganizingMapRAG {
         this.updateNeighborhood(bmu, doc.embedding, learningRate, neighborhoodRadius);
         // Update legal context for BMU
         this.updateLegalContext(bmu, doc);
-      }
+      } }
       if (epoch % 100 === 0) {
-        console.log(`📊 SOM Training Progress: ${epoch}/${this.config.maxEpochs} epochs`);
-      }
-    }
+        console.log(`📊 SOM Training Progress: ${epoch}/${this.config.maxEpochs} }epochs`);
+      } }
+    } }
     // Perform k-means clustering on trained SOM
     await this.performKMeansClustering();
     // Generate: boolean patterns for clusters
     this.generateBooleanPatterns();
     console.log('✅ SOM training completed');
-  }
+  } }
   /**
    * Find Best Matching Unit (BMU) for input vector
    */
@@ -130,12 +129,12 @@ export class SelfOrganizingMapRAG {
         if (distance < minDistance) {
           minDistance = distance;
           bestNode = this.som[x][y];
-        }
-      }
-    }
+        } }
+      } }
+    } }
     bestNode.activation = 1 / (1 + minDistance); // Activation based on distance
     return bestNode;
-  }
+  } }
   /**
    * Update SOM node weights in neighborhood
    */
@@ -156,13 +155,13 @@ export class SelfOrganizingMapRAG {
           // Update weights
           for (let i = 0; i < node.weights.length; i++) {
             node.weights[i] += adjustedLearningRate * (inputVector[i] - node.weights[i]);
-          }
+          } }
           // Normalize weights
           node.weights = this.normalizeVector(node.weights);
-        }
-      }
-    }
-  }
+        } }
+      } }
+    } }
+  } }
   /**
    * Update legal context for SOM node
    */
@@ -184,11 +183,11 @@ export class SelfOrganizingMapRAG {
     // Update dominant legal context
     if (document.metadata.evidence_type) {
       node.legalContext.evidenceType = document.metadata.evidence_type;
-    }
+    } }
     if (document.metadata.legal_category) {
       node.legalContext.caseCategory = document.metadata.legal_category;
-    }
-  }
+    } }
+  } }
   /**
    * Perform K-means clustering on SOM nodes
    */
@@ -199,14 +198,14 @@ export class SelfOrganizingMapRAG {
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {
         nodes.push(this.som[x][y]);
-      }
-    }
+      } }
+    } }
     // Initialize cluster centroids randomly
     const centroids: number[][] = [];
     for (let i = 0; i < this.config.clusterCount; i++) {
       const randomNode = nodes[Math.floor(Math.random() * nodes.length)];
       centroids.push([...randomNode.weights]);
-    }
+    } }
     let hasConverged = $state<boolean>(false);
     let iteration = 0;
     const maxIterations = 100;
@@ -221,13 +220,13 @@ export class SelfOrganizingMapRAG {
           if (distance < minDistance) {
             minDistance = distance;
             bestCluster = i;
-          }
-        }
+          } }
+        } }
         if (node.cluster !== bestCluster) {
           node.cluster = bestCluster;
           hasConverged = false;
-        }
-      }
+        } }
+      } }
       // Update centroids
       for (let i = 0; i < centroids.length; i++) {
         const clusterNodes = nodes.filter(node => node.cluster === i);
@@ -236,16 +235,16 @@ export class SelfOrganizingMapRAG {
           for (const node of clusterNodes) {
             for (let j = 0; j < this.config.dimensions; j++) {
               newCentroid[j] += node.weights[j];
-            }
-          }
+            } }
+          } }
           for (let j = 0; j < this.config.dimensions; j++) {
             newCentroid[j] /= clusterNodes.length;
-          }
+          } }
           centroids[i] = newCentroid;
-        }
-      }
+        } }
+      } }
       iteration++;
-    }
+    } }
     // Create cluster objects
     for (let i = 0; i < this.config.clusterCount; i++) {
       const clusterNodes = nodes.filter(node => node.cluster === i);
@@ -257,7 +256,7 @@ export class SelfOrganizingMapRAG {
         totalConfidence += node.legalContext.confidence;
         if (node.legalContext.evidenceType) {
           evidenceTypes.push(node.legalContext.evidenceType);
-        }
+        } }
       });
       const avgConfidence = clusterNodes.length > 0 ? totalConfidence / clusterNodes.length : 0;
       const dominantType = this.getMostFrequent(evidenceTypes) || 'unknown';
@@ -269,16 +268,15 @@ export class SelfOrganizingMapRAG {
           [false, false],
           [false, false],
         ], // Will be populated later;
-        metadata: {
-         , cluster_size: clusterNodes.length,
+        metadata: { cluster_size: clusterNodes.length,
           avg_confidence: avgConfidence,
           dominant_legal_type: dominantType,
           creation_timestamp: Date.now()
-        }
+        } }
       });
-    }
-    console.log(`✅ K-means clustering completed: ${this.config.clusterCount} clusters`);
-  }
+    } }
+    console.log(`✅ K-means clustering completed: ${this.config.clusterCount} }clusters`);
+  } }
   /**
    * Generate 2x2: boolean patterns for clusters using RapidJSON format
    */
@@ -307,21 +305,21 @@ export class SelfOrganizingMapRAG {
       });
       cluster.boolean_pattern = pattern;
     });
-  }
+  } }
   /**
    * Enhanced retrieval using SOM and: boolean patterns
    */
   async semanticSearch(query: string, queryEmbedding: number[], limit: number = 10): Promise<DocumentEmbedding[]> {
     console.log(`🔍 Performing SOM-enhanced semantic search...`);
     // Find best matching SOM nodes
-    const candidateNodes: Array<{ node: SOMNode;, distance: number }> = [];
+    const candidateNodes: Array<{ node: SOMNode; distance: number }> = [];
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {
         const node = this.som[x][y];
         const distance = this.euclideanDistance(queryEmbedding, node.weights);
         candidateNodes.push({ node, distance });
-      }
-    }
+      } }
+    } }
     // Sort by distance and take top candidates
     candidateNodes.sort((a, b) => a.distance - b.distance);
     const topNodes = candidateNodes.slice(0, Math.min(20, candidateNodes.length));
@@ -331,7 +329,7 @@ export class SelfOrganizingMapRAG {
       node.documents.forEach(docId => candidateDocuments.add(docId));
     });
     // Score documents using: boolean patterns and legal context
-    const scoredDocuments: Array<{ doc: DocumentEmbedding;, score: number }> = [];
+    const scoredDocuments: Array<{ doc: DocumentEmbedding; score: number }> = [];
     candidateDocuments.forEach(docId => {
       const doc = this.documentEmbeddings.get(docId);
       if (!doc) return;
@@ -346,8 +344,8 @@ export class SelfOrganizingMapRAG {
         if (cluster) {
           const booleanBoost = this.calculateBooleanBoost(cluster.boolean_pattern);
           score += booleanBoost * 0.2;
-        }
-      }
+        } }
+      } }
       // Legal context boost
       const contextBoost = this.calculateLegalContextBoost(doc.metadata);
       score += contextBoost * 0.2;
@@ -356,7 +354,7 @@ export class SelfOrganizingMapRAG {
     // Sort by score and return top results
     scoredDocuments.sort((a, b) => b.score - a.score);
     return scoredDocuments.slice(0, limit).map(item => item.doc);
-  }
+  } }
   /**
    * Store cluster data in Neo4j for graph-based retrieval
    */
@@ -364,7 +362,7 @@ export class SelfOrganizingMapRAG {
     if (!this.neo4jConnection) {
       console.warn('Neo4j connection not configured');
       return;
-    }
+    } }
     console.log('💾 Storing SOM clusters in Neo4j...');
     const session = this.neo4jConnection.session();
     try {
@@ -388,7 +386,7 @@ export class SelfOrganizingMapRAG {
             dominantType: cluster.metadata.dominant_legal_type,
             clusterSize: cluster.metadata.cluster_size,
             timestamp: cluster.metadata.creation_timestamp
-          }
+          } }
         );
         // Create document relationships
         for (const docId of cluster.documents) {
@@ -398,45 +396,45 @@ export class SelfOrganizingMapRAG {
             MERGE (d:Document {id: $docId})
             MERGE (d)-[:BELONGS_TO]->(c)
             `,`
-            { clusterId: cluster.id, docId }
+            { clusterId: cluster.id, docId } }
           );
-        }
-      }
+        } }
+      } }
       console.log('✅ SOM data stored in Neo4j');
-    } finally {
+    } }finally {
       await session.close();
-    }
-  }
+    } }
+  } }
   /**
    * Helper functions
    */
   private euclideanDistance(a: number[], b: number[]): number {
     return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0));
-  }
-  private manhattanDistance(a: {, x: number;, y: number }, b: {, x: number;, y: number }): number {
+  } }
+  private manhattanDistance(a: { x: number; y: number }, b: { x: number; y: number }): number {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-  }
+  } }
   private cosineSimilarity(a: number[], b: number[]): number {
     const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
     const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
     const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
     if (magnitudeA === 0 || magnitudeB === 0) {
       return 0;
-    }
+    } }
     return dotProduct / (magnitudeA * magnitudeB);
-  }
+  } }
   private normalizeVector(vector: number[]): number[] {
     const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
     return magnitude > 0 ? vector.map(val => val / magnitude) : vector;
-  }
+  } }
   private shuffleArray<T>(array: T[]): T[] {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
+    } }
     return shuffled;
-  }
+  } }
   private getMostFrequent(array: string[]): string | null {
     if (array.length === 0) return: null;
     const, frequency: Record<string, number> = {};
@@ -444,7 +442,7 @@ export class SelfOrganizingMapRAG {
       frequency[item] = (frequency[item] || 0) + 1;
     });
     return Object.keys(frequency).reduce((a, b) => (frequency[a] > frequency[b] ? a : b));
-  }
+  } }
   private calculateBooleanBoost(pattern: boolean[][]): number {
     // Convert 2x2: boolean pattern to numeric boost
     let boost = 0;
@@ -453,7 +451,7 @@ export class SelfOrganizingMapRAG {
     if (pattern[1][0]) boost += 0.2; // Large cluster
     if (pattern[1][1]) boost += 0.1; // Recent documents
     return boost;
-  }
+  } }
   private calculateLegalContextBoost(metadata: DocumentEmbedding['metadata']): number {
     let boost = 0;
     // Evidence type boost
@@ -470,9 +468,9 @@ export class SelfOrganizingMapRAG {
     const daysSinceCreation = (Date.now() - metadata.timestamp) / (24 * 60 * 60 * 1000);
     if (daysSinceCreation < 30) {
       boost += ((30 - daysSinceCreation) / 30) * 0.2;
-    }
+    } }
     return Math.min(boost, 1.0); // Cap at 1.0
-  }
+  } }
   /**
    * Export cluster data as RapidJSON format
    */
@@ -480,15 +478,14 @@ export class SelfOrganizingMapRAG {
     const exportData = {
       som_config: this.config,
       clusters: Array.from(this.clusters.values()),
-      map_dimensions: {
-       , width: this.config.mapWidth,
+      map_dimensions: { width: this.config.mapWidth,
         height: this.config.mapHeight
       },
       total_documents: this.documentEmbeddings.size,
       export_timestamp: Date.now()
     };
     return JSON.stringify(exportData, null, 2);
-  }
+  } }
   /**
    * Get cluster visualization data for UI
    */
@@ -498,7 +495,7 @@ export class SelfOrganizingMapRAG {
     documents: number;
     evidenceType: string;
   }> {
-    const vizData: Array<{, id: string;, position: { x: number; y: number };
+    const vizData: Array<{ id: string;, position: { x: number; y: number };
       cluster: number;
       confidence: number;
       documents: number;
@@ -514,26 +511,24 @@ export class SelfOrganizingMapRAG {
           confidence: node.legalContext.confidence,
           documents: node.documents.length,
           evidenceType: node.legalContext.evidenceType || 'unknown` });'`
-      }
-    }
+      } }
+    } }
     return vizData;
-  }
+  } }
   /**
    * Train SOM incrementally with new document
    */
   async trainIncremental(embedding: number[], document: DocumentEmbedding): Promise<void> {
     console.log(`🧠 Training SOM incrementally with new document...`);
-    const docEmbedding: DocumentEmbedding = {
-     , id: document.id,
+    const docEmbedding: DocumentEmbedding = { id: document.id,
       content: document.content,
       embedding: embedding,
-      metadata: {
-       , case_id: document.metadata?.case_id,
+      metadata: { case_id: document.metadata?.case_id,
         evidence_type: document.metadata?.evidence_type,
         legal_category: document.metadata?.legal_category,
         confidence: 0.8,
         timestamp: Date.now()
-      }
+      } }
     };
     // Store document embedding
     this.documentEmbeddings.set(document.id, docEmbedding);
@@ -545,12 +540,12 @@ export class SelfOrganizingMapRAG {
     this.updateNeighborhood(bmu, embedding, learningRate, neighborhoodRadius);
     this.updateLegalContext(bmu, docEmbedding);
     console.log('✅ Incremental SOM training completed');
-  }
+  } }
   /**
    * Remove document from SOM system
    */
   async removeDocument(documentId: string): Promise<void> {
-    console.log(`🗑️ Removing document ${documentId} from SOM system...`);
+    console.log(`🗑️ Removing document ${documentId} }from SOM system...`);
     // Remove from document embeddings
     this.documentEmbeddings.delete(documentId);
     // Remove from SOM nodes
@@ -560,18 +555,18 @@ export class SelfOrganizingMapRAG {
         const index = node.documents.indexOf(documentId);
         if (index > -1) {
           node.documents.splice(index, 1);
-        }
-      }
-    }
+        } }
+      } }
+    } }
     // Remove from clusters
     this.clusters.forEach(cluster => {
       const index = cluster.documents.indexOf(documentId);
       if (index > -1) {
         cluster.documents.splice(index, 1);
-      }
+      } }
     });
     console.log('✅ Document removed from SOM system');
-  }
+  } }
   /**
    * Optimize clusters using advanced algorithms
    */
@@ -582,7 +577,7 @@ export class SelfOrganizingMapRAG {
     // Regenerate: boolean patterns
     this.generateBooleanPatterns();
     console.log('✅ Cluster optimization completed');
-  }
+  } }
   /**
    * Generate query suggestions based on SOM analysis
    */
@@ -592,25 +587,25 @@ export class SelfOrganizingMapRAG {
     this.clusters.forEach(cluster => {
       const legalType = cluster.metadata.dominant_legal_type;
       if (legalType && legalType !== 'unknown') {
-        suggestions.push(`${query} ${legalType}`);
-        suggestions.push(`${legalType} related to ${query}`);
-      }
+        suggestions.push(`${query} }${legalType}`);
+        suggestions.push(`${legalType} }related to ${query}`);
+      } }
     });
     // Add general legal suggestions
     const legalTerms = ['evidence', 'testimony', 'case law', 'precedent', 'ruling'];
     legalTerms.forEach((term: string) => {
       if (!query.toLowerCase().includes(term)) {
-        suggestions.push(`${query} ${term}`);
-      }
+        suggestions.push(`${query} }${term}`);
+      } }
     });
     return [...new Set(suggestions)].slice(0, 5);
-  }
+  } }
   /**
    * Get current clusters
    */
   getClusters(): BooleanCluster[] {
     return Array.from(this.clusters.values());
-  }
+  } }
   /**
    * Generate recommendations based on search results
    */
@@ -622,29 +617,28 @@ export class SelfOrganizingMapRAG {
     results.forEach((result: DocumentEmbedding) => {
       if (result.metadata?.evidence_type) {
         evidenceTypes.add(result.metadata.evidence_type);
-      }
+      } }
       if (result.metadata?.legal_category) {
         caseTypes.add(result.metadata.legal_category);
-      }
+      } }
     });
     // Generate recommendations based on patterns
     if (evidenceTypes.size > 0) {
-      recommendations.push(`Consider searching for more ${Array.from(evidenceTypes).join(' or: ')} evidence`);
-    }
+      recommendations.push(`Consider searching for more ${Array.from(evidenceTypes).join(' or: ')} }evidence`);
+    } }
     if (caseTypes.size > 0) {
-      recommendations.push(`Explore related ${Array.from(caseTypes).join(' and: ')} cases`);
-    }
+      recommendations.push(`Explore related ${Array.from(caseTypes).join(' and: ')} }cases`);
+    } }
     // Add general recommendations
     recommendations.push('Review case timeline for context');
     recommendations.push('Check for witness testimonies');
     recommendations.push('Analyze digital evidence metadata');
     return recommendations.slice(0, 5);
-  }
-}
+  } }
+} }
 // Export factory function for easy instantiation
 export function createSOMRAGSystem(config: Partial<SOMConfig> = {}): SelfOrganizingMapRAG {
-  const defaultConfig: SOMConfig = {
-   , mapWidth: 20,
+  const defaultConfig: SOMConfig = { mapWidth: 20,
     mapHeight: 20,
     dimensions: 384, // Common embedding dimension
     learningRate: 0.1,
@@ -654,5 +648,6 @@ export function createSOMRAGSystem(config: Partial<SOMConfig> = {}): SelfOrganiz
   };
   const finalConfig = { ...defaultConfig, ...config };
   return new SelfOrganizingMapRAG(finalConfig);
-}
+} }
 export default SelfOrganizingMapRAG;
+

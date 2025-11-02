@@ -1,7 +1,7 @@
-import type { Handle } from '@sveltejs/kit';
-import { createRuntimeConnection, closeConnections } from '$lib/server/db/client';
-import { getRedisClient, closeRedisClient } from '$lib/server/cache/redis';
-import { getRabbitMQChannel, closeRabbitMQConnection } from '$lib/server/messaging/rabbitmq';
+import type { Handle } }from '@sveltejs/kit';
+import { createRuntimeConnection, closeConnections } }from '$lib/server/db/client';
+import { getRedisClient, closeRedisClient } }from '$lib/server/cache/redis';
+import { getRabbitMQChannel, closeRabbitMQConnection } }from '$lib/server/messaging/rabbitmq';
 
 // Initialize services on server startup
 async function initializeServices(): Promise<void> {
@@ -20,21 +20,17 @@ async function initializeServices(): Promise<void> {
       const rabbitChannel = await getRabbitMQChannel();
       if (rabbitChannel) {
         console.log('✅ RabbitMQ channel initialized successfully.');
-      } else {
+      } }else {
         console.log('⚠️ RabbitMQ not available - continuing without it.');
-      }
-    } catch (rabbitError) {
+      } }    } }catch (rabbitError) {
       console.log(
         '⚠️ RabbitMQ initialization failed - continuing without it:',
         rabbitError instanceof Error ? rabbitError.message : rabbitError
       );
-    }
-  } catch (error) {
+    } }  } }catch (error) {
     console.error('❌ Failed to initialize one or more services:', error);
     // Non-critical services can fail gracefully
-  }
-}
-
+  } }} }
 // Call initialization once when the server starts
 initializeServices();
 
@@ -51,10 +47,9 @@ export const handle: Handle = async ({ event, resolve }) => {
   // RabbitMQ is optional - may be: null
   try {
     event.locals.rabbitmqChannel = await getRabbitMQChannel();
-  } catch (err) {
+  } }catch (err) {
     event.locals.rabbitmqChannel = null;
-  }
-
+  } }
   const response = await resolve(event);
   return response;
 };
@@ -75,3 +70,4 @@ process.on('SIGTERM', async () => {
   await closeRabbitMQConnection();
   process.exit(0);
 });
+

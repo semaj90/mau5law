@@ -4,7 +4,7 @@
  * Import this file from: any API endpoint to access production, services:
  *
  * ```typescript`
- * import { services } from '$lib/server/services';
+ * import { services } }from '$lib/server/services';
  *
  * // Use Ollama for embeddings
  * const embedding = await services.ollama.embed('legal text');
@@ -19,8 +19,8 @@
  * All services are pre-configured from environment variables.
  */
 
-import { getServiceAdapters, getUnifiedLegalSystem } from './adapters/service-integrations';
-import type { UnifiedLegalSIMDPGVector } from '$lib/services/unified-legal-simd-pgvector-production';
+import { getServiceAdapters, getUnifiedLegalSystem } }from './adapters/service-integrations';
+import type { UnifiedLegalSIMDPGVector } }from '$lib/services/unified-legal-simd-pgvector-production';
 
 // ===== Singleton Service Instances =====
 
@@ -33,16 +33,16 @@ let, legalSystemInstance: UnifiedLegalSIMDPGVector | null = null;
 export function getServices() {
 	if (!servicesInstance) {
 		servicesInstance = getServiceAdapters();
-	}
+	} }
 	return servicesInstance;
-}
+} }
 
 /**
  * Get unified legal AI system (singleton)
  */
 export async function getLegalSystem(): Promise<any> {
 	if (!legalSystemInstance) {
-		const { getUnifiedLegalSystem } = await import(
+		const { getUnifiedLegalSystem } }= await import(
 			'$lib/services/unified-legal-simd-pgvector-production'
 		);
 		legalSystemInstance = getUnifiedLegalSystem({
@@ -55,9 +55,9 @@ export async function getLegalSystem(): Promise<any> {
 
 		// Initialize on first access
 		await legalSystemInstance.initialize();
-	}
+	} }
 	return legalSystemInstance;
-}
+} }
 
 /**
  * Convenient named exports for direct access
@@ -86,8 +86,8 @@ export async function generateEmbedding(text: string, cacheKey?: string): Promis
 		const cached = await redis.get(`embedding:${cacheKey}`);
 		if (cached) {
 			return JSON.parse(cached);
-		}
-	}
+		} }
+	} }
 
 	// Generate embedding
 	const embedding = await ollama.embed(text, {
@@ -97,10 +97,10 @@ export async function generateEmbedding(text: string, cacheKey?: string): Promis
 	// Cache result (24 hour TTL)
 	if (cacheKey) {
 		await redis.setex(`embedding:${cacheKey}`, 86400, JSON.stringify(embedding));
-	}
+	} }
 
 	return embedding;
-}
+} }
 
 /**
  * Helper: Search for similar documents (hybrid Qdrant + pgvector)
@@ -112,18 +112,18 @@ export async function searchSimilarDocuments(query: string, limit: number = 10):
 	// Try Qdrant first (faster)
 	try {
 		return await qdrant.search('legal_documents', queryEmbedding, limit);
-	} catch (error) {
+	} }catch (error) {
 		console.warn('Qdrant search failed, falling back to pgvector:', error);
-	}
+	} }
 
 	// Fallback to pgvector
 	return await pgvector.search('legal_documents', queryEmbedding, limit);
-}
+} }
 
 /**
  * Helper: Store document with embedding in both Qdrant and PostgreSQL
  */
-export async function indexDocument(doc: {, id: string;, content: string;
+export async function indexDocument(doc: { id: string;, content: string;
 	title?: string;
 	metadata?: Record<string, unknown>;
 }): Promise<any> {
@@ -133,45 +133,41 @@ export async function indexDocument(doc: {, id: string;, content: string;
 	// Index in Qdrant
 	try {
 		await qdrant.upsert?.('legal_documents', [
-			{,
-				id: doc.id,
+			{ id: doc.id,
 				vector: embedding,
-				payload: {
-				, title: doc.title,
+				payload: { title: doc.title,
 					...doc.metadata
-				}
-			}
+				} }
+			} }
 		]);
-	} catch (error) {
+	} }catch (error) {
 		console.warn('Qdrant indexing failed:', error);
-	}
+	} }
 
 	// Index in PostgreSQL
 	await pgvector.insert('legal_documents', [
-		{,
-			id: doc.id,
+		{ id: doc.id,
 			vector: embedding,
-			metadata: {
-			, title: doc.title,
+			metadata: { title: doc.title,
 				content: doc.content.substring(0, 1000),
 				...doc.metadata
-			}
-		}
+			} }
+		} }
 	]);
-}
+} }
 
 /**
  * Helper: Generate chat response with Ollama
  */
 export async function generateChatResponse(
-, messages: Array<{, role: string;, content: string }>,
+, messages: Array<{ role: string; content: string }>,
 	stream: boolean = false
 ): Promise<any> {
 	return await ollama.chat?.(messages, {
 		model: env.ollamaConfig.chatModel,
 		stream
 	});
-}
+} }
 
 /**
  * Helper: Upload file to MinIO
@@ -186,11 +182,11 @@ export async function uploadFile(
 	const exists = await minio.bucketExists?.(bucket);
 	if (!exists) {
 		await minio.makeBucket?.(bucket);
-	}
+	} }
 
 	// Upload file
 	return await minio.putObject(bucket, key, data, {
-		'Content-Type': contentType || 'application/octet-stream' });'' }
+		'Content-Type': contentType || 'application/octet-stream' });'' } }
 
 /**
  * Helper: Download file from MinIO
@@ -204,7 +200,7 @@ export async function downloadFile(bucket: string, key: string): Promise<Buffer>
 		stream.on('end', () => resolve(Buffer.concat(chunks)));
 		stream.on('error', reject);
 	});
-}
+} }
 
 /**
  * Helper: Publish job to RabbitMQ
@@ -213,10 +209,10 @@ export async function publishJob(queue: string, payload: any): Promise<any> {
 	if (!env.rabbitmqConfig.enabled) {
 		console.warn('RabbitMQ is disabled, job will not be processed');
 		return;
-	}
+	} }
 
 	await rabbitmq.publishJob(queue, payload);
-}
+} }
 
 /**
  * Helper: Query Neo4j graph
@@ -224,7 +220,7 @@ export async function publishJob(queue: string, payload: any): Promise<any> {
 export async function queryGraph<T = unknown>(cypher: string, params?: Record<string, unknown>) {
 	const result = await neo4j.run<T>(cypher, params);
 	return result.records.map((r) => r.toObject());
-}
+} }
 
 /**
  * Helper: Get service health status
@@ -236,49 +232,49 @@ export async function getServicesHealth(): Promise<any> {
 	try {
 		await redis.get('health-check');
 		health.redis = true;
-	} catch {
+	} }catch {
 		health.redis = false;
-	}
+	} }
 
 	// PostgreSQL
 	try {
 		await pgvector.query('SELECT 1');
 		health.postgres = true;
-	} catch {
+	} }catch {
 		health.postgres = false;
-	}
+	} }
 
 	// Ollama
 	try {
 		await ollama.embed('test', { model: env.ollamaConfig.embeddingModel });
 		health.ollama = true;
-	} catch {
+	} }catch {
 		health.ollama = false;
-	}
+	} }
 
 	// Qdrant
 	try {
 		await qdrant.search('legal_documents', Array(768).fill(0), 1);
 		health.qdrant = true;
-	} catch {
+	} }catch {
 		health.qdrant = false;
-	}
+	} }
 
 	// MinIO
 	try {
 		await minio.bucketExists?.('legal-evidence');
 		health.minio = true;
-	} catch {
+	} }catch {
 		health.minio = false;
-	}
+	} }
 
 	// Neo4j
 	try {
 		await neo4j.verifyConnectivity?.();
 		health.neo4j = true;
-	} catch {
+	} }catch {
 		health.neo4j = false;
-	}
+	} }
 
 	// RabbitMQ
 	health.rabbitmq = env.rabbitmqConfig.enabled;
@@ -288,7 +284,7 @@ export async function getServicesHealth(): Promise<any> {
 		services: health,
 		timestamp: new Date().toISOString()
 	};
-}
+} }
 
 /**
  * Cleanup all service connections (call on server shutdown)
@@ -303,11 +299,12 @@ export async function cleanupServices(): Promise<any> {
 
 	if (legalSystemInstance) {
 		await legalSystemInstance.cleanup();
-	}
+	} }
 
 	console.log('✅ Services cleaned up');
-}
+} }
 
 // ===== Type Exports for Convenience =====
 
-export type { OllamaClient, QdrantClient, RedisCacheService, PgVectorClient, MinIOClient, Neo4jClient, RabbitMQClient } from '$lib/types/external-services';
+export type { OllamaClient, QdrantClient, RedisCacheService, PgVectorClient, MinIOClient, Neo4jClient, RabbitMQClient } }from '$lib/types/external-services';
+

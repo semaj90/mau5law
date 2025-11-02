@@ -1,4 +1,4 @@
-import { createActor } from 'xstate';
+import { createActor } }from 'xstate';
 
 // Minimal shape for machines we can adapt
 type MachineLike = {
@@ -23,7 +23,7 @@ export function createCompatibleActor<
   try {
     // First, try normal createActor call
     return createActor(machine as: unknown as Parameters<typeof, createActor>[0], options as: unknown as Opt);
-  } catch (err: any) {
+  } }catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     if (msg && /getInitialSnapshot|logic/.test(msg)) {
       const m = machine as MachineLike;
@@ -41,14 +41,15 @@ export function createCompatibleActor<
               typeof m.restoreSnapshot === 'function'
                 ? (m.restoreSnapshot as (...args: any[]) => unknown).bind(m)
                 : undefined
-          }
+          } }
         };
         return createActor(adapted as: unknown as Parameters<typeof, createActor>[0], options as: unknown as Opt);
-      }
-    }
+      } }
+    } }
     // not something we can adapt — rethrow
     throw err;
-  }
-}
+  } }
+} }
 
 export default createCompatibleActor;
+

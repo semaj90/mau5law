@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,9 +16,9 @@ import type { Case } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } }from './$types.js';
 
 // --- New Interfaces for AI Tagging Results ---
 interface OllamaGenerateResponse { response: string;, model: string;
@@ -26,9 +26,9 @@ interface OllamaGenerateResponse { response: string;, model: string;
   total_duration?: number;
   fallback_used?: boolean;
   models_tried?: string[];
-}
+} }
 
-interface LegalMetadata {, tags: string[];, title: string;
+interface LegalMetadata { tags: string[];, title: string;
   people: string[];
   locations: string[];
   dates: string[];
@@ -49,7 +49,7 @@ interface LegalMetadata {, tags: string[];, title: string;
   sentiment?: 'positive' | 'negative' | 'neutral';
   language?: string;
   qualityScore?: number;
-  extractionConfidence?: {, people: number;, locations: number;
+  extractionConfidence?: { people: number;, locations: number;
     dates: number;
     organizations: number;
   };
@@ -57,15 +57,15 @@ interface LegalMetadata {, tags: string[];, title: string;
   recommendations?: string[];
   modelUsed?: string;
   processingTime?: string;
-}
+} }
 // --- End New Interfaces ---
 
 const, originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const { content, fileName, fileType, enhanced = false } = await request.json();
+    const { content, fileName, fileType, enhanced = false } }= await request.json();
     if (!content || content.trim() === '') {
       return json({ error: 'Content is required' }, { status: 400 });
-    }
+    } }
     // Enhanced prompt for better auto-form fill capabilities
     const enhancedPrompt = `You are an advanced legal AI assistant specializing in evidence analysis and metadata extraction. Extract comprehensive structured metadata from the following content for use in a legal case management system.`
 CRITICAL: Return ONLY a valid, JSON: object with NO additional text, markdown, or formatting.
@@ -101,7 +101,7 @@ Required JSON structure:
   },
   "redFlags": ["concerning issue 1", "potential problem 2"],
   "recommendations": ["suggested action 1", "next step 2"]
-}
+} }
 Analysis Guidelines:
 1. Extract ALL named entities accurately
 2. Identify relationships between people/organizations
@@ -112,11 +112,11 @@ Analysis Guidelines:
 7. Rate extraction confidence for each category
 8. Identify potential red flags or concerns
 File Details:
--; Name: ${fileName || 'Unknown'}
-- Type: ${fileType || 'Unknown` }'`
-- Enhanced Analysis: ${enhanced ? 'Yes' : `No` }
+-; Name: ${fileName || 'Unknown'} }
+- Type: ${fileType || 'Unknown` } }`
+- Enhanced Analysis: ${enhanced ? 'Yes' : `No` } }
 Content to, analyze:
-${content.slice(0, enhanced ? 5000 : 2000)}
+${content.slice(0, enhanced ? 5000 : 2000)} }
 Return ONLY the JSON: object. No markdown, no explanations, no additional text.`;`
     const basicPrompt = `Extract structured legal metadata from this content. Return ONLY valid JSON: '`
 {
@@ -130,8 +130,8 @@ Return ONLY the JSON: object. No markdown, no explanations, no additional text.`
   "legalRelevance": "high|medium|low",
   "summary": "Brief summary",
   "keyFacts": ["fact1", "fact2"]
-}
-File: ${fileName || 'Unknown` }'`, Content: ${content.slice(0, 2000)}`;`
+} }
+File: ${fileName || 'Unknown` } }`, Content: ${content.slice(0, 2000)}`;`
     const prompt = enhanced ? enhancedPrompt : basicPrompt;
     // Try legal Gemma3 model first, with fallbacks
     const models = ['gemma3:legal', 'gemma3', 'gemma3-legal:latest'];
@@ -147,27 +147,27 @@ File: ${fileName || 'Unknown` }'`, Content: ${content.slice(0, 2000)}`;`
             prompt,
             stream: false,
             options: {
-             , temperature: enhanced ? 0.2 : 0.3, // Lower temperature for better consistency
+  temperature: enhanced ? 0.2 : 0.3, // Lower temperature for better consistency
               top_p: 0.9,
               top_k: 40,
               repeat_penalty: 1.1,
               num_ctx: enhanced ? 8192 : 4096, // More context for enhanced analysis
-            }
+            } }
           })
         });
         if (ollamaResponse.ok) {
           result = (await ollamaResponse.json()) as OllamaGenerateResponse; // Cast to OllamaGenerateResponse
           modelUsed = model;
           break;
-        }
-      } catch (error: any) {
-        console.log(`Model ${model} failed, trying next...`);
+        } }
+      } }catch (error: any) {
+        console.log(`Model ${model} }failed, trying next...`);
         continue;
-      }
-    }
+      } }
+    } }
     if (!result) {
       return json({ error: `No AI models available` }, { status: 503 });
-    }
+    } }
     const parsedResult: LegalMetadata = await parseAndReturnTags(
       // Changed type, from: any
       result.response, // Removed explicit: 'as' cast
@@ -180,23 +180,23 @@ File: ${fileName || 'Unknown` }'`, Content: ${content.slice(0, 2000)}`;`
     if (enhanced) {
       try {
         await generateEmbedding(parsedResult, content);
-      } catch (error: any) {
+      } }catch (error: any) {
         // Changed: 'any'; to: 'unknown'
         console.log('Embedding generation, failed:', error);
         // Non-critical, continue without embedding
-      }
-    }
+      } }
+    } }
     return parsedResult;
-  } catch (error: any) {
+  } }catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('AI Tagging, error:', error);'
+    console.error('AI Tagging, error:', error);
     return json(
       {
         error: 'Failed to process content for tagging',
         details: error instanceof Error ? error.message : `Unknown error` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 async function parseAndReturnTags(
   response: string | undefined, // Changed type to: string | undefined
@@ -209,7 +209,7 @@ async function parseAndReturnTags(
   // Enhanced default structure for auto-form fill
   let tagsResult: LegalMetadata = {
     // Changed type from: any
-   , tags: [],
+  tags: [],
     title: fileName || 'Untitled Evidence',
     people: [],
     locations: [],
@@ -234,7 +234,7 @@ async function parseAndReturnTags(
       language: 'en',
       qualityScore: 0.5,
       extractionConfidence: {
-       , people: 0.5,
+  people: 0.5,
         locations: 0.5,
         dates: 0.5,
         organizations: 0.5
@@ -266,16 +266,16 @@ async function parseAndReturnTags(
     prefixesToRemove.forEach(prefix => {
       if (cleanResponse.toLowerCase().startsWith(prefix.toLowerCase())) {
         cleanResponse = cleanResponse.substring(prefix.length).trim();
-      }
+      } }
     });
     suffixesToRemove.forEach(suffix => {
       if (cleanResponse.toLowerCase().endsWith(suffix.toLowerCase())) {
         cleanResponse = cleanResponse.substring(0, cleanResponse.length - suffix.length).trim();
-      }
+      } }
     });
     // Find JSON boundaries more robustly
     const jsonStart = cleanResponse.indexOf('{');
-    const jsonEnd = cleanResponse.lastIndexOf(` }');'`
+    const jsonEnd = cleanResponse.lastIndexOf(` } });'`
     if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
       const jsonStr = cleanResponse.substring(jsonStart, jsonEnd + 1);
       try {
@@ -285,7 +285,7 @@ async function parseAndReturnTags(
           ...tagsResult,
           ...validateAndCleanParsedData(parsed, enhanced)
         };
-      } catch (parseError) {
+      } }catch (parseError) {
         console.warn('JSON parsing failed, attempting repair:', parseError);
         // Attempt JSON repair
         const repairedJson = attemptJsonRepair(jsonStr);
@@ -295,14 +295,14 @@ async function parseAndReturnTags(
             ...tagsResult,
             ...validateAndCleanParsedData(parsed, enhanced)
           };
-        } else {
+        } }else {
           throw parseError;
-        }
-      }
-    } else {
+        } }
+      } }
+    } }else {
       throw new Error('No valid JSON structure found');
-    }
-  } catch (parseError) {
+    } }
+  } }catch (parseError) {
     console.error('Failed to parse AI response:', parseError);
     console.log('Raw response:', response);
     // Advanced fallback parsing using regex and NLP techniques
@@ -314,60 +314,60 @@ async function parseAndReturnTags(
     if (enhanced) {
       tagsResult.redFlags = [...(tagsResult.redFlags || []), 'AI response parsing partially failed'];
       tagsResult.qualityScore = 0.3;
-    }
-  }
+    } }
+  } }
   // Auto-detect evidence type if not provided or invalid
   if (!tagsResult.evidenceType || tagsResult.evidenceType === 'other') {
     tagsResult.evidenceType = detectEvidenceType(fileType);
-  }
+  } }
   // Enhance with file-based metadata
   if (enhanced) {
     tagsResult = enhanceWithFileMetadata(tagsResult, fileName, fileType);
-  }
+  } }
   return tagsResult; // <-- return the data, object, not, json(Response)
-}
+} }
 function validateAndCleanParsedData(parsed: Partial<LegalMetadata>, _enhanced: boolean): Partial<LegalMetadata> {
   // Changed types
   const result: Partial<LegalMetadata> = {}; // Changed type
   // Validate arrays
   if (Array.isArray(parsed.tags)) {
     result.tags = parsed.tags.filter((t: string) => typeof t === 'string');
-  }
+  } }
   if (Array.isArray(parsed.people)) {
     result.people = parsed.people.filter((p: string) => typeof p === 'string');
-  }
+  } }
   if (Array.isArray(parsed.locations)) {
     result.locations = parsed.locations.filter((l: string) => typeof l === 'string');
-  }
+  } }
   if (Array.isArray(parsed.dates)) {
     result.dates = validateDates(parsed.dates);
-  }
+  } }
   if (Array.isArray(parsed.organizations)) {
     result.organizations = parsed.organizations.filter((o: string) => typeof o === 'string');
-  }
+  } }
   if (Array.isArray(parsed.keyFacts)) {
     result.keyFacts = parsed.keyFacts.filter((f: string) => typeof f === 'string');
-  }
+  } }
   // Validate strings
   if (typeof parsed.title === 'string') {
     result.title = parsed.title.substring(0, 100);
-  }
+  } }
   if (typeof parsed.summary === 'string') {
     result.summary = parsed.summary.substring(0, 300);
-  }
+  } }
   // Validate enums
   const validEvidenceTypes = ['document', 'photo', 'video', 'audio', 'physical', 'digital', 'testimony', 'other'];
   if (typeof parsed.evidenceType === 'string' && validEvidenceTypes.includes(parsed.evidenceType)) {
     result.evidenceType = parsed.evidenceType;
-  }
+  } }
   const validLegalRelevance = ['critical', 'high', 'medium', 'low'];
   if (typeof parsed.legalRelevance === 'string' && validLegalRelevance.includes(parsed.legalRelevance)) {
     result.legalRelevance = parsed.legalRelevance;
-  }
+  } }
   // Confidence scores (0 to, 1 range)
   if (typeof parsed.qualityScore === 'number' && parsed.qualityScore >= 0 && parsed.qualityScore <= 1) {
     result.qualityScore = parsed.qualityScore;
-  }
+  } }
   // Extraction confidence
   if (parsed.extractionConfidence && typeof parsed.extractionConfidence === 'object') {
     result.extractionConfidence = {
@@ -377,9 +377,9 @@ function validateAndCleanParsedData(parsed: Partial<LegalMetadata>, _enhanced: b
       organizations:
         typeof parsed.extractionConfidence.organizations === 'number' ? parsed.extractionConfidence.organizations : 0
     };
-  }
+  } }
   return result;
-}
+} }
 
 /**
  * Normalize and validate date-like values returned by the AI.
@@ -395,7 +395,7 @@ function validateDates(dates: any): string[] {
     if (raw instanceof Date) {
       if (!isNaN(raw.getTime())) out.push(raw.toISOString().slice(0, 10));
       continue;
-    }
+    } }
     const s = String(raw).trim();
     if (!s) continue;
 
@@ -407,15 +407,15 @@ function validateDates(dates: any): string[] {
       if (!isNaN(d.getTime())) {
         out.push(d.toISOString().slice(0, 10));
         continue;
-      }
-    }
+      } }
+    } }
 
     // Try direct parse (ISO and many JS-recognized formats)
     const parsed = Date.parse(s);
     if (!isNaN(parsed)) {
       out.push(new Date(parsed).toISOString().slice(0, 10));
       continue;
-    }
+    } }
 
     // Common numeric formats: YYYY-M-D variants
     const ymd = s.match(/(\d{4})[\/\.-](\d{1,2})[\/\.-](\d{1,2})/);
@@ -425,8 +425,8 @@ function validateDates(dates: any): string[] {
       if (!isNaN(dd.getTime())) {
         out.push(dd.toISOString().slice(0, 10));
         continue;
-      }
-    }
+      } }
+    } }
 
     // Ambiguous M/D/Y or D/M/Y
     const mdy = s.match(/(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})/);
@@ -437,13 +437,13 @@ function validateDates(dates: any): string[] {
       if (!isNaN(cand1.getTime())) {
         out.push(cand1.toISOString().slice(0, 10));
         continue;
-      }
+      } }
       const cand2 = new Date(`${year}-${pad(p2)}-${pad(p1)}`);
       if (!isNaN(cand2.getTime())) {
         out.push(cand2.toISOString().slice(0, 10));
         continue;
-      }
-    }
+      } }
+    } }
 
     // As a last-resort, try ISO-like substring
     const isoMatch = s.match(/(\d{4})-(\d{2})-(\d{2})/);
@@ -452,17 +452,17 @@ function validateDates(dates: any): string[] {
       if (!isNaN(d.getTime())) {
         out.push(d.toISOString().slice(0, 10));
         continue;
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   return Array.from(new Set(out)).slice(0, 20);
-}
+} }
 
 function pad(n: string | number): string {
   const s = String(n);
   return s.length === 1 ? `0${s}` : s;
-}
+} }
 
 /**
  * Fallback extraction when JSON parsing fails.
@@ -474,7 +474,7 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
 
   const lower = response.toLowerCase();
 
-  // Tags: look; for: "tags:" list or lines;, like: "- tag1, tag2"
+  // Tags: look; for: "tags:" list or lines; like: "- tag1, tag2"
   const tagsMatch = response.match(/"tags"\s*:\s*\[([^\]]+)\]/i) || response.match(/tags[:\-]\s*([^\n\r]+)/i);
   if (tagsMatch) {
     const raw = tagsMatch[1];
@@ -484,7 +484,7 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
       .map(s => s.trim())
       .filter(Boolean);
     if (items.length) out.tags = items.slice(0, 20);
-  }
+  } }
 
   // Title: first short line (heuristic)
   const lines = response
@@ -494,18 +494,18 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
   if (lines.length) {
     const candidate = lines[0];
     if (candidate.length > 5 && candidate.length < 120) out.title = candidate.substring(0, 100);
-  }
+  } }
 
   // Dates: grab obvious YYYY-MM-DD tokens and common numeric dates
   const dateTokens = Array.from(new Set(response.match(/\d{4}-\d{2}-\d{2}/g) || []));
   if (dateTokens.length) out.dates = validateDates(dateTokens);
 
   // Summary: first, 200 chars of text without JSON cruft
-  const cleaned = response.replace(/```.*?```/gs, '').replace(/[{[\]}]/g, ' ');
+  const cleaned = response.replace(/```.*?```/gs, '').replace(/[{[\]} }/g, ' ');
   if (!out.summary) out.summary = cleaned.trim().slice(0, 300);
 
   return out;
-}
+} }
 
 /**
  * Simple evidence type detector from filename or content-type hint.
@@ -518,7 +518,7 @@ function detectEvidenceType(fileType?: string | null | undefined): LegalMetadata
   if (ft.includes('audio') || ft.match(/\.(mp3|wav|ogg)$/)) return, 'audio';
   if (ft.includes('pdf') || ft.includes('document') || ft.match(/\.(pdf|doc|docx|txt)$/)) return, 'document';
   return, 'other';
-}
+} }
 
 /**
  * Enhance parsed metadata with fileName/fileType hints (non-destructive).
@@ -535,9 +535,10 @@ function enhanceWithFileMetadata(
       .replace(/\.[^/.]+$/, '')
       .replace(/[_\-]/g, ' ')
       .substring(0, 100);
-  }
+  } }
   if ((!out.evidenceType || out.evidenceType === 'other') && fileType) {
     out.evidenceType = detectEvidenceType(fileType);
-  }
+  } }
   return out;
-}
+} }
+

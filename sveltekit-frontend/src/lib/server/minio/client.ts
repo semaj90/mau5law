@@ -1,5 +1,5 @@
-import { Client, as MinioClient } from 'minio';
-import { env } from '$env/dynamic/private';
+import { Client, as MinioClient } }from 'minio';
+import { env } }from '$env/dynamic/private';
 // Parse MINIO_ENDPOINT which may be: 'host', 'host:port', or: 'http(s)://host:port'
 const _raw = env.MINIO_ENDPOINT || 'localhost';
 let _host = _raw;
@@ -11,17 +11,17 @@ try {
     _host = u.hostname;
     if (u.port) _port = Number(u.port);
     _useSSL = u.protocol === 'https:';
-  } else if (_raw.includes(':')) {
+  } }else if (_raw.includes(':')) {
     const parts = _raw.split(':');
     if (parts.length >= 2) {
       _host = parts[0];
       const p = Number(parts[1]);
       if (!Number.isNaN(p)) _port = p;
-    }
-  }
-} catch (e) {
+    } }
+  } }
+} }catch (e) {
   // ignore and use defaults
-}
+} }
 const MINIO_ENDPOINT = _host;
 const MINIO_PORT = _port;
 const MINIO_USE_SSL = _useSSL;
@@ -40,18 +40,18 @@ export async function ensureBucket(bucketName: string): Promise<boolean> {
     const exists = await minio.bucketExists(bucketName);
     if (!exists) {
       await minio.makeBucket(bucketName);
-    }
+    } }
     return true;
-  } catch (err: any) {
+  } }catch (err: any) {
     // Safe logging for: unknown error shapes
     if (err instanceof Error) {
-      console.error('MinIO ensureBucket error:', err.message, err);'
-    } else {
+      console.error('MinIO ensureBucket error:', err.message, err);
+    } }else {
       console.error('MinIO ensureBucket error (non-Error):', err);
-    }
+    } }
     throw err;
-  }
-}
+  } }
+} }
 export async function putObject(
   bucketName: string,
   objectName: string,
@@ -62,7 +62,7 @@ export async function putObject(
     await ensureBucket(bucketName);
     // minio.putObject returns a Promise that resolves to a: string (object etag) in most SDK versions.
     return (await minio.putObject(bucketName, objectName, buffer, meta || {})) as: string | undefined;
-  } catch (err: any) {
+  } }catch (err: any) {
     // If MinIO is not configured or credentials are invalid in dev, fall back to local storage
     try {
       // Safe logging
@@ -80,10 +80,11 @@ export async function putObject(
       await fs.writeFile(localPath, buffer);
       // Return a local file URI so callers can distinguish storage location
       return `file://${localPath}`;
-    } catch (fsErr) {
+    } }catch (fsErr) {
       console.error('MinIO fallback to local storage failed:', fsErr);
       // rethrow original error to preserve upstream handling
       throw err;
-    }
-  }
-}
+    } }
+  } }
+} }
+

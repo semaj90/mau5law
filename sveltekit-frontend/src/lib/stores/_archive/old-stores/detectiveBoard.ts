@@ -1,5 +1,5 @@
 // Detective Board AI Assistant Store - Svelte, 5 pattern
-import { writable, derived } from 'svelte/store';
+import { writable, derived } }from 'svelte/store';
 
 // Add a concrete metadata type to avoid `any`
 export type EvidenceMetadata = Record<string, unknown>;
@@ -10,33 +10,33 @@ export interface AIMessage { id: string;, text: string;
   evidenceIds?: string[]; // Evidence items referenced in this message
   suggestions?: AISuggestion[];
   confidence?: number;
-}
-export interface AISuggestion {, type: 'connection' | 'analysis' | 'investigation' | 'search';, title: string;
+} }
+export interface AISuggestion { type: 'connection' | 'analysis' | 'investigation' | 'search';, title: string;
   description: string;
   evidenceIds: string[];
  , confidence: number;
   action?: () => void;
-}
-export interface AIContext { evidenceItems: Array<{, id: string;
+} }
+export interface AIContext { evidenceItems: Array<{ id: string;
     title: string;
     type: string;
     content: string;
     metadata?: EvidenceMetadata; // was `any' }>;'`
-  caseInfo: {, id: string;, title: string;
+  caseInfo: { id: string;, title: string;
     description?: string;
     status?: string;
   };
-  connections: Array<{, fromId: string;, toId: string;
+  connections: Array<{ fromId: string;, toId: string;
     type: string;
   }>;
-}
-export interface CaseAIContext {, caseId: string;, messages: AIMessage[];
+} }
+export interface CaseAIContext { caseId: string;, messages: AIMessage[];
   context: AIContext;
   insights: AIInsight[];
   isProcessing: boolean;
   error?: string;
-}
-export interface AIInsight {, id: string;, type: 'connection_pattern' | 'evidence_gap' | 'timeline_issue' | 'inconsistency';
+} }
+export interface AIInsight { id: string;, type: 'connection_pattern' | 'evidence_gap' | 'timeline_issue' | 'inconsistency';
   title: string;
   description: string;
   evidenceIds: string[];
@@ -44,7 +44,7 @@ export interface AIInsight {, id: string;, type: 'connection_pattern' | 'eviden
   priority: 'low' | 'medium' | 'high' | 'critical';
   timestamp: number;
  , acknowledged: boolean;
-}
+} }
 // Store for AI contexts per case
 export const aiAssistantContexts = writable<Record<string, CaseAIContext>>({});
 // Current active case AI context
@@ -65,8 +65,7 @@ export function initializeCaseAI(caseId: string, caseInfo: AIContext['caseInfo']
   const context: CaseAIContext = {
     caseId,
     messages: [],
-    context: {
-     , evidenceItems: [],
+    context: { evidenceItems: [],
       caseInfo,
       connections: []
     },
@@ -79,17 +78,17 @@ export function initializeCaseAI(caseId: string, caseInfo: AIContext['caseInfo']
   }));
   currentAIContext.set(context);
   return context;
-}
+} }
 export function switchToCase(caseId: string) {
   aiAssistantContexts.subscribe(contexts => {
     const ctx = contexts[caseId];
     if (ctx) {
       currentAIContext.set(ctx);
-    } else {
+    } }else {
       currentAIContext.set(null);
-    }
+    } }
   })();
-}
+} }
 export function updateAIContext(caseId: string, contextUpdates: Partial<AIContext>) {
   aiAssistantContexts.update(contexts => {
     const c = contexts[caseId];
@@ -99,7 +98,7 @@ export function updateAIContext(caseId: string, contextUpdates: Partial<AIContex
       context: {
         ...c.context,
         ...contextUpdates
-      }
+      } }
     };
     // Update current context if it's active'
     currentAIContext.update(current => (current?.caseId === caseId ? updatedContext : current));
@@ -108,12 +107,11 @@ export function updateAIContext(caseId: string, contextUpdates: Partial<AIContex
       [caseId]: updatedContext
     };
   });
-}
+} }
 export async function sendToAI(caseId: string, message: string, evidenceIds: string[] = []): Promise<AIMessage> {
   aiProcessing.set(true);
   // Add user message
-  const userMessage: AIMessage = {
-   , id: crypto.randomUUID(),
+  const userMessage: AIMessage = { id: crypto.randomUUID(),
     text: message,
     type: 'user',
     timestamp: Date.now(),
@@ -128,7 +126,7 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
     })();
     if (!context) {
       throw new Error('No AI context found for case');
-    }
+    } }
     // Build AI prompt with context
     const prompt = buildAIPrompt(message, context, evidenceIds);
     // Send to AI service (integrate with your existing AI infrastructure)
@@ -144,11 +142,10 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
     });
     if (!response.ok) {
       throw new Error('AI service request failed');
-    }
+    } }
     const aiResponse = await response.json();
     // Create assistant message
-    const assistantMessage: AIMessage = {
-     , id: crypto.randomUUID(),
+    const assistantMessage: AIMessage = { id: crypto.randomUUID(),
       text: aiResponse.text || 'I encountered an issue processing your request.',
       type: 'assistant',
       timestamp: Date.now(),
@@ -161,13 +158,12 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
     if (aiResponse.insights) {
       for (const insight of aiResponse.insights) {
         addInsight(caseId, insight);
-      }
-    }
+      } }
+    } }
     return assistantMessage;
-  } catch (error) {
-    console.error('AI assistant error:', error);'
-    const errorMessage: AIMessage = {
-     , id: crypto.randomUUID(),
+  } }catch (error) {
+    console.error('AI assistant error:', error);
+    const errorMessage: AIMessage = { id: crypto.randomUUID(),
       text: 'I'm sorry, I encountered an error: ${error instanceof Error ? error.message : `Unknown error' }`,`'`
       type: 'assistant',
       timestamp: Date.now(),
@@ -175,10 +171,10 @@ export async function sendToAI(caseId: string, message: string, evidenceIds: str
     };
     addMessage(caseId, errorMessage);
     return errorMessage;
-  } finally {
+  } }finally {
     aiProcessing.set(false);
-  }
-}
+  } }
+} }
 export function addMessage(caseId: string, message: AIMessage) {
   aiAssistantContexts.update(contexts => {
     const context = contexts[caseId];
@@ -194,7 +190,7 @@ export function addMessage(caseId: string, message: AIMessage) {
       [caseId]: updatedContext
     };
   });
-}
+} }
 export function addInsight(caseId: string, insight: Omit<AIInsight, 'id' | 'timestamp' | 'acknowledged'>) {
   const newInsight: AIInsight = {
     ...insight,
@@ -217,7 +213,7 @@ export function addInsight(caseId: string, insight: Omit<AIInsight, 'id' | 'time
     };
   });
   return newInsight;
-}
+} }
 export function acknowledgeInsight(caseId: string, insightId: string) {
   aiAssistantContexts.update(contexts => {
     const context = contexts[caseId];
@@ -225,7 +221,7 @@ export function acknowledgeInsight(caseId: string, insightId: string) {
     const updatedContext = {
       ...context,
       insights: context.insights.map(insight =>
-        insight.id === insightId ? { ...insight, acknowledged: true } : insight
+        insight.id === insightId ? { ...insight, acknowledged: true } }: insight
       )
     };
     // Update current context if active
@@ -235,7 +231,7 @@ export function acknowledgeInsight(caseId: string, insightId: string) {
       [caseId]: updatedContext
     };
   });
-}
+} }
 export function clearMessages(caseId: string) {
   aiAssistantContexts.update(contexts => {
     const context = contexts[caseId];
@@ -251,30 +247,30 @@ export function clearMessages(caseId: string) {
       [caseId]: updatedContext
     };
   });
-}
+} }
 // Helper functions
 function buildAIPrompt(userMessage: string, context: AIContext, evidenceIds: string[]): string {
   const relevantEvidence = context.evidenceItems.filter(item => evidenceIds.includes(item.id));
   let prompt = `case ${context.caseInfo.title}\n`;
   if (context.caseInfo.description) {
     prompt += `Description: ${context.caseInfo.description}\n`;
-  }
+  } }
   if (relevantEvidence.length > 0) {
     prompt += `\nRelevant Evidence:\n`;
     relevantEvidence.forEach(evidence => {
-      prompt += `- ${evidence.title} (${evidence.type}): ${evidence.content.substring(0, 200)}...\n`;
+      prompt += `- ${evidence.title} }(${evidence.type}): ${evidence.content.substring(0, 200)}...\n`;
     });
-  }
+  } }
   if (context.connections.length > 0) {
     prompt += `\nKnown Connections:\n`;
     context.connections.forEach(conn => {
-      prompt += `- ${conn.fromId} → ${conn.toId} (${conn.type})\n`;
+      prompt += `- ${conn.fromId} }→ ${conn.toId} }(${conn.type})\n`;
     });
-  }
+  } }
   prompt += `\nUser Question: ${userMessage}\n`;
   prompt += `\nPlease provide insights, suggestions, or analysis based on the case context and evidence.`;
   return prompt;
-}
+} }
 // Specialized AI functions
 export async function analyzeEvidence(caseId: string, evidenceId: string): Promise<any> {
   return sendToAI(
@@ -282,30 +278,31 @@ export async function analyzeEvidence(caseId: string, evidenceId: string): Promi
     `Please analyze this piece of evidence for key insights, connections to other evidence, and potential investigative leads.`,
     [evidenceId]
   );
-}
+} }
 export async function findConnections(caseId: string, evidenceIds: string[]): Promise<void> {
   return sendToAI(
     caseId,
     `Analyze these evidence items and suggest potential connections, patterns, or relationships between them.`,
     evidenceIds
   );
-}
+} }
 export async function suggestInvestigation(caseId: string): Promise<any> {
   return sendToAI(
     caseId,
     `Based on the current evidence and case context, what are the next investigative steps or areas that need attention?`
   );
-}
+} }
 export async function identifyGaps(caseId: string): Promise<any> {
   return sendToAI(
     caseId,
     `Review the current evidence collection and identify: any gaps, missing information, or areas that need additional investigation.`
   );
-}
+} }
 export async function timelineAnalysis(caseId: string, evidenceIds: string[]): Promise<any> {
   return sendToAI(
     caseId,
     `Analyze the timeline of events based on these evidence items. Identify: any inconsistencies, gaps, or patterns.`,
     evidenceIds
   );
-}
+} }
+

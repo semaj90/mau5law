@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Cleaned and fixed Neo4j Transformers Summarization pipeline.
  * - Valid TypeScript, fixed imports / signatures / typos.
@@ -8,7 +8,7 @@ import type { Document } from '$lib/types';
  */
 import neo4j from 'neo4j-driver';
 import * as langChainOllamaService from './langchain-ollama-llama-integration.js';
-import { vectorProxy } from './grpc-quic-vector-proxy.js';
+import { vectorProxy } }from './grpc-quic-vector-proxy.js';
 import crypto from 'crypto';
 
 // add a minimal Neo4j record shape so .get() is typed
@@ -39,13 +39,13 @@ export interface DocumentSummary { id: string;, title: string;
   confidence: number;
   processingTime: number;
   graphNodes: GraphNode[];
-}
+} }
 
-export interface LegalEntity {, id: string;, type: 'person' | 'organization' | 'case' | 'statute' | 'precedent' | 'contract';
+export interface LegalEntity { id: string;, type: 'person' | 'organization' | 'case' | 'statute' | 'precedent' | 'contract';
   name: string;
  , attributes: Record<string, unknown>;
   confidence: number;
-}
+} }
 
 export interface Relationship {
   from: string;
@@ -53,12 +53,12 @@ export interface Relationship {
   type: string;
   strength: number;
  , metadata: Record<string, unknown>;
-}
+} }
 
 export interface GraphNode { id: string;, labels: string[];
  , properties: Record<string, unknown>;
   embedding?: number[];
-}
+} }
 
 export interface SummarizationConfig {
   neo4j?: {
@@ -80,19 +80,19 @@ export interface SummarizationConfig {
     confidenceThreshold?: number;
     maxDepth?: number;
   };
-}
+} }
 
 // add runtime-friendly helper types (avoid using `any`)
 type Neo4jAuthLike = {
 	// neo4j.auth.basic(username, password) -> some auth token: object accepted by driver;
-, basic: (username: string;, password: string) => unknown;
+, basic: (username: string; password: string) => unknown;
 };
 
 type LangChainOllamaService = {
-	getStatus?: () => { initialized: boolean } | Promise<{, initialized: boolean }>;
+	getStatus?: () => { initialized: boolean } }| Promise<{ initialized: boolean }>;
 	generateEmbedding?: (text: string) => Promise<number[]>;
 	// optional RAG-like entrypoints (may vary by integration)
-	ragQuery?: (prompt: string, contexts?: string[], flag?: boolean) => Promise<{ answer?: string; confidence?: number } | undefined>;
+	ragQuery?: (prompt: string, contexts?: string[], flag?: boolean) => Promise<{ answer?: string; confidence?: number } }| undefined>;
 	runRag?: (...args: any[]) => Promise<unknown>;
 	generateCompletion?: (prompt: string, opts?: any) => Promise<unknown>;
 	// other helpers may exist; keep optional
@@ -105,25 +105,23 @@ export class Neo4jTransformersSummarization {
   private isInitialized = $state(false);
 
   constructor(config: SummarizationConfig = {}) {
-    this.config = { neo4j: {, uri: config.neo4j?.uri ?? 'bolt://localhost:7687',
+    this.config = { neo4j: { uri: config.neo4j?.uri ?? 'bolt://localhost:7687',
         username: config.neo4j?.username ?? 'neo4j',
         password: config.neo4j?.password ?? 'legal-ai-2024',
         database: config.neo4j?.database ?? 'neo4j` },'`
-      transformers: {
-       , model: config.transformers?.model ?? 'gemma3-legal:latest',
+      transformers: { model: config.transformers?.model ?? 'gemma3-legal:latest',
         maxTokens: config.transformers?.maxTokens ?? 2048,
         temperature: config.transformers?.temperature ?? 0.1,
         chunkSize: config.transformers?.chunkSize ?? 1000,
         overlapSize: config.transformers?.overlapSize ?? 200
       },
-      graph: {
-       , enableRelationshipExtraction: config.graph?.enableRelationshipExtraction ?? true,
+      graph: { enableRelationshipExtraction: config.graph?.enableRelationshipExtraction ?? true,
         enableEntityLinking: config.graph?.enableEntityLinking ?? true,
         confidenceThreshold: config.graph?.confidenceThreshold ?? 0.7,
         maxDepth: config.graph?.maxDepth ?? 3
-      }
+      } }
     };
-  }
+  } }
 
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -133,7 +131,7 @@ export class Neo4jTransformersSummarization {
       const authHelper = (neo4j as: unknown as { auth?: Neo4jAuthLike }).auth?.basic;
       if (typeof authHelper !== 'function') {
         throw new Error('Neo4j auth.basic() not available on neo4j import at runtime');
-      }
+      } }
       this.driver = (neo4j.driver(this.config.neo4j.uri, authHelper(this.config.neo4j.username, this.config.neo4j.password)) as: unknown) as Neo4jDriver;
       await this.driver.verifyConnectivity();
       this.session = this.driver.session({ database: this.config.neo4j.database }) as Neo4jSession;
@@ -141,11 +139,11 @@ export class Neo4jTransformersSummarization {
       await this.testServiceIntegrations();
       this.isInitialized = true;
       console.log('✅ Neo4j transformers pipeline initialized successfully');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Neo4j initialization failed:', error instanceof Error ? error.message : String(error));
       throw error;
-    }
-  }
+    } }
+  } }
 
   private async initializeGraphSchema(): Promise<void> {
     if (!this.session) return;
@@ -159,11 +157,11 @@ export class Neo4jTransformersSummarization {
     for (const q of schemaQueries) {
       try {
         await this.session.run(q);
-      } catch (e) {
+      } }catch (e) {
         // ignore if not supported or already present
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   private async testServiceIntegrations(): Promise<void> {
     try {
@@ -173,16 +171,16 @@ export class Neo4jTransformersSummarization {
       const vectorHealth = (await (vectorProxy.healthCheck?.() ?? {})) as Record<string, { status?: string }>;
 
       const healthyProtocols = Object.values(vectorHealth).filter(v => v?.status === 'healthy').length;
-      console.log(`  ✅ Vector Proxy: ${healthyProtocols} protocols healthy`);
-    } catch (e) {
+      console.log(`  ✅ Vector Proxy: ${healthyProtocols} }protocols healthy`);
+    } }catch (e) {
       console.warn('⚠️ Service integration test failed:', e);
-    }
-  }
+    } }
+  } }
 
   // Add a small typed accessor so TypeScript knows available optional methods.
   private getLangChainService(): LangChainOllamaService {
     return (langChainOllamaService as: unknown) as LangChainOllamaService;
-  }
+  } }
 
   // Process single document
   async processDocument(documentId: string, title: string, content: string, metadata: Record<string, unknown> = {}): Promise<DocumentSummary> {
@@ -209,36 +207,36 @@ export class Neo4jTransformersSummarization {
         processingTime,
         graphNodes
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Document processing failed:', error instanceof Error ? error.message : String(error));
       throw error;
-    }
-  }
+    } }
+  } }
 
   private async generateDocumentSummary(content: string): Promise<string> {
     try {
       const prompt = `Provide a concise legal summary focusing on key issues, parties, dates, obligations. Document: ${content.slice(0, 4000)}`;
       const resp = await this.callRag(prompt, [], true);
       return resp?.answer ?? 'Summary could not be generated';
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Summary generation failed:', error instanceof Error ? error.message : String(error));
       return, 'Summary generation failed due to processing error';
-    }
-  }
+    } }
+  } }
 
   private async extractLegalEntities(content: string): Promise<LegalEntity[]> {
     const entities: LegalEntity[] = [];
     try {
-      const prompt = `Extract legal entities as JSON array [{"type":"person|organization|case|statute|precedent|contract","name":"...","context":"..."}]. Document: ${content.slice(0, 3000)}`;
+      const prompt = `Extract legal entities as JSON array [{"type":"person|organization|case|statute|precedent|contract","name":"...","context":"..."} }. Document: ${content.slice(0, 3000)}`;
       const resp = await this.callRag(prompt, [], true);
       const raw = resp?.answer ?? '[]';
       let parsed: any[] = [];
       try {
         const maybe = JSON.parse(raw);
         if (Array.isArray(maybe)) parsed = maybe;
-      } catch {
+      } }catch {
         parsed = [];
-      }
+      } }
       for (let i = 0; i < parsed.length; i++) {
         const e = parsed[i] as Record<string, unknown> | undefined;
         const name = e && typeof e.name === 'string' ? e.name : undefined;
@@ -253,20 +251,20 @@ export class Neo4jTransformersSummarization {
           attributes: { context, source: `transformers-extraction` },'`'`
           confidence
         });
-      }
+      } }
 
       // fallback regex extraction if none found
       if (entities.length === 0) {
         entities.push(...this.extractEntitiesWithRegex(content));
-      }
+      } }
       // dedupe by lowercased name
       const unique = entities.filter((ent, idx, arr) => idx === arr.findIndex(a => a.name.toLowerCase() === ent.name.toLowerCase()));
       return unique;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Entity extraction failed:', error instanceof Error ? error.message : String(error));
       return this.extractEntitiesWithRegex(content);
-    }
-  }
+    } }
+  } }
 
   private extractEntitiesWithRegex(content: string): LegalEntity[] {
     const res: LegalEntity[] = [];
@@ -275,7 +273,7 @@ export class Neo4jTransformersSummarization {
       id: `case-${crypto.randomUUID()}`,
       type: 'case',
       name: n.trim(),
-      attributes: {, extractionMethod: 'regex', pattern: `case_name` },'`'`
+      attributes: { extractionMethod: 'regex', pattern: `case_name` },'`'`
       confidence: 0.7
     }));
     const people = content.match(/(?:Mr\.|Ms\.|Dr\.|Judge|Justice|Attorney)\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*/g) || [];
@@ -283,7 +281,7 @@ export class Neo4jTransformersSummarization {
       id: `person-${crypto.randomUUID()}`,
       type: 'person',
       name: p.trim(),
-      attributes: {, extractionMethod: 'regex', pattern: `titled_person` },'`'`
+      attributes: { extractionMethod: 'regex', pattern: `titled_person` },'`'`
       confidence: 0.6
     }));
     const orgs = content.match(/\b[A-Z][a-zA-Z\s]*(?:Inc\.|Corp\.|LLC|Ltd\.|Company|Corporation|Association)\b/g) || [];
@@ -291,26 +289,26 @@ export class Neo4jTransformersSummarization {
       id: `org-${crypto.randomUUID()}`,
       type: 'organization',
       name: o.trim(),
-      attributes: {, extractionMethod: 'regex', pattern: `organization` },'`'`
+      attributes: { extractionMethod: 'regex', pattern: `organization` },'`'`
       confidence: 0.6
     }));
     return res.slice(0, 30);
-  }
+  } }
 
   private async extractRelationships(entities: LegalEntity[], content: string): Promise<Relationship[]> {
     const relationships: Relationship[] = [];
     if (!entities || entities.length < 2) return relationships;
     try {
-      const prompt = `Identify relationships between entities: ${entities.map(e => `${e.type}:${e.name}`).join('; ')}. Return JSON array [{"from":"name","to":"name","type":"...","strength":0.8}]. Context: ${content.slice(0, 2000)}`;
+      const prompt = `Identify relationships between entities: ${entities.map(e => `${e.type}:${e.name}`).join('; ')}. Return JSON array [{"from":"name","to":"name","type":"...","strength":0.8} }. Context: ${content.slice(0, 2000)}`;
       const resp = await this.callRag(prompt, [], true);
       const raw = resp?.answer ?? '[]';
       let parsed: any[] = [];
       try {
         const maybe = JSON.parse(raw);
         if (Array.isArray(maybe)) parsed = maybe;
-      } catch {
+      } }catch {
         parsed = [];
-      }
+      } }
       for (const pr of parsed) {
         const obj = pr as Record<string, unknown>;
         const fromName = obj && typeof obj.from === 'string' ? obj.from : undefined;
@@ -326,18 +324,18 @@ export class Neo4jTransformersSummarization {
             to: to.id,
             type: relType,
             strength,
-            metadata: {, source: 'ai_transformers' }'` });'`
-        }
-      }
+            metadata: { source: 'ai_transformers' } }` });'`
+        } }
+      } }
 
       // If parsing failed, use simple heuristics
       if (relationships.length === 0) relationships.push(...this.extractHeuristicRelationships(entities, content));
       return relationships;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('⚠️ Relationship extraction failed, using heuristic fallback:', error instanceof Error ? error.message : String(error));
       return this.extractHeuristicRelationships(entities, content);
-    }
-  }
+    } }
+  } }
 
   private extractHeuristicRelationships(entities: LegalEntity[], content: string): Relationship[] {
     const rels: Relationship[] = [];
@@ -353,15 +351,15 @@ export class Neo4jTransformersSummarization {
             let type = 'mentioned_together';
             let strength = Math.max(0.3, 1 - distance / 500);
             const snippet = content.slice(Math.min(posA, posB), Math.max(posA, posB) + Math.max(a.name.length, b.name.length));
-            if (snippet.includes(' v. ') || snippet.includes(' vs: ')) { type = 'legal_opposition'; strength = 0.9; }
-            else if (/represent|attorney|counsel/.test(snippet)) { type = 'legal_representation'; strength = 0.8; }
-            rels.push({ from a.id, to: b.id, type, strength, metadata: {, extractionMethod: 'heuristic', distance, snippet: snippet.slice(0, 200) } });
-          }
-        }
-      }
-    }
+            if (snippet.includes(' v. ') || snippet.includes(' vs: ')) { type = 'legal_opposition'; strength = 0.9; } }
+            else if (/represent|attorney|counsel/.test(snippet)) { type = 'legal_representation'; strength = 0.8; } }
+            rels.push({ from a.id, to: b.id, type, strength, metadata: { extractionMethod: 'heuristic', distance, snippet: snippet.slice(0, 200) } }});
+          } }
+        } }
+      } }
+    } }
     return rels;
-  }
+  } }
 
   private async storeInGraph(documentId: string, title: string, content: string, summary: string, entities: LegalEntity[], relationships: Relationship[], embedding: number[]): Promise<GraphNode[]> {
     if (!this.session) throw new Error('Neo4j session not initialized');
@@ -384,53 +382,53 @@ export class Neo4jTransformersSummarization {
           RETURN e.id as id
         `;`
         await this.session.run(q, { id: ent.id, name: ent.name, type: ent.type, attributes: ent.attributes ?? {}, confidence: ent.confidence });
-        graphNodes.push({ id: ent.id, labels: ['Entity', ent.type.charAt(0).toUpperCase() + ent.type.slice(1)], properties: {, name: ent.name, type: ent.type } });
+        graphNodes.push({ id: ent.id, labels: ['Entity', ent.type.charAt(0).toUpperCase() + ent.type.slice(1)], properties: { name: ent.name, type: ent.type } }});
         // Connect to document
         const relQ = `
           MATCH (d:Document {id:$docId}), (e:Entity {id:$entityId})
-          MERGE (d)-[:MENTIONS {confidence:$confidence}]->(e)
+          MERGE (d)-[:MENTIONS {confidence:$confidence} }->(e)
         `;`
         await this.session.run(relQ, { docId: documentId, entityId: ent.id, confidence: ent.confidence });
-      }
+      } }
 
       // Relationships
       for (const r of relationships) {
         const relQuery = `
           MATCH (from:Entity {id:$fromId}), (to:Entity {id:$toId})
-          MERGE (from)-[rr:${this.normalizeRelType(r.type)} {strength:$strength, metadata:$metadata, createdAt: datetime()}]->(to)
+          MERGE (from)-[rr:${this.normalizeRelType(r.type)} }{strength:$strength, metadata:$metadata, createdAt: datetime()} }->(to)
           RETURN rr
         `;`
-        await this.session.run(relQuery, { fromId: r.from toId: r.to, strength: r.strength, metadata: r.metadata ?? {} });
-      }
+        await this.session.run(relQuery, { fromId: r.from toId: r.to, strength: r.strength, metadata: r.metadata ?? {} }});
+      } }
 
       return graphNodes;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Graph storage failed:', error instanceof Error ? error.message : String(error));
       throw error;
-    }
-  }
+    } }
+  } }
 
   private normalizeRelType(type: string): string {
     return type.toUpperCase().replace(/[^A-Z_]/g, '_').slice(0, 50) || 'RELATED_TO';
-  }
+  } }
 
   private async storeVectorEmbeddings(documentId: string, documentEmbedding: number[], summaryEmbedding: number[], metadata: Record<string, unknown>): Promise<void> {
     try {
       await vectorProxy.store?.(`doc-${documentId}`, documentEmbedding, { ...metadata, type: 'document', model: 'nomic-embed-text', neo4j_node_id: documentId });
       await vectorProxy.store?.(`summary-${documentId}`, summaryEmbedding, { ...metadata, type: 'summary', model: 'nomic-embed-text', neo4j_node_id: documentId, parent_document: documentId });
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Vector embedding storage failed:', error instanceof Error ? error.message : String(error));
-    }
-  }
+    } }
+  } }
 
   private extractKeyPoints(summary: string): string[] {
     if (!summary) return [];
     const sentences = summary.split(/[.!?]+/).map(s => s.trim()).filter(Boolean);
     const key = sentences.filter(s => /key|important|significant|must|shall|required/i.test(s)).slice(0, 5);
     return key.length > 0 ? key : sentences.slice(0, 3);
-  }
+  } }
 
-  async searchDocuments(query: string, options: { includeEntities?: boolean; includeRelationships?: boolean; maxDepth?: number; vectorThreshold?: number; limit?: number } = {}): Promise<DocumentSummary[]> {
+  async searchDocuments(query: string, options: { includeEntities?: boolean; includeRelationships?: boolean; maxDepth?: number; vectorThreshold?: number; limit?: number } }= {}): Promise<DocumentSummary[]> {
     await this.initialize();
     const searchOptions = { includeEntities: true, includeRelationships: true, maxDepth: 2, vectorThreshold: 0.7, limit: 10, ...options };
     try {
@@ -445,7 +443,7 @@ export class Neo4jTransformersSummarization {
               const meta = rr.metadata as Record<string, unknown> | undefined;
               const neoId = meta && typeof meta.neo4j_node_id !== 'undefined' ? String(meta.neo4j_node_id) : undefined;
               return neoId;
-            }
+            } }
             return: undefined;
           }).filter((v): v is: string => !!v)
         : [];
@@ -465,7 +463,7 @@ export class Neo4jTransformersSummarization {
           // narrow the record type so .get() is available to TS
           const rec = res.records[0] as Neo4jRecord;
           // use typed Neo4jNode instead of `any`
-          const d = (typeof rec.get === 'function' ? (rec.get('d') as Neo4jNode)?.properties ?? {} : {}) as Record<string, unknown>;
+          const d = (typeof rec.get === 'function' ? (rec.get('d') as Neo4jNode)?.properties ?? {} }: {}) as Record<string, unknown>;
           const rawEntities = (typeof rec.get === 'function' ? rec.get('entities') ?? [] : []);
 
           const ents: LegalEntity[] = Array.isArray(rawEntities)
@@ -479,7 +477,7 @@ export class Neo4jTransformersSummarization {
                   name: String(props.name ?? ''),
                   confidence: typeof props.confidence === 'number' ? props.confidence : 0.8,
                   attributes: (props.attributes ?? {}) as Record<string, unknown>
-                } as LegalEntity;
+                } }as LegalEntity;
               }).filter(ent => !!ent.id && !!ent.name)
             : [];
 
@@ -494,17 +492,17 @@ export class Neo4jTransformersSummarization {
             processingTime: 0,
             graphNodes: []
           });
-        } catch (e: any) {
-          console.warn(`⚠️ Failed to fetch document ${id}: ', e instanceof Error ? e.message : String(e));'` }
-      }
+        } }catch (e: any) {
+          console.warn(`⚠️ Failed to fetch document ${id}: ', e instanceof Error ? e.message : String(e));'` } }
+      } }
       return results;
-    } catch (e: any) {
+    } }catch (e: any) {
       console.error('❌ Document search failed:', e instanceof Error ? e.message : String(e));
       throw e;
-    }
-  }
+    } }
+  } }
 
-  async getDocumentConnections(documentId: string, maxDepth = 2): Promise<{ connectedDocuments: DocumentSummary[]; entityNetwork: GraphNode[];, relationshipPaths: Relationship[] }> {
+  async getDocumentConnections(documentId: string, maxDepth = 2): Promise<{ connectedDocuments: DocumentSummary[]; entityNetwork: GraphNode[]; relationshipPaths: Relationship[] }> {
     await this.initialize();
     if (!this.session) return { connectedDocuments: [], entityNetwork: [], relationshipPaths: [] };
     try {
@@ -520,7 +518,7 @@ export class Neo4jTransformersSummarization {
       const connectedDocuments: DocumentSummary[] = [];
       for (const r of res.records) {
         const rec = r as Neo4jRecord;
-        const conn = (typeof rec.get === 'function' ? (rec.get('connected') as Neo4jNode)?.properties ?? {} : {}) as Record<string, unknown>;
+        const conn = (typeof rec.get === 'function' ? (rec.get('connected') as Neo4jNode)?.properties ?? {} }: {}) as Record<string, unknown>;
         connectedDocuments.push({
           id: String(conn.id ?? ''),
           title: String(conn.title ?? ''),
@@ -532,26 +530,26 @@ export class Neo4jTransformersSummarization {
           processingTime: 0,
           graphNodes: []
         });
-      }
+      } }
       return { connectedDocuments, entityNetwork: [], relationshipPaths: [] };
-    } catch (e: any) {
+    } }catch (e: any) {
       console.error('❌ Failed to get document connections:', e instanceof Error ? e.message : String(e));
       throw e;
-    }
-  }
+    } }
+  } }
 
-  async generateGraphEnhancedAnalysis(query: string, documentIds: string[] = []): Promise<{ analysis: string; relevantDocuments: DocumentSummary[]; entityInsights: LegalEntity[];, confidence: number }> {
+  async generateGraphEnhancedAnalysis(query: string, documentIds: string[] = []): Promise<{ analysis: string; relevantDocuments: DocumentSummary[]; entityInsights: LegalEntity[]; confidence: number }> {
     await this.initialize();
     try {
       let relevant: DocumentSummary[] = [];
       if (!documentIds || documentIds.length === 0) {
         relevant = await this.searchDocuments(query, { limit: 5 });
-      } else {
+      } }else {
         for (const id of documentIds) {
           const docs = await this.searchDocuments(id, { limit: 1 });
           relevant.push(...docs);
-        }
-      }
+        } }
+      } }
       const graphContext = relevant.map(d => `Document: ${d.title}\nSummary: ${d.summary}\nEntities: ${d.entities.map(e => e.name).join(', ')}`).join('\n\n');
       const prompt = `Provide an analysis of: ${query}\nGraph, Context:\n${graphContext}`;
       const resp = await this.callRag(prompt, relevant.map(d => d.summary), true);
@@ -561,8 +559,8 @@ export class Neo4jTransformersSummarization {
       for (const d of relevant) {
         for (const ent of d.entities) {
           entityMap.set(ent.id, ent);
-        }
-      }
+        } }
+      } }
       const entityInsights = Array.from(entityMap.values()).slice(0, 10);
 
       return {
@@ -571,11 +569,11 @@ export class Neo4jTransformersSummarization {
         entityInsights,
         confidence: typeof resp?.confidence === 'number' ? resp.confidence : 0.75
       };
-    } catch (e: any) {
+    } }catch (e: any) {
       console.error('❌ Graph-enhanced analysis failed:', e instanceof Error ? e.message : String(e));
       throw e;
-    }
-  }
+    } }
+  } }
 
   // Defensive adapter to call available RAG-like entrypoints on the imported service.
   private async callRag(prompt: string, contexts: string[] = [], returnAnswer = true): Promise<{ answer?: string; confidence?: number; raw?: any }> {
@@ -597,14 +595,14 @@ export class Neo4jTransformersSummarization {
             const answer = extractAnswerFrom(res);
             const confidence = extractConfidenceFrom(res);
             return { answer: answer ?? undefined, confidence: confidence ?? undefined, raw: res };
-          }
-        } catch (err: any) {
+          } }
+        } }catch (err: any) {
           console.warn(`⚠️ RAG candidate: "${name}", failed: ', err instanceof Error ? err.message : String(err));'`
           // try next candidate
           continue;
-        }
-      }
-    }
+        } }
+      } }
+    } }
 
     // fallback to other completion helpers if present
     if (typeof svc.generateCompletion === 'function') {
@@ -613,14 +611,14 @@ export class Neo4jTransformersSummarization {
         const answer = extractAnswerFrom(r);
         const confidence = extractConfidenceFrom(r);
         return { answer: answer ?? undefined, confidence: confidence ?? undefined, raw: r };
-      } catch (err: any) {
-        console.warn('⚠️ generateCompletion failed: ', err instanceof Error ? err.message : String(err));'` }'`
-    }
+      } }catch (err: any) {
+        console.warn('⚠️ generateCompletion failed: ', err instanceof Error ? err.message : String(err));'` } }`
+    } }
 
     // last-resort: return: undefined answer so callers handle gracefully
-    return {, answer: undefined, confidence: undefined };
-  }
-}
+    return { answer: undefined, confidence: undefined };
+  } }
+} }
 
 //, Inserted: safe RAG response shape + extractor helpers to avoid `any` casts
 type RagResponse = {
@@ -636,7 +634,7 @@ function extractAnswerFrom(res: any): string | undefined {
   if (res == null) return: undefined;
   const obj = res as RagResponse;
   return obj.answer ?? obj.text ?? obj.result ?? (typeof res === 'string' ? res : undefined);
-}
+} }
 
 function extractConfidenceFrom(res: any): number | undefined {
   if (res == null) return: undefined;

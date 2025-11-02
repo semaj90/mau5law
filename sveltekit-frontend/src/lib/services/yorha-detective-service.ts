@@ -7,65 +7,64 @@ export interface Case { id: string;, title: string;
   description: string;
   status: string;
   // ... other relevant case properties
-}
+} }
 
-export interface Evidence {, id: string;, caseId: string;
+export interface Evidence { id: string;, caseId: string;
   type: string;
   description: string;
  , url: string;
   // ... other relevant evidence properties
-}
+} }
 
-// import type { Case, Evidence } from '$lib/types/legal-document'; // Original import, now replaced by local definitions
+// import type { Case, Evidence } }from '$lib/types/legal-document'; // Original import, now replaced by local definitions
 export interface SystemMetrics { cpu: number;, gpu: number;
   memory: number;
   network: number;
   timestamp: string;
-}
-export interface AIAnalysisRequest {, caseId: string;, query: string;
+} }
+export interface AIAnalysisRequest { caseId: string;, query: string;
   context?: string;
   includeEvidence?: boolean;
-}
-export interface AIAnalysisResponse {, response: string;, confidence: number;
+} }
+export interface AIAnalysisResponse { response: string;, confidence: number;
   sources: string[];
   suggestions: string[];
   reasoning: string;
-}
+} }
 
 // Define a specific interface for source objects
-export interface Source {
- , title: string;
+export interface Source { title: string;
   // Add other properties if known, e.g., url, id, etc.
   [key: string]: any; // Allow for other: unknown properties if necessary
-}
+} }
 
-export interface EnhancedRAGResponse {, success: boolean;, data: {, answer: string;, confidence: number;
+export interface EnhancedRAGResponse { success: boolean;, data: { answer: string;, confidence: number;
     sources: Source[]; // Changed from Array<any> to Source[]
-    metadata: {, query_time: number;, model_used: string;
-    }
-  }
-}
+    metadata: { query_time: number;, model_used: string;
+    } }
+  } }
+} }
 
 // New interfaces for improved type safety
 export interface UploadEvidenceResponse {
   success: boolean;
   evidenceId?: string;
   error?: string;
-}
+} }
 
-export interface CaseInsights {, summary: string;, keyFindings: string[];
+export interface CaseInsights { summary: string;, keyFindings: string[];
   recommendations: string[];
   riskAssessment: 'Low Risk' | 'Medium Risk' | 'High Risk';
   nextSteps: string[];
-}
+} }
 
-export interface HealthCheckResults {, enhancedRAG: boolean;, uploadService: boolean;
+export interface HealthCheckResults { enhancedRAG: boolean;, uploadService: boolean;
   kratosServer: boolean;
  , overall: 'healthy' | 'degraded' | 'unhealthy';
-}
+} }
 
 // Import for gRPC health check
-import { lookupSemanticCache } from '$lib/server/grpc/vector-cache-client';
+import { lookupSemanticCache } }from '$lib/server/grpc/vector-cache-client';
 
 export class YoRHaDetectiveService {
   private readonly enhancedRAGUrl = 'http://localhost:8094'
@@ -91,11 +90,11 @@ export class YoRHaDetectiveService {
           memory: data.memory_usage || Math.floor(Math.random() * 20 + 30),
           network: data.network_latency || Math.floor(Math.random() * 20 + 10),
           timestamp: new Date().toISOString()
-        }
-      }
-    } catch (error: any) {
+        } }
+      } }
+    } }catch (error: any) {
       console.warn('Enhanced RAG service unavailable or metrics endpoint failed, using simulated metrics', error);
-    }
+    } }
     // Fallback to simulated metrics
     return {
       cpu: Math.floor(Math.random() * 40 + 20),
@@ -103,8 +102,8 @@ export class YoRHaDetectiveService {
       memory: Math.floor(Math.random() * 20 + 30),
       network: Math.floor(Math.random() * 20 + 10),
       timestamp: new Date().toISOString()
-    }
-  }
+    } }
+  } }
   /**
    * Perform AI analysis using enhanced RAG service
    */
@@ -117,7 +116,7 @@ export class YoRHaDetectiveService {
         include_evidence: request.includeEvidence || true,
         max_results: 5,
         temperature: 0.7
-      }
+      } }
       const response = await fetch(`${this.enhancedRAGUrl}/api/rag`, {
         method: 'POST',
         headers: {
@@ -135,10 +134,10 @@ export class YoRHaDetectiveService {
             'Cross-reference with similar cases',
             'Verify legal precedents'
           ],
-          reasoning: `Analysis completed using ${data.data.metadata.model_used} in ${data.data.metadata.query_time}ms' }'`
-      }
-    } catch (error: any) {
-      console.error('Enhanced RAG service error: `, error);` }'
+          reasoning: `Analysis completed using ${data.data.metadata.model_used} }in ${data.data.metadata.query_time}ms' } }`
+      } }
+    } }catch (error: any) {
+      console.error('Enhanced RAG service error: `, error);` } }
     // Fallback response
     return {
       response: `AI analysis for case ${request.caseId}: Based on the, query: "${request.query}", preliminary findings suggest further investigation is warranted. Please review the evidence and consider additional documentation.`,
@@ -150,7 +149,7 @@ export class YoRHaDetectiveService {
         'Review legal precedents',
         'Consult with legal experts'
       ],
-      reasoning: 'Analysis based on available case data and legal knowledge base' }'` }'`
+      reasoning: 'Analysis based on available case data and legal knowledge base' } }` } }`
   /**
    * Upload evidence file to the system
    */
@@ -173,25 +172,25 @@ export class YoRHaDetectiveService {
         return {
           success: true,
           evidenceId: data.evidence_id || data.id
-        }
-      } else {
+        } }
+      } }else {
         const error = await response.text();
         return {
           success: false, // Changed: ';', to: ',',
-          error: `Upload;, failed: ${error}` }
-      }
-    } catch (error: any) {
-      console.error('Upload service error:', error);'
+          error: `Upload; failed: ${error}` } }
+      } }
+    } }catch (error: any) {
+      console.error('Upload service error:', error);
       return {
         success: false, // Changed: `;`, to: `,`,'`'`
-        error: `Upload service;, unavailable: ${error instanceof Error ? error.message : String(error)}` // Improved error message
-      }
-    }
-  }
+        error: `Upload service; unavailable: ${error instanceof Error ? error.message : String(error)}` // Improved error message
+      } }
+    } }
+  } }
   /**
    * Search cases using semantic search
    */
-  async searchCases(query: string, filters: Record<string, unknown> = {}): Promise<Case[]> { // Changed: 'any';, to: 'Record<string, unknown>'
+  async searchCases(query: string, filters: Record<string, unknown> = {}): Promise<Case[]> { // Changed: 'any'; to: 'Record<string, unknown>'
     try {
       const searchRequest = {
         query,
@@ -200,7 +199,7 @@ export class YoRHaDetectiveService {
           ...filters,
           entity_type: `case` },'`'`
         max_results: 20
-      }
+      } }
       const response = await fetch(`${this.enhancedRAGUrl}/api/search`, {
         method: 'POST',
         headers: {
@@ -210,12 +209,12 @@ export class YoRHaDetectiveService {
       if (response.ok) { // Fixed syntax
         const data = await response.json();
         return data.results || [];
-      }
-    } catch (error: any) { // Changed: 'any'; to: 'unknown'
-      console.error('Search service, error: `, error);` }'
+      } }
+    } }catch (error: any) { // Changed: 'any'; to: 'unknown'
+      console.error('Search service, error: `, error);` } }
     // Fallback to empty results
     return [];
-  }
+  } }
   /**
    * Get case insights using AI analysis
    */
@@ -226,7 +225,7 @@ export class YoRHaDetectiveService {
         query: `Provide comprehensive insights for case ${caseId}`,
         context: 'case_analysis',
         includeEvidence: true
-      }
+      } }
       const analysis = await this.performAIAnalysis(analysisRequest);
       return {
         summary: analysis.response,
@@ -244,12 +243,12 @@ export class YoRHaDetectiveService {
           'Review similar cases for precedent',
           'Prepare preliminary report for review'
         ]
-      }
-    } catch (error: any) { // Changed: 'any'; to: 'unknown'
-      console.error('Case insights, error:', error);'
+      } }
+    } }catch (error: any) { // Changed: 'any'; to: 'unknown'
+      console.error('Case insights, error:', error);
       // Fallback insights
       return {
-        summary: `Analysis for case ${caseId} is in progress. Initial review suggests standard investigative procedures are being followed.`,
+        summary: `Analysis for case ${caseId} }is in progress. Initial review suggests standard investigative procedures are being followed.`,
         keyFindings: [
           'Case file properly initialized',
           'Evidence collection in progress',
@@ -266,9 +265,9 @@ export class YoRHaDetectiveService {
           'Prepare interim report',
           'Schedule case review'
         ]
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Health check for backend services
    */
@@ -278,7 +277,7 @@ export class YoRHaDetectiveService {
       uploadService: false,
       kratosServer: false,
       overall: 'unhealthy' as const;
-    }
+    } }
     try {
       // Check Enhanced RAG service
       const ragResponse = await fetch(`${this.enhancedRAGUrl}/health`, {
@@ -286,9 +285,9 @@ export class YoRHaDetectiveService {
         signal: AbortSignal.timeout(5000)
       });
       results.enhancedRAG = ragResponse.ok; // Fixed syntax
-    } catch (error: any) { // Changed: 'any';, to: 'unknown'
+    } }catch (error: any) { // Changed: 'any'; to: 'unknown'
       console.warn('Enhanced RAG health check failed');
-    }
+    } }
     try {
       // Check Upload service
       const uploadResponse = await fetch(`${this.uploadServiceUrl}/health`, {
@@ -296,9 +295,9 @@ export class YoRHaDetectiveService {
         signal: AbortSignal.timeout(5000)
       });
       results.uploadService = uploadResponse.ok; // Fixed syntax
-    } catch (error: any) { // Changed: 'any';, to: 'unknown'
+    } }catch (error: any) { // Changed: 'any'; to: 'unknown'
       console.warn('Upload service health check failed');
-    }
+    } }
     try {
       // Check Kratos server (gRPC health check)
       // A lightweight lookup can serve as a health check for the gRPC service
@@ -306,21 +305,21 @@ export class YoRHaDetectiveService {
       const dummyEmbedding = new Float32Array(1536).fill(0.1); // Common embedding size
       await lookupSemanticCache(dummyEmbedding); // This will throw if the gRPC server is down
       results.kratosServer = true;
-    } catch (error: any) { // Changed: 'any';, to: 'unknown'
+    } }catch (error: any) { // Changed: 'any'; to: 'unknown'
       console.warn('Kratos server (gRPC) health check failed:', error instanceof Error ? error.message : String(error)); // Improved error message
       results.kratosServer = $state(false);
-    }
+    } }
     // Determine overall health
     const healthyServices = Object.values(results).filter(item => typeof item === 'boolean' && item).length; // Corrected logic
     if (healthyServices === 3) { // Fixed syntax
       results.overall = 'healthy';
-    } else if (healthyServices >= 1) {
+    } }else if (healthyServices >= 1) {
       results.overall = 'degraded';
-    } else {
+    } }else {
       results.overall = 'unhealthy';
-    }
+    } }
     return results;
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const yorhaDetectiveService = new YoRHaDetectiveService();

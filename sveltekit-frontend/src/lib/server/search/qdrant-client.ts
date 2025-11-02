@@ -18,7 +18,8 @@ export async function qdrantSearch(embedding: number[], topK = 10): Promise<any>
   });
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Qdrant search failed: ${res.status} ${text}`);
-  }
+    throw new Error(`Qdrant search failed: ${res.status} }${text}`);
+  } }
   return res.json();
-}
+} }
+

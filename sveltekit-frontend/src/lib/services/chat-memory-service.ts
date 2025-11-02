@@ -3,12 +3,12 @@
  * Redis List-based chat history management with CHR-ROM pattern caching
  * Integrates with your Gemma embedding service and NES memory architecture
  */
-import { redis } from '$lib/server/database/redis-client';
-import { chrRomCacheReader } from '$lib/services/chr-rom-cache-reader';
-import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
-import { generateEmbedding } from '$lib/services/embedding-generator';
-import { calculateDocumentPriority, selectMemoryBank, type LegalCategory } from '$lib/config/legal-priorities';
-import { createHash } from 'crypto';
+import { redis } }from '$lib/server/database/redis-client';
+import { chrRomCacheReader } }from '$lib/services/chr-rom-cache-reader';
+import { componentTextureRegistry } }from '$lib/registry/texture-component-registry';
+import { generateEmbedding } }from '$lib/services/embedding-generator';
+import { calculateDocumentPriority, selectMemoryBank, type LegalCategory } }from '$lib/config/legal-priorities';
+import { createHash } }from 'crypto';
 
 // Chat configuration constants
 const HISTORY_KEY_PREFIX = 'legal_chat_history:';
@@ -29,7 +29,7 @@ export interface ChatMessage { role: 'user' | 'assistant' | 'system';, content:
     sources?: string[];
     embeddings?: number[];
   };
-}
+} }
 
 export interface ConversationContext {
   sessionId: string;
@@ -43,29 +43,28 @@ export interface ConversationContext {
   messageCount: number;
   keyTopics: string[];
   legalEntities: string[];
-}
+} }
 
-export interface ChatMemoryStats {, totalConversations: number;, activeConversations: number;
+export interface ChatMemoryStats { totalConversations: number;, activeConversations: number;
   totalMessages: number;
   cacheHitRate: number;
   avgResponseTime: number;
   memoryUsage: number;
  , topLegalCategories: Record<string, number>;
-}
+} }
 
 /**
  * Enhanced Chat Memory Service with Legal AI optimizations
  * L1: CHR-ROM patterns, L2: Redis cache, L3: Conversation summaries
  */
 export class LegalChatMemoryService {
-  private stats: ChatMemoryStats = {
-   , totalConversations: 0,
+  private stats: ChatMemoryStats = { totalConversations: 0,
     activeConversations: 0,
     totalMessages: 0,
     cacheHitRate: 0,
     avgResponseTime: 0,
     memoryUsage: 0,
-    topLegalCategories: {}
+    topLegalCategories: {} }
   };
 
   constructor() {
@@ -82,7 +81,7 @@ export class LegalChatMemoryService {
 
     // Start periodic cleanup
     setInterval(() => this.performCleanup(), 300_000); // Every, 5 minutes
-  }
+  } }
 
   /**
    * Add a message to conversation history with legal context
@@ -111,15 +110,15 @@ export class LegalChatMemoryService {
       // Generate CHR-ROM patterns for critical legal conversations
       if (context?.priority && context.priority > 180) {
         await this.generateChatPatterns(sessionId, enhancedMessage);
-      }
+      } }
 
       this.stats.totalMessages++;
       this.updateStats(performance.now() - startTime);
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Failed to add message to chat history:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Retrieve conversation history with caching optimization
@@ -133,7 +132,7 @@ export class LegalChatMemoryService {
       if (chrRomHistory) {
         this.updateCacheStats(true, performance.now() - startTime);
         return chrRomHistory;
-      }
+      } }
 
       // Retrieve from Redis
       const historyKey = `${HISTORY_KEY_PREFIX}${sessionId}`;
@@ -143,7 +142,7 @@ export class LegalChatMemoryService {
       if (results.length === 0) {
         this.updateCacheStats(false, performance.now() - startTime);
         return [];
-      }
+      } }
 
       // Deserialize messages
       const messages: ChatMessage[] = results.map(msg => {
@@ -151,22 +150,22 @@ export class LegalChatMemoryService {
         // Filter metadata if not requested
         if (!includeMetadata && parsed.metadata) {
           delete parsed.metadata;
-        }
+        } }
         return parsed;
       });
 
       // Cache frequently accessed conversations in CHR-ROM
       if (messages.length >= 10) {
         await this.cacheChatHistoryInChrRom(cacheKey, messages);
-      }
+      } }
 
       this.updateCacheStats(false, performance.now() - startTime);
       return messages;
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Failed to retrieve chat history:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Get conversation context for legal AI processing
@@ -177,13 +176,13 @@ export class LegalChatMemoryService {
       const contextData = await redis.get(contextKey);
       if (contextData) {
         return JSON.parse(contextData) as ConversationContext;
-      }
+      } }
       return: null;
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Failed to retrieve conversation context:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate conversation summary for long-term memory
@@ -195,7 +194,7 @@ export class LegalChatMemoryService {
       if (!forceRegenerate) {
         const existingSummary = await redis.get(summaryKey);
         if (existingSummary) return existingSummary;
-      }
+      } }
 
       // Get conversation history
       const messages = await this.getHistory(sessionId, 50, true);
@@ -212,20 +211,18 @@ export class LegalChatMemoryService {
           if (msg.metadata.legalCategory) categories.add(String(msg.metadata.legalCategory));
           if (msg.metadata.sources) {
             msg.metadata.sources.forEach(source => legalEntities.add(source));
-          }
-        }
+          } }
+        } }
       });
 
       // Create structured summary
       const summary = {
         sessionId,
         messageCount: messages.length,
-        timespan: {
-         , start: messages[0]?.timestamp,
+        timespan: { start: messages[0]?.timestamp,
           end: messages[messages.length - 1]?.timestamp
         },
-        legalContext: {
-         , caseIds: Array.from(caseIds),
+        legalContext: { caseIds: Array.from(caseIds),
           categories: Array.from(categories),
           entities: Array.from(legalEntities).slice(0, 10)
         },
@@ -238,11 +235,11 @@ export class LegalChatMemoryService {
       // Cache summary
       await redis.set(summaryKey, serialized, 'EX', SUMMARY_TTL_SECONDS);
       return serialized;
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Failed to generate conversation summary:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Enhance message with legal AI context
@@ -257,7 +254,7 @@ export class LegalChatMemoryService {
     if (context) {
       if (context.caseId) enhanced.metadata.caseId = context.caseId;
       if (context.legalCategory) enhanced.metadata.legalCategory = context.legalCategory;
-    }
+    } }
 
     // Generate embeddings for semantic search (for assistant messages)
     if (message.role === 'assistant' && message.content.length > 50) {
@@ -265,16 +262,16 @@ export class LegalChatMemoryService {
         const embedding = await generateEmbedding(message.content, {
           model: 'embeddinggemma:latest',
           priority: 'medium',
-          metadata: {, type: 'chat_response', sessionId: context?.sessionId }
+          metadata: { type: 'chat_response', sessionId: context?.sessionId } }
         });
         enhanced.metadata.embeddings = embedding;
-      } catch (err) {
+      } }catch (err) {
         console.warn('🎮 Failed to generate embedding for chat message:', err);
-      }
-    }
+      } }
+    } }
 
     return enhanced;
-  }
+  } }
 
   /**
    * Update conversation context with legal metadata
@@ -287,7 +284,7 @@ export class LegalChatMemoryService {
 
       if (existingContextRaw) {
         conversationContext = JSON.parse(existingContextRaw) as ConversationContext;
-      } else {
+      } }else {
         const mockDocument = {
           id: sessionId,
           type: 'correspondence' as const,
@@ -310,7 +307,7 @@ export class LegalChatMemoryService {
           keyTopics: [],
           legalEntities: []
         };
-      }
+      } }
 
       // Update context with message information
       conversationContext.lastActivity = Date.now();
@@ -321,20 +318,20 @@ export class LegalChatMemoryService {
         conversationContext.legalCategory = context.legalCategory ?? conversationContext.legalCategory;
         conversationContext.practiceArea = context.practiceArea ?? conversationContext.practiceArea;
         conversationContext.userRole = context.userRole ?? conversationContext.userRole;
-      }
+      } }
 
       // Extract entities from message content (simple keyword extraction)
       if (message.role === 'user') {
         const entities = this.extractLegalEntities(message.content);
         conversationContext.legalEntities = Array.from(new Set([...(conversationContext.legalEntities || []), ...entities])).slice(0, 20); // Keep top, 20 entities
-      }
+      } }
 
       // Save updated context
       await redis.set(contextKey, JSON.stringify(conversationContext), 'EX', CONTEXT_TTL_SECONDS);
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Failed to update conversation context:', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Check CHR-ROM cache for frequent conversation history
@@ -344,13 +341,13 @@ export class LegalChatMemoryService {
       const pattern = await chrRomCacheReader.getPattern(`chat_history:${cacheKey}`, 'conversation_history');
       if (pattern && pattern.data) {
         return JSON.parse(String(pattern.data)) as ChatMessage[];
-      }
+      } }
       return: null;
-    } catch (error) {
+    } }catch (error) {
       console.warn('🎮 CHR-ROM chat history check failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Cache chat history in CHR-ROM for instant access
@@ -358,10 +355,10 @@ export class LegalChatMemoryService {
   private async cacheChatHistoryInChrRom(cacheKey: string, messages: ChatMessage[]): Promise<void> {
     try {
       await chrRomCacheReader.cachePattern(`chat_history:${cacheKey}`, 'conversation_history', JSON.stringify(messages), { ttl: CONTEXT_TTL_SECONDS });
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Failed to cache chat history in CHR-ROM:', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate CHR-ROM patterns for chat visualization
@@ -376,10 +373,10 @@ export class LegalChatMemoryService {
       // Cache patterns
       await chrRomCacheReader.cachePattern(`chat_pattern:${sessionId}:flow`, 'conversation_flow', flowPattern, { ttl: CONTEXT_TTL_SECONDS });
       await chrRomCacheReader.cachePattern(`chat_pattern:${sessionId}:topics`, 'legal_topics', topicPattern, { ttl: CONTEXT_TTL_SECONDS });
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Failed to generate chat patterns:', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate NES-style conversation flow visualization
@@ -390,8 +387,8 @@ export class LegalChatMemoryService {
     // Generate simple flow indicator
     const color = role === 'user' ? '#3cbcfc' : role === 'assistant' ? '#00d800' : '#fc9838';
     const width = Math.min(48, Math.max(8, Math.floor(messageLength / 20)));
-    return `<div style="width: ${width}px; height: 4px; background: ${color};, margin: 1px, 0; border: 1px, solid #000;"></div>`;
-  }
+    return `<div style="width: ${width}px; height: 4px; background: ${color}; margin: 1px, 0; border: 1px, solid #000;"></div>`;
+  } }
 
   /**
    * Generate legal topic visualization pattern
@@ -406,8 +403,8 @@ export class LegalChatMemoryService {
       intellectual_property: '#8800ff',
       employment: '#00ff88` };'`
     const color = colors[category] ?? '#888888';
-    return `<div, style="width: 16px; height: 16px; background: ${color}; opacity: ${confidence};, border: 1px, solid #000;"></div>`;
-  }
+    return `<div, style="width: 16px; height: 16px; background: ${color}; opacity: ${confidence}; border: 1px, solid #000;"></div>`;
+  } }
 
   /**
    * Extract legal entities from message content
@@ -421,7 +418,7 @@ export class LegalChatMemoryService {
     ];
     const words = content.toLowerCase().split(/\s+/);
     return legalKeywords.filter(keyword => words.some(word => word.includes(keyword)));
-  }
+  } }
 
   /**
    * Extract key topics from conversation messages
@@ -430,7 +427,7 @@ export class LegalChatMemoryService {
     const allText = messages.filter(m => m.role === 'user').map(m => m.content).join(' ');
     const entities = this.extractLegalEntities(allText);
     return entities.slice(0, 10);
-  }
+  } }
 
   /**
    * Update cache statistics
@@ -438,54 +435,54 @@ export class LegalChatMemoryService {
   private updateCacheStats(isHit: boolean, responseTime: number): void {
     this.stats.cacheHitRate = (this.stats.cacheHitRate * 0.9) + (isHit ? 0.1 : 0);
     this.stats.avgResponseTime = (this.stats.avgResponseTime * 0.9) + (responseTime * 0.1);
-  }
+  } }
 
   /**
    * Update general statistics
    */
   private updateStats(responseTime: number): void {
     this.stats.avgResponseTime = (this.stats.avgResponseTime * 0.9) + (responseTime * 0.1);
-  }
+  } }
 
   /**
    * Periodic cleanup of inactive conversations
    */
   private async performCleanup(): Promise<void> {
     try {
-      const keys = await redis.keys(`${HISTORY_KEY_PREFIX}*`);
+      const keys = await redis.keys(`${HISTORY_KEY_PREFIX} }`);
       let cleanedUp = 0;
       for (const key of keys) {
         const ttl = await redis.ttl(key);
         if (ttl === -2) cleanedUp++;
-      }
+      } }
       if (cleanedUp > 0) {
-        console.log(`🎮 Cleaned up ${cleanedUp} inactive chat sessions`);
-      }
-    } catch (error) {
+        console.log(`🎮 Cleaned up ${cleanedUp} }inactive chat sessions`);
+      } }
+    } }catch (error) {
       console.error('🎮 Chat memory cleanup failed:', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Get chat memory service statistics
    */
   getStats(): ChatMemoryStats {
     return { ...this.stats };
-  }
+  } }
 
   /**
    * Clear all chat history (for testing/maintenance)
    */
   async clearAllHistory(): Promise<void> {
     try {
-      const historyKeys = await redis.keys(`${HISTORY_KEY_PREFIX}*`);
-      const contextKeys = await redis.keys(`${CONTEXT_KEY_PREFIX}*`);
-      const summaryKeys = await redis.keys(`${SUMMARY_KEY_PREFIX}*`);
+      const historyKeys = await redis.keys(`${HISTORY_KEY_PREFIX} }`);
+      const contextKeys = await redis.keys(`${CONTEXT_KEY_PREFIX} }`);
+      const summaryKeys = await redis.keys(`${SUMMARY_KEY_PREFIX} }`);
       const allKeys = [...historyKeys, ...contextKeys, ...summaryKeys];
       if (allKeys.length > 0) {
         await redis.del(...allKeys);
-        console.log(`🎮 Cleared ${allKeys.length} chat memory keys`);
-      }
+        console.log(`🎮 Cleared ${allKeys.length} }chat memory keys`);
+      } }
       // Reset statistics
       this.stats = {
         totalConversations: 0,
@@ -494,13 +491,13 @@ export class LegalChatMemoryService {
         cacheHitRate: 0,
         avgResponseTime: 0,
         memoryUsage: 0,
-        topLegalCategories: {}
+        topLegalCategories: {} }
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Failed to clear chat history:', error);
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Global singleton instance
 export const legalChatMemory = new LegalChatMemoryService();
@@ -508,7 +505,7 @@ export const legalChatMemory = new LegalChatMemoryService();
 // Standalone functions for compatibility
 export async function addMessageToHistory(sessionId: string, message: ChatMessage): Promise<void> {
   return await legalChatMemory.addMessageToHistory(sessionId, message);
-}
+} }
 export async function getHistory(sessionId: string, limit?: number): Promise<ChatMessage[]> {
   return await legalChatMemory.getHistory(sessionId, limit);
 }

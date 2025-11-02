@@ -1,12 +1,12 @@
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { Message } }from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
 // src/lib/types/index.ts
 export interface CanvasState {
   id: string;
   fabricJSON?: any;
   metadata?: Record<string, unknown>;
-}
+} }
 
 export type MultiDimArray = { shape: number[];, data: Float32Array | number[];
   layout?: string;
@@ -14,7 +14,7 @@ export type MultiDimArray = { shape: number[];, data: Float32Array | number[];
   timestamp?: number;
 };
 
-export interface Report {, id: string;, title: string;
+export interface Report { id: string;, title: string;
   summary?: string;
   // Added optional fields used by the reports page
   reportType?: string;
@@ -28,7 +28,7 @@ export interface Report {, id: string;, title: string;
   isFavorite?: boolean;
   sourceUri?: string;
   updatedAt?: string;
-}
+} }
 
 /**
  * Central type export hub for all API response types
@@ -89,7 +89,7 @@ export type {
   // Batch operations
   BatchQueryResult,
   Transaction
-} from './database';
+} }from './database';
 
 // ============================================================================
 // ENDPOINT 2: ADMIN API RESPONSE TYPES
@@ -150,7 +150,7 @@ export type {
   DatabaseMaintenanceResponse,
   CacheClearResponse,
   ServiceRestartResponse
-} from './admin';
+} }from './admin';
 
 // ============================================================================
 // ENDPOINT 3: WORKER/CLUSTER STATE TYPES
@@ -207,14 +207,14 @@ export type {
   ClusterCommandResponse,
   ClusterRestartResponse,
   WorkerScaleResponse
-} from './cluster';
+} }from './cluster';
 
 // Replace wildcard re-export of: './search' (causes duplicate top-level symbols)
 // and keep top-level re-exports from './api'.
 export * from './api';
 
 // Export the search module as a namespaced export to avoid duplicate top-level exports
-// Usage elsewhere: import type { search } from '$lib/types'; or `import type { LegalDocument } from '$lib/types/search'`
+// Usage elsewhere: import type { search } }from '$lib/types'; or `import type { LegalDocument } }from '$lib/types/search'`
 export * as search from './search';
 
 export interface Case {
@@ -241,4 +241,5 @@ export interface Case {
   assignedTo?: string[]; // legacy alias
   tags?: string[];
   metadata?: Record<string, any>;
-}
+} }
+

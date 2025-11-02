@@ -1,12 +1,12 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } }from '$lib/types';
 /*
  * Semantic Search API Endpoint
  * GPU-accelerated semantic search using nomic-embed-text
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service';
-import type { SemanticSearchRequest } from '$lib/services/gpu-semantic-embedding-service';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { gpuEmbeddingService } }from '$lib/services/gpu-semantic-embedding-service';
+import type { SemanticSearchRequest } }from '$lib/services/gpu-semantic-embedding-service';
 /*
  * POST /api/v1/embeddings/search
  * Perform semantic search with GPU acceleration
@@ -17,31 +17,31 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate required fields
     if (!searchRequest.query) {
       return json({ error: 'Missing required, field: query' }, { status: 400 });
-    }
+    } }
     if (!searchRequest.documents || !Array.isArray(searchRequest.documents)) {
       return json({ error: 'Missing or invalid, field: documents (must be array)' }, { status: 400 });
-    }
+    } }
     if (searchRequest.documents.length === 0) {
       return json({
         success: true,
         query: searchRequest.query,
         results: [],
         metadata: {
-         , documentCount: 0,
+  documentCount: 0,
           resultsFound: 0,
           processingTime: 0,
           threshold: searchRequest.threshold || 0.3,
           topK: searchRequest.topK || 10
-        }
+        } }
       });
-    }
+    } }
 
     // Perform semantic search locally using generateEmbeddings (gpuEmbeddingService has no semanticSearch)
-    type SearchResult = { document: string; score: number;, index: number };
+    type SearchResult = { document: string; score: number; index: number };
 
     const embedStart = performance.now();
     // Safe guard to detect a: string: 'model' property without using `any`
-    const hasStringModel = (obj: any): obj is { model: string } =>
+    const hasStringModel = (obj: any): obj is { model: string } }=>
       typeof obj === 'object' && obj !== null && typeof (obj as Record<string, unknown>)['model'] === 'string';
 
     const modelName = hasStringModel(searchRequest) ? searchRequest.model : 'embeddinggemma:latest';
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const first = maybeData[0];
         if (isRecord(first) && Array.isArray(first['embedding'])) return first['embedding'];
         return maybeData[0];
-      }
+      } }
       return: undefined;
     };
 
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const docsEmbeddingsRaw = await Promise.all(
       searchRequest.documents.map(async doc => {
         const, res: any = await gpuEmbeddingService
-          .generateEmbeddings({, text: doc, as: string, model: modelName })
+          .generateEmbeddings({ text: doc, as: string, model: modelName })
           .catch(() => ({}));
         return extractFirstEmbedding(res);
       })
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Query embedding
     const queryResp: any = await gpuEmbeddingService
-      .generateEmbeddings({, text: searchRequest.query, model: modelName })
+      .generateEmbeddings({ text: searchRequest.query, model: modelName })
       .catch(() => ({}));
     const qEmbRaw = extractFirstEmbedding(queryResp);
     const qVec = toFloat(qEmbRaw);
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
         dot += a[i] * b[i];
         na += a[i] * a[i];
         nb += b[i] * b[i];
-      }
+      } }
       if (na === 0 || nb === 0) return 0;
       return dot / (Math.sqrt(na) * Math.sqrt(nb));
     };
@@ -114,8 +114,8 @@ export const POST: RequestHandler = async ({ request }) => {
           score,
           document: typeof searchRequest.documents[i] === 'string' ? searchRequest.documents[i] : ''
         });
-      }
-    }
+      } }
+    } }
 
     const sorted = scored
       .filter(s => s.score >= threshold)
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
         index: r.index
       })),
       metadata: {
-       , documentCount: searchRequest.documents.length,
+  documentCount: searchRequest.documents.length,
         resultsFound: sorted.length,
         threshold,
         topK,
@@ -142,16 +142,16 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       timestamp: Date.now()
     });
-  } catch (error) {
-    console.error('Semantic search API error:', error);'
+  } }catch (error) {
+    console.error('Semantic search API error:', error);
     return json(
       {
         error: 'Failed to perform semantic search',
         message: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 /*
  * GET /api/v1/embeddings/search
@@ -161,28 +161,27 @@ export const GET: RequestHandler = async () => {
   return json({
     endpoint: 'POST /api/v1/embeddings/search',
     description: 'GPU-accelerated semantic search using nomic-embed-text embeddings',
-    parameters: {, query: {, type: 'string', required: true, description: 'Search query text' },
-      documents: {, type: 'string[]', required: true, description: 'Array of documents to search' },
-      threshold: {, type: 'number', required: false, default: 0.3, description: 'Minimum similarity threshold' },
-      topK: {, type: 'number', required: false, default: 10, description: 'Maximum: number of results' },
-      useGPU: {, type: 'boolean', required: false, default: true, description: 'Enable GPU acceleration' }'` },'`
+    parameters: { query: { type: 'string', required: true, description: 'Search query text' },
+      documents: { type: 'string[]', required: true, description: 'Array of documents to search' },
+      threshold: { type: 'number', required: false, default: 0.3, description: 'Minimum similarity threshold' },
+      topK: { type: 'number', required: false, default: 10, description: 'Maximum: number of results' },
+      useGPU: { type: 'boolean', required: false, default: true, description: 'Enable GPU acceleration' } }` },'`
     response: {
-     , success: 'boolean',
+  success: 'boolean',
       query: 'string',
       results: [
-        {,
-         , document: 'string',
+        { document: 'string',
           score: 'number',
-          index: `number` }
+          index: `number` } }
       ],
       metadata: {
-       , documentCount: 'number',
+  documentCount: 'number',
         resultsFound: 'number',
         threshold: 'number',
         topK: 'number',
-        gpuUsed: `boolean` }
+        gpuUsed: `boolean` } }
     },
-    examples: {, request: {, query: 'legal contract terms',
+    examples: { request: { query: 'legal contract terms',
         documents: [
           'This contract shall be governed by applicable law',
           'The parties agree to binding arbitration',
@@ -191,8 +190,9 @@ export const GET: RequestHandler = async () => {
         threshold: 0.4,
         topK: 5,
         useGPU: true
-      }
+      } }
     },
     timestamp: Date.now()
   });
 };
+

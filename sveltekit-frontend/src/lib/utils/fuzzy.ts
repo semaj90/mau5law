@@ -22,7 +22,7 @@ const fuse = new Fuse(items.data, options);
 // 4. Client-side Fuzzy Search Function (using Fuse.js and LokiJS data)
 export function clientSideFuzzySearch(query: string) {
   return fuse.search(query);
-}
+} }
 
 // 5. Enhanced Fuzzy Search (combining client-side with optional server-side vector search)
 // This function can make a call to a SvelteKit API endpoint for server-side vector search.
@@ -45,15 +45,15 @@ export async function enhancedFuzzySearch(query: string, useServerSearch: boolea
         const data = await response.json();
         serverResults = data.results || [];
         console.log('Server-side enhanced search results:', serverResults);
-      } else {
+      } }else {
         console.error('Server-side search failed with status:', response.status);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('Error during server-side enhanced search:', error);
       // Fallback to client-side if server search fails
       console.warn('Falling back to client-side fuzzy search due to server error.');
-    }
-  }
+    } }
+  } }
 
   // Perform client-side fuzzy search using Fuse.js
   const clientResults = clientSideFuzzySearch(query);
@@ -74,7 +74,7 @@ export async function enhancedFuzzySearch(query: string, useServerSearch: boolea
       fuseResult.score < combinedResultsMap.get(fuseResult.item.id).score
     ) {
       combinedResultsMap.set(fuseResult.item.id, fuseResult);
-    }
+    } }
   });
 
   // Sort by score (lower score is better for Fuse.js, server results have 0)

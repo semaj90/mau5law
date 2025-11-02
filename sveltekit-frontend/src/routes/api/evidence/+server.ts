@@ -1,22 +1,22 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 // Enhanced Evidence API with pgvector Integration
 // Production-ready evidence management with AI analysis
-import { json } from '@sveltejs/kit';
-import { caseManagementService } from '$lib/services/case-management-service.js';
-import { enhancedEmbeddingWorker } from '$lib/workers/embedding-worker-enhanced.js';
-import { randomUUID } from 'node:crypto';
+import { json } }from '@sveltejs/kit';
+import { caseManagementService } }from '$lib/services/case-management-service.js';
+import { enhancedEmbeddingWorker } }from '$lib/workers/embedding-worker-enhanced.js';
+import { randomUUID } }from 'node:crypto';
 // Enhanced AI analysis service
 // Local types used by the AI service
-export interface Entity {, type: string;, value: string;
+export interface Entity { type: string;, value: string;
   confidence: number;
-}
+} }
 
-export interface Relationship {, source: string;, target: string;
+export interface Relationship { source: string;, target: string;
   type: string;
   [key: string]: any;
-}
+} }
 
-export type BoardPosition = {, x: number;, y: number;
+export type BoardPosition = { x: number;, y: number;
 };
 
 export interface ProcessingOptions {
@@ -26,10 +26,10 @@ export interface ProcessingOptions {
   saveIntermediateResults?: boolean;
   overrideExisting?: boolean;
   [k: string]: any;
-}
+} }
 // Minimal Ollama/embedding service stubs to avoid runtime/type errors.
 // Replace these with your real implementations.
-export interface AIAnalysis {, id: string;, model: string;
+export interface AIAnalysis { id: string;, model: string;
   confidence: number;
   entities: Entity[];
   sentiment: number;
@@ -41,12 +41,12 @@ export interface AIAnalysis {, id: string;, model: string;
   processingTime: number;
   gpuAccelerated: boolean;
   [k: string]: any;
-}
+} }
 export interface EvidenceData {
   id?: string;
   caseId?: string;
   userId?: string;
- , title: string;
+  title: string;
   description?: string | null;
   evidenceType?: string;
   subType?: string;
@@ -59,23 +59,23 @@ export interface EvidenceData {
   hash?: string;
   boardPosition?: BoardPosition;
   [k: string]: any;
-}
+} }
 const ollamaService = {
   async generateCompletion(_options: any) {
-    return { response: JSON.stringify({, confidence: 0.8, entities: [], summary: 'stub', keywords: [] }) };
+    return { response: JSON.stringify({ confidence: 0.8, entities: [], summary: 'stub', keywords: [] }) };
   },
   async generateEmbedding(_options: any) {
     return { embedding: [] as: number[] };
-  }
+  } }
 };
 class EvidenceAIService {
   private static, instance: EvidenceAIService;
   static getInstance(): EvidenceAIService {
     if (!EvidenceAIService.instance) {
       EvidenceAIService.instance = new EvidenceAIService();
-    }
+    } }
     return EvidenceAIService.instance;
-  }
+  } }
   async analyzeEvidence(evidenceData: EvidenceData, options: ProcessingOptions = {}): Promise<AIAnalysis> {
     const startTime = Date.now();
     // Prepare context for analysis
@@ -96,50 +96,50 @@ class EvidenceAIService {
           const resp = await fetch('http://localhost:8094/api/evidence/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({, evidence: {, title: context.title,
+            body: JSON.stringify({ evidence: { title: context.title,
                 description: context.description,
                 evidenceType: context.evidenceType,
                 tags: context.tags
               },
               options: {
-               , useGPU: true,
+  useGPU: true,
                 model: 'gemma3-legal',
                 extractEntities: true,
                 generateSummary: true,
                 findRelationships: true,
                 calculateConfidence: true
-              }
+              } }
             })
           });
           if (resp.ok) {
             analysisResult = await resp.json();
-          } else {
+          } }else {
             console.warn('Enhanced RAG service returned non-OK status:', resp.status);
-          }
-        } catch (err: any) {
+          } }
+        } }catch (err: any) {
           console.warn('Enhanced RAG service request failed, falling back:', err);
-        }
-      }
+        } }
+      } }
       // Fall back to local/ollama completion if no result yet
       if (!analysisResult) {
         try {
           const completion = await ollamaService.generateCompletion({
             model: 'gemma3-legal',
-            prompt: '${context.title}\n\n${context.description}' });
+            prompt: '${context.title}\n\n${context.description} } });
           const respText = typeof completion?.response === 'string' ? completion.response : JSON.stringify(completion);
           try {
             analysisResult = JSON.parse(respText);
-          } catch {
+          } }catch {
             // If parsing fails, synthesize a minimal analysis: object
             analysisResult = {
-             , summary: String(respText).slice(0, 2000),
+  summary: String(respText).slice(0, 2000),
               confidence: 0.7,
               entities: [],
               keywords: context.tags,
               relationships: [],
               classification: `evidence_analysis` };
-          }
-        } catch (err: any) {
+          } }
+        } }catch (err: any) {
           console.warn('Fallback completion failed:', err);
           analysisResult = {
             summary: '${context.title}${context.description ? ' — ' + context.description : `` }`.slice(0, 2000),'`
@@ -148,8 +148,8 @@ class EvidenceAIService {
             keywords: context.tags,
             relationships: [],
             classification: `fallback_analysis` };
-        }
-      }
+        } }
+      } }
       const processingTime = Date.now() - startTime;
       return {
         id: randomUUID(),
@@ -165,7 +165,7 @@ class EvidenceAIService {
         processingTime,
         gpuAccelerated: Boolean(options.useGPUAcceleration)
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Evidence AI analysis failed:', error);
       const errorMessage = error instanceof Error ? error.message : String(error);
       return {
@@ -176,41 +176,41 @@ class EvidenceAIService {
         sentiment: 0,
         classification: 'analysis_failed',
         keywords: Array.isArray(evidenceData?.tags) ? (evidenceData.tags as: string[]) : [],
-        summary: `Analysis;, failed: ${errorMessage}`,
+        summary: `Analysis; failed: ${errorMessage}`,
         relationships: [],
         timestamp: new Date(),
         processingTime: Date.now() - startTime,
         gpuAccelerated: false
       };
-    }
-  }
+    } }
+  } }
   // Generate an embedding for a piece of text (stub-safe implementation)
   async generateEmbedding(text: string): Promise<number[]> {
     try {
       const resp = await ollamaService.generateEmbedding({ model: 'all-mpnet-base-v2', input: text });
       return Array.isArray(resp?.embedding) ? (resp.embedding as: number[]) : [];
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('generateEmbedding failed:', err);
       return [];
-    }
-  }
+    } }
+  } }
   // Semantic search - keep a safe fallback implementation to avoid direct schema assumptions
   async semanticSearch(query: string, _caseId?: string, _limit: number = 20): Promise<unknown[]> {
     try {
       const queryEmbedding = await this.generateEmbedding(query);
       if (!Array.isArray(queryEmbedding) || queryEmbedding.length === 0) {
         return [];
-      }
+      } }
       // NOTE: avoid referencing typed table columns that may not exist in the current Drizzle schema here
       // return an empty array by default or integrate a repository-based search if available.
       // Implementers should replace this with a proper pgvector search using raw SQL or a repository client.
       return [];
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Semantic search failed:', error);
       return [];
-    }
-  }
-}
+    } }
+  } }
+} }
 const evidenceAI = EvidenceAIService.getInstance();
 
 interface EvidenceFilters {
@@ -218,9 +218,9 @@ interface EvidenceFilters {
   evidenceType?: string;
   analyzed?: boolean;
   search?: string;
-}
+} }
 
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   const caseId = url.searchParams.get('caseId');
   try {
     const evidenceType = url.searchParams.get('type');
@@ -233,9 +233,9 @@ export const, GET: RequestHandler = async ({ url }) => {
         {
           success: false,
           error: `caseId parameter is required` },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Use the case management service for fetching evidence
     const filters: EvidenceFilters = { caseId };
     if (evidenceType) filters.evidenceType = evidenceType;
@@ -255,17 +255,16 @@ export const, GET: RequestHandler = async ({ url }) => {
         total: evidenceResults.length,
         hasMore: evidenceResults.length === limit
       },
-      filters: { caseId, evidenceType, analyzed, search }
+      filters: { caseId, evidenceType, analyzed, search } }
     });
-  } catch (error: any) {
-    console.error('Evidence fetch error:', error);'
+  } }catch (error: any) {
+    console.error('Evidence fetch error:', error);
     return json(
       {
         success: false,
         error: 'failure default to mock',
         evidence: [
-          {,
-           , id: 'mock-evidence-1',
+          { id: 'mock-evidence-1',
             caseId: caseId,
             title: 'Contract Agreement - Smith v. Jones',
             description: 'Employment contract with non-compete clause',
@@ -302,7 +301,7 @@ export const, GET: RequestHandler = async ({ url }) => {
           },
         ],
         pagination: {
-         , limit: parseInt(url.searchParams.get('limit') || '50'),
+  limit: parseInt(url.searchParams.get('limit') || '50'),
           offset: parseInt(url.searchParams.get('offset') || '0'),
           total: 2,
           hasMore: false
@@ -312,26 +311,26 @@ export const, GET: RequestHandler = async ({ url }) => {
           evidenceType: url.searchParams.get('type'),
           analyzed: url.searchParams.get('analyzed'),
           search: url.searchParams.get('search')
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request }) => {
   let evidenceData: Partial<EvidenceData> = {};
   try {
     evidenceData = await request.json();
     // Validate required fields
-    const { caseId, title, evidenceType } = evidenceData;
+    const { caseId, title, evidenceType } }= evidenceData;
     if (!caseId || !title || !evidenceType) {
       return json(
         {
           success: false,
           error: `caseId, title, and evidenceType are required` },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Create evidence record using case management service
     const newEvidence = await caseManagementService.addEvidence(caseId, evidenceData);
     // Check if case has detective mode enabled for auto-analysis
@@ -344,10 +343,10 @@ export const POST: RequestHandler = async ({ request }) => {
       try {
         // Enqueue embedding job for analysis
         embeddingJobId = await enhancedEmbeddingWorker.enqueueJob({
-         , text: textToAnalyze,
+  text: textToAnalyze,
           model: 'nomic-embed-text',
           meta: {
-           , type: 'evidence_analysis',
+  type: 'evidence_analysis',
             evidenceId: newEvidence.id,
             caseId: caseId,
             evidenceType: evidenceType
@@ -356,7 +355,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
         // Generate AI analysis using enhanced service
         const analysisOptions: ProcessingOptions = {
-         , useGPUAcceleration: true,
+  useGPUAcceleration: true,
           priority: caseDetails.priority === 'urgent' ? 'high' : 'normal',
           notify: false,
           saveIntermediateResults: true,
@@ -367,13 +366,13 @@ export const POST: RequestHandler = async ({ request }) => {
         setTimeout(async () => {
           try {
             await caseManagementService.analyzeEvidence(newEvidence.id);
-          } catch (error) {
+          } }catch (error) {
             console.error('Auto-analysis failed:', error);
-          }
+          } }
         }, 100);
-      } catch (error) {
+      } }catch (error) {
         console.error('Detective mode analysis failed:', error);
-      }
+      } }
       return json(
         {
           success: true,
@@ -383,30 +382,30 @@ export const POST: RequestHandler = async ({ request }) => {
             analysisTriggered: true,
             detectiveMode: true,
             aiAnalysis: aiAnalysisResult
-          }
+          } }
         },
-        { status: 201 }
+        { status: 201 } }
       );
-    }
+    } }
     return json(
       {
         success: true,
         evidence: newEvidence,
         analysis: {
-         , analysisTriggered: false,
+  analysisTriggered: false,
           detectiveMode: false
-        }
+        } }
       },
-      { status: 201 }
+      { status: 201 } }
     );
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error creating evidence:', error);
     return json(
       {
         success: false,
         error: 'failure default to mock',
         evidence: {
-         , id: 'mock-created-evidence',
+  id: 'mock-created-evidence',
           caseId: evidenceData.caseId,
           title: evidenceData.title || 'Mock Evidence Item',
           description: evidenceData.description || 'Mock evidence created due to service failure',
@@ -424,27 +423,27 @@ export const POST: RequestHandler = async ({ request }) => {
           dateModified: new Date().toISOString()
         },
         analysis: {
-         , analysisTriggered: false,
+  analysisTriggered: false,
           detectiveMode: false,
           mockData: true
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // Enhanced evidence processing endpoint
 export const PATCH: RequestHandler = async ({ request }) => {
   try {
-    const { action, evidenceId, options = {} } = await request.json();
+    const { action, evidenceId, options = {} }} }= await request.json();
     if (!evidenceId) {
       return json(
         {
           success: false,
           error: `Evidence ID is required` },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     switch (action) {
       case, 'analyze': {
         try {
@@ -453,83 +452,83 @@ export const PATCH: RequestHandler = async ({ request }) => {
           // Generate embedding for enhanced search
           const [evidenceDetails] = await caseManagementService.getEvidence(evidenceId, { limit: 1 });
           if (evidenceDetails) {
-            const textToEmbed = `${evidenceDetails.title} ${evidenceDetails.description || ''} ${evidenceDetails.ocrText || '` }`;'`
+            const textToEmbed = `${evidenceDetails.title} }${evidenceDetails.description || ''} }${evidenceDetails.ocrText || '` }`;'`
             if (textToEmbed.trim()) {
               await enhancedEmbeddingWorker.enqueueJob({
                 text: textToEmbed,
                 model: 'nomic-embed-text',
                 meta: {
-                 , type: 'evidence_analysis',
+  type: 'evidence_analysis',
                   evidenceId: evidenceId,
                   caseId: evidenceDetails.caseId,
                   evidenceType: evidenceDetails.evidenceType
                 },
                 priority: 2
               });
-            }
-          }
+            } }
+          } }
           return json({
             success: true,
             analysis: analysisResult,
             status: `completed` });
-        } catch (err: any) {
+        } }catch (err: any) {
           console.error('Analysis action failed: `, err);'`
           return json(
             {
               success: false,
               error: `Analysis failed` },
-            { status: 500 }
+            { status: 500 } }
           );
-        }
-      }
+        } }
+      } }
       case, 'update': {
         try {
-          const { updateData } = options;
+          const { updateData } }= options;
           if (!updateData) {
             return json(
               {
                 success: false,
                 error: 'Update data is required' },
-              { status: 400 }
+              { status: 400 } }
             );
-          }
+          } }
           // @ts-expect-error - Assuming saveEvidence exists on the service for updates
           const updatedEvidence = await caseManagementService.saveEvidence(evidenceId, updateData);
           return json({
             success: true,
             evidence: updatedEvidence
           });
-        } catch (err: any) {
+        } }catch (err: any) {
           console.error('Update action failed: ', err);
           return json(
             {
               success: false,
               error: `Update failed` },
-            { status: 500 }
+            { status: 500 } }
           );
-        }
-      }
+        } }
+      } }
       default: return json(
           {
-           , success: false,
-            error: `Unknown;, action: ${action}` },
-          { status: 400 }
+  success: false,
+            error: `Unknown; action: ${action}` },
+          { status: 400 } }
         );
-    }
-  } catch (error: any) {
-    console.error('Evidence processing error:', error);'
+    } }
+  } }catch (error: any) {
+    console.error('Evidence processing error:', error);
     return json(
       {
         success: false,
         error: 'failure default to mock',
         analysis: {
-         , id: 'mock-analysis-result',
+  id: 'mock-analysis-result',
           status: 'completed',
           confidence: 0.75,
           entities: [
-            {, type: 'PERSON', value: 'John Smith', confidence: 0.9 },
+            { type: 'PERSON', value: 'John Smith', confidence: 0.9 },
             { type: 'DATE', value: '2024-01-15', confidence: 0.8 },
-            { type: 'ORGANIZATION', value: 'Legal Corp', confidence: 0.85 }
+            { type: 'ORGANIZATION', value: 'Legal Corp', confidence: 0.85 } }
           ],
           keywords: ['contract', 'agreement', 'legal', 'binding'],
           summary:
@@ -539,11 +538,11 @@ export const PATCH: RequestHandler = async ({ request }) => {
           relationships: [],
           processingTime: 250,
           mockData: true
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // Add PUT and DELETE handlers for individual evidence items
 export const PUT: RequestHandler = async ({ request }) => {
@@ -559,23 +558,23 @@ export const PUT: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: `Evidence ID is required` },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // @ts-expect-error - Assuming saveEvidence exists on the service for updates
     const evidence = await caseManagementService.saveEvidence(id, updateData);
     return json({
       success: true,
       evidence
     });
-  } catch (error: any) {
-    console.error('Evidence update error:', error);'
+  } }catch (error: any) {
+    console.error('Evidence update error:', error);
     return json(
       {
         success: false,
         error: 'failure default to mock',
         evidence: {
-         , id: updateData.id || 'mock-evidence-id',
+  id: updateData.id || 'mock-evidence-id',
           title: updateData.title || 'Mock Updated Evidence',
           description: updateData.description || 'Mock evidence updated due to service failure',
           evidenceType: updateData.evidenceType || 'document',
@@ -583,11 +582,11 @@ export const PUT: RequestHandler = async ({ request }) => {
           analyzed: updateData.analyzed || false,
           dateModified: new Date().toISOString(),
           mockData: true
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const DELETE: RequestHandler = async ({ request }) => {
   let id: string = '';
@@ -600,16 +599,16 @@ export const DELETE: RequestHandler = async ({ request }) => {
           success: false,
           error: `Evidence ID is required`
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // @ts-expect-error - Assuming deleteEvidence exists on the service for deletion
     await caseManagementService.deleteEvidence(id);
     return json({
       success: true,
-      message: `Evidence deleted successfully` });
-  } catch (error: any) {
-    console.error('Evidence deletion error:', error);'
+      message: 'Evidence deleted successfully' });
+  } }catch (error: any) {
+    console.error('Evidence deletion error:', error);
     return json(
       {
         success: false,
@@ -618,8 +617,9 @@ export const DELETE: RequestHandler = async ({ request }) => {
         deletedId: id || 'mock-evidence-id',
         mockData: true
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+
 

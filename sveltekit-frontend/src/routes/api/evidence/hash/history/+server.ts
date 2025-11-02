@@ -1,16 +1,16 @@
-import { evidence, hashVerifications, users } from '$lib/server/db/schema-postgres';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import type { RequestHandler } from './$types';
-import { eq, desc } from 'drizzle-orm';
+import { evidence, hashVerifications, users } }from '$lib/server/db/schema-postgres';
+import { json } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db/index';
+import type { RequestHandler } }from './$types';
+import { eq, desc } }from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-  const auth = (locals as { user?: { id?: string } | null }) ?? {};
+  const auth = (locals as { user?: { id?: string } }| null }) ?? {};
   const user = auth.user ?? null;
   const userId = user?.id ?? null;
   if (!userId) {
     return json({ error: 'Not authenticated' }, { status: 401 });
-  }
+  } }
 
   const body = (await request.json()) as {
     evidenceId?: string;
@@ -19,16 +19,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     notes?: string;
   };
 
-  const { evidenceId, verifiedHash, method = 'manual', notes } = body;
+  const { evidenceId, verifiedHash, method = 'manual', notes } }= body;
 
   if (!evidenceId || !verifiedHash) {
     return json({ error: 'evidenceId and verifiedHash required' }, { status: 400 });
-  }
+  } }
 
   // Validate hash format (SHA-256 hex)
   if (!/^[a-f0-9]{64}$/i.test(verifiedHash)) {
     return json({ error: 'Invalid hash format' }, { status: 400 });
-  }
+  } }
 
   try {
     // Get the evidence item
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     if (evidenceItems.length === 0) {
       return json({ error: 'Evidence not found' }, { status: 404 });
-    }
+    } }
 
     const item = evidenceItems[0];
     const storedHash = (item as { hash?: string }).hash ?? null;
@@ -72,22 +72,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           : 'Hash verification failed - file may have been modified',
         verifiedAt: new Date().toISOString()
       },
-      { status: 200 }
+      { status: 200 } }
     );
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error recording hash verification:', error);
     const details = error instanceof Error ? error.message : String(error);
     return json({ error: 'Failed to record verification', details }, { status: 500 });
-  }
+  } }
 };
 
 export const GET: RequestHandler = async ({ url, locals }) => {
-  const auth = (locals as { user?: { id?: string } | null }) ?? {};
+  const auth = (locals as { user?: { id?: string } }| null }) ?? {};
   const user = auth.user ?? null;
   const userId = user?.id ?? null;
   if (!userId) {
     return json({ error: 'Not authenticated' }, { status: 401 });
-  }
+  } }
 
   try {
     const limit = Math.max(1, parseInt(url.searchParams.get('limit') || '20'));
@@ -120,9 +120,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const verifications = await filteredQuery.orderBy(desc(hashVerifications.verifiedAt)).limit(limit).offset(offset);
 
     return json(verifications, { status: 200 });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error fetching hash verification history:', error);
     const details = error instanceof Error ? error.message : String(error);
     return json({ error: 'Failed to fetch verification history', details }, { status: 500 });
-  }
+  } }
 };
+

@@ -1,5 +1,5 @@
 // Zod schemas for vector search & RAG endpoints
-import { z } from 'zod';
+import { z } }from 'zod';
 export const vectorSearchRequestSchema = z.object({
   query: z.string().min(1),
   userId: z.string().min(1),
@@ -8,8 +8,7 @@ export const vectorSearchRequestSchema = z.object({
   threshold: z.number().min(0).max(1).default(0.7)
 });
 export const vectorSearchResponseSchema = z.object({
-  results: z.array(z.object({,
-    id: z.string().optional(),
+  results: z.array(z.object({ id: z.string().optional(),
     score: z.number().optional(),
     content: z.string().optional(),
     metadata: z.record(z.any()).optional()
@@ -33,8 +32,7 @@ export const similarCasesRequestSchema = z.object({
 });
 // Minimal response schema to satisfy imports and provide type safety
 export const similarCasesResponseSchema = z.object({
-  cases: z.array(z.object({,
-    id: z.string().optional(),
+  cases: z.array(z.object({ id: z.string().optional(),
     caseNumber: z.string().optional(),
     title: z.string().optional(),
     description: z.string().optional(),

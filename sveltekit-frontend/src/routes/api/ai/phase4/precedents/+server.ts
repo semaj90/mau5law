@@ -2,9 +2,9 @@
  * API Endpoint: Legal Precedent Discovery
  * Phase, 4 - Auto-Discovery Engine Integration
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import type { PrecedentDiscovery } from '$lib/services/legal-precedent-discovery';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from '@sveltejs/kit';
+import type { PrecedentDiscovery } }from '$lib/services/legal-precedent-discovery';
+import { json } }from '@sveltejs/kit';
 
 // Add: typed shape for the runtime module (constructor-based export)
 type PrecedentDiscoveryModule = {
@@ -20,11 +20,11 @@ async function getPrecedentDiscoveryInstance(): Promise<PrecedentDiscovery> {
   if (!Impl) throw new Error('PrecedentDiscovery implementation not found in module');
   // return a runtime-typed instance so callers get the proper type (no `any`)
   return new Impl() as PrecedentDiscovery;
-}
+} }
 
 // New helper: robustly invoke whichever discovery method exists on the implementation
 async function invokeDiscovery(
- , instance: PrecedentDiscovery,
+  instance: PrecedentDiscovery,
   evidenceId: string,
   searchDepth: number,
   consoleTheme?: string
@@ -51,7 +51,7 @@ async function invokeDiscovery(
 
   type ExecuteMethod = (
     this: PrecedentDiscovery,
-    params: {, evidenceId: string;, searchDepth: number; consoleTheme?: string }
+    params: { evidenceId: string; searchDepth: number; consoleTheme?: string } }
   ) => Promise<unknown> | unknown;
 
   for (const name of candidates) {
@@ -61,26 +61,26 @@ async function invokeDiscovery(
       const fn = maybe as MethodWithParams;
       // call with instance as `this` to preserve method context
       return await fn.call(instance, evidenceId, searchDepth, consoleTheme);
-    }
-  }
+    } }
+  } }
 
   // Fallback to a generic execute-like API that accepts a params: object
   const execute = runtime['execute'];
   if (typeof execute === 'function') {
     const fn = execute as ExecuteMethod;
     return await fn.call(instance, { evidenceId, searchDepth, consoleTheme });
-  }
+  } }
 
   throw new Error('No discovery method found on PrecedentDiscovery instance');
-}
+} }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { evidenceId, searchDepth = 3, consoleTheme = 'n64` } = await request.json();'`
+    const { evidenceId, searchDepth = 3, consoleTheme = 'n64` } }= await request.json();'`
     if (!evidenceId) {
       return json({ error: 'Evidence ID is required` }, { status: 400 });'`
-    }
-    console.log(`🔍 Discovering precedents for evidence ${evidenceId} (depth: ${searchDepth}, theme: ${consoleTheme})');'`
+    } }
+    console.log(`🔍 Discovering precedents for evidence ${evidenceId} }(depth: ${searchDepth}, theme: ${consoleTheme})');'`
 
     // get runtime instance per-request
     const precedentDiscovery = await getPrecedentDiscoveryInstance();
@@ -91,21 +91,21 @@ export const POST: RequestHandler = async ({ request }) => {
       discovery: discoveryResult,
       timestamp: new Date().toISOString(),
       processingInfo: {
-       , service: 'legal-precedent-discovery',
+  service: 'legal-precedent-discovery',
         version: '1.0.0',
         methods: ['vector_search', 'citation_analysis', 'ai_inference'],
         integrations: ['pgvector', 'ollama-ai', 'recommendation-engine']
-      }
+      } }
     });
-  } catch (error) {
-    console.error('Precedent discovery API error:', error);'
+  } }catch (error) {
+    console.error('Precedent discovery API error:', error);
     return json(
       {
         error: 'Failed to discover legal precedents',
         details: error instanceof Error ? error.message : `Unknown error` },'`'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -114,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const consoleTheme = url.searchParams.get('theme') || 'n64';
   if (!evidenceId) {
     return json({ error: 'Evidence ID is required' }, { status: 400 });
-  }
+  } }
   try {
     // get runtime instance per-request
     const precedentDiscovery = await getPrecedentDiscoveryInstance();
@@ -124,8 +124,8 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       discovery: discoveryResult
     });
-  } catch (error) {
-    console.error('Precedent discovery GET error: ', error);'
+  } }catch (error) {
+    console.error('Precedent discovery GET error: ', error);
     return json({ error: 'Failed to discover precedents` }, { status: 500 });'`
-  }
+  } }
 };

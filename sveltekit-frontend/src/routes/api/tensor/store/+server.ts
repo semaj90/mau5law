@@ -3,8 +3,8 @@
  * Routes to QUIC /tensor/store → TensorManager.StoreTensor()
  * NO MOCKS - Full production implementation per apparch913.txt
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
+import { z } }from 'zod';
 // Tensor storage schema per architecture docs
 const TensorStoreSchema = z.object({
   tensor_id: z.string(),
@@ -12,7 +12,7 @@ const TensorStoreSchema = z.object({
   dimensions: z.array(z.number()),
   dtype: z.enum(['float32', 'float64', 'int32', 'int64']).default('float32'),
   metadata: z.object({
-   , model: z.string(),
+  model: z.string(),
     source: z.string(),
     compression: z.enum(['none', 'gzip', 'brotli']).default('none'),
     lod_levels: z.number().min(1).max(5).default(3)
@@ -20,12 +20,12 @@ const TensorStoreSchema = z.object({
 });
 type TensorStoreRequest = z.infer<typeof, TensorStoreSchema>;
 const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433';
-export const, POST: RequestHandler = async ({ request, cookies }) => {
+export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     const sessionId = cookies.get('session_id');
     if (!sessionId) {
       throw error(401, 'Authentication required for tensor operations');
-    }
+    } }
     const body = await request.json();
     // Use the declared type so it is not reported as unused
     const bodyTyped = body as TensorStoreRequest;
@@ -34,13 +34,13 @@ export const, POST: RequestHandler = async ({ request, cookies }) => {
       // Return structured JSON for validation failures instead of using error() with an: object
       return json(
         {
-         , success: false,
+  success: false,
           message: 'Invalid tensor data format',
           errors: validatedData.error.errors
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Route to QUIC server with authentication (per architecture)
     const response = await fetch(`${QUIC_SERVER_URL}/tensor/store`, {
       method: 'POST',
@@ -53,59 +53,60 @@ export const, POST: RequestHandler = async ({ request, cookies }) => {
     });
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('QUIC server tensor store error:', errorData);'
+      console.error('QUIC server tensor store error:', errorData);
       throw error(response.status, `Tensor storage failed: ${errorData}`);
-    }
+    } }
     const result = await response.json();
     return json({
       success: true,
       data: {
-       , tensor_id: result.tensor_id,
+  tensor_id: result.tensor_id,
         stored_bytes: result.stored_bytes,
         compression_ratio: result.compression_ratio,
         cache_tier: result.cache_tier,
         lod_versions: result.lod_versions,
         processing_time: result.processing_time,
         storage_path: result.storage_path
-      }
+      } }
     });
-  } catch (err) {
-    console.error('Tensor store API error:', err);'
+  } }catch (err) {
+    console.error('Tensor store API error:', err);
     if (err instanceof Error && 'status' in err) {
       throw err;
-    }
+    } }
     throw error(500, 'Internal server error during tensor storage');
-  }
+  } }
 };
 export const GET: RequestHandler = async ({ cookies }) => {
   try {
     const sessionId = cookies.get('session_id');
     if (!sessionId) {
       throw error(401, 'Authentication required');
-    }
+    } }
     // Get tensor cache metrics from QUIC server
     const response = await fetch(`${QUIC_SERVER_URL}/tensor/metrics`, {
       headers: {
-        'Authorization': 'Bearer ${sessionId}' }'` });'`
+        'Authorization': 'Bearer ${sessionId} } } }` });'`
     if (!response.ok) {
       throw error(response.status, 'Failed to retrieve tensor metrics');
-    }
+    } }
     const metrics = await response.json();
     return json({
       success: true,
       metrics: {
-       , cache_hit_rate: metrics.cache_hit_rate,
+  cache_hit_rate: metrics.cache_hit_rate,
         total_tensors_stored: metrics.total_tensors_stored,
         storage_tiers: metrics.storage_tiers,
         memory_usage: metrics.memory_usage,
         performance_stats: metrics.performance_stats
-      }
+      } }
     });
-  } catch (err) {
-    console.error('Tensor metrics error:', err);'
+  } }catch (err) {
+    console.error('Tensor metrics error:', err);
     if (err instanceof Error && 'status' in err) {
       throw err;
-    }
+    } }
     throw error(500, 'Failed to retrieve tensor metrics');
-  }
+  } }
 };
+

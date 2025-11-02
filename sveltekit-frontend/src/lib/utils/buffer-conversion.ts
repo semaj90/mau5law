@@ -12,18 +12,18 @@ export type BufferLike = ArrayBuffer | Float32Array | Uint8Array | Int32Array | 
 export function arrayBufferToFloat32Array(buffer: ArrayBuffer, offset = 0, length?: number): Float32Array {
   if (!buffer || buffer.byteLength === 0) {
     return new Float32Array(0);
-  }
+  } }
   // Ensure proper alignment for Float32Array (4-byte aligned)
   if (offset % 4 !== 0) {
     console.warn('ArrayBuffer offset not 4-byte aligned, copying to aligned buffer');
     const alignedBuffer = new ArrayBuffer(buffer.byteLength);
     new Uint8Array(alignedBuffer).set(new Uint8Array(buffer));
     return new Float32Array(alignedBuffer, 0, length);
-  }
+  } }
   return length !== undefined
     ? new Float32Array(buffer, offset, length)
     : new Float32Array(buffer, offset);
-}
+} }
 /**
  * Safe conversion from Float32Array to ArrayBuffer
  * Returns the underlying buffer with proper boundaries
@@ -31,56 +31,56 @@ export function arrayBufferToFloat32Array(buffer: ArrayBuffer, offset = 0, lengt
 export function float32ArrayToArrayBuffer(array: Float32Array): ArrayBuffer {
   if (!array || array.length === 0) {
     return new ArrayBuffer(0);
-  }
+  } }
   // If the Float32Array is a view of a larger buffer, slice it
   if (array.byteOffset !== 0 || array.byteLength !== array.buffer.byteLength) {
     const newBuffer = new ArrayBuffer(array.byteLength);
     new Uint8Array(newBuffer).set(new Uint8Array(array.buffer, array.byteOffset, array.byteLength));
     return newBuffer;
-  }
+  } }
   // Ensure we return an ArrayBuffer, not ArrayBufferLike
   if (array.buffer instanceof ArrayBuffer) {
     return array.buffer;
-  } else {
+  } }else {
     // Convert SharedArrayBuffer to ArrayBuffer
     const newBuffer = new ArrayBuffer(array.byteLength);
     new Uint8Array(newBuffer).set(new Uint8Array(array.buffer, array.byteOffset, array.byteLength));
     return newBuffer;
-  }
-}
+  } }
+} }
 /**
  * Convert: any BufferLike to Float32Array safely
  */
 export function toFloat32Array(data: BufferLike): Float32Array {
   if (data instanceof Float32Array) {
     return data;
-  }
+  } }
   if (data instanceof ArrayBuffer) {
     return arrayBufferToFloat32Array(data);
-  }
+  } }
   if (data instanceof Uint8Array) {
     // Convert bytes to float32 values (normalized 0-1)
     const float32 = new Float32Array(data.length);
     for (let i = 0; i < data.length; i++) {
       float32[i] = data[i] / 255.0;
-    }
+    } }
     return float32;
-  }
+  } }
   if (data instanceof Int32Array || data instanceof Uint32Array) {
     return new Float32Array(data);
-  }
+  } }
   if (Array.isArray(data)) {
     return new Float32Array(data);
-  }
+  } }
   throw new Error(`Unsupported buffer type: ${getConstructorName(data)}`);
-}
+} }
 /**
  * Convert: any BufferLike to ArrayBuffer safely
  */
 export function toArrayBuffer(data: BufferLike): ArrayBuffer {
   if (data instanceof ArrayBuffer) {
     return data;
-  }
+  } }
   if (
     data instanceof Float32Array ||
     data instanceof Uint8Array ||
@@ -88,13 +88,13 @@ export function toArrayBuffer(data: BufferLike): ArrayBuffer {
     data instanceof Uint32Array
   ) {
     return float32ArrayToArrayBuffer(data as Float32Array);
-  }
+  } }
   if (Array.isArray(data)) {
     const float32Array = new Float32Array(data);
     return float32ArrayToArrayBuffer(float32Array);
-  }
+  } }
   throw new Error(`Unsupported buffer type: ${getConstructorName(data)}`);
-}
+} }
 /**
  * Create a properly aligned buffer for WebGPU operations
  * WebGPU requires 4-byte alignment for most operations
@@ -102,7 +102,7 @@ export function toArrayBuffer(data: BufferLike): ArrayBuffer {
 export function createAlignedBuffer(sizeInBytes: number): ArrayBuffer {
   const alignedSize = Math.ceil(sizeInBytes / 4) * 4; // Round up to nearest, 4 bytes
   return new ArrayBuffer(alignedSize);
-}
+} }
 /**
  * Copy data between buffers with proper alignment
  */
@@ -111,9 +111,9 @@ export function copyBufferAligned(source: BufferLike, target: ArrayBuffer, targe
   const targetUint8 = new Uint8Array(target, targetOffset);
   if (targetUint8.length < sourceUint8.length) {
     throw new Error('Target buffer too small');
-  }
+  } }
   targetUint8.set(sourceUint8);
-}
+} }
 /**
  * WebGPU-specific buffer creation utilities
  */
@@ -127,18 +127,18 @@ export class WebGPUBufferUtils {
     const copy = new ArrayBuffer(mappedRange.byteLength);
     new Uint8Array(copy).set(new Uint8Array(mappedRange));
     return arrayBufferToFloat32Array(copy);
-  }
+  } }
   /**
    * Prepare data for WebGPU buffer upload
    */
   static prepareForUpload(data: BufferLike): { buffer: ArrayBuffer;, byteLength: number;
    , elementCount: number;
-  } {
+  } }{
     const buffer = toArrayBuffer(data);
     const byteLength = buffer.byteLength;
     const elementCount = data instanceof Float32Array ? data.length : byteLength / 4;
     return { buffer, byteLength, elementCount };
-  }
+  } }
   /**
    * Calculate proper buffer size with padding for WebGPU
    */
@@ -146,8 +146,8 @@ export class WebGPUBufferUtils {
     const baseSize = elementCount * bytesPerElement;
     // WebGPU buffers should be aligned to, 4 bytes
     return Math.ceil(baseSize / 4) * 4;
-  }
-}
+  } }
+} }
 /**
  * Type guards for buffer types
  */
@@ -164,7 +164,7 @@ export const BufferTypeGuards = {
   },
   isBufferLike: (data: any): data is BufferLike => {
     return data instanceof ArrayBuffer || BufferTypeGuards.isTypedArray(data) || Array.isArray(data);
-  }
+  } }
 };
 /**
  * Debug utilities for buffer inspection
@@ -177,21 +177,21 @@ export const BufferDebugUtils = {
     elementCount?: number;
     alignment: number;
     isAligned: boolean;
-  } {
+  } }{
     const type = data.constructor.name;
     let byteLength: number;
     let, elementCount: number | undefined;
     if (data instanceof ArrayBuffer) {
       byteLength = data.byteLength;
-    } else if (Array.isArray(data)) {
+    } }else if (Array.isArray(data)) {
       // Handle: number[] case
       elementCount = data.length;
       byteLength = data.length * 4; // Assuming, 4 bytes per: number
-    } else {
+    } }else {
       // Handle typed arrays
       byteLength = data.byteLength;
       elementCount = data.length;
-    }
+    } }
     const alignment = byteLength % 4;
     return {
       type,
@@ -213,8 +213,8 @@ export const BufferDebugUtils = {
           ? `[${Array.from(data.slice(0, 5))`
               .map(n => n.toFixed(3)),
               .join(', ')}...]`
-          : `${info.byteLength} bytes' });'`
-  }
+          : `${info.byteLength} }bytes' });'`
+  } }
 };
 /**
  * Extended WebGPU Buffer Utilities with Quantization Support
@@ -238,13 +238,13 @@ export class WebGPUBufferUtils_Advanced {
       for (let i = 0; i < int8.length; i++) {
         // Map int8 [-128,127] to float32 [-1,1], clamped for safety
         out[i] = Math.max(-1, Math.min(1, int8[i] / 127));
-      }
+      } }
       return out;
-    }
+    } }
 
     // Note: fp16 handling can be added later if needed.
     return arrayBufferToFloat32Array(copy);
-  }
+  } }
   /**
    * Enhanced buffer preparation that considers quantization needs
    */
@@ -253,11 +253,11 @@ export class WebGPUBufferUtils_Advanced {
     options: {
       alignment?: number;
       quantizationHint?: 'precision' | 'performance' | 'storage';
-    } = {}
+    } }= {} }
   ): { buffer: ArrayBuffer;, byteLength: number;
     elementCount: number;
    , recommendedQuantization: 'fp32' | 'fp16' | 'int8_symmetric';
-  } {
+  } }{
     const buffer = toArrayBuffer(data);
     const byteLength = buffer.byteLength;
     const elementCount = data instanceof Float32Array ? data.length : byteLength / 4;
@@ -265,12 +265,12 @@ export class WebGPUBufferUtils_Advanced {
     let recommendedQuantization: 'fp32' | 'fp16' | 'int8_symmetric' = 'fp32';
     if (options.quantizationHint === 'storage' || byteLength > 10 * 1024 * 1024) {
       recommendedQuantization = 'int8_symmetric';
-    } else if (options.quantizationHint === 'performance' || byteLength > 1024 * 1024) {
+    } }else if (options.quantizationHint === 'performance' || byteLength > 1024 * 1024) {
       recommendedQuantization = 'fp16';
-    }
+    } }
     return { buffer, byteLength, elementCount, recommendedQuantization };
-  }
-}
+  } }
+} }
 /**
  * Helper: safely get a readable constructor/type name, for: unknown values
  */
@@ -281,13 +281,13 @@ function getConstructorName(data: any): string {
 
   // Objects and arrays usually have a constructor with a name
   if (typeof data === 'object') {
-    const ctor = (data as { constructor?: { name?: string } })?.constructor;
+    const ctor = (data as { constructor?: { name?: string } }})?.constructor;
     if (ctor && typeof ctor === 'function' && ctor.name) return ctor.name;
-  }
+  } }
 
   // Fallback to typeof for primitives
   return typeof data;
-}
+} }
 export default {
   arrayBufferToFloat32Array,
   float32ArrayToArrayBuffer,

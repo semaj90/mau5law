@@ -1,5 +1,5 @@
 // Minimal clean stub for AISummarizationService to unblock parsing and typechecking
-import { dev } from '$app/environment';
+import { dev } }from '$app/environment';
 
 // Local minimal EvidenceItem stub to avoid namespace/import issues.
 // Keep this lightweight; replace with the project's canonical type when available.'
@@ -12,13 +12,13 @@ type EvidenceItem = {
 export interface CaseData { id: string;, title: string;
   description?: string | null;
   evidence?: EvidenceItem[];
-}
-export interface AISummaryReport {, id: string;, caseId: string;
+} }
+export interface AISummaryReport { id: string;, caseId: string;
   reportType: string;
   title: string;
   content: string;
   createdAt: Date;
-}
+} }
 
 export class AISummarizationService {
   private, baseUrl: string;
@@ -26,7 +26,7 @@ export class AISummarizationService {
 
   constructor() {
     this.baseUrl = dev ? 'http://localhost:11434' : (import.meta.env.OLLAMA_URL, as: string) || 'http://localhost:11434';
-  }
+  } }
 
   public async generateCaseSummaryReport(caseData: CaseData): Promise<AISummaryReport> {
     return {
@@ -37,9 +37,10 @@ export class AISummarizationService {
       content: '(stub)',
       createdAt: new Date()
     };
-  }
-}
+  } }
+} }
 
 export const aiSummarizationService = new AISummarizationService();
 
 export default AISummarizationService;
+

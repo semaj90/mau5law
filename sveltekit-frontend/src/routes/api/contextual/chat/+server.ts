@@ -8,22 +8,22 @@
  * - Next-step predictions
  */
 
-import { json } from '@sveltejs/kit';
-import { agenticGemma3 } from '$lib/server/ai/gemma3-agentic-functions';
-import { transcribeBuffer } from '$lib/server/ai/voice/recognizer';
-import type { RequestHandler } from '@sveltejs/kit'; // Corrected import path
+import { json } }from '@sveltejs/kit';
+import { agenticGemma3 } }from '$lib/server/ai/gemma3-agentic-functions';
+import { transcribeBuffer } }from '$lib/server/ai/voice/recognizer';
+import type { RequestHandler } }from '@sveltejs/kit'; // Corrected import path
 
-export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { // Renamed: 'cookies';, to: '_cookies'
+export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { // Renamed: 'cookies'; to: '_cookies'
   try {
     const body = await request.json();
-  const { message, sessionId, userId, enableFunctions = true, audioBase64 } = body;
+  const { message, sessionId, userId, enableFunctions = true, audioBase64 } }= body;
 
     if (!message || !sessionId || !userId) {
       return json(
         { error: 'Missing required, fields: message, sessionId, userId' },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // If an audio payload is provided (base64), transcribe it and use transcript as message
     let promptMessage = message;
@@ -32,10 +32,10 @@ export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { 
         const raw = Buffer.from(audioBase64, 'base64');
         // transcribeBuffer is used directly to allow streaming-friendly buffer handling
         promptMessage = await transcribeBuffer(raw);
-      } catch (e) {
+      } }catch (e) {
         console.warn('Audio transcription failed:', e);
-      }
-    }
+      } }
+    } }
 
     // Generate response with agentic function calling
     const response = await agenticGemma3.generateWithFunctions({
@@ -51,28 +51,29 @@ export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { 
     return json({
       success: true,
       data: {
-       , response: response.text,
+  response: response.text,
         functionCalls: response.functionCalls,
         metadata: {
-         , model: response.model,
+  model: response.model,
           confidence: response.confidence,
           duration: response.duration
-        }
-      }
+        } }
+      } }
     });
-  } catch (error) {
-    console.error('Contextual chat error:', error);'
+  } }catch (error) {
+    console.error('Contextual chat error:', error);
 
     return json(
       {
         success: false,
         error: {
-         , code: 'CHAT_ERROR',
+  code: 'CHAT_ERROR',
           message: error instanceof Error ? error.message : 'Unknown error'
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+
 

@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * API Endpoint: Context-Aware AI Chat
  * Phase, 4 - AI Memory Integration
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { contextAwareMemory } from '$lib/services/context-aware-ai-memory';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { contextAwareMemory } }from '$lib/services/context-aware-ai-memory';
+import { json } }from '@sveltejs/kit';
 
 // Local expected shape for the contextual AI response (safe guards)
 type ExpectedAIResponse = {
@@ -18,11 +18,11 @@ type ExpectedAIResponse = {
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { caseId, query, consoleTheme = 'n64', updateMemory = true } = await request.json();
+    const { caseId, query, consoleTheme = 'n64', updateMemory = true } }= await request.json();
 
     if (!caseId || !query) {
       return json({ error: 'Case ID and query are required' }, { status: 400 });
-    }
+    } }
 
     console.log(`🧠 Context-aware AI query for case ${caseId}: "${query.substring(0, 50)}..."`);
 
@@ -43,13 +43,13 @@ export const POST: RequestHandler = async ({ request }) => {
     let respText = '';
     if (typeof ai.response === 'string') {
       respText = ai.response;
-    } else {
+    } }else {
       const textVal = rawObj['text'];
       const dataVal = rawObj['data'];
       const alt = typeof textVal === 'string' ? textVal : dataVal;
       if (typeof alt === 'string') respText = alt;
       else if (alt !== undefined) respText = String(alt);
-    }
+    } }
 
     // Safely extract arrays and coerce/filter to expected element types
     const contextUsed = Array.isArray(ai.contextUsed)
@@ -77,26 +77,26 @@ export const POST: RequestHandler = async ({ request }) => {
         gameElements,
         timestamp: new Date().toISOString(),
         processingInfo: {
-         , service: 'context-aware-ai-memory',
+  service: 'context-aware-ai-memory',
           version: '1.0.0',
           memoryLoaded: true,
           memoryUpdated: Boolean(updateMemory),
           contextItems: contextUsed.length,
           integrations: ['ollama-ai', 'vector-search', 'case-memory']
-        }
+        } }
       },
-      { status: 200 }
+      { status: 200 } }
     );
-  } catch (error) {
-    console.error('Context-aware AI error:', error);'
+  } }catch (error) {
+    console.error('Context-aware AI error:', error);
     return json(
       {
         error: 'Failed to generate contextual AI response',
         details: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const consoleTheme = url.searchParams.get('theme') || 'n64';
   if (!caseId) {
     return json({ error: 'Case ID is required' }, { status: 400 });
-  }
+  } }
   try {
     // Load case memory without query
     const memory = await contextAwareMemory.loadCaseMemory(caseId, consoleTheme);
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: true,
         memory: {
-         , caseId: memory.caseId,
+  caseId: memory.caseId,
           contextVersion: memory.contextVersion,
           lastUpdated: memory.lastUpdated,
           evidenceCount: Array.isArray(memory.evidenceTimeline) ? memory.evidenceTimeline.length : 0,
@@ -126,9 +126,10 @@ export const GET: RequestHandler = async ({ url }) => {
         },
         timestamp: new Date().toISOString()
       },
-      { status: 200 }
+      { status: 200 } }
     );
-  } catch (error) {
-    console.error('Load case memory error: ', error);'
-    return json({ error: 'Failed to load case memory' }, { status: 500 });'` }'`
+  } }catch (error) {
+    console.error('Load case memory error: ', error);
+    return json({ error: 'Failed to load case memory' }, { status: 500 });'` } }`
 };
+

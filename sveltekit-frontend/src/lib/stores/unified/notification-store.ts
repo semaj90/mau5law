@@ -8,14 +8,14 @@
  * - analyticsStore.ts (feedback component)
  *
  * Usage:
- *   import { notificationStore, showToast } from '$lib/stores/unified';
+ *   import { notificationStore, showToast } }from '$lib/stores/unified';
  *
  *   notificationStore.showToast('Success!', 'success', 3000);
  *   notificationStore.addNotification({ title: 'Update', message: 'Task complete' });
  *   $: notifications = $notificationStore.notifications;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } }from 'svelte/store';
 
 /**
  * Types
@@ -27,52 +27,50 @@ export interface Toast { id: string;, message: string;
   type: NotificationType;
   duration: ToastDuration;
   createdAt: number;
-}
+} }
 
-export interface Notification {, id: string;, title: string;
+export interface Notification { id: string;, title: string;
   message: string;
   type: NotificationType;
   isRead: boolean;
   createdAt: number;
   actionUrl?: string;
-}
+} }
 
-export interface Alert {, id: string;, title: string;
+export interface Alert { id: string;, title: string;
   description: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   isDismissed: boolean;
   createdAt: number;
   dismissedAt?: number;
-}
+} }
 
 /**
  * Notification Store State
  */
-interface NotificationStoreState {, notifications: Notification[];, toasts: Toast[];
+interface NotificationStoreState { notifications: Notification[];, toasts: Toast[];
   alerts: Alert[];
   unreadCount: number;
-  alertSettings: {, enableSoundNotification: boolean;, enableDesktopNotification: boolean;
+  alertSettings: { enableSoundNotification: boolean;, enableDesktopNotification: boolean;
     groupByType: boolean;
   };
-}
+} }
 
-const initialState: NotificationStoreState = {
- , notifications: [],
+const initialState: NotificationStoreState = { notifications: [],
   toasts: [],
   alerts: [],
   unreadCount: 0,
-  alertSettings: {
-   , enableSoundNotification: true,
+  alertSettings: { enableSoundNotification: true,
     enableDesktopNotification: false,
     groupByType: true
-  }
+  } }
 };
 
 /**
  * Create Notification Store
  */
 function createNotificationStore() {
-  const { subscribe, update } = writable<NotificationStoreState>(initialState);
+  const { subscribe, update } }= writable<NotificationStoreState>(initialState);
 
   return {
     subscribe,
@@ -125,7 +123,7 @@ function createNotificationStore() {
         return {
           ...s,
           notifications: s.notifications.map(n =>
-            n.id === id ? { ...n, isRead: true } : n
+            n.id === id ? { ...n, isRead: true } }: n
           ),
           unreadCount: Math.max(0, s.unreadCount - 1)
         };
@@ -179,7 +177,7 @@ function createNotificationStore() {
         setTimeout(() => {
           this.dismissToast(id);
         }, duration);
-      }
+      } }
 
       return id;
     },
@@ -233,7 +231,7 @@ function createNotificationStore() {
       update(s => ({
         ...s,
         alerts: s.alerts.map(a =>
-          a.id === id ? { ...a, isDismissed: true, dismissedAt: Date.now() } : a
+          a.id === id ? { ...a, isDismissed: true, dismissedAt: Date.now() } }: a
         )
       }));
     },
@@ -266,7 +264,7 @@ function createNotificationStore() {
     updateSettings(settings: Partial<NotificationStoreState['alertSettings']>) {
       update(s => ({
         ...s,
-        alertSettings: { ...s.alertSettings, ...settings }
+        alertSettings: { ...s.alertSettings, ...settings } }
       }));
     },
 
@@ -279,7 +277,7 @@ function createNotificationStore() {
         alertSettings: {
           ...s.alertSettings,
           enableSoundNotification: !s.alertSettings.enableSoundNotification
-        }
+        } }
       }));
     },
 
@@ -292,11 +290,11 @@ function createNotificationStore() {
         alertSettings: {
           ...s.alertSettings,
           enableDesktopNotification: !s.alertSettings.enableDesktopNotification
-        }
+        } }
       }));
-    }
+    } }
   };
-}
+} }
 
 /**
  * Export singleton instance
@@ -336,17 +334,18 @@ export const activeAlerts = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { alerts, addAlert, dismissAlert  } from '$lib/stores/unified'
- *   import { notifications } from '$lib/stores/notifications'
- *   import { showToast } from '$lib/stores/toast'
+ *   import { alerts, addAlert, dismissAlert  } }from '$lib/stores/unified'
+ *   import { notifications } }from '$lib/stores/notifications'
+ *   import { showToast } }from '$lib/stores/toast'
  *
  * New imports:
- *   import { notificationStore, showToast, notifications, alerts } from '$lib/stores/unified'
+ *   import { notificationStore, showToast, notifications, alerts } }from '$lib/stores/unified'
  *
  * Usage patterns:
- *  ;, Old: addAlert(...) - function based
+ *  ; Old: addAlert(...) - function based
  *   New: notificationStore.addAlert(...) - method based
  *
  *   Old: $alerts, $notifications, $toasts - separate subscriptions
  *   New: All in one store ($notificationStore or use derived stores)
  */
+

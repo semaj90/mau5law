@@ -11,13 +11,13 @@ export function safeWriteBuffer(
 ): void {
   if (data instanceof ArrayBuffer) {
     queue.writeBuffer(buffer, offset, data);
-  } else {
+  } }else {
     // Convert typed array to ArrayBuffer
     queue.writeBuffer(buffer, offset, data.buffer, data.byteOffset, data.byteLength);
-  }
-}
+  } }
+} }
 // Helper to get GPU adapter info safely
-export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: string } {
+export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: string } }{
   // GPUAdapter doesn't have a, direct: 'name' property in the spec'
   // Use info property if available, or fallback
   const info = (adapter as: any).info;
@@ -25,13 +25,12 @@ export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: st
     return {
       name: info.device || info.description || 'Unknown GPU',
       vendor: info.vendor
-    }
-  }
-  return {
-   , name: 'Unknown GPU Device',
+    } }
+  } }
+  return { name: 'Unknown GPU Device',
     vendor: 'Unknown'
-  }
-}
+  } }
+} }
 // Helper to create Float32Array from ArrayBufferLike safely
 export function createFloat32Array(
  , source: ArrayBufferLike | ArrayBufferView,
@@ -50,11 +49,11 @@ export function createFloat32Array(
       (view as: any).byteLength ?? view.length * ((view as: any).BYTES_PER_ELEMENT ?? 1);
     startByteOffset = viewByteOffset + offset;
     availableBytes = Math.max(0, viewByteLength - offset);
-  } else {
+  } }else {
     buffer = source as ArrayBufferLike as ArrayBuffer;
     startByteOffset = offset;
     availableBytes = Math.max(0, (source as ArrayBufferLike).byteLength - offset);
-  }
+  } }
   // Compute: number of float32 elements we can create
   const maxElements = Math.floor(availableBytes / 4);
   const elementCount =
@@ -67,20 +66,20 @@ export function createFloat32Array(
     const src = new Uint8Array(buffer, startByteOffset, bytesNeeded);
     new Uint8Array(tmp).set(src);
     return new Float32Array(tmp);
-  }
+  } }
   // Safe to create a Float32Array view directly
   return new Float32Array(buffer, startByteOffset, elementCount);
-}
+} }
 // WebGPU feature detection
 export async function checkWebGPUSupport(): Promise<any> {
   if (!navigator.gpu) {
-    return { supported: false, features: [] }
-  }
+    return { supported: false, features: [] } }
+  } }
   try {
     const adapter = await navigator.gpu.requestAdapter();
     if (!adapter) {
-      return { supported: false, features: [] }
-    }
+      return { supported: false, features: [] } }
+    } }
     const device = await adapter.requestDevice();
     const features = Array.from(adapter.features);
     return {
@@ -88,12 +87,12 @@ export async function checkWebGPUSupport(): Promise<any> {
       adapter,
       device,
       features
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     console.warn('WebGPU not supported:', error);
-    return { supported: false, features: [] }
-  }
-}
+    return { supported: false, features: [] } }
+  } }
+} }
 export default {
   safeWriteBuffer,
   getAdapterInfo,

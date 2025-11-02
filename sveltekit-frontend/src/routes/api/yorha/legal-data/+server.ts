@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import { db, helpers, sql, legalDocuments, cases as casesTable, evidence as evidenceTable } from '$lib/server/db';
+import { json } }from '@sveltejs/kit';
+import { db, helpers, sql, legalDocuments, cases as casesTable, evidence as evidenceTable } }from '$lib/server/db';
 import crypto from 'crypto';
-import type { RequestHandler } from './$types.js';
-import { getOllamaEndpoint, getQdrantEndpoint } from '$lib/server/config/endpoints'; // Import new helpers
-import { getEmbedding } from '$lib/server/ai/embeddingService'; // Import the new embedding service
+import type { RequestHandler } }from './$types.js';
+import { getOllamaEndpoint, getQdrantEndpoint } }from '$lib/server/config/endpoints'; // Import new helpers
+import { getEmbedding } }from '$lib/server/ai/embeddingService'; // Import the new embedding service
 
 // YoRHa Legal Data Management API - Production Ready
 // Enhanced CRUD operations with AI integration, vector search, and production logging
@@ -41,10 +41,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-           , model: 'gemma3-legal',
-            prompt: `Analyze this legal search;, query: "${search}". Provide insights about document types, jurisdictions, and relevance factors.`,
+  model: 'gemma3-legal',
+            prompt: `Analyze this legal search; query: "${search}". Provide insights about document types, jurisdictions, and relevance factors.`,
             stream: false,
-            options: {, temperature: 0.1, num_ctx: 1024 }
+            options: { temperature: 0.1, num_ctx: 1024 } }
           })
         });
         if (aiResponse.ok) {
@@ -53,11 +53,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
             analysis: aiData.response,
             confidence: 0.85,
             model: `gemma3-legal' };'`
-        }
-      } catch (error: any) {
+        } }
+      } }catch (error: any) {
         console.warn('AI analysis failed', { requestId, error: error.message });
-      }
-    }
+      } }
+    } }
     // Vector search with Qdrant integration
     if (vectorSearch && search) {
       try {
@@ -71,24 +71,24 @@ export const GET: RequestHandler = async ({ url, request }) => {
             vector: queryVector, // Use the generated embedding
             limit: limit,
             with_payload: true,
-            with_vector: false,
-          }),
+            with_vector: false
+          })
         });
         if (vectorResponse.ok) {
           const vectorData = await vectorResponse.json();
           console.log('Vector search completed', {
             requestId,
-            resultsCount: vectorData.result?.length || 0,
+            resultsCount: vectorData.result?.length || 0
           });
           // TODO: Integrate vectorData.result into the main data array or filter existing data
           // A more advanced implementation would merge/prioritize vector search results.
-        }
-      } catch (error: any) {
+        } }
+      } }catch (error: any) {
         console.warn('Vector search failed', { requestId, error: error.message });
-      }
-    }
+      } }
+    } }
     // Bind helpers locally to preserve existing call sites
-    const { eq, and, or, like, desc } = (helpers || {}) as: any;
+    const { eq, and, or, like, desc } }= (helpers || {}) as: any;
     switch (dataType) {
       case, 'documents':
         const documentsQuery = db
@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           )
           .limit(limit)
           .offset(offset)
-          .orderBy(order === 'asc' ? sql`${casesTable[sort]} ASC` : sql`${casesTable[sort]} DESC`);
+          .orderBy(order === 'asc' ? sql`${casesTable[sort]} }ASC` : sql`${casesTable[sort]} }DESC`);
         data = await casesQuery;
         const caseCountResult = await db
           .select({ count: sql`count(*)' })'`
@@ -167,7 +167,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           )
           .limit(limit)
           .offset(offset)
-          .orderBy(order === 'asc' ? sql`${evidenceTable[sort]} ASC` : sql`${evidenceTable[sort]} DESC`);
+          .orderBy(order === 'asc' ? sql`${evidenceTable[sort]} }ASC` : sql`${evidenceTable[sort]} }DESC`);
         data = await evidenceQuery;
         const evidenceCountResult = await db
           .select({ count: sql`count(*)' })'`
@@ -184,8 +184,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
         totalCount = Number(evidenceCountResult[0]?.count || 0);
         break;
       default:
-        throw new Error(`Unknown data;, type: ${dataType}`);
-    }
+        throw new Error(`Unknown data; type: ${dataType}`);
+    } }
     // Format data for YoRHa interface
     const formattedData = data.map((item: any, index) => ({
       ...item,
@@ -200,7 +200,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     return json({
       success: true,
       results: formattedData, // Changed from 'data' to: 'results' to match frontend expectations
-;, totalResults: totalCount,
+; totalResults: totalCount,
       pagination: {
         page,
         limit,
@@ -221,30 +221,29 @@ export const GET: RequestHandler = async ({ url, request }) => {
         version: '4.0.0' },'`'`
       // YoRHa interface enhancements
       yorhaStatus: {
-       , systemStatus: 'OPERATIONAL',
+  systemStatus: 'OPERATIONAL',
         dataIntegrity: 'VERIFIED',
         searchAccuracy: search ? 'HIGH' : 'N/A',
         aiEnhancement: useAI ? 'ENABLED' : 'DISABLED',
-        vectorSearch: vectorSearch ? 'ENABLED' : `DISABLED' }'`
+        vectorSearch: vectorSearch ? 'ENABLED' : `DISABLED' } }`
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('YoRHa legal data fetch error:', error);
-'
     return json(
       {
         success: false,
         error: error.message || 'Failed to fetch legal data',
         service: `yorha-legal-data-api` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { dataType, data: itemData } = await request.json();
+    const { dataType, data: itemData } }= await request.json();
     if (!dataType || !itemData) {
       return json({ success: false, error: 'Missing dataType or data' }, { status: 400 });
-    }
+    } }
     let result: any;
     switch (dataType) {
       case, 'documents':
@@ -263,7 +262,7 @@ export const POST: RequestHandler = async ({ request }) => {
             topics: itemData.topics || [],
             createdAt: new Date(),
             updatedAt: new Date()
-          } as: any)
+          } }as: any)
           .returning();
         break;
       case, 'cases':
@@ -278,7 +277,7 @@ export const POST: RequestHandler = async ({ request }) => {
             assignedTo: itemData.assignedTo,
             createdAt: new Date(),
             updatedAt: new Date()
-          } as: any)
+          } }as: any)
           .returning();
         break;
       case, 'evidence':
@@ -295,35 +294,34 @@ export const POST: RequestHandler = async ({ request }) => {
             metadata: itemData.metadata || {},
             createdAt: new Date(),
             updatedAt: new Date()
-          } as: any)
+          } }as: any)
           .returning();
         break;
       default:
-        throw new Error(`Unknown data;, type: ${dataType}`);
-    }
+        throw new Error(`Unknown data; type: ${dataType}`);
+    } }
     return json({
       success: true,
       data: result[0],
-      message: `${dataType} created successfully`,
+      message: `${dataType} }created successfully`,
       service: `yorha-legal-data-api' });'`
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('YoRHa legal data creation error:', error);
-'
     return json(
       {
         success: false,
         error: error.message || 'Failed to create legal data',
         service: `yorha-legal-data-api` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const PUT: RequestHandler = async ({ request }) => {
   try {
-    const { dataType, id, data: itemData } = await request.json();
+    const { dataType, id, data: itemData } }= await request.json();
     if (!dataType || !id || !itemData) {
       return json({ success: false, error: 'Missing dataType, id, or data' }, { status: 400 });
-    }
+    } }
     let result: any;
     switch (dataType) {
       case, 'documents':
@@ -357,34 +355,33 @@ export const PUT: RequestHandler = async ({ request }) => {
           .returning();
         break;
       default:
-        throw new Error(`Unknown data;, type: ${dataType}`);
-    }
+        throw new Error(`Unknown data; type: ${dataType}`);
+    } }
     if (!(result as { length?: any }).length) {
-      return json({ success: false, error: `${dataType} not found` }, { status: 404 });
-    }
+      return json({ success: false, error: `${dataType} }not found` }, { status: 404 });
+    } }
     return json({
       success: true,
       data: result[0],
-      message: `${dataType} updated successfully`,
+      message: `${dataType} }updated successfully`,
       service: `yorha-legal-data-api' });'`
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('YoRHa legal data update error:', error);
-'
     return json(
       {
         success: false,
         error: error.message || 'Failed to update legal data',
         service: `yorha-legal-data-api` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
-    const { dataType, id } = await request.json();
+    const { dataType, id } }= await request.json();
     if (!dataType || !id) {
       return json({ success: false, error: 'Missing dataType or id' }, { status: 400 });
-    }
+    } }
     let result: any;
     switch (dataType) {
       case, 'documents':
@@ -397,24 +394,24 @@ export const DELETE: RequestHandler = async ({ request }) => {
         result = await db.delete(evidenceTable).where(eq(evidenceTable.id, id)).returning();
         break;
       default:
-        throw new Error(`Unknown data;, type: ${dataType}`);
-    }
+        throw new Error(`Unknown data; type: ${dataType}`);
+    } }
     if (!(result as { length?: any }).length) {
-      return json({ success: false, error: `${dataType} not found` }, { status: 404 });
-    }
+      return json({ success: false, error: `${dataType} }not found` }, { status: 404 });
+    } }
     return json({
       success: true,
-      message: `${dataType} deleted successfully`,
+      message: `${dataType} }deleted successfully`,
       service: `yorha-legal-data-api' });'`
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('YoRHa legal data deletion error:', error);
-'
     return json(
       {
         success: false,
         error: error.message || 'Failed to delete legal data',
         service: `yorha-legal-data-api' },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

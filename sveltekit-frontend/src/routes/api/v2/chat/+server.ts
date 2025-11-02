@@ -1,20 +1,20 @@
-import type { Message } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { ollamaChatStream } from '$lib/services/ollamaChatStream';
+import type { Message } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { ollamaChatStream } }from '$lib/services/ollamaChatStream';
 import {
   initializeChatEmbeddingsTable,
   searchSimilarChats,
   type VectorSearchResult
-} from '$lib/server/services/vectorDBService';
+} }from '$lib/server/services/vectorDBService';
 // Initialize database on startup
 let dbInitialized = $state<boolean>(false);
 async function ensureDbInitialized(): Promise<void> {
   if (!dbInitialized) {
     await initializeChatEmbeddingsTable();
     dbInitialized = true;
-  }
-}
+  } }
+} }
 
 // Safe parser: validate: unknown input and return VectorSearchResult[]
 function parseSources(input: any): VectorSearchResult[] {
@@ -25,10 +25,10 @@ function parseSources(input: any): VectorSearchResult[] {
         typeof it === 'object' && it !== null && ('similarity' in it || 'score' in it || 'id' in it || 'text' in it)
     )
     .map(it => it as VectorSearchResult);
-}
+} }
 
 export interface ChatMessage { role: 'system' | 'user' | 'assistant';, content: string;
-}
+} }
 export interface EnhancedChatRequest {
   message: string;
   messages?: ChatMessage[];
@@ -40,21 +40,21 @@ export interface EnhancedChatRequest {
   useVectorSearch?: boolean;
   searchThreshold?: number;
   systemPrompt?: string;
-}
+} }
 export interface ChatResponse {
   success: boolean;
   response?: string;
   conversationId?: string;
   sources?: VectorSearchResult[];
-  metadata?: {, model: string;, temperature: number;
+  metadata?: { model: string;, temperature: number;
     processingTimeMs: number;
     vectorSearchUsed: boolean;
     timestamp: string;
   };
   error?: string;
-}
+} }
 // GET method for health check and service info
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   try {
     await ensureDbInitialized();
     const action = url.searchParams.get('action') || 'health';
@@ -65,35 +65,35 @@ export const, GET: RequestHandler = async ({ url }) => {
       });
       if (!ollamaHealth.ok) {
         throw new Error('Ollama service unavailable');
-      }
+      } }
       const version = await ollamaHealth.json();
       return json({
         success: true,
         status: 'healthy',
         service: 'enhanced-chat-v2',
         features: {
-         , pgvectorEmbeddings: true,
+  pgvectorEmbeddings: true,
           keywordFallback: true,
           streamingSupport: true,
           vectorCache: true
         },
         ollama: {
-         , version: version.version || 'unknown',
+  version: version.version || 'unknown',
           model: 'gemma3-legal:latest'
         },
         database: {
-         , pgvector: true,
+  pgvector: true,
           embeddingsTable: 'chat_embeddings'
         },
         timestamp: new Date().toISOString()
       });
-    }
+    } }
     if (action === 'search') {
       const query = url.searchParams.get('q');
       const limit = parseInt(url.searchParams.get('limit') || '5');
       if (!query) {
         return json({ error: 'Query, parameter: "q" is required' }, { status: 400 });
-      }
+      } }
 
       // Use the zero-arg API of searchSimilarChats; then apply threshold + limit locally
       const thresholdParam = url.searchParams.get('threshold');
@@ -112,7 +112,7 @@ export const, GET: RequestHandler = async ({ url }) => {
         for (const key of Object.keys(rec)) {
           const v = rec[key];
           if (typeof v === 'string' && v.toLowerCase().includes(qLower)) return true;
-        }
+        } }
         return false;
       });
 
@@ -124,7 +124,7 @@ export const, GET: RequestHandler = async ({ url }) => {
           const sim = scored.similarity ?? scored.score ?? null;
           return typeof sim === 'number' ? sim >= threshold : true;
         });
-      }
+      } }
 
       // Enforce the requested limit
       results = results.slice(0, Math.max(0, limit));
@@ -136,16 +136,16 @@ export const, GET: RequestHandler = async ({ url }) => {
         count: results.length,
         timestamp: new Date().toISOString()
       });
-    }
+    } }
     return json(
       {
         success: false,
         error: 'Invalid action. Use ?action=health or ?action=search'
       },
-      { status: 400 }
+      { status: 400 } }
     );
-  } catch (error: any) {
-    console.error('Enhanced chat GET error:', error);'
+  } }catch (error: any) {
+    console.error('Enhanced chat GET error:', error);
     const errMsg = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -154,9 +154,9 @@ export const, GET: RequestHandler = async ({ url }) => {
         error: errMsg,
         timestamp: new Date().toISOString()
       },
-      { status: 503 }
+      { status: 503 } }
     );
-  }
+  } }
 };
 // POST method for enhanced chat with vector embeddings
 export const POST: RequestHandler = async ({ request }) => {
@@ -175,15 +175,15 @@ export const POST: RequestHandler = async ({ request }) => {
       useVectorSearch = true,
       searchThreshold = 0.7,
       systemPrompt
-    } = body;
+    } }= body;
     if (!message && (!messages || messages.length === 0)) {
       return json(
         {
           success: false,
           error: 'Message or messages array is required' },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Use the message directly or get the last user message from messages array
     const userMessage = message || (messages && messages.length ? messages[messages.length - 1].content : undefined);
     if (!userMessage) {
@@ -191,9 +191,9 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'No user message found` },'`
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // For streaming responses
     if (stream) {
       const encoder = new TextEncoder();
@@ -217,7 +217,7 @@ export const POST: RequestHandler = async ({ request }) => {
             let sources: VectorSearchResult[] = [];
             for await (const chunkRaw of streamGenerator) {
               const chunk = chunkRaw as { text?: any; metadata?: any };
-              const meta = chunk.metadata as { type?: string; sources?: any; confidence?: any } | undefined;
+              const meta = chunk.metadata as { type?: string; sources?: any; confidence?: any } }| undefined;
 
               if (meta?.type === 'sources') {
                 sources = parseSources(meta.sources);
@@ -227,7 +227,7 @@ export const POST: RequestHandler = async ({ request }) => {
                   timestamp: new Date().toISOString()
                 };
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`));
-              } else if (meta?.type === 'text') {
+              } }else if (meta?.type === 'text') {
                 const text = typeof chunk.text === 'string' ? chunk.text : String(chunk.text ?? '');
                 const confidence = typeof meta.confidence === 'number' ? meta.confidence : 0.9;
                 const textChunk = {
@@ -236,7 +236,7 @@ export const POST: RequestHandler = async ({ request }) => {
                   confidence
                 };
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify(textChunk)}\n\n`));
-              } else if (meta?.type === 'final') {
+              } }else if (meta?.type === 'final') {
                 const finalChunk = {
                   type: 'final',
                   conversationId,
@@ -245,12 +245,12 @@ export const POST: RequestHandler = async ({ request }) => {
                   sources
                 };
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`));
-              }
-            }
+              } }
+            } }
             controller.enqueue(encoder.encode('data: [DONE]\n\n'));
             controller.close();
-          } catch (error: any) {
-            console.error('Streaming error:', error);'
+          } }catch (error: any) {
+            console.error('Streaming error:', error);
             const errMsg = error instanceof Error ? error.message : String(error);
             const errorChunk = {
               type: 'error',
@@ -259,8 +259,8 @@ export const POST: RequestHandler = async ({ request }) => {
             };
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
             controller.close();
-          }
-        }
+          } }
+        } }
       });
       return new Response(readable, {
         headers: {
@@ -268,8 +268,8 @@ export const POST: RequestHandler = async ({ request }) => {
           'Cache-Control': 'no-cache',
           'Connection': 'keep-alive',
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type' }'` });'`
-    }
+          'Access-Control-Allow-Headers': 'Content-Type' } }` });'`
+    } }
     // For non-streaming responses
     let fullResponse = '';
     let sources: VectorSearchResult[] = [];
@@ -285,21 +285,21 @@ export const POST: RequestHandler = async ({ request }) => {
         useVectorSearch,
         searchThreshold,
         context: messages || []
-      }
+      } }
     );
     for await (const chunkRaw of streamGenerator) {
       const chunk = chunkRaw as { text?: any; metadata?: any };
-      const meta = chunk.metadata as { type?: string; sources?: any } | undefined;
+      const meta = chunk.metadata as { type?: string; sources?: any } }| undefined;
       if (meta?.type === 'sources') {
         sources = parseSources(meta.sources);
         vectorSearchUsed = sources.length > 0;
-      } else if (meta?.type === 'text') {
+      } }else if (meta?.type === 'text') {
         const text = typeof chunk.text === 'string' ? chunk.text : String(chunk.text ?? '');
         fullResponse += text;
-      }
-    }
+      } }
+    } }
     const response: ChatResponse = {
-     , success: true,
+  success: true,
       response: fullResponse,
       conversationId,
       sources: sources.length > 0 ? sources : undefined,
@@ -309,11 +309,11 @@ export const POST: RequestHandler = async ({ request }) => {
         processingTimeMs: Date.now() - startTime,
         vectorSearchUsed,
         timestamp: new Date().toISOString()
-      }
+      } }
     };
     return json(response);
-  } catch (error: any) {
-    console.error('Enhanced chat API error:', error);'
+  } }catch (error: any) {
+    console.error('Enhanced chat API error:', error);
     return json(
       {
         success: false,
@@ -322,7 +322,8 @@ export const POST: RequestHandler = async ({ request }) => {
         processingTimeMs: Date.now() - startTime,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

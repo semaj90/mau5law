@@ -1,50 +1,50 @@
-import type { TextChunk } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { TextChunk } }from '$lib/types';
+import type { Document } }from '$lib/types';
 // TypeScript declarations for missing types across the codebase
 // This file resolves many TS2304: "Cannot find name" errors
 // Engine/Graphics types
 declare class ShaderCache {
   static get(_key: string): any;
   static set(_key: string, value: any): void;
-}
+} }
 declare class MatrixTransformLib {
   static createTransform(): any;
   static multiply(a: any, b: any): any;
-}
+} }
 // Docker/Optimization types
 declare class DockerResourceOptimizer {
   static optimizeMemory(): Promise<any>;
   static getCurrentUsage(): Promise<any>;
-}
+} }
 // RAG/Search types
 declare interface RAGSearchResult { id: string;, content: string;
   score: number;
   metadata?: { [key: string]: any };
-}
-declare interface TextChunk {, text: string;, index: number;
+} }
+declare interface TextChunk { text: string;, index: number;
   metadata?: { [key: string]: any };
-}
-declare interface RAGDocument {, id: string;, content: string;
+} }
+declare interface RAGDocument { id: string;, content: string;
   embedding?: number[];
   metadata?: { [key: string]: any };
-}
+} }
 // Store types
-declare const enhancedRAGStore: {, search: (query: string) => Promise<RAGSearchResult[]>;, add: (doc: RAGDocument) => Promise<void>;
+declare const enhancedRAGStore: { search: (query: string) => Promise<RAGSearchResult[]>;, add: (doc: RAGDocument) => Promise<void>;
 };
 declare const documentVectors: any;
 // Routing types
-declare interface DynamicRouteConfig {, path: string;, component: any;
+declare interface DynamicRouteConfig { path: string;, component: any;
   metadata?: { [key: string]: any };
-}
-declare interface GeneratedRoute {, path: string;, handler: any;
-}
+} }
+declare interface GeneratedRoute { path: string;, handler: any;
+} }
 declare function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute;
 // Document processing types
 declare interface DocumentProcessingOptions {
   type: 'pdf' | 'docx' | 'txt';
   extractImages?: boolean;
   ocrEnabled?: boolean;
-}
+} }
 // Context7/MCP types
 declare function createContext7MCPIntegration(): any;
 // Database and ORM globals (fixes TS2304 errors)
@@ -72,7 +72,7 @@ declare global {
   const metrics: any;
   const z: any;
   const, prisma: any;
-}
+} }
 // Langchain missing exports
 declare module, '@langchain/community/vectorstores/pgvector' {
   export class PGVectorStore {
@@ -80,33 +80,33 @@ declare module, '@langchain/community/vectorstores/pgvector' {
     static fromExistingIndex(config: any): Promise<PGVectorStore>;
     similaritySearchWithScore(query: string, k?: number): Promise<any[]>;
     similaritySearch(query: string, k?: number): Promise<any[]>;
-  }
+  } }
   export enum DistanceStrategy {
     EUCLIDEAN = 'euclidean',
     COSINE = 'cosine',
     INNER_PRODUCT = 'innerProduct'
-  }
-}
+  } }
+} }
 declare module, '@langchain/community/vectorstores/neo4j_vector' {
   export class Neo4jVectorStore {
     constructor(config: any);
     static fromExistingIndex(config: any): Promise<Neo4jVectorStore>;
     similaritySearch(query: string, k?: number): Promise<any[]>;
-  }
-}
+  } }
+} }
 // XState v5 compatibility stubs
 declare module, 'xstate' {
   export interface StateId {
     [key: string]: any;
-  }
+  } }
   export interface MetaObject {
     [key: string]: any;
-  }
+  } }
   export interface TransitionConfig<TContext = any, TEvent = any, TResolvedEvent = any, TEventType = any> {
     cond?: any;
     actions?: any;
     target?: any;
-  }
+  } }
   export interface Actor<T = any> {
     send(_event: any): void;
     getSnapshot(): T;
@@ -116,9 +116,9 @@ declare module, 'xstate' {
     onDone?: (listener: (_event: any) => void) => { unsubscribe(): void };
     onStop?: (listener: () => void) => { unsubscribe(): void };
     withConfig?: (config: any) => any;
-  }
+  } }
   export function createActor<T>(machine: any): Actor<T>;
-}
+} }
 // Redis stub
 declare module, 'ioredis' {
   export default class Redis {
@@ -140,8 +140,8 @@ declare module, 'ioredis' {
     quit(): Promise<'OK' | void>;
     /** Ping server */
     ping(message?: string): Promise<string>;
-  }
-}
+  } }
+} }
 // Utility stubs for production
 export function generateEmbedding(text: string, options?: any): Promise<number[]>;
 export function withRetry<T>(fn: () => Promise<T>, retries?: number): Promise<T>;
@@ -154,11 +154,11 @@ export interface GenericLegalAnalysisResult { score: number;, confidence: numbe
   complexity: number;
   recommendations: string[];
   legalRelevance?: number;
-}
-export interface LegalEmbeddingResult {, embedding: number[];, model: string;
+} }
+export interface LegalEmbeddingResult { embedding: number[];, model: string;
   dimensions: number;
   processingTime: number;
-}
+} }
 export interface MetricData {
   id?: string;
   metric: string;
@@ -169,9 +169,10 @@ export interface MetricData {
   level?: string;
   category?: string;
   data?: any;
-}
+} }
 export interface MonitoringService {
   recordMetric(metric: string, value: number, labels?: { [key: string]: any }): void;
   recordSynthesis?(data: any): void;
   getMetrics(): Promise<MetricData[]>;
-}
+} }
+

@@ -1,7 +1,7 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { SvelteComponent } from 'svelte'; // Add this import
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import type { SvelteComponent } }from 'svelte'; // Add this import
 /**
  * Complete Routes Configuration for YoRHa Navigation
  * Comprehensive mapping of all available demo routes and features
@@ -13,11 +13,10 @@ export interface RouteDefinition { id: string;, label: string;
   category: 'main' | 'demo' | 'admin' | 'dev' | 'ai' | 'legal' | 'utilities' | 'auth' | 'system';
   status: 'active' | 'beta' | 'experimental' | 'deprecated' | 'development';
   tags: string[];
-}
+} }
 export const allRoutes: RouteDefinition[] = [
   // === MAIN OPERATIONS ===
-  {
-   , id: 'command-center',
+  { id: 'command-center',
     label: 'Command Center',
     route: '/',
     icon: '⚡',
@@ -2990,10 +2989,10 @@ export const allRoutes: RouteDefinition[] = [
 // Helper functions for route management
 export function getRoutesByCategory(category: RouteDefinition['category']): RouteDefinition[] {
   return allRoutes.filter(route => route.category === category);
-}
+} }
 export function getActiveRoutes(): RouteDefinition[] {
   return allRoutes.filter(route => route.status === 'active');
-}
+} }
 export function searchRoutes(query: string): RouteDefinition[] {
   const lowerQuery = query.toLowerCase();
   return allRoutes.filter(
@@ -3003,53 +3002,47 @@ export function searchRoutes(query: string): RouteDefinition[] {
       route.description.toLowerCase().includes(lowerQuery) ||
       route.tags.some(tag => tag.toLowerCase().includes(lowerQuery))
   );
-}
+} }
 export function getRouteById(id: string): RouteDefinition | undefined {
   return allRoutes.find(route => route.id === id);
-}
+} }
 export function getRoutesByTag(tag: string): RouteDefinition[] {
   return allRoutes.filter(route => route.tags.includes(tag));
-}
+} }
 // Route categories with metadata
-export const routeCategories = { main: {, label: 'CORE OPERATIONS',
+export const routeCategories = { main: { label: 'CORE OPERATIONS',
     icon: '⚡',
     description: 'Primary system operations and tools',
     color: '#ffbf00'
   },
-  demo: {
-   , label: 'AI DEMONSTRATIONS',
+  demo: { label: 'AI DEMONSTRATIONS',
     icon: '🎯',
     description: 'AI capabilities and technology showcases',
     color: '#00ff41'
   },
-  ai: {
-   , label: 'AI SYSTEMS',
+  ai: { label: 'AI SYSTEMS',
     icon: '🤖',
     description: 'Artificial intelligence tools and interfaces',
     color: '#ff6b6b'
   },
-  legal: {
-   , label: 'LEGAL OPERATIONS',
+  legal: { label: 'LEGAL OPERATIONS',
     icon: '⚖️',
     description: 'Legal-specific tools and workflows',
     color: '#4ecdc4'
   },
-  dev: {
-   , label: 'DEVELOPMENT TOOLS',
+  dev: { label: 'DEVELOPMENT TOOLS',
     icon: '🔧',
     description: 'Development and debugging utilities',
     color: '#a78bfa'
   },
-  admin: {
-   , label: 'ADMINISTRATION',
+  admin: { label: 'ADMINISTRATION',
     icon: '⚙️',
     description: 'System administration and configuration',
     color: '#fb7185'
-  }
+  } }
 };
 // Statistics for dashboard
-export const routeStats = {
- , total: allRoutes.length,
+export const routeStats = { total: allRoutes.length,
   active: getActiveRoutes().length,
   experimental: allRoutes.filter(route => route.status === 'experimental').length,
   beta: allRoutes.filter(route => route.status === 'beta').length,
@@ -3059,7 +3052,7 @@ export const routeStats = {
       acc[category] = getRoutesByCategory(category as RouteDefinition['category']).length;
       return acc;
     },
-    {} as Record<string, number>
+    {} }as Record<string, number>
   )
 };
 // Additional interfaces and types for compatibility
@@ -3067,12 +3060,12 @@ export interface DynamicRouteConfig {
   path: string;
   component?: typeof SvelteComponent;
   metadata?: Record<string, unknown>;
-}
+} }
 export interface GeneratedRoute { path: string;, handler: typeof SvelteComponent | undefined;
   config: DynamicRouteConfig;
-}
-export interface NavigationGuard {, name: string;, condition: (route: RouteDefinition) => boolean;
-}
+} }
+export interface NavigationGuard { name: string;, condition: (route: RouteDefinition) => boolean;
+} }
 // Route registry for dynamic route management
 export const routeRegistry = new Map<string, RouteDefinition>();
 // Initialize route registry
@@ -3082,14 +3075,15 @@ allRoutes.forEach(route => {
 // Dynamic route management functions
 export function getRoute(id: string): RouteDefinition | undefined {
   return routeRegistry.get(id) || getRouteById(id);
-}
+} }
 export function getAllDynamicRoutes(): RouteDefinition[] {
   return Array.from(routeRegistry.values());
-}
+} }
 export function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute {
   return {
     path: config.path,
     handler: config.component,
     config
   };
-}
+} }
+

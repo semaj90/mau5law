@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Enhanced API Client for Legal AI Platform
  * TypeScript integration with Zod validation and Superforms compatibility
  */
-import { z } from 'zod';
-import { goto } from '$app/navigation';
-import { browser } from '$app/environment';
+import { z } }from 'zod';
+import { goto } }from '$app/navigation';
+import { browser } }from '$app/environment';
 // Base API configuration
 const API_BASE_URL = '/api/v1';
 // API Response types
@@ -16,14 +16,14 @@ export interface ApiResponse<T = unknown> {
   message?: string;
   code?: string;
   details?: Record<string, unknown> | unknown;
-}
+} }
 export interface PaginatedResponse<T = unknown> { data: T[];, page: number;
   limit: number;
   total: number;
  , totalPages: number;
   hasNext?: boolean;
   hasPrev?: boolean;
-}
+} }
 // Request options
 export interface RequestOptions {
   headers?: Record<string, string>;
@@ -32,7 +32,7 @@ export interface RequestOptions {
     attempts?: number;
     backoffMs?: number;
   };
-}
+} }
 // Error types
 export class ApiError extends Error {
   public status: number;
@@ -46,8 +46,8 @@ export class ApiError extends Error {
     this.code = code;
     this.details = details;
     Object.setPrototypeOf(this, ApiError.prototype);
-  }
-}
+  } }
+} }
 /**
  * Enhanced API Client with comprehensive error handling and type safety
  */
@@ -55,7 +55,7 @@ export class LegalAIApiClient {
   private baseUrl: string;
   constructor(baseUrl: string = API_BASE_URL) {
     this.baseUrl = baseUrl;
-  }
+  } }
   /**
    * Generic request method with retry logic and error handling
    */
@@ -68,9 +68,9 @@ export class LegalAIApiClient {
       headers?: Record<string, string>;
       signal?: AbortSignal;
       retry?: { attempts?: number; backoffMs?: number };
-    } = {}
+    } }= {} }
   ): Promise<T> {
-    const { method = 'GET', body, query, headers = {}, signal, retry = { attempts: 3, backoffMs: 1000 } } = options;
+    const { method = 'GET', body, query, headers = {}, signal, retry = { attempts: 3, backoffMs: 1000 } }} }= options;
 
     const origin = browser ? window.location.origin : 'http://localhost:5173';
     const url = new URL(`${this.baseUrl}${endpoint}`, origin);
@@ -78,9 +78,9 @@ export class LegalAIApiClient {
       Object.entries(query).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           url.searchParams.set(key, String(value));
-        }
+        } }
       });
-    }
+    } }
 
     const requestInit: RequestInit = {
       method,
@@ -93,7 +93,7 @@ export class LegalAIApiClient {
 
     if (body && method !== 'GET') {
       requestInit.body = JSON.stringify(body as: unknown);
-    }
+    } }
 
     let lastError: any;
     const maxAttempts = retry.attempts ?? 1;
@@ -105,12 +105,12 @@ export class LegalAIApiClient {
         const contentType = response.headers.get('content-type') || '';
         if (contentType.includes('application/json')) {
           parsed = await response.json().catch(() => null);
-        } else {
+        } }else {
           parsed = await response.text().catch(() => null);
-        }
+        } }
 
         if (!response.ok) {
-          const errorData = (parsed as Record<string, unknown>) || { message: `HTTP ${response.status}` };'`'`
+          const errorData = (parsed as Record<string, unknown>) || { message: 'HTTP ${response.status} } };'`'`
           const ed = errorData as Record<string, unknown>;
           const errCode = typeof ed?.['code'] === 'string' ? (ed['code'] as: string) : 'API_ERROR';
           const errMessage =
@@ -119,26 +119,26 @@ export class LegalAIApiClient {
           if (response.status === 401) {
             if (browser) goto('/auth/login');
             throw new ApiError(401, 'AUTH_REQUIRED', 'Authentication required', errDetails);
-          }
+          } }
           throw new ApiError(response.status, errCode, errMessage, errDetails);
-        }
+        } }
 
-        return (parsed as T) ?? ({} as T);
-      } catch (error) {
+        return (parsed as T) ?? ({} }as T);
+      } }catch (error) {
         lastError = error;
         // Don't retry on client errors (4xx) except, 429 (rate limit)'
         if (error instanceof ApiError && error.status >= 400 && error.status < 500 && error.status !== 429) {
           throw error;
-        }
+        } }
         if (attempt === maxAttempts) {
           throw error;
-        }
+        } }
         const delay = (retry.backoffMs ?? 1000) * Math.pow(2, attempt - 1);
         await new Promise(resolve => setTimeout(resolve, delay));
-      }
-    }
+      } }
+    } }
     throw lastError;
-  }
+  } }
   // ===== CASES API =====
   /**
    * List cases with pagination and filtering
@@ -152,23 +152,22 @@ export class LegalAIApiClient {
       status?: 'open' | 'closed' | 'pending' | 'archived';
       priority?: 'low' | 'medium' | 'high' | 'urgent';
       signal?: AbortSignal;
-    } = {}
+    } }= {} }
   ): Promise<PaginatedResponse<unknown>> {
-    const { signal, ...query } = _options;
+    const { signal, ...query } }= _options;
     return this.request<PaginatedResponse<unknown>>('/cases', { query, signal });
-  }
+  } }
   /**
    * Get specific case by ID
    */
   async getCase(id: string, signal?: AbortSignal): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>(`/cases/${id}`, { signal });
-  }
+  } }
   /**
    * Create new case
    */
   async createCase(
-    caseData: {
-     , title: string;
+    caseData: { title: string;
       description?: string;
       caseNumber?: string;
       status?: 'open' | 'closed' | 'pending' | 'archived';
@@ -183,13 +182,13 @@ export class LegalAIApiClient {
       body: caseData,
       signal
     });
-  }
+  } }
   /**
    * Update case
    */
   async updateCase(
     id: string,
-    caseData: Partial<{, title: string;, description: string;
+    caseData: Partial<{ title: string;, description: string;
      , caseNumber: string;
      , status: 'open' | 'closed' | 'pending' | 'archived';
      , priority: 'low' | 'medium' | 'high' | 'urgent';
@@ -203,7 +202,7 @@ export class LegalAIApiClient {
       body: caseData,
       signal
     });
-  }
+  } }
   /**
    * Delete case
    */
@@ -212,7 +211,7 @@ export class LegalAIApiClient {
       method: 'DELETE',
       signal
     });
-  }
+  } }
   // ===== EVIDENCE API =====
   /**
    * List evidence with pagination and filtering
@@ -225,22 +224,22 @@ export class LegalAIApiClient {
       evidenceType?: string;
       isPublic?: boolean;
       signal?: AbortSignal;
-    } = {}
+    } }= {} }
   ): Promise<PaginatedResponse<unknown>> {
-    const { signal, ...query } = _options;
+    const { signal, ...query } }= _options;
     return this.request<PaginatedResponse<unknown>>('/evidence', { query, signal });
-  }
+  } }
   /**
    * Get specific evidence by ID
    */
   async getEvidenceItem(id: string, signal?: AbortSignal): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>(`/evidence/${id}`, { signal });
-  }
+  } }
   /**
    * Create new evidence
    */
   async createEvidence(
-    evidenceData: {, caseId: string;, title: string;
+    evidenceData: { caseId: string;, title: string;
      , evidenceType: string;
       description?: string;
       fileUrl?: string;
@@ -262,13 +261,13 @@ export class LegalAIApiClient {
       body: evidenceData,
       signal
     });
-  }
+  } }
   /**
    * Update evidence
    */
   async updateEvidence(
     id: string,
-    evidenceData: Partial<{, title: string;, evidenceType: string;
+    evidenceData: Partial<{ title: string;, evidenceType: string;
       description: string;
       fileUrl: string;
       fileName: string;
@@ -289,7 +288,7 @@ export class LegalAIApiClient {
       body: evidenceData,
       signal
     });
-  }
+  } }
   /**
    * Delete evidence
    */
@@ -298,7 +297,7 @@ export class LegalAIApiClient {
       method: 'DELETE',
       signal
     });
-  }
+  } }
   // ===== REPORTS API =====
   /**
    * List reports with pagination and filtering
@@ -311,23 +310,22 @@ export class LegalAIApiClient {
       reportType?: string;
       status?: string;
       signal?: AbortSignal;
-    } = {}
+    } }= {} }
   ): Promise<PaginatedResponse<unknown>> {
-    const { signal, ...query } = _options;
+    const { signal, ...query } }= _options;
     return this.request<PaginatedResponse<unknown>>('/reports', { query, signal });
-  }
+  } }
   /**
    * Get specific report by ID
    */
   async getReport(id: string, signal?: AbortSignal): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>(`/reports/${id}`, { signal });
-  }
+  } }
   /**
    * Create new report
    */
   async createReport(
-    reportData: {
-     , title: string;
+    reportData: { title: string;
       description?: string;
      , reportType: string;
       caseId?: string;
@@ -342,13 +340,13 @@ export class LegalAIApiClient {
       body: reportData,
       signal
     });
-  }
+  } }
   /**
    * Update report
    */
   async updateReport(
     id: string,
-    reportData: Partial<{, title: string;, description: string;
+    reportData: Partial<{ title: string;, description: string;
      , reportType: string;
      , caseId: string;
      , content: string;
@@ -362,7 +360,7 @@ export class LegalAIApiClient {
       body: reportData,
       signal
     });
-  }
+  } }
   /**
    * Delete report
    */
@@ -371,7 +369,7 @@ export class LegalAIApiClient {
       method: 'DELETE',
       signal
     });
-  }
+  } }
   // ===== PERSONS OF INTEREST API =====
   /**
    * List persons of interest with pagination and filtering
@@ -383,23 +381,22 @@ export class LegalAIApiClient {
       riskLevel?: string;
       caseId?: string;
       signal?: AbortSignal;
-    } = {}
+    } }= {} }
   ): Promise<PaginatedResponse<unknown>> {
-    const { signal, ...query } = _options;
+    const { signal, ...query } }= _options;
     return this.request<PaginatedResponse<unknown>>('/persons-of-interest', { query, signal });
-  }
+  } }
   /**
    * Get specific person of interest by ID
    */
   async getPersonOfInterest(id: string, signal?: AbortSignal): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>(`/persons-of-interest/${id}`, { signal });
-  }
+  } }
   /**
    * Create new person of interest
    */
   async createPersonOfInterest(
-    personData: {
-     , name: string;
+    personData: { name: string;
       description?: string;
      , riskLevel: string;
       caseId?: string;
@@ -414,13 +411,13 @@ export class LegalAIApiClient {
       body: personData,
       signal
     });
-  }
+  } }
   /**
    * Update person of interest
    */
   async updatePersonOfInterest(
     id: string,
-    personData: Partial<{, name: string;, description: string;
+    personData: Partial<{ name: string;, description: string;
      , riskLevel: string;
      , caseId: string;
      , contactInfo: Record<string, unknown>;
@@ -434,7 +431,7 @@ export class LegalAIApiClient {
       body: personData,
       signal
     });
-  }
+  } }
   /**
    * Delete person of interest
    */
@@ -443,7 +440,7 @@ export class LegalAIApiClient {
       method: 'DELETE',
       signal
     });
-  }
+  } }
   // ===== UTILITY METHODS =====
   /**
    * Upload file with progress tracking
@@ -452,7 +449,7 @@ export class LegalAIApiClient {
     file: File,
     onProgress?: (progress: number) => void,
     signal?: AbortSignal
-  ): Promise<{ fileUrl: string; fileName: string; fileSize: number; mimeType: string;, hash: string }> {
+  ): Promise<{ fileUrl: string; fileName: string; fileSize: number; mimeType: string; hash: string }> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -464,12 +461,12 @@ export class LegalAIApiClient {
           reject(new Error('Upload aborted'));
         };
         signal.addEventListener('abort', onAbort, { once: true });
-      }
+      } }
       xhr.upload.addEventListener('progress', event => {
         if (event.lengthComputable && onProgress) {
           const progress = (event.loaded / event.total) * 100;
           onProgress(progress);
-        }
+        } }
       });
       xhr.addEventListener('load', () => {
         try {
@@ -480,19 +477,19 @@ export class LegalAIApiClient {
             // Expect server to return ApiResponse-like payload
             if (parsed && parsed.data) {
               resolve(parsed.data);
-            } else {
+            } }else {
               resolve(parsed);
-            }
-          } else {
+            } }
+          } }else {
             let parsed = {};
             try {
               parsed = text ? JSON.parse(text) : {};
-            } catch {}
+            } }catch {} }
             reject(new ApiError(status, 'UPLOAD_FAILED', 'File upload failed', parsed));
-          }
-        } catch (err) {
+          } }
+        } }catch (err) {
           reject(err);
-        }
+        } }
       });
       xhr.addEventListener('error', () => {
         reject(new Error('Network error during upload'));
@@ -500,19 +497,19 @@ export class LegalAIApiClient {
       xhr.open('POST', `${this.baseUrl}/files/upload`);
       xhr.send(formData);
     });
-  }
+  } }
   /**
    * Get health status of the API
    */
   async getHealthStatus(
     signal?: AbortSignal
-  ): Promise<ApiResponse<{ status: string; timestamp: string;, services: Record<string, unknown> }>> {
-    return this.request<ApiResponse<{ status: string; timestamp: string;, services: Record<string, unknown> }>>(
+  ): Promise<ApiResponse<{ status: string; timestamp: string; services: Record<string, unknown> }>> {
+    return this.request<ApiResponse<{ status: string; timestamp: string; services: Record<string, unknown> }>>(
       '/health',
-      { signal }
+      { signal } }
     );
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const apiClient = new LegalAIApiClient();
 // Export Zod schemas for form validation

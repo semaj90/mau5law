@@ -18,10 +18,10 @@
  * TensorRT-LLM with Ollama Fallback API
  * High-performance legal AI inference endpoint with Redis optimization
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
-import { tensorrtLLMService } from '$lib/services/tensorrt-llm-service';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { z } }from 'zod';
+import { tensorrtLLMService } }from '$lib/services/tensorrt-llm-service';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
 // Request validation schema
 const InferenceRequestSchema = z.object({
   prompt: z.string().min(1),
@@ -50,9 +50,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           error: 'Invalid request data',
           details: validatedData.error.flatten()
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Convert to TensorRT service format
     const inferenceRequest = {
       prompt: validatedData.data.prompt,
@@ -76,15 +76,15 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       qualityScore: result.tokens ? Math.min(1, 0.6 + result.tokens / 500) : 0.75,
       error: result.error
     });
-  } catch (error) {
+  } }catch (error) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Inference failed'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
 export const GET: RequestHandler = async ({ url }) => {
@@ -107,23 +107,24 @@ export const GET: RequestHandler = async ({ url }) => {
         await tensorrtLLMService.warmupModels();
         return json({
           success: true,
-          data: {, message: 'Models warmed up successfully' }
+          data: { message: 'Models warmed up successfully' } }
         });
       default: return json(
           {
-           , success: false,
+  success: false,
             error: 'Unknown action'
           },
-          { status: 400 }
+          { status: 400 } }
         );
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Health check failed'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

@@ -11,25 +11,25 @@ export function useModal(initialOpen = false) {
   function open(modalData?: any): void {
     data = modalData || null;
     isOpen = true;
-  }
+  } }
   function close(): void {
     isOpen = false;
     data = null;
     onConfirm = null;
     onCancel = null;
-  }
+  } }
   function confirm(): void {
     onConfirm?.();
     close();
-  }
+  } }
   function cancel(): void {
     onCancel?.();
     close();
-  }
+  } }
   function setCallbacks(confirmFn?: () => void, cancelFn?: () => void): void {
     onConfirm = confirmFn || null;
     onCancel = cancelFn || null;
-  }
+  } }
   return {
     isOpen: () => isOpen,
     data: () => data,
@@ -38,15 +38,15 @@ export function useModal(initialOpen = false) {
     confirm,
     cancel,
     setCallbacks
-  }
-}
+  } }
+} }
 // Toast/Notification state management
 interface Toast { id: string;, type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message?: string;
   duration?: number;
  , createdAt: number;
-}
+} }
 export function useToast() {
   let toasts = $state<Toast[]>([]);
   // derive activeToasts from current toasts array
@@ -73,13 +73,13 @@ export function useToast() {
       removeToast(id);
     }, toast.duration);
     return id;
-  }
+  } }
   function removeToast(id: string): void {
     toasts = toasts.filter(t => t.id !== id);
-  }
+  } }
   function clearAll(): void {
     toasts = [];
-  }
+  } }
   // Convenience methods
   const success = (title: string, message?: string, duration?: number) => addToast('success', title, message, duration);
   const error = (title: string, message?: string, duration?: number) => addToast('error', title, message, duration);
@@ -96,7 +96,7 @@ export function useToast() {
     warning,
     info
   };
-}
+} }
 // Form state management
 export function useForm<T, extends, Record<string, any>>(initialValues: T) {
   let values = $state<T>({ ...initialValues });
@@ -113,28 +113,28 @@ export function useForm<T, extends, Record<string, any>>(initialValues: T) {
       const newErrors = { ...errors };
       delete newErrors[field];
       errors = newErrors;
-    }
-  }
+    } }
+  } }
   function setError(field: keyof T, message: string): void {
     errors = { ...errors, [field]: message };
-  }
+  } }
   function clearError(field: keyof T): void {
     const newErrors = { ...errors };
     delete newErrors[field];
     errors = newErrors;
-  }
+  } }
   function clearAllErrors(): void {
-    errors = {} as Partial<Record<keyof, T, string>>;
-  }
+    errors = {} }as Partial<Record<keyof, T, string>>;
+  } }
   function setTouched(field: keyof T, isTouched = true): void {
     touched = { ...touched, [field]: isTouched };
-  }
+  } }
   function reset(newValues?: Partial<T>): void {
-    values = { ...initialValues, ...newValues } as T;
-    errors = {} as Partial<Record<keyof, T, string>>;
-    touched = {} as Partial<Record<keyof, T, boolean>>;
+    values = { ...initialValues, ...newValues } }as T;
+    errors = {} }as Partial<Record<keyof, T, string>>;
+    touched = {} }as Partial<Record<keyof, T, boolean>>;
     isSubmitting = false;
-  }
+  } }
   function validate(validators: Partial<Record<keyof T, (_value: any) => string | null>>): boolean {
     const newErrors: Partial<Record<keyof, T, string>> = {};
     let hasErrors = $state<boolean>(false);
@@ -146,11 +146,11 @@ export function useForm<T, extends, Record<string, any>>(initialValues: T) {
         if (result !== null) {
           newErrors[key] = result;
           hasErrors = true;
-        }
-      }
+        } }
+      } }
     });
     return !hasErrors;
-  }
+  } }
   return {
     values,
     errors,

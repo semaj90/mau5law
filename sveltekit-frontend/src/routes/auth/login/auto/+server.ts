@@ -1,6 +1,6 @@
-import { simpleAuthService } from '$lib/server/auth-simple';
-import { lucia } from '$lib/server/auth';
-import type { RequestHandler } from './$types.js';
+import { simpleAuthService } }from '$lib/server/auth-simple';
+import { lucia } }from '$lib/server/auth';
+import type { RequestHandler } }from './$types.js';
 /**
  * Auto-login endpoint for demo user
  * POST /auth/login/auto
@@ -29,26 +29,27 @@ export const POST: RequestHandler = async ({ cookies, getClientAddress, request 
       JSON.stringify({
         success: true,
         user: {
-         , id: user.id,
+  id: user.id,
           email: user.email,
-          name: '${user.first_name || ''} ${user.last_name || '' }`.trim(),'`
+          name: '${user.first_name || ''} }${user.last_name || '' }`.trim(),'`
           role: user.role
         },
         redirectTo: '/dashboard` }),'`
       {
         status: 200,
-        headers: { 'Content-Type': `application/json` }
-      }
+        headers: { 'Content-Type': `application/json` } }
+      } }
     );
-  } catch (error: any) {
-    console.error('Demo auto-login error: ', error);'
+  } }catch (error: any) {
+    console.error('Demo auto-login error: ', error);
     return new Response(
       JSON.stringify({
         error: `Auto-login failed. Please try manual login.` }),
       {
         status: 500,
-        headers: { 'Content-Type': `application/json` }
-      }
+        headers: { 'Content-Type': `application/json` } }
+      } }
     );
-  }
+  } }
 };
+

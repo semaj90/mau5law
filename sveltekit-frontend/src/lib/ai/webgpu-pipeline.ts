@@ -1,7 +1,7 @@
-import { pipeline } from '@xenova/transformers';
-import { LLMChain, PromptTemplate } from 'langchain';
-import { TransformersLLM } from 'langchain/llms/transformers';
-import { cudaServiceWorker } from '$lib/ai/cuda-service-worker'; // Corrected import path
+import { pipeline } }from '@xenova/transformers';
+import { LLMChain, PromptTemplate } }from 'langchain';
+import { TransformersLLM } }from 'langchain/llms/transformers';
+import { cudaServiceWorker } }from '$lib/ai/cuda-service-worker'; // Corrected import path
 
 let pipe: any | null = null;
 
@@ -15,7 +15,7 @@ export async function initWebGPUPipeline(): Promise<void> {
   });
   console.log('✅ Gemma WebGPU model ready.');
   return pipe;
-}
+} }
 
 /** Simple text-generation using LangChain wrapper */
 export async function runWebGPUInference(prompt: string): Promise<string> {
@@ -30,7 +30,7 @@ export async function runWebGPUInference(prompt: string): Promise<string> {
 
   const res = await chain.call({ input: prompt });
   return res.text ?? res.output_text ?? '';
-}
+} }
 
 /** Hybrid routing:
  *  Short prompts → local WebGPU
@@ -39,7 +39,7 @@ export async function runWebGPUInference(prompt: string): Promise<string> {
 export async function hybridGenerate(prompt: string): Promise<any> {
   if (prompt.length < 500) {
     return { source: 'webgpu', text: await runWebGPUInference(prompt) };
-  }
+  } }
   console.log('⚖️  Routing long prompt to CUDA Service Worker…');
   const resp = await cudaServiceWorker.generateText({
     model: 'gemma3-legal-latest',
@@ -48,4 +48,5 @@ export async function hybridGenerate(prompt: string): Promise<any> {
     priority: 'high'
   });
   return { source: 'cuda', text: resp.text };
-}
+} }
+

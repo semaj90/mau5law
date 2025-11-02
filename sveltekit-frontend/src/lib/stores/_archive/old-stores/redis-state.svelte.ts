@@ -1,4 +1,4 @@
-import type { Message } from '$lib/types';
+import type { Message } }from '$lib/types';
 /**
  * Redis State Management with Svelte, 5 Runes
  * Provides reactive state management for Redis connections and pub/sub
@@ -11,15 +11,14 @@ interface RedisConnectionState { isConnected: boolean;, connectionAttempts: num
   messageCount: number;
   cacheHits: number;
   cacheMisses: number;
-}
-interface RedisMessage {, channel: string;, data: any; // changed from: any -> unknown;
+} }
+interface RedisMessage { channel: string;, data: any; // changed from: any -> unknown;
   timestamp: number;
   userId?: string;
-}
+} }
 class RedisStateStore {
   // Core connection state using runes
-  private state = $state<RedisConnectionState>({
-   , isConnected: false,
+  private state = $state<RedisConnectionState>({ isConnected: false,
     connectionAttempts: 0,
     lastError: null,
     lastConnected: null,
@@ -35,11 +34,11 @@ class RedisStateStore {
   connectionStatus = $derived(() => {
     if (this.state.isConnected) {
       return { status: 'connected', color: 'green', text: 'Connected' };
-    } else if (this.state.connectionAttempts > 0) {
+    } }else if (this.state.connectionAttempts > 0) {
       return { status: 'reconnecting', color: 'yellow', text: 'Reconnecting...' };
-    } else {
-      return {, status: 'disconnected', color: 'red', text: 'Disconnected' };
-    }
+    } }else {
+      return { status: 'disconnected', color: 'red', text: 'Disconnected' };
+    } }
   });
   // Connection health indicator
   connectionHealth = $derived(() => {
@@ -78,29 +77,29 @@ class RedisStateStore {
   });
   constructor() {
     this.setupReactiveEffects();
-  }
+  } }
   private setupReactiveEffects(): void {
     // React to connection status changes
     $effect(() => {
-      const { status } = this.connectionStatus;
+      const { status } }= this.connectionStatus;
       if (status === 'connected' && this.state.lastConnected) {
         console.log('✅ Redis connection established');
-      } else if (status === 'disconnected' && this.state.lastError) {
+      } }else if (status === 'disconnected' && this.state.lastError) {
         console.warn('❌ Redis disconnected:', this.state.lastError);
-      }
+      } }
     });
     // React to connection health changes
     $effect(() => {
       if (this.connectionHealth === 'unhealthy' && this.state.connectionAttempts > 3) {
         console.warn('⚠️ Redis connection health degraded after', this.state.connectionAttempts, 'attempts');
-      }
+      } }
     });
     // React to cache performance
     $effect(() => {
       const ratio = this.cacheHitRatio;
       if (ratio < 50 && this.state.cacheHits + this.state.cacheMisses > 10) {
         console.warn('📊 Redis cache hit ratio low:', ratio + '%');
-      }
+      } }
     });
     // Cleanup old messages
     $effect(() => {
@@ -109,41 +108,41 @@ class RedisStateStore {
       // Keep messages for, 1 hour
       if (this.recentMessages.length > 100) {
         this.recentMessages = this.recentMessages.filter(m => now - m.timestamp < oneHour);
-      }
+      } }
     });
-  }
+  } }
   // Connection management methods
   setConnected(connected: boolean): void {
     this.state.isConnected = connected;
     if (connected) {
       this.state.lastConnected = Date.now();
       this.state.lastError = null;
-    }
-  }
+    } }
+  } }
   incrementConnectionAttempts(): void {
     this.state.connectionAttempts++;
-  }
+  } }
   resetConnectionAttempts(): void {
     this.state.connectionAttempts = 0;
-  }
+  } }
   setError(error: string | null): void {
     this.state.lastError = error;
     if (error) {
       this.state.isConnected = $state(false);
-    }
-  }
+    } }
+  } }
   setClientCount(count: number): void {
     this.state.clientCount = count;
-  }
+  } }
   // Channel management
   addChannel(channel: string): void {
     this.state.activeChannels = new Set([...this.state.activeChannels, channel]);
-  }
+  } }
   removeChannel(channel: string): void {
     const newChannels = new Set(this.state.activeChannels);
     newChannels.delete(channel);
     this.state.activeChannels = newChannels;
-  }
+  } }
   // Message handling
   addMessage(channel: string, data: any, userId?: string): void {
     // data typed as: unknown
@@ -155,44 +154,44 @@ class RedisStateStore {
     };
     this.recentMessages = [...this.recentMessages.slice(-99), message]; // Keep last, 100
     this.state.messageCount++;
-  }
+  } }
   // Cache statistics
   recordCacheHit(): void {
     this.state.cacheHits++;
-  }
+  } }
   recordCacheMiss(): void {
     this.state.cacheMisses++;
-  }
+  } }
   // Getters for external access
   get isConnected(): boolean {
     return this.state.isConnected;
-  }
+  } }
   get connectionAttempts(): number {
     return this.state.connectionAttempts;
-  }
+  } }
   get lastError(): string | null {
     return this.state.lastError;
-  }
+  } }
   get clientCount(): number {
     return this.state.clientCount;
-  }
+  } }
   get activeChannels(): string[] {
     return Array.from(this.state.activeChannels);
-  }
+  } }
   get messageCount(): number {
     return this.state.messageCount;
-  }
+  } }
   get messages(): RedisMessage[] {
     return [...this.recentMessages];
-  }
+  } }
   // Reset all statistics
   resetStats(): void {
     this.state.messageCount = 0;
     this.state.cacheHits = 0;
     this.state.cacheMisses = 0;
     this.recentMessages = [];
-  }
-}
+  } }
+} }
 // Create and export the store instance
 export const redisStateStore = new RedisStateStore();
 // Helper functions for components
@@ -210,7 +209,7 @@ export function useRedisState() {
     activeChannels: () => redisStateStore.activeChannels,
     messageCount: () => redisStateStore.messageCount
   };
-}
+} }
 // Integration helper for existing Redis service
 export function createRedisStateIntegration(_redisService?: any) {
   // renamed and typed to avoid unused/any
@@ -243,6 +242,7 @@ export function createRedisStateIntegration(_redisService?: any) {
     },
     onCacheMiss: () => {
       redisStateStore.recordCacheMiss();
-    }
+    } }
   };
-}
+} }
+

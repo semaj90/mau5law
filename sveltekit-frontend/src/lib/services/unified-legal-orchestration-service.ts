@@ -5,9 +5,9 @@
  * combining optimized job orchestration, auto-attach queue management,
  * and asynchronous state management into one cohesive service.
  */
-import { OptimizedRabbitMQOrchestrator } from '$lib/orchestration/optimized-rabbitmq-orchestrator';
-import type { JobType, JobStatus, ProcessingMetrics } from '$lib/types/rabbitmq-types';
-import type { Readable } from 'svelte/store';
+import { OptimizedRabbitMQOrchestrator } }from '$lib/orchestration/optimized-rabbitmq-orchestrator';
+import type { JobType, JobStatus, ProcessingMetrics } }from '$lib/types/rabbitmq-types';
+import type { Readable } }from 'svelte/store';
 
 export interface LegalProcessingRequest {
   documentId?: string;
@@ -17,28 +17,28 @@ export interface LegalProcessingRequest {
   metadata?: Record<string, unknown>;
   evidenceCanvasId?: string;
   analysisType?: 'detective' | 'legal' | 'forensic' | 'comparative';
-}
+} }
 
 export interface LegalProcessingResult { jobIds: string[];, statusStores: Map<string, Readable<JobStatus | undefined>>;
   aggregateStatus: Readable<'pending' | 'processing' | 'completed' | 'failed'>;
   processingMetrics: ProcessingMetrics;
-}
+} }
 
-export interface SystemHealthStatus {, orchestrator: {, isHealthy: boolean;
+export interface SystemHealthStatus { orchestrator: { isHealthy: boolean;
     activeJobs: number;
     queuedJobs: number;
     completedToday: number;
     averageProcessingTime: number;
   };
-  queueManager: {, isHealthy: boolean;, attachedQueues: number;
+  queueManager: { isHealthy: boolean;, attachedQueues: number;
     optimizationScore: number;
     autoScalingActive: boolean;
   };
-  stateManager: {, isHealthy: boolean;, activeSubscriptions: number;
+  stateManager: { isHealthy: boolean;, activeSubscriptions: number;
     stateConflicts: number;
     syncLatency: number;
   };
-}
+} }
 
 // Lightweight local shapes to avoid cross-module JobType/JobDefinition mismatches
 interface OrchestratorJobDefinition {
@@ -46,7 +46,7 @@ interface OrchestratorJobDefinition {
   payload?: any;
   priority?: number;
   dependencies?: string[];
-}
+} }
 
 interface OrchestratorLike {
   start?: (opts?: any) => Promise<void> | void;
@@ -55,16 +55,16 @@ interface OrchestratorLike {
   getMetrics?: () => Promise<ProcessingMetrics> | ProcessingMetrics;
   shutdown?: () => Promise<void> | void;
   updateQueueRouting?: (queueName: string, attachment: any) => void;
-}
+} }
 
 // Add concrete shape for queue attachment info (replace loose `any`)
 interface AttachmentInfo {
   optimalLoad?: number;
   currentLoad?: number;
-  autoScaling?: { enabled?: boolean } | null;
-  performanceMetrics?: { averageProcessingTime?: number } | null;
+  autoScaling?: { enabled?: boolean } }| null;
+  performanceMetrics?: { averageProcessingTime?: number } }| null;
   [key: string]: any;
-}
+} }
 
 // Helper to safely read numeric fields, from: unknown objects
 function safeNumber(obj: any, key: string, fallback = 0): number {
@@ -76,9 +76,9 @@ function safeNumber(obj: any, key: string, fallback = 0): number {
   if (typeof v === 'string' && v.trim() !== '') {
     const n = Number(v);
     if (Number.isFinite(n)) return n;
-  }
+  } }
   return fallback;
-}
+} }
 
 // Type-check for ProcessingMetrics-like shape (runtime-only: boolean).
 // Avoid using a TypeScript type predicate here to prevent parse issues in some toolchains.
@@ -88,7 +88,7 @@ function hasProcessingMetricsShape(v: any): boolean {
   // check at least one expected numeric property to identify the shape
   const cand = ['successRate', 'totalJobs', 'averageProcessingTime'];
   return cand.some(k => typeof r[k] === 'number');
-}
+} }
 
 export class UnifiedLegalOrchestrationService {
   private orchestrator: OptimizedRabbitMQOrchestrator;
@@ -101,22 +101,22 @@ export class UnifiedLegalOrchestrationService {
     getAttachments?: () => Promise<Map<string, AttachmentInfo>> | Map<string, AttachmentInfo>;
     optimizeBasedOnJobStatus?: (jobId?: string, status?: any) => void;
     shutdown?: () => Promise<void> | void;
-  } = {};
+  } }= {};
 
   private stateManager: {
     start?: (opts?: any) => Promise<void> | void;
     createJobStatusStore?: (jobId: string) => Readable<JobStatus | undefined>;
-    subscribe?: (sub: {, type: string;, handler: (data: any) => void }) => void;
+    subscribe?: (sub: { type: string; handler: (data: any) => void }) => void;
     getActiveSubscriptions?: () => number;
     shutdown?: () => Promise<void> | void;
-  } = {};
+  } }= {};
 
   private initialized = $state(false);
 
   constructor() {
     this.orchestrator = new OptimizedRabbitMQOrchestrator();
     // queueManager and stateManager will be lazy-loaded in initialize()
-  }
+  } }
 
   /**
    * Initialize the unified service with all subsystems
@@ -146,11 +146,11 @@ export class UnifiedLegalOrchestrationService {
       this.setupIntegrations();
       this.initialized = true;
       console.log('Unified Legal Orchestration Service initialized successfully');
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to initialize Unified Legal Orchestration Service:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Process a legal document through the complete AI pipeline
@@ -158,7 +158,7 @@ export class UnifiedLegalOrchestrationService {
   async processLegalDocument(request: LegalProcessingRequest): Promise<LegalProcessingResult> {
     if (!this.initialized) {
       await this.initialize();
-    }
+    } }
 
     const jobIds: string[] = [];
     const statusStores = new Map<string, Readable<JobStatus | undefined>>();
@@ -166,7 +166,7 @@ export class UnifiedLegalOrchestrationService {
     // Auto-attach queues for the required job types
     for (const jobType of request.processingPipeline) {
       await this.queueManager.attachQueue?.(`legal.${String(jobType)}`, [jobType]);
-    }
+    } }
 
     // Submit jobs in the processing pipeline order
     for (let i = 0; i < request.processingPipeline.length; i++) {
@@ -174,10 +174,8 @@ export class UnifiedLegalOrchestrationService {
       const previousJobId = i > 0 ? jobIds[i - 1] : undefined;
 
       // Build a permissive job shape that matches the orchestrator's expectations'
-      const orchestratorJob: Partial<OrchestratorJobDefinition> = {
-       , type: String(jobType),
-        payload: {
-         , content: request.content,
+      const orchestratorJob: Partial<OrchestratorJobDefinition> = { type: String(jobType),
+        payload: { content: request.content,
           documentId: request.documentId,
           evidenceCanvasId: request.evidenceCanvasId,
           analysisType: request.analysisType,
@@ -196,8 +194,8 @@ export class UnifiedLegalOrchestrationService {
       // Guard stateManager.createJobStatusStore which may be: undefined
       if (typeof this.stateManager.createJobStatusStore === 'function') {
         statusStores.set(jobId, this.stateManager.createJobStatusStore(jobId));
-      }
-    }
+      } }
+    } }
 
     const aggregateStatus = this.createAggregateStatusStore(jobIds);
 
@@ -219,7 +217,7 @@ export class UnifiedLegalOrchestrationService {
             queueDepth: 0,
             activeWorkers: 0,
             successRate: 1
-          } as ProcessingMetrics);
+          } }as ProcessingMetrics);
 
     return {
       jobIds,
@@ -227,7 +225,7 @@ export class UnifiedLegalOrchestrationService {
       aggregateStatus,
       processingMetrics
     };
-  }
+  } }
 
   /**
    * Process evidence canvas data with detective / forensic analysis
@@ -250,18 +248,17 @@ export class UnifiedLegalOrchestrationService {
       priority: 2,
       evidenceCanvasId: canvasId,
       analysisType,
-      metadata: {
-       , evidenceCount: Array.isArray(evidenceItems) ? evidenceItems.length : 0,
+      metadata: { evidenceCount: Array.isArray(evidenceItems) ? evidenceItems.length : 0,
         canvasTimestamp: Date.now()
-      }
+      } }
     });
-  }
+  } }
 
   /**
    * Batch process multiple legal documents
    */
   async batchProcessDocuments(
-    documents: Array<{, id: string;, content: string; pipeline?: JobType[] }>
+    documents: Array<{ id: string; content: string; pipeline?: JobType[] }>
   ): Promise<Map<string, LegalProcessingResult>> {
     const results = new Map<string, LegalProcessingResult>();
     const defaultPipeline: JobType[] = [
@@ -284,10 +281,10 @@ export class UnifiedLegalOrchestrationService {
           results.set(doc.id, result);
         })
       );
-    }
+    } }
 
     return results;
-  }
+  } }
 
   /**
    * Get comprehensive system health status
@@ -316,26 +313,24 @@ export class UnifiedLegalOrchestrationService {
     const completedJobs = safeNumber(orchestratorMetrics, 'completedJobs', 0);
     const averageProcessingTime = safeNumber(orchestratorMetrics, 'averageProcessingTime', 0);
 
-    return { orchestrator: {, isHealthy: successRate > 0.95,
+    return { orchestrator: { isHealthy: successRate > 0.95,
         activeJobs,
         queuedJobs,
         completedToday: completedJobs,
         averageProcessingTime
       },
-      queueManager: {
-       , isHealthy: queueAttachments.size > 0,
+      queueManager: { isHealthy: queueAttachments.size > 0,
         attachedQueues: queueAttachments.size,
         optimizationScore: this.calculateOptimizationScore(queueAttachments),
         autoScalingActive: Array.from(queueAttachments.values()).some(a => !!a?.autoScaling?.enabled)
       },
-      stateManager: {
-       , isHealthy: stateSubscriptions < 1000,
+      stateManager: { isHealthy: stateSubscriptions < 1000,
         activeSubscriptions: stateSubscriptions,
         stateConflicts: 0,
         syncLatency: 50
-      }
+      } }
     };
-  }
+  } }
 
   /**
    * Shutdown the unified service gracefully
@@ -347,11 +342,11 @@ export class UnifiedLegalOrchestrationService {
       await Promise.all([orch.shutdown?.(), this.queueManager.shutdown?.(), this.stateManager.shutdown?.()]);
       this.initialized = false;
       console.log('Unified Legal Orchestration Service shutdown completed');
-    } catch (error) {
+    } }catch (error) {
       console.error('Error during shutdown:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Wire event integrations between components
@@ -367,10 +362,10 @@ export class UnifiedLegalOrchestrationService {
           const jobId = typeof rec.jobId === 'string' ? rec.jobId : undefined;
           const status = rec.status;
           this.queueManager.optimizeBasedOnJobStatus?.(jobId, status);
-        } catch {
+        } }catch {
           /* swallow */
-        }
-      }
+        } }
+      } }
     });
     // Subscribe orchestrator to queue attachment changes
     this.stateManager.subscribe?.({
@@ -382,12 +377,12 @@ export class UnifiedLegalOrchestrationService {
           const attachment = rec.attachment;
           const orch = this.orchestrator as: unknown as OrchestratorLike;
           if (queueName) orch.updateQueueRouting?.(queueName, attachment);
-        } catch {
+        } }catch {
           /* swallow */
-        }
-      }
+        } }
+      } }
     });
-  }
+  } }
 
   private createAggregateStatusStore(jobIds: string[]): Readable<'pending' | 'processing' | 'completed' | 'failed'> {
     return {
@@ -401,21 +396,21 @@ export class UnifiedLegalOrchestrationService {
             // if no store available, keep status: undefined
             statuses.set(jobId, undefined);
             return;
-          }
+          } }
           const unsubscribe = store.subscribe((status: JobStatus | undefined) => {
             statuses.set(jobId, status);
             const allStatuses = Array.from(statuses.values()).filter(s => typeof s !== 'undefined') as JobStatus[];
             // if: any known status is failed -> failed
             if (allStatuses.some(s => String(s) === 'failed')) {
               run('failed');
-            } else if (allStatuses.length === jobIds.length && allStatuses.every(s => String(s) === 'completed')) {
+            } }else if (allStatuses.length === jobIds.length && allStatuses.every(s => String(s) === 'completed')) {
               // all known and all completed
               run('completed');
-            } else if (allStatuses.some(s => String(s) === 'processing')) {
+            } }else if (allStatuses.some(s => String(s) === 'processing')) {
               run('processing');
-            } else {
+            } }else {
               run('pending');
-            }
+            } }
           });
           unsubscribers.push(unsubscribe);
         });
@@ -424,14 +419,14 @@ export class UnifiedLegalOrchestrationService {
           unsubscribers.forEach(unsub => {
             try {
               unsub();
-            } catch {
+            } }catch {
               /* swallow */
-            }
+            } }
           });
         };
-      }
-    } as Readable<'pending' | 'processing' | 'completed' | 'failed'>;
-  }
+      } }
+    } }as Readable<'pending' | 'processing' | 'completed' | 'failed'>;
+  } }
 
   /**
    * Calculate optimization score based on queue attachments
@@ -446,9 +441,9 @@ export class UnifiedLegalOrchestrationService {
       const perfTime = attachment?.performanceMetrics?.averageProcessingTime ?? 1000;
       const performanceScore = Math.min(perfTime / 1000, 1) * 30;
       totalScore += utilizationScore + scalingScore + performanceScore;
-    }
+    } }
     return Math.round(totalScore / attachments.size);
-  }
+  } }
 
   // Add small helper to instantiate imported modules safely
   private tryInstantiateModule(m: any): any | undefined {
@@ -459,13 +454,13 @@ export class UnifiedLegalOrchestrationService {
       if (typeof Ctor === 'function') {
         const ctorTyped = Ctor as { new (): any };
         return new ctorTyped();
-      }
+      } }
       return Ctor;
-    } catch {
+    } }catch {
       return Ctor;
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Export singleton instance
 export const unifiedLegalOrchestrationService = new UnifiedLegalOrchestrationService();

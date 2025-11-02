@@ -14,7 +14,7 @@ export function getGlyphProgram(gl: WebGL2RenderingContext, styleKey: string) {
   void main(){ float a = texture(u_glyphAtlas, v_uv).r; outColor = vec4(vec3(a), 1.0); }`;`
   const key = `glyph:${styleKey}`;
   return shaderCache.getOrCreateProgram(gl, key, vert, frag);
-}
+} }
 export function createGlyphAtlasTexture(gl: WebGL2RenderingContext, width: number, height: number, data: Uint8Array) {
   const tex = gl.createTexture();
   if (!tex) throw new Error('Unable to create glyph atlas texture');
@@ -25,5 +25,6 @@ export function createGlyphAtlasTexture(gl: WebGL2RenderingContext, width: numbe
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.bindTexture(gl.TEXTURE_2D, null);
   return tex;
-}
+} }
 export default { getGlyphProgram, createGlyphAtlasTexture };
+

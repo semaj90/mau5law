@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { dev } from '$app/environment';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import { dev } }from '$app/environment';
 
 // Define interfaces for User, Session, and Case
 interface User {
@@ -9,20 +9,20 @@ interface User {
   name?: string; // Made optional to match locals.user type
   role: string;
   // Add other user properties as needed from your authentication system
-}
+} }
 
-interface Session {, id: string;, userId: string;
+interface Session { id: string;, userId: string;
   expiresAt: Date;
   // Add other session properties as needed
-}
+} }
 
-interface Case {, id: string;, name: string;
+interface Case { id: string;, name: string;
   description?: string;
   status?: string;
   createdAt?: string;
   updatedAt?: string;
   // Add other case properties as returned by your /api/cases endpoint
-}
+} }
 
 /**
  * Server-side data loader for legal cases page
@@ -39,7 +39,7 @@ export const load = (async ({ locals, fetch }) => {
   if (devBypass && !user) {
     if (devBypass) {
       console.warn('🔓 DEV_BYPASS_AUTH: Creating stub user for development testing');
-    }
+    } }
     user = {
       id: 'dev-user-001',
       email: 'dev@localhost',
@@ -47,12 +47,11 @@ export const load = (async ({ locals, fetch }) => {
       role: 'prosecutor'
     };
 
-    session = {
-     , id: 'dev-session-001',
+    session = { id: 'dev-session-001',
       userId: 'dev-user-001',
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
     };
-  }
+  } }
 
   // Attempt to fetch cases (will use DEV_BYPASS_AUTH in API as well)
   let cases: Case[] = [];
@@ -63,20 +62,20 @@ export const load = (async ({ locals, fetch }) => {
 
     if (response.ok) {
       const data = await response.json();
-      // API returns { cases: [...], pagination: {...} }
+      // API returns { cases: [...], pagination: {...} }} }
       cases = data.cases || [];
-    } else if (response.status === 401 && devBypass) {
+    } }else if (response.status === 401 && devBypass) {
       // Auth error in dev mode - still allow page to load
       console.warn('🔓 DEV_BYPASS_AUTH: API returned, 401, but continuing in dev mode');
       error = 'Authentication required (bypassed in dev mode)';
-    } else {
+    } }else {
       const errorData = await response.json().catch(() => ({ error: 'Failed to load cases' }));
       error = errorData.error || errorData.message || 'Failed to load cases';
-    }
-  } catch (err) {
+    } }
+  } }catch (err) {
     console.error('Failed to load cases:', err);
     error = err instanceof Error ? err.message : 'Error loading cases';
-  }
+  } }
 
   return {
     user,
@@ -87,3 +86,4 @@ export const load = (async ({ locals, fetch }) => {
     devBypassActive: devBypass
   };
 }) satisfies import('./$types').PageServerLoad;
+

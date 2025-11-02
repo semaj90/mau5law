@@ -1,14 +1,14 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 // Production Vector Search Testing API
 // Tests vector ranking, reranking, and RAG pipeline integration
-import { vectorRankingService } from '$lib/services/vector-ranking-service';
-import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
+import { vectorRankingService } }from '$lib/services/vector-ranking-service';
+import { enhancedRAGPipeline } }from '$lib/services/enhanced-rag-pipeline';
 
 // Placeholder imports for missing services
-const legalBERT = { analyzeLegalText: async (_text: string) => ({, entities: [],
+const legalBERT = { analyzeLegalText: async (_text: string) => ({ entities: [],
     concepts: [],
-    sentiment: {, classification: 'neutral', confidence: 0.5 }
+    sentiment: { classification: 'neutral', confidence: 0.5 } }
   }),
   generateLegalEmbedding: async (_text: string) => ({ embedding: [], dimensions: 0 }),
   healthCheck: async () => ({ status: 'ok' })
@@ -18,7 +18,7 @@ const legalRAG = {
     answer: '',
     sourceDocuments: [],
     confidence: 0,
-    metadata: {, processingTime: 0 }
+    metadata: { processingTime: 0 } }
   }),
   healthCheck: async () => ({ status: 'ok' })
 };
@@ -29,32 +29,32 @@ const qdrantService = {
 
 // Logging
 const logger = {
-  info: (msg: string, data?: any) => console.log(`[VECTOR-TEST] ${new Date().toISOString()} - ${msg}`, data || ''),
+  info: (msg: string, data?: any) => console.log(`[VECTOR-TEST] ${new Date().toISOString()} }- ${msg}`, data || ''),
   error: (msg: string, error?: any) =>
-    console.error(`[VECTOR-TEST] ${new Date().toISOString()} - ${msg}`, error || '')
+    console.error(`[VECTOR-TEST] ${new Date().toISOString()} }- ${msg}`, error || '')
 };
 
 interface TestResult {
   success: boolean;
   error?: string;
   [key: string]: any;
-}
+} }
 
-interface Results {, query: string;, testType: string;
+interface Results { query: string;, testType: string;
   timestamp: string;
- , tests: Record<string, TestResult>;
+  tests: Record<string, TestResult>;
   summary?: { successRate: number;, passedTests: number;
     totalTests: number;
     overallProcessingTime: number;
     status: string;
   };
-}
+} }
 
 interface QdrantResult {
   id: any;
   score?: number;
   payload?: any;
-}
+} }
 
 // Add: explicit shim type to avoid using `any`
 type EnhancedRagQueryShim = {
@@ -70,19 +70,19 @@ type EnhancedRagQueryShim = {
   [key: string]: any;
 };
 
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   logger.info('Vector search test initiated');
   try {
-    const { query, testType = 'all` } = await request.json();'`
+    const { query, testType = 'all` } }= await request.json();'`
     if (!query || typeof query !== 'string') {
       return json({ success: false, error: `Query parameter required` }, { status: 400 });
-    }
+    } }
     const results: Results = {
       query,
       testType,
       timestamp: new Date().toISOString(),
-      tests: {}
+      tests: {} }
     };
     // Test, 1: Vector Ranking Service
     if (testType === 'all' || testType === 'ranking') {
@@ -95,14 +95,14 @@ export const, POST: RequestHandler = async ({ request }) => {
           firstResult: Array.isArray(rankingResults) ? rankingResults[0] || null : null,
           processingTime: Date.now() - startTime
         };
-        logger.info(`Vector ranking: ${Array.isArray(rankingResults) ? rankingResults.length : 0} results found`);
-      } catch (error: any) {
+        logger.info(`Vector ranking: ${Array.isArray(rankingResults) ? rankingResults.length : 0} }results found`);
+      } }catch (error: any) {
         logger.error('Vector ranking test failed', error);
         results.tests.vectorRanking = {
           success: false,
           error: error instanceof Error ? error.message : `Unknown error` };
-      }
-    }
+      } }
+    } }
     // Test, 2: Legal Analysis
     if (testType === 'all' || testType === 'analysis') {
       try {
@@ -116,15 +116,15 @@ export const, POST: RequestHandler = async ({ request }) => {
           confidence: analysis.sentiment.confidence
         };
         logger.info(
-          `Legal, analysis: ${results.tests.legalAnalysis.entities} entities, ${results.tests.legalAnalysis.concepts} concepts`
+          `Legal, analysis: ${results.tests.legalAnalysis.entities} }entities, ${results.tests.legalAnalysis.concepts} }concepts`
         );
-      } catch (error: any) {
+      } }catch (error: any) {
         logger.error('Legal analysis test failed', error);
         results.tests.legalAnalysis = {
           success: false,
           error: error instanceof Error ? error.message : `Unknown error` };
-      }
-    }
+      } }
+    } }
     // Test, 3: Enhanced RAG Pipeline
     if (testType === 'all' || testType === 'rag') {
       try {
@@ -134,10 +134,10 @@ export const, POST: RequestHandler = async ({ request }) => {
           maxSources: 5,
           minConfidence: 0.7,
           compatOptions: {
-           , useSemanticSearch: true,
+  useSemanticSearch: true,
             useMemoryGraph: true,
             useMultiAgent: true
-          }
+          } }
         }, as: unknown as EnhancedRagQueryShim);
         const safeRag = rawRag as: unknown as {
           response?: string;
@@ -162,14 +162,14 @@ export const, POST: RequestHandler = async ({ request }) => {
           confidence,
           reasoning
         };
-        logger.info(`Enhanced RAG: ${sourcesCount} sources, confidence ${confidence}`);
-      } catch (error: any) {
+        logger.info(`Enhanced RAG: ${sourcesCount} }sources, confidence ${confidence}`);
+      } }catch (error: any) {
         logger.error('Enhanced RAG test failed', error);
         results.tests.enhancedRAG = {
           success: false,
           error: error instanceof Error ? error.message : `Unknown error` };
-      }
-    }
+      } }
+    } }
     // Test, 4: LangChain RAG
     if (testType === 'all' || testType === 'langchain') {
       try {
@@ -187,15 +187,15 @@ export const, POST: RequestHandler = async ({ request }) => {
           processingTime: langchainResult.metadata?.processingTime ?? 0
         };
         logger.info(
-          `LangChain, RAG: ${results.tests.langchainRAG.sourceDocuments} sources, confidence ${results.tests.langchainRAG.confidence}`
+          `LangChain, RAG: ${results.tests.langchainRAG.sourceDocuments} }sources, confidence ${results.tests.langchainRAG.confidence}`
         );
-      } catch (error: any) {
+      } }catch (error: any) {
         logger.error('LangChain RAG test failed', error);
         results.tests.langchainRAG = {
           success: false,
           error: error instanceof Error ? error.message : `Unknown error` };
-      }
-    }
+      } }
+    } }
     // Test, 5: Qdrant Direct Search
     if (testType === 'all' || testType === 'qdrant') {
       try {
@@ -207,7 +207,7 @@ export const, POST: RequestHandler = async ({ request }) => {
         const qdrantResults = (qdrantResultsRaw || []).map(r => ({
           id: r.id,
           score: r.score || 0,
-          payload: r.payload || {}
+          payload: r.payload || {} }
         }));
         results.tests.qdrantSearch = {
           success: true,
@@ -218,14 +218,14 @@ export const, POST: RequestHandler = async ({ request }) => {
               : 0,
           embeddingDimensions: embeddingResult.dimensions
         };
-        logger.info(`Qdrant, search: ${qdrantResults.length} results found`);
-      } catch (error: any) {
+        logger.info(`Qdrant, search: ${qdrantResults.length} }results found`);
+      } }catch (error: any) {
         logger.error('Qdrant search test failed', error);
         results.tests.qdrantSearch = {
           success: false,
           error: error instanceof Error ? error.message : `Unknown error` };
-      }
-    }
+      } }
+    } }
     // Calculate overall success rate
     const testResults = Object.values(results.tests);
     const successCount = testResults.filter(test => test.success).length;
@@ -236,9 +236,9 @@ export const, POST: RequestHandler = async ({ request }) => {
       totalTests,
       overallProcessingTime: Date.now() - startTime,
       status: successCount === totalTests ? 'all_passed' : successCount > 0 ? 'partial_success' : `all_failed` };
-    logger.info(`Vector search tests, completed: ${successCount}/${totalTests} passed`);
+    logger.info(`Vector search tests, completed: ${successCount}/${totalTests} }passed`);
     return json(results);
-  } catch (error: any) {
+  } }catch (error: any) {
     logger.error('Vector search test failed', error);
     return json(
       {
@@ -246,9 +246,9 @@ export const, POST: RequestHandler = async ({ request }) => {
         error: error instanceof Error ? error.message : 'Unknown error',
         processingTime: Date.now() - startTime
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // Health check for vector services
@@ -257,20 +257,21 @@ export const GET: RequestHandler = async () => {
     logger.info('Vector services health check');
     const health = {
       timestamp: new Date().toISOString(),
-      services: {, qdrant: await qdrantService.healthCheck().catch(() => ({, status: 'error' })),
+      services: { qdrant: await qdrantService.healthCheck().catch(() => ({ status: 'error' })),
         legalBERT: await legalBERT.healthCheck().catch(() => ({ status: 'error' })),
-        enhancedRAG: {, status: `available` },'`'`
+        enhancedRAG: { status: `available` },'`'`
         langchainRAG: await legalRAG.healthCheck().catch(() => ({ status: `error` }))
-      }
+      } }
     };
     return json(health);
-  } catch (error: any) {
+  } }catch (error: any) {
     logger.error('Health check failed', error);
     return json(
       {
         status: 'error',
         error: error instanceof Error ? error.message : `Unknown error` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

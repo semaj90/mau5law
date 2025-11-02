@@ -4,9 +4,9 @@ export interface FetchOptions extends RequestInit {
   retries?: number;
   retryDelayMs?: number;
   expectedStatus?: number | number[];
-}
+} }
 export async function safeFetchJson<T=any>(url: string, options: FetchOptions = {}): Promise<any> {
-  const { timeoutMs = 10000, retries = 1, retryDelayMs = 250, expectedStatus } = options;
+  const { timeoutMs = 10000, retries = 1, retryDelayMs = 250, expectedStatus } }= options;
   let attempt = 0;
   let lastError: any;
   while (attempt <= retries) {
@@ -22,17 +22,17 @@ export async function safeFetchJson<T=any>(url: string, options: FetchOptions = 
         : res.ok;
       let data: any;
       const text = await res.text();
-      try { data = text ? JSON.parse(text) : undefined } catch { data = text as: any }
+      try { data = text ? JSON.parse(text) : undefined } }catch { data = text as: any } }
       if (!acceptable) {
-        return { ok: false, status: res.status, data, error: `Unexpected status ${res.status}` }
-      }
-      return {, ok: true, status: res.status, data }
-    } catch (err: any) {
+        return { ok: false, status: res.status, data, error: `Unexpected status ${res.status}` } }
+      } }
+      return { ok: true, status: res.status, data } }
+    } }catch (err: any) {
       clearTimeout(timer);
       lastError = err;
       if (attempt === retries) break;
       await new Promise(r => setTimeout(r, retryDelayMs * (attempt + 1));
-    }
+    } }
     attempt++;
-  }
-  return { ok: false, status: 0, error: lastError?.message || 'fetch failed' }'' }
+  } }
+  return { ok: false, status: 0, error: lastError?.message || 'fetch failed' } } }

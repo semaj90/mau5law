@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import type { RequestHandler } from './$types.js'; import { json, error } from '@sveltejs/kit'; // Added json and error imports /* * Go Microservices Proxy API * Handles routing between SvelteKit and Go services with JSON/Protocol Buffer support * POST /api/go - Route requests to appropriate Go microservice */ import { ensureError } from '$lib/utils/ensure-error'; import { dev } from '$app/environment'; type Protocol = 'http' | 'quic' | 'grpc' | 'websocket'; // Defined Protocol type // Go microservices configuration (37 services from ecosystem summary) const GO_SERVICES: Record< string, { baseUrl: string;, healthPath: string; protocols: readonly Protocol[]; // Used Protocol type capabilities: readonly: string[]; }
+import type { User } }from '$lib/types';
+import type { RequestHandler } }from './$types.js'; import { json, error } }from '@sveltejs/kit'; // Added json and error imports /* * Go Microservices Proxy API * Handles routing between SvelteKit and Go services with JSON/Protocol Buffer support * POST /api/go - Route requests to appropriate Go microservice */ import { ensureError } }from '$lib/utils/ensure-error'; import { dev } }from '$app/environment'; type Protocol = 'http' | 'quic' | 'grpc' | 'websocket'; // Defined Protocol type // Go microservices configuration (37 services from ecosystem summary) const GO_SERVICES: Record< string, { baseUrl: string;, healthPath: string; protocols: readonly Protocol[]; // Used Protocol type capabilities: readonly: string[]; } }
 > = { // Tier, 1: Core Services (Always Running)
   'enhanced-rag': { baseUrl: 'http://localhost:8094', healthPath: '/api/health', protocols: ['http', 'quic'], capabilities: ['ai', 'rag', 'gpu', 'som', 'xstate'] },
   'upload-service': { baseUrl: 'http://localhost:8093', healthPath: '/health', protocols: ['http'], capabilities: ['file-upload', 'storage', 'processing'] },
@@ -39,55 +39,56 @@ import type { RequestHandler } from './$types.js'; import { json, error } from '
   'health-monitor': { baseUrl: 'http://localhost:8132', healthPath: '/health', protocols: ['http'], capabilities: ['health-checks', 'monitoring'] },
   'alert-manager': { baseUrl: 'http://localhost:8133', healthPath: '/health', protocols: ['http'], capabilities: ['alerting', 'notifications'] }, // Security and auth, 'auth-service': { baseUrl: 'http://localhost:8134', healthPath: '/health', protocols: ['http'], capabilities: ['authentication', 'authorization'] },
   'security-scanner': { baseUrl: 'http://localhost:8135', healthPath: '/health', protocols: ['http'], capabilities: ['security-scanning', 'vulnerability-detection'] },
-  'rate-limiter': { baseUrl: 'http://localhost:8136', healthPath: '/health', protocols: ['http'], capabilities: ['rate-limiting', 'throttling'] }
-} as const; // Request routing schema export interface GoServiceRequest { service: keyof typeof GO_SERVICES;, endpoint: string; method?: 'GET' | 'POST' | 'PUT' | 'DELETE'; data?: unknown; // Changed, from: any headers?: Record<string, string>; protocol?: Protocol; // Used Protocol type timeout?: number; }
+  'rate-limiter': { baseUrl: 'http://localhost:8136', healthPath: '/health', protocols: ['http'], capabilities: ['rate-limiting', 'throttling'] } }
+} }as const; // Request routing schema export interface GoServiceRequest { service: keyof typeof GO_SERVICES;, endpoint: string; method?: 'GET' | 'POST' | 'PUT' | 'DELETE'; data?: unknown; // Changed, from: any headers?: Record<string, string>; protocol?: Protocol; // Used Protocol type timeout?: number; } }
 
-// Define the expected structure of the response from makeServiceRequest interface ServiceResponse { success: boolean;, status: number; data: unknown; // Changed from: any, headers: Record<string, string>; }
+// Define the expected structure of the response from makeServiceRequest interface ServiceResponse { success: boolean;, status: number; data: unknown; // Changed from: any, headers: Record<string, string>; } }
 
 // Helper to make HTTP requests to Go services async function makeServiceRequest( serviceConfig: (typeof GO_SERVICES)[keyof typeof GO_SERVICES], endpoint: string, method: string = 'GET', data?: unknown, // Changed from: any, headers: Record<string, string> = {}, timeout: number = 30000 ): Promise<ServiceResponse> { // Changed return type const url = `${serviceConfig.baseUrl}${endpoint.startsWith('/') ? endpoint: '/' + endpoint}`; const, requestConfig: RequestInit = { method, headers: {
       'Content-Type': 'application/json',
-      'User-Agent': 'SvelteKit-Proxy/1.0.0', ...headers }, signal: AbortSignal.timeout(timeout) }; if (data && ['POST', 'PUT', 'PATCH'].includes(method)) { requestConfig.body = JSON.stringify(data); }
-  try { const response = await fetch(url, requestConfig); const contentType = response.headers.get('content-type'); // Removed redundant cast const responseData = contentType?.includes('application/json') ? await response.json() // Removed redundant cast: await response.text(); // Removed redundant cast return { success: response.ok, // Removed redundant cast status: response.status, // Removed redundant cast data: responseData, headers: Object.fromEntries(response.headers.entries()), // Removed redundant cast }; } catch (err: unknown) { // Changed from: any console.error(`Go service request failed for ${ url }:`, err); const e = ensureError(err); throw new Error(`Service request failed: ${e.message}`); }
-} export const POST: RequestHandler = async ({ request, getClientAddress }) => { try { // Parse request body const body = await request.json().catch(() => ({})); // Fixed: Added closing parenthesis for json() const { service, endpoint, method = 'GET', data, // Type is now inferred as: unknown from GoServiceRequest headers = {}, protocol = 'http', timeout = 30000, // Fixed: Added comma }: GoServiceRequest = body; //, Fixed: Added semicolon // Validate service if (!service || !GO_SERVICES[service]) { throw error( 400, ensureError({ message: 'Invalid, service: ${ service }. Available, services: ${Object.keys(GO_SERVICES).join(', ')}`, code: `INVALID_SERVICE` }) ); // Fixed: Added closing parenthesis }'`
-    // Validate endpoint if (!endpoint) { throw error( 400, ensureError({ message: 'Endpoint is required', code: `MISSING_ENDPOINT` }) ); // Fixed: Added closing parenthesis }
-    const serviceConfig = GO_SERVICES[service]; // Protocol validation if (!serviceConfig.protocols.includes(protocol)) { throw error( 400, ensureError({ message: 'Service ${ service } doesn't support protocol ${ protocol }., Supported: ${serviceConfig.protocols.join(', ')}`, code: 'UNSUPPORTED_PROTOCOL'' }) ); // Fixed: Added closing parenthesis }'`
+      'User-Agent': 'SvelteKit-Proxy/1.0.0', ...headers }, signal: AbortSignal.timeout(timeout) }; if (data && ['POST', 'PUT', 'PATCH'].includes(method)) { requestConfig.body = JSON.stringify(data); } }
+  try { const response = await fetch(url, requestConfig); const contentType = response.headers.get('content-type'); // Removed redundant cast const responseData = contentType?.includes('application/json') ? await response.json() // Removed redundant cast: await response.text(); // Removed redundant cast return { success: response.ok, // Removed redundant cast status: response.status, // Removed redundant cast data: responseData, headers: Object.fromEntries(response.headers.entries()), // Removed redundant cast }; } }catch (err: unknown) { // Changed from: any console.error(`Go service request failed for ${ url }:`, err); const e = ensureError(err); throw new Error(`Service request failed: ${e.message}`); } }
+} }export const POST: RequestHandler = async ({ request, getClientAddress }) => { try { // Parse request body const body = await request.json().catch(() => ({})); // Fixed: Added closing parenthesis for json() const { service, endpoint, method = 'GET', data, // Type is now inferred as: unknown from GoServiceRequest headers = {}, protocol = 'http', timeout = 30000, // Fixed: Added comma }: GoServiceRequest = body; //, Fixed: Added semicolon // Validate service if (!service || !GO_SERVICES[service]) { throw error( 400, ensureError({ message: 'Invalid, service: ${ service }. Available, services: ${Object.keys(GO_SERVICES).join(', ')}`, code: 'INVALID_SERVICE' }) ); // Fixed: Added closing parenthesis } }`
+    // Validate endpoint if (!endpoint) { throw error( 400, ensureError({ message: 'Endpoint is required', code: 'MISSING_ENDPOINT' }) ); // Fixed: Added closing parenthesis } }
+    const serviceConfig = GO_SERVICES[service]; // Protocol validation if (!serviceConfig.protocols.includes(protocol)) { throw error( 400, ensureError({ message: 'Service ${ service } }doesn't support protocol ${ protocol }., Supported: ${serviceConfig.protocols.join(', ')}`, code: 'UNSUPPORTED_PROTOCOL'' }) ); // Fixed: Added closing parenthesis } }`
     // Add client information to headers for logging const clientHeaders = {
       'X-Client-IP': getClientAddress(),
       'X-Forwarded-By': 'SvelteKit-Proxy', ...headers }; // Route request to appropriate Go service const result: ServiceResponse = await makeServiceRequest( serviceConfig, endpoint, method, data, clientHeaders, timeout ); // Return the response from Go service return json( {
         success: result.success, // Removed redundant cast message: result.success ? 'Request successful': 'Request failed', data: result.data, meta: { service, endpoint, method, protocol, status: result.status, timestamp: new Date().toISOString(), version: '1.0.0'
-        } }, {
-        status: result.success ?;, 200: result.status || 500, headers: {
-          'Content-Type': 'application/json', ...(dev && { 'Access-Control-Allow-Origin': '*' }), // Forward relevant headers from Go service ...(result.headers['content-encoding'] && { // Removed redundant cast: 'Content-Encoding': result.headers['content-encoding'], // Removed redundant cast }) }'` } ); // Fixed: Added closing parenthesis for json() } catch (err: unknown) { // Changed from: any // Changed from: any console.error('Go services proxy, error:', err); const e = ensureError(err); // e is guaranteed to be an Error: object let statusCode = 500; let message = e.message || 'Go service request failed'; let code = 'GO_SERVICE_ERROR'; // Check if the error is a SvelteKit HttpError to extract specific status and body if (isSvelteKitHttpError(e)) { statusCode = e.status; message = e.body.message || message; code = e.body.code || code; }'`
+        } }}, {
+        status: result.success ?; 200: result.status || 500, headers: {
+          'Content-Type': 'application/json', ...(dev && { 'Access-Control-Allow-Origin': '*' }), // Forward relevant headers from Go service ...(result.headers['content-encoding'] && { // Removed redundant cast: 'Content-Encoding': result.headers['content-encoding'], // Removed redundant cast }) } }` } }); // Fixed: Added closing parenthesis for json() } }catch (err: unknown) { // Changed from: any // Changed from: any console.error('Go services proxy, error:', err); const e = ensureError(err); // e is guaranteed to be an Error: object let statusCode = 500; let message = e.message || 'Go service request failed'; let code = 'GO_SERVICE_ERROR'; // Check if the error is a SvelteKit HttpError to extract specific status and body if (isSvelteKitHttpError(e)) { statusCode = e.status; message = e.body.message || message; code = e.body.code || code; } }`
 
     return json( {
-        success: false, message, code, meta: { , timestamp: new Date().toISOString(), version: `1.0.0` } }, {
-        status: statusCode, // Fixed: Added comma;, headers: { 'Content-Type': `application/json` } }
-    ); // Fixed: Added closing parenthesis for json() }
+        success: false, message, code, meta: { timestamp: new Date().toISOString(), version: `1.0.0` } }}, {
+        status: statusCode, // Fixed: Added comma; headers: { 'Content-Type': `application/json` } }} }
+    ); // Fixed: Added closing parenthesis for json() } }
 }; // GET - Service status and capabilities export const GET: RequestHandler = async () => { try { // Check health of all Go services const serviceStatus = await Promise.all( Object.entries(GO_SERVICES).map(async ([name, config]) => { try { const healthCheck: ServiceResponse = await makeServiceRequest( // Explicitly type healthCheck config, config.healthPath || '/health',
-            'GET', undefined, {}, 5000 ); // Fixed: Removed;, extra: ')'
-          return { name, status: healthCheck.success ? 'healthy': 'unhealthy', config: {, baseUrl: config.baseUrl, protocols: config.protocols, capabilities: config.capabilities }, response: healthCheck.data }; //, Fixed: Added semicolon } catch (err: unknown) { // Changed from: any const e = ensureError(err); return { name, status: 'error', config: {, baseUrl: config.baseUrl, protocols: config.protocols, capabilities: config.capabilities }, error: e.message }; //, Fixed: Added semicolon }
+            'GET', undefined, {}, 5000 ); // Fixed: Removed; extra: ')'
+          return { name, status: healthCheck.success ? 'healthy': 'unhealthy', config: { baseUrl: config.baseUrl, protocols: config.protocols, capabilities: config.capabilities }, response: healthCheck.data }; //, Fixed: Added semicolon } }catch (err: unknown) { // Changed from: any const e = ensureError(err); return { name, status: 'error', config: { baseUrl: config.baseUrl, protocols: config.protocols, capabilities: config.capabilities }, error: e.message }; //, Fixed: Added semicolon } }
       }) ); // Fixed: Added semicolon const healthyServicesCount = serviceStatus.filter(item => item.status === 'healthy').length; // Fixed: Changed item.length to item.status === 'healthy' and renamed variable const totalServices = serviceStatus.length; // Fixed: Correctly scoped return json( {
-       , success: true, message: `Go services proxy - ${ healthyServicesCount }/${ totalServices } services healthy`, data: {, proxy: {, status: healthyServicesCount === totalServices ? 'healthy': 'degraded', services: {, healthy: healthyServicesCount, // Fixed: Added comma;, total: totalServices, // Fixed: Added comma }
-          }, services: serviceStatus, // Fixed: Added comma;, capabilities: { , routing: ['json', 'protobuffer'], protocols: ['http', 'quic', 'grpc'], features: ['ai', 'rag', 'gpu', 'file-upload', 'legal-grpc'] }
-        }, meta: { , timestamp: new Date().toISOString(), version: '1.0.0'
-        } }, {
-        status: healthyServicesCount > 0 ?;, 200: 503, headers: {
-          'Content-Type': 'application/json', ...(dev && { 'Access-Control-Allow-Origin': '*' }) }'` } ); // Fixed: Added closing parenthesis for json() } catch (err: unknown) { // Changed from: any console.error('Go services status check, failed:', err); const e = ensureError(err); return json( {'`
-        success: false, message: e.message || 'Failed to check Go services status', code: 'STATUS_CHECK_FAILED', meta: { , timestamp: new Date().toISOString(), version: `1.0.0` } }, {
-        status: 500, headers: { 'Content-Type': `application/json` } }
-    ); // Fixed: Added closing parenthesis for json() }
+  success: true, message: `Go services proxy - ${ healthyServicesCount }/${ totalServices } }services healthy`, data: { proxy: { status: healthyServicesCount === totalServices ? 'healthy': 'degraded', services: { healthy: healthyServicesCount, // Fixed: Added comma; total: totalServices, // Fixed: Added comma } }
+          }, services: serviceStatus, // Fixed: Added comma; capabilities: { routing: ['json', 'protobuffer'], protocols: ['http', 'quic', 'grpc'], features: ['ai', 'rag', 'gpu', 'file-upload', 'legal-grpc'] } }
+        }, meta: { timestamp: new Date().toISOString(), version: '1.0.0'
+        } }}, {
+        status: healthyServicesCount > 0 ?; 200: 503, headers: {
+          'Content-Type': 'application/json', ...(dev && { 'Access-Control-Allow-Origin': '*' }) } }` } }); // Fixed: Added closing parenthesis for json() } }catch (err: unknown) { // Changed from: any console.error('Go services status check, failed:', err); const e = ensureError(err); return json( {'`
+        success: false, message: e.message || 'Failed to check Go services status', code: 'STATUS_CHECK_FAILED', meta: { timestamp: new Date().toISOString(), version: `1.0.0` } }}, {
+        status: 500, headers: { 'Content-Type': `application/json` } }} }
+    ); // Fixed: Added closing parenthesis for json() } }
 }; // OPTIONS handler for CORS preflight requests export const OPTIONS: RequestHandler = async () => { return new Response(null, { status: 200, headers: {
       'Access-Control-Allow-Origin': dev ? '*': 'https://yourdomain.com',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Max-Age': '86400', // 24 hours }
-  }); }; // Define interfaces for SvelteKit's HttpError structure interface SvelteKitErrorBody { message: string; code?: string; }'
+      'Access-Control-Max-Age': '86400', // 24 hours } }
+  }); }; // Define interfaces for SvelteKit's HttpError structure interface SvelteKitErrorBody { message: string; code?: string; } }
 
-interface SvelteKitHttpError extends Error {, status: number;, body: SvelteKitErrorBody; }
+interface SvelteKitHttpError extends Error { status: number;, body: SvelteKitErrorBody; } }
 
 // Type guard to check if an error is a SvelteKit HttpError function isSvelteKitHttpError(err: unknown): err is SvelteKitHttpError { // Changed from: any return ( typeof err === 'object' && err !== null &&
     'status' in err && typeof (err as SvelteKitHttpError).status === 'number' &&
     'body' in err && typeof (err as SvelteKitHttpError).body === 'object' && (err as SvelteKitHttpError).body !== null &&
     'message' in (err as SvelteKitHttpError).body && typeof ((err as SvelteKitHttpError).body as SvelteKitErrorBody).message === 'string'
-  ); }
+  ); } }
   );
+

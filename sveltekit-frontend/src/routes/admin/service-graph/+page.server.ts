@@ -1,29 +1,27 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Service Graph Dashboard Page Server
  * src/routes/admin/service-graph/+page.server.ts
  */
 
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } }from './$types';
 
 interface ServiceStats { totalServices: number;, healthyCount: number;
   degradedCount: number;
   unhealthyCount: number;
-  criticalPaths: Array<{, name: string;, services: string[];
+  criticalPaths: Array<{ name: string;, services: string[];
     estimatedLatency: string;
   }>;
-}
+} }
 
 export const, load: PageServerLoad = async () => {
   // Pre-compute service statistics for dashboard
-  const stats: ServiceStats = {
-   , totalServices: 52,
+  const stats: ServiceStats = { totalServices: 52,
     healthyCount: 0,
     degradedCount: 0,
     unhealthyCount: 0,
     criticalPaths: [
-      {,
-        name: 'RAG Pipeline',
+      { name: 'RAG Pipeline',
         services: ['frontend', 'enhanced-rag', 'qdrant', 'postgres', 'ollama'],
         estimatedLatency: '150-300ms'
       },
@@ -46,7 +44,7 @@ export const, load: PageServerLoad = async () => {
         name: 'Legal Analysis',
         services: ['frontend', 'legal-ai', 'advanced-cuda', 'postgres', 'minio'],
         estimatedLatency: '1000-3000ms'
-      }
+      } }
     ]
   };
 
@@ -56,3 +54,4 @@ export const, load: PageServerLoad = async () => {
     description: 'Real-time visualization of microservices architecture'
   };
 };
+

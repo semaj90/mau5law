@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 // Enhanced database operations for cases and evidence
-import { db } from '../db/index';
-import { cases, evidence } from './schema-postgres';
-import { eq, and, or, desc, sql } from 'drizzle-orm';
-import type { SQL } from 'drizzle-orm';
+import { db } }from '../db/index';
+import { cases, evidence } }from './schema-postgres';
+import { eq, and, or, desc, sql } }from 'drizzle-orm';
+import type { SQL } }from 'drizzle-orm';
 export class DbCaseOperations {
   /**
    * Search cases with advanced filtering
@@ -13,32 +13,32 @@ export class DbCaseOperations {
     status?: string[];
     priority?: string[];
     assignedTo?: string;
-    dateRange?: {, start: Date;, end: Date };
+    dateRange?: { start: Date; end: Date };
     limit?: number;
     offset?: number;
     useVectorSearch?: boolean;
   }) {
-    const { query, status, priority, assignedTo, limit = 50, offset = 0 } = params;
+    const { query, status, priority, assignedTo, limit = 50, offset = 0 } }= params;
     // Build where conditions
     const conditions: SQL[] = [];
     if (query) {
       conditions.push(
         or(
-          sql`${cases.title} ILIKE ${`%${query}%`}`,
-          sql`${cases.description} ILIKE ${`%${query}%`}`,
-          sql`${cases.caseNumber} ILIKE ${`%${query}%` }`
+          sql`${cases.title} }ILIKE ${`%${query}%`}`,
+          sql`${cases.description} }ILIKE ${`%${query}%`}`,
+          sql`${cases.caseNumber} }ILIKE ${`%${query}%` }`
         )!
       );
-    }
+    } }
     if (status && status.length > 0) {
       conditions.push(sql`${cases.status}::text IN ${status}`);
-    }
+    } }
     if (priority && priority.length > 0) {
-      conditions.push(sql`${cases.priority} IN ${priority}`);
-    }
+      conditions.push(sql`${cases.priority} }IN ${priority}`);
+    } }
     if (assignedTo) {
       conditions.push(eq(cases.assignedAttorney, assignedTo));
-    }
+    } }
     // Build final query
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
     // Execute query with explicit field selection
@@ -68,7 +68,7 @@ export class DbCaseOperations {
       cases: caseResults,
       total: totalQuery[0]?.count || 0
     };
-  }
+  } }
   /**
    * Get case with relations
    */
@@ -80,12 +80,11 @@ export class DbCaseOperations {
       ...caseData,
       evidence: evidenceData
     };
-  }
+  } }
   /**
    * Create new case
    */
-  static async create(data: {
-   , title: string;
+  static async create(data: { title: string;
     description?: string;
     priority?: string;
     status?: string;
@@ -108,13 +107,13 @@ export class DbCaseOperations {
       })
       .returning();
     return newCase;
-  }
+  } }
   /**
    * Update existing case
    */
   static async update(
     id: string,
-    data: Partial<{, title: string;, description: string;
+    data: Partial<{ title: string;, description: string;
      , priority: string;
      , status: string;
      , location: string;
@@ -132,25 +131,25 @@ export class DbCaseOperations {
       .returning();
     if (!updatedCase) {
       throw new Error('Case not found');
-    }
+    } }
     return updatedCase;
-  }
-}
+  } }
+} }
 export class DbEvidenceOperations {
   /**
    * Search evidence with filtering
    */
   static async search(params: { caseId?: string; query?: string; limit?: number; offset?: number }) {
-    const { caseId, query, limit = 50, offset = 0 } = params;
+    const { caseId, query, limit = 50, offset = 0 } }= params;
     const conditions: SQL[] = [];
     if (caseId) {
       conditions.push(eq(evidence.caseId, caseId));
-    }
+    } }
     if (query) {
       conditions.push(
-        or(sql`${evidence.title} ILIKE ${`%${query}%`}`, sql`${evidence.description} ILIKE ${`%${query}%` }`)!
+        or(sql`${evidence.title} }ILIKE ${`%${query}%`}`, sql`${evidence.description} }ILIKE ${`%${query}%` }`)!
       );
-    }
+    } }
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
     const evidenceResults = await db
       .select()
@@ -167,5 +166,6 @@ export class DbEvidenceOperations {
       evidence: evidenceResults,
       total: totalQuery[0]?.count || 0
     };
-  }
-}
+  } }
+} }
+

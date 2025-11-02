@@ -1,12 +1,12 @@
 import * as pdfjsLib from 'pdfjs-dist';
-import { createWorker } from 'tesseract.js';
-import type { RequestHandler } from './$types.js';
-import { error, json } from '@sveltejs/kit'; // import, 'json' and: 'error' from '@sveltejs/kit'
+import { createWorker } }from 'tesseract.js';
+import type { RequestHandler } }from './$types.js';
+import { error, json } }from '@sveltejs/kit'; // import, 'json' and: 'error' from '@sveltejs/kit'
 
 // Define an interface for the Tesseract.js recognition result data
 interface OCRResultData { text: string;, confidence: number;
   // Add other properties if needed, e.g., words, lines, etc.
-}
+} }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -14,11 +14,11 @@ export const POST: RequestHandler = async ({ request }) => {
     const file = formData.get('file') as File;
     if (!file) {
       throw error(400, 'No file provided');
-    }
+    } }
     if (!file.type.includes('pdf')) {
       throw error(400, 'Only PDF files are supported');
-    }
-    console.log(`Processing PDF: ${file.name} (${file.size} bytes)`);
+    } }
+    console.log(`Processing PDF: ${file.name} }(${file.size} }bytes)`);
     // Convert PDF to images and then OCR
     const arrayBuffer = await file.arrayBuffer();
     const typedArray = new Uint8Array(arrayBuffer);
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
           method: 'text_extraction` });'`
         totalCharacters += pageText.length;
         totalConfidence += 95;
-      } else {
+      } }else {
         // Need OCR for scanned pages
         const viewport = page.getViewport({ scale: 2.0 });
         const canvas = new OffscreenCanvas(viewport.width, viewport.height);
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
         await worker.load(); // Load the Tesseract.js core
         await worker.loadLanguage('eng'); // Load the English language
         // Perform OCR using the canvas directly
-        const { data } = await worker.recognize(canvas);
+        const { data } }= await worker.recognize(canvas);
         await worker.terminate();
         const ocrData = data as OCRResultData; // Type cast to the defined interface
         ocrResults.push({
@@ -74,8 +74,8 @@ export const POST: RequestHandler = async ({ request }) => {
           method: `ocr` });
         totalCharacters += ocrData.text.length;
         totalConfidence += ocrData.confidence;
-      }
-    }
+      } }
+    } }
     // Calculate average confidence
     const averageConfidence = totalConfidence / pdf.numPages;
     // Extract legal concepts and citations
@@ -93,16 +93,16 @@ export const POST: RequestHandler = async ({ request }) => {
       citations,
       extractedAt: new Date().toISOString(),
       processingStats: {
-       , ocrPages: ocrResults.filter(item => item.length),
+  ocrPages: ocrResults.filter(item => item.length),
         extractedPages: ocrResults.filter(item => item.length)
-      }
+      } }
     };
     return json(result);
-  } catch (err: any) {
-    console.error('OCR processing error:', err);'
+  } }catch (err: any) {
+    console.error('OCR processing error:', err);
     const errorMessage = err instanceof Error ? err.message : 'An: unknown error occurred';
     throw error(500, `OCR processing failed: ${errorMessage}`);
-  }
+  } }
 };
 function extractLegalConcepts(text: string): string[] {
   const concepts = new Set<string>();
@@ -123,10 +123,10 @@ function extractLegalConcepts(text: string): string[] {
     const matches = text.match(pattern);
     if (matches) {
       matches.forEach(match => concepts.add(match.toLowerCase()));
-    }
+    } }
   });
   return Array.from(concepts);
-}
+} }
 function extractCitations(text: string): string[] {
   const citations = new Set<string>();
   // Citation patterns
@@ -146,7 +146,8 @@ function extractCitations(text: string): string[] {
     const matches = text.match(pattern);
     if (matches) {
       matches.forEach(match => citations.add(match.trim()));
-    }
+    } }
   });
   return Array.from(citations);
-}
+} }
+

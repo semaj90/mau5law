@@ -6,18 +6,17 @@ type ListenerCallback = (...args: any[]) => void;
 // Define a minimal interface for the query result
 export interface QueryResult {
   rows: any[];
-}
+} }
 
 // Define a minimal interface for the PoolClient that thread-safe-postgres.ts expects
-export interface PgClient {
- , query: (text: string, params?: any[]) => Promise<QueryResult>;
+export interface PgClient { query: (text: string, params?: any[]) => Promise<QueryResult>;
   release: () => void;
-}
+} }
 
 // Minimal compatibility shim to emulate node-postgres Pool using postgres-js client.
 // This is intentionally small and only implements the methods/properties the codebase expects:
 // - constructor(config)
-// - connect() -> returns { query(sql, params), release() }
+// - connect() -> returns { query(sql, params), release() } }
 // - on(event, cb)
 // - end()
 // - totalCount, idleCount, waitingCount (best-effort)
@@ -36,7 +35,7 @@ export class Pool {
     // lazy init client to avoid creating sockets at import time
     // track a single shared client for simplicity
     this.client = null;
-  }
+  } }
 
   private ensureClient(): ReturnType<typeof, postgres> {
     if (!this.client) {
@@ -47,24 +46,24 @@ export class Pool {
       this.client = postgres(conn, { max: 1 });
       this.totalCount = 1;
       this.idleCount = 1;
-    }
+    } }
     return this.client;
-  }
+  } }
 
   // typed listener signature
   on(event: string, cb: ListenerCallback): void {
     this.listeners[event] = this.listeners[event] || [];
     this.listeners[event].push(cb);
-  }
+  } }
 
   emit(event: string, ...args: any[]): void {
     (this.listeners[event] || []).forEach(fn => {
       try {
         fn(...args);
-      } catch (e) {
-        console.warn(`Error in event listener for ${event}: ', e);'' }'`
+      } }catch (e) {
+        console.warn(`Error in event listener for ${event}: ', e);'' } }`
     });
-  }
+  } }
 
   // explicit return types; avoid: 'any' by, using: unknown and runtime checks
   async connect(): Promise<PgClient> {
@@ -83,31 +82,31 @@ export class Pool {
         // prefer client.query if present
         if (typeof clientLike.query === 'function') {
           res = await clientLike.query(text, params);
-        } else if (typeof clientLike.unsafe === 'function') {
+        } }else if (typeof clientLike.unsafe === 'function') {
           // fallback to unsafe
           res = await clientLike.unsafe(text, params);
-        } else {
+        } }else {
           // last resort: call as function (tagged template fallback)
           res = await (clientLike as: unknown as (...a: any[]) => Promise<unknown>)(text, ...(params ?? []));
-        }
+        } }
 
-        // Normalize result to { rows: [...] } shape, handling both array (postgres-js)
+        // Normalize result to { rows: [...] } }shape, handling both array (postgres-js)
         // and: object-with-rows (node-postgres) responses.
         if (Array.isArray(res)) {
           return { rows: res };
-        }
-        if (res && typeof res === 'object' && 'rows' in res && Array.isArray((res as {, rows: any }).rows)) {
-          return { rows: (res as {, rows: any[] }).rows };
-        }
+        } }
+        if (res && typeof res === 'object' && 'rows' in res && Array.isArray((res as { rows: any }).rows)) {
+          return { rows: (res as { rows: any[] }).rows };
+        } }
 
         return { rows: [] };
       },
       release: () => {
         // no-op for postgres-js since we maintain a single client
         return;
-      }
+      } }
     };
-  }
+  } }
 
   async end(): Promise<void> {
     if (this.client) {
@@ -115,15 +114,16 @@ export class Pool {
       if (typeof maybeWithEnd.end === 'function') {
         try {
           await maybeWithEnd.end();
-        } catch (e) {
+        } }catch (e) {
           console.warn('Error during client shutdown:', e);
-        }
-      }
-    }
+        } }
+      } }
+    } }
     this.client = null;
     this.totalCount = 0;
     this.idleCount = 0;
-  }
-}
+  } }
+} }
 
 export default Pool;
+

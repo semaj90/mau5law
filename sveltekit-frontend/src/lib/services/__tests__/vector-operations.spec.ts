@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { mapErrorToServiceError, mapResponseToServiceError } from '$lib/utils/http-error-mapper';
+import { describe, it, expect } }from 'vitest';
+import { mapErrorToServiceError, mapResponseToServiceError } }from '$lib/utils/http-error-mapper';
 
 describe('vector-operations - validation and ServiceError mapping', () => {
   it('maps a network TypeError to network_error', () => {
@@ -17,8 +17,8 @@ describe('vector-operations - validation and ServiceError mapping', () => {
 
   it('parses a typical 4xx response body into ServiceError', async () => {
     // scaffolded Response: object - replace with actual fetch in integration tests
-    const body = JSON.stringify({, code: 'invalid_input', message: 'Text too short' });
-    const res = new Response(body, { status: 422, headers: { 'Content-Type': 'application/json' } });
+    const body = JSON.stringify({ code: 'invalid_input', message: 'Text too short' });
+    const res = new Response(body, { status: 422, headers: { 'Content-Type': 'application/json' } }});
     const svc = await mapResponseToServiceError(res);
     expect(svc.status).toBe(422);
     expect(svc.code).toBe('invalid_input');
@@ -29,3 +29,4 @@ describe('vector-operations - validation and ServiceError mapping', () => {
   it.todo('ensures ServiceError mapping on upstream 5xx failures');
   it.todo('integration: should call generateEmbedding and handle ServiceError appropriately');
 });
+

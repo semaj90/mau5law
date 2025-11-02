@@ -8,7 +8,7 @@
  * @see https://en.wikipedia.org/wiki/Golden_ratio
  * @see Context7 best practices for CSS Grid layouts
  */
-export { default, as GoldenRatioGrid } from "./GoldenRatioGrid.svelte";
+export { default, as GoldenRatioGrid } }from "./GoldenRatioGrid.svelte";
 /**
  * Golden Ratio Constants
  * Use these in your components for consistent mathematical proportions
@@ -59,8 +59,8 @@ export const goldenRatioUtils = {
    */
   spacing: (baseSpacing: number = 1, scale: number = 0): number => {
     return baseSpacing * Math.pow(GOLDEN_RATIO, scale);
-  }
-}
+  } }
+} }
 /**
  * Predefined golden ratio breakpoints for responsive design
  */
@@ -69,7 +69,7 @@ export const goldenBreakpoints = {
   tablet: Math.round(768 * GOLDEN_RATIO), // ~1242px
   desktop: Math.round(1024 * GOLDEN_RATIO), // ~1657px
   wide: Math.round(1440 * GOLDEN_RATIO), // ~2330px
-}
+} }
 /**
  * CSS custom property names for golden ratio values
  */
@@ -103,4 +103,4 @@ export const goldenRatioCSSVars = {
   aspectLandscape: "--aspect-phi-landscape",
   aspectPortrait: "--aspect-phi-portrait",
   aspectSquare: "--aspect-phi-square"
-} as const;
+} }as const;

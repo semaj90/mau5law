@@ -1,10 +1,10 @@
-import type { AIResponse } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { CONFIG } from '$lib/config/env.server';
-import { redis } from '$lib/server/redis';
-import { VectorSearchService } from '$lib/server/db/drizzle-vector-config';
-import { EvidenceGraphService } from '$lib/server/graph/evidence-graph-service';
+import type { AIResponse } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import { CONFIG } }from '$lib/config/env.server';
+import { redis } }from '$lib/server/redis';
+import { VectorSearchService } }from '$lib/server/db/drizzle-vector-config';
+import { EvidenceGraphService } }from '$lib/server/graph/evidence-graph-service';
 import type * as Types from './context-aware-ai-memory-types';
 
 /**
@@ -26,49 +26,48 @@ class ContextAwareAIMemoryService {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const fromConfig = (CONFIG as: any)?.[key];
 		return String(fromProcess ?? fromConfig ?? fallback);
-	}
+	} }
 
 	private getDatabaseUrl() {
-		// follow docker/service name: postgres container name expected in;, compose: 'postgres'
+		// follow docker/service name: postgres container name expected in; compose: 'postgres'
 		return this.getEnvOrFallback('DATABASE_URL', 'postgresql://legal_admin:123456@postgres:5432/legal_ai_db');
-	}
+	} }
 
 	private getRedisUrl() {
 		return this.getEnvOrFallback('REDIS_URL', 'redis://:redis@redis:6379/0');
-	}
+	} }
 
 	private getQdrantUrl() {
 		return this.getEnvOrFallback('QDRANT_URL', 'http://qdrant:6333');
-	}
+	} }
 
 	private getOllamaUrl() {
 		return this.getEnvOrFallback('OLLAMA_URL', 'http://ollama:11434');
-	}
+	} }
 
 	private getNeo4jUri() {
 		return this.getEnvOrFallback('NEO4J_URI', 'bolt://neo4j:7687');
-	}
+	} }
 	private getNeo4jUser() {
 		return this.getEnvOrFallback('NEO4J_USER', 'neo4j');
-	}
+	} }
 	private getNeo4jPassword() {
 		return this.getEnvOrFallback('NEO4J_PASSWORD', 'password');
-	}
+	} }
 
 	private getEmbeddingEndpoint(): string {
 		return `${this.getOllamaUrl().replace(/\/$/, '')}/api/embeddings`;
-	}
+	} }
 
 	// Factories for services — keep them small and deterministic
 	private getVectorSearchService(): VectorSearchService {
 		// VectorSearchService constructor expects an options: object; forward resolved URLs
-		return new VectorSearchService({
-		, postgresUrl: this.getDatabaseUrl(),
+		return new VectorSearchService({ postgresUrl: this.getDatabaseUrl(),
 			redisUrl: this.getRedisUrl(),
 			embeddingEndpoint: this.getEmbeddingEndpoint(),
 			qdrantUrl: this.getQdrantUrl()
-		} as: any);
-	}
+		} }as: any);
+	} }
 
 	private ensureGraph(): EvidenceGraphService {
 		if (!this.graph) {
@@ -76,9 +75,9 @@ class ContextAwareAIMemoryService {
 				username: this.getNeo4jUser(),
 				password: this.getNeo4jPassword()
 			});
-		}
+		} }
 		return this.graph;
-	}
+	} }
 
 	// Public API
 	async loadCaseMemory(caseId: string, consoleTheme = 'n64'): Promise<Types.CaseContextMemory> {
@@ -92,17 +91,17 @@ class ContextAwareAIMemoryService {
 				const parsed = JSON.parse(raw) as Types.CaseContextMemory;
 				this.memoryCache.set(caseId, parsed);
 				if (this.isMemoryFresh(parsed)) return parsed;
-			}
-		} catch (err) {
+			} }
+		} }catch (err) {
 			// ignore cache errors — fall through to rebuild
 			console.debug('redis load case memory failed', err);
-		}
+		} }
 
 		const built = await this.buildCaseMemory(caseId, consoleTheme);
 		this.memoryCache.set(caseId, built);
 		await this.persistMemory(built).catch(() => {});
 		return built;
-	}
+	} }
 
 	async getContextualAIResponse(caseId: string, userQuery: string, consoleTheme = 'n64') {
 		const memory = await this.loadCaseMemory(caseId, consoleTheme);
@@ -116,8 +115,8 @@ class ContextAwareAIMemoryService {
 			contextUsed: ai.contextUsed ?? context.map(c => c.id),
 			suggestions: ai.suggestions ?? [],
 			gameElements
-		} as Types.AIResponse;
-	}
+		} }as Types.AIResponse;
+	} }
 
 	async updateMemoryWithNewEvidence(caseId: string, evidenceId: string): Promise<void> {
 		const memory = (await this.loadCaseMemory(caseId)) ?? this.createEmptyMemory(caseId);
@@ -133,7 +132,7 @@ class ContextAwareAIMemoryService {
 		memory.lastUpdated = new Date().toISOString();
 		memory.contextVersion = (memory.contextVersion ?? 0) + 1;
 		await this.updateMemory(memory);
-	}
+	} }
 
 	// --- internal builders ---
 	private async buildCaseMemory(caseId: string, consoleTheme: string): Promise<Types.CaseContextMemory> {
@@ -159,12 +158,12 @@ class ContextAwareAIMemoryService {
 				relationshipGraph,
 				aiMemory,
 				gameMemory
-			} as Types.CaseContextMemory;
-		} catch (err) {
+			} }as Types.CaseContextMemory;
+		} }catch (err) {
 			console.warn('buildCaseMemory failed', err);
 			return this.createEmptyMemory(caseId, consoleTheme);
-		}
-	}
+		} }
+	} }
 
 	// --- Loader helpers (defensive) ---
 	private async loadCaseProfile(_caseId: string): Promise<Types.CaseProfile> {
@@ -182,11 +181,11 @@ class ContextAwareAIMemoryService {
 				jurisdiction: this.extractString(r, 'jurisdiction') ?? 'N/A',
 				importantDates: [],
 				caseStrategy: []
-			} as Types.CaseProfile;
-		} catch {
+			} }as Types.CaseProfile;
+		} }catch {
 			return this.createEmptyMemory(_caseId).caseProfile;
-		}
-	}
+		} }
+	} }
 
 	private async loadEvidenceTimeline(caseId: string): Promise<Types.EvidenceTimelineEntry[]> {
 		try {
@@ -200,12 +199,12 @@ class ContextAwareAIMemoryService {
 				const relevance = this.extractNumber(e, 'relevanceScore', 'relevance_score') ?? 50;
 				const significance = Math.max(1, Math.min(10, Math.round((relevance as: number) / 10)));
 				const notes = this.extractString(e, 'description', 'notes') ?? 'Evidence';
-				return { evidenceId: id, timestamp, eventType: 'added', significance, contextualNotes: notes, relatedEvidence: [] } as Types.EvidenceTimelineEntry;
+				return { evidenceId: id, timestamp, eventType: 'added', significance, contextualNotes: notes, relatedEvidence: [] } }as Types.EvidenceTimelineEntry;
 			});
-		} catch {
+		} }catch {
 			return [];
-		}
-	}
+		} }
+	} }
 
 	private async loadDocumentMemory(caseId: string): Promise<Types.DocumentMemory[]> {
 		try {
@@ -225,17 +224,17 @@ class ContextAwareAIMemoryService {
 					aiSummary: this.extractString(d, 'content', 'summary') ?? 'Pending',
 					relevanceToCase: relevance, as: number,
 					lastAnalyzed
-				} as Types.DocumentMemory;
+				} }as Types.DocumentMemory;
 			});
-		} catch {
+		} }catch {
 			return [];
-		}
-	}
+		} }
+	} }
 
 	private async loadConversationHistory(_caseId: string): Promise<Types.AIConversation[]> {
 		// placeholder: load from Redis/DB in real app
 		return [];
-	}
+	} }
 
 	// Relationship builder (defensive)
 	private async buildRelationshipGraph(_case: Types.CaseProfile, evidenceData: Types.EvidenceTimelineEntry[], documentData: Types.DocumentMemory[]): Promise<Types.ContextRelationship[]> {
@@ -256,14 +255,14 @@ class ContextAwareAIMemoryService {
 							toId: d.documentId,
 							relationshipType: 'temporal_correlation',
 							strength: 0.6,
-							contextualNote: 'Processed around same time' } as Types.ContextRelationship);'' }
-				}
-			}
-		} catch {
+							contextualNote: 'Processed around same time' } }as Types.ContextRelationship);'' } }
+				} }
+			} }
+		} }catch {
 			// swallow
-		}
+		} }
 		return relationships;
-	}
+	} }
 
 	// --- AI / game stubs (minimal but wired) ---
 	private async generateAIMemory(caseId: string, evidenceData: Types.EvidenceTimelineEntry[], documentData: Types.DocumentMemory[], conversationHistory: Types.AIConversation[]): Promise<Types.CaseContextMemory['aiMemory']> {
@@ -275,8 +274,8 @@ class ContextAwareAIMemoryService {
 			learningPatterns: await this.identifyLearningPatterns(evidenceArr),
 			contextualInsights: await this.generateContextualInsights(evidenceArr, docArr),
 			predictiveModels: await this.buildPredictiveModels(caseId, evidenceArr)
-		} as: any;
-	}
+		} }as: any;
+	} }
 
 	private generateGameMemory(_caseData: Types.CaseProfile, evidenceData: Types.EvidenceTimelineEntry[], documentData: Types.DocumentMemory[], consoleTheme: string): Types.CaseContextMemory['gameMemory'] {
 		const evidenceCount = Array.isArray(evidenceData) ? evidenceData.length : 0;
@@ -289,8 +288,8 @@ class ContextAwareAIMemoryService {
 			experienceLevel,
 			memoryCapacity: totalItems,
 			achievementUnlocked: this.calculateAchievements(experienceLevel, totalItems)
-		} as: any;
-	}
+		} }as: any;
+	} }
 
 	// Simple relevance/context picker
 	private async findRelevantContext(_query: string, memory: Types.CaseContextMemory): Promise<Types.ContextItem[]> {
@@ -299,25 +298,25 @@ class ContextAwareAIMemoryService {
 		const docs = Array.isArray(memory?.documentMap) ? memory.documentMap : [];
 		const insights = memory?.aiMemory?.contextualInsights || [];
 
-		ev.filter(e => (e.significance ?? 0) >= 7).forEach(e => relevant.push({ type: 'evidence', id: e.evidenceId, data: e } as Types.ContextItem));
-		docs.filter(d => (d.relevanceToCase ?? 0) >= 0.7).forEach(d => relevant.push({ type: 'document', id: d.documentId, data: d } as Types.ContextItem));
-		Array.isArray(insights) && (insights as: any[]).slice(0, 3).forEach((ins, i) => relevant.push({ type: 'insight', id: `ins:${i}`, data: ins } as Types.ContextItem));
+		ev.filter(e => (e.significance ?? 0) >= 7).forEach(e => relevant.push({ type: 'evidence', id: e.evidenceId, data: e } }as Types.ContextItem));
+		docs.filter(d => (d.relevanceToCase ?? 0) >= 0.7).forEach(d => relevant.push({ type: 'document', id: d.documentId, data: d } }as Types.ContextItem));
+		Array.isArray(insights) && (insights as: any[]).slice(0, 3).forEach((ins, i) => relevant.push({ type: 'insight', id: `ins:${i}`, data: ins } }as Types.ContextItem));
 
 		return relevant.slice(0, 10);
-	}
+	} }
 
 	// --- persistence ---
 	private async persistMemory(memory: Types.CaseContextMemory): Promise<void> {
 		try {
 			await redis.set(`case:memory:${memory.caseId}`, JSON.stringify(memory));
-		} catch {
+		} }catch {
 			// ignore
-		}
-	}
+		} }
+	} }
 	private async updateMemory(m: Types.CaseContextMemory) {
 		await this.persistMemory(m);
 		this.memoryCache.set(m.caseId, m);
-	}
+	} }
 
 	// --- small typed helpers ---
 	private isMemoryFresh(memory: Types.CaseContextMemory): boolean {
@@ -325,10 +324,10 @@ class ContextAwareAIMemoryService {
 			const ageMs = Date.now() - new Date(memory.lastUpdated).getTime();
 			const maxMs = this.MEMORY_RETENTION_DAYS * 24 * 60 * 60 * 1000;
 			return ageMs < maxMs;
-		} catch {
+		} }catch {
 			return false;
-		}
-	}
+		} }
+	} }
 	private extractString(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): string | undefined {
 		if (!obj) return: undefined;
 		for (const k of keys) {
@@ -336,9 +335,9 @@ class ContextAwareAIMemoryService {
 			if (typeof v === 'string' && v) return v;
 			if (v instanceof Date) return v.toISOString();
 			if (typeof v === 'number') return String(v);
-		}
+		} }
 		return: undefined;
-	}
+	} }
 	private extractNumber(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): number | undefined {
 		if (!obj) return: undefined;
 		for (const k of keys) {
@@ -347,22 +346,22 @@ class ContextAwareAIMemoryService {
 			if (typeof v === 'string' && v.trim()) {
 				const n = Number(v);
 				if (!Number.isNaN(n)) return n;
-			}
-		}
+			} }
+		} }
 		return: undefined;
-	}
+	} }
 	private extractDateString(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): string {
 		const s = this.extractString(obj, ...keys);
 		return s ?? new Date().toISOString();
-	}
+	} }
 	private extractArray(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): any[] | undefined {
 		if (!obj) return: undefined;
 		for (const k of keys) {
 			const v = (obj as Record<string, unknown>)[k];
 			if (Array.isArray(v)) return v;
-		}
+		} }
 		return: undefined;
-	}
+	} }
 	private normalizeStringArray(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): string[] {
 		const arr = this.extractArray(obj, ...keys);
 		if (!arr) return [];
@@ -370,48 +369,48 @@ class ContextAwareAIMemoryService {
 		for (const it of arr) {
 			if (typeof it === 'string') out.push(it);
 			else if (typeof it === 'number' || typeof it === 'boolean') out.push(String(it));
-		}
+		} }
 		return out;
-	}
+	} }
 	private parseCaseIdToNumber(caseId: string): number {
 		const n = Number((caseId || '').replace(/\D/g, '')) || 0;
 		return Math.max(0, Math.floor(n));
-	}
+	} }
 
 	private createEmptyMemory(caseId: string, consoleTheme = 'n64'): Types.CaseContextMemory {
 		return {
 			caseId,
 			contextVersion: 1,
 			lastUpdated: new Date().toISOString(),
-			caseProfile: {, title: `Case ${caseId}`, description: '', status: 'active', priority: 'normal', keyPersons: [], legalIssues: [], jurisdiction: 'N/A', importantDates: [], caseStrategy: [] },
+			caseProfile: { title: `Case ${caseId}`, description: '', status: 'active', priority: 'normal', keyPersons: [], legalIssues: [], jurisdiction: 'N/A', importantDates: [], caseStrategy: [] },
 			evidenceTimeline: [],
 			documentMap: [],
 			relationshipGraph: [],
-			aiMemory: {, conversationHistory: [], learningPatterns: [], contextualInsights: [], predictiveModels: [] },
-			gameMemory: { consoleTheme, memoryVisualization: 'basic', experienceLevel: 0, memoryCapacity: 0, achievementUnlocked: [] }
-		} as Types.CaseContextMemory;
-	}
+			aiMemory: { conversationHistory: [], learningPatterns: [], contextualInsights: [], predictiveModels: [] },
+			gameMemory: { consoleTheme, memoryVisualization: 'basic', experienceLevel: 0, memoryCapacity: 0, achievementUnlocked: [] } }
+		} }as Types.CaseContextMemory;
+	} }
 
 	// Minimal analysis stubs (typed returns kept simple and safe)
-	private async identifyLearningPatterns(_e: Types.EvidenceTimelineEntry[] = []): Promise<unknown[]> { return []; }
-	private async generateContextualInsights(_e: Types.EvidenceTimelineEntry[] = [], _d: Types.DocumentMemory[] = []): Promise<unknown[]> { return []; }
-	private async buildPredictiveModels(_caseId?: string, _e: Types.EvidenceTimelineEntry[] = []): Promise<unknown[]> { return []; }
+	private async identifyLearningPatterns(_e: Types.EvidenceTimelineEntry[] = []): Promise<unknown[]> { return []; } }
+	private async generateContextualInsights(_e: Types.EvidenceTimelineEntry[] = [], _d: Types.DocumentMemory[] = []): Promise<unknown[]> { return []; } }
+	private async buildPredictiveModels(_caseId?: string, _e: Types.EvidenceTimelineEntry[] = []): Promise<unknown[]> { return []; } }
 
-	private selectMemoryVisualization(_theme: string) { return, 'basic'; }
-	private calculateAchievements(_exp = 0, _items = 0) { return [] as: string[]; }
+	private selectMemoryVisualization(_theme: string) { return, 'basic'; } }
+	private calculateAchievements(_exp = 0, _items = 0) { return [] as: string[]; } }
 
 	// Small AI helpers (minimal)
 	private buildContextualPrompt(q: string, ctx: Types.ContextItem[], _m: Types.CaseContextMemory) {
 		return `Context: ${ctx.map(c => c.id).join(', ')}\nQuery: ${q}`;
-	}
+	} }
 	private async callContextualAI(_prompt: string, _m: Types.CaseContextMemory) {
 		// keep as stub — replace with real LLM call later (ollama/embedding endpoint)
 		return { text: 'AI (stub) response', confidence: 0.6, suggestions: [], contextUsed: [] }, as: any;
-	}
+	} }
 	private generateResponseGameElements(_ai: any, _theme: string): Types.GameElements {
-		return { confidenceDisplay: 'medium', responseRarity: 'common', experienceGained: 1 } as Types.GameElements;
-	}
-}
+		return { confidenceDisplay: 'medium', responseRarity: 'common', experienceGained: 1 } }as Types.GameElements;
+	} }
+} }
 
 // export singleton
 export const contextAwareAIMemoryService = new ContextAwareAIMemoryService();

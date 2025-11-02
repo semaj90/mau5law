@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { minioService } from '$lib/server/storage/minio-service';
+import type { RequestHandler } }from './$types.js';
+import { minioService } }from '$lib/server/storage/minio-service';
 /**
  * MinIO File Download API
  * GET: Download file by bucket and filename
@@ -16,10 +16,10 @@ export const GET: RequestHandler = async ({ url }) => {
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     // Extract query parameters
     const bucket = url.searchParams.get('bucket');
     const fileName = url.searchParams.get('file');
@@ -30,10 +30,10 @@ export const GET: RequestHandler = async ({ url }) => {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     // Get file from MinIO
     const fileData = await minioService.getFile(bucket, fileName);
     if (!fileData) {
@@ -43,10 +43,10 @@ export const GET: RequestHandler = async ({ url }) => {
         }),
         {
           status: 404,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     // Return file with proper headers
     const headers = new Headers();
     headers.set('Content-Type', fileData.contentType || 'application/octet-stream');
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const toBodyInit = (raw: any): BodyInit => {
       if (raw == null) {
         return new Uint8Array();
-      }
+      } }
 
       // Normalize Node Buffer -> Uint8Array (copy)
       if (typeof Buffer !== 'undefined' && Buffer.isBuffer(raw)) {
@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const copy = new Uint8Array(src.length);
         copy.set(src);
         return copy;
-      }
+      } }
 
       // ArrayBufferView (TypedArray / DataView) -> copy into new Uint8Array (ensures ArrayBuffer)
       if (ArrayBuffer.isView(raw)) {
@@ -77,13 +77,13 @@ export const GET: RequestHandler = async ({ url }) => {
         const view = raw as ArrayBufferView & {
           buffer: ArrayBufferLike;
           byteOffset?: number;
-         , byteLength: number;
+  byteLength: number;
         };
         const src = new Uint8Array(view.buffer, view.byteOffset ?? 0, view.byteLength);
         const copy = new Uint8Array(src.byteLength);
         copy.set(src);
         return copy;
-      }
+      } }
 
       // ArrayBuffer or SharedArrayBuffer -> copy into new Uint8Array
       if (
@@ -94,11 +94,11 @@ export const GET: RequestHandler = async ({ url }) => {
         const copy = new Uint8Array(src.byteLength);
         copy.set(src);
         return copy;
-      }
+      } }
 
       if (typeof raw === 'string') {
         return raw;
-      }
+      } }
 
       // Fallback: stringify and return as Blob
       return new Blob([String(raw)]);
@@ -110,27 +110,27 @@ export const GET: RequestHandler = async ({ url }) => {
     let contentLength: number | undefined;
     if (body instanceof Blob) {
       contentLength = body.size;
-    } else if (typeof body === 'string') {
+    } }else if (typeof body === 'string') {
       contentLength = new TextEncoder().encode(body).byteLength;
-    } else if (body instanceof Uint8Array) {
+    } }else if (body instanceof Uint8Array) {
       contentLength = body.byteLength;
-    } else if (body instanceof ArrayBuffer) {
+    } }else if (body instanceof ArrayBuffer) {
       contentLength = body.byteLength;
-    } else {
+    } }else {
       // leave: undefined if we can't determine'
       contentLength = undefined;
-    }
+    } }
 
     if (typeof contentLength === 'number') {
       headers.set('Content-Length', String(contentLength));
-    }
+    } }
 
     return new Response(body, {
       status: 200,
       headers
     });
-  } catch (error) {
-    console.error('File download error:', error);'
+  } }catch (error) {
+    console.error('File download error:', error);
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to download file',
@@ -138,17 +138,17 @@ export const GET: RequestHandler = async ({ url }) => {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' } }
+      } }
     );
-  }
+  } }
 };
 /**
  * POST: Get signed URL for client-side download (for large files)
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { bucket, fileName, expirySeconds = 3600 } = await request.json();
+    const { bucket, fileName, expirySeconds = 3600 } }= await request.json();
     if (!bucket || !fileName) {
       return new Response(
         JSON.stringify({
@@ -156,10 +156,10 @@ export const POST: RequestHandler = async ({ request }) => {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     // Initialize MinIO service
     const initialized = await minioService.initialize();
     if (!initialized) {
@@ -169,9 +169,9 @@ export const POST: RequestHandler = async ({ request }) => {
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' }'` }'`
+          headers: { 'Content-Type': 'application/json' } }` } }`
       );
-    }
+    } }
     // Generate presigned URL for download
     const downloadUrl = await minioService.getPresignedDownloadUrl(bucket, fileName, expirySeconds);
     return new Response(
@@ -185,11 +185,11 @@ export const POST: RequestHandler = async ({ request }) => {
       }),
       {
         status: 200,
-        headers: { 'Content-Type': `application/json` }
-      }
+        headers: { 'Content-Type': `application/json` } }
+      } }
     );
-  } catch (error) {
-    console.error('Presigned URL generation error:', error);'
+  } }catch (error) {
+    console.error('Presigned URL generation error:', error);
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Failed to generate download URL',
@@ -197,8 +197,9 @@ export const POST: RequestHandler = async ({ request }) => {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': `application/json` }
-      }
+        headers: { 'Content-Type': `application/json` } }
+      } }
     );
-  }
+  } }
 };
+

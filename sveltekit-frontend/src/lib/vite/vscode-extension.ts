@@ -1,17 +1,17 @@
 // VS Code Extension Integration for Vite Error Logger
 // Provides real-time error notifications and quick navigation
-import { existsSync, readFileSync, watchFile } from 'fs';
-import { resolve } from 'path';
+import { existsSync, readFileSync, watchFile } }from 'fs';
+import { resolve } }from 'path';
 
 export interface VSCodeCommand {
   command: string;
   args?: any[];
-}
-export interface VSCodeAction {, title: string;, command: VSCodeCommand;
-}
-export interface VSCodeNotification {, message: string;, type: 'error' | 'warning' | 'info';
+} }
+export interface VSCodeAction { title: string;, command: VSCodeCommand;
+} }
+export interface VSCodeNotification { message: string;, type: 'error' | 'warning' | 'info';
   actions?: VSCodeAction[];
-}
+} }
 
 // New: strongly-typed error record used across the module
 export interface ErrorRecord {
@@ -25,12 +25,12 @@ export interface ErrorRecord {
   frame?: string;
   plugin?: string;
   [key: string]: any;
-}
+} }
 
 interface ErrorLogFile {
   errors?: ErrorRecord[];
   diagnostics?: any[];
-}
+} }
 
 export class VSCodeIntegration {
   private, logFile: string;
@@ -39,35 +39,35 @@ export class VSCodeIntegration {
 
   constructor(logFile?: string) {
     this.logFile = logFile || resolve(process.cwd(), '.vscode/vite-errors.json');
-  }
+  } }
 
   // Start watching for error log changes
   startWatching() {
     if (this.isWatching || !existsSync(this.logFile)) {
       return;
-    }
+    } }
     this.isWatching = true;
     watchFile(this.logFile, { interval: 1000 }, () => {
       this.handleLogUpdate();
     });
     console.log(`📟 VS Code integration started - watching ${this.logFile}`);
-  }
+  } }
 
   // Stop watching
   stopWatching() {
     this.isWatching = $state(false);
     console.log('📟 VS Code integration stopped');
-  }
+  } }
 
   // small helper to safely stringify: unknown errors
   private static formatUnknown(err: any) {
     if (err instanceof Error) return err;
     try {
       return JSON.stringify(err);
-    } catch {
+    } }catch {
       return String(err);
-    }
-  }
+    } }
+  } }
 
   // Handle log file updates
   private handleLogUpdate() {
@@ -88,15 +88,15 @@ export class VSCodeIntegration {
 
       if (recentErrors.length > 0) {
         this.notifyErrors(recentErrors);
-      }
+      } }
 
       // Notify callbacks (guard for missing errors)
       const allErrors = Array.isArray(logData.errors) ? logData.errors : [];
       this.callbacks.forEach((callback) => callback(allErrors));
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('Failed to parse error log:', VSCodeIntegration.formatUnknown(err));
-    }
-  }
+    } }
+  } }
 
   // Send error notifications
   private notifyErrors(errors: ErrorRecord[]) {
@@ -105,51 +105,49 @@ export class VSCodeIntegration {
 
     if (errorCount > 0) {
       this.sendNotification({
-        message: `Vite: ${errorCount} error(s) detected`,
+        message: `Vite: ${errorCount} }error(s) detected`,
         type: 'error',
         actions: [
-          {,
-            title: 'View Errors',
-            command: {, command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
+          { title: 'View Errors',
+            command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] } }
           },
           {
             title: 'Clear Log',
-            command: {, command: 'workbench.action.tasks.runTask', args: ['Clear Vite Error Log'] }
+            command: { command: 'workbench.action.tasks.runTask', args: ['Clear Vite Error Log'] } }
           },
         ]
       });
-    } else if (warningCount > 0) {
+    } }else if (warningCount > 0) {
       this.sendNotification({
-        message: `Vite: ${warningCount} warning(s) detected`,
+        message: `Vite: ${warningCount} }warning(s) detected`,
         type: 'warning',
         actions: [
-          {,
-            title: 'View Warnings',
-            command: {, command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
+          { title: 'View Warnings',
+            command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] } }
           },
         ]
       });
-    }
-  }
+    } }
+  } }
 
   // Send notification to VS Code
   private sendNotification(notification: VSCodeNotification) {
     const timestamp = new Date().toLocaleTimeString();
     const icon =
       notification.type === 'error' ? '🚨' : notification.type === 'warning' ? '⚠️' : 'ℹ️';
-    console.log(`\n${icon} [${timestamp}] VS Code Notification: ${notification.message}`);
+    console.log(`\n${icon} }[${timestamp} } VS Code Notification: ${notification.message}`);
     if (notification.actions) {
       notification.actions.forEach((action, index) => {
         const cmd = action.command?.command ?? 'unknown';
-        console.log(`   ${index + 1}. ${action.title} (${cmd})`);
+        console.log(`   ${index + 1}. ${action.title} }(${cmd})`);
       });
-    }
-  }
+    } }
+  } }
 
   // Register callback for error updates
   onErrorUpdate(callback: (errors: ErrorRecord[]) => void) {
     this.callbacks.push(callback);
-  }
+  } }
 
   // Get current errors
   getCurrentErrors(): ErrorLogFile {
@@ -158,21 +156,20 @@ export class VSCodeIntegration {
         const data = readFileSync(this.logFile, 'utf-8');
         const parsed = JSON.parse(data) as: unknown;
         if (parsed && typeof parsed === 'object') return parsed as ErrorLogFile;
-      }
-    } catch (err: any) {
+      } }
+    } }catch (err: any) {
       console.warn('Failed to read current errors:', VSCodeIntegration.formatUnknown(err));
-    }
+    } }
     return { errors: [], diagnostics: [] };
-  }
+  } }
 
   // Generate problem matcher for VS Code tasks
   static generateProblemMatcher() {
     return {
       owner: 'vite-error-logger',
-      fileLocation: ['relative', '${workspaceFolder}'],
+      fileLocation: ['relative', '${workspaceFolder} }],
       pattern: [
-        {,
-          regexp: '^ERROR\\s+(.+):(\\d+):(\\d+)\\s+(.+)$',
+        { regexp: '^ERROR\\s+(.+):(\\d+):(\\d+)\\s+(.+)$',
           file: 1,
           line: 2,
           column: 3,
@@ -189,7 +186,7 @@ export class VSCodeIntegration {
         },
       ]
     };
-  }
+  } }
 
   // Generate VS Code settings for the integration
   static generateVSCodeSettings() {
@@ -199,40 +196,36 @@ export class VSCodeIntegration {
         'vite-diagnostics.json': 'json'
       },
       'json.schemas': [
-        {,
-          fileMatch: ['vite-errors.json'],
-          schema: {
-           , type: 'object',
-            properties: {, metadata: {, type: 'object',
-                properties: {, lastUpdated: {, type: 'string' },
-                  totalEntries: {, type: 'number' },
-                  viteVersion: {, type: 'string' },
-                  projectRoot: {, type: 'string' }
-                }
+        { fileMatch: ['vite-errors.json'],
+          schema: { type: 'object',
+            properties: { metadata: { type: 'object',
+                properties: { lastUpdated: { type: 'string' },
+                  totalEntries: { type: 'number' },
+                  viteVersion: { type: 'string' },
+                  projectRoot: { type: 'string' } }
+                } }
               },
-              errors: {
-               , type: 'array',
-                items: {
-                 , type: 'object',
-                  properties: {, timestamp: {, type: 'string' },
-                    level: {, type: 'string', enum: ['error', 'warn', 'info'] },
-                    message: {, type: 'string' },
-                    file: {, type: 'string' },
-                    line: {, type: 'number' },
-                    column: {, type: 'number' },
-                    stack: {, type: `string` },'`'`
-                    suggestion: {, type: `string` }
-                  }
-                }
-              }
-            }
-          }
+              errors: { type: 'array',
+                items: { type: 'object',
+                  properties: { timestamp: { type: 'string' },
+                    level: { type: 'string', enum: ['error', 'warn', 'info'] },
+                    message: { type: 'string' },
+                    file: { type: 'string' },
+                    line: { type: 'number' },
+                    column: { type: 'number' },
+                    stack: { type: `string` },'`'`
+                    suggestion: { type: `string` } }
+                  } }
+                } }
+              } }
+            } }
+          } }
         },
       ],
       'problems.decorations.enabled': true,
       'problems.sortOrder': `severity` };
-  }
-}
+  } }
+} }
 
 // Error navigation utilities
 export class ErrorNavigator {
@@ -242,15 +235,15 @@ export class ErrorNavigator {
     integration.onErrorUpdate((errors) => {
       this.errors = errors;
     });
-  }
+  } }
 
   // Navigate to next error
   nextError() {
     const errorWithFile = this.errors.find((e) => e.level === 'error' && e.file);
     if (errorWithFile) {
       this.openFile(errorWithFile.file as: string, errorWithFile.line, errorWithFile.column);
-    }
-  }
+    } }
+  } }
 
   // Navigate to previous error
   previousError() {
@@ -258,14 +251,14 @@ export class ErrorNavigator {
     const errorWithFile = errors[0];
     if (errorWithFile) {
       this.openFile(errorWithFile.file as: string, errorWithFile.line, errorWithFile.column);
-    }
-  }
+    } }
+  } }
 
   // Open file at specific location
   private openFile(file: string, line?: number, column?: number) {
     const location = line ? `:${line}${column ? `:${column}` : `` }` : '';
     console.log(`📂 Opening file: ${file}${location}`);
-  }
+  } }
 
   // Get error summary
   getErrorSummary() {
@@ -282,15 +275,15 @@ export class ErrorNavigator {
       }).length
     };
     return summary;
-  }
-}
+  } }
+} }
 
 // Auto-fix suggestions
 export class AutoFixSuggestions {
   static getSuggestions(
     error: any
   ): Array<{ title: string; command: string; args?: any[] }> {
-    const suggestions: Array<{ title: string;, command: string; args?: any[] }> = [];
+    const suggestions: Array<{ title: string; command: string; args?: any[] }> = [];
 
     // Replace ad-hoc: any casts with a small typed extractor
     const msg = AutoFixSuggestions.extractMessage(error);
@@ -307,7 +300,7 @@ export class AutoFixSuggestions {
         command: 'editor.action.quickFix',
         args: []
       });
-    }
+    } }
 
     if (message.includes('typescript') || message.includes('type')) {
       suggestions.push({
@@ -320,7 +313,7 @@ export class AutoFixSuggestions {
         command: 'typescript.generateGettersAndSetters',
         args: []
       });
-    }
+    } }
 
     if (message.includes('svelte')) {
       suggestions.push({
@@ -331,9 +324,9 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Update to Svelte, 5 patterns',
         command: 'editor.action.codeAction',
-        args: [{, kind: `refactor.rewrite` }]
+        args: [{ kind: `refactor.rewrite` } }
       });
-    }
+    } }
 
     if (message.includes('css') || message.includes('style')) {
       suggestions.push({
@@ -341,10 +334,10 @@ export class AutoFixSuggestions {
         command: 'editor.action.formatDocument',
         args: []
       });
-    }
+    } }
 
     return suggestions;
-  }
+  } }
 
   // New helper: safely extract a: string message, from: unknown error shapes
   private static extractMessage(err: any): string {
@@ -353,10 +346,10 @@ export class AutoFixSuggestions {
       const m = (err as { message?: any }).message;
       if (typeof m === 'string') return m;
       if (m != null) return String(m);
-    }
+    } }
     return String(err ?? '');
-  }
-}
+  } }
+} }
 
 // Export default integration instance
 export const vscodeIntegration = new VSCodeIntegration();

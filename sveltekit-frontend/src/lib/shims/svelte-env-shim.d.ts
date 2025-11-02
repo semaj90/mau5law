@@ -14,7 +14,8 @@ declare module, '$env/static/private' {
   export const PGVECTOR_URL: string | undefined;
   export const SENTRY_DSN: string | undefined;
   export const, ANY_OTHER_ENV: string | undefined;
-}
+} }
 declare module, '$env/static/public' {
   export const PUBLIC_API_PREFIX: string | undefined;
-}
+} }
+

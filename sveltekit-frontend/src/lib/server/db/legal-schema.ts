@@ -1,8 +1,8 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Document } }from '$lib/types';
 // Enhanced legal AI database schema with pgvector support
-import { pgTable, serial, text, timestamp, real, integer, boolean, jsonb } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+import { pgTable, serial, text, timestamp, real, integer, boolean, jsonb } }from 'drizzle-orm/pg-core';
+import { sql } }from 'drizzle-orm';
 // Legal queries table - stores all AI interactions
 export const legal_queries = pgTable('legal_queries', {
   id: serial('id').primaryKey(),
@@ -148,3 +148,4 @@ export type LegalEntity = typeof legal_entities.$inferSelect;
 export type NewLegalEntity = typeof legal_entities.$inferInsert;
 export type LegalTopic = typeof legal_topics.$inferSelect;
 export type NewLegalTopic = typeof legal_topics.$inferInsert;
+

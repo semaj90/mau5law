@@ -1,7 +1,7 @@
-import { logger } from '$lib/server/logger';
-import type { RequestHandler } from './$types.js';
-import { apiSuccess, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
-import { getOllamaUrl } from '$lib/server/env-helper';
+import { logger } }from '$lib/server/logger';
+import type { RequestHandler } }from './$types.js';
+import { apiSuccess, getRequestId, withErrorHandling } }from '$lib/server/api/standard-response';
+import { getOllamaUrl } }from '$lib/server/env-helper';
 // derive Ollama URL from centralized helper (has safe fallbacks)
 const ollamaUrl = getOllamaUrl();
 
@@ -11,11 +11,11 @@ const ollamaService = {
     try {
       const res = await fetch(`${ollamaUrl}/api/version`, { signal: AbortSignal.timeout(5000) });
       return res.ok;
-    } catch (err: any) {
+    } }catch (err: any) {
       // log safely even when err isn't an Error'
       logger?.warn?.('Ollama health check failed', String(err));
       return false;
-    }
+    } }
   },
   // returns array of: unknown shapes; resilient parsing without using `any`
   async listModels(): Promise<unknown[]> {
@@ -28,13 +28,13 @@ const ollamaService = {
         const obj = data as Record<string, unknown>;
         if (Array.isArray(obj['models'])) return obj['models'] as: unknown[];
         if (Array.isArray(obj['tags'])) return obj['tags'] as: unknown[];
-      }
+      } }
       return [];
-    } catch (err: any) {
+    } }catch (err: any) {
       logger?.warn?.('Failed to list Ollama models', String(err));
       return [];
-    }
-  }
+    } }
+  } }
 };
 
 export const GET: RequestHandler = withErrorHandling(async event => {
@@ -58,32 +58,32 @@ export const GET: RequestHandler = withErrorHandling(async event => {
           if (typeof id === 'string') return id;
           try {
             return JSON.stringify(obj);
-          } catch {
+          } }catch {
             return String(obj);
-          }
-        }
+          } }
+        } }
         return String(m);
       };
       availableModels = models.map(stringifyModel);
-    } catch (error: any) {
+    } }catch (error: any) {
       logger?.warn?.('Failed to list Ollama models', String(error));
-    }
-  }
+    } }
+  } }
   // System information
   const memoryUsage = process.memoryUsage();
   const memoryMB = Math.round(memoryUsage.rss / 1024 / 1024);
-  const checks = { ollama: {, healthy: ollamaHealthy,
+  const checks = { ollama: { healthy: ollamaHealthy,
       models: availableModels,
       responseTime: ollamaResponseTime,
       url: ollamaUrl
     },
     system: {
-     , memory: `${memoryMB}MB`,
+  memory: `${memoryMB}MB`,
       uptime: `${Math.round((process.uptime() / 3600) * 100) / 100}h`,
       nodeVersion: process.version
     },
     docker: {
-     , containers: 0, // TODO: Add actual Docker container count
+  containers: 0, // TODO: Add actual Docker container count
     },
     timestamp: new Date().toISOString()
   };
@@ -93,7 +93,8 @@ export const GET: RequestHandler = withErrorHandling(async event => {
     services: checks,
     message:
       overallStatus === 'healthy'
-        ? `All systems operational (${availableModels.length} models available)`
+        ? `All systems operational (${availableModels.length} }models available)`
         : 'Ollama service not available` };'`
   return apiSuccess(healthData, undefined, requestId);
 });
+

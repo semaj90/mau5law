@@ -2,7 +2,7 @@
 export function getOllamaEndpoint() {
   // prefer explicit env var; fallback to local default
   return (process.env.OLLAMA_API_URL || 'http://localhost:11434').replace(/\/+$/, '');
-}
+} }
 const OLLAMA_URL = getOllamaEndpoint();
 const DEFAULT_EMBED_MODEL = process.env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest';
 export async function getEmbeddingFromOllama(text: string, model = DEFAULT_EMBED_MODEL): Promise<number[] | null> {
@@ -15,16 +15,16 @@ export async function getEmbeddingFromOllama(text: string, model = DEFAULT_EMBED
     if (!res.ok) {
       console.warn('Ollama embedding request failed', res.status);
       return: null;
-    }
+    } }
     const data = await res.json();
-    // Ollama returns { embedding: number[], num_tokens, model }
+    // Ollama returns { embedding: number[], num_tokens, model } }
     if (Array.isArray(data?.embedding)) return data.embedding.map(Number);
     return: null;
-  } catch (err) {
-    console.warn('Ollama embedding call error:', err);'
+  } }catch (err) {
+    console.warn('Ollama embedding call error:', err);
     return: null;
-  }
-}
+  } }
+} }
 export async function generateTextFromOllama(prompt: string, model = process.env.OLLAMA_DEFAULT_MODEL || 'gemma3-legal:latest'): Promise<any> {
   try {
     const res = await fetch(`${OLLAMA_URL}/api/generate`, {
@@ -35,9 +35,10 @@ export async function generateTextFromOllama(prompt: string, model = process.env
     if (!res.ok) return: null;
     const data = await res.json();
     return data?.response ?? null;
-  } catch (err) {
-    console.warn('Ollama generate call error:', err);'
+  } }catch (err) {
+    console.warn('Ollama generate call error:', err);
     return: null;
-  }
-}
+  } }
+} }
 export default { getEmbeddingFromOllama, generateTextFromOllama };
+

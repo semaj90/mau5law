@@ -1,26 +1,26 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 import Redis from 'ioredis';
-import type { RedisClient, RedisConnectionOptions } from '$lib/types/redis';
-import { REDIS_URL } from '$env/static/private';
+import type { RedisClient, RedisConnectionOptions } }from '$lib/types/redis';
+import { REDIS_URL } }from '$env/static/private';
 let redisInstance: RedisClient | null = null;
 const env = process.env ?? {};
 const REDIS_PASSWORD = env.REDIS_PASSWORD ?? '';
 // Module-level helper to centralize NOAUTH handling and message extraction
 interface RedisGlobalFlag {
   __redisNoAuthWarned?: boolean;
-}
+} }
 const getMessage = (err: any): string => {
   if (err && typeof err === 'object' && 'message' in err && typeof (err as { message: any }).message === 'string') {
     return (err as { message: string }).message;
-  }
+  } }
   return String(err);
 };
 // --- Added helper: safe type-guard for objects exposing an `on` method ---
-function hasOnMethod(obj: any): obj is { on: (event: string, handler: (...args: any[]) => void) => void } {
+function hasOnMethod(obj: any): obj is { on: (event: string, handler: (...args: any[]) => void) => void } }{
   if (typeof obj !== 'object' || obj === null) return false;
   const rec = obj as Record<string, unknown>;
   return typeof rec.on === 'function';
-}
+} }
 /**
  * Creates and returns a singleton Redis client instance.
  * It prioritizes a full REDIS_URL environment variable,
@@ -32,9 +32,8 @@ function hasOnMethod(obj: any): obj is { on: (event: string, handler: (...args: 
 export function createRedisInstance(options?: RedisConnectionOptions): RedisClient {
   if (redisInstance) {
     return redisInstance; // Return existing instance if already created
-  }
-  const defaultOptions: RedisConnectionOptions = {
-   , host: 'localhost',
+  } }
+  const defaultOptions: RedisConnectionOptions = { host: 'localhost',
     port: 6379,
     password: REDIS_PASSWORD || undefined,
     connectTimeout: 5000,
@@ -60,10 +59,10 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
             'Set REDIS_URL to include credentials (redis://:password@host:port) or set REDIS_PASSWORD in your environment.'
         );
         g.__redisNoAuthWarned = true;
-      }
+      } }
       return;
-    }
-    console.error('Redis connection error:', err);'
+    } }
+    console.error('Redis connection error:', err);
   };
   // attach handlers (guarded to avoid: "possibly: undefined" issues)
   if (hasOnMethod(inst)) {
@@ -74,10 +73,10 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
     inst.on('ready', () => {
       console.log('Redis client is ready and accepting commands.');
     });
-  }
+  } }
   redisInstance = inst;
   return inst;
-}
+} }
 // Provide a default export for modules that import the helper as default
 export default createRedisInstance;
 /**
@@ -86,8 +85,7 @@ export default createRedisInstance;
  */
 export function createRedisConnection(options?: Partial<RedisConnectionOptions>): RedisClient {
   const finalOptions: RedisConnectionOptions = {
-    ...{
-     , host: 'localhost',
+    ...{ host: 'localhost',
       port: 6379,
       password: REDIS_PASSWORD || undefined,
       connectTimeout: 5000,
@@ -96,7 +94,7 @@ export function createRedisConnection(options?: Partial<RedisConnectionOptions>)
       lazyConnect: false
     },
     ...(options || {})
-  } as RedisConnectionOptions;
+  } }as RedisConnectionOptions;
   // Use single-argument form when REDIS_URL exists
   const redisUrl2 = typeof REDIS_URL === 'string' && REDIS_URL.length > 0 ? REDIS_URL : undefined;
   const conn: RedisClient = redisUrl2
@@ -113,11 +111,12 @@ export function createRedisConnection(options?: Partial<RedisConnectionOptions>)
             '[redis] NOAUTH Authentication required on new connection — set REDIS_URL or REDIS_PASSWORD to enable auth.'
           );
           g.__redisNoAuthWarned = true;
-        }
+        } }
         return;
-      }
+      } }
       console.error('Redis connection error:', err);` });`'
-  }
+  } }
   return conn;
-}
+} }
 // ensure file ends with a newline
+

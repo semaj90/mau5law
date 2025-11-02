@@ -14,14 +14,14 @@ interface ViteErrorLog {
   summary_prompt?: string;
   auto_solved?: boolean;
   severity?: 'low' | 'medium' | 'high' | 'critical';
-}
-interface AutoSolution {, approach_id: string;, library_docs: string;
+} }
+interface AutoSolution { approach_id: string;, library_docs: string;
   fixes: string[];
   confidence: number;
   test_results: { [key: string]: any };
   claude_prompt: string;
   copilot_summary: string;
-}
+} }
 class ViteErrorLogger {
   private serverUrl: string;
   private ws: WebSocket | null = null;
@@ -31,7 +31,7 @@ class ViteErrorLogger {
     this.serverUrl = serverUrl;
     this.initializeWebSocket();
     this.setupErrorCapture();
-  }
+  } }
   // Initialize WebSocket for real-time error streaming
   private initializeWebSocket() {
     const wsUrl = this.serverUrl.replace('http://', 'ws://').replace('https://', 'wss://');
@@ -50,11 +50,11 @@ class ViteErrorLogger {
       try {
         const errorLog = JSON.parse(event.data);
         this.handleIncomingError(errorLog);
-      } catch (e) {
+      } }catch (e) {
         console.warn('Failed to parse incoming error log:', e);
-      }
+      } }
     };
-  }
+  } }
   // Setup global error capture for Vite/SvelteKit
   private setupErrorCapture() {
     // Capture unhandled errors
@@ -66,23 +66,21 @@ class ViteErrorLogger {
         file: event.filename,
         line: event.lineno,
         column: event.colno,
-        context: {
-         , source: 'window.error',
+        context: { source: 'window.error',
           url: window.location.href
-        }
+        } }
       });
     });
     // Capture unhandled promise rejections
     window.addEventListener('unhandledrejection', event => {
       this.logError({
         type: 'runtime',
-        message: `Unhandled promise;, rejection: ${event.reason}`,
+        message: `Unhandled promise; rejection: ${event.reason}`,
         stack: event.reason?.stack,
-        context: {
-         , source: 'unhandledrejection',
+        context: { source: 'unhandledrejection',
           url: window.location.href,
           reason: event.reason
-        }
+        } }
       });
     });
     // Capture Vite HMR errors (development only)
@@ -93,13 +91,12 @@ class ViteErrorLogger {
           message: (data as { message?: any; stack?: any; file?: any; errors?: any }).message || 'Vite HMR error',
           stack: (data as { message?: any; stack?: any; file?: any; errors?: any }).stack,
           file: (data as { message?: any; stack?: any; file?: any; errors?: any }).file,
-          context: {
-           , source: 'vite:hmr',
+          context: { source: 'vite:hmr',
             ...data
-          }
+          } }
         });
       });
-    }
+    } }
     // Monkey-patch console.error to capture logged errors
     const originalError = console.error;
     console.error = (...args) => {
@@ -110,15 +107,14 @@ class ViteErrorLogger {
         this.logError({
           type: this.detectErrorType(message),
           message,
-          context: {
-           , source: 'console.error',
+          context: { source: 'console.error',
             url: window.location.href,
             args: args.slice(0, 3), // First, 3 args only
-          }
+          } }
         });
-      }
+      } }
     };
-  }
+  } }
   // Determine if error is relevant for logging
   private isRelevantError(message: string): boolean {
     const relevantKeywords = [
@@ -138,27 +134,27 @@ class ViteErrorLogger {
     ];
     const lowerMessage = message.toLowerCase();
     return relevantKeywords.some(keyword => lowerMessage.includes(keyword));
-  }
+  } }
   // Detect error type from message content
   private detectErrorType(message: string): ViteErrorLog['type'] {
     const lowerMessage = message.toLowerCase();
     if (lowerMessage.includes('typescript') || lowerMessage.includes('type')) {
       return, 'typescript';
-    }
+    } }
     if (lowerMessage.includes('svelte') || lowerMessage.includes('component')) {
       return, 'svelte';
-    }
+    } }
     if (lowerMessage.includes('import') || lowerMessage.includes('module')) {
       return, 'import';
-    }
+    } }
     if (lowerMessage.includes('syntax') || lowerMessage.includes('unexpected')) {
       return, 'syntax';
-    }
+    } }
     if (lowerMessage.includes('build') || lowerMessage.includes('bundle')) {
       return, 'build';
-    }
+    } }
     return, 'runtime';
-  }
+  } }
   // Log error to Redis system
   async logError(errorLog: ViteErrorLog): Promise<void> {
     // Add metadata
@@ -185,29 +181,29 @@ class ViteErrorLogger {
       });
       if (!(response as { ok?: any; status?: any; json?: any }).ok) {
         throw new Error(`HTTP ${(response as { ok?: any; status?: any; json?: any }).status}`);
-      }
+      } }
       const result = await (response as { ok?: any; status?: any; json?: any }).json();
       console.log(`Error logged with ID: ${(result as { error_id?: any }).error_id}`);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to log error to Redis:', error);
       // Queue for retry if WebSocket is available
       if (this.isConnected) {
         this.errorQueue.push(errorLog);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   // Generate text suitable for embedding
   private generateEmbeddingText(errorLog: ViteErrorLog): string {
-    return `${errorLog.type} error in ${errorLog.file || 'unknown file` }: ${errorLog.message}.`'`
+    return `${errorLog.type} }error in ${errorLog.file || 'unknown file` }: ${errorLog.message}.`'`
 Context: SvelteKit legal AI platform, Svelte, 5, ${errorLog.context?.url || 'unknown URL'}.
-Stack: ${errorLog.stack || 'No stack trace` }`;` }'`
+Stack: ${errorLog.stack || 'No stack trace` }`;` } }`
   // Flush queued errors when connection is restored
   private flushErrorQueue() {
     while (this.errorQueue.length > 0) {
       const errorLog = this.errorQueue.shift()!;
       this.logError(errorLog);
-    }
-  }
+    } }
+  } }
   // Handle incoming errors from WebSocket (other clients/servers)
   private handleIncomingError(errorLog: any) {
     // Emit custom event for components to listen to
@@ -222,20 +218,20 @@ Stack: ${errorLog.stack || 'No stack trace` }`;` }'`
         `Auto-solved critical error in ${errorLog.file}`,
         errorLog.solution?.copilot_summary || 'Error automatically resolved'
       );
-    }
-  }
+    } }
+  } }
   // Show browser notification
   private showNotification(title: string, body: string) {
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification(title, { body });
-    } else if (Notification.permission !== 'denied') {
+    } }else if (Notification.permission !== 'denied') {
       Notification.requestPermission().then(permission => {
         if (permission === 'granted') {
           new Notification(title, { body });
-        }
+        } }
       });
-    }
-  }
+    } }
+  } }
   // Get recent errors for display
   async getRecentErrors(query?: string): Promise<any[]> {
     try {
@@ -247,31 +243,30 @@ Stack: ${errorLog.stack || 'No stack trace` }`;` }'`
       return (data as { message?: any; stack?: any; file?: any; errors?: any }).errors.map((errorJson: string) =>
         JSON.parse(errorJson)
       );
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to fetch recent errors:', error);
       return [];
-    }
-  }
+    } }
+  } }
   // Manual error logging for specific cases
   logManualError(type: ViteErrorLog['type'], message: string, context?: { [key: string]: any }) {
     this.logError({
       type,
       message,
-      context: {
-       , source: 'manual',
+      context: { source: 'manual',
         ...context
-      }
+      } }
     });
-  }
+  } }
   // Disconnect and cleanup
   disconnect() {
     if (this.ws) {
       this.ws.close();
       this.ws = null;
-    }
+    } }
     this.isConnected = $state(false);
-  }
-}
+  } }
+} }
 // Global instance
 export const viteErrorLogger = new ViteErrorLogger();
 // Hook integration for SvelteKit
@@ -281,14 +276,14 @@ export function setupViteErrorLogging() {
     // Request notification permission
     if ('Notification' in window) {
       Notification.requestPermission();
-    }
+    } }
     console.log('Vite error logging system initialized');
     console.log('- Real-time error capture active');
     console.log('- Redis logging with embeddings');
     console.log('- MCP Context7 auto-solve enabled');
     console.log('- Claude Code integration ready');
-  }
-}
+  } }
+} }
 // Svelte action for component-level error logging
 export function logComponentError(
   node: HTMLElement,
@@ -298,7 +293,7 @@ export function logComponentError(
   }: {
     component: string;
     context?: { [key: string]: any };
-  }
+  } }
 ) {
   const errorHandler = (error: any) => {
     viteErrorLogger.logError({
@@ -308,7 +303,7 @@ export function logComponentError(
       context: {
         component,
         ...context,
-        source: `svelte-action` }
+        source: `svelte-action` } }
     });
   };
   // Catch component errors
@@ -316,8 +311,9 @@ export function logComponentError(
   return {
     destroy() {
       window.removeEventListener('error', errorHandler);
-    }
+    } }
   };
-}
+} }
 // Types for external use
 export type { ViteErrorLog, AutoSolution };
+

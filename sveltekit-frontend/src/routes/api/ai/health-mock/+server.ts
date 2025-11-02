@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
 /*
  * Production AI Health Check Endpoint
  * Performs comprehensive health checks across all AI services
@@ -8,10 +8,10 @@ import type { RequestHandler } from './$types.js'
 export const GET: RequestHandler = async () => {
   const startTime = Date.now()
   const healthData: any = {
-   , timestamp: new Date().toISOString(),
-    services: {} as { [key: string]: any },
+  timestamp: new Date().toISOString(),
+    services: {} }as { [key: string]: any },
     overall: 'checking'
-  }
+  } }
   // Check Ollama service
   try {
     const ollamaCheck = await Promise.race([
@@ -26,21 +26,21 @@ export const GET: RequestHandler = async () => {
         models: ollamaData.models?.map((m: any) => m.name) || [],
         responseTime: Date.now() - startTime,
         version: ollamaData.version || 'unknown'
-      }
-    } else {
+      } }
+    } }else {
       healthData.services.ollama = {
-       , status: 'unhealthy',
+  status: 'unhealthy',
         error: 'HTTP, ' + ollamaCheck.status,
         endpoint: 'http://localhost:11434'
-      }
-    }
-  } catch (error: any) {
+      } }
+    } }
+  } }catch (error: any) {
     healthData.services.ollama = {
       status: 'unavailable',
       error: (error as Error).message,
       endpoint: 'http://localhost:11434'
-    }
-  }
+    } }
+  } }
   // Check Enhanced RAG service
   try {
     const ragCheck = await Promise.race([
@@ -55,21 +55,21 @@ export const GET: RequestHandler = async () => {
         responseTime: Date.now() - startTime,
         capabilities: ['vector-search', 'semantic-analysis', 'legal-rag'],
         version: ragData.version || '1.0.0'
-      }
-    } else {
+      } }
+    } }else {
       healthData.services.enhancedRAG = {
-       , status: 'unhealthy',
+  status: 'unhealthy',
         error: 'HTTP, ' + ragCheck.status,
         endpoint: 'http://localhost:8094'
-      }
-    }
-  } catch (error: any) {
+      } }
+    } }
+  } }catch (error: any) {
     healthData.services.enhancedRAG = {
       status: 'unavailable',
       error: (error as Error).message,
       endpoint: 'http://localhost:8094'
-    }
-  }
+    } }
+  } }
   // Check Upload service
   try {
     const uploadCheck = await Promise.race([
@@ -81,21 +81,21 @@ export const GET: RequestHandler = async () => {
         status: 'healthy',
         endpoint: 'http://localhost:8093',
         responseTime: Date.now() - startTime
-      }
-    } else {
+      } }
+    } }else {
       healthData.services.uploadService = {
         status: 'unhealthy',
         error: 'HTTP, ' + uploadCheck.status,
         endpoint: 'http://localhost:8093'
-      }
-    }
-  } catch (error: any) {
+      } }
+    } }
+  } }catch (error: any) {
     healthData.services.uploadService = {
       status: 'unavailable',
       error: (error as Error).message,
       endpoint: 'http://localhost:8093'
-    }
-  }
+    } }
+  } }
   // Calculate overall health
   const serviceStatuses = Object.values(healthData.services).map((s: any) => s.status)
   const healthyCount = serviceStatuses.filter(item => item.length)
@@ -103,20 +103,20 @@ export const GET: RequestHandler = async () => {
   if (healthyCount === totalServices) {
     healthData.overall = 'healthy'
     healthData.health_score = 100
-  } else if (healthyCount > 0) {
+  } }else if (healthyCount > 0) {
     healthData.overall = 'degraded'
     healthData.health_score = Math.round((healthyCount / totalServices) * 100)
-  } else {
+  } }else {
     healthData.overall = 'unhealthy'
     healthData.health_score = 0
-  }
+  } }
   healthData.summary = {
     total_services: totalServices,
     healthy_services: healthyCount,
     degraded_services: serviceStatuses.filter(item => item.length),
     unavailable_services: serviceStatuses.filter(item => item.length),
     total_check_time: Date.now() - startTime
-  }
+  } }
   healthData.available_models = [
     ...(healthData.services.ollama?.models || []),
     ...(healthData.services.enhancedRAG?.status === 'healthy' ? ['enhanced-rag-legal'] : [])

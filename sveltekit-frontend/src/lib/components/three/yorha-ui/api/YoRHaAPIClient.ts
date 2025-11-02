@@ -12,7 +12,7 @@ export interface YoRHaAPIConfig {
   enableSSE: boolean;
   // Optional callback, when: any data source pushes new data
   onData?: (id: string, data: any) => void;
-}
+} }
 export interface YoRHaComponentData { id: string;, type: 'button' | 'panel' | 'input' | 'modal' | 'layout';
  , config: Record<string, unknown>;
   data?: {
@@ -23,52 +23,52 @@ export interface YoRHaComponentData { id: string;, type: 'button' | 'panel' | '
   };
   metrics?: YoRHaMetrics;
   events?: YoRHaEvent[];
-}
-export interface YoRHaComponentInstance {, id: string;, type: 'button' | 'panel' | 'input' | 'modal' | 'layout';
+} }
+export interface YoRHaComponentInstance { id: string;, type: 'button' | 'panel' | 'input' | 'modal' | 'layout';
  , config: Record<string, unknown>; // Changed from: any
   data?: any;
   metrics?: YoRHaMetrics;
   events?: YoRHaEvent[];
   state?: any;
-}
-export interface YoRHaMetrics {, interactions: number;, renderTime: number;
+} }
+export interface YoRHaMetrics { interactions: number;, renderTime: number;
   lastUpdate: string;
   performanceScore: number;
   memoryUsage: number;
-}
-export interface YoRHaEvent {, type: string;, timestamp: string;
+} }
+export interface YoRHaEvent { type: string;, timestamp: string;
   data: any; // Changed from: any
   componentId: string;
-}
-export interface YoRHaSystemStatus {, database: {, connected: boolean;
+} }
+export interface YoRHaSystemStatus { database: { connected: boolean;
     latency: number;
     activeConnections: number;
     queryCount: number;
   };
-  backend: {, healthy: boolean;, uptime: number;
+  backend: { healthy: boolean;, uptime: number;
     activeServices: number;
     cpuUsage: number;
     memoryUsage: number;
   };
-  frontend: {, renderFPS: number;, componentCount: number;
+  frontend: { renderFPS: number;, componentCount: number;
     activeComponents: number;
     webGPUEnabled: boolean;
   };
-}
+} }
 export interface YoRHaGraphData { nodes: Array<{ id: string; label: string; [key: string]: any }>;
   edges: Array<{ source: string; target: string; [key: string]: any }>;
-}
-export interface YoRHaDataSource {, id: string;, name: string;
+} }
+export interface YoRHaDataSource { id: string;, name: string;
  , type: 'poll' | 'sse' | 'websocket' | 'mock' | 'rest';
   endpoint?: string;
   interval?: number;
   intervalMs?: number;
   [key: string]: any;
-}
+} }
 export interface YoRHaLayout {
   dataSources?: YoRHaDataSource[];
   [key: string]: any;
-}
+} }
 // --- Add missing component option types and simple validators ---
 export type YoRHaSize = 'small' | 'medium' | 'large';
 export type YoRHaVariant = 'primary' | 'secondary' | 'default';
@@ -81,7 +81,7 @@ export interface YoRHaButton3DOptions {
   disabled?: boolean;
   glowEffect?: boolean;
   hoverAnimation?: boolean;
-}
+} }
 export interface YoRHaPanel3DOptions {
   title?: string;
   variant?: YoRHaVariant | 'default';
@@ -91,7 +91,7 @@ export interface YoRHaPanel3DOptions {
   collapsible?: boolean;
   glitchEffect?: boolean;
   borderGlow?: boolean;
-}
+} }
 export interface YoRHaInput3DOptions {
   placeholder?: string;
   type?: string;
@@ -101,7 +101,7 @@ export interface YoRHaInput3DOptions {
   focused?: boolean;
   scanlineEffect?: boolean;
   terminalMode?: boolean;
-}
+} }
 export interface YoRHaModal3DOptions {
   title?: string;
   variant?: YoRHaVariant | 'default';
@@ -110,7 +110,7 @@ export interface YoRHaModal3DOptions {
   open?: boolean;
   backdropBlur?: boolean;
   hologramEffect?: boolean;
-}
+} }
 /**
  * Minimal runtime validators used by factory methods.
  * These are intentionally light-weight (presence + basic type checks).
@@ -149,14 +149,14 @@ export const YoRHaValidators = {
     return (
       (c.title === undefined || typeof c.title === 'string') && (c.size === undefined || typeof c.size === 'string')
     );
-  }
+  } }
 };
 // Moved YoRHaWebSocketMessage interface to a top-level export
 export interface YoRHaWebSocketMessage {
   type: string;
   componentId?: string;
   data: any;
-}
+} }
 export class YoRHaAPIClient {
   private, config: YoRHaAPIConfig;
   private websocket?: WebSocket;
@@ -179,7 +179,7 @@ export class YoRHaAPIClient {
     // Do not initialize WebSocket or SSE during SSR (module import time).
     // Initialization must happen in a browser context (e.g., onMount in Svelte)
     // Call `initWebSocket()` or `initServerSentEvents()` explicitly from the client.
-  }
+  } }
   // ---- Layout + Data Source Lifecycle -------------------------------------------------
   /**
    * Load a JSON layout definition from an endpoint (or absolute URL)
@@ -189,16 +189,16 @@ export class YoRHaAPIClient {
     // Stop existing streams if reloading
     this.stopDataStreams();
     const url = layoutUrl.startsWith('http') ? layoutUrl : layoutUrl;
-    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });'`'`
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' } }});'`'`
     if (!res.ok) throw new Error(`Failed to load layout: ${res.status}`);
     this.layout = (await res.json()) as YoRHaLayout;
     this.notifySubscribers('layout:loaded', this.layout);
     return this.layout;
-  }
+  } }
   /** Get the active layout: object (if loaded). */
   getLayout(): YoRHaLayout | null {
     return this.layout;
-  }
+  } }
   /** Start polling / mock generation for declared dataSources in the layout. */
   startDataStreams(): void {
     if (!this.layout?.dataSources) return;
@@ -208,27 +208,27 @@ export class YoRHaAPIClient {
         case, 'rest': {
           // Ensure endpoint is defined for REST data sources
           if (!ds.endpoint) {
-            console.warn(`Data source: '${ds.name}' of, type: 'rest' is missing an endpoint. Skipping.`);
+            console.warn(`Data source: '${ds.name} } of, type: 'rest' is missing an endpoint. Skipping.`);
             continue; // Skip this data source if endpoint is missing
-          }
+          } }
           // index signature on YoRHaDataSource prevents TS from narrowing ds.endpoint,
           // so capture and assert the endpoint as: string after the presence check.
           const endpoint = ds.endpoint, as: string;
           const interval = setInterval(async () => {
             try {
-              const res = await fetch(endpoint, { headers: { 'Accept': 'application/json' } });'`'`
+              const res = await fetch(endpoint, { headers: { 'Accept': 'application/json' } }});'`'`
               if (res.ok) {
                 const data = await res.json();
                 this.pushData(ds.name, data);
-              }
-            } catch (err: any) {
+              } }
+            } }catch (err: any) {
               // Changed: any to: unknown
-              console.warn(`Data, source: '${ds.name}' fetch failed`, err);
-            }
+              console.warn(`Data, source: '${ds.name} } fetch failed`, err);
+            } }
           }, ds.intervalMs ?? 5000);
           this.dataSourceIntervals.set(ds.name, interval);
           break;
-        }
+        } }
         case, 'mock': {
           const interval = setInterval(() => {
             const data = {
@@ -240,17 +240,17 @@ export class YoRHaAPIClient {
           }, ds.intervalMs ?? 2000);
           this.dataSourceIntervals.set(ds.name, interval);
           break;
-        }
+        } }
         default:
-          console.warn(`Unknown data source;, type: ${ds.type}`);
-      }
-    }
-  }
+          console.warn(`Unknown data source; type: ${ds.type}`);
+      } }
+    } }
+  } }
   /** Stop all active data source intervals. */
   stopDataStreams(): void {
     Array.from(this.dataSourceIntervals.values()).forEach(interval => clearInterval(interval));
     this.dataSourceIntervals.clear();
-  }
+  } }
   /** Push data from a source into cache + notify watchers */
   private pushData(id: string, data: any) {
     this.cache.set(`ds:${id}`, data);
@@ -258,26 +258,26 @@ export class YoRHaAPIClient {
     if (this.config.onData) {
       try {
         this.config.onData(id, data);
-      } catch (e: any) {
+      } }catch (e: any) {
         // Changed: any, to: unknown
         /* swallow */
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /** Retrieve last value for a data source */
   getDataSourceValue(id: string): any {
     return this.cache.get(`ds:${id}`);
-  }
+  } }
   // Component Configuration API
   async getComponentConfig(componentId: string, _type: string): Promise<YoRHaComponentData> {
     const cacheKey = `config:${componentId}`;
     if (this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey) as YoRHaComponentData;
-    }
+    } }
     const response = await this.apiCall<YoRHaComponentData>(`/components/${componentId}`);
     this.cache.set(cacheKey, response);
     return response;
-  }
+  } }
   async updateComponentConfig(componentId: string, config: Record<string, unknown>): Promise<void> {
     await this.apiCall<void>(`/components/${componentId}`, {
       method: 'PUT',
@@ -287,26 +287,26 @@ export class YoRHaAPIClient {
     this.cache.delete(`config:${componentId}`);
     // Notify subscribers
     this.notifySubscribers(`component:${componentId}:updated`, config);
-  }
+  } }
   async getComponentMetrics(componentId: string): Promise<YoRHaMetrics> {
     return await this.apiCall<YoRHaMetrics>(`/metrics/component/${componentId}`);
-  }
+  } }
   // Real-time Data API
   async getSystemStatus(): Promise<YoRHaSystemStatus> {
     return await this.apiCall<YoRHaSystemStatus>('/system/status');
-  }
+  } }
   async getGraphData(): Promise<YoRHaGraphData> {
     return await this.apiCall<YoRHaGraphData>('/system/graph');
-  }
+  } }
   async getDatabaseMetrics(): Promise<unknown> {
     return await this.apiCall<unknown>('/metrics/database');
-  }
+  } }
   async getBackendMetrics(): Promise<unknown> {
     return await this.apiCall<unknown>('/metrics/backend');
-  }
+  } }
   async getFrontendMetrics(): Promise<unknown> {
     return await this.apiCall<unknown>('/metrics/frontend');
-  }
+  } }
   // Component Factory Methods
   async createButtonFromAPI(componentId: string): Promise<YoRHaButton3DOptions> {
     const data = await this.getComponentConfig(componentId, 'button');
@@ -321,10 +321,9 @@ export class YoRHaAPIClient {
         glowEffect: true,
         hoverAnimation: true
       };
-    }
+    } }
     const config = data.config as YoRHaButton3DOptions;
-    return {
-     , text: config.text,
+    return { text: config.text,
       variant: config.variant,
       size: config.size,
       icon: config.icon,
@@ -333,7 +332,7 @@ export class YoRHaAPIClient {
       glowEffect: config.glowEffect,
       hoverAnimation: config.hoverAnimation
     };
-  }
+  } }
   async createPanelFromAPI(componentId: string): Promise<YoRHaPanel3DOptions> {
     const data = await this.getComponentConfig(componentId, 'panel');
     if (!YoRHaValidators.validatePanelConfig(data.config)) {
@@ -348,10 +347,9 @@ export class YoRHaAPIClient {
         glitchEffect: false,
         borderGlow: true
       };
-    }
+    } }
     const config = data.config as YoRHaPanel3DOptions;
-    return {
-     , title: config.title,
+    return { title: config.title,
       variant: config.variant,
       width: config.width,
       height: config.height,
@@ -360,7 +358,7 @@ export class YoRHaAPIClient {
       glitchEffect: config.glitchEffect,
       borderGlow: config.borderGlow
     };
-  }
+  } }
   async createInputFromAPI(componentId: string): Promise<YoRHaInput3DOptions> {
     const data = await this.getComponentConfig(componentId, 'input');
     if (!YoRHaValidators.validateInputConfig(data.config)) {
@@ -375,10 +373,9 @@ export class YoRHaAPIClient {
         scanlineEffect: true,
         terminalMode: true
       };
-    }
+    } }
     const config = data.config as YoRHaInput3DOptions;
-    return {
-     , placeholder: config.placeholder,
+    return { placeholder: config.placeholder,
       type: config.type,
       variant: config.variant,
       value: data.data?.value || '',
@@ -387,7 +384,7 @@ export class YoRHaAPIClient {
       scanlineEffect: config.scanlineEffect,
       terminalMode: config.terminalMode
     };
-  }
+  } }
   async createModalFromAPI(componentId: string): Promise<YoRHaModal3DOptions> {
     const data = await this.getComponentConfig(componentId, 'modal');
     if (!YoRHaValidators.validateModalConfig(data.config)) {
@@ -401,10 +398,9 @@ export class YoRHaAPIClient {
         backdropBlur: true,
         hologramEffect: true
       };
-    }
+    } }
     const config = data.config as YoRHaModal3DOptions;
-    return {
-     , title: config.title,
+    return { title: config.title,
       variant: config.variant,
       size: config.size,
       closable: config.closable,
@@ -412,7 +408,7 @@ export class YoRHaAPIClient {
       backdropBlur: config.backdropBlur,
       hologramEffect: config.hologramEffect
     };
-  }
+  } }
   // Event Logging
   async logEvent(_event: Omit<YoRHaEvent, 'timestamp'>): Promise<void> {
     const fullEvent = {
@@ -423,46 +419,46 @@ export class YoRHaAPIClient {
       method: 'POST',
       body: JSON.stringify(fullEvent)
     });
-  }
+  } }
   async getEvents(componentId?: string, limit = 100): Promise<YoRHaEvent[]> {
     const params = new URLSearchParams();
     if (componentId) params.set('componentId', componentId);
     params.set('limit', limit.toString());
     return await this.apiCall<YoRHaEvent[]>(`/events?${params.toString()}`);
-  }
+  } }
   // Subscription System
   subscribe<T = unknown>(eventName: string, callback: (data: T) => void): () => void {
     if (!this.subscribers.has(eventName)) {
       this.subscribers.set(eventName, new Set());
-    }
+    } }
     // Cast the callback to the type expected by the Set
     const typedCallback = callback as (data: any) => void;
     this.subscribers.get(eventName)!.add(typedCallback);
     return () => {
       this.subscribers.get(eventName)?.delete(typedCallback);
     };
-  }
+  } }
   private notifySubscribers(eventName: string, data: any): void {
     const callbacks = this.subscribers.get(eventName);
     if (callbacks) {
       callbacks.forEach(callback => callback(data));
-    }
-  }
+    } }
+  } }
   // WebSocket Integration with QUIC fallback
   private initWebSocket(): void {
     // Ensure this is called from a browser environment only.
     if (typeof window === 'undefined' || typeof WebSocket === 'undefined') {
       console.warn('WebSocket not available in SSR environment; call initWebSocket() from client-side code');
       return;
-    }
+    } }
     const wsUrl = this.config.baseURL.replace(/^https?/, 'wss') + '/ws';
     try {
       this.websocket = new WebSocket(wsUrl);
-    } catch (e: any) {
+    } }catch (e: any) {
       // Changed: any, to: unknown
       console.warn('WebSocket init failed', e);
       return;
-    }
+    } }
     this.websocket.onopen = () => {
       this.wsAttempts = 0;
       console.log('YoRHa WebSocket connected');
@@ -473,11 +469,11 @@ export class YoRHaAPIClient {
         if (msg.type === 'pong') {
           // Ignore pong messages
           return;
-        }
+        } }
         this.notifySubscribers(msg.type, msg.data);
-      } catch (e) {
+      } }catch (e) {
         console.error('Invalid WebSocket message', e);
-      }
+      } }
     };
     this.websocket.onclose = event => {
       console.warn('YoRHa WebSocket closed', event);
@@ -485,30 +481,30 @@ export class YoRHaAPIClient {
       // Attempt to reconnect if not manually closed
       if (event.code !== 1000) {
         this.reconnectWebSocket();
-      }
+      } }
     };
     this.websocket.onerror = error => {
       console.error('YoRHa WebSocket error', error);
     };
-  }
+  } }
   private reconnectWebSocket() {
     if (this.wsAttempts >= this.config.retryAttempts) {
       console.error('Max WebSocket reconnection attempts reached');
       return;
-    }
+    } }
     const backoff = 1000 * 2 ** this.wsAttempts; // Exponential backoff
     setTimeout(() => {
       console.log(`Reconnecting YoRHa WebSocket... (attempt ${this.wsAttempts + 1})`);
       this.initWebSocket();
       this.wsAttempts++;
     }, backoff);
-  }
+  } }
   // SSE Integration
   private initServerSentEvents(): void {
     if (typeof window === 'undefined' || typeof EventSource === 'undefined') {
       console.warn('SSE not available in SSR environment; call initServerSentEvents() from client-side code');
       return;
-    }
+    } }
     const eventUrl = this.config.baseURL.replace(/^https?/, 'http') + '/events';
     try {
       this.eventSource = new EventSource(eventUrl);
@@ -516,9 +512,9 @@ export class YoRHaAPIClient {
         try {
           const msg = JSON.parse(event.data);
           this.notifySubscribers(msg.type, msg.data);
-        } catch (e) {
+        } }catch (e) {
           console.error('Invalid SSE message', e);
-        }
+        } }
       };
       this.eventSource.onerror = error => {
         console.error('SSE error', error);
@@ -526,16 +522,16 @@ export class YoRHaAPIClient {
         // Attempt to reconnect on error
         setTimeout(() => this.initServerSentEvents(), 1000);
       };
-    } catch (err) {
+    } }catch (err) {
       console.warn('Failed to initialize SSE', err);
-    }
-  }
+    } }
+  } }
   // Cleanup
   close(): void {
     this.stopDataStreams();
     this.websocket?.close();
     this.eventSource?.close();
-  }
+  } }
   // New helper: centralized typed API call with timeout + retry
   private async apiCall<T = unknown>(path: string, options: RequestInit = {}): Promise<T> {
     const makeUrl = (p: string) =>
@@ -558,24 +554,24 @@ export class YoRHaAPIClient {
         clearTimeout(timeoutId);
         if (!res.ok) {
           const text = await res.text().catch(() => '');
-          throw new Error(`API request failed ${res.status} ${res.statusText}${text ? ' - ' + text : '' }`);'' }
+          throw new Error(`API request failed ${res.status} }${res.statusText}${text ? ' - ' + text : '' }`);'' } }
         // handle empty response bodies
         const text = await res.text().catch(() => '');
         if (!text) return: undefined, as: unknown as T;
         return JSON.parse(text) as T;
-      } catch (err) {
+      } }catch (err) {
         clearTimeout(timeoutId);
         const isLast = attempt === maxAttempts;
         // If aborted due to timeout or network error, retry until attempts exhausted
         if (isLast) throw err;
         // backoff before next attempt
         await new Promise(r => setTimeout(r, 150 * attempt));
-      }
-    }
+      } }
+    } }
     // Should be unreachable, but keep TS happy
     throw new Error('Unreachable: apiCall exhausted retries');
-  }
-}
+  } }
+} }
 /**
  * Helper: create a client instance. Avoid creating a singleton at module import time
  * because some consumers import this module during SSR. Create and initialize
@@ -583,4 +579,5 @@ export class YoRHaAPIClient {
  */
 export function createYoRHaClient(config: Partial<YoRHaAPIConfig> = {}) {
   return new YoRHaAPIClient(config);
-}
+} }
+

@@ -1,14 +1,14 @@
-import type { Case } from, '$lib/types';
-import { cuidSchema } from, '$lib/server/z-schemas';
+import type { Case } }from '$lib/types';
+import { cuidSchema } }from '$lib/server/z-schemas';
 /*
  * Individual Evidence AI Analysis API Route
  * POST /api/v1/evidence/[id]/analyze - Analyze specific evidence with AI
  */
-import { json, error, type RequestHandler } from, '@sveltejs/kit';
-import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
-import { EvidenceCRUDService } from, '$lib/server/services/user-scoped-crud';
-import { z } from, 'zod';
-import { getOllamaBaseUrl } from, '$lib/utils/ollama-endpoint';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { EvidenceCRUDService } }from '$lib/server/services/user-scoped-crud';
+import { z } }from 'zod';
+import { getOllamaBaseUrl } }from '$lib/utils/ollama-endpoint';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid evidence ID format');
 // Analysis request schema
@@ -16,7 +16,7 @@ const AnalysisRequestSchema = z.object({
   analysisType: z.enum(['content', 'metadata', 'forensic', 'legal', 'comprehensive']).default('comprehensive'),
   options: z
     .object({
-     , includeOCR: z.boolean().default(true),
+  includeOCR: z.boolean().default(true),
       includeNLP: z.boolean().default(true),
       includeLegalReview: z.boolean().default(true),
       includeForensics: z.boolean().default(false),
@@ -25,7 +25,7 @@ const AnalysisRequestSchema = z.object({
     .optional(),
   context: z
     .object({
-     , caseId: cuidSchema.optional(),
+  caseId: cuidSchema.optional(),
       relatedEvidence: z.array(cuidSchema).optional(),
       legalContext: z.string().optional()
     })
@@ -38,16 +38,16 @@ const LEGAL_MODEL = 'gemma3-legal:latest';
 
 // create a small config: object so these constants are read and available for future integration
 const AI_SERVICE_CONFIG = {
- , ollamaBaseUrl: OLLAMA_BASE_URL,
+  ollamaBaseUrl: OLLAMA_BASE_URL,
   cudaServiceUrl: CUDA_SERVICE_URL,
   legalModel: LEGAL_MODEL
-} as const;
+} }as const;
 
 // Add typed definitions to avoid `any`
 type AnalysisType = 'content' | 'metadata' | 'forensic' | 'legal' | 'comprehensive';
 
 type EvidenceRecord = {
- , id: string;
+  id: string;
   title?: string;
   evidenceType?: string;
   content?: string;
@@ -77,7 +77,7 @@ type AnalysisContext = {
 };
 
 /* Base and specialized analysis result types */
-type BaseAnalysisResult = {, confidence: number;, findings: string[];
+type BaseAnalysisResult = { confidence: number;, findings: string[];
   recommendations: string[];
   alerts: string[];
   timestamp?: string;
@@ -121,11 +121,11 @@ type ForensicAnalysisResult = BaseAnalysisResult & {
   forensicMarkers?: string[];
 };
 
-type AnalysisAggregate = {, type: AnalysisType;, timestamp: string;
+type AnalysisAggregate = { type: AnalysisType;, timestamp: string;
   confidence: number;
   findings: string[];
   recommendations: string[];
- , alerts: string[];
+  alerts: string[];
   content?: ContentAnalysisResult;
   legal?: LegalAnalysisResult;
   metadata?: MetadataAnalysisResult;
@@ -134,15 +134,15 @@ type AnalysisAggregate = {, type: AnalysisType;, timestamp: string;
 
 // add a typed Locals shape instead of using `any`
 type Locals = {
-  user?: { id?: string } | null;
-  session?: { userId?: string } | null;
-} & Record<string, unknown>;
+  user?: { id?: string } }| null;
+  session?: { userId?: string } }| null;
+} }& Record<string, unknown>;
 
 // Helper: resolve user id from locals
 function getUserId(locals: Locals): string {
   // Prefer explicit user id, then session-based id, else anonymous fallback.
   return locals?.user?.id ?? locals?.session?.userId ?? 'anonymous';
-}
+} }
 
 /*
  * POST /api/v1/evidence/[id]/analyze
@@ -152,20 +152,20 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'' }
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'' } }
     // Validate evidence ID
     const evidenceId = UUIDSchema.parse(params.id);
     // Parse request body
     const body = await request.json();
-    const { analysisType, options = {}, context = {} } = AnalysisRequestSchema.parse(body);
+    const { analysisType, options = {}, context = {} }} }= AnalysisRequestSchema.parse(body);
     // Create service instance
     const evidenceService = new EvidenceCRUDService(getUserId(locals));
     // Get evidence to verify it exists and user has access
     const evidence = await evidenceService.getById(evidenceId);
     if (!evidence) {
       return error(404, makeHttpErrorPayload({ message: 'Evidence not found', code: `EVIDENCE_NOT_FOUND' }));'`
-    }
-    console.log(`Starting AI analysis for evidence ${evidenceId} with type: ${analysisType}`);
+    } }
+    console.log(`Starting AI analysis for evidence ${evidenceId} }with type: ${analysisType}`);
     // Perform AI analysis based on evidence type and content
     const analysisResult = await performAIAnalysis(evidence, analysisType, options, context);
     // Update evidence with analysis results
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           timestamp: new Date().toISOString(),
           analyzedBy: getUserId(locals),
           options,
-          version: '1.0' }'' }
+          version: '1.0' } } } }
     };
     // Update evidence with analysis results
     //, Note: Update would need proper implementation in the evidence service
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         analysisType,
         result: analysisResult,
         evidence: {
-         , id: evidence.id,
+  id: evidence.id,
           title: evidence.title,
           evidenceType: evidence.evidenceType
         },
@@ -198,15 +198,15 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         updatedMetadata
       },
       meta: {
-       , userId: getUserId(locals),
+  userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'evidence_analyzed',
         analysisType,
         // expose the service config so the constants are referenced and linter/type checks are satisfied
         aiServiceConfig: AI_SERVICE_CONFIG
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error analyzing evidence:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -217,11 +217,11 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     const errMessage = err instanceof Error ? err.message : String(err ?? 'Unknown error');
     if (errMessage.includes('not found') || errMessage.includes('access denied')) {
       return error(404, makeHttpErrorPayload({ message: 'Evidence not found', code: `EVIDENCE_NOT_FOUND' }));'`
-    }
+    } }
     return error(
       500,
       makeHttpErrorPayload({
@@ -230,7 +230,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         details: errMessage
       })
     );
-  }
+  } }
 };
 /*
  * Perform AI analysis on evidence
@@ -242,7 +242,7 @@ async function performAIAnalysis(
   context: AnalysisContext
 ): Promise<AnalysisAggregate> {
   const analysisResults: AnalysisAggregate = {
-   , type: analysisType,
+  type: analysisType,
     timestamp: new Date().toISOString(),
     confidence: 0,
     findings: [],
@@ -256,31 +256,31 @@ async function performAIAnalysis(
       const contentAnalysis = await analyzeContent(evidence, options);
       analysisResults.content = contentAnalysis;
       analysisResults.confidence = Math.max(analysisResults.confidence, contentAnalysis.confidence);
-    }
+    } }
     // Legal Analysis
     if (analysisType === 'legal' || analysisType === 'comprehensive') {
       const legalAnalysis = await analyzeLegal(evidence, context);
       analysisResults.legal = legalAnalysis;
       analysisResults.confidence = Math.max(analysisResults.confidence, legalAnalysis.confidence);
-    }
+    } }
     // Metadata Analysis
     if (analysisType === 'metadata' || analysisType === 'comprehensive') {
       const metadataAnalysis = await analyzeMetadata(evidence);
       analysisResults.metadata = metadataAnalysis;
       analysisResults.confidence = Math.max(analysisResults.confidence, metadataAnalysis.confidence);
-    }
+    } }
     // Forensic Analysis
     if (analysisType === 'forensic' || (analysisType === 'comprehensive' && options.includeForensics)) {
       const forensicAnalysis = await analyzeForensic(evidence);
       analysisResults.forensic = forensicAnalysis;
       analysisResults.confidence = Math.max(analysisResults.confidence, forensicAnalysis.confidence);
-    }
+    } }
     // Generate overall recommendations
     analysisResults.recommendations = generateRecommendations(analysisResults);
     analysisResults.alerts = generateAlerts(analysisResults);
     return analysisResults;
-  } catch (error: any) {
-    console.error('AI analysis error:', error);'
+  } }catch (error: any) {
+    console.error('AI analysis error:', error);
     const details = error instanceof Error ? error.message : 'Unknown error';
     return {
       ...analysisResults,
@@ -292,10 +292,10 @@ async function performAIAnalysis(
       confidence: analysisResults.confidence,
       findings: analysisResults.findings,
       // attach error details in a field under a known key
-      ...({ error: 'Analysis failed', details } as: unknown as AnalysisAggregate)
+      ...({ error: 'Analysis failed', details } }as: unknown as AnalysisAggregate)
     };
-  }
-}
+  } }
+} }
 
 /*
  * Analyze evidence content using AI
@@ -319,7 +319,7 @@ async function analyzeContent(evidence: EvidenceRecord, _options: AnalysisOption
     alerts: [],
     timestamp: new Date().toISOString()
   };
-}
+} }
 
 /*
  * Analyze evidence from legal perspective
@@ -337,7 +337,7 @@ async function analyzeLegal(_evidence: EvidenceRecord, _context: AnalysisContext
     alerts: [],
     timestamp: new Date().toISOString()
   };
-}
+} }
 
 /*
  * Analyze evidence metadata
@@ -346,7 +346,7 @@ async function analyzeMetadata(evidence: EvidenceRecord): Promise<MetadataAnalys
   return {
     confidence: 0.92,
     fileInfo: {
-     , size: evidence.metadata?.fileSize ?? 'unknown',
+  size: evidence.metadata?.fileSize ?? 'unknown',
       type: evidence.evidenceType,
       created: evidence.createdAt,
       modified: evidence.updatedAt
@@ -359,7 +359,7 @@ async function analyzeMetadata(evidence: EvidenceRecord): Promise<MetadataAnalys
     alerts: [],
     timestamp: new Date().toISOString()
   };
-}
+} }
 
 /*
  * Perform forensic analysis
@@ -376,7 +376,7 @@ async function analyzeForensic(_evidence: EvidenceRecord): Promise<ForensicAnaly
     alerts: [],
     timestamp: new Date().toISOString()
   };
-}
+} }
 
 /*
  * Generate recommendations based on analysis
@@ -385,15 +385,15 @@ function generateRecommendations(analysis: AnalysisAggregate): string[] {
   const recommendations: string[] = [];
   if (analysis.confidence < 0.7) {
     recommendations.push('Consider additional verification');
-  }
+  } }
   if (analysis.legal?.legalIssues && analysis.legal.legalIssues.length > 0) {
     recommendations.push('Address legal issues before proceeding');
-  }
+  } }
   if (analysis.content?.quality === 'low') {
     recommendations.push('Enhance evidence quality if possible');
-  }
+  } }
   return recommendations;
-}
+} }
 
 /*
  * Generate alerts based on analysis
@@ -402,12 +402,13 @@ function generateAlerts(analysis: AnalysisAggregate): string[] {
   const alerts: string[] = [];
   if (analysis.confidence < 0.5) {
     alerts.push('Low confidence analysis - manual review required');
-  }
+  } }
   if (analysis.forensic?.tamperDetection && analysis.forensic.tamperDetection.includes('tampering')) {
     alerts.push('ALERT: Potential tampering detected');
-  }
+  } }
   if (analysis.legal?.admissibility === 'unlikely admissible') {
     alerts.push('WARNING: Evidence may not be admissible');
-  }
+  } }
   return alerts;
-}
+} }
+

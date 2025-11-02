@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { createRedisConnection } from '$lib/server/redis';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { createRedisConnection } }from '$lib/server/redis';
 
 export const GET: RequestHandler = async () => {
   // Helper: safely extract a message: string, from: unknown error values
@@ -9,13 +9,13 @@ export const GET: RequestHandler = async () => {
     if (typeof e === 'object' && e !== null) {
       const maybe = (e as Record<string, unknown>)['message'];
       if (typeof maybe === 'string') return maybe;
-    }
+    } }
     try {
       return String(e);
-    } catch {
+    } }catch {
       return, 'Unknown error';
-    }
-  }
+    } }
+  } }
 
   try {
     // Attempt to load Redis client with fallback
@@ -30,14 +30,14 @@ export const GET: RequestHandler = async () => {
       // If the client exposes connect, ensure it's open before ping'
       if (client && typeof client.connect === 'function' && !client.isOpen) {
         await client.connect();
-      }
+      } }
 
       // Ping using the short-lived client
       if (client && typeof client.ping === 'function') {
         await client.ping();
         isAvailable = true;
-      }
-    } catch (redisError: any) {
+      } }
+    } }catch (redisError: any) {
       // Improve diagnostics for common problems like missing auth or aborted clients
       const msg = extractMessage(redisError);
       console.warn('[Redis Health] Redis unavailable:', msg);
@@ -47,17 +47,17 @@ export const GET: RequestHandler = async () => {
         console.warn(
           '[Redis Health] Auth mismatch: check REDIS_URL/REDIS_PASSWORD and whether Redis requires a password.'
         );
-      }
+      } }
 
       isAvailable = false;
-    } finally {
+    } }finally {
       // Quit the short-lived client if possible to avoid leaking connections
       try {
         if (client && typeof client.quit === 'function') await client.quit();
-      } catch {
+      } }catch {
         /* ignore */
-      }
-    }
+      } }
+    } }
 
     if (isAvailable) {
       return json({
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async () => {
         host: 'localhost',
         timestamp: new Date().toISOString()
       });
-    } else {
+    } }else {
       return json(
         {
           status: 'unavailable',
@@ -75,10 +75,10 @@ export const GET: RequestHandler = async () => {
           message: 'Redis not configured or unreachable',
           timestamp: new Date().toISOString()
         },
-        { status: 503 }
+        { status: 503 } }
       );
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     const errorMsg = extractMessage(error);
     return json(
       {
@@ -87,7 +87,8 @@ export const GET: RequestHandler = async () => {
         error: errorMsg || 'Health check failed',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

@@ -1,23 +1,23 @@
-import { error, redirect } from, '@sveltejs/kit';
-import type { PageServerLoad, Actions } from, './$types.js';
-import { db } from, '$lib/db/index.js';
-import { users, cases, evidence, sessions, aiHistory, profileTable } from, '$lib/db/schema.js';
-import { eq, desc, count, sql } from, 'drizzle-orm';
-import { getUserId } from, '$lib/server/auth/utils';
+import { error, redirect } }from, '@sveltejs/kit';
+import type { PageServerLoad, Actions } }from, './$types.js';
+import { db } }from, '$lib/db/index.js';
+import { users, cases, evidence, sessions, aiHistory, profileTable } }from, '$lib/db/schema.js';
+import { eq, desc, count, sql } }from, 'drizzle-orm';
+import { getUserId } }from, '$lib/server/auth/utils';
 export const load: PageServerLoad = async ({ params, locals }) => {
   // Check authentication using Lucia v3
   if (!locals.session || !locals.user) {
     throw redirect(302, '/login');
-  }
+  } }
   // Check if user is admin
   const adminCheck = await db.select().from(users).limit(1);
   if (adminCheck.length === 0 || adminCheck[0].id !== getUserId(locals)) {
     throw error(403, 'Admin access required');
-  }
+  } }
   const userId = parseInt(params.userId);
   if (isNaN(userId)) {
     throw error(400, 'Invalid user ID');
-  }
+  } }
   try {
     // Get user details with profile
     const userResult = await db
@@ -37,7 +37,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
       .limit(1);
     if (userResult.length === 0) {
       throw error(404, 'User not found');
-    }
+    } }
     const user = userResult[0];
     // Get user statistics
     const [casesCount, evidenceCount, sessionsCount, aiHistoryCount] = await Promise.all([
@@ -107,7 +107,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
       .where(eq(sessions.user_id, userId))
       .orderBy(desc(sessions.created_at))
       .limit(5);
-    return { user: {, id: user.id,
+    return { user: { id: user.id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -125,23 +125,22 @@ export const load: PageServerLoad = async ({ params, locals }) => {
       recentAIInteractions,
       activeSessions
     };
-  } catch (err) {
+  } }catch (err) {
     console.error('Error loading user details:', err);
     throw error(500, 'Failed to load user details');
-  }
+  } }
 };
-export const actions: Actions = {
- , updateProfile: async ({ request, params, locals }) => {
+export const actions: Actions = { updateProfile: async ({ request, params, locals }) => {
     if (!locals.session || !locals.user) {
       throw redirect(302, '/login');
-    }
+    } }
     const userId = parseInt(params.userId);
     const formData = await request.formData();
     const firstName = formData.get('firstName')?.toString() || '';
     const lastName = formData.get('lastName')?.toString() || '';
     if (!firstName || !lastName) {
       return { success: false, error: 'First name and last name are required' };
-    }
+    } }
     try {
       // Check if profile exists
       const existingProfile = await db.select().from(profileTable).where(eq(profileTable.id, userId)).limit(1);
@@ -154,50 +153,50 @@ export const actions: Actions = {
             lastName
           })
           .where(eq(profileTable.id, userId));
-      } else {
+      } }else {
         // Create new profile
         await db.insert(profileTable).values({
           id: userId,
           firstName,
           lastName
         });
-      }
+      } }
       return { success: true, message: 'Profile updated successfully' };
-    } catch (err) {
+    } }catch (err) {
       console.error('Error updating profile:', err);
       return { success: false, error: 'Failed to update profile' };
-    }
+    } }
   },
   revokeSession: async ({ request, params, locals }) => {
     if (!locals.session || !locals.user) {
       throw redirect(302, '/login');
-    }
+    } }
     const formData = await request.formData();
     const sessionId = formData.get('sessionId')?.toString();
     if (!sessionId) {
       return { success: false, error: 'Session ID is required' };
-    }
+    } }
     try {
       await db.delete(sessions).where(eq(sessions.id, sessionId));
       return { success: true, message: 'Session revoked successfully' };
-    } catch (err) {
+    } }catch (err) {
       console.error('Error revoking session:', err);
       return { success: false, error: 'Failed to revoke session' };
-    }
+    } }
   },
   resetPassword: async ({ request, params, locals }) => {
     if (!locals.session || !locals.user) {
       throw redirect(302, '/login');
-    }
+    } }
     const userId = parseInt(params.userId);
     const formData = await request.formData();
     const newPassword = formData.get('newPassword')?.toString();
     if (!newPassword || newPassword.length < 8) {
       return { success: false, error: 'Password must be at least, 8 characters' };
-    }
+    } }
     try {
       // Hash the new password
-      const { hash } = await import('@node-rs/argon2');
+      const { hash } }= await import('@node-rs/argon2');
       const passwordHash = await hash(newPassword, {
         memoryCost: 19456,
         timeCost: 2,
@@ -215,9 +214,10 @@ export const actions: Actions = {
       // Revoke all existing sessions for this user
       await db.delete(sessions).where(eq(sessions.user_id, userId));
       return { success: true, message: 'Password reset successfully. All sessions have been revoked.' };
-    } catch (err) {
+    } }catch (err) {
       console.error('Error resetting password:', err);
       return { success: false, error: 'Failed to reset password' };
-    }
-  }
+    } }
+  } }
 };
+

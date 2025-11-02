@@ -8,7 +8,7 @@
  * potential GPU acceleration. All browser-specific code has been removed.
  * It now uses a proper Redis client and strong typing, eliminating all `any` types.
  */
-import { dev } from '$app/environment';
+import { dev } }from '$app/environment';
 // Import only the Redis runtime class; remove unused RedisOptions type to fix linter/TS error
 import Redis from 'ioredis';
 
@@ -22,7 +22,7 @@ interface MinimalRedis {
   get: (key: string) => Promise<string | null>;
   set: (key: string, value: string, mode?: string, duration?: number) => Promise<unknown>;
   on?: (event: string, handler: (...args: any[]) => void) => void;
-}
+} }
 
 // --- New: Runtime-config interface & defaults ---
 //, maxRetriesPerRequest: Controls how many times Redis will retry a failed command before giving up.
@@ -60,14 +60,14 @@ const DOCKER_FRIENDLY_DEFAULTS = {
 
 export interface RedisGPUCacheEntry { key: string;, response: string;
   // Data prepared on the server for the client's GPU'
-  quantized: {, compressed: Uint8Array;, compressionRatio: number;
+  quantized: { compressed: Uint8Array;, compressionRatio: number;
    , glyphMap: Record<string, string>;
   };
   embeddings: number[]; // JSON friendly
-  gpuTexturePayload: {, chrROMPattern: string;, visualGlyphs: Uint8Array;
+  gpuTexturePayload: { chrROMPattern: string;, visualGlyphs: Uint8Array;
     renderCache: string; // Pre-rendered HTML or data
   };
-  metadata: {, userId: string;, sessionId: string;
+  metadata: { userId: string;, sessionId: string;
     confidence: number;
     processingTime: number; // in milliseconds
     cacheLevel: 'L1' | 'L2';
@@ -75,18 +75,18 @@ export interface RedisGPUCacheEntry { key: string;, response: string;
     hitCount: number;
     lastAccessed: string; //, ISO: string
   };
-}
+} }
 
 // A type for the data before it's serialized for Redis'
 type SerializableCacheEntry = Omit<
   RedisGPUCacheEntry,
   'quantized' | 'gpuTexturePayload' | 'embeddings' | 'metadata'
-> & { quantized: {, compressed: number[]; // number[] is JSON serializable
+> & { quantized: { compressed: number[]; // number[] is JSON serializable
     compressionRatio: number;
    , glyphMap: Record<string, string>;
   };
   embeddings: number[];
-  gpuTexturePayload: {, chrROMPattern: string;, visualGlyphs: number[]; // number[] is JSON serializable
+  gpuTexturePayload: { chrROMPattern: string;, visualGlyphs: number[]; // number[] is JSON serializable
     renderCache: string;
   };
  , metadata: Omit<RedisGPUCacheEntry['metadata'], 'timestamp' | 'lastAccessed'> & { timestamp: string;, lastAccessed: string;
@@ -94,8 +94,7 @@ type SerializableCacheEntry = Omit<
 };
 
 // --- Ollama API Types ---
-type OllamaEmbeddingResponse = {
- , embedding: number[];
+type OllamaEmbeddingResponse = { embedding: number[];
 };
 
 class RedisGPUChatOptimizationService {
@@ -106,8 +105,7 @@ class RedisGPUChatOptimizationService {
   private readonly EMBEDDING_DIM = 2048; // For embeddinggemma
 
   // --- replace hard-coded constants with values derived from config ---
-  private config: Required<ServiceConfig> = {
-   , redisUrl: DOCKER_FRIENDLY_DEFAULTS.redisUrlCandidates[0] || 'redis://localhost:6379',
+  private config: Required<ServiceConfig> = { redisUrl: DOCKER_FRIENDLY_DEFAULTS.redisUrlCandidates[0] || 'redis://localhost:6379',
     ollamaApiBase: DOCKER_FRIENDLY_DEFAULTS.ollamaCandidates[0] || 'http://localhost:11434',
     embeddingModel: DOCKER_FRIENDLY_DEFAULTS.embeddingModel,
     l2TtlSeconds: DOCKER_FRIENDLY_DEFAULTS.l2TtlSeconds,
@@ -122,7 +120,7 @@ class RedisGPUChatOptimizationService {
     });
     this.startBackgroundTasks(); // Start background tasks regardless of initial config
     console.log('🚀 Redis-GPU Chat Optimization Service initialized (Server-Side)');
-  }
+  } }
 
   // --- connectToRedis now uses runtime config & will re-create client on URL change ---
   private connectToRedis() {
@@ -132,8 +130,8 @@ class RedisGPUChatOptimizationService {
         // If client already exists and appears to be ready or connecting, return.
         if (this.redis.status === 'ready' || this.redis.status === 'connecting') {
           return;
-        }
-      }
+        } }
+      } }
 
       // ioredis: pass, options: object, including url and maxRetriesPerRequest
       // Cast to MinimalRedis to satisfy our local typing surface
@@ -147,33 +145,33 @@ class RedisGPUChatOptimizationService {
         this.redis.on('error', (err: any) => console.error('Redis Client Error', err));
         this.redis.on('connect', () => console.log('📡 Redis client socket connected.'));
         this.redis.on('ready', () => console.log('📡 Redis client ready to accept commands.'));
-      }
+      } }
 
       // Removed explicit this.redis.connect() call here.
       // ioredis clients connect automatically unless lazyConnect is true.
       // `ensureRedisConnected` will handle explicit connection if needed.
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to initialize Redis connection:', error);
-    }
-  }
+    } }
+  } }
 
   private async ensureRedisConnected(): Promise<void> {
     if (!this.redis) {
       // create a client on-demand using current config
       this.connectToRedis();
-    }
+    } }
     if (!this.redis) return; // If connectToRedis failed to create a client, exit.
     try {
       // Only call connect if the method exists and status is not: 'ready'
       if (this.redis.connect && this.redis.status !== 'ready') {
         await this.redis.connect();
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      console.error('ensureRedisConnected error:', message);'
+      console.error('ensureRedisConnected error:', message);
       // swallow; operations will fallback to L1 only if Redis is unavailable
-    }
-  }
+    } }
+  } }
 
   // --- setConfig method extracted and corrected ---
   public async setConfig(partial: ServiceConfig): Promise<void> {
@@ -196,23 +194,23 @@ class RedisGPUChatOptimizationService {
         if (this.redis) {
           try {
             await this.redis.quit();
-          } catch {
+          } }catch {
             // ignore quit errors
-          }
+          } }
           this.redis = null;
-        }
-      } finally {
+        } }
+      } }finally {
         if (this.config.autoConnectRedis) {
           this.connectToRedis();
-        }
-      }
-    }
+        } }
+      } }
+    } }
 
     // Ensure connection if requested
     if (this.config.autoConnectRedis) {
       await this.ensureRedisConnected();
-    }
-  }
+    } }
+  } }
 
   // --- Public API ---
 
@@ -226,7 +224,7 @@ class RedisGPUChatOptimizationService {
       l1Entry.metadata.lastAccessed = new Date().toISOString();
       console.log(`⚡ L1 Cache hit: ${cacheKey.slice(0, 20)}`);
       return l1Entry;
-    }
+    } }
 
     // L2 Cache Check (Redis)
     if (this.redis && typeof (this.redis as MinimalRedis).get === 'function') {
@@ -240,27 +238,26 @@ class RedisGPUChatOptimizationService {
           this.l1Cache.set(cacheKey, l2Entry); // Promote to L1
           console.log(`🔥 L2 Redis Cache hit: ${cacheKey.slice(0, 20)}`);
           return l2Entry;
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         console.warn(`Redis GET failed; falling back to L1 only: ${message}`);
-      }
-    }
+      } }
+    } }
 
     return: null;
-  }
+  } }
 
   public async cacheResponse(
    , query: string,
     response: string,
     userId: string,
     sessionId: string,
-    metadata: {, confidence: number;, processingTime: number }
+    metadata: { confidence: number; processingTime: number } }
   ): Promise<void> {
     const cacheKey = this.generateCacheKey(query, userId);
 
-    const newEntry: RedisGPUCacheEntry = {
-     , key: cacheKey,
+    const newEntry: RedisGPUCacheEntry = { key: cacheKey,
       response,
       quantized: await this.quantizeResponse(response),
       embeddings: await this.generateEmbedding(query),
@@ -274,14 +271,14 @@ class RedisGPUChatOptimizationService {
         timestamp: new Date().toISOString(),
         hitCount: 1,
         lastAccessed: new Date().toISOString()
-      }
+      } }
     };
 
     // Always cache in L1 for immediate access
     this.l1Cache.set(cacheKey, newEntry);
     if (this.l1Cache.size > this.L1_MAX_SIZE) {
       this.evictLRUFromL1();
-    }
+    } }
 
     // Cache in L2 (Redis) for persistence
     if (this.redis && typeof (this.redis as MinimalRedis).set === 'function') {
@@ -289,19 +286,19 @@ class RedisGPUChatOptimizationService {
       try {
         // use current TTL from config
         await (this.redis as MinimalRedis).set(cacheKey, this.serializeEntry(newEntry), 'EX', this.config.l2TtlSeconds);
-      } catch (err) {
+      } }catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         console.warn(`Redis SET failed; stored in L1 only: ${message}`);
-      }
-    }
+      } }
+    } }
 
     // Hook for fine-tuning pipeline
     if (metadata.confidence < 0.75) {
       this.scheduleFineTuningData(query, response, metadata.confidence);
-    }
+    } }
 
     console.log(`💾 Cached response: ${cacheKey.slice(0, 20)}`);
-  }
+  } }
 
   // --- Real Implementations for AI/GPU tasks ---
 
@@ -311,9 +308,9 @@ class RedisGPUChatOptimizationService {
       return {
         compressed: new TextEncoder().encode(response),
         compressionRatio: 1.0,
-        glyphMap: {}
+        glyphMap: {} }
       };
-    }
+    } }
 
     const words = response.split(/\s+/);
     const freq = new Map<string, number>();
@@ -330,8 +327,8 @@ class RedisGPUChatOptimizationService {
         const glyph = String.fromCharCode(GLYPH_START_CODE + glyphIndex);
         glyphMap[word] = glyph;
         glyphIndex++;
-      }
-    }
+      } }
+    } }
 
     const quantizedText = words.map(word => glyphMap[word] || word).join(' ');
     const compressed = new TextEncoder().encode(quantizedText);
@@ -339,41 +336,40 @@ class RedisGPUChatOptimizationService {
     const compressionRatio = originalSize / compressedSize;
 
     return { compressed, compressionRatio, glyphMap };
-  }
+  } }
 
   private async generateEmbedding(text: string): Promise<number[]> {
     try {
       const response = await fetch(`${this.config.ollamaApiBase}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({
-         , model: this.config.embeddingModel,
+        body: JSON.stringify({ model: this.config.embeddingModel,
           prompt: text
         })
       });
 
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.statusText}`);
-      }
+      } }
 
       const data = (await response.json()) as OllamaEmbeddingResponse;
       if (!Array.isArray(data?.embedding)) {
         throw new Error('Invalid embedding response from Ollama');
-      }
+      } }
 
       const embedding = data.embedding;
       if (embedding.length > this.EMBEDDING_DIM) {
         return embedding.slice(0, this.EMBEDDING_DIM);
-      }
+      } }
       if (embedding.length < this.EMBEDDING_DIM) {
         return embedding.concat(Array(this.EMBEDDING_DIM - embedding.length).fill(0));
-      }
+      } }
       return embedding;
-    } catch (error) {
+    } }catch (error) {
       console.error('Embedding generation failed:', error);
       return Array(this.EMBEDDING_DIM).fill(0);
-    }
-  }
+    } }
+  } }
 
   private async prepareGPUTexturePayload(response: string): Promise<RedisGPUCacheEntry['gpuTexturePayload']> {
     return {
@@ -381,14 +377,14 @@ class RedisGPUChatOptimizationService {
       visualGlyphs: new TextEncoder().encode(response),
       renderCache: response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'), // Pre-render markdown
     };
-  }
+  } }
 
   private scheduleFineTuningData(query: string, response: string, confidence: number): void {
     if (dev) {
       console.log(`[Fine-Tuning Hook] Low confidence (${confidence.toFixed(2)}) detected. Scheduling for training.`);
       // Production: publish to message queue for QLoRA dataset collection.
-    }
-  }
+    } }
+  } }
 
   // --- Serialization & Utility Methods ---
 
@@ -408,10 +404,10 @@ class RedisGPUChatOptimizationService {
         ...entry.metadata,
         timestamp: entry.metadata.timestamp,
         lastAccessed: entry.metadata.lastAccessed
-      }
+      } }
     };
     return JSON.stringify(serializable);
-  }
+  } }
 
   private deserializeEntry(serialized: string): RedisGPUCacheEntry {
     const parsed: SerializableCacheEntry = JSON.parse(serialized);
@@ -430,14 +426,14 @@ class RedisGPUChatOptimizationService {
         ...parsed.metadata,
         timestamp: parsed.metadata.timestamp,
         lastAccessed: parsed.metadata.lastAccessed
-      }
+      } }
     };
-  }
+  } }
 
   private generateCacheKey(query: string, userId: string): string {
     const queryHash = this.simpleHash(query.toLowerCase().trim());
     return `rgpu:${userId}:${queryHash}`;
-  }
+  } }
 
   private simpleHash(str: string): string {
     let hash = 0;
@@ -445,9 +441,9 @@ class RedisGPUChatOptimizationService {
       const char = str.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash |= 0; // Convert to 32bit integer
-    }
+    } }
     return Math.abs(hash).toString(36);
-  }
+  } }
 
   private evictLRUFromL1(): void {
     let oldestKey: string | null = null;
@@ -457,13 +453,13 @@ class RedisGPUChatOptimizationService {
       if (entry.metadata.lastAccessed < oldestTime) {
         oldestTime = entry.metadata.lastAccessed;
         oldestKey = key;
-      }
-    }
+      } }
+    } }
     if (oldestKey) {
       this.l1Cache.delete(oldestKey);
-      console.log(`🧹 Evicted ${oldestKey.slice(0, 20)} from L1 cache.`);
-    }
-  }
+      console.log(`🧹 Evicted ${oldestKey.slice(0, 20)} }from L1 cache.`);
+    } }
+  } }
 
   private startBackgroundTasks(): void {
     if (dev) {
@@ -473,13 +469,13 @@ class RedisGPUChatOptimizationService {
         for (const [k, v] of this.l1Cache.entries()) {
           if (new Date(v.metadata.lastAccessed).getTime() < threshold) {
             this.l1Cache.delete(k);
-            console.log(`🧹 Evicted stale ${k.slice(0, 20)} from L1 (idle >24h).`);
-          }
-        }
+            console.log(`🧹 Evicted stale ${k.slice(0, 20)} }from L1 (idle >24h).`);
+          } }
+        } }
       }, 60000);
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Export a singleton instance for use across your server-side code
 export const redisGPUChatOptimization = new RedisGPUChatOptimizationService();
@@ -489,6 +485,7 @@ export async function initRedisGPUChatOptimization(config?: ServiceConfig): Prom
   // apply config and ensure redis connects if configured
   await redisGPUChatOptimization.setConfig(config ?? {});
   return redisGPUChatOptimization;
-}
+} }
 
 export default redisGPUChatOptimization;
+

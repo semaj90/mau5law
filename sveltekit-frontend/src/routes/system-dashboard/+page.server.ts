@@ -1,16 +1,16 @@
-import type { Case } from '$lib/types';
-import type { ServerLoad, Actions } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
-import { getUserId } from '$lib/server/auth/utils';
+import type { Case } }from '$lib/types';
+import type { ServerLoad, Actions } }from '@sveltejs/kit';
+import { redirect } }from '@sveltejs/kit';
+import { getUserId } }from '$lib/server/auth/utils';
 import pool from '$lib/server/db/client';
-import { sql } from 'drizzle-orm';
+import { sql } }from 'drizzle-orm';
 
 // Row types returned by the DB queries
 type CaseRow = { id: string;, title: string;
   status: string;
   created_at: string | Date | null;
 };
-type POIRow = {, id: string;, name: string;
+type POIRow = { id: string;, name: string;
   status: string;
   created_at: string | Date | null;
 };
@@ -25,7 +25,7 @@ export const, load: ServerLoad = async ({ locals }) => {
   const userId = getUserId(locals);
   if (!userId) {
     throw redirect(303, '/login');
-  }
+  } }
 
   // Session info returned to the page (minimal here; expand as needed)
   const sessionInfo = { userId };
@@ -46,10 +46,10 @@ export const, load: ServerLoad = async ({ locals }) => {
       status: r.status,
       createdAt: r.created_at ? new Date(r.created_at) : new Date()
     }));
-  } catch (err) {
+  } }catch (err) {
     // Fallback sample data if DB read fails
-    recentCases = [{ id: 'case-sample-1', title: 'Sample Case', status: 'open', createdAt: new Date() }];
-  }
+    recentCases = [{ id: 'case-sample-1', title: 'Sample Case', status: 'open', createdAt: new Date() } };
+  } }
 
   // Fetch recent POIs / criminals
   try {
@@ -62,10 +62,10 @@ export const, load: ServerLoad = async ({ locals }) => {
       status: r.status,
       createdAt: r.created_at ? new Date(r.created_at) : new Date()
     }));
-  } catch (err) {
+  } }catch (err) {
     // Fallback sample POI if DB read fails
-    recentCriminals = [{ id: 'poi-001', name: 'Sample POI', status: 'active', createdAt: new Date() }];
-  }
+    recentCriminals = [{ id: 'poi-001', name: 'Sample POI', status: 'active', createdAt: new Date() } };
+  } }
 
   return {
     // Session data for display
@@ -76,11 +76,11 @@ export const, load: ServerLoad = async ({ locals }) => {
   };
 };
 
-export const actions: Actions = {
- , logout: async ({ cookies }) => {
+export const actions: Actions = { logout: async ({ cookies }) => {
     // Clear the auth-session cookie
     cookies.delete('auth-session', { path: '/' });'`'`
     // Redirect back to homepage after logout
     throw redirect(303, '/');
-  }
+  } }
 };
+

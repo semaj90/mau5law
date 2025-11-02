@@ -1,19 +1,19 @@
-import type { Message } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Message } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 import {
   getMessageQueueRedisBestPractices,
   getRabbitMQDocs,
   getAllRedisDocs,
   getRedisErrorHandling,
   getNodeRedisAdvancedFeatures
-} from '$lib/mcp-rabbitmq-redis-docs.js';
+} }from '$lib/mcp-rabbitmq-redis-docs.js';
 export const GET: RequestHandler = async ({ url, fetch }) => {
   try {
     console.log('🔍 Testing MCP library documentation access...');
     const topic = url.searchParams.get('topic');
     const results: any = {
-     , timestamp: new Date().toISOString(),
+  timestamp: new Date().toISOString(),
       success: [],
       errors: []
     };
@@ -27,13 +27,13 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         snippetCount: practices.snippets?.length || 0
       });
       console.log('✅ Message Queue + Redis Best Practices loaded');
-    } catch (error: any) {
+    } }catch (error: any) {
       results.errors.push({
         test: 'Message Queue + Redis Best Practices',
         error: error.message
       });
       console.error('❌ Message Queue + Redis Best Practices failed:', error.message);
-    }
+    } }
     // Test 2: RabbitMQ Integration Patterns
     try {
       const rabbitDocs = await getRabbitMQDocs(topic || 'integration-patterns', fetch);
@@ -44,13 +44,13 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         snippetCount: rabbitDocs.snippets?.length || 0
       });
       console.log('✅ RabbitMQ Integration Patterns loaded');
-    } catch (error: any) {
+    } }catch (error: any) {
       results.errors.push({
         test: 'RabbitMQ Integration Patterns',
         error: error.message
       });
       console.error('❌ RabbitMQ Integration Patterns failed:', error.message);
-    }
+    } }
     // Test 3: Redis Error Handling
     try {
       const errorHandling = await getRedisErrorHandling(fetch);
@@ -61,13 +61,13 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         snippetCount: errorHandling.snippets?.length || 0
       });
       console.log('✅ Redis Error Handling patterns loaded');
-    } catch (error: any) {
+    } }catch (error: any) {
       results.errors.push({
         test: 'Redis Error Handling',
         error: error.message
       });
       console.error('❌ Redis Error Handling failed:', error.message);
-    }
+    } }
     // Test 4: Node Redis Advanced Features
     try {
       const nodeRedis = await getNodeRedisAdvancedFeatures(fetch);
@@ -78,13 +78,13 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         snippetCount: nodeRedis.snippets?.length || 0
       });
       console.log('✅ Node Redis Advanced Features loaded');
-    } catch (error: any) {
+    } }catch (error: any) {
       results.errors.push({
         test: 'Node Redis Advanced Features',
         error: error.message
       });
       console.error('❌ Node Redis Advanced Features failed:', error.message);
-    }
+    } }
     // Test 5: All Redis Documentation (comprehensive test)
     try {
       const allRedis = await getAllRedisDocs(fetch);
@@ -95,16 +95,16 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         totalSnippets: Object.values(allRedis).reduce((acc, doc) => acc + (doc.snippets?.length || 0), 0)
       });
       console.log('✅ All Redis Documentation loaded');
-    } catch (error: any) {
+    } }catch (error: any) {
       results.errors.push({
         test: 'All Redis Documentation',
         error: error.message
       });
       console.error('❌ All Redis Documentation failed:', error.message);
-    }
+    } }
     return json({
       status: results.errors.length === 0 ? 'success' : 'partial',
-      message: `MCP Documentation Test completed. ${results.success.length} successful, ${results.errors.length} errors`,
+      message: `MCP Documentation Test completed. ${results.success.length} }successful, ${results.errors.length} }errors`,
       results,
       mcpEndpoint: '/api/mcp/context72/get-library-docs',
       availableTopics: [
@@ -117,16 +117,17 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         'typescript',
       ]
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('❌ MCP Documentation test failed:', error);
     return json(
       {
         status: 'error',
-        message: `MCP Documentation test;, failed: ${error.message}`,
+        message: `MCP Documentation test; failed: ${error.message}`,
         error: error.message,
         stack: error.stack
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

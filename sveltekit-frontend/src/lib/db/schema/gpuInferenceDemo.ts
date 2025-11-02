@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, jsonb, real, integer, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, jsonb, real, integer, boolean } }from 'drizzle-orm/pg-core';
 export const gpuInferenceSessions = pgTable('gpu_inference_sessions', {
   id: uuid('id').primaryKey().defaultRandom(),
   sessionName: text('session_name').notNull(),
@@ -48,3 +48,4 @@ export const aiEngineStatus = pgTable('ai_engine_status', {
   errorStatus: text('error_status'),
   metadata: jsonb('metadata')
 });
+

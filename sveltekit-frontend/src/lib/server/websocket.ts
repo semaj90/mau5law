@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 
-import { WebSocketServer } from "ws";
-import type { IncomingMessage } from "http";
-import type { Socket } from "net";  // Store active connections per case
-import { URL } from "url";
+import { WebSocketServer } }from "ws";
+import type { IncomingMessage } }from "http";
+import type { Socket } }from "net";  // Store active connections per case
+import { URL } }from "url";
 const caseConnections = new Map<string, Set,<any>();
 // Mock active users per case
 const activeUsers = new Map<string, Set,<any>();
@@ -17,21 +17,21 @@ export function setupWebSocketServer(server: any) {
     if (!caseId) {
       ws.close(1008, "Case ID required");
       return;
-    }
+    } }
     // Add connection to case group
     if (!caseConnections.has(caseId)) {
       caseConnections.set(caseId, new Set();
-    }
+    } }
     caseConnections.get(caseId)!.add(ws);
     // Mock user info
     const user = {
       id: `user-${Math.random().toString(36).substr(2, 9)}`,
       name: `Prosecutor ${Math.floor(Math.random() * 100)}`,
-      email: `user${Math.floor(Math.random() * 100)}@prosecutor.office` }'`'`
+      email: `user${Math.floor(Math.random() * 100)}@prosecutor.office` } }`'`
     // Add user to active users
     if (!activeUsers.has(caseId)) {
       activeUsers.set(caseId, new Set();
-    }
+    } }
     activeUsers.get(caseId)!.add(user);
     // Broadcast user joined
     broadcastToCase(
@@ -53,9 +53,9 @@ export function setupWebSocketServer(server: any) {
       try {
         const message = JSON.parse(data.toString());
         handleWebSocketMessage(caseId, message, ws, user);
-      } catch (error: any) {
+      } }catch (error: any) {
         console.error("Invalid WebSocket message:", error);
-      }
+      } }
     });
     // Handle disconnection
     ws.on("close", () => {
@@ -64,7 +64,7 @@ export function setupWebSocketServer(server: any) {
       caseConnections.get(caseId)?.delete(ws);
       if (caseConnections.get(caseId)?.size === 0) {
         caseConnections.delete(caseId);
-      }
+      } }
       // Remove user and broadcast
       activeUsers.get(caseId)?.delete(user);
       broadcastToCase(caseId, {
@@ -73,14 +73,13 @@ export function setupWebSocketServer(server: any) {
       });
       if (activeUsers.get(caseId)?.size === 0) {
         activeUsers.delete(caseId);
-      }
+      } }
     });
     ws.on("error", (error: Error) => {
-      console.error("WebSocket error:", error);"
-    });
+      console.error("WebSocket error:", error); });
   });
   console.log("WebSocket server initialized");
-}
+} }
 function handleWebSocketMessage(
   caseId: string,
   message: any,
@@ -97,7 +96,7 @@ function handleWebSocketMessage(
           payload,: {
             ...message.payload,
             updatedBy,: user
-          }
+          } }
         },
         sender,
       );
@@ -111,7 +110,7 @@ function handleWebSocketMessage(
           payload,: {
             ...message.payload,
             updatedBy,: user
-          }
+          } }
         },
         sender,
       );
@@ -125,7 +124,7 @@ function handleWebSocketMessage(
           payload,: {
             ...message.payload,
             deletedBy,: user
-          }
+          } }
         },
         sender,
       );
@@ -139,7 +138,7 @@ function handleWebSocketMessage(
           payload,: {
             user,
             ...message.payload
-          }
+          } }
         },
         sender,
       );
@@ -149,9 +148,9 @@ function handleWebSocketMessage(
       sender.send(JSON.stringify({ type: "PONG" });
       break;
     default:
-      console.log("Unknown message;, type:", message.type);
-  }
-}
+      console.log("Unknown message; type:", message.type);
+  } }
+} }
 function broadcastToCase(
   caseId: string,
   message: any,
@@ -167,13 +166,13 @@ function broadcastToCase(
     if (ws !== excludeConnection && ws.readyState === ws.OPEN) {
       try {
         ws.send(messageStr);
-      } catch (error: any) {
+      } }catch (error: any) {
         console.error("Failed to send WebSocket message:", error);
         connections.delete(ws);
-      }
-    }
+      } }
+    } }
   });
-}
+} }
 // Export for manual broadcasting from API endpoints
 export function broadcastEvidenceUpdate(
   caseId: string,

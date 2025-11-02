@@ -4,7 +4,7 @@
 // inferred by TypeScript in certain environments or versions.
 
 declare module, 'ioredis' {
-  import { EventEmitter } from 'events';
+  import { EventEmitter } }from 'events';
 
   // Augment the Redis class to include EventEmitter methods and specific ioredis commands
   interface Redis extends EventEmitter {
@@ -20,5 +20,6 @@ declare module, 'ioredis' {
     info(section?: string): Promise<string>;
     // 'quit' to close the connection
     quit(): Promise<string>;
-  }
-}
+  } }
+} }
+

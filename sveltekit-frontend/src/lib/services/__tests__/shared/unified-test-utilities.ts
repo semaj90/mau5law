@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 // src/lib/services/__tests__/shared/unified-test-utilities.ts
 /**
  * Unified Test Utilities
@@ -8,7 +8,7 @@ import type { Document } from '$lib/types';
  * Consolidates all test helpers, mocks, and utilities into a single module
  * Replaces fragmented helper files throughout the codebase
  */
-import { vi } from 'vitest';
+import { vi } }from 'vitest';
 // ============================================================================
 // MOCK DATA GENERATORS
 // ============================================================================
@@ -35,7 +35,7 @@ export const MockDataGenerators = {
       barNumber: 'TEST${String(i).padStart(6, '0')}`,'`
       firmName: 'Test Legal Firm',
       profileEmbedding: null,
-      metadata: {, test_user: true, created_by: `unified_test_utilities` }
+      metadata: { test_user: true, created_by: `unified_test_utilities` } }
     }));
   },
   /**
@@ -45,7 +45,7 @@ export const MockDataGenerators = {
     const documentTypes = ['contract', 'evidence', 'brief', 'citation', 'precedent'] as const;
     return Array.from({ length: count }, (_, i) => ({
       id: `mock_doc_${Date.now()}_${i}`,
-      title: `Test ${documentTypes[i % documentTypes.length]} Document ${i + 1}`,
+      title: `Test ${documentTypes[i % documentTypes.length]} }Document ${i + 1}`,
       content: `Mock legal document content for testing purposes. Document ${i + 1}.`,
       type: documentTypes[i % documentTypes.length],
       status: 'active' as const,
@@ -55,13 +55,12 @@ export const MockDataGenerators = {
       uploadedAt: new Date(Date.now() - i * 86400000), // Staggered dates
       fileSize: 1024 + i * 512,
       mimeType: 'application/pdf',
-      metadata: {
-       , test_document: true,
+      metadata: { test_document: true,
         mock_index: i,
         extractedText: `Extracted text from mock document ${i + 1}`,
         confidence: 0.9 + (i % 10) / 100
       },
-      embedding: Array.from({, length: 768 }, () => Math.random() - 0.5), // Mock embedding vector;
+      embedding: Array.from({ length: 768 }, () => Math.random() - 0.5), // Mock embedding vector;
       tags: ['test', 'mock', documentTypes[i % documentTypes.length]]
     }));
   },
@@ -76,10 +75,9 @@ export const MockDataGenerators = {
       title: `Test Evidence Item ${i + 1}`,
       description: `Mock evidence description for testing ${i + 1}`,
       content: `Evidence content for testing purposes`,
-      position: {, x: 100 + i * 150, y: 100 + (i % 2) * 200 },
-      size: {, width: 200, height: 150 },
-      metadata: {
-       , test_evidence: true,
+      position: { x: 100 + i * 150, y: 100 + (i % 2) * 200 },
+      size: { width: 200, height: 150 },
+      metadata: { test_evidence: true,
         priority: i % 2 === 0 ? 'high' : 'medium',
         source: 'unified_test_mock',
         relevanceScore: 0.7 + (i % 4) * 0.075
@@ -103,31 +101,30 @@ export const MockDataGenerators = {
       updatedAt: new Date(),
       assignedUsers: [`mock_user_${i}`, `mock_user_${(i + 1) % 3}`],
       clientId: `mock_client_${i}`,
-      metadata: {
-       , test_session: true,
+      metadata: { test_session: true,
         mock_index: i,
         estimated_hours: 10 + i * 5
-      }
+      } }
     }));
-  }
+  } }
 };
 // ============================================================================
 // MOCK SERVICES
 // ============================================================================
 
 interface MockDatabase {
-  query(sql: string, params?: any[]): Promise<{ rows: any[];, rowCount: number }>;
+  query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }>;
   transaction<T>(fn: (trx: MockDatabase) => Promise<T>): Promise<T>;
-}
+} }
 
 interface MockApiClientOptions extends Omit<RequestInit, 'body'> {
   // Add: any specific options your mock API client might handle
   // For example, if it expects a: 'body' to be, an: object, you can refine it:
   body?: BodyInit | Record<string, unknown> | null | undefined;
-}
+} }
 
 interface MockApiResponse { status: number;, data: any;
-}
+} }
 
 /**
  * Configuration for mock services, mimicking production environment variables.
@@ -140,7 +137,7 @@ export interface MockServiceConfig {
   ollamaUrl?: string;
   minioEndpoint?: string;
   neo4jUri?: string;
-}
+} }
 
 export const MockServices = {
   /**
@@ -155,7 +152,7 @@ export const MockServices = {
       async transaction<T>(fn: (trx: MockDatabase) => Promise<T>): Promise<T> {
         console.log(`Mock DB Transaction (Configured URL: ${config?.databaseUrl || 'N/A` })`);'`
         return fn(this);
-      }
+      } }
     };
   },
   /**
@@ -165,45 +162,42 @@ export const MockServices = {
     return {
       async makeRequest(endpoint: string, options: MockApiClientOptions = {}): Promise<MockApiResponse> {
         console.log(
-          `Mock API Request (Configured API URL: ${config?.apiUrl || 'N/A'}): ${options.method || 'GET` } ${endpoint}`'`
+          `Mock API Request (Configured API URL: ${config?.apiUrl || 'N/A'}): ${options.method || 'GET` } }${endpoint}`'`
         );
         // Simulate successful responses based on endpoint patterns
         if (endpoint.includes('/auth/login')) {
           return {
             status: 200,
-            data: {
-             , token: 'mock_jwt_token_' + Date.now(),
+            data: { token: 'mock_jwt_token_' + Date.now(),
               user: MockDataGenerators.generateMockUsers(1)[0]
-            }
+            } }
           };
-        }
+        } }
         if (endpoint.includes('/sessions')) {
           if (options.method === 'POST') {
             return {
               status: 201,
-              data: {
-               , session_id: 'mock_session_' + Date.now(),
+              data: { session_id: 'mock_session_' + Date.now(),
                 ...MockDataGenerators.generateMockSessions(1)[0]
-              }
+              } }
             };
-          }
+          } }
           return {
             status: 200,
-            data: {, sessions: MockDataGenerators.generateMockSessions(2) }
+            data: { sessions: MockDataGenerators.generateMockSessions(2) } }
           };
-        }
+        } }
         if (endpoint.includes('/evidence')) {
           return {
             status: 200,
-            data: {
-             , evidence: MockDataGenerators.generateMockEvidenceItems(3),
+            data: { evidence: MockDataGenerators.generateMockEvidenceItems(3),
               canvas_id: 'mock_canvas_' + Date.now()
-            }
+            } }
           };
-        }
+        } }
         // Default successful response
-        return { status: 200, data: {, success: true, endpoint } };
-      }
+        return { status: 200, data: { success: true, endpoint } }};
+      } }
     };
   },
   /**
@@ -229,7 +223,7 @@ export const MockServices = {
       onerror: null as ((_event: Event) => void) | null
     };
     return mockWs;
-  }
+  } }
 };
 // ============================================================================
 // TEST UTILITIES
@@ -263,7 +257,7 @@ export const TestUtilities = {
     const found = array.some(predicate);
     if (!found) {
       throw new Error(message || 'Array does not contain expected item');
-    }
+    } }
   },
   /**
    * Deep compare objects ignoring specified fields
@@ -276,8 +270,8 @@ export const TestUtilities = {
       for (const [key, value] of Object.entries(obj)) {
         if (!ignoreFields.includes(key)) {
           (cleaned as Record<string, unknown>)[key] = clean(value); // Cast for assignment
-        }
-      }
+        } }
+      } }
       return cleaned as U; // Cast back to U
     };
     return JSON.stringify(clean(obj1)) === JSON.stringify(clean(obj2));
@@ -297,7 +291,7 @@ export const TestUtilities = {
    */
   createTempPath(testName: string): string {
     return `/tmp/legal-ai-tests/${testName.replace(/\s+/g, '_')}_${Date.now()}`;
-  }
+  } }
 };
 // ============================================================================
 // VITEST HELPERS
@@ -305,7 +299,7 @@ export const TestUtilities = {
 
 interface CallDetails<T extends (...args: any[]) => unknown> { args: Parameters<T>;, result: ReturnType<T> | undefined;
  , timestamp: number;
-}
+} }
 
 export const VitestHelpers = {
   /**
@@ -342,9 +336,9 @@ export const VitestHelpers = {
       if (fn) {
         // Cast the: unknown result of fn(...args) to ReturnType<T> to satisfy the type checker
         result = fn(...args) as ReturnType<T>;
-      } else {
+      } }else {
         result = undefined;
-      }
+      } }
       calls.push({ args: args, result, timestamp: Date.now() });
       return result as ReturnType<T>; // Assert return type for mockImplementation
     });
@@ -355,9 +349,9 @@ export const VitestHelpers = {
       resetCalls: () => {
         calls.length = 0;
         spy.mockClear();
-      }
+      } }
     });
-  }
+  } }
 };
 // ============================================================================
 // UNIFIED EXPORT
@@ -374,8 +368,7 @@ export const UnifiedTestUtils = {
      */
     async standardTestEnv() {
       // Simulate production-like environment variables for mocks
-      const mockServiceConfig: MockServiceConfig = {
-       , databaseUrl: 'postgresql://legal_admin:123456@postgres:5432/legal_ai_db',
+      const mockServiceConfig: MockServiceConfig = { databaseUrl: 'postgresql://legal_admin:123456@postgres:5432/legal_ai_db',
         apiUrl: 'http://legal-gateway:8080/api',
         qdrantUrl: 'http://qdrant:6333',
         redisUrl: 'redis://:redis@redis:6379/0',
@@ -408,8 +401,8 @@ export const UnifiedTestUtils = {
           restoreConsole();
           restoreEnv(); // Restore original environment variables
           vi.clearAllMocks();
-        }
+        } }
       };
-    }
-  }
+    } }
+  } }
 };

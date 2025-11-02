@@ -8,13 +8,13 @@
  * - poi-timeline.ts
  *
  *, Usage:
- *   import { poiStore } from '$lib/stores/unified';
+ *   import { poiStore } }from '$lib/stores/unified';
  *
  *   poiStore.createPOI({ name: 'John Doe' });
  *   $: pois = $poiStore.personOfInterest;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } }from 'svelte/store';
 
 /**
  * Types
@@ -36,28 +36,28 @@ export interface PersonOfInterest { id: string;, name: string;
   tags?: string[];
   createdAt: number;
   updatedAt: number;
-}
+} }
 
-export interface POIRelationship {, id: string;, poiId1: string;
+export interface POIRelationship { id: string;, poiId1: string;
   poiId2: string;
   type: RelationshipType;
   strength: number; // 0-1
   description?: string;
   evidence?: string[];
-}
+} }
 
-export interface TimelineEvent {, id: string;, poiId: string;
+export interface TimelineEvent { id: string;, poiId: string;
   date: number;
   title: string;
   description: string;
   type: string;
   location?: string;
-}
+} }
 
-export interface POICluster {, id: string;, pois: PersonOfInterest[];
+export interface POICluster { id: string;, pois: PersonOfInterest[];
   theme: string;
   confidence: number;
-}
+} }
 
 /**
  * POI Store State
@@ -73,8 +73,7 @@ interface POIStoreState {
 
   // Network analysis
   clusters: POICluster[];
-  networkMetrics: {
-   , centrality: Map<string, number>;
+  networkMetrics: { centrality: Map<string, number>;
     clustering: Map<string, number>;
     density: number;
   };
@@ -92,16 +91,14 @@ interface POIStoreState {
   isLoading: boolean;
   error: string | null;
   lastUpdated: number;
-}
+} }
 
-const initialState: POIStoreState = {
- , personOfInterest: [],
+const initialState: POIStoreState = { personOfInterest: [],
   activePOI: null,
   relationships: [],
   relationshipGraph: new Map(),
   clusters: [],
-  networkMetrics: {
-   , centrality: new Map(),
+  networkMetrics: { centrality: new Map(),
     clustering: new Map(),
     density: 0
   },
@@ -118,7 +115,7 @@ const initialState: POIStoreState = {
  * Create POI Store
  */
 function createPOIStore() {
-  const { subscribe, update } = writable<POIStoreState>(initialState);
+  const { subscribe, update } }= writable<POIStoreState>(initialState);
 
   return {
     subscribe,
@@ -148,13 +145,13 @@ function createPOIStore() {
             lastUpdated: Date.now(),
             isLoading: false
           }));
-        } else {
+        } }else {
           throw new Error('Failed to load POIs');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to load POIs';
         update(s => ({ ...s, error: errorMsg, isLoading: false }));
-      }
+      } }
     },
 
     // ========== CREATE & UPDATE ==========
@@ -181,13 +178,13 @@ function createPOIStore() {
           }));
 
           return newPOI;
-        } else {
+        } }else {
           throw new Error('Failed to create POI');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to create POI';
         throw new Error(errorMsg);
-      }
+      } }
     },
 
     /**
@@ -206,18 +203,18 @@ function createPOIStore() {
 
           update(s => ({
             ...s,
-            personOfInterest: s.personOfInterest.map(p => (p.id === id ? { ...p, ...updated } : p)),
-            activePOI: s.activePOI?.id === id ? { ...s.activePOI, ...updated } : s.activePOI
+            personOfInterest: s.personOfInterest.map(p => (p.id === id ? { ...p, ...updated } }: p)),
+            activePOI: s.activePOI?.id === id ? { ...s.activePOI, ...updated } }: s.activePOI
           }));
 
           return updated;
-        } else {
+        } }else {
           throw new Error('Failed to update POI');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to update POI';
         throw new Error(errorMsg);
-      }
+      } }
     },
 
     /**
@@ -237,8 +234,8 @@ function createPOIStore() {
             activePOI: s.activePOI?.id === id ? null : s.activePOI,
             totalPOIs: s.totalPOIs - 1
           }));
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Delete error:', error);` }`'
     },
 
@@ -293,8 +290,8 @@ function createPOIStore() {
           }));
 
           return relationship;
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Relationship creation error:', error);` }`'
     },
 
@@ -319,8 +316,7 @@ function createPOIStore() {
       update(s => ({ ...s, isLoading: true }));
 
       try {
-        const state: { pois: PersonOfInterest[]; relationships: POIRelationship[] } = {
-         , pois: [],
+        const state: { pois: PersonOfInterest[]; relationships: POIRelationship[] } }= { pois: [],
           relationships: []
         };
         subscribe(s => {
@@ -342,11 +338,11 @@ function createPOIStore() {
             networkMetrics: data.metrics,
             isLoading: false
           }));
-        }
-      } catch (error) {
-        console.error('Network analysis error: ', error);'
+        } }
+      } }catch (error) {
+        console.error('Network analysis error: ', error);
         update(s => ({ ...s, isLoading: false }));
-      }
+      } }
     },
 
     // ========== TIMELINE ==========
@@ -370,11 +366,11 @@ function createPOIStore() {
           }));
 
           return events;
-        }
-      } catch (error) {
-        console.error('Timeline error:', error);'
+        } }
+      } }catch (error) {
+        console.error('Timeline error:', error);
         return [];
-      }
+      } }
     },
 
     /**
@@ -402,8 +398,8 @@ function createPOIStore() {
           });
 
           return newEvent;
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Timeline event error:', error);` }`'
     },
 
@@ -428,12 +424,12 @@ function createPOIStore() {
           }));
 
           return riskScore;
-        }
+        } }
         return 0;
-      } catch (error) {
-        console.error('Risk prediction error:', error);'
+      } }catch (error) {
+        console.error('Risk prediction error:', error);
         return 0;
-      }
+      } }
     },
 
     /**
@@ -458,9 +454,9 @@ function createPOIStore() {
         graph.set(r.poiId2, [...neighbors2, r.poiId1]);
       });
       return graph;
-    }
+    } }
   };
-}
+} }
 
 /**
  * Export singleton instance
@@ -490,9 +486,10 @@ export const relationships = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { personOfInterest, createPOI } from '$lib/stores/legal-poi'
- *   import { poiNetwork } from '$lib/stores/poi-network'
+ *   import { personOfInterest, createPOI } }from '$lib/stores/legal-poi'
+ *   import { poiNetwork } }from '$lib/stores/poi-network'
  *
  * New imports:
- *   import { poiStore, pois, activePOI, relationships } from '$lib/stores/unified'
+ *   import { poiStore, pois, activePOI, relationships } }from '$lib/stores/unified'
  */
+

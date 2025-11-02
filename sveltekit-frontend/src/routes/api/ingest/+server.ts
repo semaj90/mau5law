@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { User } }from '$lib/types';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
 
 // Clean, minimal ingestion route. Supports multipart upload (file) and JSON { minioUrl }.
 
@@ -14,21 +14,21 @@ type IngestResponse = {
   anonId?: string;
 };
 
-const optional: any = {, loaded: false };
+const optional: any = { loaded: false };
 
 async function ensureOptionalLoaded(): Promise<any> {
   if (optional.loaded) return;
   optional.loaded = true;
   try {
     optional.sharedWorkerPool = (await import('$lib/server/ingest/worker-pool-simple.js')).sharedWorkerPool;
-  } catch (_) {
+  } }catch (_) {
     optional.sharedWorkerPool = null;
-  }
-}
+  } }
+} }
 
 function generateAnonId() {
   return `anon_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-}
+} }
 
 async function proxyToGo(path: string, init?: RequestInit): Promise<any> {
   const url = `http://localhost:8080${path}`;
@@ -38,13 +38,13 @@ async function proxyToGo(path: string, init?: RequestInit): Promise<any> {
     const headers: Record<string, string> = {};
     res.headers.forEach((v, k) => (headers[k] = v));
     return new Response(body, { status: res.status, headers });
-  } catch (err) {
+  } }catch (err) {
     return new Response(JSON.stringify({ success: false, error: String(err) }), {
       status: 502,
-      headers: { 'content-type': `application/json' }'`
+      headers: { 'content-type': `application/json' } }`
     });
-  }
-}
+  } }
+} }
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   await ensureOptionalLoaded();
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       if (process.env.STRICT_UPLOADS === 'true') throw error(401, 'Authentication required');
       userId = generateAnonId();
       anonIdCreated = userId;
-    }
+    } }
 
     const warnings: string[] = [];
 
@@ -75,33 +75,33 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         userId,
         contentType: file.type || 'application/octet-stream',
         metadata: {
-         , uploadedAt: new Date().toISOString(),
+  uploadedAt: new Date().toISOString(),
           originalName: file.name,
           size: buffer.length,
           anon: !!anonIdCreated
-        }
+        } }
       };
 
       if (optional.sharedWorkerPool) {
         optional.sharedWorkerPool.push(job);
-        const resp: IngestResponse = {, success: true, jobId, queued: true, anonId: anonIdCreated };
+        const resp: IngestResponse = { success: true, jobId, queued: true, anonId: anonIdCreated };
         if (anonIdCreated)
           return new Response(JSON.stringify(resp), {
             status: 200,
             headers: {
               'content-type': 'application/json',
-              'set-cookie': `anonId=${anonIdCreated}; Path=/; Max-Age=3600; HttpOnly' }'`
+              'set-cookie': `anonId=${anonIdCreated}; Path=/; Max-Age=3600; HttpOnly' } }`
           });
         return json(resp);
-      }
+      } }
 
       const body = new FormData();
       body.append('file', new Blob([buffer]), file.name);
       body.append('userId', userId);
-      const init: RequestInit = {, method: 'POST', body };
+      const init: RequestInit = { method: 'POST', body };
       if (anonIdCreated) init.headers = { 'x-anon-id': anonIdCreated };
       return await proxyToGo('/api/ingest', init);
-    }
+    } }
 
     const data = (await request.json()) as IngestRequest;
     if (!data?.minioUrl) throw error(400, 'minioUrl is required');
@@ -110,32 +110,32 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       id: jobId,
       minioUrl: data.minioUrl,
       userId: data.userId ?? userId,
-      metadata: {, requestedAt: new Date().toISOString(), anon: !!anonIdCreated, ...(data.metadata || {}) }
+      metadata: { requestedAt: new Date().toISOString(), anon: !!anonIdCreated, ...(data.metadata || {}) } }
     };
 
     if (optional.sharedWorkerPool) {
       optional.sharedWorkerPool.push(job);
-      const resp: IngestResponse = {, success: true, jobId, queued: true, anonId: anonIdCreated };
+      const resp: IngestResponse = { success: true, jobId, queued: true, anonId: anonIdCreated };
       if (anonIdCreated)
         return new Response(JSON.stringify(resp), {
           status: 200,
           headers: {
             'content-type': 'application/json',
-            'set-cookie': 'anonId=${anonIdCreated}; Path=/; Max-Age=3600; HttpOnly' }'' });
+            'set-cookie': 'anonId=${anonIdCreated}; Path=/; Max-Age=3600; HttpOnly' } } });
       return json(resp);
-    }
+    } }
 
     const init: RequestInit = {
-     , method: 'POST',
+  method: 'POST',
       body: JSON.stringify(data),
-      headers: { 'content-type': `application/json' }'`
+      headers: { 'content-type': `application/json' } }`
     };
     if (anonIdCreated) init.headers = { ...(init.headers || {}), 'x-anon-id': anonIdCreated };
     return await proxyToGo('/api/ingest', init);
-  } catch (err) {
-    console.error('Ingest POST error:', err);'
+  } }catch (err) {
+    console.error('Ingest POST error:', err);
     return json({ success: false, error: err instanceof Error ? err.message : String(err) }, { status: 500 });
-  }
+  } }
 };
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -149,27 +149,27 @@ export const GET: RequestHandler = async ({ url }) => {
       const embeddingHealth = optional.checkEmbeddingEndpointHealth
         ? await optional.checkEmbeddingEndpointHealth()
         : { healthy: true };
-      return json({, success: true, recentDocuments, workerStats, embeddingHealth });
-    }
+      return json({ success: true, recentDocuments, workerStats, embeddingHealth });
+    } }
     return await proxyToGo('/api/ingest');
-  } catch (err) {
-    console.error('Ingest GET error:', err);'
+  } }catch (err) {
+    console.error('Ingest GET error:', err);
     return json({ success: false, error: err instanceof Error ? err.message : String(err) }, { status: 500 });
-  }
+  } }
 };
 
 /* Follow-ups: POST /api/ingest/claim, presigned URL generation, virus-scan, rate-limits */
-import { json, error } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
-import { fetchMinioObject } from '$lib/server/services/minio';
+import { json, error } }from '@sveltejs/kit';
+import { auth } }from '$lib/server/auth';
+import { fetchMinioObject } }from '$lib/server/services/minio';
 
 export const POST = auth.handle(async ({ locals, request }) => {
   if (!locals.user) throw error(401, 'Unauthorized');
 
-  const { minioUrl } = await request.json();
+  const { minioUrl } }= await request.json();
   if (!minioUrl) throw error(400, 'Missing MinIO URL');
 
-  const { buffer, contentType } = await fetchMinioObject(minioUrl);
+  const { buffer, contentType } }= await fetchMinioObject(minioUrl);
 
   // Send file to Python OCR/LangExtract service
   const res = await fetch(`${process.env.PYTHON_API_URL}/analyze`, {
@@ -183,3 +183,4 @@ export const POST = auth.handle(async ({ locals, request }) => {
 
   return json({ success: true, ...result, type: contentType });
 });
+

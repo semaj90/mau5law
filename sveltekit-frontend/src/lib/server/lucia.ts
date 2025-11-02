@@ -1,32 +1,32 @@
-import { and, eq, sql } from 'drizzle-orm';
-import { db } from '$lib/server/db';
-import { sessions, as sessionsTable } from '$lib/server/db/unified-schema';
+import { and, eq, sql } }from 'drizzle-orm';
+import { db } }from '$lib/server/db';
+import { sessions, as sessionsTable } }from '$lib/server/db/unified-schema';
 import bcrypt from 'bcryptjs';
-import type { Cookies } from '@sveltejs/kit';
+import type { Cookies } }from '@sveltejs/kit';
 
 async function generateId(length: number = 40): Promise<string> {
-  const { randomBytes } = await import('crypto');
+  const { randomBytes } }= await import('crypto');
   return randomBytes(Math.ceil(length / 2))
     .toString('hex')
     .slice(0, length);
-}
+} }
 
-function createDate(timeSpan: {, days: number }): Date {
+function createDate(timeSpan: { days: number }): Date {
   const date = new Date();
   date.setDate(date.getDate() + timeSpan.days);
   return date;
-}
+} }
 
 export async function hashPassword(password: string): Promise<string> {
   return await bcrypt.hash(password, 12);
-}
+} }
 
 export async function verifyPassword(hashedPassword: string, password: string): Promise<boolean> {
   return await bcrypt.compare(password, hashedPassword);
-}
+} }
 
 export interface CreateUserSessionResult { sessionId: string;, expiresAt: Date;
-}
+} }
 
 export async function createUserSession(
  , userId: string,
@@ -42,52 +42,52 @@ export async function createUserSession(
     expires_at: expiresAt,
     ip_address: ipAddress,
     user_agent: userAgent,
-    session_context: {}
+    session_context: {} }
   });
   return { sessionId, expiresAt };
-}
+} }
 
 export interface SessionData { id: string;, user_id: string;
   expires_at: Date;
   ip_address: string | null;
   user_agent: string | null;
  , session_context: Record<string, unknown>;
-}
+} }
 
 export interface ValidatedUser { id: string;, email: string;
   firstName: string;
   lastName: string;
   role: string;
-}
+} }
 
-export interface ValidationResult {, session: SessionData | null;, user: ValidatedUser | null;
-}
+export interface ValidationResult { session: SessionData | null;, user: ValidatedUser | null;
+} }
 
 export async function validateSession(sessionId: string): Promise<ValidationResult> {
   const now = new Date();
   const session = await db.query.sessions.findFirst({
-    where: and(eq(sessionsTable.id, sessionId), sql`${sessionsTable.expiresAt} >= ${now}`),
-    with: {, user: {, columns: {, id: true, email: true, first_name: true, last_name: true, role: true }
-      }
-    }
+    where: and(eq(sessionsTable.id, sessionId), sql`${sessionsTable.expiresAt} }>= ${now}`),
+    with: { user: { columns: { id: true, email: true, first_name: true, last_name: true, role: true } }
+      } }
+    } }
   });
   if (session && session.user) {
-    const { user, ...rest } = session;
+    const { user, ...rest } }= session;
     return {
       session: rest as SessionData,
-      user: {, id: user.id, email: user.email, firstName: user.first_name, lastName: user.last_name, role: user.role }
+      user: { id: user.id, email: user.email, firstName: user.first_name, lastName: user.last_name, role: user.role } }
     };
-  }
-  return {, session: null, user: null };
-}
+  } }
+  return { session: null, user: null };
+} }
 
 export async function invalidateSession(sessionId: string): Promise<void> {
   await db.delete(sessionsTable).where(eq(sessionsTable.id, sessionId));
-}
+} }
 
 export async function invalidateUserSessions(userId: string): Promise<void> {
   await db.delete(sessionsTable).where(eq(sessionsTable.userId, userId));
-}
+} }
 
 export function setSessionCookie(cookies: Cookies, sessionId: string, expiresAt: Date): void {
   const isProduction = process.env.NODE_ENV === 'production';
@@ -102,10 +102,10 @@ export function setSessionCookie(cookies: Cookies, sessionId: string, expiresAt:
   cookies.set('session_id', sessionId, cookieOptions);
   try {
     cookies.set('session', sessionId, cookieOptions);
-  } catch (error) {
+  } }catch (error) {
     // Fails in some environments; session_id is the primary cookie.
-  }
-}
+  } }
+} }
 
 export function deleteSessionCookie(cookies: Cookies): void {
   const isProduction = process.env.NODE_ENV === 'production';
@@ -120,6 +120,7 @@ export function deleteSessionCookie(cookies: Cookies): void {
   cookies.set('session', '', clearOptions);
   cookies.delete('session_id', { path: '/' });'`'`
   cookies.delete('session', { path: `/' });'`
-}
+} }
 
 export const clearSessionCookie = deleteSessionCookie;
+

@@ -2,21 +2,21 @@
  * Unified Legal AI Service
  * Integrates: MinIO storage, Qdrant vectors, PostgreSQL metadata, Redis cache, Neo4j recommendations
  */
-import { db } from '../db.js';
-import { evidence, legalDocuments as documents } from '../db/schema.js';
-import { cache } from '../cache/redis.js';
-import { minioStorage } from '../storage/minio.js';
+import { db } }from '../db.js';
+import { evidence, legalDocuments as documents } }from '../db/schema.js';
+import { cache } }from '../cache/redis.js';
+import { minioStorage } }from '../storage/minio.js';
 import qdrant from '../vector/qdrant.js';
-import { embedText } from '../ai/embedder.js';
-import { createId } from '@paralleldrive/cuid2';
-import { eq } from 'drizzle-orm/expressions';
-import { sql } from 'drizzle-orm/sql';
+import { embedText } }from '../ai/embedder.js';
+import { createId } }from '@paralleldrive/cuid2';
+import { eq } }from 'drizzle-orm/expressions';
+import { sql } }from 'drizzle-orm/sql';
 
 // --- Added types & guards ---
-type MinioUploadResult = { objectName: string; size: number;, url: string };
+type MinioUploadResult = { objectName: string; size: number; url: string };
 function isMinioUploadResult(x: any): x is MinioUploadResult {
   return !!x && typeof x === 'object' && 'objectName' in x && 'size' in x && 'url' in x;
-}
+} }
 
 // ADDED: generic async function type used for flexible client adapter casts
 type AsyncFn<T = unknown> = (...args: any[]) => Promise<T>;
@@ -24,12 +24,12 @@ type AsyncFn<T = unknown> = (...args: any[]) => Promise<T>;
 type QdrantHit = { id: string; score?: number; payload?: Record<string, unknown> };
 type SearchHit = QdrantHit & { type: 'evidence' | 'document' | 'unknown'; source: string };
 
-export interface DocumentUpload {, file: Buffer;, fileName: string;
+export interface DocumentUpload { file: Buffer;, fileName: string;
   contentType: string;
   caseId?: string;
  , documentType: 'evidence' | 'legal_document' | 'contract' | 'brief';
   metadata?: Record<string, unknown>;
-}
+} }
 
 export interface SearchOptions {
   query: string;
@@ -39,13 +39,12 @@ export interface SearchOptions {
   caseId?: string;
   useRecommendations?: boolean;
   cacheResults?: boolean;
-}
+} }
 
 // Return/result shapes
 type UploadResult = { id: string; fileUrl: string; embeddingId: string; cached: true };
 type SearchResults = { results: SearchHit[]; recommendations: Recommendation[]; cached: boolean; sources: string[] };
-type FullDocument = {
- , metadata: Record<string, unknown>;
+type FullDocument = { metadata: Record<string, unknown>;
   fileUrl: string;
   textContent: string;
   similarDocuments: QdrantHit[];
@@ -76,10 +75,10 @@ export class UnifiedLegalAIService {
       let textContent = '';
       if (upload.contentType === 'text/plain') {
         textContent = upload.file.toString('utf-8');
-      } else {
+      } }else {
         // TODO: Implement OCR for PDFs, images, etc.
         textContent = upload.fileName; // Placeholder
-      }
+      } }
 
       // Step 2: Store file in MinIO (fixed ternary)
       const minioResult: any =
@@ -110,14 +109,14 @@ export class UnifiedLegalAIService {
           minio_object: minioObjectName,
           ...upload.metadata
         });
-      } else {
+      } }else {
         await this.upsertToQdrant('cases', documentId, embedding, {
           file_name: upload.fileName,
           document_type: upload.documentType,
           minio_object: minioObjectName,
           ...upload.metadata
         });
-      }
+      } }
 
       // Step 4: Store metadata in PostgreSQL (fixed insert/values/returning)
       if (upload.documentType === 'evidence') {
@@ -137,7 +136,7 @@ export class UnifiedLegalAIService {
             updated_at: new Date()
           })
           .returning();
-      } else {
+      } }else {
         await db
           .insert(documents)
           .values({
@@ -154,7 +153,7 @@ export class UnifiedLegalAIService {
             updated_at: new Date()
           })
           .returning();
-      }
+      } }
 
       // Step 5: Cache the document for fast access
       const cacheKey = `document:${documentId}`;
@@ -174,7 +173,7 @@ export class UnifiedLegalAIService {
       // Step 6: Update Neo4j relationships (if case provided)
       if (upload.caseId) {
         await this.updateNeo4jRelationships(documentId, upload.caseId, upload.documentType);
-      }
+      } }
 
       return {
         id: documentId,
@@ -182,11 +181,11 @@ export class UnifiedLegalAIService {
         embeddingId: documentId, // Use documentId since qdrant upsert doesn't necessarily return an id'
         cached: true
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('Document upload pipeline failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   // --- ADDED: Qdrant adapter helpers ---
 
   // Try to perform a search on Qdrant in a variety of common client shapes.
@@ -194,7 +193,7 @@ export class UnifiedLegalAIService {
   private async qdrantSearch(
    , collection: string,
     query: string,
-    opts: { limit?: number; scoreThreshold?: number } = {}
+    opts: { limit?: number; scoreThreshold?: number } }= {} }
   ): Promise<QdrantHit[]> {
     const qc = qdrant as: unknown as Record<string, unknown>;
     // If client exposes domain-specific helpers, prefer them
@@ -202,12 +201,12 @@ export class UnifiedLegalAIService {
       const fn = qc['searchEvidence'] as AsyncFn;
       const raw = await fn(query, opts);
       return raw as: unknown as QdrantHit[];
-    }
+    } }
     if (typeof qc['searchCases'] === 'function' && (collection === 'cases' || collection === 'case_embeddings')) {
       const fn = qc['searchCases'] as AsyncFn;
       const raw = await fn(query, opts);
       return raw as: unknown as QdrantHit[];
-    }
+    } }
 
     // Ensure we have a vector (many SDKs require a numeric vector)
     const vector = await embedText(query);
@@ -225,7 +224,7 @@ export class UnifiedLegalAIService {
       if (Array.isArray(maybe.result)) return maybe.result as QdrantHit[];
       if (Array.isArray(maybe.data)) return maybe.data as QdrantHit[];
       return [];
-    }
+    } }
 
     // Some SDKs use client.points.search or client.points.find
     if (typeof qc['points'] === 'object' && qc['points'] !== null) {
@@ -242,12 +241,12 @@ export class UnifiedLegalAIService {
         if (Array.isArray(maybe.result)) return maybe.result as QdrantHit[];
         if (Array.isArray(maybe.data)) return maybe.data as QdrantHit[];
         return [];
-      }
-    }
+      } }
+    } }
 
     // Fallback: nothing matched, return empty and let caller decide
     return [];
-  }
+  } }
 
   // Try several ways to detect whether Qdrant is reachable.
   private async isQdrantHealthy(): Promise<boolean> {
@@ -257,29 +256,29 @@ export class UnifiedLegalAIService {
       if (typeof qc['isHealthy'] === 'function') {
         const res = await (qc['isHealthy'] as AsyncFn)();
         return !!res;
-      }
+      } }
       if (typeof qc['health'] === 'function') {
         const res = await (qc['health'] as AsyncFn)();
         return !!res;
-      }
+      } }
       // Many clients expose collection listing; it's a cheap health probe'
       if (typeof qc['getCollections'] === 'function') {
         await (qc['getCollections'] as AsyncFn)();
         return true;
-      }
+      } }
       if (
         typeof qc['collections'] === 'object' &&
         typeof (qc['collections'] as Record<string, unknown>)['list'] === 'function'
       ) {
         await ((qc['collections'] as Record<string, unknown>)['list'] as AsyncFn)();
         return true;
-      }
+      } }
       // points.listCollections or http ping could be added here if needed
       return false;
-    } catch (err) {
+    } }catch (err) {
       return false;
-    }
-  }
+    } }
+  } }
   // --- END ADDED HELPERS ---
 
   /**
@@ -295,8 +294,8 @@ export class UnifiedLegalAIService {
       if (cachedResults && typeof cachedResults === 'object' && 'results' in cachedResults) {
         console.log('🚀 Search cache hit');
         return { ...(cachedResults as: object as SearchResults), cached: true };
-      }
-    }
+      } }
+    } }
 
     const results: SearchHit[] = [];
     const, sources: string[] = [];
@@ -321,10 +320,10 @@ export class UnifiedLegalAIService {
               ...(dbRecord[0] || {}),
               type: 'evidence',
               source: 'qdrant+postgresql` });'`
-          }
-        }
+          } }
+        } }
         sources.push('qdrant', 'postgresql');
-      }
+      } }
 
       if (options.type === 'documents' || options.type === 'all') {
         const documentResults = (await this.qdrantSearch('cases', options.query, {
@@ -344,17 +343,17 @@ export class UnifiedLegalAIService {
               ...result,
               ...(dbRecord[0] || {}),
               type: 'document',
-              source: 'qdrant+postgresql' });'` }'`
-        }
+              source: 'qdrant+postgresql' });'` } }`
+        } }
         sources.push('qdrant', 'postgresql');
-      }
+      } }
 
       // Get Neo4j recommendations if requested
       let recommendations: Recommendation[] = [];
       if (options.useRecommendations && options.caseId) {
         recommendations = await this.getNeo4jRecommendations(options.caseId, options.query);
         sources.push('neo4j');
-      }
+      } }
 
       const searchResults = {
         results: results.slice(0, options.limit || 20),
@@ -366,13 +365,13 @@ export class UnifiedLegalAIService {
       // Cache results
       if (options.cacheResults !== false) {
         await cache.set(cacheKey, searchResults, 5 * 60 * 1000); // Cache for, 5 minutes
-      }
+      } }
       return searchResults;
-    } catch (error) {
+    } }catch (error) {
       console.error('Unified search failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Get document with all associated data from all systems
    */
@@ -382,15 +381,15 @@ export class UnifiedLegalAIService {
     const cached = await cache.get(cacheKey);
     if (cached && typeof cached === 'object' && 'metadata' in cached) {
       return cached as FullDocument;
-    }
+    } }
     try {
       // Get from PostgreSQL
       const evidenceRecord = await db.select().from(evidence).where(eq(evidence.id, id)).limit(1);
       const documentRecord = await db.select().from(documents).where(eq(documents.id, id)).limit(1);
       const record = evidenceRecord.length > 0 ? evidenceRecord[0] : documentRecord[0];
       if (!record) {
-        throw new Error(`Document ${id} not found`);
-      }
+        throw new Error(`Document ${id} }not found`);
+      } }
 
       // Get MinIO URL (fixed parentheses)
       const fileUrl =
@@ -407,8 +406,7 @@ export class UnifiedLegalAIService {
       // Get Neo4j recommendations
       const recommendations = await this.getNeo4jRecommendations(record.case_id || id, textForSimilarity);
 
-      const result: FullDocument = {
-       , metadata: record as Record<string, unknown>,
+      const result: FullDocument = { metadata: record as Record<string, unknown>,
         fileUrl,
         textContent: record.ocr_content || record.content || '',
         similarDocuments: similarDocs,
@@ -418,34 +416,34 @@ export class UnifiedLegalAIService {
       // Cache the result
       await cache.set(cacheKey, result, 60 * 60 * 1000); // Cache for, 1 hour
       return result;
-    } catch (error) {
+    } }catch (error) {
       console.error('Get document failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Update Neo4j relationships for recommendations
    */
   private async updateNeo4jRelationships(documentId: string, caseId: string, _documentType: string): Promise<void> {
     try {
       // TODO: Implement Neo4j driver connection and relationship updates
-      console.log(`📊 Would update Neo4j relationships for ${documentId} in case ${caseId}`);
-    } catch (error) {
+      console.log(`📊 Would update Neo4j relationships for ${documentId} }in case ${caseId}`);
+    } }catch (error) {
       console.error('Neo4j update failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Get recommendations from Neo4j based on case relationships
    */
   private async getNeo4jRecommendations(caseId: string, query: string): Promise<Recommendation[]> {
     try {
-      console.log(`🔍 Would get Neo4j recommendations for case ${caseId} with query: ${query}`);
+      console.log(`🔍 Would get Neo4j recommendations for case ${caseId} }with query: ${query}`);
       return [];
-    } catch (error) {
+    } }catch (error) {
       console.error('Neo4j recommendations failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Health check for all integrated systems
    */
@@ -461,34 +459,34 @@ export class UnifiedLegalAIService {
     try {
       await db.execute(sql`SELECT 1`);
       health.postgresql = true;
-    } catch (error) {
+    } }catch (error) {
       console.warn('PostgreSQL health check failed:', error);
-    }
+    } }
 
     try {
       await cache.set('health_check', 'ok', 1000);
       health.redis = true;
-    } catch (error) {
+    } }catch (error) {
       console.warn('Redis health check failed:', error);
-    }
+    } }
 
     try {
       await minioStorage.listFiles('legal-evidence', '');
       health.minio = true;
-    } catch (error) {
+    } }catch (error) {
       console.warn('MinIO health check failed:', error);
-    }
+    } }
 
     try {
       health.qdrant = await this.isQdrantHealthy();
       if (!health.qdrant) throw new Error('qdrant probe returned false');
-    } catch (error) {
+    } }catch (error) {
       console.warn('Qdrant health check failed:', error);
-    }
+    } }
 
     // TODO: Add Neo4j health check
     return health;
-  }
+  } }
 
   // updated upsertToQdrant to avoid explicit: any and try common shapes
   private async upsertToQdrant(
@@ -502,33 +500,33 @@ export class UnifiedLegalAIService {
     if (typeof qc['upsert'] === 'function') {
       await (qc['upsert'] as AsyncFn)(collection, id, vector, payload);
       return;
-    }
+    } }
     // Some clients expose points.upsert(...)
     if (typeof qc['points'] === 'object' && qc['points'] !== null) {
       const points = qc['points'] as Record<string, unknown>;
       if (typeof points['upsert'] === 'function') {
         await (points['upsert'] as AsyncFn)({
           collection_name: collection,
-          points: [{ id, vector, payload }]
+          points: [{ id, vector, payload } }
         });
         return;
-      }
-    }
+      } }
+    } }
     // older/alternative names
     if (typeof qc['insert'] === 'function') {
       await (qc['insert'] as AsyncFn)(collection, { id, vector, payload });
       return;
-    }
+    } }
     if (typeof qc['upsertPoint'] === 'function') {
       await (qc['upsertPoint'] as AsyncFn)(collection, id, vector, payload);
       return;
-    }
+    } }
     // Nothing matched: provide a clear error showing available keys to help integrator adapt
     throw new Error(
       'Qdrant client does not expose a known upsert/insert method. Available, keys: ' + Object.keys(qc).join(', ')
     );
-  }
-}
+  } }
+} }
 
 // Singleton instance
 export const legalAI = new UnifiedLegalAIService();

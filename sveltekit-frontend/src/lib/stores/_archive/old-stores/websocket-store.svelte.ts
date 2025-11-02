@@ -1,10 +1,10 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Enhanced WebSocket Real-time Dashboard Integration
  * Provides live updates for the Legal AI Dashboard with Svelte, 5 runes
  */
-import { browser } from '$app/environment';
-import { getWebSocketClient } from '$lib/services/websocket-service';
+import { browser } }from '$app/environment';
+import { getWebSocketClient } }from '$lib/services/websocket-service';
 
 // WebSocket client instance
 let wsClient: ReturnType<typeof getWebSocketClient> | null = null;
@@ -17,23 +17,20 @@ export const websocketStore = {
   error: $state<string | null>(null),
 
   // Live data
-  dashboardData: $state({
-   , cases: [],
+  dashboardData: $state({ cases: [],
     evidence: [],
     reports: [],
-    stats: {
-     , totalCases: 0,
+    stats: { totalCases: 0,
       totalEvidence: 0,
       pendingAnalysis: 0,
       activeCases: 0
-    }
+    } }
   }),
 
   // Real-time updates
   recentActivity: $state<any[]>([]),
   processingJobs: $state<any[]>([]),
-  systemHealth: $state({
-   , api: 'unknown',
+  systemHealth: $state({ api: 'unknown',
     database: 'unknown',
     aiServices: 'unknown',
     jobQueue: 'unknown'
@@ -59,7 +56,7 @@ export const websocketStore = {
 async function connect(userId?: string): Promise<void> {
   if (!browser || websocketStore.connected || websocketStore.connecting) {
     return;
-  }
+  } }
 
   try {
     websocketStore.connecting = true;
@@ -83,7 +80,7 @@ async function connect(userId?: string): Promise<void> {
     wsClient.on('error', (error: any) => {
       websocketStore.error = error.message || 'WebSocket error';
       websocketStore.connecting = $state(false);
-      console.error('❌ WebSocket error:', error);'
+      console.error('❌ WebSocket error:', error);
     });
 
     // Real-time event handlers
@@ -97,12 +94,12 @@ async function connect(userId?: string): Promise<void> {
 
     // Connect to WebSocket server
     await wsClient.connect();
-  } catch (error) {
+  } }catch (error) {
     websocketStore.connecting = $state(false);
     websocketStore.error = error instanceof Error ? error.message : 'Connection failed';
     console.error('Failed to connect to WebSocket:', error);
-  }
-}
+  } }
+} }
 
 /**
  * Disconnect from WebSocket
@@ -111,12 +108,12 @@ function disconnect(): void {
   if (wsClient) {
     wsClient.disconnect();
     wsClient = null;
-  }
+  } }
   websocketStore.connected = $state(false);
   websocketStore.connecting = $state(false);
   websocketStore.activeEditors.clear();
   websocketStore.evidenceBeingEdited.clear();
-}
+} }
 
 /**
  * Subscribe to case updates
@@ -124,8 +121,8 @@ function disconnect(): void {
 function subscribeToCase(caseId: number): void {
   if (wsClient && websocketStore.connected) {
     wsClient.subscribe([`case:${caseId}`, `processing:case:${caseId}`]);
-  }
-}
+  } }
+} }
 
 /**
  * Subscribe to evidence updates
@@ -133,8 +130,8 @@ function subscribeToCase(caseId: number): void {
 function subscribeToEvidence(evidenceId: number): void {
   if (wsClient && websocketStore.connected) {
     wsClient.subscribe([`evidence:${evidenceId}`, `processing:evidence:${evidenceId}`]);
-  }
-}
+  } }
+} }
 
 /**
  * Subscribe to dashboard updates
@@ -142,8 +139,8 @@ function subscribeToEvidence(evidenceId: number): void {
 function subscribeToDashboard(): void {
   if (wsClient && websocketStore.connected) {
     wsClient.subscribe(['dashboard', 'system', 'processing']);
-  }
-}
+  } }
+} }
 
 /**
  * Broadcast evidence edit to other collaborators
@@ -155,8 +152,8 @@ function broadcastEvidenceEdit(evidenceId: number, operation: string, data: any)
       payload: { evidenceId, operation, data },
       timestamp: new Date().toISOString()
     });
-  }
-}
+  } }
+} }
 
 /**
  * Broadcast cursor position for collaborative editing
@@ -168,12 +165,12 @@ function broadcastCursorPosition(evidenceId: number, position: any, selection?: 
       payload: { evidenceId, position, selection },
       timestamp: new Date().toISOString()
     });
-  }
-}
+  } }
+} }
 
 // Event handlers for real-time updates
 function handleCaseUpdate(data: any): void {
-  const { caseId, data: updateData } = data;
+  const { caseId, data: updateData } }= data;
 
   // Update case in dashboard data
   const caseIndex = websocketStore.dashboardData.cases.findIndex((c: any) => c.id === caseId);
@@ -183,7 +180,7 @@ function handleCaseUpdate(data: any): void {
       ...websocketStore.dashboardData.cases[caseIndex],
       ...updateData
     };
-  }
+  } }
 
   // Add to recent activity
   websocketStore.recentActivity.unshift({
@@ -196,11 +193,11 @@ function handleCaseUpdate(data: any): void {
   // Keep only last, 20 activities
   if (websocketStore.recentActivity.length > 20) {
     websocketStore.recentActivity = websocketStore.recentActivity.slice(0, 20);
-  }
-}
+  } }
+} }
 
 function handleEvidenceAdded(data: any): void {
-  const { caseId, evidence } = data;
+  const { caseId, evidence } }= data;
 
   // Add evidence to dashboard data
   websocketStore.dashboardData.evidence.unshift(evidence);
@@ -209,7 +206,7 @@ function handleEvidenceAdded(data: any): void {
   websocketStore.dashboardData.stats.totalEvidence += 1;
   if (!evidence.aiSummary) {
     websocketStore.dashboardData.stats.pendingAnalysis += 1;
-  }
+  } }
 
   // Add to recent activity
   websocketStore.recentActivity.unshift({
@@ -222,11 +219,11 @@ function handleEvidenceAdded(data: any): void {
   // Keep only last, 20 activities
   if (websocketStore.recentActivity.length > 20) {
     websocketStore.recentActivity = websocketStore.recentActivity.slice(0, 20);
-  }
-}
+  } }
+} }
 
 function handleProcessingStatus(data: any): void {
-  const { entityType, entityId, status } = data;
+  const { entityType, entityId, status } }= data;
 
   // Update processing jobs list
   const jobIndex = websocketStore.processingJobs.findIndex(
@@ -238,14 +235,14 @@ function handleProcessingStatus(data: any): void {
       ...websocketStore.processingJobs[jobIndex],
       status
     };
-  } else {
+  } }else {
     websocketStore.processingJobs.push({
       entityType,
       entityId,
       status,
       timestamp: new Date().toISOString()
     });
-  }
+  } }
 
   // Update pending analysis count if completed
   if (entityType === 'evidence' && status.status === 'completed') {
@@ -259,25 +256,25 @@ function handleProcessingStatus(data: any): void {
 
     if (evidenceIndex !== -1) {
       websocketStore.dashboardData.evidence[evidenceIndex].aiSummary = status.result?.summary;
-    }
-  }
-}
+    } }
+  } }
+} }
 
 function handleDashboardUpdate(data: any): void {
   // Merge dashboard update data
   if (data.stats) {
     websocketStore.dashboardData.stats = { ...websocketStore.dashboardData.stats, ...data.stats };
-  }
+  } }
   if (data.recentCases) {
     websocketStore.dashboardData.cases = data.recentCases;
-  }
+  } }
   if (data.recentEvidence) {
     websocketStore.dashboardData.evidence = data.recentEvidence;
-  }
-}
+  } }
+} }
 
 function handleCollaborativeEdit(data: any): void {
-  const { evidenceId, operation, data: editData, userId, sessionId } = data;
+  const { evidenceId, operation, data: editData, userId, sessionId } }= data;
 
   // Track active editor
   websocketStore.activeEditors.set(sessionId, {
@@ -301,12 +298,12 @@ function handleCollaborativeEdit(data: any): void {
 
     if (!stillEditing) {
       websocketStore.evidenceBeingEdited.delete(evidenceId);
-    }
+    } }
   }, 30000);
-}
+} }
 
 function handleCursorUpdate(data: any): void {
-  const { evidenceId, position, selection, userId, sessionId } = data;
+  const { evidenceId, position, selection, userId, sessionId } }= data;
 
   // Update cursor position for active editor
   const editor = websocketStore.activeEditors.get(sessionId);
@@ -317,26 +314,26 @@ function handleCursorUpdate(data: any): void {
       selection,
       timestamp: new Date().toISOString()
     });
-  }
-}
+  } }
+} }
 
 function handleSystemHealth(data: any): void {
   websocketStore.systemHealth = { ...websocketStore.systemHealth, ...data };
-}
+} }
 
 // Utility functions for components
 export function isEvidenceBeingEdited(evidenceId: number): boolean {
   return websocketStore.evidenceBeingEdited.has(evidenceId);
-}
+} }
 
 export function getActiveEditorsForEvidence(evidenceId: number): any[] {
   return Array.from(websocketStore.activeEditors.values()).filter(editor => editor.evidenceId === evidenceId);
-}
+} }
 
 export function formatRecentActivity(activity: any): string {
   const timeAgo = getTimeAgo(new Date(activity.timestamp));
-  return `${activity.title} (${timeAgo})`;
-}
+  return `${activity.title} }(${timeAgo})`;
+} }
 
 function getTimeAgo(date: Date): string {
   const now = new Date();
@@ -349,7 +346,7 @@ function getTimeAgo(date: Date): string {
   if (diffMins < 60) return `${diffMins}m, ago`;
   if (diffHours < 24) return `${diffHours}h, ago`;
   return `${diffDays}d ago`;
-}
+} }
 
 // Auto-connect on browser load
 if (browser) {
@@ -357,4 +354,5 @@ if (browser) {
   setTimeout(() => {
     connect();
   }, 1000);
-}
+} }
+

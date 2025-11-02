@@ -1,4 +1,4 @@
-import type { RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } }from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ request }) => {
   // If the client attempted a WebSocket upgrade, provide a clear JSON response
@@ -14,10 +14,10 @@ export const GET: RequestHandler = async ({ request }) => {
       }),
       {
         status: 426,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' } }
+      } }
     );
-  }
+  } }
 
   // Regular HTTP response describing the websocket endpoint.
   return new Response(
@@ -26,13 +26,14 @@ export const GET: RequestHandler = async ({ request }) => {
       protocol: 'websocket',
       status: 'ready',
       description: 'Precedent WebSocket endpoint for streaming precedent metadata and search results.',
-      example: {, subscribe: {, action: 'subscribe', channel: 'precedents:case-123' },
-        search: {, action: 'search', query: 'contract breach', topK: 5 }
-      }
+      example: { subscribe: { action: 'subscribe', channel: 'precedents:case-123' },
+        search: { action: 'search', query: 'contract breach', topK: 5 } }
+      } }
     }),
     {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    }
+      headers: { 'Content-Type': 'application/json' } }
+    } }
   );
 };
+

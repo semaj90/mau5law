@@ -9,7 +9,7 @@ import type {
   IQdrantVectorService,
   VectorSearchOptions,
   VectorSearchResult
-} from '$lib/types/external-services';
+} }from '$lib/types/external-services';
 
 import type {
   PointStruct,
@@ -17,12 +17,12 @@ import type {
   SearchRequest,
   SearchResponse,
   Filter
-} from '$lib/types/qdrant';
+} }from '$lib/types/qdrant';
 
 interface QdrantConfig { url: string;, collectionName: string;
   vectorSize?: number;
   timeout?: number;
-}
+} }
 
 class QdrantVectorService implements IQdrantVectorService {
   private, config: Required<QdrantConfig>;
@@ -34,7 +34,7 @@ class QdrantVectorService implements IQdrantVectorService {
       vectorSize: config.vectorSize || 768,
       timeout: config.timeout || 30000
     };
-  }
+  } }
 
   /**
    * Initialize collection if it doesn't exist'
@@ -46,15 +46,15 @@ class QdrantVectorService implements IQdrantVectorService {
 
       if (exists && recreate) {
         await this.deleteCollection();
-      }
+      } }
 
       if (!exists || recreate) {
         await this.createCollection();
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       throw new Error(`Failed to initialize Qdrant collection: ${error instanceof Error ? error.message : String(error)}`);
-    }
-  }
+    } }
+  } }
 
   /**
    * Upsert single vector
@@ -64,21 +64,20 @@ class QdrantVectorService implements IQdrantVectorService {
     vector: Float32Array | number[],
     metadata?: Record<string, any>
   ): Promise<void> {
-    await this.upsertBatch([{ id, vector, metadata }]);
-  }
+    await this.upsertBatch([{ id, vector, metadata } });
+  } }
 
   /**
    * Upsert batch of vectors
    */
   async upsertBatch(
-    items: Array<{, id: string;, vector: Float32Array | number[]; metadata?: Record<string, any> }>
+    items: Array<{ id: string; vector: Float32Array | number[]; metadata?: Record<string, any> }>
   ): Promise<void> {
     if (items.length === 0) return;
 
-    const points: PointStruct[] = items.map(item => ({
-     , id: item.id,
+    const points: PointStruct[] = items.map(item => ({ id: item.id,
       vector: Array.from(item.vector),
-      payload: item.metadata || {}
+      payload: item.metadata || {} }
     }));
 
     const body: UpsertPoints = {
@@ -92,13 +91,13 @@ class QdrantVectorService implements IQdrantVectorService {
         method: 'PUT',
         headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(body)
-      }
+      } }
     );
 
     if (!response.ok) {
       throw new Error(`Qdrant upsert failed: ${response.statusText}`);
-    }
-  }
+    } }
+  } }
 
   /**
    * Search vectors with optional filtering
@@ -108,8 +107,7 @@ class QdrantVectorService implements IQdrantVectorService {
     topK: number,
     options?: VectorSearchOptions
   ): Promise<Array<VectorSearchResult<TMeta>>> {
-    const body: SearchRequest = {
-     , vector: Array.from(query),
+    const body: SearchRequest = { vector: Array.from(query),
       limit: topK,
       with_payload: options?.includePayload ?? true,
       with_vectors: false
@@ -118,12 +116,12 @@ class QdrantVectorService implements IQdrantVectorService {
     // Add filter if provided
     if (options?.filter) {
       body.filter = this.buildFilter(options.filter);
-    }
+    } }
 
     // Add score threshold if provided
     if (options?.includePayload !== undefined) {
       body.score_threshold = 0.7; // Default threshold
-    }
+    } }
 
     const response = await this.fetchWithTimeout(
       `${this.config.url}/collections/${this.config.collectionName}/points/search`,
@@ -131,12 +129,12 @@ class QdrantVectorService implements IQdrantVectorService {
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(body)
-      }
+      } }
     );
 
     if (!response.ok) {
       throw new Error(`Qdrant search failed: ${response.statusText}`);
-    }
+    } }
 
     const data: SearchResponse = await response.json();
 
@@ -145,7 +143,7 @@ class QdrantVectorService implements IQdrantVectorService {
       score: hit.score,
       payload: hit.payload as TMeta
     }));
-  }
+  } }
 
   /**
    * Delete vectors by IDs
@@ -158,17 +156,16 @@ class QdrantVectorService implements IQdrantVectorService {
       {
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({
-         , points: ids,
+        body: JSON.stringify({ points: ids,
           wait: true
         })
-      }
+      } }
     );
 
     if (!response.ok) {
       throw new Error(`Qdrant delete failed: ${response.statusText}`);
-    }
-  }
+    } }
+  } }
 
   /**
    * Delete points by metadata filter
@@ -179,17 +176,16 @@ class QdrantVectorService implements IQdrantVectorService {
       {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , filter: this.buildFilter(filter),
+        body: JSON.stringify({ filter: this.buildFilter(filter),
           wait: true
         })
-      }
+      } }
     );
 
     if (!response.ok) {
       throw new Error(`Qdrant filter delete failed: ${response.statusText}`);
-    }
-  }
+    } }
+  } }
 
   /**
    * Get collection info
@@ -197,15 +193,15 @@ class QdrantVectorService implements IQdrantVectorService {
   async getCollectionInfo(): Promise<any> {
     const response = await this.fetchWithTimeout(
       `${this.config.url}/collections/${this.config.collectionName}`,
-      { method: `GET' }'`
+      { method: `GET' } }`
     );
 
     if (!response.ok) {
       throw new Error(`Qdrant collection info failed: ${response.statusText}`);
-    }
+    } }
 
     return await response.json();
-  }
+  } }
 
   /**
    * Health check
@@ -220,7 +216,7 @@ class QdrantVectorService implements IQdrantVectorService {
 
       if (!response.ok) {
         return { status: `unavailable' };'`
-      }
+      } }
 
       const data = await response.json();
       const collections = data.result?.collections?.map((c: any) => c.name) || [];
@@ -229,10 +225,10 @@ class QdrantVectorService implements IQdrantVectorService {
         status: collections.length > 0 ? 'healthy' : 'degraded',
         collections
       };
-    } catch (error) {
+    } }catch (error) {
       return { status: `unavailable` };
-    }
-  }
+    } }
+  } }
 
   // Private helper methods
 
@@ -244,10 +240,10 @@ class QdrantVectorService implements IQdrantVectorService {
         5000
       );
       return response.ok;
-    } catch (error) {
+    } }catch (error) {
       return false;
-    }
-  }
+    } }
+  } }
 
   private async createCollection(): Promise<void> {
     const response = await this.fetchWithTimeout(
@@ -255,30 +251,29 @@ class QdrantVectorService implements IQdrantVectorService {
       {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({, vectors: {, size: this.config.vectorSize,
+        body: JSON.stringify({ vectors: { size: this.config.vectorSize,
             distance: `Cosine` },
-          optimizers_config: {
-           , indexing_threshold: 10000
-          }
+          optimizers_config: { indexing_threshold: 10000
+          } }
         })
-      }
+      } }
     );
 
     if (!response.ok) {
       throw new Error(`Failed to create collection: ${response.statusText}`);
-    }
-  }
+    } }
+  } }
 
   private async deleteCollection(): Promise<void> {
     const response = await this.fetchWithTimeout(
       `${this.config.url}/collections/${this.config.collectionName}`,
-      { method: `DELETE' }'`
+      { method: `DELETE' } }`
     );
 
     if (!response.ok) {
       throw new Error(`Failed to delete collection: ${response.statusText}`);
-    }
-  }
+    } }
+  } }
 
   private buildFilter(metadata: Record<string, any>): Filter {
     const conditions = Object.entries(metadata).map(([key, value]) => {
@@ -289,18 +284,18 @@ class QdrantVectorService implements IQdrantVectorService {
             key,
             range: value
           };
-        }
-      }
+        } }
+      } }
 
       // Handle exact match
       return {
         key,
-        match: { value }
+        match: { value } }
       };
     });
 
     return { must: conditions };
-  }
+  } }
 
   private async fetchWithTimeout(
    , url: string,
@@ -316,11 +311,11 @@ class QdrantVectorService implements IQdrantVectorService {
         signal: controller.signal
       });
       return response;
-    } finally {
+    } }finally {
       clearTimeout(timeoutId);
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Singleton instance
 let qdrantInstance: QdrantVectorService | null = null;
@@ -328,8 +323,8 @@ let qdrantInstance: QdrantVectorService | null = null;
 export function getQdrantService(config?: Partial<QdrantConfig>): QdrantVectorService {
   if (!qdrantInstance || config) {
     qdrantInstance = new QdrantVectorService(config);
-  }
+  } }
   return qdrantInstance;
-}
+} }
 
 export { QdrantVectorService };

@@ -1,7 +1,7 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 // Case Service - Production Implementation for Legal AI Platform
-import { getAuthHeaders } from './auth-service.js';
+import { getAuthHeaders } }from './auth-service.js';
 export interface LegalCase { id: string;, title: string;
   description?: string;
   status: 'active' | 'closed' | 'pending' | 'archived';
@@ -18,9 +18,9 @@ export interface LegalCase { id: string;, title: string;
   tags: string[];
   documents: CaseDocument[];
   metadata?: { [key: string]: any };
-}
+} }
 
-export interface CaseDocument {, id: string;, caseId: string;
+export interface CaseDocument { id: string;, caseId: string;
   filename: string;
   type: 'contract' | 'evidence' | 'brief' | 'correspondence' | 'other';
   uploadedAt: string;
@@ -29,7 +29,7 @@ export interface CaseDocument {, id: string;, caseId: string;
   processingStatus: 'pending' | 'processing' | 'completed' | 'failed';
   aiAnalysisCompleted: boolean;
   tags: string[];
-}
+} }
 
 export interface CaseListOptions {
   status?: LegalCase['status'];
@@ -42,7 +42,7 @@ export interface CaseListOptions {
   sortBy?: 'createdAt' | 'updatedAt' | 'dueDate' | 'priority' | 'riskLevel';
   sortOrder?: 'asc' | 'desc';
   search?: string;
-}
+} }
 
 export interface CreateCaseData {
   title: string;
@@ -54,7 +54,7 @@ export interface CreateCaseData {
   estimatedValue?: number;
   tags?: string[];
   assignedLawyers?: string[];
-}
+} }
 
 export interface UpdateCaseData {
   title?: string;
@@ -66,13 +66,13 @@ export interface UpdateCaseData {
   tags?: string[];
   assignedLawyers?: string[];
   metadata?: { [key: string]: any };
-}
+} }
 
-export interface CaseListResponse {, cases: LegalCase[];, total: number;
+export interface CaseListResponse { cases: LegalCase[];, total: number;
   limit: number;
   offset: number;
  , hasMore: boolean;
-}
+} }
 // Core Case Management Functions
 export async function listCases(options: CaseListOptions = {}): Promise<CaseListResponse> {
   try {
@@ -93,21 +93,21 @@ export async function listCases(options: CaseListOptions = {}): Promise<CaseList
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to fetch cases');
-    }
+    } }
     const data: CaseListResponse = await response.json();
     // TODO: Add caching layer for frequently accessed cases
-    console.log(`Fetched ${data.cases.length} cases`);
+    console.log(`Fetched ${data.cases.length} }cases`);
     return data;
-  } catch (error: any) {
-    console.error('Case listing error:', error);'
+  } }catch (error: any) {
+    console.error('Case listing error:', error);
     throw new Error(`Failed to list cases: ${error.message}`);
-  }
-}
+  } }
+} }
 export async function getCaseById(caseId: string): Promise<LegalCase> {
   try {
     const response = await fetch(`/api/cases/${caseId}`, {
@@ -115,21 +115,21 @@ export async function getCaseById(caseId: string): Promise<LegalCase> {
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to fetch case');
-    }
+    } }
     const caseData: LegalCase = await response.json();
     // TODO: Add audit logging for case access
-    console.log(`Fetched case ${caseData.title} (${caseId})`);
+    console.log(`Fetched case ${caseData.title} }(${caseId})`);
     return caseData;
-  } catch (error: any) {
-    console.error('Case fetch error:', error);'
+  } }catch (error: any) {
+    console.error('Case fetch error:', error);
     throw new Error(`Failed to fetch case ${error.message}`);
-  }
-}
+  } }
+} }
 export async function createCase(caseData: CreateCaseData): Promise<LegalCase> {
   try {
     const response = await fetch('/api/cases', {
@@ -143,16 +143,16 @@ export async function createCase(caseData: CreateCaseData): Promise<LegalCase> {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to create case');
-    }
+    } }
     const newCase: LegalCase = await response.json();
     // TODO: Add audit logging for case creation
-    console.log(`Created new case ${newCase.title} (${newCase.id})`);
+    console.log(`Created new case ${newCase.title} }(${newCase.id})`);
     return newCase;
-  } catch (error: any) {
-    console.error('Case creation error:', error);'
+  } }catch (error: any) {
+    console.error('Case creation error:', error);
     throw new Error(`Failed to create case ${error.message}`);
-  }
-}
+  } }
+} }
 export async function updateCase(caseId: string, updates: UpdateCaseData): Promise<LegalCase> {
   try {
     const response = await fetch(`/api/cases/${caseId}`, {
@@ -166,16 +166,16 @@ export async function updateCase(caseId: string, updates: UpdateCaseData): Promi
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to update case');
-    }
+    } }
     const updatedCase: LegalCase = await response.json();
     // TODO: Add audit logging for case updates
-    console.log(`Updated case ${updatedCase.title} (${caseId})`);
+    console.log(`Updated case ${updatedCase.title} }(${caseId})`);
     return updatedCase;
-  } catch (error: any) {
-    console.error('Case update error:', error);'
+  } }catch (error: any) {
+    console.error('Case update error:', error);
     throw new Error(`Failed to update case ${error.message}`);
-  }
-}
+  } }
+} }
 export async function deleteCase(caseId: string): Promise<void> {
   try {
     const response = await fetch(`/api/cases/${caseId}`, {
@@ -183,19 +183,19 @@ export async function deleteCase(caseId: string): Promise<void> {
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to delete case');
-    }
+    } }
     // TODO: Add audit logging for case deletion
     console.log(`Deleted case ${caseId}`);
-  } catch (error: any) {
-    console.error('Case deletion error:', error);'
+  } }catch (error: any) {
+    console.error('Case deletion error:', error);
     throw new Error(`Failed to delete case ${error.message}`);
-  }
-}
+  } }
+} }
 // Case Document Management
 export async function getCaseDocuments(caseId: string): Promise<CaseDocument[]> {
   try {
@@ -204,20 +204,20 @@ export async function getCaseDocuments(caseId: string): Promise<CaseDocument[]> 
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to fetch case documents');
-    }
+    } }
     const documents: CaseDocument[] = await response.json();
-    console.log(`Fetched ${documents.length} documents for case ${caseId}`);
+    console.log(`Fetched ${documents.length} }documents for case ${caseId}`);
     return documents;
-  } catch (error: any) {
-    console.error('Case documents fetch error:', error);'
+  } }catch (error: any) {
+    console.error('Case documents fetch error:', error);
     throw new Error(`Failed to fetch case documents: ${error.message}`);
-  }
-}
+  } }
+} }
 export async function assignLawyer(caseId: string, lawyerId: string): Promise<void> {
   try {
     const response = await fetch(`/api/cases/${caseId}/assign`, {
@@ -231,21 +231,21 @@ export async function assignLawyer(caseId: string, lawyerId: string): Promise<vo
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to assign lawyer');
-    }
+    } }
     // TODO: Add audit logging for lawyer assignment
-    console.log(`Assigned lawyer ${lawyerId} to case ${caseId}`);
-  } catch (error: any) {
-    console.error('Lawyer assignment error:', error);'
+    console.log(`Assigned lawyer ${lawyerId} }to case ${caseId}`);
+  } }catch (error: any) {
+    console.error('Lawyer assignment error:', error);
     throw new Error(`Failed to assign lawyer: ${error.message}`);
-  }
-}
+  } }
+} }
 // Search and Filter Utilities
 export async function searchCases(query: string, options: CaseListOptions = {}): Promise<CaseListResponse> {
   return listCases({
     ...options,
     search: query
   });
-}
+} }
 export async function getCasesByClient(clientId: string, options: CaseListOptions = {}): Promise<CaseListResponse> {
   try {
     const response = await fetch(`/api/clients/${clientId}/cases`, {
@@ -253,20 +253,20 @@ export async function getCasesByClient(clientId: string, options: CaseListOption
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to fetch client cases');
-    }
+    } }
     const data: CaseListResponse = await response.json();
-    console.log(`Fetched ${data.cases.length} cases for client ${clientId}`);
+    console.log(`Fetched ${data.cases.length} }cases for client ${clientId}`);
     return data;
-  } catch (error: any) {
-    console.error('Client cases fetch error:', error);'
+  } }catch (error: any) {
+    console.error('Client cases fetch error:', error);
     throw new Error(`Failed to fetch client cases: ${error.message}`);
-  }
-}
+  } }
+} }
 // Case Analytics
 export async function getCaseAnalytics(caseId: string): Promise<any> {
   try {
@@ -275,17 +275,17 @@ export async function getCaseAnalytics(caseId: string): Promise<any> {
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to fetch case analytics');
-    }
+    } }
     const analytics = await response.json();
     console.log(`Fetched analytics for case ${caseId}`);
     return analytics;
-  } catch (error: any) {
-    console.error('Case analytics error:', error);'
+  } }catch (error: any) {
+    console.error('Case analytics error:', error);
     throw new Error(`Failed to fetch case analytics: ${error.message}`);
-  }
+  } }
 }

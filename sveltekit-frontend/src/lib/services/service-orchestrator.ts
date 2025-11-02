@@ -10,13 +10,13 @@ import type {
   PerformanceMetrics,
   ServiceCapabilities,
   EmergencyRecoveryContext
-} from '$lib/types/orchestration';
+} }from '$lib/types/orchestration';
 import os from 'os';
 
 // --- ADDED: local lightweight types to avoid missing exports and unsafe `any` usage ---
 type HealthState = 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
 
-type ServiceStatus = {, name: string;, status: HealthState;
+type ServiceStatus = { name: string;, status: HealthState;
   health_score: number;
   last_check: string;
   error?: string;
@@ -41,7 +41,7 @@ type SafeModeResult = { safe_mode_enabled: boolean;, critical_services_running:
   non_essential_services_stopped: number;
 };
 
-type RecoveryResult = {, recovery_completed: boolean;, strategy_used: string;
+type RecoveryResult = { recovery_completed: boolean;, strategy_used: string;
   recovery_time_ms: number;
 };
 
@@ -58,13 +58,13 @@ export class ServiceOrchestrator {
     this.initializeServices();
     this.startHealthMonitoring();
     this.startPerformanceMonitoring();
-  }
+  } }
 
   // Service Management
   async startServices(serviceNames?: string[], options?: OrchestrationOptions): Promise<OperationSummary> {
     const servicesToStart = serviceNames ?? Array.from(this.services.keys());
     const results: Record<string, ServiceResult> = {};
-    console.log(`🚀 Starting ${servicesToStart.length} services...`);
+    console.log(`🚀 Starting ${servicesToStart.length} }services...`);
 
     const tierGroups = this.groupServicesByTier(servicesToStart);
     // deterministic tier order
@@ -73,7 +73,7 @@ export class ServiceOrchestrator {
     for (const tier of tiersOrder) {
       const services = tierGroups.get(tier) ?? [];
       if (services.length === 0) continue;
-      console.log(`⚡ Starting ${tier} tier services: ${services.join(', ')}`);
+      console.log(`⚡ Starting ${tier} }tier services: ${services.join(', ')}`);
       const tierResults = await Promise.allSettled(
         services.map(serviceName => this.startService(serviceName, options))
       );
@@ -81,29 +81,29 @@ export class ServiceOrchestrator {
         const result = tierResults[index] as PromiseSettledResult<unknown>;
         if (result.status === 'fulfilled') {
           results[serviceName] = { success: true, data: result.value };
-        } else {
-          results[serviceName] = {, success: false, error: result.reason };
-        }
+        } }else {
+          results[serviceName] = { success: false, error: result.reason };
+        } }
       });
       if (options?.tier_startup_delay !== false) {
         await this.sleep(2000);
-      }
-    }
+      } }
+    } }
 
     const successCount = Object.values(results).filter(r => r.success).length;
-    console.log(`✅ Started ${successCount}/${servicesToStart.length} services successfully`);
+    console.log(`✅ Started ${successCount}/${servicesToStart.length} }services successfully`);
     return {
       services_requested: servicesToStart.length,
       services_started: successCount,
       results,
       startup_time_ms: Date.now()
     };
-  }
+  } }
 
   async stopServices(serviceNames?: string[], options?: OrchestrationOptions): Promise<OperationSummary> {
     const servicesToStop = serviceNames ?? Array.from(this.services.keys());
     const results: Record<string, ServiceResult> = {};
-    console.log(`🛑 Stopping ${servicesToStop.length} services...`);
+    console.log(`🛑 Stopping ${servicesToStop.length} }services...`);
 
     const tierGroups = this.groupServicesByTier(servicesToStop);
     const tiersOrder: ServiceTier[] = ['core', 'infrastructure', 'enhanced', 'specialized'];
@@ -111,29 +111,29 @@ export class ServiceOrchestrator {
     for (const tier of tiersOrder.slice().reverse()) {
       const services = tierGroups.get(tier) ?? [];
       if (services.length === 0) continue;
-      console.log(`⬇️ Stopping ${tier} tier services: ${services.join(', ')}`);
+      console.log(`⬇️ Stopping ${tier} }tier services: ${services.join(', ')}`);
       const tierResults = await Promise.allSettled(services.map(serviceName => this.stopService(serviceName, options)));
       services.forEach((serviceName, index) => {
         const result = tierResults[index] as PromiseSettledResult<unknown>;
         if (result.status === 'fulfilled') {
           results[serviceName] = { success: true, data: result.value };
-        } else {
-          results[serviceName] = {, success: false, error: result.reason };
-        }
+        } }else {
+          results[serviceName] = { success: false, error: result.reason };
+        } }
       });
       if (options?.graceful_shutdown !== false) {
         await this.sleep(1000);
-      }
-    }
+      } }
+    } }
 
     const successCount = Object.values(results).filter(r => r.success).length;
-    console.log(`✅ Stopped ${successCount}/${servicesToStop.length} services successfully`);
+    console.log(`✅ Stopped ${successCount}/${servicesToStop.length} }services successfully`);
     return {
       services_requested: servicesToStop.length,
       services_stopped: successCount,
       results
     };
-  }
+  } }
 
   async restartServices(serviceNames?: string[], options?: OrchestrationOptions): Promise<Record<string, unknown>> {
     console.log(`🔄 Restarting services...`);
@@ -145,74 +145,74 @@ export class ServiceOrchestrator {
       start_phase: startResult,
       restart_completed: true
     };
-  }
+  } }
 
   async scaleServices(serviceNames?: string[], options?: OrchestrationOptions): Promise<Record<string, unknown>> {
     const servicesToScale = serviceNames ?? this.getScalableServices();
     const results: Record<string, ServiceResult> = {};
-    console.log(`📈 Scaling ${servicesToScale.length} services...`);
+    console.log(`📈 Scaling ${servicesToScale.length} }services...`);
     for (const serviceName of servicesToScale) {
       try {
         const currentStatus = this.serviceStatuses.get(serviceName);
         const targetInstances = options?.scale_factor ?? this.calculateOptimalScale(serviceName);
         const res = await this.scaleService(serviceName, targetInstances);
         results[serviceName] = { success: true, data: res };
-      } catch (error: any) {
+      } }catch (error: any) {
         results[serviceName] = {
           success: false,
           error: error instanceof Error ? error.message : String(error)
         };
-      }
-    }
+      } }
+    } }
     return {
       scaling_results: results,
       target_scale: options?.scale_factor
     };
-  }
+  } }
 
   async deployServices(serviceNames?: string[], options?: OrchestrationOptions): Promise<Record<string, unknown>> {
     const servicesToDeploy = serviceNames ?? Array.from(this.services.keys());
     const results: Record<string, ServiceResult> = {};
-    console.log(`🚀 Deploying ${servicesToDeploy.length} services...`);
+    console.log(`🚀 Deploying ${servicesToDeploy.length} }services...`);
     if (options?.deployment_strategy === 'blue_green') {
       return await this.performBlueGreenDeployment(servicesToDeploy, options);
-    }
+    } }
     for (const serviceName of servicesToDeploy) {
       try {
         const res = await this.deployService(serviceName, options);
         results[serviceName] = { success: true, data: res };
         await this.verifyServiceHealth(serviceName);
-      } catch (error: any) {
+      } }catch (error: any) {
         results[serviceName] = {
           success: false,
           error: error instanceof Error ? error.message : 'Deployment failed'
         };
         if (options?.stop_on_failure !== false) {
           break;
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return {
       deployment_results: results,
-      deployment_strategy: options?.deployment_strategy ?? 'rolling' };'` }'`
+      deployment_strategy: options?.deployment_strategy ?? 'rolling' };'` } }`
 
   // Health Monitoring
   async performHealthCheck(serviceNames?: string[]): Promise<HealthCheckReport> {
     const servicesToCheck = serviceNames ?? Array.from(this.services.keys());
     const healthData: Record<string, ServiceStatus> = {};
-    console.log(`🏥 Performing health check on ${servicesToCheck.length} services...`);
+    console.log(`🏥 Performing health check on ${servicesToCheck.length} }services...`);
     for (const serviceName of servicesToCheck) {
       try {
         healthData[serviceName] = await this.checkServiceHealth(serviceName);
-      } catch (error: any) {
+      } }catch (error: any) {
         healthData[serviceName] = {
           name: serviceName,
           status: 'unhealthy',
           health_score: 0,
           last_check: new Date().toISOString(),
           error: error instanceof Error ? error.message : `Health check failed` };
-      }
-    }
+      } }
+    } }
     const healthyCount = Object.values(healthData).filter(item => item.status === 'healthy').length;
     const degradedCount = Object.values(healthData).filter(item => item.status === 'degraded').length;
     const unhealthyCount = Object.values(healthData).filter(item => item.status === 'unhealthy').length;
@@ -225,8 +225,8 @@ export class ServiceOrchestrator {
       unhealthy_services: unhealthyCount,
       services: healthData,
       check_timestamp: new Date().toISOString()
-    } as HealthCheckReport;
-  }
+    } }as HealthCheckReport;
+  } }
 
   async comprehensiveHealthCheck(): Promise<HealthCheckReport> {
     console.log('🔬 Performing comprehensive health check...');
@@ -242,8 +242,8 @@ export class ServiceOrchestrator {
       resource_health: resourceHealth,
       dependency_health: dependencyHealth,
       comprehensive: true
-    } as HealthCheckReport;
-  }
+    } }as HealthCheckReport;
+  } }
 
   // System Status & Metrics
   async getSystemStatus(): Promise<Record<string, unknown>> {
@@ -260,7 +260,7 @@ export class ServiceOrchestrator {
       memory_usage: process.memoryUsage(),
       load_average: this.getLoadAverage()
     };
-  }
+  } }
 
   async getPerformanceMetrics(): Promise<PerformanceMetrics> {
     return {
@@ -272,8 +272,8 @@ export class ServiceOrchestrator {
       error_rates: await this.getErrorRates(),
       throughput: await this.getThroughput(),
       timestamp: new Date().toISOString()
-    } as PerformanceMetrics;
-  }
+    } }as PerformanceMetrics;
+  } }
 
   getCapabilities(): ServiceCapabilities {
     return {
@@ -287,8 +287,8 @@ export class ServiceOrchestrator {
       load_balancing: true,
       service_discovery: true,
       configuration_management: true
-    } as ServiceCapabilities;
-  }
+    } }as ServiceCapabilities;
+  } }
 
   getManagedServices(): Record<ServiceTier, string[]> {
     const servicesByTier: Record<ServiceTier, string[]> = {
@@ -299,9 +299,9 @@ export class ServiceOrchestrator {
     };
     for (const [name, config] of this.services) {
       servicesByTier[config.tier].push(name);
-    }
+    } }
     return servicesByTier;
-  }
+  } }
 
   // Emergency Management
   async emergencyShutdown(): Promise<Record<string, unknown>> {
@@ -318,7 +318,7 @@ export class ServiceOrchestrator {
       services_stopped: results.services_stopped,
       timestamp: new Date().toISOString()
     };
-  }
+  } }
 
   // Updated: return typed OperationSummary instead of Promise<any>
   async restartCriticalServices(): Promise<OperationSummary> {
@@ -329,7 +329,7 @@ export class ServiceOrchestrator {
       priority: 'critical',
       health_check_required: true
     });
-  }
+  } }
 
   // Updated: return typed SafeModeResult instead of Promise<any>
   async enableSafeMode(): Promise<SafeModeResult> {
@@ -344,7 +344,7 @@ export class ServiceOrchestrator {
       critical_services_running: criticalServices.length,
       non_essential_services_stopped: nonEssentialServices.length
     };
-  }
+  } }
 
   //, Updated: return typed RecoveryResult instead of Promise<any>
   async recoverFromFailure(context: EmergencyRecoveryContext): Promise<RecoveryResult> {
@@ -365,13 +365,13 @@ export class ServiceOrchestrator {
         break;
       default:
         recoveryStrategy = await this.performGenericRecovery(context);
-    }
+    } }
     return {
       recovery_completed: true,
       strategy_used: recoveryStrategy,
       recovery_time_ms: Date.now() - new Date(context.failure_timestamp).getTime()
     };
-  }
+  } }
 
   // Private Methods
   private initializeServices(): void {
@@ -384,9 +384,9 @@ export class ServiceOrchestrator {
         health_score: 0,
         last_check: new Date().toISOString()
       });
-    }
-    console.log(`🏗️ Initialized ${this.services.size} managed services`);
-  }
+    } }
+    console.log(`🏗️ Initialized ${this.services.size} }managed services`);
+  } }
 
   private getServiceConfigurations(): ServiceConfig[] {
     // Based on GO_BINARIES_CATALOG.md - all, 37 services
@@ -435,77 +435,77 @@ export class ServiceOrchestrator {
         critical: true
       },
     ];
-  }
+  } }
 
   private groupServicesByTier(serviceNames: string[]): Map<ServiceTier, string[]> {
     const tierGroups = new Map<ServiceTier, string[]>();
     const tiers: ServiceTier[] = ['core', 'infrastructure', 'enhanced', 'specialized'];
     for (const t of tiers) {
       tierGroups.set(t, []);
-    }
+    } }
     for (const serviceName of serviceNames) {
       const config = this.services.get(serviceName);
       if (config) {
         const services = tierGroups.get(config.tier) || [];
         services.push(serviceName);
         tierGroups.set(config.tier, services);
-      }
-    }
+      } }
+    } }
     return tierGroups;
-  }
+  } }
 
   // Additional helper methods would be implemented here...
   private async sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
-  }
+  } }
 
   private async startService(serviceName: string, _options?: OrchestrationOptions): Promise<ServiceResult> {
     // Mock service start - in real implementation would use child_process
     console.log(`▶️ Starting ${serviceName}...`);
-    return { success: true, data: {, started: true, service: serviceName } };
-  }
+    return { success: true, data: { started: true, service: serviceName } }};
+  } }
 
   private async stopService(serviceName: string, _options?: OrchestrationOptions): Promise<ServiceResult> {
     // Mock service stop
     console.log(`⏹️ Stopping ${serviceName}...`);
-    return { success: true, data: {, stopped: true, service: serviceName } };
-  }
+    return { success: true, data: { stopped: true, service: serviceName } }};
+  } }
 
   private getCriticalServices(): string[] {
     return Array.from(this.services.entries())
       .filter(([_, config]) => config.critical === true)
       .map(([name]) => name);
-  }
+  } }
 
   private getNonEssentialServices(): string[] {
     return Array.from(this.services.entries())
       .filter(([_, config]) => config.critical !== true)
       .map(([name]) => name);
-  }
+  } }
 
   private getScalableServices(): string[] {
     // simple heuristic: scale enhanced and specialized services
     return Array.from(this.services.entries())
       .filter(([_, cfg]) => cfg.tier === 'enhanced' || cfg.tier === 'specialized')
       .map(([name]) => name);
-  }
+  } }
 
   private startHealthMonitoring(): void {
     this.healthCheckInterval = setInterval(async () => {
       await this.performHealthCheck();
     }, 30000); // Every, 30 seconds
-  }
+  } }
 
   private startPerformanceMonitoring(): void {
     this.performanceMonitor = setInterval(async () => {
       // use the implemented getPerformanceMetrics() (collectPerformanceMetrics did not exist)
       try {
         await this.getPerformanceMetrics();
-      } catch (err) {
+      } }catch (err) {
         console.error('Performance monitoring error', err);
-      }
+      } }
     }, 60000); // Every minute
-  }
+  } }
 
   // Stub implementations for complex operations
   private async checkServiceHealth(serviceName: string): Promise<ServiceStatus> {
@@ -515,7 +515,7 @@ export class ServiceOrchestrator {
       health_score: 95,
       last_check: new Date().toISOString()
     };
-  }
+  } }
 
   private calculateOverallHealth(healthy: number, degraded: number, unhealthy: number): string {
     const total = healthy + degraded + unhealthy || 1;
@@ -523,12 +523,12 @@ export class ServiceOrchestrator {
     // Return a normalized overall health: string based on thresholds
     if (healthPercentage >= 80) {
       return, 'healthy';
-    }
+    } }
     if (healthPercentage >= 50) {
       return, 'degraded';
-    }
+    } }
     return, 'unhealthy';
-  }
+  } }
 
   // ---------- Added: concrete recovery helper implementations ----------
   private async recoverFromServiceCrash(context: EmergencyRecoveryContext): Promise<string> {
@@ -538,16 +538,16 @@ export class ServiceOrchestrator {
       if (Array.isArray(targets) && targets.length > 0) {
         await this.restartServices(targets, { health_check_required: true });
         return `restarted_services:${targets.join(',')}`;
-      }
+      } }
       // Fallback: restart critical services
       await this.restartCriticalServices();
       return, 'restarted_critical_services';
-    } catch (err) {
+    } }catch (err) {
       // Fallback behavior
       await this.enableSafeMode();
       return, 'recovery_failed_recovered_with_safe_mode';
-    }
-  }
+    } }
+  } }
 
   private async recoverFromNetworkPartition(_: EmergencyRecoveryContext): Promise<string> {
     try {
@@ -557,15 +557,15 @@ export class ServiceOrchestrator {
       if (present.length) {
         await this.restartServices(present, { priority: 'critical', health_check_required: true });
         return `restarted_network_services:${present.join(',')}`;
-      }
+      } }
       // Fallback to restarting critical services
       await this.restartCriticalServices();
       return, 'restarted_critical_services_for_network_partition';
-    } catch (err) {
+    } }catch (err) {
       await this.enableSafeMode();
       return, 'network_recovery_fallback_safe_mode_enabled';
-    }
-  }
+    } }
+  } }
 
   private async recoverFromResourceExhaustion(_: EmergencyRecoveryContext): Promise<string> {
     try {
@@ -573,12 +573,12 @@ export class ServiceOrchestrator {
       await this.enableSafeMode();
       await this.restartCriticalServices();
       return, 'enabled_safe_mode_and_restarted_critical_services';
-    } catch (err) {
+    } }catch (err) {
       // If even safe mode fails, perform emergency shutdown and report
       await this.emergencyShutdown();
       return, 'emergency_shutdown_due_to_resource_exhaustion';
-    }
-  }
+    } }
+  } }
 
   private async recoverFromCascadeFailure(_: EmergencyRecoveryContext): Promise<string> {
     try {
@@ -588,12 +588,12 @@ export class ServiceOrchestrator {
       await this.sleep(1500);
       await this.restartCriticalServices();
       return, 'emergency_shutdown_and_restart_after_cascade';
-    } catch (err) {
+    } }catch (err) {
       // last-resort fallback
       await this.enableSafeMode();
       return, 'cascade_recovery_fallback_safe_mode';
-    }
-  }
+    } }
+  } }
 
   private async performGenericRecovery(_: EmergencyRecoveryContext): Promise<string> {
     try {
@@ -602,12 +602,12 @@ export class ServiceOrchestrator {
       // Give the system time to stabilize
       await this.sleep(1000);
       return, 'generic_restart_critical_services';
-    } catch (err) {
+    } }catch (err) {
       // If generic recovery fails, enter safe mode
       await this.enableSafeMode();
       return, 'generic_recovery_fallback_safe_mode';
-    }
-  }
+    } }
+  } }
   // ---------- end added helpers ----------
 
   // ---------- Added: missing deploy/verify/metrics helpers to satisfy callers ----------
@@ -628,10 +628,10 @@ export class ServiceOrchestrator {
         const res = await this.deployService(s);
         green[s] = { success: true, data: res };
         await this.verifyServiceHealth(s);
-      } catch (err) {
+      } }catch (err) {
         green[s] = { success: false, error: err };
-      }
-    }
+      } }
+    } }
 
     // simulate traffic switch validation (mock)
     await this.sleep(500);
@@ -641,18 +641,17 @@ export class ServiceOrchestrator {
         const res = await this.deployService(s);
         blue[s] = { success: true, data: res };
         await this.verifyServiceHealth(s);
-      } catch (err) {
+      } }catch (err) {
         blue[s] = { success: false, error: err };
-      }
-    }
+      } }
+    } }
 
-    return {
-     , strategy: 'blue_green',
-      green: {, results: green, deployed: Object.keys(green).length },
-      blue: {, results: blue, deployed: Object.keys(blue).length },
+    return { strategy: 'blue_green',
+      green: { results: green, deployed: Object.keys(green).length },
+      blue: { results: blue, deployed: Object.keys(blue).length },
       timestamp: new Date().toISOString()
     };
-  }
+  } }
 
   private async deployService(serviceName: string, _options?: OrchestrationOptions): Promise<Record<string, unknown>> {
     // Minimal, safe deployment stub: mark as deploying then healthy
@@ -672,15 +671,15 @@ export class ServiceOrchestrator {
       last_check: new Date().toISOString()
     });
     return { deployed: true, service: serviceName, timestamp: new Date().toISOString() };
-  }
+  } }
 
   private async verifyServiceHealth(serviceName: string): Promise<void> {
     const status = await this.checkServiceHealth(serviceName);
     if (status.status !== 'healthy') {
-      throw new Error(`Service ${serviceName} verification failed: ${status.status}`);
-    }
+      throw new Error(`Service ${serviceName} }verification failed: ${status.status}`);
+    } }
     return;
-  }
+  } }
 
   private async collectSystemMetrics(): Promise<Record<string, unknown>> {
     return {
@@ -692,7 +691,7 @@ export class ServiceOrchestrator {
       uptime_seconds: process.uptime(),
       timestamp: new Date().toISOString()
     };
-  }
+  } }
 
   private async checkNetworkHealth(): Promise<Record<string, unknown>> {
     // Lightweight network health summary
@@ -703,7 +702,7 @@ export class ServiceOrchestrator {
       average_latency_ms: latencyMs,
       last_checked: new Date().toISOString()
     };
-  }
+  } }
 
   private async checkResourceHealth(): Promise<Record<string, unknown>> {
     const cpu = await this.getCPUUsage();
@@ -716,7 +715,7 @@ export class ServiceOrchestrator {
       notes: healthy ? 'resources within expected bounds' : 'resources under pressure',
       last_checked: new Date().toISOString()
     };
-  }
+  } }
 
   private async checkDependencyHealth(): Promise<Record<string, unknown>> {
     // Check a few known dependency names gracefully
@@ -728,7 +727,7 @@ export class ServiceOrchestrator {
       if (present) {
         try {
           statuses[name].status = await this.checkServiceHealth(name);
-        } catch (err) {
+        } }catch (err) {
           statuses[name].status = {
             name,
             status: 'unhealthy',
@@ -736,58 +735,58 @@ export class ServiceOrchestrator {
             last_check: new Date().toISOString(),
             error: err instanceof Error ? err.message : String(err)
           };
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return { dependencies: statuses, last_checked: new Date().toISOString() };
-  }
+  } }
 
   private getLoadAverage(): number {
     // os.loadavg() may return zeros on Windows; return first value or, 0
     const avg = os.loadavg && os.loadavg()[0];
     return typeof avg === 'number' ? avg : 0;
-  }
+  } }
 
   private async getCPUUsage(): Promise<number> {
     // Lightweight mock: small random-ish: number to represent % usage
     return Number((Math.random() * 25 + 5).toFixed(2));
-  }
+  } }
 
   private async getMemoryUsage(): Promise<number> {
     // Return RSS in MB
     const memMb = Math.round((process.memoryUsage().rss || 0) / (1024 * 1024));
     return memMb;
-  }
+  } }
 
   private async getDiskUsage(): Promise<number> {
     // Placeholder percent (requires native bindings for real disk stats)
     return Number((Math.random() * 50 + 20).toFixed(2));
-  }
+  } }
 
   private async getNetworkIO(): Promise<{ rx_bytes: number; tx_bytes: number }> {
     // Mock counters
-    return {, rx_bytes: Math.floor(Math.random() * 1e6), tx_bytes: Math.floor(Math.random() * 1e6) };
-  }
+    return { rx_bytes: Math.floor(Math.random() * 1e6), tx_bytes: Math.floor(Math.random() * 1e6) };
+  } }
 
   private async getServiceResponseTimes(): Promise<Record<string, number>> {
     const map: Record<string, number> = {};
     for (const [name] of this.services) {
       map[name] = Math.round(Math.random() * 200) + 20; // ms
-    }
+    } }
     return map;
-  }
+  } }
 
   private async getErrorRates(): Promise<Record<string, number>> {
     const map: Record<string, number> = {};
     for (const [name] of this.services) {
       map[name] = Number((Math.random() * 0.02).toFixed(4)); // fraction errors per request
-    }
+    } }
     return map;
-  }
+  } }
 
   private async getThroughput(): Promise<number> {
     // requests per second estimate
     return Math.round(Math.random() * 500 + 50);
-  }
+  } }
   // ---------- end added helpers ----------
 }

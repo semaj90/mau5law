@@ -12,31 +12,30 @@ interface ChatRequest {
   useVectorSearch?: boolean;
   searchThreshold?: number;
   systemPrompt?: string;
-}
+} }
 
 interface Source {
   uri?: string;
   title?: string;
   snippet?: string;
-}
+} }
 
-interface ChatResponse {
- , success: boolean;
+interface ChatResponse { success: boolean;
   response?: string;
   conversationId?: string;
   sources?: Source[];
   metadata?: Record<string, unknown>;
   error?: string;
-}
+} }
 
 type WorkerProgressEvent =
-  | { type: 'queued'; position?: number }
-  | { type: 'started'; timestamp?: string }
-  | { type: 'stream_data'; data: any }
-  | { type: 'stream_end' }
+  | { type: 'queued'; position?: number } }
+  | { type: 'started'; timestamp?: string } }
+  | { type: 'stream_data'; data: any } }
+  | { type: 'stream_end' } }
   | { type: 'stream_complete' };
 
-type ActiveRequest = {, resolve: (value: ChatResponse) => void;, reject: (reason?: any) => void;
+type ActiveRequest = { resolve: (value: ChatResponse) => void;, reject: (reason?: any) => void;
   onProgress?: (data: WorkerProgressEvent) => void;
   timeoutId?: number;
   port?: MessagePort;
@@ -48,13 +47,13 @@ export class ChatWorkerClient {
 
   constructor() {
     void this.initializeServiceWorker();
-  }
+  } }
 
   private async initializeServiceWorker(): Promise<void> {
     if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) {
       // Environment doesn't support service workers'
       return;
-    }
+    } }
 
     try {
       const registration = await navigator.serviceWorker.register('/chat-worker.js', { scope: '/' });
@@ -64,10 +63,10 @@ export class ChatWorkerClient {
 
       // Listen for messages from service worker (global)
       navigator.serviceWorker.addEventListener('message', (evt: MessageEvent) => this.handleWorkerMessage(evt));
-    } catch {
+    } }catch {
       // swallow registration errors - callers will fall back
-    }
-  }
+    } }
+  } }
 
   private handleWorkerMessage(event: MessageEvent): void {
     const raw = event?.data;
@@ -106,7 +105,7 @@ export class ChatWorkerClient {
         request.onProgress?.({ type: 'stream_end' });
         break;
       case, 'STREAM_COMPLETE':
-        request.resolve({ success: true, response: undefined } as ChatResponse);
+        request.resolve({ success: true, response: undefined } }as ChatResponse);
         this.clearRequest(requestId);
         break;
       case, 'ERROR': {
@@ -117,35 +116,35 @@ export class ChatWorkerClient {
         request.reject(err);
         this.clearRequest(requestId);
         break;
-      }
+      } }
       default:
         // unknown type — ignore
         break;
-    }
-  }
+    } }
+  } }
 
   private clearRequest(requestId: string): void {
     const r = this.activeRequests.get(requestId);
     if (r) {
       if (r.timeoutId) {
         clearTimeout(r.timeoutId);
-      }
+      } }
       try {
         r.port?.close();
-      } catch {
+      } }catch {
         // ignore
-      }
-    }
+      } }
+    } }
     this.activeRequests.delete(requestId);
-  }
+  } }
 
   async sendChatRequest(
     request: ChatRequest,
-    options?: { onProgress?: (data: WorkerProgressEvent) => void }
+    options?: { onProgress?: (data: WorkerProgressEvent) => void } }
   ): Promise<ChatResponse> {
     if (!this.worker) {
       return this.directApiCall(request);
-    }
+    } }
 
     const requestId = `req_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 
@@ -155,7 +154,7 @@ export class ChatWorkerClient {
             if (this.activeRequests.has(requestId)) {
               this.activeRequests.delete(requestId);
               reject(new Error('Request timeout'));
-            }
+            } }
           }, 60000)
         : undefined;
 
@@ -180,43 +179,43 @@ export class ChatWorkerClient {
           },
           [channel.port2]
         );
-      } catch (err) {
+      } }catch (err) {
         this.clearRequest(requestId);
         reject(err);
-      }
+      } }
     });
-  }
+  } }
 
   async abortRequest(requestId: string): Promise<void> {
     if (this.worker) {
       try {
         (this.worker as ServiceWorker).postMessage({ type: 'ABORT_REQUEST', requestId });
-      } catch {
+      } }catch {
         // ignore
-      }
-    }
+      } }
+    } }
 
     const request = this.activeRequests.get(requestId);
     if (!request) return;
 
     if (request.timeoutId) {
       clearTimeout(request.timeoutId);
-    }
+    } }
 
     try {
       request.port?.close();
-    } catch {
+    } }catch {
       // ignore
-    }
+    } }
 
     try {
       request.reject(new Error('Request aborted'));
-    } catch {
+    } }catch {
       // ignore
-    }
+    } }
 
     this.activeRequests.delete(requestId);
-  }
+  } }
 
   private async directApiCall(_request: ChatRequest): Promise<ChatResponse> {
     // Fallback for environments without service worker support
@@ -224,5 +223,5 @@ export class ChatWorkerClient {
       setTimeout(() => {
         resolve({ success: true, response: 'Fallback response' });'' }, 1000);
     });
-  }
+  } }
 }

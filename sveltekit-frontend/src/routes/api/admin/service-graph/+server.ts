@@ -4,8 +4,8 @@
  * GET /api/admin/service-graph
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
 
 interface Service { id: string;, label: string;
   type: string;
@@ -17,18 +17,18 @@ interface Service { id: string;, label: string;
   health?: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
   responseTime?: number;
   uptime?: number;
-}
+} }
 
-interface Edge {, source: string;, target: string;
+interface Edge { source: string;, target: string;
   type: string;
-}
+} }
 
-interface ServiceGraph {, nodes: Service[];, edges: Edge[];
-  metadata: {, totalServices: number;, totalConnections: number;
-   , generated: string;
+interface ServiceGraph { nodes: Service[];, edges: Edge[];
+  metadata: { totalServices: number;, totalConnections: number;
+  generated: string;
     lastUpdated?: string;
   };
-}
+} }
 
 // Service inventory (mirrors generate-service-dependency-graph.mjs)
 const SERVICES_INVENTORY: Record<string, Omit<Service, 'id' | 'label'>> = {
@@ -439,16 +439,16 @@ const SERVICES_INVENTORY: Record<string, Omit<Service, 'id' | 'label'>> = {
     capabilities: ['llm', 'embeddings', 'inference'],
     protocol: 'http',
     dependsOn: []
-  }
+  } }
 };
 
 /**
  * Check health of a service
  */
 async function checkServiceHealth(
- , serviceId: string,
+  serviceId: string,
   port: number
-): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy';, responseTime: number; uptime?: number }> {
+): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy'; responseTime: number; uptime?: number }> {
   const startTime = Date.now();
   try {
     const url = `http://localhost:${port}/health`;
@@ -466,14 +466,14 @@ async function checkServiceHealth(
       responseTime,
       uptime: response.ok ? 100 : 50
     };
-  } catch (error) {
+  } }catch (error) {
     return {
       status: 'unhealthy',
       responseTime: Date.now() - startTime,
       uptime: 0
     };
-  }
-}
+  } }
+} }
 
 /**
  * Build service graph
@@ -494,19 +494,19 @@ function buildServiceGraph(): ServiceGraph {
         source: id,
         target: dep,
         type: `depends_on' });'`
-    }
-  }
+    } }
+  } }
 
   return {
     nodes,
     edges,
     metadata: {
-     , totalServices: nodes.length,
+  totalServices: nodes.length,
       totalConnections: edges.length,
       generated: new Date().toISOString()
-    }
+    } }
   };
-}
+} }
 
 /**
  * GET /api/admin/service-graph
@@ -528,12 +528,12 @@ export const GET: RequestHandler = async ({ url }) => {
         });
 
       const healthResults = await Promise.allSettled(healthPromises);
-      const healthMap = new Map<string, { status: 'healthy' | 'degraded' | 'unhealthy';, responseTime: number; uptime?: number }>();
+      const healthMap = new Map<string, { status: 'healthy' | 'degraded' | 'unhealthy'; responseTime: number; uptime?: number }>();
 
       healthResults.forEach((result) => {
         if (result.status === 'fulfilled') {
           healthMap.set(result.value.nodeId, result.value.health);
-        }
+        } }
       });
 
       graph.nodes = graph.nodes.map(node => ({
@@ -544,16 +544,16 @@ export const GET: RequestHandler = async ({ url }) => {
       }));
 
       graph.metadata.lastUpdated = new Date().toISOString();
-    }
+    } }
 
     return json(graph);
-  } catch (error) {
-    console.error('Service graph error: ', error);'
+  } }catch (error) {
+    console.error('Service graph error: ', error);
     return json(
       { error: `Failed to generate service graph` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -563,7 +563,7 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json() as { serviceId?: string; depth?: number };
-    const { serviceId, depth = 2 } = body;
+    const { serviceId, depth = 2 } }= body;
 
     const graph = buildServiceGraph();
 
@@ -572,14 +572,14 @@ export const POST: RequestHandler = async ({ request }) => {
       const service = graph.nodes.find(n => n.id === serviceId);
       if (!service) {
         return json({ error: 'Service not found' }, { status: 404 });
-      }
+      } }
 
       const analysis = analyzeDependencies(graph, serviceId, depth);
       return json({
         service: serviceId,
         ...analysis
       });
-    }
+    } }
 
     // Return overall graph analysis
     return json({
@@ -588,19 +588,19 @@ export const POST: RequestHandler = async ({ request }) => {
       averageDependencies: (graph.edges.length / graph.nodes.length).toFixed(2),
       serviceByCriticalityScore: graph.nodes
         .map(node => ({
-         , id: node.id,
+  id: node.id,
           criticalityScore: calculateCriticalityScore(graph, node.id)
         }))
         .sort((a, b) => b.criticalityScore - a.criticalityScore)
         .slice(0, 10)
     });
-  } catch (error) {
-    console.error('Service analysis error: ', error);'
+  } }catch (error) {
+    console.error('Service analysis error: ', error);
     return json(
       { error: 'Failed to analyze services' },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -617,7 +617,7 @@ function analyzeDependencies(
   directDependents?: string[];
   transitiveDependencies?: string[];
   dependencyDepth?: number;
-} {
+} }{
   if (depth >= maxDepth || visited.has(serviceId)) return {};
 
   visited.add(serviceId);
@@ -635,7 +635,7 @@ function analyzeDependencies(
     const analysis = analyzeDependencies(graph, dep, maxDepth, visited, depth + 1);
     if (analysis.directDependencies) {
       analysis.directDependencies.forEach((d: string) => transitiveDependencies.add(d));
-    }
+    } }
   });
 
   return {
@@ -644,7 +644,7 @@ function analyzeDependencies(
     transitiveDependencies: Array.from(transitiveDependencies),
     dependencyDepth: depth + 1
   };
-}
+} }
 
 /**
  * Calculate criticality score (how many services depend on this one)
@@ -656,4 +656,5 @@ function calculateCriticalityScore(graph: ServiceGraph, serviceId: string): numb
   // Services with many dependents are more critical
   // Services with few dependencies are more stable (less critical if they fail)
   return (dependents * 2) - (dependencies * 0.5);
-}
+} }
+

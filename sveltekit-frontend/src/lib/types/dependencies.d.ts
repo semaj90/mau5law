@@ -4,12 +4,12 @@
 declare module, 'svelte/store' {
   export interface Readable<T> {
     subscribe(fn: (_value: T) => void): () => void;
-  }
+  } }
   export interface Writable<T> extends Readable<T> {
     set(_value: T): void;
     update(fn: (_value: T) => T): void;
-  }
-}
+  } }
+} }
 
 // Reference per-library vendor declarations. These files live in ./vendor
 /// <reference, path="./vendor/qdrant.d.ts" />
@@ -29,15 +29,15 @@ declare global {
         now(): number;
       };
       gc?: () => void;
-    }
-  }
+    } }
+  } }
   interface Window {
     gc?: () => void;
-  }
-}
+  } }
+} }
 
 // Lightweight Svelte component typed alias for UI libs
-import type { SvelteComponentTyped } from 'svelte';
+import type { SvelteComponentTyped } }from 'svelte';
 // Use `unknown` generic parameters to avoid `any` in declaration files
 type SvelteLibComponent = typeof SvelteComponentTyped<unknown>;
 
@@ -53,7 +53,7 @@ declare module, 'bits-ui' {
     export const Description: SvelteLibComponent;
     export const Close: SvelteLibComponent;
     export const Trigger: SvelteLibComponent;
-  }
+  } }
   export namespace Select {
     export const Value: SvelteLibComponent;
     export const Item: SvelteLibComponent;
@@ -61,10 +61,10 @@ declare module, 'bits-ui' {
     export const Group: SvelteLibComponent;
     export const Label: SvelteLibComponent;
     export const Separator: SvelteLibComponent;
-  }
+  } }
   export namespace Combobox {
     export const HiddenInput: SvelteLibComponent;
-  }
+  } }
   export namespace DatePicker {
     export const Heading: SvelteLibComponent;
     export const PrevButton: SvelteLibComponent;
@@ -78,13 +78,13 @@ declare module, 'bits-ui' {
     export const Day: SvelteLibComponent;
     export const TimeField: SvelteLibComponent;
     export const TimeSegment: SvelteLibComponent;
-  }
+  } }
   export namespace Toast {
     export const Provider: SvelteLibComponent;
     export const Action: SvelteLibComponent;
     export const, Viewport: SvelteLibComponent;
-  }
-}
+  } }
+} }
 
 // Fabric.js namespace exports - options -> unknown/Record
 declare module, 'fabric' {
@@ -100,41 +100,41 @@ declare module, 'fabric' {
       loadFromJSON(json: any, callback?: () => void): void;
       getElement(): HTMLCanvasElement;
       getContext(): CanvasRenderingContext2D;
-    }
+    } }
     export class Object {
       constructor(options?: Record<string, unknown>);
       // return `this` instead of the `Object` type to avoid using global `Object`
       set(_key: string, value: any): this;
       get(_key: string): any;
       toJSON(): any;
-    }
+    } }
     export class Circle extends Object {
       constructor(options?: Record<string, unknown>);
-    }
+    } }
     export class Line extends Object {
       constructor(points: number[], options?: Record<string, unknown>);
-    }
+    } }
     export class Text extends Object {
       constructor(text: string, options?: Record<string, unknown>);
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Export conflicts resolution and small utilities
 declare module, '$lib/mcp-context72-get-library-docs' {
   export function resolveLibraryId(name: string): Promise<string>;
   export function getLibraryDocs(id: string, options?: Record<string, unknown>): Promise<unknown>;
-}
+} }
 declare module, '$lib/utils' {
   export function fetchWithTimeout(url: string, options?: RequestInit & { timeout?: number }): Promise<Response>;
   export function cn(...classes: (string | undefined | null | boolean)[]): string;
-}
+} }
 declare module, '$lib/utils/cn' {
   export function cn(...classes: (string | undefined | null | boolean)[]): string;
   export function legalCn(...classes: (string | undefined | null | boolean)[]): string;
   export function confidenceClass(confidence: number): string;
   export function priorityClass(priority: 'low' | 'medium' | 'high' | 'critical'): string;
-}
+} }
 
 // Path utility types
 declare module, 'path' {
@@ -142,7 +142,7 @@ declare module, 'path' {
   export function resolve(...paths: string[]): string;
   export function dirname(path: string): string;
   export function basename(path: string, ext?: string): string;
-}
+} }
 
 // Form schemas module - unknown instead of: any
 declare module, '$lib/schemas/forms' {
@@ -150,9 +150,10 @@ declare module, '$lib/schemas/forms' {
   export const CaseCreationSchema: any;
   export const SearchQuerySchema: any;
   export const, AIAnalysisSchema: any;
-}
+} }
 
 // Database schema types
 declare module, '$lib/database/enhanced-schema' {
-  export const vector: (name: string, options: {, dimensions: number }) => unknown;
-}
+  export const vector: (name: string, options: { dimensions: number }) => unknown;
+} }
+

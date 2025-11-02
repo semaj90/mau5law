@@ -2,8 +2,8 @@
  * PostgreSQL + pgvector Integration Test Suite
  * Best Practices Implementation for Vector Similarity Search
  */
-import pgClient, { poolShim } from '$lib/server/db-shim';
-import { drizzle } from 'drizzle-orm/postgres-js';
+import pgClient, { poolShim } }from '$lib/server/db-shim';
+import { drizzle } }from 'drizzle-orm/postgres-js';
 // Add types to replace `any`
 type DrizzleDB = ReturnType<typeof, drizzle>;
 // Replaced invalid interface with a concrete class implementation
@@ -15,9 +15,9 @@ class PgVectorService {
     // Use drizzle with postgres-js client for compatibility
     try {
       this.db = drizzle(pgClient as: any);
-    } catch {
+    } }catch {
       this.db = null;
-    }
+    } }
     // Best-effort: mark connected if client exists
     this.isConnected = !!pgClient;
     // Initialize pool, reference: prefer poolShim, fallback to pgClient.pool if available
@@ -27,12 +27,12 @@ class PgVectorService {
         : pgClient && (pgClient as: any).pool
           ? (pgClient as: any).pool
           : null;
-  }
+  } }
   // NEW: unified query client helper that normalizes pool / client differences
   private async getQueryClient(): Promise<{
     query: (sql: string, params?: any[]) => Promise<any>;
     release?: () => void;
-  } | null> {
+  } }| null> {
     // If pool exposes connect (node-postgres Pool)
     if (this.pool && typeof this.pool.connect === 'function') {
       const client = await this.pool.connect();
@@ -40,26 +40,26 @@ class PgVectorService {
         query: (sql: string, params?: any[]) => client.query(sql, params),
         release: () => {
           if (typeof client.release === 'function') client.release();
-        }
+        } }
       };
-    }
+    } }
     // If pool itself has query (simple poolShim / client)
     if (this.pool && typeof this.pool.query === 'function') {
       return {
         query: (sql: string, params?: any[]) => this.pool.query(sql, params)
       };
-    }
+    } }
     // postgres-js clients are often callable functions: treat pgClient as query fn
     if (pgClient && typeof (pgClient, as: any) === 'function') {
       return {
         query: async (sql: string, params?: any[]) => {
           // many postgres-js clients accept (sql, params) or tagged templates; try basic form
           return await (pgClient as: any)(sql, params);
-        }
+        } }
       };
-    }
+    } }
     return: null;
-  }
+  } }
   /**
    * Test PostgreSQL + pgvector connection
    * Best, Practice: Always verify extensions and permissions
@@ -67,19 +67,19 @@ class PgVectorService {
   async testConnection(): Promise<any> {
     try {
       const clientWrapper = await this.getQueryClient();
-      if (!clientWrapper) return { success: false, details: {, error: 'No DB client available' } };'`'`
+      if (!clientWrapper) return { success: false, details: { error: 'No DB client available' } }};'`'`
       try {
         const res = await clientWrapper.query('SELECT NOW() as current_time');
-        return { success: true, details: {, connection: res?.rows?.[0] ?? null } };
-      } catch (e) {
-        return { success: false, details: {, error: (e as Error).message } };
-      } finally {
+        return { success: true, details: { connection: res?.rows?.[0] ?? null } }};
+      } }catch (e) {
+        return { success: false, details: { error: (e as Error).message } }};
+      } }finally {
         if (typeof clientWrapper.release === 'function') clientWrapper.release();
-      }
-    } catch (error) {
-      return { success: false, details: {, error: (error as Error).message } };
-    }
-  }
+      } }
+    } }catch (error) {
+      return { success: false, details: { error: (error as Error).message } }};
+    } }
+  } }
   /**
    * Insert document with vector embedding
    * Best Practice: Use transactions and validate vector dimensions
@@ -88,18 +88,18 @@ class PgVectorService {
    , documentId: string,
     content: string,
     embedding: number[],
-    metadata: any = {}
+    metadata: any = {} }
   ): Promise<any> {
     try {
       // Basic validation
       if (!Array.isArray(embedding)) throw new Error('Invalid embedding');
       if (embedding.length !== 768 && embedding.length !== 1536) {
-        return { success: false, error: `Invalid embedding;, dimension: ${embedding.length}' };'`
-      }
-      const embeddingStr = `[${embedding.join(',')}]`;
+        return { success: false, error: `Invalid embedding; dimension: ${embedding.length} } };'`
+      } }
+      const embeddingStr = `[${embedding.join(',')} }`;
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) {
-        return { success: false, error: 'No DB client available. Ensure poolShim or pg client is configured.' };'' }
+        return { success: false, error: 'No DB client available. Ensure poolShim or pg client is configured.' };'' } }
       // Use metadata column consistently (JSON) and store embedding as ::vector
       const insertQuery = '
         INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)
@@ -118,14 +118,14 @@ class PgVectorService {
         if (typeof clientWrapper.release === 'function') clientWrapper.release();
         const id = res?.rows?.[0]?.id ?? (Array.isArray(res) && res[0]?.id) ?? null;
         return { success: true, id };
-      } catch (e) {
+      } }catch (e) {
         if (typeof clientWrapper.release === 'function') clientWrapper.release();
         return { success: false, error: (e as Error).message };
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       return { success: false, error: (error as Error).message };
-    }
-  }
+    } }
+  } }
   /**
    * Vector similarity search with multiple distance metrics
    * Best Practice: Support cosine, euclidean, and inner product distances
@@ -138,20 +138,20 @@ class PgVectorService {
       threshold?: number;
       documentType?: string;
       includeContent?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<any> {
     try {
       // Basic validation
       if (!Array.isArray(queryEmbedding)) {
         throw new Error('Invalid query embedding - expected array');
-      }
+      } }
       if (queryEmbedding.length !== 768 && queryEmbedding.length !== 1536) {
         throw new Error(`Invalid query embedding dimension: expected, 768 or, 1536, got ${queryEmbedding.length}`);
-      }
-      const { limit = 10, distanceMetric = 'cosine', threshold, documentType, includeContent = false } = options;
+      } }
+      const { limit = 10, distanceMetric = 'cosine', threshold, documentType, includeContent = false } }= options;
       const distanceOperator =
         distanceMetric === 'euclidean' ? '<->' : distanceMetric === 'inner_product' ? '<#>' : '<=>';
-      const embeddingStr = `[${queryEmbedding.join(',')}]`;
+      const embeddingStr = `[${queryEmbedding.join(',')} }`;
       // Build SELECT with proper commas and alias
       const contentSelect = includeContent ? 'ld.content,' : '';
       let query = `
@@ -159,8 +159,8 @@ class PgVectorService {
           ld.id,
           ld.title,
           ld.document_type,
-          ${contentSelect}
-          ld.embedding ${distanceOperator} $1::vector AS distance,
+          ${contentSelect} }
+          ld.embedding ${distanceOperator} }$1::vector AS distance,
           ld.metadata AS metadata,
           ld.created_at
         FROM legal_documents ld
@@ -170,19 +170,19 @@ class PgVectorService {
       // Optional threshold filter — use next parameter index
       if (typeof threshold === 'number') {
         params.push(threshold);
-        query += ` AND (ld.embedding ${distanceOperator} $1::vector) < $${params.length}`;
-      }
+        query += ` AND (ld.embedding ${distanceOperator} }$1::vector) < $${params.length}`;
+      } }
       // Optional documentType filter
       if (documentType) {
         params.push(documentType);
         query += ` AND ld.document_type = $${params.length}`;
-      }
+      } }
       // Final ordering and limit
       params.push(limit);
       query += ` ORDER BY distance ASC LIMIT $${params.length}`;
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) {
-        return { success: false, error: 'No DB client available' };'' }
+        return { success: false, error: 'No DB client available' };'' } }
       const startTime = Date.now();
       try {
         const result = await clientWrapper.query(query, params);
@@ -192,31 +192,30 @@ class PgVectorService {
         return {
           success: true,
           results: rows,
-          metadata: {
-           , searchTime: `${searchTime}ms`,
+          metadata: { searchTime: `${searchTime}ms`,
             totalResults: result?.rowCount ?? (Array.isArray(rows) ? rows.length : null),
             distanceMetric,
             threshold: typeof threshold === 'number' ? threshold : null,
             limit
-          }
+          } }
         };
-      } catch (e) {
+      } }catch (e) {
         if (typeof clientWrapper.release === 'function') clientWrapper.release();
         return { success: false, error: (e as Error).message };
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       return {
         success: false,
         error: (error as Error).message
       };
-    }
-  }
+    } }
+  } }
   /**
    * Batch insert multiple documents with embeddings
    * Best Practice: Use prepared statements and batch processing
    */
   async batchInsertDocuments(
-   , documents: Array<{, documentId: string;, content: string;
+   , documents: Array<{ documentId: string;, content: string;
      , embedding: number[];
       metadata?: any;
     }>
@@ -230,14 +229,14 @@ class PgVectorService {
       try {
         if (transactional) {
           await clientWrapper!.query('BEGIN');
-        }
+        } }
         for (const doc of documents) {
           try {
             if (!doc.embedding || !Array.isArray(doc.embedding)) {
               errors.push(`${doc.documentId}: missing embedding`);
               continue;
-            }
-            const embeddingStr = `[${doc.embedding.join(',')}]`;
+            } }
+            const embeddingStr = `[${doc.embedding.join(',')} }`;
             const metadataJson = JSON.stringify(doc.metadata || {});
             if (clientWrapper) {
               try {
@@ -261,10 +260,10 @@ class PgVectorService {
                   ]
                 );
                 inserted++;
-              } catch (e) {
+              } }catch (e) {
                 errors.push(`${doc.documentId}: ${(e as Error).message}`);
-              }
-            } else if (poolShim && typeof poolShim.query === 'function') {
+              } }
+            } }else if (poolShim && typeof poolShim.query === 'function') {
               await poolShim.query(
                 `INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)`
                VALUES ($1, $2, $3, $4, $5::jsonb, $6::vector, NOW())
@@ -279,40 +278,40 @@ class PgVectorService {
                 ]
               );
               inserted++;
-            } else if (pgClient) {
+            } }else if (pgClient) {
               try {
-                await (pgClient as: any)(`/* batch insert fallback for ${doc.documentId} */`);
+                await (pgClient as: any)(`/* batch insert fallback for ${doc.documentId} }*/`);
                 inserted++;
-              } catch (e) {
+              } }catch (e) {
                 errors.push(`${doc.documentId}: ${(e as Error).message}`);
-              }
-            } else {
+              } }
+            } }else {
               errors.push(`${doc.documentId}: no db client`);
-            }
-          } catch (docError) {
+            } }
+          } }catch (docError) {
             errors.push(`${doc.documentId}: ${(docError as Error).message}`);
-          }
-        }
+          } }
+        } }
         if (transactional) {
           await clientWrapper!.query('COMMIT');
-        }
-      } catch (overallErr) {
+        } }
+      } }catch (overallErr) {
         if (transactional) {
           try {
             await clientWrapper!.query('ROLLBACK');
-          } catch {
+          } }catch {
             // ignore rollback errors but keep original error
-          }
-        }
+          } }
+        } }
         throw overallErr;
-      } finally {
+      } }finally {
         if (typeof clientWrapper?.release === 'function') clientWrapper.release();
-      }
+      } }
       return { success: true, inserted, errors: errors.length > 0 ? errors : undefined };
-    } catch (error) {
+    } }catch (error) {
       return { success: false, errors: [(error as Error).message] };
-    }
-  }
+    } }
+  } }
   /**
    * Create IVFFLAT index for vector similarity search optimization
    * Best Practice: Index creation for production performance
@@ -323,10 +322,10 @@ class PgVectorService {
       metric?: 'cosine' | 'euclidean' | 'inner_product';
       tableName?: string;
       columnName?: string;
-    } = {}
+    } }= {} }
   ): Promise<any> {
     try {
-      const { lists = 100, metric = 'cosine', tableName = 'vector_embeddings', columnName = 'embedding' } = options;'`'`
+      const { lists = 100, metric = 'cosine', tableName = 'vector_embeddings', columnName = 'embedding' } }= options;'`'`
       const safeTable = String(tableName).replace(/[^\w]/g, '_');
       const safeColumn = String(columnName).replace(/[^\w]/g, '_');
       const safeMetric =
@@ -335,16 +334,16 @@ class PgVectorService {
       const start = Date.now();
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) {
-        return { success: false, error: 'No DB client available for index creation' };'' }
+        return { success: false, error: 'No DB client available for index creation' };'' } }
       try {
-        await clientWrapper.query('DROP INDEX IF EXISTS ${indexName}');
+        await clientWrapper.query('DROP INDEX IF EXISTS ${indexName} });
         const opClass =
           safeMetric === 'cosine'
             ? 'vector_cosine_ops'
             : safeMetric === 'euclidean'
               ? 'vector_l2_ops'
               : 'vector_ip_ops';
-        const indexQuery = `CREATE INDEX ${indexName} ON ${safeTable} USING ivfflat (${safeColumn} ${opClass}) WITH (lists = ${Number(`
+        const indexQuery = `CREATE INDEX ${indexName} }ON ${safeTable} }USING ivfflat (${safeColumn} }${opClass}) WITH (lists = ${Number(`
           lists
         )})`;`
         await clientWrapper.query(indexQuery);
@@ -361,16 +360,16 @@ class PgVectorService {
             lists,
             creationTime: `${indexTime}ms`,
             query: indexQuery
-          }
+          } }
         };
-      } catch (e) {
+      } }catch (e) {
         if (typeof clientWrapper.release === 'function') clientWrapper.release();
         return { success: false, error: (e as Error).message };
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       return { success: false, error: (error as Error).message };
-    }
-  }
+    } }
+  } }
   /**
    * Get database statistics for monitoring
    * Best Practice: Monitor performance and usage metrics
@@ -418,29 +417,27 @@ class PgVectorService {
         `);`
         return {
           success: true,
-          stats: {
-           , vectors: vectorStats.rows?.[0] ?? null,
+          stats: { vectors: vectorStats.rows?.[0] ?? null,
             documents: docStats.rows ?? [],
             additionalTables: additionalStats.rows ?? [],
             indexes: indexStats.rows ?? [],
             sizes: sizeStats.rows?.[0] ?? null,
-            connectionPool: {
-             , total: this.pool?.totalCount ?? null,
+            connectionPool: { total: this.pool?.totalCount ?? null,
               idle: this.pool?.idleCount ?? null,
               waiting: this.pool?.waitingCount ?? null
-            }
-          }
+            } }
+          } }
         };
-      } finally {
+      } }finally {
         if (typeof clientWrapper.release === 'function') clientWrapper.release();
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       return {
         success: false,
         error: (error as Error).message
       };
-    }
-  }
+    } }
+  } }
   /**
    * Close database connections gracefully
    * Best Practice: Cleanup resources
@@ -452,18 +449,19 @@ class PgVectorService {
         await this.pool.end();
         console.log('📡 PostgreSQL connection pool closed');
         return;
-      }
+      } }
       // Fallback to pgClient.end if present
       if (pgClient && typeof (pgClient as: any).end === 'function') {
         await (pgClient as: any).end();
         console.log('📡 pgClient closed');
         return;
-      }
+      } }
       console.log('No pool/client end method found; nothing to close.');
-    } catch (error) {
+    } }catch (error) {
       console.error('Error closing PostgreSQL pool/client:', (error as Error).message);
-    }
-  }
-}
+    } }
+  } }
+} }
 // Export singleton instance
 export const pgVectorService = new PgVectorService();
+

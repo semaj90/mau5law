@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { callGemma3 } from '$lib/server/ai/adapters/gemma3-http';
+import { describe, it, expect, vi, beforeEach, afterEach } }from 'vitest';
+import { callGemma3 } }from '$lib/server/ai/adapters/gemma3-http';
 
 describe('callGemma3 adapter', () => {
   const originalEnv = { ...process.env };
@@ -16,9 +16,10 @@ describe('callGemma3 adapter', () => {
   it('returns LLMOutput when remote returns expected shape', async () => {
     const fakeText = 'Generated summary from gemma3';
     // @ts-ignore
-    global.fetch = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ outputs: [{, data: [fakeText] }] }) });
+    global.fetch = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ outputs: [{ data: [fakeText] } } }) });
 
     const out = await callGemma3('hello world', { temperature: 0.5, maxTokens: 128 });
     expect(out.text).toBe(fakeText);
   });
 });
+

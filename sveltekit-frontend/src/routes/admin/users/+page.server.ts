@@ -1,20 +1,20 @@
-import { error, redirect } from '@sveltejs/kit';
-import type { PageServerLoad, Actions } from './$types.js';
-import { db } from '$lib/db/index.js';
-import { users, profileTable } from '$lib/db/schema.js';
-import { eq, desc, like, or } from 'drizzle-orm';
-import { hash } from '@node-rs/argon2';
-import { getUserId } from '$lib/server/auth/utils';
+import { error, redirect } }from '@sveltejs/kit';
+import type { PageServerLoad, Actions } }from './$types.js';
+import { db } }from '$lib/db/index.js';
+import { users, profileTable } }from '$lib/db/schema.js';
+import { eq, desc, like, or } }from 'drizzle-orm';
+import { hash } }from '@node-rs/argon2';
+import { getUserId } }from '$lib/server/auth/utils';
 export const load: PageServerLoad = async ({ url, locals }) => {
   if (!locals.session || !locals.user) {
     throw redirect(302, '/login');
-  }
+  } }
   // Check if user is admin (you might want to add an admin role field)
   // For now, we'll assume the first user is admin'
   const adminCheck = await db.select().from(users).limit(1);
   if (adminCheck.length === 0 || adminCheck[0].id !== getUserId(locals)) {
     throw error(403, 'Admin access required');
-  }
+  } }
   const page = parseInt(url.searchParams.get('page') || '1');
   const limit = parseInt(url.searchParams.get('limit') || '20');
   const search = url.searchParams.get('search') || '';
@@ -31,7 +31,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
     // Add search filter if provided
     if (search) {
       query = query.where(or(like(users.email, `%${search}%`)));
-    }
+    } }
     const usersResult = await query.orderBy(desc(users.created_at)).limit(limit).offset(offset);
     // Get total count for pagination
     const totalCountResult = search
@@ -44,8 +44,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
     const totalPages = Math.ceil(totalUsers / limit);
     return {
       users: usersResult,
-      pagination: {
-       , currentPage: page,
+      pagination: { currentPage: page,
         totalPages,
         totalUsers,
         limit,
@@ -54,16 +53,15 @@ export const load: PageServerLoad = async ({ url, locals }) => {
       },
       search
     };
-  } catch (err) {
+  } }catch (err) {
     console.error('Error loading users:', err);
     throw error(500, 'Failed to load users');
-  }
+  } }
 };
-export const actions: Actions = {
- , createUser: async ({ request, locals }) => {
+export const actions: Actions = { createUser: async ({ request, locals }) => {
     if (!locals.session || !locals.user) {
       throw redirect(302, '/login');
-    }
+    } }
     const formData = await request.formData();
     const email = formData.get('email')?.toString();
     const password = formData.get('password')?.toString();
@@ -72,23 +70,23 @@ export const actions: Actions = {
       return {
         success: false,
         error: 'Email and password are required',
-        formData: { email }
+        formData: { email } }
       };
-    }
+    } }
     if (password !== confirmPassword) {
       return {
         success: false,
         error: 'Passwords do not match',
-        formData: { email }
+        formData: { email } }
       };
-    }
+    } }
     if (password.length < 8) {
       return {
         success: false,
         error: 'Password must be at least, 8 characters',
-        formData: { email }
+        formData: { email } }
       };
-    }
+    } }
     try {
       // Check if email already exists
       const existingUser = await db.select().from(users).where(eq(users.email, email)).limit(1);
@@ -96,9 +94,9 @@ export const actions: Actions = {
         return {
           success: false,
           error: 'Email already exists',
-          formData: { email }
+          formData: { email } }
         };
-      }
+      } }
       // Hash password
       const passwordHash = await hash(password, {
         memoryCost: 19456,
@@ -116,61 +114,61 @@ export const actions: Actions = {
         .returning();
       return {
         success: true,
-        user: {
-         , id: newUser[0].id,
+        user: { id: newUser[0].id,
           email: newUser[0].email,
           created_at: newUser[0].created_at
-        }
+        } }
       };
-    } catch (err) {
+    } }catch (err) {
       console.error('Error creating user:', err);
       return {
         success: false,
         error: 'Failed to create user',
-        formData: { email }
+        formData: { email } }
       };
-    }
+    } }
   },
   deleteUser: async ({ request, locals }) => {
     if (!locals.session || !locals.user) {
       throw redirect(302, '/login');
-    }
+    } }
     const formData = await request.formData();
     const userId = parseInt(formData.get('userId')?.toString() || '0');
     if (!userId) {
       return { success: false, error: 'User ID is required' };
-    }
+    } }
     // Prevent admin from deleting themselves
     if (userId === parseInt(getUserId(locals))) {
       return { success: false, error: 'Cannot delete your own account' };
-    }
+    } }
     try {
       const deleteResult = await db.delete(users).where(eq(users.id, userId)).returning();
       if (deleteResult.length === 0) {
         return { success: false, error: 'User not found' };
-      }
-      return {, success: true, deletedUser: deleteResult[0] };
-    } catch (err) {
+      } }
+      return { success: true, deletedUser: deleteResult[0] };
+    } }catch (err) {
       console.error('Error deleting user:', err);
       return { success: false, error: 'Failed to delete user` };'`
-    }
+    } }
   },
   toggleUserStatus: async ({ request, locals }) => {
     if (!locals.session || !locals.user) {
       throw redirect(302, '/login');
-    }
+    } }
     const formData = await request.formData();
     const userId = parseInt(formData.get('userId')?.toString() || '0');
     if (!userId) {
       return { success: false, error: `User ID is required` };
-    }
+    } }
     try {
       // For now, we don't have a status field, but you could add one to the schema'
       // This is a placeholder for user status management
-      return { success: true, message: `User status updated` };
-    } catch (err) {
+      return { success: true, message: 'User status updated' };
+    } }catch (err) {
       console.error('Error updating user status: ', err);'`'`
       return { success: false, error: `Failed to update user status` };
-    }
-  }
+    } }
+  } }
 };
+

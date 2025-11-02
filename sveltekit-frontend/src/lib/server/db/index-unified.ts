@@ -13,7 +13,7 @@ import {
   testDatabaseConnection,
   closeDatabaseConnections,
   getDatabaseHealth
-} from './connection-manager.js';
+} }from './connection-manager.js';
 // Import database configuration
 import {
   getDatabaseConfig,
@@ -23,10 +23,10 @@ import {
   getPoolConfig,
   DATABASE_CONSTANTS,
   getBrowserSafeDatabaseInfo
-} from '$lib/config/database.js';
+} }from '$lib/config/database.js';
 // Import schema and types
 import * as schema from './schema-postgres.js';
-import type { DatabaseConfig, DatabaseUrls } from '$lib/config/database.js';
+import type { DatabaseConfig, DatabaseUrls } }from '$lib/config/database.js';
 // Re-export everything for backwards compatibility
 export {
   getAppPool,
@@ -45,12 +45,12 @@ export {
   getPoolConfig,
   DATABASE_CONSTANTS,
   getBrowserSafeDatabaseInfo
-}
+} }
 // Re-export schema
 export * from './schema-postgres.js';
-export { schema }
+export { schema } }
 // Export types
-export type { DatabaseConfig, DatabaseUrls }
+export type { DatabaseConfig, DatabaseUrls } }
 // Default database instances (lazy initialization)
 export // removed unused db assignment
 export const sql = getPostgresJsClient();
@@ -66,7 +66,7 @@ export const {
   legalDocuments,
   caseActivities,
   statutes
-} = schema;
+} }= schema;
 // Type-safe table lookup
 export function getTableByName(tableName: string) {
   const tableMap = {
@@ -77,9 +77,9 @@ export function getTableByName(tableName: string) {
     legalDocuments,
     caseActivities,
     statutes
-  }
+  } }
   return tableMap[tableName as keyof typeof tableMap];
-}
+} }
 // Enhanced health check using centralized connection manager
 export async function healthCheck(): Promise<any> {
   try {
@@ -90,8 +90,8 @@ export async function healthCheck(): Promise<any> {
         status: "unhealthy" as const,
         error: health.error || 'Database connection failed',
         timestamp: new Date()
-      }
-    }
+      } }
+    } }
     // Test specific tables if connection is healthy
     if (connection.success) {
       try {
@@ -104,17 +104,17 @@ export async function healthCheck(): Promise<any> {
         if (failedTests.length > 0) {
           return {
             status: "degraded" as const,
-            error: `${failedTests.length} table(s) inaccessible`,
+            error: `${failedTests.length} }table(s) inaccessible`,
             timestamp: new Date(),
             tables: connection.tables || [],
             extensions: connection.extensions || []
-          }
-        }
-      } catch (tableError) {
+          } }
+        } }
+      } }catch (tableError) {
         console.warn('Table access test failed:', tableError);
         // Still return healthy if basic connection works
-      }
-    }
+      } }
+    } }
     return {
       status: "healthy" as const,
       timestamp: new Date(),
@@ -122,15 +122,15 @@ export async function healthCheck(): Promise<any> {
       tables: connection.tables?.length || 0,
       extensions: connection.extensions || [],
       poolStats: health.pools
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     return {
       status: "unhealthy" as const,
       error: error.message,
       timestamp: new Date()
-    }
-  }
-}
+    } }
+  } }
+} }
 // System health with comprehensive checks
 export async function getSystemHealth(): Promise<any> {
   const dbHealth = await getDatabaseHealth();
@@ -138,21 +138,20 @@ export async function getSystemHealth(): Promise<any> {
   const appHealth = await healthCheck();
   return {
     overall: appHealth.status,
-    database: {
-     , status: dbHealth.status,
+    database: { status: dbHealth.status,
       config: dbHealth.config,
       connection: connectionTest,
       pools: dbHealth.pools
     },
     application: appHealth,
     timestamp: new Date().toISOString(),
-    version: '2.0.0-unified' }'' }
+    version: '2.0.0-unified' } } } }
 // Vector store with centralized connection (updated for embeddinggemma)
 export function getVectorStore() {
   try {
     // Import LangChain components
-    const { PGVectorStore } = require("@langchain/community/vectorstores/pgvector");
-    const { OllamaEmbeddings } = require("@langchain/community/embeddings/ollama");
+    const { PGVectorStore } }= require("@langchain/community/vectorstores/pgvector");
+    const { OllamaEmbeddings } }= require("@langchain/community/embeddings/ollama");
     const embeddings = new OllamaEmbeddings({
       model: "embeddinggemma:latest",
       baseUrl: "http://localhost:11434"
@@ -160,18 +159,17 @@ export function getVectorStore() {
     return new PGVectorStore(embeddings, {
       pool: getAppPool(),
       tableName: "vector_embeddings",
-      columns: {
-       , idColumnName: "id",
+      columns: { idColumnName: "id",
         vectorColumnName: "embedding",
         contentColumnName: "content",
         metadataColumnName: "metadata"
-      }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Vector store initialization failed:', error);
     throw new Error(`Vector store unavailable: ${error.message}`);
-  }
-}
+  } }
+} }
 // Database migration utilities
 export async function runMigration(migrationName: string, migrationSql: string): Promise<any> {
   return executeQuery(async (client) => {
@@ -189,8 +187,8 @@ export async function runMigration(migrationName: string, migrationSql: string):
           status = 'completed'
       `, [migrationName, Date.now() - start]);`
       await client.query('COMMIT');
-      return { success: true, executionTime: Date.now() - start }
-    } catch (error) {
+      return { success: true, executionTime: Date.now() - start } }
+    } }catch (error) {
       await client.query('ROLLBACK');
       // Record failed migration
       await client.query(`
@@ -202,6 +200,6 @@ export async function runMigration(migrationName: string, migrationSql: string):
           error_message = $2
       `, [migrationName, error.message]);`
       throw error;
-    }
+    } }
   }, true); // Use admin connection for migrations
 }

@@ -14,5 +14,6 @@ declare namespace svelteHTML {
     onsubmit?: (_event: Event) => any;
     onfocus?: (_event: FocusEvent) => any;
     onblur?: (_event: FocusEvent) => any;
-  }
-}
+  } }
+} }
+

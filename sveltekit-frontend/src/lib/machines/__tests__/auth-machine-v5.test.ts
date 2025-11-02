@@ -1,44 +1,38 @@
 // src/lib/machines/__tests__/auth-machine.test.ts
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createActor, createMachine, assign, fromPromise } from 'xstate';
-import { mockServices, perf } from '../../services/__tests__/setup.js';
-import type { AuthMachineState, LegalAIContext, LegalAIEvent } from '../../services/types.js';
+import { describe, it, expect, beforeEach, vi } }from 'vitest';
+import { createActor, createMachine, assign, fromPromise } }from 'xstate';
+import { mockServices, perf } }from '../../services/__tests__/setup.js';
+import type { AuthMachineState, LegalAIContext, LegalAIEvent } }from '../../services/types.js';
 // XState v5 compatible auth machine for testing Phase 5-7 performance optimization
 const authMachine = createMachine({
   id: 'authMachine',
   initial: 'idle',
-  context: {
-   , user: undefined,
+  context: { user: undefined,
     authToken: undefined,
     error: undefined,
     retryCount: 0,
     performanceMetrics: undefined
   },
-  states: {, idle: {, on: {
-       , LOGIN: 'authenticating'
-      }
+  states: { idle: { on: { LOGIN: 'authenticating'
+      } }
     },
-    authenticating: {, invoke: {, src: fromPromise(async ({ input }) => {
+    authenticating: { invoke: { src: fromPromise(async ({ input }) => {
           // Performance measurement for gRPC migration baseline
           const startTime = performance.now();
           const result = await mockServices.validateCredentials(input.credentials);
           const duration = performance.now() - startTime;
-          return { ...result, performanceMetrics: {, responseTime: duration, protocol: 'HTTP' } }
+          return { ...result, performanceMetrics: { responseTime: duration, protocol: 'HTTP' } }} }
         }),
         input: ({ event }) => ({ credentials: event.credentials }),
-        onDone: {
-         , target: 'authenticated',
-          actions: assign({
-           , user: ({ event }) => event.output,
+        onDone: { target: 'authenticated',
+          actions: assign({ user: ({ event }) => event.output,
             authToken: ({ event }) => event.output.token,
-            error: undefined;, retryCount: 0,
+            error: undefined; retryCount: 0,
             performanceMetrics: ({ event }) => event.output.performanceMetrics
           })
         },
-        onError: {
-         , target: 'error',
-          actions: assign({
-           , error: ({ event }) => {
+        onError: { target: 'error',
+          actions: assign({ error: ({ event }) => {
               const err = event.error;
               return err && typeof err === 'object' && 'message' in err
                 ? String((err as Error).message)
@@ -46,51 +40,45 @@ const authMachine = createMachine({
             },
             retryCount: ({ context }) => context.retryCount + 1
           })
-        }
-      }
+        } }
+      } }
     },
-    authenticated: {, on: {, LOGOUT: 'idle',
+    authenticated: { on: { LOGOUT: 'idle',
         TOKEN_EXPIRED: 'refreshingToken'
       },
-      after: {
-       , 3600000: 'refreshingToken' // Auto-refresh after, 1 hour
-      }
+      after: { 3600000: 'refreshingToken' // Auto-refresh after, 1 hour
+      } }
     },
-    refreshingToken: {, invoke: {, src: fromPromise(async () => {
+    refreshingToken: { invoke: { src: fromPromise(async () => {
           const startTime = performance.now();
           const result = await mockServices.refreshAuthToken();
           const duration = performance.now() - startTime;
-          return { ...result, performanceMetrics: {, responseTime: duration, protocol: 'HTTP' } }
+          return { ...result, performanceMetrics: { responseTime: duration, protocol: 'HTTP' } }} }
         }),
-        onDone: {
-         , target: 'authenticated',
-          actions: assign({
-           , authToken: ({ event }) => event.output.token,
+        onDone: { target: 'authenticated',
+          actions: assign({ authToken: ({ event }) => event.output.token,
             error: undefined,
             performanceMetrics: ({ event }) => event.output.performanceMetrics
           })
         },
-        onError: {
-         , target: 'idle',
-          actions: assign({
-           , error: ({ event }) => {
+        onError: { target: 'idle',
+          actions: assign({ error: ({ event }) => {
               const err = event.error;
               return err && typeof err === 'object' && 'message' in err
                 ? String((err as Error).message)
                 : String(err || 'Unknown error');
             },
-            user: undefined;, authToken: undefined
+            user: undefined; authToken: undefined
           })
-        }
-      }
+        } }
+      } }
     },
-    error: {, on: {, LOGIN: {
-         , target: 'authenticating',
+    error: { on: { LOGIN: { target: 'authenticating',
           guard: ({ context }) => context.retryCount < 3
-        }
-      }
-    }
-  }
+        } }
+      } }
+    } }
+  } }
 });
 describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
   beforeEach(() => {
@@ -109,7 +97,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // Send login event
       authActor.send({
         type: 'LOGIN',
-        credentials: {, email: 'test@example.com', password: 'password' }
+        credentials: { email: 'test@example.com', password: 'password' } }
       });
       // Wait for async completion
   await new Promise(resolve => setTimeout(resolve, 100));
@@ -138,7 +126,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         const startTime = performance.now();
         authActor.send({
           type: 'LOGIN',
-          credentials: {, email: `test${i}@example.com`, password: `password` }
+          credentials: { email: `test${i}@example.com`, password: `password` } }
         });
         await new Promise(resolve => setTimeout(resolve, 100);
         const duration = performance.now() - startTime;
@@ -146,7 +134,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         // Reset for next iteration
         authActor.send({ type: `LOGOUT` });
         await new Promise(resolve => setTimeout(resolve, 50);
-      }
+      } }
       const averageTime = measurements.reduce((a, b) => a + b, 0) / measurements.length;
       // Baseline metrics for gRPC optimization
       console.log(`HTTP/JSON Baseline Performance: ${averageTime.toFixed(2)}ms average`);
@@ -161,15 +149,15 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         attemptCount++;
         if (attemptCount <= 2) {
           throw new Error('Invalid credentials');
-        }
-        return { valid: true, userId: 'test-123', token: 'success-token', role: 'attorney' }
+        } }
+        return { valid: true, userId: 'test-123', token: 'success-token', role: 'attorney' } }
       });
       const authActor = createActor(authMachine);
       authActor.start();
       // First attempt - should fail
       authActor.send({
         type: 'LOGIN',
-        credentials: {, email: 'test@example.com', password: 'wrong' }
+        credentials: { email: 'test@example.com', password: 'wrong' } }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect((authActor.getSnapshot() as: any).value).toBe('error');
@@ -177,7 +165,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // Second attempt - should fail
       authActor.send({
         type: 'LOGIN',
-        credentials: {, email: 'test@example.com', password: 'wrong' }
+        credentials: { email: 'test@example.com', password: 'wrong' } }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect((authActor.getSnapshot() as: any).value).toBe('error');
@@ -185,7 +173,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // Third attempt - should succeed
       authActor.send({
         type: 'LOGIN',
-        credentials: {, email: 'test@example.com', password: 'correct' }
+        credentials: { email: 'test@example.com', password: 'correct' } }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect((authActor.getSnapshot() as: any).value).toBe('authenticated');
@@ -200,7 +188,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // Initial login
       authActor.send({
         type: 'LOGIN',
-        credentials: {, email: 'test@example.com', password: 'password' }
+        credentials: { email: 'test@example.com', password: 'password' } }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect((authActor.getSnapshot() as: any).value).toBe('authenticated');
@@ -222,7 +210,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // Login first
       authActor.send({
         type: 'LOGIN',
-        credentials: {, email: 'test@example.com', password: 'password` }'`
+        credentials: { email: 'test@example.com', password: 'password` } }`
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       // Simulate token refresh failure
@@ -253,12 +241,12 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
             userId: snapshot.context.user.userId || snapshot.context.user.id,
             role: snapshot.context.user.role
           });
-        }
+        } }
       });
       authActor.start();
       authActor.send({
         type: 'LOGIN',
-        credentials: {, email: 'test@example.com', password: `password` }
+        credentials: { email: 'test@example.com', password: `password` } }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       expect(sessionMachineHandler).toHaveBeenCalledWith('USER_AUTHENTICATED',
@@ -291,6 +279,6 @@ describe('Phase 5-7 Performance Benchmarks', () => {
       console.log(`   Target P95: ${(stats.p95 * 0.4).toFixed(2)}ms`);
       console.log(`   Concurrent Users: 2,500+ (400% increase)`);
       console.log(`   Throughput: 7,500 req/sec (1,500% increase)\n`);
-    }
+    } }
   });
 });

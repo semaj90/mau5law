@@ -1,4 +1,4 @@
-import { eq, sql as drizzleSql, and, gte } from 'drizzle-orm';
+import { eq, sql as drizzleSql, and, gte } }from 'drizzle-orm';
 // Fallback schema import - will gracefully degrade if schema not available
 // Use non-any types to satisfy lint/TS rules while still allowing a runtime fallback.
 type TablePlaceholder = Record<string, unknown>;
@@ -7,33 +7,33 @@ let schema: SchemaFallback;
 try {
   // Cast, from: unknown to our safe shape (avoids introducing `any`)
   schema = require('$lib/server/db/unified-schema') as: unknown as SchemaFallback;
-} catch {
+} }catch {
   // Provide a minimal, valid fallback schema structure using Record<string, unknown>
   schema = {
     // Tables referenced in this file - minimal placeholders so code can import/compile in degraded environments
-    legalDocuments: {} as TablePlaceholder,
-    documentChunks: {} as TablePlaceholder,
-    autoTags: {} as TablePlaceholder,
-    userAiQueries: {} as TablePlaceholder,
-    evidence: {} as TablePlaceholder,
-    cases: {} as TablePlaceholder,
+    legalDocuments: {} }as TablePlaceholder,
+    documentChunks: {} }as TablePlaceholder,
+    autoTags: {} }as TablePlaceholder,
+    userAiQueries: {} }as TablePlaceholder,
+    evidence: {} }as TablePlaceholder,
+    cases: {} }as TablePlaceholder,
     // Generic catch-all for: any other table access
-    // NOTE: these are plain placeholders — replace with your real Drizzle schema when available;, __fallback: {} as TablePlaceholder
+    // NOTE: these are plain placeholders — replace with your real Drizzle schema when available; __fallback: {} }as TablePlaceholder
   };
-}
+} }
 import Redis from 'ioredis';
-import { createHash } from 'crypto';
+import { createHash } }from 'crypto';
 // RAG Pipeline with PostgreSQL + pgvector + LangChain + Ollama
 // (Header line previously corrupted; cleaned.)
-import { Ollama } from '@langchain/community/llms/ollama';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { PromptTemplate } from '@langchain/core/prompts';
-import { RunnableSequence, RunnablePassthrough } from '@langchain/core/runnables';
-import { StringOutputParser } from '@langchain/core/output_parsers';
-import type { Document as LangChainDocument } from '@langchain/core/documents';
+import { Ollama } }from '@langchain/community/llms/ollama';
+import { RecursiveCharacterTextSplitter } }from 'langchain/text_splitter';
+import { PromptTemplate } }from '@langchain/core/prompts';
+import { RunnableSequence, RunnablePassthrough } }from '@langchain/core/runnables';
+import { StringOutputParser } }from '@langchain/core/output_parsers';
+import type { Document as LangChainDocument } }from '@langchain/core/documents';
 const postgres = require('postgres');
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { getOllamaBaseUrl, getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { drizzle } }from 'drizzle-orm/postgres-js';
+import { getOllamaBaseUrl, getOllamaEndpoint } }from '$lib/utils/ollama-endpoint';
 // Import schema directly (same path used across project). If it fails at runtime we degrade gracefully.
 // Configuration
 const EMBEDDING_MODEL = 'nomic-embed-text:latest';
@@ -50,7 +50,7 @@ const sql = postgres({
   max: 20,
   idle_timeout: 20,
   prepare: true,
-  ssl: process.env.NODE_ENV === 'production' ? {, rejectUnauthorized: false } : false
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } }: false
 });
 // --- Create Drizzle DB instance to use consistently as `db` ---
 const db = drizzle(sql);
@@ -80,22 +80,21 @@ class OllamaEmbeddingsClient { baseUrl: string;, model: string;
     this.baseUrl = (resolvedBase.length ? resolvedBase : OLLAMA_BASE_URL).replace(/\/$/, '');
     this.model = opts.model;
     this.requestOptions = opts.requestOptions || {};
-  }
+  } }
   // Keep signature used elsewhere in this file
   async embedQuery(text: string): Promise<number[]> {
-    const payload: any = {
-     , model: this.model,
+    const payload: any = { model: this.model,
       input: text,
       // Map to Ollama option name; avoid unsupported property names (TS-safe)
       options: {
         ...(this.requestOptions || {})
-      }
+      } }
     };
     // Ensure numeric thread option uses Ollama expected key (num_thread)
     if (this.requestOptions?.numThread != null) {
       payload.options.num_thread = this.requestOptions.numThread;
       delete payload.options.numThread;
-    }
+    } }
     const res = await fetch(getOllamaEndpoint('embeddings', this.baseUrl), {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
@@ -103,8 +102,8 @@ class OllamaEmbeddingsClient { baseUrl: string;, model: string;
     });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
-      throw new Error(`Ollama embeddings error: ${res.status} ${res.statusText} ${text}`);
-    }
+      throw new Error(`Ollama embeddings error: ${res.status} }${res.statusText} }${text}`);
+    } }
     const json = await res.json().catch(() => ({}));
     // Support a few plausible response shapes returned by Ollama / wrappers
     if (Array.isArray(json) && json[0]?.embedding) return json[0].embedding;
@@ -112,16 +111,15 @@ class OllamaEmbeddingsClient { baseUrl: string;, model: string;
     if (json?.embedding && Array.isArray(json.embedding)) return json.embedding;
     // Fallback empty vector
     return [];
-  }
-}
+  } }
+} }
 const embeddings = new OllamaEmbeddingsClient({
   baseUrl: OLLAMA_BASE_URL,
   model: EMBEDDING_MODEL,
-  requestOptions: {
-   , useMMap: true,
+  requestOptions: { useMMap: true,
     // Use singular: 'numThread' internally; wrapper maps to Ollama's num_thread.'
    , numThread: 8
-  }
+  } }
 });
 const llm = new Ollama({
   baseUrl: OLLAMA_BASE_URL,
@@ -167,16 +165,16 @@ export class LegalRAGPipeline {
     const testEmbedding = await embeddings.embedQuery('test');
     console.log('[RAG] Embeddings working:', testEmbedding.length === EMBEDDING_DIMENSIONS);
     this.initialized = true;
-  }
+  } }
   // === DOCUMENT INGESTION ===
-  async ingestLegalDocument(params: {, title: string;, content: string;
+  async ingestLegalDocument(params: { title: string;, content: string;
    , documentType: string;
     metadata?: { [key: string]: any };
     caseId?: string;
    , userId: string;
   }) {
     const startTime = Date.now();
-    const { title, content, documentType, metadata = {}, caseId, userId } = params;
+    const { title, content, documentType, metadata = {}, caseId, userId } }= params;
     try {
       // 1. Create main document record (use db from drizzle)
       const [document] = await db
@@ -219,12 +217,12 @@ export class LegalRAGPipeline {
                 position: i + idx,
                 totalChunks: chunks.length,
                 ...metadata
-              }
+              } }
             };
           })
         );
         await db.insert(schema.documentChunks).values(chunkRecords);
-      }
+      } }
       // 5. Auto-generate tags using AI
       const tags = await this.generateAutoTags(content, documentType);
       for (const tag of tags) {
@@ -236,7 +234,7 @@ export class LegalRAGPipeline {
           source: 'ai_analysis',
           model: LLM_MODEL
         });
-      }
+      } }
       const processingTime = Date.now() - startTime;
       console.log(`[RAG] Document ingestion completed in ${processingTime}ms`);
       return {
@@ -245,20 +243,19 @@ export class LegalRAGPipeline {
         tags: tags.map((t: any) => t.tag),
         processingTime
       };
-    } catch (error: any) {
-      console.error('[RAG] Ingestion error:', error);'
+    } }catch (error: any) {
+      console.error('[RAG] Ingestion error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   // === RETRIEVAL & SEARCH ===
-  async hybridSearch(params: {
-   , query: string;
+  async hybridSearch(params: { query: string;
     caseId?: string;
     documentType?: string;
     limit?: number;
     threshold?: number;
   }): Promise<LangChainDocument[]> {
-    const { query, caseId, documentType, limit = 10, threshold = 0.5 } = params;
+    const { query, caseId, documentType, limit = 10, threshold = 0.5 } }= params;
     try {
       const queryEmbedding = await this.generateEmbedding(query);
       // Vector results (using sql tagged template) - keep as-is but ensure usage is syntactically valid
@@ -270,11 +267,11 @@ export class LegalRAGPipeline {
           dc.document_id,
           1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
         FROM document_chunks dc
-        WHERE, 1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) > ${threshold}
-          ${caseId ? sql`AND dc.metadata->>'caseId' = ${caseId}` : sql``}
-          ${documentType ? sql`AND dc.document_type = ${documentType}` : sql`` }
+        WHERE, 1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) > ${threshold} }
+          ${caseId ? sql`AND dc.metadata->>'caseId' = ${caseId}` : sql``} }
+          ${documentType ? sql`AND dc.document_type = ${documentType}` : sql`` } }
         ORDER BY dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector
-        LIMIT ${limit * 2}
+        LIMIT ${limit * 2} }
       `;`
       const keywordResults = await sql`
         SELECT
@@ -286,10 +283,10 @@ export class LegalRAGPipeline {
         FROM document_chunks dc
         WHERE
           to_tsvector('english', dc.content) @@ plainto_tsquery('english', ${query})
-          ${caseId ? sql`AND dc.metadata->>'caseId' = ${caseId}` : sql``}
-          ${documentType ? sql`AND dc.document_type = ${documentType}` : sql`` }
+          ${caseId ? sql`AND dc.metadata->>'caseId' = ${caseId}` : sql``} }
+          ${documentType ? sql`AND dc.document_type = ${documentType}` : sql`` } }
         ORDER BY text_rank DESC
-        LIMIT ${limit}
+        LIMIT ${limit} }
       `;`
       // --- typed result merging (replaces previous: any usage) ---
       type VectorRow = { id: string | number;, content: string;
@@ -329,7 +326,7 @@ export class LegalRAGPipeline {
         if (existing) {
           existing.score += textRank * 0.3;
           existing.text_rank = textRank;
-        } else {
+        } }else {
           combinedResults.set(id, {
             id,
             content: r.content,
@@ -338,7 +335,7 @@ export class LegalRAGPipeline {
             text_rank: textRank,
             score: textRank * 0.3
           });
-        }
+        } }
       });
       // Sort by combined score and convert to Documents
       const sortedResults = Array.from(combinedResults.values())
@@ -353,24 +350,23 @@ export class LegalRAGPipeline {
             score: r.score,
             similarity: r.similarity || 0,
             textRank: r.text_rank || 0
-          }
+          } }
         })
       );
-    } catch (error: any) {
+    } }catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
-      console.error('[RAG] Search error:', err);'
+      console.error('[RAG] Search error:', err);
       throw err;
-    }
-  }
+    } }
+  } }
   // === QUESTION ANSWERING ===
-  async answerLegalQuestion(params: {
-   , question: string;
+  async answerLegalQuestion(params: { question: string;
     caseId?: string;
    , userId: string;
     conversationContext?: string;
   }) {
     const startTime = Date.now();
-    const { question, caseId, userId, conversationContext } = params;
+    const { question, caseId, userId, conversationContext } }= params;
     try {
       const relevantDocs = await this.hybridSearch({
         query: question,
@@ -385,14 +381,14 @@ export class LegalRAGPipeline {
           sources: [],
           confidence: 0
         };
-      }
-      const context = relevantDocs.map((doc, idx) => `[Source ${idx + 1}]:\n${doc.pageContent}`).join('\n\n---\n\n');
+      } }
+      const context = relevantDocs.map((doc, idx) => `[Source ${idx + 1} }:\n${doc.pageContent}`).join('\n\n---\n\n');
       // --- Cleaned prompt (removed stray characters and ensured valid template) ---
       const promptTemplate = PromptTemplate.fromTemplate(`
 You are a legal AI assistant with expertise in legal analysis. Answer the question based ONLY on the provided context.
-${conversationContext ? `Previous Conversation Context:\n${conversationContext}\n\n` : `` }
+${conversationContext ? `Previous Conversation Context:\n${conversationContext}\n\n` : `` } }
 Legal, Context:
-{context}, Question: {question}, Instructions:
+{context} }, Question: {question} }, Instructions:
 1. Provide a clear, accurate answer based on the context
 2. Cite specific sources using [Source N] notation
 3. Identify: any legal principles or precedents mentioned
@@ -416,15 +412,13 @@ Answer: ');'
         processingTime: Date.now() - startTime,
         contextUsed: relevantDocs.map(d => d.metadata.documentId),
         embedding: JSON.stringify(queryEmbedding),
-        metadata: {
-         , sourcesCount: relevantDocs.length,
+        metadata: { sourcesCount: relevantDocs.length,
           keyPoints: analysis.keyPoints
-        }
+        } }
       });
       return {
         answer,
-        sources: relevantDocs.map(d => ({
-         , id: d.metadata.documentId,
+        sources: relevantDocs.map(d => ({ id: d.metadata.documentId,
           title: (d.metadata, as: any).title,
           score: d.metadata.score
         })),
@@ -432,8 +426,8 @@ Answer: ');'
         keyPoints: analysis.keyPoints,
         processingTime: Date.now() - startTime
       };
-    } catch (error: any) {
-      console.error('[RAG] QA error:', error);'
+    } }catch (error: any) {
+      console.error('[RAG] QA error:', error);
       await db.insert(schema.userAiQueries).values({
         userId,
         caseId,
@@ -445,14 +439,14 @@ Answer: ');'
         processingTime: Date.now() - startTime
       });
       throw error;
-    }
-  }
+    } }
+  } }
   // === LEGAL ANALYSIS CHAINS ===
   async analyzeContract(contractText: string) {
     const contractPrompt = PromptTemplate.fromTemplate(`
 You are a legal expert specializing in contract analysis. Analyze the following contract and provide a structured assessment.
 Contract:)
-{contract}
+{contract} }
 Provide your analysis in the following format:
 1. CONTRACT TYPE & PARTIES
 - Type of contract
@@ -483,7 +477,7 @@ Provide specific clause references where applicable.
     const chainResult = await chain.invoke({ contract: contractText });
     const analysis = typeof chainResult === 'string' ? chainResult : chainResult.parse || '';
     return this.parseContractAnalysis(analysis);
-  }
+  } }
   async correlateEvidence(evidenceIds: string[]) {
     // Fetch evidence content using raw SQL to avoid Drizzle type errors with the fallback schema.
     // This returns rows as plain objects (any), so accessing title/description/summary is safe.
@@ -494,13 +488,13 @@ Provide specific clause references where applicable.
     `;`
     // Build formatted evidence blocks for the prompt
     const formattedEvidence = evidenceRecords.map(
-      (e: any, i: number) => `Evidence ${i + 1} (${e.title ?? 'Untitled` }): '
-${e.description ?? ''}
+      (e: any, i: number) => `Evidence ${i + 1} }(${e.title ?? 'Untitled` }): '
+${e.description ?? ''} }
 ${e.summary ?? '` }`'
     );
     const correlationPrompt = PromptTemplate.fromTemplate(`
 As a legal analyst, examine the relationships between these pieces of evidence:
-${formattedEvidence.join('\n\n')}
+${formattedEvidence.join('\n\n')} }
 Provide a comprehensive analysis covering:
 1. DIRECT CONNECTIONS
 - Explicit relationships between evidence items
@@ -530,19 +524,19 @@ Analysis:
     `);`
     const chain = RunnableSequence.from([correlationPrompt, llm, new StringOutputParser()]);
     return await chain.invoke({});
-  }
+  } }
   // === HELPER METHODS ===
   private async generateEmbedding(text: string): Promise<number[]> {
     const cacheKey = `embedding:${this.hashText(text)}`;
     const cached = await redis.get(cacheKey);
     if (cached) {
       return JSON.parse(cached);
-    }
+    } }
     const embedding = await embeddings.embedQuery(text);
     // Cache for, 24 hours
     await redis.set(cacheKey, JSON.stringify(embedding), 'EX', 60 * 60 * 24);
     return embedding;
-  }
+  } }
   private async smartLegalChunking(content: string): Promise<string[]> {
     const chunks: string[] = [];
     const sectionPatterns = [
@@ -559,31 +553,31 @@ Analysis:
         for (let i = 0; i < sections.length; i++) {
           if (sections[i].trim().length > 50) {
             structuredChunks.push(sections[i].trim());
-          }
-        }
+          } }
+        } }
         if (structuredChunks.length > 0) break;
-      }
-    }
+      } }
+    } }
     if (structuredChunks.length === 0) {
       const docs = await textSplitter.createDocuments([content]);
       structuredChunks = docs.map(d => d.pageContent);
-    }
+    } }
     for (const chunk of structuredChunks) {
       if (chunk.length > 2000) {
         const subDocs = await textSplitter.createDocuments([chunk]);
         chunks.push(...subDocs.map(d => d.pageContent));
-      } else {
+      } }else {
         chunks.push(chunk);
-      }
-    }
+      } }
+    } }
     return chunks;
-  }
+  } }
   private async generateAutoTags(content: string, documentType: string): Promise<Array<any>> {
     const tagPrompt = PromptTemplate.fromTemplate(`
-Extract relevant legal tags from this {documentType} document.
+Extract relevant legal tags from this {documentType} }document.
 Focus on: legal concepts, parties, jurisdictions, case types, and key topics.
 Document excerpt:
-{content}
+{content} }
 Return ONLY a JSON array of tags with confidence scores (0-1):
 [{"tag": "contract law", "confidence": 0.95}, ...]
     `);`
@@ -597,17 +591,17 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
       const jsonMatch = responseText.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]);
-      }
+      } }
       return [];
-    } catch (error: any) {
-      console.error('[RAG] Auto-tagging error:', error);'
+    } }catch (error: any) {
+      console.error('[RAG] Auto-tagging error:', error);
       return [];
-    }
-  }
+    } }
+  } }
   private async analyzeAnswer(answer: string, sources: LangChainDocument[]) {
     if (!sources || sources.length === 0) {
       return { confidence: 0, keyPoints: [] };
-    }
+    } }
     const avgScore = sources.reduce((sum, doc) => sum + (doc.metadata?.score || 0), 0) / (sources.length || 1);
     const confidence = Math.min(0.95, avgScore);
     // Extract simple key points from the answer: first, 3 non-empty lines after trimming common bullets
@@ -620,7 +614,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
       confidence,
       keyPoints
     };
-  }
+  } }
   private parseContractAnalysis(analysis: string) {
     const sections = {
       contractType: '',
@@ -658,22 +652,23 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
           case, 'recommendations':
             sections.recommendations.push(trimmed);
             break;
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return sections;
-  }
+  } }
   private hashText(text: string): string {
     return createHash('sha256').update(text).digest('hex');
-  }
+  } }
   // === CLEANUP ===
   async close() {
     // Cleanup handled by connection pool
     try {
       await sql.end();
-    } catch {
-      // ignore if postgres client doesn't expose end` }'`
-  }
-}
+    } }catch {
+      // ignore if postgres client doesn't expose end` } }`
+  } }
+} }
 // Export singleton instance
 export const ragPipeline = new LegalRAGPipeline();
+

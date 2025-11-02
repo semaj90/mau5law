@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+import { json } }from '@sveltejs/kit';
 
 /**
  * POST /api/evidence-canvas/save
@@ -12,20 +12,21 @@ export async function POST({ request }): Promise<any> {
     // basic validation
     if (!body || typeof body !== 'object') {
       return json({ error: 'Invalid JSON body' }, { status: 400 });
-    }
+    } }
     if (!body.id && !body.metadata && !body.data) {
       return json({ error: 'Missing required canvas fields (id, metadata or data)' }, { status: 400 });
-    }
+    } }
 
     // Construct a saved: object placeholder. Replace with DB/minio persistence as needed.
     const savedCanvas = {
-     , id: body.id || `canvas_${Date.now()}`,
+  id: body.id || `canvas_${Date.now()}`,
       metadata: body.metadata || {},
       data: body.data || null,
       updated_at: new Date().toISOString()
     };
 
     return json({ success: true, canvas: savedCanvas }, { status: 201 });
-  } catch (err) {
-    return json({ error: 'Unable to parse JSON or process request' }, { status: 400 });'' }
-}
+  } }catch (err) {
+    return json({ error: 'Unable to parse JSON or process request' }, { status: 400 });'' } }
+} }
+

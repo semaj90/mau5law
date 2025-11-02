@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { legalAI } from '$lib/server/unified/legal-ai-service';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { legalAI } }from '$lib/server/unified/legal-ai-service';
 export const GET: RequestHandler = async _event => {
   try {
     const health = await legalAI.healthCheck();
@@ -16,24 +16,25 @@ export const GET: RequestHandler = async _event => {
       },
       {
         status: overall ? 200 : 503
-      }
+      } }
     );
-  } catch (error) {
-    console.error('Health check error:', error);'
+  } }catch (error) {
+    console.error('Health check error:', error);
     return json(
       {
         status: 'unhealthy',
         timestamp: new Date().toISOString(),
         error: error instanceof Error ? error.message : 'Unknown error',
         services: {
-         , postgresql: false,
+  postgresql: false,
           redis: false,
           minio: false,
           qdrant: false,
           neo4j: false
-        }
+        } }
       },
-      { status: 503 }
+      { status: 503 } }
     );
-  }
+  } }
 };
+

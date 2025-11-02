@@ -3,8 +3,8 @@
  * Returns authenticated user data and session details
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { auth } }from '$lib/server/auth';
 
 export const GET: RequestHandler = async (event) => {
   try {
@@ -16,17 +16,17 @@ export const GET: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-           , message: 'Not authenticated',
+  message: 'Not authenticated',
             code: 'NO_SESSION',
             status: 401
-          }
+          } }
         },
-        { status: 401 }
+        { status: 401 } }
       );
-    }
+    } }
 
     // Get session and user from Lucia
-    const { session, user } = await auth.validateSession(sessionId);
+    const { session, user } }= await auth.validateSession(sessionId);
 
     if (!session || !user) {
       // Clear invalid session cookie
@@ -40,20 +40,20 @@ export const GET: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-           , message: 'Session expired or invalid',
+  message: 'Session expired or invalid',
             code: 'INVALID_SESSION',
             status: 401
-          }
+          } }
         },
-        { status: 401 }
+        { status: 401 } }
       );
-    }
+    } }
 
     // Return user session information
     return json({
       success: true,
       user: {
-       , id: user.id,
+  id: user.id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -61,22 +61,23 @@ export const GET: RequestHandler = async (event) => {
         avatarUrl: user.avatarUrl
       },
       session: {
-       , id: session.id,
+  id: session.id,
         expiresAt: session.expiresAt.toISOString()
-      }
+      } }
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error fetching user session:', error);
     return json(
       {
         success: false,
         error: {
-         , message: 'Failed to fetch user session',
+  message: 'Failed to fetch user session',
           code: 'SESSION_ERROR',
           status: 500
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

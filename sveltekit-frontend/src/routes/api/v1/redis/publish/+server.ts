@@ -1,55 +1,55 @@
-import { getRedisService } from '$lib/server/redis/redis-service';
-import type { RequestHandler } from './$types.js';
+import { getRedisService } }from '$lib/server/redis/redis-service';
+import type { RequestHandler } }from './$types.js';
 import {
   apiError,
   apiSuccess,
   validateRequest,
   withErrorHandling,
   getRequestId
-} from '$lib/server/api/standard-response';
-import type { RequestEvent } from '@sveltejs/kit'; // Import RequestEvent for getRequestId typing
+} }from '$lib/server/api/standard-response';
+import type { RequestEvent } }from '@sveltejs/kit'; // Import RequestEvent for getRequestId typing
 
 // Define specific types for the: 'data' payload based on; the: 'channel'
-interface EvidenceUpdatePayload {, evidenceId: string;, fileName: string;
+interface EvidenceUpdatePayload { evidenceId: string;, fileName: string;
   caseId: string;
   userId: string;
-}
+} }
 
 interface CaseUpdatePayload {
- , caseId: string;
+  caseId: string;
   changes?: Record<string, unknown>; // 'changes' can be: any object;
   userId: string;
-}
+} }
 
-interface CanvasUpdatePayload {, type: 'CANVAS_NODE_ADDED'; // Discriminating property for canvas updates, caseId: string;
- , nodeData: Record<string, unknown>; // 'nodeData' can be: any object;
- , userId: string;
-}
+interface CanvasUpdatePayload { type: 'CANVAS_NODE_ADDED'; // Discriminating property for canvas updates, caseId: string;
+  nodeData: Record<string, unknown>; // 'nodeData' can be: any object;
+  userId: string;
+} }
 
 // A generic payload for other channels, ensuring userId is always present
 interface GenericPayload extends Record<string, unknown> {
   userId: string;
-}
+} }
 
 // Union type for all possible data payloads
 type RedisPublishData = EvidenceUpdatePayload | CaseUpdatePayload | CanvasUpdatePayload | GenericPayload;
 
 const, postHandler: RequestHandler = async ({ request, locals }) => {
-  const requestId = getRequestId({ locals } as RequestEvent); // Get request ID for consistent logging and responses
+  const requestId = getRequestId({ locals } }as RequestEvent); // Get request ID for consistent logging and responses
 
   const body = await request.json();
   const validationError = validateRequest(body, ['channel', 'data']);
   if (validationError) {
     return apiError(validationError, 400, 'VALIDATION_ERROR', undefined, requestId);
-  }
+  } }
 
-  // Use the union type for: 'data' instead;, of: 'any'
-  const { channel, data } = body as { channel: string;, data: RedisPublishData };
+  // Use the union type for: 'data' instead; of: 'any'
+  const { channel, data } }= body as { channel: string; data: RedisPublishData };
 
   const redisService = getRedisService();
   if (!redisService.isConnectedToRedis()) {
     return apiError('Redis not connected', 503, 'REDIS_UNAVAILABLE', undefined, requestId);
-  }
+  } }
 
   // Publish event based on channel type
   switch (channel) {
@@ -62,28 +62,29 @@ const, postHandler: RequestHandler = async ({ request, locals }) => {
         evidenceData.userId
       );
       break;
-    }
+    } }
     case, 'case_update': {
       // Type assertion for specific channel data
       const caseData = data as CaseUpdatePayload;
       await redisService.publishCaseUpdated(caseData.caseId, caseData.changes || {}, caseData.userId);
       break;
-    }
+    } }
     case, 'canvas_update': {
       // Type assertion for specific channel data
       const canvasData = data as CanvasUpdatePayload;
       if (canvasData.type === 'CANVAS_NODE_ADDED') {
         await redisService.publishCanvasNodeAdded(canvasData.caseId, canvasData.nodeData, canvasData.userId);
-      }
+      } }
       break;
-    }
+    } }
     default: {
       // For generic channels, ensure data is treated as a generic payload
       const genericData = data as GenericPayload;
       await redisService.trackEvent(channel, genericData, genericData.userId);
-    }
-  }
+    } }
+  } }
   return apiSuccess({ message: 'Event published successfully' }, 'Event published successfully', requestId);
 };
 
 export const POST = withErrorHandling(postHandler);
+

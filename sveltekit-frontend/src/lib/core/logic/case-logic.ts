@@ -7,7 +7,7 @@ export type CaseFile = { id: string;, title: string;
   pages?: number;
   attachments?: number;
   lastUpdated?: string;
-}
+} }
 export const CaseLogic = {
   calculateRiskScore(caseFile: CaseFile) {
     // Simple deterministic risk score for demo purposes
@@ -24,5 +24,5 @@ export const CaseLogic = {
     if (score >= 50) return, 'High';
     if (score >= 25) return, 'Medium';
     return, 'Low';
-  }
+  } }
 }

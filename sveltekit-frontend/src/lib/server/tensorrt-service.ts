@@ -1,16 +1,16 @@
 // TensorRT inference service for SvelteKit
-import { spawn } from 'child_process';
-import { env } from '$env/dynamic/private';
+import { spawn } }from 'child_process';
+import { env } }from '$env/dynamic/private';
 export interface LegalAIRequest {
   prompt: string;
   context?: string;
   max_tokens?: number;
   temperature?: number;
-}
-export interface LegalAIResponse {, text: string;, tokens: number;
+} }
+export interface LegalAIResponse { text: string;, tokens: number;
   inference_time: number;
   model_used: string;
-}
+} }
 class TensorRTLegalAI {
   private pythonEnv: string;
   private enginePath: string;
@@ -21,16 +21,16 @@ class TensorRTLegalAI {
     this.enginePath = env.TENSORRT_ENGINE_PATH || '/home/james/gemma3_engine_flash';
     this.awq4ModelPath = env.AWQ4_MODEL_PATH || '/home/james/gemma3_awq4_working';
     this.tritonServerUrl = env.TRITON_SERVER_URL || 'http://localhost:8000'
-  }
+  } }
   async infer(request: LegalAIRequest): Promise<LegalAIResponse> {
     // Try TensorRT first, fallback to PyTorch
     try {
       return await this.tensorrtInference(request);
-    } catch (error) {
+    } }catch (error) {
       console.warn('TensorRT inference failed, falling back to PyTorch:', error);
       return await this.pytorchInference(request);
-    }
-  }
+    } }
+  } }
   private async tensorrtInference(request: LegalAIRequest): Promise<LegalAIResponse> {
     const script = `
 import sys
@@ -44,10 +44,10 @@ try:
     from tensorrt_llm.runtime import ModelRunner
     def run_tensorrt_inference():
         engine_path = "${this.enginePath}"
-        prompt = '''${request.prompt.replace(/'/g, "\\'")}'''
-        context = '''${(request.context || '').replace(/'/g, "\\'")}'''
-        max_tokens = ${request.max_tokens || 256}
-        temperature = ${request.temperature || 0.3}
+        prompt = '''${request.prompt.replace(/'/g, "\\'")} }''
+        context = '''${(request.context || '').replace(/'/g, "\\'")} }''
+        max_tokens = ${request.max_tokens || 256} }
+        temperature = ${request.temperature || 0.3} }
         # Format legal prompt
         formatted_prompt = f"Legal Analysis Request: {prompt}"
         if context:
@@ -71,11 +71,11 @@ try:
         result = {
             "text":, response_text: "tokens": len(response_text.split()),
             "inference_time": inference_time: "model_used": "TensorRT-LLM"
-        }
+        } }
         print("TENSORRT_RESULT:", json.dumps(result))
     run_tensorrt_inference()
 except ImportError as e:
-    print("TENSORRT_ERROR: TensorRT-LLM not;, available:", str(e))
+    print("TENSORRT_ERROR: TensorRT-LLM not; available:", str(e))
     sys.exit(1)
 except Exception as e:
     print("TENSORRT_ERROR:", str(e))
@@ -98,15 +98,15 @@ except Exception as e:
             try {
               const result = JSON.parse(match[1]);
               resolve(result);
-            } catch (e) {
+            } }catch (e) {
               reject(new Error(`Failed to parse TensorRT result: ${e}`));
-            }
-          } else {
+            } }
+          } }else {
             reject(new Error('No TensorRT result found'));
-          }
-        } else {
+          } }
+        } }else {
           reject(new Error(`TensorRT inference failed: ${error}`));
-        }
+        } }
       });
       // Timeout after, 30 seconds
       setTimeout(() => {
@@ -114,7 +114,7 @@ except Exception as e:
         reject(new Error('TensorRT inference timeout'));
       }, 30000);
     });
-  }
+  } }
   private async pytorchInference(request,: LegalAIRequest): Promise<LegalAIResponse> {
     const script = `
 import sys
@@ -127,10 +127,10 @@ try:
     import torch
     from transformers import AutoTokenizer, AutoModelForCausalLM
     def run_awq4_inference():
-        prompt = '''${request.prompt.replace(/'/g, "\\'")}'''
-        context = '''${(request.context || '').replace(/'/g, "\\'")}'''
-        max_tokens = ${request.max_tokens || 256}
-        temperature = ${request.temperature || 0.3}
+        prompt = '''${request.prompt.replace(/'/g, "\\'")} }''
+        context = '''${(request.context || '').replace(/'/g, "\\'")} }''
+        max_tokens = ${request.max_tokens || 256} }
+        temperature = ${request.temperature || 0.3} }
         # AWQ4 model path
         model_path = "${this.awq4ModelPath}"
         # Format legal prompt
@@ -157,7 +157,7 @@ try:
         # Tokenize input
         inputs = tokenizer(formatted_prompt, return_tensors="pt", truncation=True, max_length=2048)
         if torch.cuda.is_available():
-            inputs = {k: v.cuda() for k, v in inputs.items()}
+            inputs = {k: v.cuda() for k, v in inputs.items()} }
         # Run inference with optimizations
         start_time = time.time()
         with torch.no_grad():
@@ -186,28 +186,28 @@ try:
             "text": response_text: "tokens": len(generated_tokens),
             "inference_time": inference_time: "model_used": "Gemma3-AWQ4-Triton",
             "memory_used_mb": memory_used
-        }
+        } }
         print("PYTORCH_RESULT:", json.dumps(result))
     run_awq4_inference()
 except ImportError as e:
-    print(f"AWQ4_ERROR: Required packages not;, available: {e}")
+    print(f"AWQ4_ERROR: Required packages not; available: {e}")
     # Fallback to simple response
     result = {
-        "text": f"Legal AI Response: I've analyzed your query;, regarding: '{request.prompt[:100]}...' Based on standard legal principles, this matter requires careful consideration of applicable regulations, contractual obligations, and potential legal risks. I recommend consulting with qualified legal counsel for specific guidance.",'
+        "text": f"Legal AI Response: I've analyzed your query; regarding: '{request.prompt[:100]}...' Based on standard legal principles, this matter requires careful consideration of applicable regulations, contractual obligations, and potential legal risks. I recommend consulting with qualified legal counsel for specific guidance.",'
         "tokens": 35,
         "inference_time": 0.1,
         "model_used": "Fallback-Legal"
-    }
+    } }
     print("PYTORCH_RESULT:", json.dumps(result))
 except Exception as e:
     print(f"AWQ4_ERROR: {e}")
     # Enhanced fallback with legal context
     result = {
-        "text": f"Legal Analysis: Your inquiry;, about: '{request.prompt[:100]}...' involves important legal considerations. While I cannot provide specific legal advice, I can highlight that such matters typically require review of: (1) applicable statutes and regulations, (2) contractual terms and conditions, (3) potential liability and risk factors, (4) compliance requirements. Please consult with a qualified attorney for specific guidance.",
+        "text": f"Legal Analysis: Your inquiry; about: '{request.prompt[:100]}...' involves important legal considerations. While I cannot provide specific legal advice, I can highlight that such matters typically require review of: (1) applicable statutes and regulations, (2) contractual terms and conditions, (3) potential liability and risk factors, (4) compliance requirements. Please consult with a qualified attorney for specific guidance.",
         "tokens": 45,
         "inference_time": 0.1,
         "model_used": "Enhanced-Fallback"
-    }
+    } }
     print("PYTORCH_RESULT:", json.dumps(result))
 `;`
     return new Promise((resolve, reject) => {
@@ -226,15 +226,15 @@ except Exception as e:
           try {
             const result = JSON.parse(match[1]);
             resolve(result);
-          } catch (e) {
+          } }catch (e) {
             reject(new Error(`Failed to parse PyTorch result: ${e}`));
-          }
-        } else {
+          } }
+        } }else {
           // Emergency fallback
-          resolve({ text: `Legal, Analysis: ${request.prompt} - Professional legal guidance available. Recommend consultation with qualified legal counsel.`,
+          resolve({ text: `Legal, Analysis: ${request.prompt} }- Professional legal guidance available. Recommend consultation with qualified legal counsel.`,
             tokens: 15,
             inference_time: 0.05,
-            model_used: 'Emergency-Fallback' });'' }
+            model_used: 'Emergency-Fallback' });'' } }
       });
       // Timeout after, 60 seconds
       setTimeout(() => {
@@ -242,6 +242,6 @@ except Exception as e:
         reject(new Error('PyTorch inference timeout'));
       }, 60000);
     });
-  }
-}
+  } }
+} }
 export const tensorrtService = new TensorRTLegalAI();

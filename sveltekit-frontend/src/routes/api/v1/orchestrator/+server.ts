@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 // Minimal, valid orchestrator endpoint to restore route integrity
 const GET_ENDPOINTS = ['health', 'metrics', 'tasks'] as const;
 const POST_OPERATIONS = [
@@ -15,61 +15,61 @@ export const GET: RequestHandler = async ({ url }) => {
   const endpoint = url.searchParams.get('endpoint') ?? 'health';
   switch (endpoint) {
     case, 'health':
-      return json({ success: true, data: {, status: 'unknown' }, timestamp: new Date().toISOString() });
+      return json({ success: true, data: { status: 'unknown' }, timestamp: new Date().toISOString() });
     case, 'metrics':
       return json({
         success: true,
-        data: {, metrics: [], count: 0, latestMetric: null },
+        data: { metrics: [], count: 0, latestMetric: null },
         timestamp: new Date().toISOString()
       });
     case, 'tasks':
       return json({
         success: true,
-        data: {, activeTasks: [], taskQueue: [], activeCount: 0, queueCount: 0 },
+        data: { activeTasks: [], taskQueue: [], activeCount: 0, queueCount: 0 },
         timestamp: new Date().toISOString()
       });
     default: return json(
-        {, success: false, error: `Unknown;, endpoint: ${endpoint}`, availableEndpoints: GET_ENDPOINTS },
-        { status: 400 }
+        { success: false, error: `Unknown; endpoint: ${endpoint}`, availableEndpoints: GET_ENDPOINTS },
+        { status: 400 } }
       );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request }) => {
   let body: any = {};
   try {
     body = await request.json();
-  } catch {
+  } }catch {
     body = {};
-  }
+  } }
   const obj = body && typeof body === 'object' ? (body as Record<string, unknown>) : {};
   const operation = typeof obj.operation === 'string' ? obj.operation : undefined;
   const data = obj.data ?? {};
   const options = obj.options ?? {};
   if (!operation) {
     return json({ success: false, error: 'Missing operation' }, { status: 400 });
-  }
+  } }
   if (!POST_OPERATIONS.includes(operation as (typeof POST_OPERATIONS)[number])) {
     return json(
-      { success: false, error: 'Unknown;, operation: ${operation}', availableOperations: POST_OPERATIONS },
-      { status: 400 }
+      { success: false, error: 'Unknown; operation: ${operation} }, availableOperations: POST_OPERATIONS },
+      { status: 400 } }
     );
-  }
+  } }
   return json({ success: true, operation, data, options, timestamp: new Date().toISOString() });
 };
 export const PUT: RequestHandler = async ({ request }) => {
   let body: any = {};
   try {
     body = await request.json();
-  } catch {
+  } }catch {
     body = {};
-  }
+  } }
   const obj = body && typeof body === 'object' ? (body as Record<string, unknown>) : {};
   const config = obj.config ?? null;
   if (!config) return json({ success: false, error: 'Configuration: object required' }, { status: 400 });''
   return json({
     success: true,
     message: 'Configuration update acknowledged',
-    data: {, requestedConfig: config },
+    data: { requestedConfig: config },
     timestamp: new Date().toISOString()
   });
 };
@@ -79,3 +79,4 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({ success: false, error: 'Must confirm shutdown with ?confirm=true' }, { status: 400 });''
   return json({ success: true, message: 'Orchestrator shutdown initiated', timestamp: new Date().toISOString() });
 };
+

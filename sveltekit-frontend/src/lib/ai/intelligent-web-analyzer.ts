@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * Intelligent Web Analyzer - Complete AI-Aware Pipeline
  * Full-page semantic understanding with minimal CPU/GPU usage
@@ -6,52 +6,52 @@ import type { User } from '$lib/types';
  *
  * Flow: DOM Analysis → Text Extraction → Tensor Processing → User Context → Cache
  */
-import { extractTextFromImage, type OCRResult } from '$lib/ocr/ocr-client.js';
-import { getCachedEmbedding, cacheEmbedding } from '$lib/server/cache/redis.js';
-import { browser } from '$app/environment';
+import { extractTextFromImage, type OCRResult } }from '$lib/ocr/ocr-client.js';
+import { getCachedEmbedding, cacheEmbedding } }from '$lib/server/cache/redis.js';
+import { browser } }from '$app/environment';
 export interface WebElement { id: string;, tagName: string;
   textContent: string;
   innerHTML: string;
   boundingBox: DOMRect;
  , attributes: Record<string, string>;
-  metadata: {, importance: 'high' | 'medium' | 'low';, elementType: 'text' | 'image' | 'input' | 'button' | 'link' | 'container';
+  metadata: { importance: 'high' | 'medium' | 'low';, elementType: 'text' | 'image' | 'input' | 'button' | 'link' | 'container';
     interactionCount: number;
     lastInteraction?: number; // optional: can be populated for richer analytics
   };
-}
-export interface PageChunk {, id: string;, content: string;
+} }
+export interface PageChunk { id: string;, content: string;
   elements: WebElement[];
   position: { start: number; end: number };
   embeddings?: Float32Array;
   semantic_meaning?: string;
   confidence: number;
-}
-export interface ClickPoint {, x: number;, y: number;
+} }
+export interface ClickPoint { x: number;, y: number;
   count: number;
   timestamp?: number; // optional: can be populated for richer analytics
-}
-export interface UserAnalytics {, userId: string;, sessionId: string;
-  typingPatterns: {, avgSpeed: number; // WPM, commonWords: string[];
+} }
+export interface UserAnalytics { userId: string;, sessionId: string;
+  typingPatterns: { avgSpeed: number; // WPM, commonWords: string[];
    , specialization: string[]; // legal, technical, etc.
   };
-  interactionPatterns: {, clickHeatmap: ClickPoint[]; // typed instead of Array<any>, scrollBehavior: { depth: number; speed: number };
+  interactionPatterns: { clickHeatmap: ClickPoint[]; // typed instead of Array<any>, scrollBehavior: { depth: number; speed: number };
     focusAreas: string[]; // element selectors
   };
-  caseContext: {, activeCases: string[];, currentTask: string;
+  caseContext: { activeCases: string[];, currentTask: string;
     relevantDocuments: string[];
   };
-}
-export type TrainingChunk = {, input_text: string;, embeddings: number[]; // serialized embeddings for transport/storage
+} }
+export type TrainingChunk = { input_text: string;, embeddings: number[]; // serialized embeddings for transport/storage
   context: UserAnalytics;
   importance_weight: number;
   created_at: number;
 };
-export interface QLoRATrainingData {, user_id: string;, chunks: TrainingChunk[]; // typed training chunk array
-  metadata: {, page_url: string;, session_data: UserAnalytics;
+export interface QLoRATrainingData { user_id: string;, chunks: TrainingChunk[]; // typed training chunk array
+  metadata: { page_url: string;, session_data: UserAnalytics;
     distilled_size: number;
     training_ready: boolean;
   };
-}
+} }
 export class IntelligentWebAnalyzer {
   private worker?: ServiceWorker;
   private mutationObserver?: MutationObserver;
@@ -63,26 +63,23 @@ export class IntelligentWebAnalyzer {
     this.userAnalytics = {
       userId: initialAnalytics.userId || 'anonymous',
       sessionId: initialAnalytics.sessionId || crypto.randomUUID(),
-      typingPatterns: {
-       , avgSpeed: 0,
+      typingPatterns: { avgSpeed: 0,
         commonWords: [],
         specialization: [],
         ...initialAnalytics.typingPatterns
       },
-      interactionPatterns: {
-       , clickHeatmap: [],
-        scrollBehavior: {, depth: 0, speed: 0 },
+      interactionPatterns: { clickHeatmap: [],
+        scrollBehavior: { depth: 0, speed: 0 },
         focusAreas: [],
         ...initialAnalytics.interactionPatterns
       },
-      caseContext: {
-       , activeCases: [],
+      caseContext: { activeCases: [],
         currentTask: '',
         relevantDocuments: [],
         ...initialAnalytics.caseContext
-      }
+      } }
     };
-  }
+  } }
   /**
    * Initialize the intelligent web analyzer
    */ async initialize(): Promise<void> {
@@ -97,10 +94,10 @@ export class IntelligentWebAnalyzer {
       // Initial page analysis
       await this.analyzeCurrentPage();
       console.log('✅ Intelligent Web Analyzer initialized');
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to initialize web analyzer:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Initialize Service Worker for background tensor processing
    */ private async initializeWorker(): Promise<void> {
@@ -109,10 +106,10 @@ export class IntelligentWebAnalyzer {
       const registration = await navigator.serviceWorker.register('/intelligent-web-worker.js', { scope: '/' });
       this.worker = (registration.active || registration.installing || registration.waiting) ?? undefined;
       console.log('🧠 Intelligent Web Worker initialized');
-    } catch (error) {
+    } }catch (error) {
       console.warn('Service Worker initialization failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Set up DOM mutation observer for real-time page changes
    */ private setupDOMObserver(): void {
@@ -121,14 +118,14 @@ export class IntelligentWebAnalyzer {
       mutations.forEach(mutation => {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
           hasSignificantChanges = true;
-        } else if (mutation.type === 'characterData') {
+        } }else if (mutation.type === 'characterData') {
           hasSignificantChanges = true;
-        }
+        } }
       });
       if (hasSignificantChanges) {
         // Debounced page re-analysis
         this.debouncePageAnalysis();
-      }
+      } }
     });
     this.mutationObserver.observe(document.body, {
       childList: true,
@@ -136,7 +133,7 @@ export class IntelligentWebAnalyzer {
       characterData: true,
       attributes: false, // Skip attribute changes for performance
     });
-  }
+  } }
   /**
    * Set up user interaction tracking for context-aware AI
    */ private setupUserTracking(): void {
@@ -149,15 +146,15 @@ export class IntelligentWebAnalyzer {
         const timeDiff = currentTime - lastKeyTime;
         const wpm = 60000 / (timeDiff * 5); // Approximate WPM calculation
         this.userAnalytics.typingPatterns.avgSpeed = (this.userAnalytics.typingPatterns.avgSpeed + wpm) / 2;
-      }
+      } }
       lastKeyTime = currentTime;
       if (e.key.length === 1) {
         typingBuffer.push(e.key);
         if (typingBuffer.length > 50) {
           this.analyzeTypingPatterns(typingBuffer.join(''));
           typingBuffer = [];
-        }
-      }
+        } }
+      } }
     });
     // Click heatmap tracking
     document.addEventListener('click', e => {
@@ -173,14 +170,14 @@ export class IntelligentWebAnalyzer {
         element.metadata.interactionCount++;
         element.metadata.lastInteraction = Date.now();
         element.metadata.importance = element.metadata.interactionCount > 5 ? 'high' : 'medium';
-      }
+      } }
     });
     // Focus area tracking
     document.addEventListener('focusin', e => {
       const selector = this.getElementSelector(e.target as Element);
       if (!this.userAnalytics.interactionPatterns.focusAreas.includes(selector)) {
         this.userAnalytics.interactionPatterns.focusAreas.push(selector);
-      }
+      } }
     });
     // Scroll behavior tracking
     let lastScrollTime = 0;
@@ -193,10 +190,10 @@ export class IntelligentWebAnalyzer {
           depth: Math.max(this.userAnalytics.interactionPatterns.scrollBehavior.depth, scrollDepth),
           speed: scrollSpeed
         };
-      }
+      } }
       lastScrollTime = currentTime;
     });
-  }
+  } }
   /**
    * Analyze current page content with chunking and streaming
    */ async analyzeCurrentPage(): Promise<QLoRATrainingData> {
@@ -213,9 +210,9 @@ export class IntelligentWebAnalyzer {
     const qloraData = this.prepareQLoRATrainingData(processedChunks);
     // 6. Cache results for future use
     await this.cacheAnalysisResults(qloraData);
-    console.log(`✅ Page analysis complete: ${chunks.length} chunks processed`);
+    console.log(`✅ Page analysis complete: ${chunks.length} }chunks processed`);
     return qloraData;
-  }
+  } }
   /**
    * Extract all meaningful elements from the page
    */ private async extractPageElements(): Promise<WebElement[]> {
@@ -235,24 +232,22 @@ export class IntelligentWebAnalyzer {
       const textContent = el.textContent?.trim() || '';
       // Skip elements with no meaningful content
       if (textContent.length < 3 && el.tagName !== 'IMG') return;
-      const webElement: WebElement = {
-       , id: elementId,
+      const webElement: WebElement = { id: elementId,
         tagName: el.tagName.toLowerCase(),
         textContent,
         innerHTML: el.innerHTML.slice(0, 1000), // Limit size
         boundingBox: rect,
         attributes: this.getElementAttributes(el),
-        metadata: {
-         , importance: this.calculateImportance(el, textContent),
+        metadata: { importance: this.calculateImportance(el, textContent),
           elementType: this.getElementType(el),
           interactionCount: 0
-        }
+        } }
       };
       elements.push(webElement);
       this.pageElements.set(elementId, webElement);
     });
     return elements;
-  }
+  } }
   /**
    * Process images with OCR for text extraction
    */ private async processImages(imageElements: WebElement[]): Promise<void> {
@@ -264,31 +259,31 @@ export class IntelligentWebAnalyzer {
         const cacheKey = `ocr:${imgEl.src}`;
         const cachedResult = await getCachedEmbedding(cacheKey, 'ocr');
         if (cachedResult) {
-          element.textContent = `[Image: ${cachedResult}]`;
+          element.textContent = `[Image: ${cachedResult} }`;
           return;
-        }
+        } }
         // Extract text using OCR
         const, ocrResult: OCRResult = await extractTextFromImage(imgEl);
         if (ocrResult.text && ocrResult.text.length > 5) {
-          element.textContent = `[Image: ${ocrResult.text}]`;
+          element.textContent = `[Image: ${ocrResult.text} }`;
           // Cache OCR result
           await cacheEmbedding(cacheKey, [ocrResult.confidence || 0], 'ocr');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.warn('OCR processing failed for element:', element.id, error);
-      }
+      } }
     });
     await Promise.allSettled(imagePromises);
-  }
+  } }
   /**
    * Create semantic chunks from page elements
    */ private async createSemanticChunks(elements: WebElement[]): Promise<PageChunk[]> {
     // Build a single text with markers so we can map resulting chunks back to elements
-    const markers = elements.map((el, idx) => `[[elem_${idx}]]`);
-    const pieces = elements.map((el, idx) => `${markers[idx]} ${el.tagName}: ${el.textContent}`);
+    const markers = elements.map((el, idx) => `[[elem_${idx} }]`);
+    const pieces = elements.map((el, idx) => `${markers[idx]} }${el.tagName}: ${el.textContent}`);
     const fullText = pieces.join('\n\n');
     // Dynamic import to avoid bundling issues in environments that don't need the splitter'
-    const { RecursiveCharacterTextSplitter } = await import('langchain/text_splitter');
+    const { RecursiveCharacterTextSplitter } }= await import('langchain/text_splitter');
     const splitter = new RecursiveCharacterTextSplitter({
       chunkSize: 750,
       chunkOverlap: 100
@@ -304,7 +299,7 @@ export class IntelligentWebAnalyzer {
       while ((m = markerRegex.exec(txt)) !== null) {
         const idx = Number(m[1]);
         if (!Number.isNaN(idx)) matchedIndices.push(idx);
-      }
+      } }
       const includedElements = Array.from(new Set(matchedIndices))
         .map(idx => elements[idx])
         .filter(Boolean);
@@ -316,12 +311,12 @@ export class IntelligentWebAnalyzer {
         id: `chunk_${chunks.length}`,
         content: txt,
         elements: includedElements,
-        position: {, start: posStart, end: posEnd },
+        position: { start: posStart, end: posEnd },
         confidence: this.calculateChunkConfidence(includedElements)
       });
-    }
+    } }
     return chunks;
-  }
+  } }
   /**
    * Stream chunks for processing with minimal CPU/GPU usage
    */ private async streamChunksForProcessing(chunks: PageChunk[]): Promise<PageChunk[]> {
@@ -335,13 +330,12 @@ export class IntelligentWebAnalyzer {
           const cachedEmbedding = await getCachedEmbedding(chunk.content, 'web-analysis');
           if (cachedEmbedding) {
             chunk.embeddings = new Float32Array(cachedEmbedding);
-          } else {
+          } }else {
             // Generate new embedding via API
             const response = await fetch('/api/embeddings', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },'`'`
-              body: JSON.stringify({
-               , text: chunk.content,
+              body: JSON.stringify({ text: chunk.content,
                 model: 'nomic-text',
                 source: `web-analysis' })'`
             });
@@ -350,27 +344,27 @@ export class IntelligentWebAnalyzer {
               chunk.embeddings = new Float32Array(data.embedding);
               // Cache the embedding
               await cacheEmbedding(chunk.content, data.embedding, 'web-analysis');
-            }
-          }
+            } }
+          } }
           // Generate semantic meaning using LangExtract-style analysis
           chunk.semantic_meaning = this.extractSemanticMeaning(chunk);
           return chunk;
-        } catch (error) {
+        } }catch (error) {
           console.warn('Chunk processing failed:', chunk.id, error);
           return chunk;
-        }
+        } }
       });
       const batchResults = await Promise.allSettled<PageChunk>(batchPromises);
       for (const result of batchResults) {
         if (result.status === 'fulfilled') {
           processedChunks.push(result.value);
-        }
-      }
+        } }
+      } }
       // Small delay between batches to prevent CPU/GPU spikes
       await new Promise(resolve => setTimeout(resolve, 100));
-    }
+    } }
     return processedChunks;
-  }
+  } }
   /**
    * Prepare QLoRA training data with user context
    */ private prepareQLoRATrainingData(chunks: PageChunk[]): QLoRATrainingData {
@@ -384,14 +378,13 @@ export class IntelligentWebAnalyzer {
     return {
       user_id: this.userAnalytics.userId,
       chunks: trainingChunks,
-      metadata: {
-       , page_url: window.location.href,
+      metadata: { page_url: window.location.href,
         session_data: this.userAnalytics,
         distilled_size: trainingChunks.length,
         training_ready: true
-      }
+      } }
     };
-  }
+  } }
   /**
    * Cache analysis results for future use
    */ private async cacheAnalysisResults(qloraData: QLoRATrainingData): Promise<void> {
@@ -401,8 +394,7 @@ export class IntelligentWebAnalyzer {
       const response = await fetch('/api/tensor/store', {
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({
-         , results: qloraData.chunks.map((chunk, index) => {
+        body: JSON.stringify({ results: qloraData.chunks.map((chunk, index) => {
             const embeddings = chunk.embeddings ?? [];
             return {
               text: chunk.input_text,
@@ -413,23 +405,22 @@ export class IntelligentWebAnalyzer {
               search_index: embeddings.slice(0, Math.min(100, embeddings.length)), // Reduced for indexing
             };
           }),
-          metadata: {
-           , processed_at: Date.now(),
+          metadata: { processed_at: Date.now(),
             batch_size: qloraData.chunks.length,
             source: 'web_analysis',
             user_id: this.userAnalytics.userId,
             session_id: this.userAnalytics.sessionId,
             cache_key: cacheKey, // use the cacheKey to avoid: "assigned but never used"
-          }
+          } }
         })
       });
       if (response.ok) {
         console.log('✅ Analysis results cached successfully');
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('Failed to cache analysis results:', error);
-    }
-  }
+    } }
+  } }
   // Utility methods
   private debouncePageAnalysis = this.debounce(() => {
     this.analyzeCurrentPage();
@@ -442,7 +433,7 @@ export class IntelligentWebAnalyzer {
         // allow both sync and async functions; ignore return value: void func(...args);
       }, wait);
     };
-  }
+  } }
   private getElementId(element: Element): string {
     if (element.id && element.id.trim().length > 0) return element.id;
     // Try to build a stable id from sibling index, otherwise fallback to UUID
@@ -450,9 +441,9 @@ export class IntelligentWebAnalyzer {
     if (parent) {
       const idx = Array.from(parent.childNodes || []).indexOf(element);
       if (idx >= 0) return `el_${idx}_${(parent as Element).nodeName.toLowerCase()}`;
-    }
+    } }
     return `el_${crypto.randomUUID()}`;
-  }
+  } }
   private getElementSelector(element: Element): string {
     const path = [];
     let current = element;
@@ -462,16 +453,16 @@ export class IntelligentWebAnalyzer {
       if (current.className) selector += `.${current.className.split(' ').join('.')}`;
       path.unshift(selector);
       current = current.parentElement!;
-    }
+    } }
     return path.join(' > ');
-  }
+  } }
   private getElementAttributes(element: Element): Record<string, string> {
     const attrs: Record<string, string> = {};
     Array.from(element.attributes).forEach(attr => {
       attrs[attr.name] = attr.value;
     });
     return attrs;
-  }
+  } }
   private calculateImportance(element: Element, textContent: string): 'high' | 'medium' | 'low' {
     const tagName = element.tagName.toLowerCase();
     // High importance elements
@@ -481,7 +472,7 @@ export class IntelligentWebAnalyzer {
     if (['h3', 'h4', 'a', 'input', 'label'].includes(tagName)) return, 'medium';
     if (textContent.length > 20) return, 'medium';
     return, 'low';
-  }
+  } }
   private getElementType(element: Element): WebElement['metadata']['elementType'] {
     const tagName = element.tagName.toLowerCase();
     if (['img', 'video', 'canvas'].includes(tagName)) return, 'image';
@@ -490,20 +481,20 @@ export class IntelligentWebAnalyzer {
     if (tagName === 'a') return, 'link';
     if (['div', 'section', 'article'].includes(tagName)) return, 'container';
     return, 'text';
-  }
+  } }
   private calculateChunkConfidence(elements: WebElement[]): number {
     if (!elements || elements.length === 0) return 0.5;
     const highImportanceCount = elements.filter(item => item.metadata.importance === 'high').length;
     const totalElements = elements.length;
     return Math.min(0.9, 0.5 + (highImportanceCount / totalElements) * 0.4);
-  }
+  } }
   private calculateImportanceWeight(chunk: PageChunk): number {
     if (!chunk || !chunk.elements || chunk.elements.length === 0) return chunk?.confidence ?? 0.5;
     const interactionWeight =
       chunk.elements.reduce((sum, el) => sum + (el.metadata.interactionCount || 0), 0) / chunk.elements.length;
     const confidenceWeight = chunk.confidence ?? 0.5;
     return Math.min(1.0, interactionWeight * 0.4 + confidenceWeight * 0.6);
-  }
+  } }
   private extractSemanticMeaning(chunk: PageChunk): string {
     const content = chunk.content.toLowerCase();
     // Simple semantic analysis - replace with more sophisticated NLP
@@ -513,7 +504,7 @@ export class IntelligentWebAnalyzer {
     if (content.includes('form') || content.includes('input')) return, 'data_entry';
     if (content.includes('button') || content.includes('click')) return, 'user_action';
     return, 'general_content';
-  }
+  } }
   private analyzeTypingPatterns(text: string): void {
     const words = text
       .toLowerCase()
@@ -528,10 +519,10 @@ export class IntelligentWebAnalyzer {
     const technicalCount = words.filter(w => technicalTerms.includes(w)).length;
     if (legalCount > technicalCount && !this.userAnalytics.typingPatterns.specialization.includes('legal')) {
       this.userAnalytics.typingPatterns.specialization.push('legal');
-    } else if (technicalCount > legalCount && !this.userAnalytics.typingPatterns.specialization.includes('technical')) {
+    } }else if (technicalCount > legalCount && !this.userAnalytics.typingPatterns.specialization.includes('technical')) {
       this.userAnalytics.typingPatterns.specialization.push('technical');
-    }
-  }
+    } }
+  } }
   /**
    * Update user context for better AI personalization
    */ updateUserContext(context: Partial<UserAnalytics>): void {
@@ -539,20 +530,19 @@ export class IntelligentWebAnalyzer {
       ...this.userAnalytics,
       ...context
     };
-  }
+  } }
   /**
    * Get current analysis state for debugging
    */ getAnalysisState(): { elementsCount: number;, chunksInQueue: number;
     userAnalytics: UserAnalytics;
     isProcessing: boolean;
-  } {
-    return {
-     , elementsCount: this.pageElements.size,
+  } }{
+    return { elementsCount: this.pageElements.size,
       chunksInQueue: this.processingQueue.length,
       userAnalytics: this.userAnalytics,
       isProcessing: this.isProcessing
     };
-  }
+  } }
   /**
    * Clean up resources
    */ dispose(): void {
@@ -564,14 +554,15 @@ export class IntelligentWebAnalyzer {
         navigator.serviceWorker.getRegistration('/').then(reg => {
           if (reg) reg.unregister().catch(() => {});
         });
-      } catch {
+      } }catch {
         // ignore
-      }
-    }
+      } }
+    } }
     this.worker = undefined;
     this.pageElements.clear();
     this.processingQueue = [];
-  }
-}
+  } }
+} }
 // Singleton instance for easy access
 export const intelligentWebAnalyzer = new IntelligentWebAnalyzer();
+

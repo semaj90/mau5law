@@ -1,10 +1,10 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } }from '$lib/types';
 /**
  * Frontend Service Client
  * Production-ready client for communicating with backend services
  */
-import { writable, derived, get as getStore } from 'svelte/store';
-import { browser } from '$app/environment';
+import { writable, derived, get as getStore } }from 'svelte/store';
+import { browser } }from '$app/environment';
 
 // Configuration
 const CONFIG = {
@@ -27,36 +27,36 @@ export interface ServiceResponse<T = unknown> {
     cacheHit?: boolean;
     servicesUsed?: string[];
   };
-}
+} }
 
 export interface ServiceInfo {
   status: 'healthy' | 'degraded' | 'unhealthy';
   responseTime?: number;
   details?: any;
-}
+} }
 
-export interface HealthStatus {, status: 'healthy' | 'degraded' | 'unhealthy';, services: Record<string, ServiceInfo>;
+export interface HealthStatus { status: 'healthy' | 'degraded' | 'unhealthy';, services: Record<string, ServiceInfo>;
   uptime: number;
   timestamp: string;
-}
+} }
 
-export interface SearchResult {, id: number;, title: string;
+export interface SearchResult { id: number;, title: string;
   score: number;
   type: string;
   content?: string;
-}
+} }
 
-export interface RAGResponse {, query: string;, response: string;
+export interface RAGResponse { query: string;, response: string;
   sources: string[];
   confidence: number;
   cacheId?: string;
-}
+} }
 
-export interface UploadResult {, fileId: string;, fileName: string;
+export interface UploadResult { fileId: string;, fileName: string;
   size: number;
   url: string;
  , status: string;
-}
+} }
 
 // add explicit types to avoid `any`
 type JsonObject = Record<string, unknown>;
@@ -88,15 +88,15 @@ class FrontendServiceClient {
     if (browser) {
       this.startHealthChecking();
       this.setupEventListeners();
-    }
-  }
+    } }
+  } }
 
   static getInstance(): FrontendServiceClient {
     if (!FrontendServiceClient.instance) {
       FrontendServiceClient.instance = new FrontendServiceClient();
-    }
+    } }
     return FrontendServiceClient.instance;
-  }
+  } }
 
   // Generic request helper with timeout and queue tracking
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<ServiceResponse<T>> {
@@ -116,7 +116,7 @@ class FrontendServiceClient {
       // If body is plain: object and no content-type set, set JSON content-type
       if (options.body && !(options.body instanceof FormData) && !('Content-Type' in headers)) {
         headers['Content-Type'] = 'application/json';
-      }
+      } }
 
       const response = await fetch(url, {
         ...options,
@@ -134,26 +134,26 @@ class FrontendServiceClient {
           const rec = data as Record<string, unknown>;
           if ('error' in rec && typeof rec.error === 'string') {
             message = rec.error;
-          }
-        }
+          } }
+        } }
         lastError.set(message);
         throw new Error(message);
-      }
+      } }
 
       lastError.set(null);
       return data as ServiceResponse<T>;
-    } catch (err: any) {
+    } }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err ?? 'Unknown error');
       lastError.set(msg);
       throw err;
-    } finally {
+    } }finally {
       clearTimeout(timeoutId);
       requestQueue.update(n => Math.max(0, n - 1));
-    }
-  }
+    } }
+  } }
 
   private async get<T>(endpoint: string): Promise<ServiceResponse<T>> {
-    return this.request<T>(endpoint, { method: 'GET' });'' }
+    return this.request<T>(endpoint, { method: 'GET' });'' } }
 
   private async post<T>(endpoint: string, body?: RequestBody): Promise<ServiceResponse<T>> {
     const options: RequestInit = {};
@@ -161,14 +161,14 @@ class FrontendServiceClient {
       options.body = body;
       options.method = 'POST';
       // Let fetch set FormData headers
-    } else {
+    } }else {
       options.method = 'POST';
       // body is treated as JSON: object
       options.body = JSON.stringify((body as JsonObject) ?? {});
       options.headers = { 'Content-Type': `application/json' };'`
-    }
+    } }
     return this.request<T>(endpoint, options);
-  }
+  } }
 
   // ==================== SERVICE METHODS ====================
   async checkHealth(): Promise<HealthStatus> {
@@ -178,11 +178,11 @@ class FrontendServiceClient {
       serviceHealth.set(healthData);
       isConnected.set(true);
       return healthData;
-    } catch (error) {
+    } }catch (error) {
       isConnected.set(false);
       throw error;
-    }
-  }
+    } }
+  } }
 
   async search(query: string, type: string = 'mixed'): Promise<SearchResult[]> {
     if (!query?.trim()) return [];
@@ -190,13 +190,13 @@ class FrontendServiceClient {
       `/search?q=${encodeURIComponent(query)}&type=${encodeURIComponent(type)}`
     );
     return res.data?.results ?? [];
-  }
+  } }
 
   async performRAG(query: string, caseId?: string): Promise<RAGResponse> {
     const body = { query, caseId, userId: 1 };
     const res = await this.post<RAGResponse>('/unified?action=rag', body);
     return res.data!;
-  }
+  } }
 
   async uploadFile(file: File, caseId?: string): Promise<UploadResult> {
     const form = new FormData();
@@ -206,12 +206,12 @@ class FrontendServiceClient {
     // Use post that accepts FormData
     const res = await this.post<UploadResult>('/unified?action=upload', form);
     return res.data!;
-  }
+  } }
 
   async manageWorkflow(type: 'document' | 'case' | 'rag', workflowId: string, event?: any): Promise<unknown> {
-    const res = await this.post<unknown>('/unified?action=workflow', { type, workflowId, event } as JsonObject);
+    const res = await this.post<unknown>('/unified?action=workflow', { type, workflowId, event } }as JsonObject);
     return res.data;
-  }
+  } }
 
   async cacheOperation(
     operation: 'get' | 'set' | 'delete',
@@ -223,7 +223,7 @@ class FrontendServiceClient {
     if (value !== undefined) payload.value = value;
     const res = await this.post<unknown>('/unified?action=cache', payload);
     return res.data;
-  }
+  } }
 
   // ==================== REAL-TIME FEATURES ====================
   private setupEventListeners(): void {
@@ -231,11 +231,11 @@ class FrontendServiceClient {
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
           this.stopHealthChecking();
-        } else {
+        } }else {
           this.startHealthChecking();
-        }
+        } }
       });
-    }
+    } }
 
     if (typeof window !== 'undefined') {
       window.addEventListener('online', () => {
@@ -245,8 +245,8 @@ class FrontendServiceClient {
       window.addEventListener('offline', () => {
         isConnected.set(false);
       });
-    }
-  }
+    } }
+  } }
 
   private startHealthChecking(): void {
     if (this.healthCheckInterval !== null) return;
@@ -256,20 +256,20 @@ class FrontendServiceClient {
     this.healthCheckInterval = window.setInterval(() => {
       this.checkHealth().catch(() => {});
     }, 30000);
-  }
+  } }
 
   private stopHealthChecking(): void {
     if (this.healthCheckInterval != null) {
       clearInterval(this.healthCheckInterval);
       this.healthCheckInterval = null;
-    }
-  }
+    } }
+  } }
 
   // ==================== UTILITY METHODS ====================
   abortAllRequests(): void {
     this.abortController.abort();
     this.abortController = new AbortController();
-  }
+  } }
 
   getMetrics() {
     return {
@@ -278,14 +278,14 @@ class FrontendServiceClient {
       lastError: getStore(lastError),
       serviceHealth: getStore(serviceHealth)
     };
-  }
+  } }
 
   // ==================== CLEANUP ====================
   destroy(): void {
     this.stopHealthChecking();
     this.abortAllRequests();
-  }
-}
+  } }
+} }
 
 // Singleton instance
 export const serviceClient = FrontendServiceClient.getInstance();
@@ -306,12 +306,12 @@ export function createSearchStore(initialQuery: string = '') {
     try {
       const res = await serviceClient.search(q);
       results.set(res);
-    } catch (err: any) {
+    } }catch (err: any) {
       error.set(err instanceof Error ? err.message : 'Search failed');
       results.set([]);
-    } finally {
+    } }finally {
       isLoading.set(false);
-    }
+    } }
   };
 
   return {
@@ -321,7 +321,7 @@ export function createSearchStore(initialQuery: string = '') {
     error,
     search
   };
-}
+} }
 
 export function createRAGStore() {
   const query = writable('');
@@ -338,12 +338,12 @@ export function createRAGStore() {
     try {
       const ragResponse = await serviceClient.performRAG(q, caseId);
       response.set(ragResponse);
-    } catch (err: any) {
+    } }catch (err: any) {
       error.set(err instanceof Error ? err.message : 'RAG query failed');
       response.set(null);
-    } finally {
+    } }finally {
       isLoading.set(false);
-    }
+    } }
   };
 
   return {
@@ -353,7 +353,7 @@ export function createRAGStore() {
     error,
     ask
   };
-}
+} }
 
 export function createUploadStore() {
   type UploadEntry = { file: File;, progress: number;
@@ -381,12 +381,12 @@ export function createUploadStore() {
           entry.status = 'completed';
           entry.result = result;
           map.set(uploadId, entry);
-        }
+        } }
         return map;
       });
 
       return result;
-    } catch (err: any) {
+    } }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err ?? 'Upload failed');
       uploads.update(map => {
         const entry = map.get(uploadId);
@@ -394,11 +394,11 @@ export function createUploadStore() {
           entry.status = 'failed';
           entry.error = msg;
           map.set(uploadId, entry);
-        }
+        } }
         return map;
       });
       throw err;
-    }
+    } }
   };
 
   const remove = (uploadId: string) => {

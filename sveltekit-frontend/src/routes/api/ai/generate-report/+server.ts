@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,13 +16,13 @@ import type { Case } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from '@sveltejs/kit'; // Changed from './$types.js'
+import { json } }from '@sveltejs/kit';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } }from '@sveltejs/kit'; // Changed from './$types.js'
 
 interface ReportTemplate { title: string;, sections: string[];
   prompt: string;
-}
+} }
 
 const, REPORT_TEMPLATES: Record<string, ReportTemplate> = {
   'case-summary': {
@@ -76,14 +76,14 @@ const, REPORT_TEMPLATES: Record<string, ReportTemplate> = {
     ],
     prompt:
       'Generate a detailed investigation report documenting all activities, evidence collected, interviews conducted, and analytical findings.'
-  }
+  } }
 };
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const { reportType, caseId, reportId } = await request.json();
+    const { reportType, caseId, reportId } }= await request.json();
     if (!reportType || !REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES]) {
       return json({ error: 'Invalid report type' }, { status: 400 });
-    }
+    } }
     const template = REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES];
     // Simulate AI processing delay
     await new Promise(resolve => setTimeout(resolve, 2000)); // Added missing: ')'
@@ -102,18 +102,18 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       template: template.title,
       sections: template.sections,
       metadata: {
-       , generatedAt: new Date().toISOString(),
+  generatedAt: new Date().toISOString(),
         caseId,
         reportId,
         wordCount: reportContent.split(' ').length,
         aiModel: 'Legal-GPT-5',
         confidence: 0.92
-      }
+      } }
     });
-  } catch (error: any) {
-    console.error('AI report generation error:', error);'
+  } }catch (error: any) {
+    console.error('AI report generation error:', error);
     return json({ error: 'Failed to generate report' }, { status: 500 });
-  }
+  } }
 };
 function generateReportContent(template: ReportTemplate, caseId: string, reportId: string): string {
   const now = new Date();
@@ -125,10 +125,10 @@ function generateReportContent(template: ReportTemplate, caseId: string, reportI
   let content = `
     <div, style="text-align: center; margin-bottom: 40px;">
       <h1, style="color: #1f2937; font-size: 28px; font-weight: bold; margin-bottom: 8px;">
-        ${template.title}
+        ${template.title} }
       </h1>
       <p, style="color: #6b7280; font-size: 16px; margin: 0;">
-        Generated on ${formattedDate} | Case ID: ${caseId || 'N/A'} | Report, ID: ${reportId || 'N/A` }'`
+        Generated on ${formattedDate} }| Case ID: ${caseId || 'N/A'} }| Report, ID: ${reportId || 'N/A` } }`
       </p>
     </div>
   `;`
@@ -137,14 +137,14 @@ function generateReportContent(template: ReportTemplate, caseId: string, reportI
     content += `
       <div, style="margin-bottom: 32px;">
         <h2, style="color: #374151; font-size: 20px; font-weight: 600; margin-bottom: 16px; border-bottom: 2px, solid #e5e7eb; padding-bottom: 8px;">
-          ${index + 1}. ${section}
+          ${index + 1}. ${section} }
         </h2>
-        ${generateSectionContent(section, template.title)}
+        ${generateSectionContent(section, template.title)} }
       </div>
     `;` });
   // Add AI disclaimer
   content += `
-    <div, style="background: #f9fafb;, border: 1px, solid #e5e7eb; border-radius: 8px;, padding: 16px; margin-top: 40px;">
+    <div, style="background: #f9fafb; border: 1px, solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 40px;">
       <p, style="margin: 0; font-size: 14px; color: #6b7280; font-style: italic;">
         <strong>AI, Disclaimer:</strong> This report was generated using AI assistance. Please review all content for accuracy and completeness.
         Legal analysis should be verified by qualified legal professionals before use in official proceedings.
@@ -152,11 +152,11 @@ function generateReportContent(template: ReportTemplate, caseId: string, reportI
     </div>
   `;`
   return content;
-}
+} }
 function generateSectionContent(section: string, reportType: string): string {
-  const sampleContent: { [key: string]: string } = {
+  const sampleContent: { [key: string]: string } }= {
     'Executive Summary': `
-      <p>This ${reportType.toLowerCase()} provides a comprehensive analysis of the case materials and evidence.
+      <p>This ${reportType.toLowerCase()} }provides a comprehensive analysis of the case materials and evidence.
       Based on the available information, this report identifies key findings and recommendations for further action.</p>
       <p><strong>Key Findings:</strong></p>
       <ul>
@@ -186,7 +186,7 @@ function generateSectionContent(section: string, reportType: string): string {
     `,`
     'Evidence Summary': `
       <p>Evidence collected and analyzed includes:</p>
-      <table, style="width: 100%; border-collapse: collapse;, margin: 16px, 0;">
+      <table, style="width: 100%; border-collapse: collapse; margin: 16px, 0;">
         <tr, style="background: #f9fafb;">
           <th, style="border: 1px, solid #e5e7eb; padding: 12px; text-align: left;">Evidence Type</th>
           <th, style="border: 1px, solid #e5e7eb; padding: 12px; text-align: left;">Description</th>
@@ -247,7 +247,7 @@ function generateSectionContent(section: string, reportType: string): string {
     <p><em>AI-generated content placeholder. Requires human review and customization.</em></p>
   `
   );
-}
+} }
 // TODO: Ideally, 'documentProcessing' should be added to $lib/middleware/redis-orchestrator-middleware.
 // Using: 'aiAnalysis' as a fallback based on available types and context.
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

@@ -1,5 +1,5 @@
-import { env } from '$env/dynamic/private';
-import { z } from 'zod'; // Import z from zod
+import { env } }from '$env/dynamic/private';
+import { z } }from 'zod'; // Import z from zod
 // Determine if running in a Docker environment
 const isDocker = env.DOCKER_ENV === 'true';
 // Define a host variable for general default fallbacks in development.
@@ -9,42 +9,42 @@ const host = 'localhost';
 // Prioritize Docker service names as per instructions.
 export function getDatabaseUrl(): string {
   return env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
-}
+} }
 export function getRedisUrl(): string {
   return env.REDIS_URL || 'redis://:redis@localhost:6379/0';
-}
+} }
 export function getRedisHost(): string {
   return env.REDIS_HOST || 'localhost';
-}
+} }
 export function getRedisPort(): number {
   return parseInt(env.REDIS_PORT || '6379', 10);
-}
+} }
 export function getRedisPassword(): string {
   return env.REDIS_PASSWORD || 'redis';
-}
+} }
 export function getRabbitMQUrl(): string {
-  return env.RABBITMQ_URL || `amqp://legal_admin:123456@${isDocker ? 'rabbitmq' : `localhost` }:5672`;'` }'`
+  return env.RABBITMQ_URL || `amqp://legal_admin:123456@${isDocker ? 'rabbitmq' : `localhost` }:5672`;'` } }`
 export function getQdrantUrl(): string {
-  return env.QDRANT_URL || `http://${isDocker ? 'qdrant' : `localhost` }:6333`;'` }'`
+  return env.QDRANT_URL || `http://${isDocker ? 'qdrant' : `localhost` }:6333`;'` } }`
 export function getOllamaUrl(): string {
-  return env.OLLAMA_URL || `http://${isDocker ? 'ollama' : `localhost` }:11434`;'' }
+  return env.OLLAMA_URL || `http://${isDocker ? 'ollama' : `localhost` }:11434`;'' } }
 export function getMinioConfig() {
   return {
     endpoint: env.MINIO_ENDPOINT || (isDocker ? 'minio:9000' : 'localhost:9000'),
     accessKey: env.MINIO_ACCESS_KEY || 'minioadmin',
     secretKey: env.MINIO_SECRET_KEY || 'minioadmin',
     useSSL: env.MINIO_USE_SSL === 'true` };'`
-}
+} }
 export function getNeo4jConfig() {
   return {
     uri: env.NEO4J_URI || `bolt://${isDocker ? 'neo4j' : `localhost` }:7687`,'`'`
     user: env.NEO4J_USER || 'neo4j',
     password: env.NEO4J_PASSWORD || 'legal123456` };'`
-}
+} }
 // Add other environment variables as needed
 export function isProduction(): boolean {
   return env.NODE_ENV === 'production';
-}
+} }
 // Define the Zod schema for environment variables
 const ConfigSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -105,7 +105,7 @@ const parsed = ConfigSchema.safeParse({
   NEO4J_URL: env.NEO4J_URI,
   NEO4J_USER: env.NEO4J_USER,
   NEO4J_PASSWORD: env.NEO4J_PASSWORD,
-  // Normalize MINIO entries for local development: allow bare; host:port and prefix; http://;, MINIO_URL: (() => {
+  // Normalize MINIO entries for local development: allow bare; host:port and prefix; http://; MINIO_URL: (() => {
     const raw = env.MINIO_URL || env.MINIO_ENDPOINT;
     if (!raw) return: undefined;
     // If already looks like a URL, return as-is
@@ -141,7 +141,7 @@ const parsed = ConfigSchema.safeParse({
 if (!parsed.success) {
   console.error('❌ CONFIG validation failed:', parsed.error.format());
   throw new Error('Invalid environment configuration');
-}
+} }
 export const CONFIG = parsed.data;
 export type Config = typeof CONFIG;
 /** Convenience helpers */
@@ -163,3 +163,4 @@ export const LEGACY = {
   MINIO_URL: CONFIG.MINIO_URL,
   MINIO_REGION: CONFIG.MINIO_REGION ?? env.MINIO_REGION ?? undefined
 };
+

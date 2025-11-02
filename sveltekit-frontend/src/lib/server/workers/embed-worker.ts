@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
-import { parentPort, workerData } from 'worker_threads';
-import type { ChunkJob, EmbedResult } from '$lib/types/pipeline';
-import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
+import { parentPort, workerData } }from 'worker_threads';
+import type { ChunkJob, EmbedResult } }from '$lib/types/pipeline';
+import { getEmbeddingViaGate } }from '$lib/server/embedding-gateway';
 async function run(): Promise<any> {
   const job = workerData as ChunkJob;
   try {
@@ -9,17 +9,16 @@ async function run(): Promise<any> {
       model: job?.model || "unknown" // @ts-ignore - Model property access,
       tags: job.tags
     });
-    const out: EmbedResult = {
-     , docId: job.docId,
+    const out: EmbedResult = { docId: job.docId,
       chunkId: job.chunkId,
       embedding: res.embedding,
       model: res?.model || "unknown" // @ts-ignore - Model property access,
       backend: res.backend,
       cached: false
-    }
-    parentPort?.postMessage({, ok: true, result: out });
-  } catch (e: any) {
+    } }
+    parentPort?.postMessage({ ok: true, result: out });
+  } }catch (e: any) {
     parentPort?.postMessage({ ok: false, error: e?.message || String(e) });
-  }
-}
+  } }
+} }
 void run();

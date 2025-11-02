@@ -31,8 +31,8 @@ import type {
 	RabbitMQClient,
 	ServiceEnvironment,
 	ServiceUrls
-} from '$lib/types/external-services';
-import { dev } from '$app/environment';
+} }from '$lib/types/external-services';
+import { dev } }from '$app/environment';
 // ===== Environment Configuration Loader =====
 /**
  * Load service configuration from environment variables
@@ -47,8 +47,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 	return {
 		// Database
 		databaseUrl,
-		postgresConfig: {
-		, host: dbUrl.hostname || 'localhost',
+		postgresConfig: { host: dbUrl.hostname || 'localhost',
 			port: parseInt(dbUrl.port || '5432', 10),
 			database: dbUrl.pathname.slice(1) || 'legal_ai_db',
 			user: dbUrl.username || 'legal_admin',
@@ -58,8 +57,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 			idleTimeoutMillis: 30000
 		},
 		// Redis
-		redisConfig: {
-		, url: process.env.REDIS_URL || 'redis://localhost:6379/0',
+		redisConfig: { url: process.env.REDIS_URL || 'redis://localhost:6379/0',
 			password: process.env.REDIS_PASSWORD || undefined,
 			host: process.env.REDIS_HOST || 'localhost',
 			port: parseInt(process.env.REDIS_PORT || '6379', 10),
@@ -68,23 +66,20 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 			enableReadyCheck: true
 		},
 		// Qdrant
-		qdrantConfig: {
-		, host: process.env.QDRANT_HOST || 'localhost',
+		qdrantConfig: { host: process.env.QDRANT_HOST || 'localhost',
 			port: parseInt(process.env.QDRANT_PORT || '6333', 10),
 			apiKey: process.env.QDRANT_API_KEY,
 			timeout: 30000
 		},
 		// Ollama
-		ollamaConfig: {
-		, baseUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
+		ollamaConfig: { baseUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
 			embeddingModel: process.env.EMBEDDING_MODEL || 'embeddinggemma:latest',
 			chatModel: process.env.CHAT_MODEL || 'gemma3:legal-latest',
 			gpuLayers: parseInt(process.env.OLLAMA_GPU_LAYERS || '30', 10),
 			timeout: 60000
 		},
 		// MinIO
-		minioConfig: {
-		, endPoint: (process.env.MINIO_ENDPOINT || 'localhost:9000').split(':')[0],
+		minioConfig: { endPoint: (process.env.MINIO_ENDPOINT || 'localhost:9000').split(':')[0],
 			port: parseInt((process.env.MINIO_ENDPOINT || 'localhost:9000').split(':')[1] || process.env.MINIO_PORT || '9000', 10),
 			accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
 			secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin123',
@@ -92,27 +87,25 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 			region: 'us-east-1'
 		},
 		// Neo4j
-		neo4jConfig: {
-		, uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
+		neo4jConfig: { uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
 			user: process.env.NEO4J_USER || 'neo4j',
 			password: process.env.NEO4J_PASSWORD || 'password',
 			database: process.env.NEO4J_DATABASE || 'neo4j',
 			maxConnectionPoolSize: 50
 		},
 		// RabbitMQ
-		rabbitmqConfig: {
-		, url: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672',
+		rabbitmqConfig: { url: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672',
 			enabled: process.env.RABBITMQ_ENABLED !== 'false',
 			exchange: 'legal-ai-exchange',
 			queuePrefix: 'legal-ai',
 			heartbeat: 60
 		},
 		// Development
-		nodeEnv: (process.env.NODE_ENV;, as: 'development' | 'production' | 'test') || 'development',
+		nodeEnv: (process.env.NODE_ENV; as: 'development' | 'production' | 'test') || 'development',
 		devBypassAuth: process.env.DEV_BYPASS_AUTH === 'true' || dev,
-		logLevel: (process.env.LOG_LEVEL;, as: 'error' | 'warn' | 'info' | 'debug') || 'info'
+		logLevel: (process.env.LOG_LEVEL; as: 'error' | 'warn' | 'info' | 'debug') || 'info'
 	};
-}
+} }
 /**
  * Get all service URLs for health checks and debugging
  */
@@ -141,10 +134,10 @@ export function getServiceUrls(env: ServiceEnvironment): ServiceUrls {
 		tensorRTWebSocket: process.env.TENSORRT_WS_URL,
 		cudaService: process.env.CUDA_SERVICE_URL
 	};
-}
+} }
 // ===== Ollama Adapter =====
 export class OllamaAdapter implements OllamaClient {
-	constructor(private, config: OllamaConfig) {}
+	constructor(private, config: OllamaConfig) {} }
 	async embed(text: string, opts?: { model?: string }): Promise<number[]> {
 		const model = opts?.model || this.config.embeddingModel;
 		const url = `${this.config.baseUrl}/api/embeddings`;
@@ -156,10 +149,10 @@ export class OllamaAdapter implements OllamaClient {
 		});
 		if (!response.ok) {
 			throw new Error(`Ollama embed failed: ${response.statusText}`);
-		}
+		} }
 		const data = await response.json();
 		return data.embedding;
-	}
+	} }
 	async generateText(prompt: string, opts?: { model?: string; maxTokens?: number }): Promise<string> {
 		const model = opts?.model || this.config.chatModel;
 		const url = `${this.config.baseUrl}/api/generate`;
@@ -170,19 +163,19 @@ export class OllamaAdapter implements OllamaClient {
 				model,
 				prompt,
 				stream: false,
-				options: {, num_predict: opts?.maxTokens || 512 }
+				options: { num_predict: opts?.maxTokens || 512 } }
 			}),
 			signal: AbortSignal.timeout(this.config.timeout || 60000)
 		});
 		if (!response.ok) {
 			throw new Error(`Ollama generate failed: ${response.statusText}`);
-		}
+		} }
 		const data = await response.json();
 		return data.response;
-	}
+	} }
 	async chat(
-		messages: Array<{, role: string;, content: string }>,
-		opts?: { model?: string; stream?: boolean }
+		messages: Array<{ role: string; content: string }>,
+		opts?: { model?: string; stream?: boolean } }
 	): Promise<string | AsyncIterable<string>> {
 		const model = opts?.model || this.config.chatModel;
 		const url = `${this.config.baseUrl}/api/chat`;
@@ -198,7 +191,7 @@ export class OllamaAdapter implements OllamaClient {
 		});
 		if (!response.ok) {
 			throw new Error(`Ollama chat failed: ${response.statusText}`);
-		}
+		} }
 		if (opts?.stream) {
 			// Return async iterable for streaming
 			return (async function* () {
@@ -206,7 +199,7 @@ export class OllamaAdapter implements OllamaClient {
 				if (!reader) return;
 				const decoder = new TextDecoder();
 				while (true) {
-					const { done, value } = await reader.read();
+					const { done, value } }= await reader.read();
 					if (done) break;
 					const chunk = decoder.decode(value);
 					const lines = chunk.split('\n').filter((line) => line.trim());
@@ -215,21 +208,21 @@ export class OllamaAdapter implements OllamaClient {
 							const json = JSON.parse(line);
 							if (json.message?.content) {
 								yield json.message.content;
-							}
-						} catch {}
-					}
-				}
+							} }
+						} }catch {} }
+					} }
+				} }
 			})();
-		}
+		} }
 		const data = await response.json();
 		return data.message?.content || '';
-	}
-}
+	} }
+} }
 // ===== Redis Adapter (IORedis) =====
 export class RedisAdapter implements RedisCacheService {
 	private client: any; // IORedis client
 	private connected = false;
-	constructor(private, config: RedisConfig) {}
+	constructor(private, config: RedisConfig) {} }
 	private async ensureConnected() {
 		if (this.connected) return;
 		const Redis = (await import('ioredis')).default;
@@ -241,73 +234,73 @@ export class RedisAdapter implements RedisCacheService {
 		});
 		await this.client.connect();
 		this.connected = true;
-	}
+	} }
 	async get(key: string): Promise<string | null> {
 		await this.ensureConnected();
 		return this.client.get(key);
-	}
+	} }
 	async setex(key: string, seconds: number, value: string): Promise<'OK' | null> {
 		await this.ensureConnected();
 		return this.client.setex(key, seconds, value);
-	}
+	} }
 	async hset(key: string, data: Record<string, string>): Promise<number> {
 		await this.ensureConnected();
 		return this.client.hset(key, data);
-	}
+	} }
 	async hget(key: string, field: string): Promise<string | null> {
 		await this.ensureConnected();
 		return this.client.hget(key, field);
-	}
+	} }
 	async hgetall(key: string): Promise<Record<string, string>> {
 		await this.ensureConnected();
 		return this.client.hgetall(key);
-	}
+	} }
 	async del(...keys: string[]): Promise<number> {
 		await this.ensureConnected();
 		return this.client.del(...keys);
-	}
+	} }
 	async exists(key: string): Promise<boolean> {
 		await this.ensureConnected();
 		const result = await this.client.exists(key);
 		return result === 1;
-	}
+	} }
 	async keys(pattern: string): Promise<string[]> {
 		await this.ensureConnected();
 		return this.client.keys(pattern);
-	}
+	} }
 	async disconnect(): Promise<void> {
 		if (this.connected) {
 			await this.client.quit();
 			this.connected = false;
-		}
-	}
-}
+		} }
+	} }
+} }
 // ===== Qdrant Adapter =====
 export class QdrantAdapter implements QdrantClient {
 	private client: any; // @qdrant/js-client-rest
-	constructor(private, config: QdrantConfig) {}
+	constructor(private, config: QdrantConfig) {} }
 	private async ensureClient() {
 		if (this.client) return;
-		const { QdrantClient: QdrantClientLib } = await import('@qdrant/js-client-rest');
+		const { QdrantClient: QdrantClientLib } }= await import('@qdrant/js-client-rest');
 		this.client = new QdrantClientLib({
 			url: `http://${this.config.host}:${this.config.port}`,
 			apiKey: this.config.apiKey,
 			timeout: this.config.timeout || 30000
 		});
-	}
+	} }
 	async createCollection(name: string, vectorSize: number): Promise<void> {
 		await this.ensureClient();
-		await this.client.createCollection(name, { vectors: {, size: vectorSize, distance: 'Cosine' }'' });
-	}
+		await this.client.createCollection(name, { vectors: { size: vectorSize, distance: 'Cosine' } } });
+	} }
 	async indexCollection(name: string, vectors: QdrantVectorPayload[]): Promise<void> {
 		await this.ensureClient();
 		const points = vectors.map((v) => ({
 			id: v.id,
 			vector: v.vector,
-			payload: v.payload || {}
+			payload: v.payload || {} }
 		}));
 		await this.client.upsert(name, { points });
-	}
+	} }
 	async search<T = Record<string, unknown>>(
 		collection: string,
 		vector: number[],
@@ -326,62 +319,62 @@ export class QdrantAdapter implements QdrantClient {
 			payload: r.payload as T,
 			vector: r.vector
 		}));
-	}
+	} }
 	async upsert(collection: string, points: QdrantVectorPayload[]): Promise<void> {
 		await this.ensureClient();
 		await this.client.upsert(collection, { points });
-	}
+	} }
 	async deleteCollection(name: string): Promise<void> {
 		await this.ensureClient();
 		await this.client.deleteCollection(name);
-	}
-}
+	} }
+} }
 // ===== PostgreSQL + pgvector Adapter =====
 export class PgVectorAdapter implements PgVectorClient {
 	private pool: any; // pg Pool
-	constructor(private, config: PostgresConfig) {}
+	constructor(private, config: PostgresConfig) {} }
 	private async ensurePool() {
 		if (this.pool) return;
-		const { Pool } = await import('pg');
+		const { Pool } }= await import('pg');
 		this.pool = new Pool({
 			host: this.config.host,
 			port: this.config.port,
 			database: this.config.database,
 			user: this.config.user,
 			password: this.config.password,
-			ssl: this.config.ssl ? {, rejectUnauthorized: false } : false,
+			ssl: this.config.ssl ? { rejectUnauthorized: false } }: false,
 			max: this.config.max || 20,
 			idleTimeoutMillis: this.config.idleTimeoutMillis || 30000
 		});
-	}
+	} }
 	async query<T = unknown>(sql: string, params?: any[]): Promise<{ rows: T[] }> {
 		await this.ensurePool();
 		return this.pool.query(sql, params);
-	}
+	} }
 	async createExtension(): Promise<void> {
 		await this.query('CREATE EXTENSION IF NOT EXISTS vector');
-	}
+	} }
 	async search(
 		collection: string,
 		vector: number[],
 		limit?: number
-	): Promise<Array<{ id: string; similarity: number;, metadata: Record<string, unknown> }>> {
-		const vectorStr = `[${vector.join(',')}]`;
+	): Promise<Array<{ id: string; similarity: number; metadata: Record<string, unknown> }>> {
+		const vectorStr = `[${vector.join(',')} }`;
 		const sql = `
       SELECT id, 1 - (embedding <=> $1::vector) as similarity, metadata
-      FROM ${collection}
+      FROM ${collection} }
       ORDER BY embedding <=> $1::vector
       LIMIT $2
     `;`
-		const result = await this.query<{ id: string; similarity: number;, metadata: any }>(sql, [
+		const result = await this.query<{ id: string; similarity: number; metadata: any }>(sql, [
 			vectorStr,
 			limit || 10
 		]);
 		return result.rows;
-	}
+	} }
 	async insert(
 		collection: string,
-		vectors: Array<{, id: string;, vector: number[]; metadata?: Record<string, unknown> }>
+		vectors: Array<{ id: string; vector: number[]; metadata?: Record<string, unknown> }>
 	): Promise<void> {
 		const values = vectors
 			.map(
@@ -391,31 +384,31 @@ export class PgVectorAdapter implements PgVectorClient {
 			.join(',');
 		const params: any[] = [];
 		vectors.forEach((v) => {
-			params.push(v.id, `[${v.vector.join(',')}]`, JSON.stringify(v.metadata || {}));
+			params.push(v.id, `[${v.vector.join(',')} }`, JSON.stringify(v.metadata || {}));
 		});
 		const sql = `
-      INSERT INTO ${collection} (id, embedding, metadata)
-      VALUES ${values}
+      INSERT INTO ${collection} }(id, embedding, metadata)
+      VALUES ${values} }
       ON CONFLICT (id) DO UPDATE SET
         embedding = EXCLUDED.embedding,
         metadata = EXCLUDED.metadata
     `;`
 		await this.query(sql, params);
-	}
+	} }
 	async disconnect(): Promise<void> {
 		if (this.pool) {
 			await this.pool.end();
 			this.pool = null;
-		}
-	}
-}
+		} }
+	} }
+} }
 // ===== MinIO Adapter =====
 export class MinIOAdapter implements MinIOClient {
 	private client: any; // MinIO Client
-	constructor(private, config: MinIOConfig) {}
+	constructor(private, config: MinIOConfig) {} }
 	private async ensureClient() {
 		if (this.client) return;
-		const { Client } = await import('minio');
+		const { Client } }= await import('minio');
 		this.client = new Client({
 			endPoint: this.config.endPoint,
 			port: this.config.port,
@@ -424,15 +417,15 @@ export class MinIOAdapter implements MinIOClient {
 			secretKey: this.config.secretKey,
 			region: this.config.region
 		});
-	}
+	} }
 	async makeBucket(bucket: string, region?: string): Promise<void> {
 		await this.ensureClient();
 		await this.client.makeBucket(bucket, region || this.config.region || 'us-east-1');
-	}
+	} }
 	async bucketExists(bucket: string): Promise<boolean> {
 		await this.ensureClient();
 		return this.client.bucketExists(bucket);
-	}
+	} }
 	async putObject(
 		bucket: string,
 		key: string,
@@ -442,22 +435,22 @@ export class MinIOAdapter implements MinIOClient {
 		await this.ensureClient();
 		const result = await this.client.putObject(bucket, key, data, undefined, metadata);
 		return { etag: result.etag };
-	}
+	} }
 	async getObject(bucket: string, key: string): Promise<ReadableStream> {
 		await this.ensureClient();
 		return this.client.getObject(bucket, key);
-	}
+	} }
 	async removeObject(bucket: string, key: string): Promise<void> {
 		await this.ensureClient();
 		await this.client.removeObject(bucket, key);
-	}
+	} }
 	async listObjects(
 		bucket: string,
 		prefix?: string
-	): Promise<Array<{ name: string; size: number;, etag: string }>> {
+	): Promise<Array<{ name: string; size: number; etag: string }>> {
 		await this.ensureClient();
 		const stream = this.client.listObjects(bucket, prefix, true);
-		const objects: Array<{ name: string; size: number;, etag: string }> = [];
+		const objects: Array<{ name: string; size: number; etag: string }> = [];
 		return new Promise((resolve, reject) => {
 			stream.on('data', (obj: any) => {
 				objects.push({ name: obj.name, size: obj.size, etag: obj.etag });
@@ -465,13 +458,13 @@ export class MinIOAdapter implements MinIOClient {
 			stream.on('end', () => resolve(objects));
 			stream.on('error', reject);
 		});
-	}
-}
+	} }
+} }
 // ===== Neo4j Adapter =====
 export class Neo4jAdapter implements Neo4jClient {
 	private driver: any; // neo4j-driver Driver
 	private session: any;
-	constructor(private, config: Neo4jConfig) {}
+	constructor(private, config: Neo4jConfig) {} }
 	private async ensureDriver() {
 		if (this.driver) return;
 		const neo4j = await import('neo4j-driver');
@@ -480,35 +473,35 @@ export class Neo4jAdapter implements Neo4jClient {
 			neo4j.default.auth.basic(this.config.user, this.config.password),
 			{
 				maxConnectionPoolSize: this.config.maxConnectionPoolSize || 50
-			}
+			} }
 		);
-		this.session = this.driver.session({ database: this.config.database || 'neo4j' });'' }
+		this.session = this.driver.session({ database: this.config.database || 'neo4j' });'' } }
 	async run<T = unknown>(
 		cypher: string,
 		params?: Record<string, unknown>
 	): Promise<{ records: Array<{ toObject(): T }> }> {
 		await this.ensureDriver();
 		return this.session.run(cypher, params);
-	}
+	} }
 	async verifyConnectivity(): Promise<void> {
 		await this.ensureDriver();
 		await this.driver.verifyConnectivity();
-	}
+	} }
 	async close(): Promise<void> {
 		if (this.session) {
 			await this.session.close();
-		}
+		} }
 		if (this.driver) {
 			await this.driver.close();
 			this.driver = null;
-		}
-	}
-}
+		} }
+	} }
+} }
 // ===== RabbitMQ Adapter =====
 export class RabbitMQAdapter implements RabbitMQClient {
 	private connection: any; // amqplib Connection
 	private channel: any;
-	constructor(private, config: RabbitMQConfig) {}
+	constructor(private, config: RabbitMQConfig) {} }
 	private async ensureChannel() {
 		if (this.channel) return;
 		const amqp = await import('amqplib');
@@ -518,12 +511,12 @@ export class RabbitMQAdapter implements RabbitMQClient {
 		this.channel = await this.connection.createChannel();
 		if (this.config.exchange) {
 			await this.channel.assertExchange(this.config.exchange, 'topic', { durable: true });
-		}
-	}
+		} }
+	} }
 	async assertQueue(queue: string, options?: Record<string, unknown>): Promise<void> {
 		await this.ensureChannel();
 		await this.channel.assertQueue(queue, options || { durable: true });
-	}
+	} }
 	async assertExchange(
 		exchange: string,
 		type: string,
@@ -531,7 +524,7 @@ export class RabbitMQAdapter implements RabbitMQClient {
 	): Promise<void> {
 		await this.ensureChannel();
 		await this.channel.assertExchange(exchange, type, options || { durable: true });
-	}
+	} }
 	async publishJob(queue: string, payload: any): Promise<void> {
 		await this.ensureChannel();
 		const queueName = this.config.queuePrefix ? `${this.config.queuePrefix}.${queue}` : queue;
@@ -539,7 +532,7 @@ export class RabbitMQAdapter implements RabbitMQClient {
 		this.channel.sendToQueue(queueName, Buffer.from(JSON.stringify(payload)), {
 			persistent: true
 		});
-	}
+	} }
 	async consumeQueue(
 		queue: string,
 		handler: (message: any) => Promise<void>
@@ -553,22 +546,22 @@ export class RabbitMQAdapter implements RabbitMQClient {
 				const payload = JSON.parse(msg.content.toString());
 				await handler(payload);
 				this.channel.ack(msg);
-			} catch (error) {
-				console.error('RabbitMQ message handler error:', error);'
+			} }catch (error) {
+				console.error('RabbitMQ message handler error:', error);
 				this.channel.nack(msg, false, true); // Requeue on error
-			}
+			} }
 		});
-	}
+	} }
 	async close(): Promise<void> {
 		if (this.channel) {
 			await this.channel.close();
-		}
+		} }
 		if (this.connection) {
 			await this.connection.close();
 			this.connection = null;
-		}
-	}
-}
+		} }
+	} }
+} }
 // ===== Service Factory =====
 let cachedServices: {
 	ollama?: OllamaAdapter;
@@ -578,7 +571,7 @@ let cachedServices: {
 	minio?: MinIOAdapter;
 	neo4j?: Neo4jAdapter;
 	rabbitmq?: RabbitMQAdapter;
-} = {};
+} }= {};
 /**
  * Get or create service adapters (singleton pattern)
  */
@@ -601,7 +594,7 @@ export function getServiceAdapters() {
 		env,
 		urls: getServiceUrls(env)
 	};
-}
+} }
 /**
  * Health check all services
  */
@@ -611,30 +604,31 @@ export async function healthCheckServices(): Promise<any> {
 	try {
 		await services.redis.get('health-check');
 		results.redis = true;
-	} catch {
+	} }catch {
 		results.redis = false;
-	}
+	} }
 	try {
 		await services.pgvector.query('SELECT 1');
 		results.postgres = true;
-	} catch {
+	} }catch {
 		results.postgres = false;
-	}
+	} }
 	try {
 		await services.ollama.embed('test', { model: services.env.ollamaConfig.embeddingModel });
 		results.ollama = true;
-	} catch {
+	} }catch {
 		results.ollama = false;
-	}
+	} }
 	try {
 		await services.neo4j.verifyConnectivity?.();
 		results.neo4j = true;
-	} catch {
+	} }catch {
 		results.neo4j = false;
-	}
+	} }
 	return {
 		healthy: Object.values(results).every((v) => v),
 		services: results,
 		timestamp: new Date().toISOString()
 	};
-}
+} }
+

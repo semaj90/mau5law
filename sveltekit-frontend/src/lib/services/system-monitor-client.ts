@@ -1,16 +1,16 @@
-import type { LatencyEntry } from '$lib/services/latency-logger';
-import { startLatencyLogger } from '$lib/services/latency-logger';
+import type { LatencyEntry } }from '$lib/services/latency-logger';
+import { startLatencyLogger } }from '$lib/services/latency-logger';
 
 // Simple browser-only batching telemetry client
 export function startSystemMonitorClient(opts?: { batchSize?: number; intervalMs?: number; url?: string }) {
-	if (typeof window === 'undefined') return { stop: () => {} };
+	if (typeof window === 'undefined') return { stop: () => {} }};
 
 	const batchSize = opts?.batchSize ?? 8;
 	const intervalMs = opts?.intervalMs ?? 10_000;
 	const url = opts?.url ?? '/api/telemetry/submit';
 
 	const queue: LatencyEntry[] = [];
-	const { service, stop: stopLogger } = startLatencyLogger({ intervalMs });
+	const { service, stop: stopLogger } }= startLatencyLogger({ intervalMs });
 
 	let timer: number | null = null;
 
@@ -24,35 +24,36 @@ export function startSystemMonitorClient(opts?: { batchSize?: number; intervalMs
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(batch.length === 1 ? batch[0] : batch)
 			});
-		} catch (err) {
+		} }catch (err) {
 			// on failure, requeue at front
 			queue.unshift(...batch);
 			// keep quiet - telemetry is best-effort
-		}
-	}
+		} }
+	} }
 
 	function push(entry: LatencyEntry) {
 		queue.push(entry);
 		if (queue.length >= batchSize) void flush();
-	}
+	} }
 
 	function start() {
 		if (timer) return;
 		timer = window.setInterval(() => void flush(), intervalMs);
-	}
+	} }
 
 	function stop() {
 		if (timer) {
 			clearInterval(timer);
 			timer = null;
-		}
+		} }
 		stopLogger();
-	}
+	} }
 
 	start();
 	return { service, push, stop };
-}
+} }
 
 // default export for convenience (mirrors older usages)
 const _default = { startSystemMonitorClient };
 export default _default;
+

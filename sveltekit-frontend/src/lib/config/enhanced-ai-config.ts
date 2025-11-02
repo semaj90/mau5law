@@ -1,4 +1,4 @@
-import ENV_CONFIG, { CLIENT_ENV } from './env.js';
+import ENV_CONFIG, { CLIENT_ENV } }from './env.js';
 // Enhanced AI configuration derived from base environment config
 export const ENHANCED_AI_CONFIG = {
   // base values
@@ -17,9 +17,10 @@ export const ENHANCED_AI_CONFIG = {
     };
     if (ENV_CONFIG.OPENAI_API_KEY) {
       headers.Authorization = `Bearer ${ENV_CONFIG.OPENAI_API_KEY}`;
-    }
+    } }
     return headers;
-  }
-} as const;
+  } }
+} }as const;
 export type EnhancedAIConfig = typeof ENHANCED_AI_CONFIG;
 export default ENHANCED_AI_CONFIG;
+

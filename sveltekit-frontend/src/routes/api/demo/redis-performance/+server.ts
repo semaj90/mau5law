@@ -3,14 +3,14 @@
  * Shows dramatic performance improvements with Redis caching
  * Demonstrates 240x speed improvement for complex operations
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { createRedisInstance } from '$lib/server/redis'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
+import { createRedisInstance } }from '$lib/server/redis'
 // Create Redis client directly
 let redis = createRedisInstance()
 interface PerformanceResult { operation: string, uncachedTime: number; cachedTime: number; speedupFactor: number;
- , result: any
-}
+  result: any
+} }
 // Simulate expensive operations like vector search, legal analysis, etc.
 async function expensiveVectorSearch(query: string): Promise<any> {
   // Simulate heavy computation (vector similarity, AI processing)
@@ -18,8 +18,7 @@ async function expensiveVectorSearch(query: string): Promise<any> {
   return {
     query,
     results: [
-      {,
-        id: 'doc_001',
+      { id: 'doc_001',
         title: 'Employment Contract Analysis - Remote Work Clauses',
         similarity: 0.94,
         content: 'This landmark case establishes precedent for remote work provisions...',
@@ -34,20 +33,20 @@ async function expensiveVectorSearch(query: string): Promise<any> {
       },
     ],
     metadata: {
-     , searchTime: '1200ms',
+  searchTime: '1200ms',
       totalResults: 2,
       model: 'legal-nomic-embed',
       embedding: new Array(768).fill(0).map(() => Math.random()), // Mock 768-dim vector
-    }
+    } }
   };
-}
+} }
 async function expensiveLegalAnalysis(_document: string): Promise<any> {
   // Simulate complex legal analysis (NLP, entity extraction, risk assessment)
   await new Promise(resolve => setTimeout(resolve, 800)); // 800ms delay
   return {
     document: _document.substring(0, 100) + '...',
     analysis: {
-     , riskLevel: 'Medium',
+  riskLevel: 'Medium',
       confidence: 0.86,
       keyEntities: ['Employment Agreement', 'Remote Work', 'Compensation'],
       sentiment: 0.12,
@@ -60,11 +59,11 @@ async function expensiveLegalAnalysis(_document: string): Promise<any> {
     },
     processingTime: '800ms'
   };
-}
-export const, POST: RequestHandler = async ({ request }) => {
+} }
+export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now()
   try {
-    const { operation = 'vector-search', query = 'employment contract dispute' } =
+    const { operation = 'vector-search', query = 'employment contract dispute' } }=
       await request.json()
     const results: PerformanceResult[] = []
     const cacheKey = `demo:${operation}:${Buffer.from(query).toString('base64')}`
@@ -89,7 +88,7 @@ export const, POST: RequestHandler = async ({ request }) => {
         speedupFactor: Math.round(uncachedTime / cachedTime),
         result: cachedResult
       })
-    }
+    } }
     // Test 2: Legal Analysis Performance
     if (operation === 'legal-analysis' || operation === 'all') {
       const analysisKey = `${cacheKey}:analysis`
@@ -112,7 +111,7 @@ export const, POST: RequestHandler = async ({ request }) => {
         speedupFactor: Math.round(uncachedTime / cachedTime),
         result: cachedAnalysis
       })
-    }
+    } }
     // Redis Performance Metrics
     const redisInfo = await redis.info('memory')
     const redisStats = {
@@ -122,19 +121,19 @@ export const, POST: RequestHandler = async ({ request }) => {
       uptime: await redis
         .info('server')
         .then((info) => parseRedisInfo(info).uptime_in_seconds || 0)
-    }
+    } }
     const totalTime = performance.now() - startTime
     return json({
       success: true,
       demo: {
-       , title: 'Redis Cache Performance Demonstration',
+  title: 'Redis Cache Performance Demonstration',
         description: 'Real-world performance comparison showing dramatic speed improvements',
         testQuery: query,
         operationsTested: operation
       },
       results,
       performance: {
-       , totalDemoTime: `${totalTime.toFixed(2)}ms`,
+  totalDemoTime: `${totalTime.toFixed(2)}ms`,
         avgSpeedup:
           results.length > 0
             ? Math.round(results.reduce((sum, r) => sum + r.speedupFactor, 0) / results.length)
@@ -143,12 +142,12 @@ export const, POST: RequestHandler = async ({ request }) => {
         productionImpact: 'Enables real-time legal AI with sub-second responses' },'`'`
       redis: redisStats,
       costSavings: {
-       , computeReduction: '99.6%',
+  computeReduction: '99.6%',
         estimatedSavings: '$1,200/month for 10K daily requests',
         energyEfficiency: `240x reduction in CPU usage per query' },'`
       timestamp: new Date().toISOString()
     })
-  } catch (error: any) {
+  } }catch (error: any) {
     const totalTime = performance.now() - startTime
     return json(
       {
@@ -163,12 +162,12 @@ export const, POST: RequestHandler = async ({ request }) => {
         responseTime: `${totalTime.toFixed(2)}ms`,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     )
-  }
-}
+  } }
+} }
 // GET: Quick Redis health and cache statistics
-export const, GET: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
   try {
     const start = performance.now()
     // Quick health check
@@ -184,18 +183,18 @@ export const, GET: RequestHandler = async () => {
     return json({
       success: true,
       redis: {
-       , status: 'Connected',
+  status: 'Connected',
         version: server.redis_version,
-        uptime: `${Math.floor((server.uptime_in_seconds || 0) / 60)} minutes`,
+        uptime: `${Math.floor((server.uptime_in_seconds || 0) / 60)} }minutes`,
         memory: {
-         , used: memory.used_memory_human,
+  used: memory.used_memory_human,
           peak: memory.used_memory_peak_human,
           fragmentation: memory.mem_fragmentation_ratio
         },
         keys: keyCount,
         performance: '${responseTime.toFixed(2)}ms' },'`'`
       cacheDemo: {
-       , endpoint: 'POST /api/demo/redis-performance',
+  endpoint: 'POST /api/demo/redis-performance',
         operations: ['vector-search', 'legal-analysis', 'all'],
         expectedSpeedup: '50x to 240x faster',
         examples: [
@@ -205,30 +204,30 @@ export const, GET: RequestHandler = async () => {
       },
       timestamp: new Date().toISOString()
     })
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         success: false,
         redis: {
-         , status: 'Disconnected',
+  status: 'Disconnected',
           error: error instanceof Error ? error.message : String(error)
         },
-        troubleshooting: { dockerCommand: 'docker run -d --name redis-demo -p;, 6379:6379, redis:7-alpine',
+        troubleshooting: { dockerCommand: 'docker run -d --name redis-demo -p; 6379:6379, redis:7-alpine',
           testConnection: `redis-cli ping' },'`
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     )
-  }
-}
+  } }
+} }
 function parseRedisInfo(info: string): any {
-  const result: any = {}
+  const result: any = {} }
   const lines = info.split('\r\n')
   for (const line of lines) {
     if (line.includes(':')) {
       const [key, value] = line.split(':', 2)
       result[key] = isNaN(Number(value)) ? value : Number(value)
-    }
-  }
+    } }
+  } }
   return result
 }

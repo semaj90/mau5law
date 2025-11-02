@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -19,44 +19,43 @@ import type { Case } from '$lib/types';
  */
 // Contextual Prompts Generation API
 // Generates intelligent prompts based on legal context and user behavior
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { validateAuthSession } from '$lib/server/auth';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { validateAuthSession } }from '$lib/server/auth';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const session = await validateAuthSession(request);
     if (!session) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    const { context, timing, model = 'gemma2:9b', legalContext } = await request.json();
+    } }
+    const { context, timing, model = 'gemma2:9b', legalContext } }= await request.json();
     // Generate contextual prompts based on timing and legal context
     const promptGenerationPrompt = `
 You are an expert legal AI assistant. Generate contextual prompts and recommendations for a legal professional during document upload and analysis.
 Context:
--; Timing: ${timing}
-- Files: ${context.files?.length || 0} documents
-- Case ID: ${context.caseId || 'No active case'}
-- Legal, Context: ${JSON.stringify(legalContext || {})}
-- User Expertise: ${context.userAnalytics?.caseContext?.expertise || 'associate'}
-- Practice Area: ${legalContext?.practiceArea || 'General'}
-- Urgency: ${legalContext?.urgency || 'medium'}
-File, Names: ${context.files?.map((f: any) => f.name).join(', ') || 'None` }'`
-Generate 2-4 relevant prompts based on the timing phase:;, For: "before-upload": Focus on preparation, organization, and potential issues
+-; Timing: ${timing} }
+- Files: ${context.files?.length || 0} }documents
+- Case ID: ${context.caseId || 'No active case'} }
+- Legal, Context: ${JSON.stringify(legalContext || {})} }
+- User Expertise: ${context.userAnalytics?.caseContext?.expertise || 'associate'} }
+- Practice Area: ${legalContext?.practiceArea || 'General'} }
+- Urgency: ${legalContext?.urgency || 'medium'} }
+File, Names: ${context.files?.map((f: any) => f.name).join(', ') || 'None` } }`
+Generate 2-4 relevant prompts based on the timing phase:; For: "before-upload": Focus on preparation, organization, and potential issues
 For: "during-upload": Focus on monitoring, insights, and real-time guidance
 For: "after-upload": Focus on next steps, analysis results, and recommendations
 Each prompt should be actionable and specific to legal workflows.
 Respond in JSON format:
 {
   "prompts": [
-    {,
-      "id": "unique-id",
+    { "id": "unique-id",
       "content": "Specific, actionable prompt text",
       "category": "optimization|guidance|insight|warning|recommendation",
       "confidence": 0.0-1.0,
       "relevance": 0.0-1.0,
       "actionable": boolean: "legalSpecific": boolean
-    }
+    } }
   ]
 }`;`
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
@@ -64,43 +63,43 @@ Respond in JSON format:
       headers: {
         'Content-Type': `application/json` },
       body: JSON.stringify({
-       , model: model,
+  model: model,
         prompt: promptGenerationPrompt,
         format: 'json',
         stream: false,
         options: {
-         , temperature: 0.6,
+  temperature: 0.6,
           top_p: 0.9
-        }
+        } }
       })
     });
     if (!ollamaResponse.ok) {
       throw new Error(`Ollama API error: ${ollamaResponse.statusText}`);
-    }
+    } }
     const result = await ollamaResponse.json();
     let promptsData;
     try {
       promptsData = JSON.parse((result as { response?: any }).response);
-    } catch (error) {
+    } }catch (error) {
       // Fallback prompts based on timing and context
       promptsData = generateFallbackPrompts(timing, context, legalContext);
-    }
+    } }
     // Add timing property to each prompt
     const prompts = promptsData.prompts.map((prompt: any) => ({
       ...prompt,
       timing: timing,
       id: prompt.id || `${timing}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}` }));
     return json({ prompts });
-  } catch (error) {
-    console.error('Prompt generation error:', error);'
+  } }catch (error) {
+    console.error('Prompt generation error:', error);
     // Return fallback prompts
     const fallbackPrompts = generateFallbackPrompts(
       request.body?.timing || 'before-upload',
       request.body?.context || {},
-      request.body?.legalContext || {}
+      request.body?.legalContext || {} }
     );
     return json(fallbackPrompts);
-  }
+  } }
 };
 function generateFallbackPrompts(timing: string, context: any, legalContext: any) {
   const prompts = [];
@@ -117,7 +116,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         actionable: true,
         legalSpecific: true
       });
-    }
+    } }
     if (context.files?.length > 10) {
       prompts.push({
         id: `bulk-${timestamp}`,
@@ -129,7 +128,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         actionable: true,
         legalSpecific: true
       });
-    }
+    } }
     if (legalContext?.practiceArea === 'litigation') {
       prompts.push({
         id: `litigation-${timestamp}`,
@@ -141,8 +140,8 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         actionable: true,
         legalSpecific: true
       });
-    }
-  }
+    } }
+  } }
   if (timing === 'during-upload') {
     prompts.push({
       id: `monitoring-${timestamp}`,
@@ -165,8 +164,8 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         actionable: false,
         legalSpecific: true
       });
-    }
-  }
+    } }
+  } }
   if (timing === 'after-upload') {
     prompts.push({
       id: `next-steps-${timestamp}`,
@@ -188,7 +187,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         actionable: true,
         legalSpecific: true
       });
-    }
+    } }
     prompts.push({
       id: `quality-check-${timestamp}`,
       content:
@@ -199,7 +198,8 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
       actionable: true,
       legalSpecific: true
     });
-  }
+  } }
   return { prompts };
-}
+} }
 export const POST = redisOptimized.documentProcessing(originalPOSTHandler);
+

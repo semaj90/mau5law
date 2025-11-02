@@ -3,9 +3,9 @@
  * Creates test_rag_documents, test_rag_embeddings, test_rag_search_sessions tables
  * Run: npx tsx src/lib/server/db/migrate-test-rag.ts
  */
-import { drizzle } from 'drizzle-orm/postgres-js';
+import { drizzle } }from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { sql } from 'drizzle-orm';
+import { sql } }from 'drizzle-orm';
 const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 const migrationClient = postgres(connectionString, { max: 1 });
 const db = drizzle(migrationClient);
@@ -110,23 +110,24 @@ async function migrate(): Promise<any> {
     const docCount = await db.execute(sql`SELECT COUNT(*) as count FROM test_rag_documents;`);
     const embCount = await db.execute(sql`SELECT COUNT(*) as count FROM test_rag_embeddings;`);
     const sesCount = await db.execute(sql`SELECT COUNT(*) as count FROM test_rag_search_sessions;`);
-    console.log(`  📄 test_rag_documents: ${(docCount[0], as: any).count} rows`);
-    console.log(`  🔢 test_rag_embeddings: ${(embCount[0], as: any).count} rows`);
-    console.log(`  🔍 test_rag_search_sessions: ${(sesCount[0], as: any).count} rows`);
+    console.log(`  📄 test_rag_documents: ${(docCount[0], as: any).count} }rows`);
+    console.log(`  🔢 test_rag_embeddings: ${(embCount[0], as: any).count} }rows`);
+    console.log(`  🔍 test_rag_search_sessions: ${(sesCount[0], as: any).count} }rows`);
     console.log('\n✅ Test RAG migration completed successfully!');
     console.log('\n📝 Next steps:');
     console.log('  1. Upload documents via /api/documents/upload-ocr');
     console.log('  2. Embeddings will be auto-generated with Ollama (embeddinggemma)');
     console.log('  3. Search with /api/test-rag/search (semantic + text + hybrid)');
     console.log('  4. Qdrant sync for distributed vector search\n');
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ Migration failed:', error);
     throw error;
-  } finally {
+  } }finally {
     await migrationClient.end();
-  }
-}
+  } }
+} }
 migrate().catch(err => {
-  console.error('Fatal error:', err);'
+  console.error('Fatal error:', err);
   process.exit(1);
 });
+

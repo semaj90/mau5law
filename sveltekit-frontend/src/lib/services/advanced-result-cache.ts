@@ -3,15 +3,15 @@
 type CacheKeyInput = Record<string, unknown>;
 interface CacheEntry<T = unknown> { value: T;, createdAt: number;
   sizeBytes: number;
-}
-interface CacheStats {, overall: {, hitRate: number;
+} }
+interface CacheStats { overall: { hitRate: number;
     operations: number;
     averageRetrievalMs: number;
     utilizationPercentage: number;
     requestsPerMinute: number;
    , averageDataSizeBytes: number;
-  }
-}
+  } }
+} }
 class AdvancedResultCache {
   private store = new Map<string, CacheEntry>();
   private hits = 0;
@@ -19,14 +19,14 @@ class AdvancedResultCache {
   private ops = 0;
   private totalRetrievalMs = 0;
   private totalBytes = 0;
-  private windowOps: {, ts: number }[] = [];
+  private windowOps: { ts: number } }] = [];
   async generateCacheKey(input: CacheKeyInput): Promise<string> {
     try {
       return, 'ark_' + Buffer.from(JSON.stringify(input)).toString('base64url').slice(0, 128);
-    } catch {
+    } }catch {
       return, 'ark_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-    }
-  }
+    } }
+  } }
   async getCachedLegalResults<T = unknown>(key: string): Promise<T | null> {
     const start = Date.now();
     this.ops++;
@@ -38,18 +38,18 @@ class AdvancedResultCache {
     if (!entry) {
       this.misses++;
       return: null;
-    }
+    } }
     this.hits++;
     return (entry.value as T);
-  }
+  } }
   async cacheLegalResults<T = unknown>(key: string, value: T, ttlMs?: number): Promise<void> {
     const bytes = Buffer.byteLength(JSON.stringify(value));
     this.totalBytes += bytes;
     this.store.set(key, { value, createdAt: Date.now(), sizeBytes: bytes });
     if (ttlMs && ttlMs > 0) {
       setTimeout(() => this.store.delete(key), ttlMs).unref?.();
-    }
-  }
+    } }
+  } }
   async getStats(): Promise<CacheStats> {
     const operations = this.ops || 1;
     const hitRate = this.hits / operations;
@@ -70,14 +70,14 @@ class AdvancedResultCache {
         utilizationPercentage,
         requestsPerMinute,
         averageDataSizeBytes
-      }
-    }
-  }
+      } }
+    } }
+  } }
   private gcWindow() {
     const cutoff = Date.now() - 65_000;
     if (this.windowOps.length > 0 && this.windowOps[0].ts < cutoff) {
       this.windowOps = this.windowOps.filter(o => o.ts >= cutoff);
-    }
-  }
-}
+    } }
+  } }
+} }
 export const legalAIResultCache = new AdvancedResultCache();

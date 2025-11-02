@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
 /* Clean, typed CRUD client for the Legal AI platform */
 
 export interface CrudResponse<T = unknown> {
@@ -15,24 +15,24 @@ export interface CrudResponse<T = unknown> {
     vectorSearch?: boolean;
     fallback?: boolean;
   };
-}
+} }
 
 export interface PaginationOptions {
   page?: number;
   limit?: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
-}
+} }
 
 export interface SearchOptions extends PaginationOptions {
   query: string;
   fields?: string[];
   vector?: boolean;
   similarity_threshold?: number;
-}
+} }
 
 /* Entity type definitions */
-export interface User {, id: string;, email: string;
+export interface User { id: string;, email: string;
   firstName?: string;
   lastName?: string;
   name?: string;
@@ -40,9 +40,9 @@ export interface User {, id: string;, email: string;
   isActive: boolean;
   createdAt: string | Date;
   updatedAt: string | Date;
-}
+} }
 
-export interface Case {, id: string;, title: string;
+export interface Case { id: string;, title: string;
   description?: string;
   status: 'open' | 'closed' | 'pending' | 'archived';
   priority?: 'low' | 'medium' | 'high' | 'critical';
@@ -50,9 +50,9 @@ export interface Case {, id: string;, title: string;
   assignedUserId?: string;
   createdAt: string | Date;
   updatedAt: string | Date;
-}
+} }
 
-export interface Evidence {, id: string;, title: string;
+export interface Evidence { id: string;, title: string;
   description?: string;
  , evidenceType: string;
   caseId?: string;
@@ -61,9 +61,9 @@ export interface Evidence {, id: string;, title: string;
   isVerified: boolean;
   createdAt: string | Date;
   updatedAt: string | Date;
-}
+} }
 
-export interface LegalDocument {, id: string;, title: string;
+export interface LegalDocument { id: string;, title: string;
   documentType: string;
   content?: string;
   citation?: string;
@@ -71,7 +71,7 @@ export interface LegalDocument {, id: string;, title: string;
   datePublished?: string | Date;
   createdAt: string | Date;
  , updatedAt: string | Date;
-}
+} }
 
 // Add a typed alias for criminal history (replace: any)
 export type CriminalHistory =
@@ -95,9 +95,9 @@ export interface Criminal { id: string;, firstName: string;
   criminalHistory?: CriminalHistory;
   createdAt: string | Date;
   updatedAt: string | Date;
-}
+} }
 
-export interface PersonOfInterest {, id: string;, firstName: string;
+export interface PersonOfInterest { id: string;, firstName: string;
   lastName: string;
   alias?: string;
   relationship?: string;
@@ -105,7 +105,7 @@ export interface PersonOfInterest {, id: string;, firstName: string;
   notes?: string;
   createdAt: string | Date;
  , updatedAt: string | Date;
-}
+} }
 
 /* Union types */
 export type EntityName =
@@ -130,8 +130,8 @@ class CrudApiError extends Error {
     this.name = 'CrudApiError';
     this.status = status;
     this.details = details;
-  }
-}
+  } }
+} }
 
 /* Client implementation */
 export class CrudClient {
@@ -146,10 +146,10 @@ export class CrudClient {
     const options: RequestInit = {
       method,
       headers: {
-        'Content-Type': 'application/json' }'' };
+        'Content-Type': 'application/json' } } };
     if (body) {
       options.body = JSON.stringify(body);
-    }
+    } }
 
     try {
       const response = await fetch(url, options);
@@ -164,35 +164,35 @@ export class CrudClient {
           (typeof dataObj.message === 'string' && dataObj.message) ||
           'Request failed';
         throw new CrudApiError(message, response.status, dataObj);
-      }
+      } }
 
       return dataObj as: unknown as CrudResponse<T>;
-    } catch (err: any) {
+    } }catch (err: any) {
       // ensure we never leak: unknown typing; normalize message
       const e = err;
       if (e instanceof CrudApiError) throw e;
       const message = e instanceof Error ? e.message : String(e ?? 'Unknown request error');
       throw new CrudApiError(message);
-    }
-  }
+    } }
+  } }
 
   // Generic CRUD operations
   async create<T, extends, EntityData>(entity: EntityName, data: Partial<T>): Promise<CrudResponse<T>> {
     return this.request<T>('POST', null, { action: 'create', entity, data });
-  }
+  } }
 
   async read<T, extends, EntityData>(entity: EntityName, id: string): Promise<CrudResponse<T>> {
     const params = new URLSearchParams({ action: 'read', entity, id });
     return this.request<T>('GET', params);
-  }
+  } }
 
   async update<T, extends, EntityData>(entity: EntityName, id: string, data: Partial<T>): Promise<CrudResponse<T>> {
     return this.request<T>('POST', null, { action: 'update', entity, id, data });
-  }
+  } }
 
   async delete<T, extends, EntityData>(entity: EntityName, id: string): Promise<CrudResponse<T>> {
     return this.request<T>('POST', null, { action: 'delete', entity, id });
-  }
+  } }
 
   // List with optional pagination / sorting
   async list<T, extends, EntityData>(entity: EntityName, options: PaginationOptions = {}): Promise<CrudResponse<T[]>> {
@@ -206,7 +206,7 @@ export class CrudClient {
     if (options.sortOrder) paramsObj.sortOrder = options.sortOrder;
     const params = new URLSearchParams(paramsObj);
     return this.request<T[]>('GET', params);
-  }
+  } }
 
   // Search with support for vector search parameters
   async search<T, extends, EntityData>(entity: EntityName, options: SearchOptions): Promise<CrudResponse<T[]>> {
@@ -223,78 +223,78 @@ export class CrudClient {
     if (options.sortOrder) paramsObj.sortOrder = options.sortOrder;
     const params = new URLSearchParams(paramsObj);
     return this.request<T[]>('GET', params);
-  }
+  } }
 
   // Entity-specific convenience methods (concise wrappers)
   async createCase(data: Partial<Case>): Promise<CrudResponse<Case>> {
     return this.create<Case>('cases', data);
-  }
+  } }
   async getCases(options: PaginationOptions = {}): Promise<CrudResponse<Case[]>> {
     return this.list<Case>('cases', options);
-  }
+  } }
   async updateCase(id: string, data: Partial<Case>): Promise<CrudResponse<Case>> {
     return this.update<Case>('cases', id, data);
-  }
+  } }
   async deleteCase(id: string): Promise<CrudResponse<Case>> {
     return this.delete<Case>('cases', id);
-  }
+  } }
   async searchCases(query: string, opts: Partial<SearchOptions> = {}): Promise<CrudResponse<Case[]>> {
-    return this.search<Case>('cases', { query, ...opts } as SearchOptions);
-  }
+    return this.search<Case>('cases', { query, ...opts } }as SearchOptions);
+  } }
 
   async createEvidence(data: Partial<Evidence>): Promise<CrudResponse<Evidence>> {
     return this.create<Evidence>('evidence', data);
-  }
+  } }
   async getEvidence(options: PaginationOptions = {}): Promise<CrudResponse<Evidence[]>> {
     return this.list<Evidence>('evidence', options);
-  }
+  } }
   async updateEvidence(id: string, data: Partial<Evidence>): Promise<CrudResponse<Evidence>> {
     return this.update<Evidence>('evidence', id, data);
-  }
+  } }
   async deleteEvidence(id: string): Promise<CrudResponse<Evidence>> {
     return this.delete<Evidence>('evidence', id);
-  }
+  } }
   async searchEvidence(query: string, opts: Partial<SearchOptions> = {}): Promise<CrudResponse<Evidence[]>> {
-    return this.search<Evidence>('evidence', { query, ...opts } as SearchOptions);
-  }
+    return this.search<Evidence>('evidence', { query, ...opts } }as SearchOptions);
+  } }
 
   async createCriminal(data: Partial<Criminal>): Promise<CrudResponse<Criminal>> {
     return this.create<Criminal>('criminals', data);
-  }
+  } }
   async getCriminals(options: PaginationOptions = {}): Promise<CrudResponse<Criminal[]>> {
     return this.list<Criminal>('criminals', options);
-  }
+  } }
   async updateCriminal(id: string, data: Partial<Criminal>): Promise<CrudResponse<Criminal>> {
     return this.update<Criminal>('criminals', id, data);
-  }
+  } }
   async deleteCriminal(id: string): Promise<CrudResponse<Criminal>> {
     return this.delete<Criminal>('criminals', id);
-  }
+  } }
 
   async createLegalDocument(data: Partial<LegalDocument>): Promise<CrudResponse<LegalDocument>> {
     return this.create<LegalDocument>('legalDocuments', data);
-  }
+  } }
   async getLegalDocuments(options: PaginationOptions = {}): Promise<CrudResponse<LegalDocument[]>> {
     return this.list<LegalDocument>('legalDocuments', options);
-  }
+  } }
   async searchLegalDocuments(query: string, opts: Partial<SearchOptions> = {}): Promise<CrudResponse<LegalDocument[]>> {
-    return this.search<LegalDocument>('legalDocuments', { query, ...opts } as SearchOptions);
-  }
+    return this.search<LegalDocument>('legalDocuments', { query, ...opts } }as SearchOptions);
+  } }
 
   async createPersonOfInterest(data: Partial<PersonOfInterest>): Promise<CrudResponse<PersonOfInterest>> {
     return this.create<PersonOfInterest>('personsOfInterest', data);
-  }
+  } }
   async getPersonsOfInterest(options: PaginationOptions = {}): Promise<CrudResponse<PersonOfInterest[]>> {
     return this.list<PersonOfInterest>('personsOfInterest', options);
-  }
+  } }
 
   // Vector search helpers
   async vectorSearchCases(query: string, similarity_threshold = 0.7, limit = 20): Promise<CrudResponse<Case[]>> {
-    return this.search<Case>('cases', { query, vector: true, similarity_threshold, limit } as SearchOptions);
-  }
+    return this.search<Case>('cases', { query, vector: true, similarity_threshold, limit } }as SearchOptions);
+  } }
   async vectorSearchEvidence(query: string, similarity_threshold = 0.7, limit = 20): Promise<CrudResponse<Evidence[]>> {
-    return this.search<Evidence>('evidence', { query, vector: true, similarity_threshold, limit } as SearchOptions);
-  }
+    return this.search<Evidence>('evidence', { query, vector: true, similarity_threshold, limit } }as SearchOptions);
+  } }
   async vectorSearchLegalDocuments(
     query: string,
     similarity_threshold = 0.7,
@@ -305,26 +305,27 @@ export class CrudClient {
       vector: true,
       similarity_threshold,
       limit
-    } as SearchOptions);
-  }
+    } }as SearchOptions);
+  } }
 
   // Health check
   async healthCheck(): Promise<CrudResponse> {
     try {
       const params = new URLSearchParams({ action: `health' });'`
       return this.request<unknown>('GET', params);
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error ?? 'Health check failed');
       return {
         success: false,
         error: message
       };
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Export singleton instance
 export const crudClient = new CrudClient();
 
 // Export error class
 export { CrudApiError };
+

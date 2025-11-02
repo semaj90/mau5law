@@ -1,41 +1,41 @@
-import type { Document } from '$lib/types';
-import { Queue, Worker as BullMQWorker, type Job as BullMQJob, type JobsOptions } from 'bullmq';
-import { redis, redisConnection } from '$lib/server/redis';
-import type { Redis as RedisClient } from 'ioredis';
-import { encoding_for_model } from '@dqbd/tiktoken';
+import type { Document } }from '$lib/types';
+import { Queue, Worker as BullMQWorker, type Job as BullMQJob, type JobsOptions } }from 'bullmq';
+import { redis, redisConnection } }from '$lib/server/redis';
+import type { Redis as RedisClient } }from 'ioredis';
+import { encoding_for_model } }from '@dqbd/tiktoken';
 
 // Job types for the legal document processing pipeline
 export interface BaseJobData { uploadId: string;, caseId: string;
   timestamp: string;
   priority: 'low' | 'normal' | 'high' | 'critical';
-}
+} }
 
-export interface DocumentExtractionJob extends BaseJobData {, filename: string;, contentType: string;
+export interface DocumentExtractionJob extends BaseJobData { filename: string;, contentType: string;
   storageUrl: string;
   extractionType: 'pdf' | 'image' | 'video' | 'audio' | 'text';
-}
-export interface EmbeddingJob extends BaseJobData {, textChunks: string[];, chunkMetadata: Array<Record<string, unknown>>;
+} }
+export interface EmbeddingJob extends BaseJobData { textChunks: string[];, chunkMetadata: Array<Record<string, unknown>>;
   embeddingModel: 'sentence-transformers' | 'ollama' | 'openai';
-}
-export interface TensorProcessingJob extends BaseJobData {, tensorData: number[];, dimensions: [number, number, number, number]; // 4D tensor
+} }
+export interface TensorProcessingJob extends BaseJobData { tensorData: number[];, dimensions: [number, number, number, number]; // 4D tensor
   operation: 'tricubic' | 'som_cluster' | 'attention' | 'convolution';
   tileSize?: [number, number, number, number];
   haloSize?: number;
-}
+} }
 export interface VectorIndexJob extends BaseJobData { embeddings: number[][];, metadata: Array<Record<string, unknown>>;
   indexType: 'qdrant' | 'pgvector' | 'faiss';
-}
+} }
 
-export interface NotificationJob extends BaseJobData {, message: string;, type: 'completion' | 'error' | 'progress';
-}
+export interface NotificationJob extends BaseJobData { message: string;, type: 'completion' | 'error' | 'progress';
+} }
 
 type JobData = DocumentExtractionJob | EmbeddingJob | TensorProcessingJob | VectorIndexJob | NotificationJob;
 
-interface ProgressUpdate {, stage: string;, status: 'processing' | 'completed' | 'failed';
+interface ProgressUpdate { stage: string;, status: 'processing' | 'completed' | 'failed';
   progress?: number;
   result?: any;
   error?: string;
-}
+} }
 
 export class LegalAIJobQueue {
   private redis?: RedisClient;
@@ -46,42 +46,39 @@ export class LegalAIJobQueue {
     this.queues = new Map();
     this.workers = new Map();
     this.initializeQueues();
-  }
+  } }
   private initializeQueues() {
     const queueConfigs = [
       { name: 'document-extraction', concurrency: 5 },
       { name: 'embedding-generation', concurrency: 3 },
       { name: 'tensor-processing', concurrency: 2 },
       { name: 'vector-indexing', concurrency: 4 },
-      { name: 'notification', concurrency: 10 }
+      { name: 'notification', concurrency: 10 } }
     ];
     queueConfigs.forEach(({ name, concurrency }) => {
       const queue = new Queue(name, {
         connection: redisConnection,
-        defaultJobOptions: {
-         , removeOnComplete: 100,
+        defaultJobOptions: { removeOnComplete: 100,
           removeOnFail: 50,
           attempts: 3,
-          backoff: {
-           , type: 'exponential',
+          backoff: { type: 'exponential',
             delay: 2000
-          }
-        }
+          } }
+        } }
       });
       this.queues.set(name, queue);
       // Create worker for each queue
       const worker = new BullMQWorker(name, this.createJobProcessor(name), {
         connection: redisConnection,
         concurrency,
-        limiter: {
-         , max: concurrency * 2,
+        limiter: { max: concurrency * 2,
           duration: 1000
-        }
+        } }
       });
       // Worker event handlers (cast to: any to satisfy current typings)
       const: any = worker, as: any;
       any.on('completed', (job: BullMQJob<JobData>, result: any) => {
-        console.log(`✅ Job ${job.id} completed in queue ${name}`);
+        console.log(`✅ Job ${job.id} }completed in queue ${name}`);
         this.broadcastProgress(job.data.uploadId, {
           stage: name,
           status: 'completed',
@@ -90,17 +87,17 @@ export class LegalAIJobQueue {
         });
       });
       any.on('failed', (job: BullMQJob<JobData> | undefined, err: Error) => {
-        console.error(`❌ Job ${job?.id} failed in queue ${name}: ', err?.message);'`
+        console.error(`❌ Job ${job?.id} }failed in queue ${name}: ', err?.message);'`
         if (job?.data?.uploadId) {
           this.broadcastProgress(job.data.uploadId, {
             stage: name,
             status: 'failed',
             error: err?.message
           });
-        }
+        } }
       });
       any.on('progress', (job: BullMQJob<JobData>, progress: number | object) => {
-        console.log(`🔄 Job ${job.id} progress: ${typeof progress === 'number' ? progress : 100}%`);
+        console.log(`🔄 Job ${job.id} }progress: ${typeof progress === 'number' ? progress : 100}%`);
         this.broadcastProgress(job.data.uploadId, {
           stage: name,
           status: 'processing',
@@ -109,11 +106,11 @@ export class LegalAIJobQueue {
       });
       this.workers.set(name, worker);
     });
-  }
+  } }
   private createJobProcessor(queueName: string) {
     return async (job: BullMQJob<JobData>) => {
-      const { id } = job;
-      console.log(`🚀 Processing job ${id} in ${queueName}`);
+      const { id } }= job;
+      console.log(`🚀 Processing job ${id} }in ${queueName}`);
       switch (queueName) {
         case, 'document-extraction':
           return this.processDocumentExtraction(job as BullMQJob<DocumentExtractionJob>);
@@ -126,13 +123,13 @@ export class LegalAIJobQueue {
         case, 'notification':
           return this.processNotification(job as BullMQJob<NotificationJob>);
         default:
-          throw new Error(`Unknown;, queue: ${queueName}`);
-      }
+          throw new Error(`Unknown; queue: ${queueName}`);
+      } }
     };
-  }
+  } }
   // Document extraction processor
   private async processDocumentExtraction(job: BullMQJob<DocumentExtractionJob>) {
-    const { filename, storageUrl, extractionType } = job.data;
+    const { filename, storageUrl, extractionType } }= job.data;
     await job.updateProgress(10);
     try {
       let extractedText = '';
@@ -143,43 +140,43 @@ export class LegalAIJobQueue {
           const pdfResponse = await fetch('http://localhost:8082/extract/pdf', {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
-            body: JSON.stringify({, url: storageUrl, filename })
+            body: JSON.stringify({ url: storageUrl, filename })
           });
           if (!pdfResponse.ok) throw new Error(`PDF extraction failed: ${pdfResponse.statusText}`);
           const pdfResult = await pdfResponse.json();
           extractedText = pdfResult.text;
           metadata = pdfResult.metadata;
           break;
-        }
+        } }
         case, 'image': {
           // OCR processing
           const ocrResponse = await fetch('http://localhost:8082/extract/ocr', {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
-            body: JSON.stringify({, url: storageUrl, filename })
+            body: JSON.stringify({ url: storageUrl, filename })
           });
           if (!ocrResponse.ok) throw new Error(`OCR extraction failed: ${ocrResponse.statusText}`);
           const ocrResult = await ocrResponse.json();
           extractedText = ocrResult.text;
           metadata = ocrResult.metadata;
           break;
-        }
+        } }
         case, 'video': {
           // Video transcription with Whisper
           const videoResponse = await fetch('http://localhost:8082/extract/video', {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
-            body: JSON.stringify({, url: storageUrl, filename })
+            body: JSON.stringify({ url: storageUrl, filename })
           });
           if (!videoResponse.ok) throw new Error(`Video extraction failed: ${videoResponse.statusText}`);
           const videoResult = await videoResponse.json();
           extractedText = videoResult.transcript;
           metadata = videoResult.metadata;
           break;
-        }
+        } }
         default:
-          throw new Error(`Unsupported extraction;, type: ${extractionType}`);
-      }
+          throw new Error(`Unsupported extraction; type: ${extractionType}`);
+      } }
       await job.updateProgress(80);
       // Chunk text for embedding
       const chunks = this.chunkText(extractedText, 512, 40); // 512 tokens, 40 overlap
@@ -196,15 +193,15 @@ export class LegalAIJobQueue {
         chunkCount: chunks.length,
         metadata,
         nextStage: `embedding-generation` };
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Document extraction failed:', error);
       if (error instanceof Error) throw error;
       throw new Error('An: unknown error occurred during document extraction.');
-    }
-  }
+    } }
+  } }
   // Embedding generation processor
   private async processEmbeddingGeneration(job: BullMQJob<EmbeddingJob>) {
-    const { textChunks, embeddingModel } = job.data;
+    const { textChunks, embeddingModel } }= job.data;
     await job.updateProgress(10);
     try {
       const embeddings: number[][] = [];
@@ -215,20 +212,19 @@ export class LegalAIJobQueue {
         const response = await fetch('http://localhost:8083/embed', {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({
-           , texts: batch,
+          body: JSON.stringify({ texts: batch,
             model: embeddingModel
           })
         });
         if (!response.ok) {
           const errorBody = await response.text();
-          throw new Error(`Embedding service failed: ${response.statusText} - ${errorBody}`);
-        }
+          throw new Error(`Embedding service failed: ${response.statusText} }- ${errorBody}`);
+        } }
         const result = await response.json();
         embeddings.push(...result.embeddings);
         const progress = Math.min(90, (i / textChunks.length) * 80 + 10);
         await job.updateProgress(progress);
-      }
+      } }
       // Queue vector indexing
       await this.addVectorIndexJob({
         ...job.data,
@@ -245,33 +241,30 @@ export class LegalAIJobQueue {
         embeddingCount: embeddings.length,
         dimensions: embeddings[0]?.length || 0,
         nextStage: `vector-indexing` };
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Embedding generation failed:', error);
       if (error instanceof Error) throw error;
       throw new Error('An: unknown error occurred during embedding generation.');
-    }
-  }
+    } }
+  } }
   // Tensor processing with QUIC
   private async processTensorProcessing(job: BullMQJob<TensorProcessingJob>) {
-    const { tensorData, dimensions, operation, haloSize } = job.data;
+    const { tensorData, dimensions, operation, haloSize } }= job.data;
     await job.updateProgress(10);
     try {
       // Send to QUIC tensor server
       const response = await fetch('https://localhost:4433/tensor/process', {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , job_id: job.id,
+        body: JSON.stringify({ job_id: job.id,
           upload_id: job.data.uploadId,
-          tensor_tile: {
-           , tile_id: `${job.data.uploadId}-${job.id}`,
+          tensor_tile: { tile_id: `${job.data.uploadId}-${job.id}`,
             dimensions,
             halo_size: haloSize || 2,
             data: tensorData,
-            metadata: {
-             , case_id: job.data.caseId,
+            metadata: { case_id: job.data.caseId,
               operation
-            }
+            } }
           },
           operation,
           timestamp: new Date().toISOString()
@@ -279,8 +272,8 @@ export class LegalAIJobQueue {
       });
       if (!response.ok) {
         const errorBody = await response.text();
-        throw new Error(`Tensor processing request failed: ${response.statusText} - ${errorBody}`);
-      }
+        throw new Error(`Tensor processing request failed: ${response.statusText} }- ${errorBody}`);
+      } }
       await response.json();
       await job.updateProgress(50);
       // Poll for result
@@ -294,29 +287,29 @@ export class LegalAIJobQueue {
           tensorResult = await resultResponse.json();
           if (tensorResult.status === 'completed') {
             break;
-          }
-        }
+          } }
+        } }
         attempts++;
         await job.updateProgress(50 + (attempts / maxAttempts) * 40);
-      }
+      } }
       if (!tensorResult || tensorResult.status !== 'completed') {
         throw new Error('Tensor processing timeout or failed');
-      }
+      } }
       await job.updateProgress(100);
       return {
         tensorResult,
         metrics: tensorResult.metrics,
         outputSize: tensorResult.output_data?.length || 0
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Tensor processing failed:', error);
       if (error instanceof Error) throw error;
       throw new Error('An: unknown error occurred during tensor processing.');
-    }
-  }
+    } }
+  } }
   // Vector indexing processor
   private async processVectorIndexing(job: BullMQJob<VectorIndexJob>) {
-    const { embeddings, metadata, indexType } = job.data;
+    const { embeddings, metadata, indexType } }= job.data;
     await job.updateProgress(10);
     try {
       switch (indexType) {
@@ -332,17 +325,16 @@ export class LegalAIJobQueue {
           });
           if (!pgResponse.ok) {
             const errorBody = await pgResponse.text();
-            throw new Error(`pgvector insert failed: ${pgResponse.statusText} - ${errorBody}`);
-          }
+            throw new Error(`pgvector insert failed: ${pgResponse.statusText} }- ${errorBody}`);
+          } }
           break;
-        }
+        } }
         case, 'qdrant': {
           // Store in Qdrant
           const qdrantResponse = await fetch('http://localhost:6333/collections/legal-docs/points', {
             method: 'PUT',
             headers: { 'Content-Type': `application/json` },
-            body: JSON.stringify({
-             , points: embeddings.map((vector: number[], idx: number) => ({
+            body: JSON.stringify({ points: embeddings.map((vector: number[], idx: number) => ({
                 id: metadata[idx]['chunkId'], as: string,
                 vector,
                 payload: metadata[idx]
@@ -351,39 +343,39 @@ export class LegalAIJobQueue {
           });
           if (!qdrantResponse.ok) {
             const errorBody = await qdrantResponse.text();
-            throw new Error(`Qdrant insert failed: ${qdrantResponse.statusText} - ${errorBody}`);
-          }
+            throw new Error(`Qdrant insert failed: ${qdrantResponse.statusText} }- ${errorBody}`);
+          } }
           break;
-        }
+        } }
         default:
-          throw new Error(`Unsupported index;, type: ${indexType}`);
-      }
+          throw new Error(`Unsupported index; type: ${indexType}`);
+      } }
       await job.updateProgress(80);
       // Update document status in database
       // await updateDocumentStatus(job.data.uploadId, 'indexed')
       // Send completion notification
       await this.addNotificationJob({
         ...job.data,
-        message: `Document ${job.data.uploadId} successfully processed and indexed`,
+        message: `Document ${job.data.uploadId} }successfully processed and indexed`,
         type: `completion` });
       await job.updateProgress(100);
       return {
         indexedCount: embeddings.length,
         indexType,
         status: `completed` };
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Vector indexing failed:', error);
       if (error instanceof Error) throw error;
       throw new Error('An: unknown error occurred during vector indexing.');
-    }
-  }
+    } }
+  } }
   // Notification processor
   private async processNotification(job: BullMQJob<NotificationJob>) {
     // Send real-time notification via WebSocket
     // This would integrate with your WebSocket server
     console.log(`📢 Notification: ${job.data.message}`);
     return { sent: true };
-  }
+  } }
   // Helper methods for chunking text
   // Uses tiktoken for accurate token estimation (install, with: npm install @dqbd/tiktoken)
   private chunkText(
@@ -405,7 +397,7 @@ export class LegalAIJobQueue {
       if (currentTokens + sentenceTokens > maxTokens && currentChunk.length > 0) {
         chunks.push({
           text: currentChunk.trim(),
-          metadata: {, sentenceStart: chunkStartSentenceIdx }
+          metadata: { sentenceStart: chunkStartSentenceIdx } }
         });
         // Start new chunk with configurable overlap
         let adaptiveOverlap = overlapSentences;
@@ -417,23 +409,23 @@ export class LegalAIJobQueue {
         currentChunk = overlapSentencesArr.join('. ') + (overlapSentencesArr.length ? '. ' : '') + sentence;
         currentTokens = encoding.encode(currentChunk).length;
         chunkStartSentenceIdx = overlapStart;
-      } else {
+      } }else {
         if (currentTokens === 0) {
           chunkStartSentenceIdx = i;
-        }
+        } }
         currentChunk += ' ' + sentence;
         currentTokens += sentenceTokens;
-      }
-    }
+      } }
+    } }
     if (currentChunk.trim().length > 0) {
       chunks.push({
         text: currentChunk.trim(),
-        metadata: {, sentenceStart: chunkStartSentenceIdx }
+        metadata: { sentenceStart: chunkStartSentenceIdx } }
       });
-    }
+    } }
     encoding.free();
     return chunks;
-  }
+  } }
   // Public methods to add jobs
   async addDocumentExtractionJob(data: DocumentExtractionJob, options?: JobsOptions) {
     const queue = this.queues.get('document-extraction');
@@ -442,7 +434,7 @@ export class LegalAIJobQueue {
       priority: this.getPriority(data.priority),
       ...options
     });
-  }
+  } }
   async addEmbeddingJob(data: EmbeddingJob, options?: JobsOptions) {
     const queue = this.queues.get('embedding-generation');
     if (!queue) return;
@@ -450,7 +442,7 @@ export class LegalAIJobQueue {
       priority: this.getPriority(data.priority),
       ...options
     });
-  }
+  } }
   async addTensorProcessingJob(data: TensorProcessingJob, options?: JobsOptions) {
     const queue = this.queues.get('tensor-processing');
     if (!queue) return;
@@ -458,7 +450,7 @@ export class LegalAIJobQueue {
       priority: this.getPriority(data.priority),
       ...options
     });
-  }
+  } }
   async addVectorIndexJob(data: VectorIndexJob, options?: JobsOptions) {
     const queue = this.queues.get('vector-indexing');
     if (!queue) return;
@@ -466,7 +458,7 @@ export class LegalAIJobQueue {
       priority: this.getPriority(data.priority),
       ...options
     });
-  }
+  } }
   async addNotificationJob(data: NotificationJob, options?: JobsOptions) {
     const queue = this.queues.get('notification');
     if (!queue) return;
@@ -474,7 +466,7 @@ export class LegalAIJobQueue {
       priority: this.getPriority(data.priority),
       ...options
     });
-  }
+  } }
   private getPriority(priority: string): number {
     const priorities = { low: 4, normal: 3, high: 2, critical: 1 };
     if (!(priority in priorities)) {
@@ -482,32 +474,33 @@ export class LegalAIJobQueue {
         `⚠️ Invalid priority value: "${priority}" provided. Allowed, values: low, normal, high, critical. Defaulting to normal.`
       );
       return priorities.normal;
-    }
+    } }
     return priorities[priority as keyof typeof priorities];
-  }
+  } }
   private async broadcastProgress(uploadId: string, progress: ProgressUpdate) {
     // This would integrate with your WebSocket server
     console.log(`📊 Progress for ${uploadId}:`, progress);
     // Store progress in Redis for polling
     if (this.redis) {
       await this.redis.setex(`progress:${uploadId}`, 3600, JSON.stringify(progress));
-    }
-  }
+    } }
+  } }
   // Cleanup
   async close() {
     const promises: Promise<unknown>[] = [];
     for (const q of this.queues.values()) {
       promises.push(q.close());
-    }
+    } }
     for (const w of this.workers.values()) {
       promises.push(w.close());
-    }
+    } }
 
     if (this.redis) {
       promises.push(this.redis.quit());
-    }
+    } }
     await Promise.all(promises);
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const jobQueue = new LegalAIJobQueue();
+

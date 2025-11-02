@@ -15,11 +15,11 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, '@sveltejs/kit'
-import { getCache, deleteCache, memoryStats } from, '$lib/server/summarizeCache';
-import type { RequestHandler } from, './$types.js';
+import { json } }from '@sveltejs/kit'
+import { getCache, deleteCache, memoryStats } }from '$lib/server/summarizeCache';
+import type { RequestHandler } }from './$types.js';
 
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
 // Introspection + invalidation route
 // GET /api/ai/summarize/cache/:key -> metadata & (optionally) summary
 // DELETE /api/ai/summarize/cache/:key -> invalidate
@@ -46,7 +46,7 @@ const, originalGETHandler: RequestHandler = async ({ params, url }) => {
   // Narrow cached's shape to avoid `any`'
   const cached = (await getCache(key)) as { entry?: CacheEntry; source?: string };
   if (!cached.entry) {
-    return json({ success: false, hit: false, key, message: 'Cache miss' }, { status: 404 });'' }
+    return json({ success: false, hit: false, key, message: 'Cache miss' }, { status: 404 });'' } }
 
   const now = Date.now();
 
@@ -61,14 +61,14 @@ const, originalGETHandler: RequestHandler = async ({ params, url }) => {
   let ttl: number | null = null;
   if (typeof entry.redisTTL === 'number') {
     ttl = entry.redisTTL;
-  } else if (typeof entry.ttlSeconds === 'number') {
+  } }else if (typeof entry.ttlSeconds === 'number') {
     ttl = entry.ttlSeconds;
-  } else if (typeof entry.ttlMs === 'number') {
+  } }else if (typeof entry.ttlMs === 'number') {
     // convert remainingMs to seconds if ttlMs exists
     ttl = Math.max(0, Math.round((entry.ttlMs - (now - entry.ts)) / 1000));
-  } else {
+  } }else {
     ttl = null;
-  }
+  } }
 
   return json({
     success: true,
@@ -94,6 +94,6 @@ const originalDELETEHandler: RequestHandler = async ({ params }) => {
   if (!key) return json({ success: false, error: 'Key required' }, { status: 400 })'`'`
   await deleteCache(key)
   return json({ success: true, deleted: key, timestamp: new Date().toISOString() })
-}
+} }
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);

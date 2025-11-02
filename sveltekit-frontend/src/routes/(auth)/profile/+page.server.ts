@@ -1,7 +1,7 @@
-import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/db/drizzle';
-import { sql } from 'drizzle-orm';
-import { users, cases, evidence, criminals } from '$lib/server/db/schema';
+import type { PageServerLoad } }from './$types';
+import { db } }from '$lib/server/db/drizzle';
+import { sql } }from 'drizzle-orm';
+import { users, cases, evidence, criminals } }from '$lib/server/db/schema';
 
 type CountRow = { value: number | string | bigint | null };
 
@@ -33,7 +33,7 @@ type SelectChain = {
   from (table: any) => FromResult;
 };
 
-type DB = { query: {; users: {;, findFirst: (opts: {;, columns: {
+type DB = { query: {; users: {; findFirst: (opts: {; columns: {
           id?: boolean;
           email?: boolean;
           name?: boolean;
@@ -56,7 +56,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       profile: null,
       stats: null
     };
-  }
+  } }
 
   // replace unsafe `any` casts with a typed assertion and `unknown` where appropriate
   const _db = db as: unknown as DB;
@@ -66,7 +66,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   const _criminals = criminals as: unknown;
 
   // use the typed-like `_db` and `_users/_cases/...` for the WHERE clause and selects
-  const profile = await _db.query.users.findFirst({, columns: {, id: true,
+  const profile = await _db.query.users.findFirst({ columns: { id: true,
       email: true,
       name: true,
       firstName: true,
@@ -74,7 +74,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       role: true,
       avatarUrl: true
     },
-    where: sql`${_users.id} = ${userId}`
+    where: sql`${_users.id} }= ${userId}`
   });
 
   if (!profile) {
@@ -82,7 +82,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       profile: null,
       stats: null
     };
-  }
+  } }
 
   const [totalCasesRow, openCasesRow, closedCasesRow, evidenceRow, poiRow] = await Promise.all([
     _db.select({ value: sql<number>`count(*)::int` }).from(_cases),
@@ -100,12 +100,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   return {
     profile,
-    stats: {
-     , totalCases: asNumber(totalCasesRow),
+    stats: { totalCases: asNumber(totalCasesRow),
       openCases: asNumber(openCasesRow),
       closedCases: asNumber(closedCasesRow),
       totalEvidence: asNumber(evidenceRow),
       personsOfInterest: asNumber(poiRow)
-    }
+    } }
   };
 };

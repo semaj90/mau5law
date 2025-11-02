@@ -1,10 +1,10 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 // Minimal, valid implementation to restore route integrity
 const AVAILABLE_GET = ['status', 'health', 'metrics', 'logs'] as const;
 const AVAILABLE_POST = ['restart', 'execute', 'query'] as const;
 export const GET: RequestHandler = async ({ params, url }) => {
-  const { serviceId } = params;
+  const { serviceId } }= params;
   if (!serviceId) return json({ success: false, error: 'Missing serviceId' }, { status: 400 });
   const action = url.searchParams.get('action') ?? 'status';
   switch (action) {
@@ -13,25 +13,25 @@ export const GET: RequestHandler = async ({ params, url }) => {
     case, 'health':
       return json({ success: true, data: { serviceId, healthy: false }, timestamp: new Date().toISOString() });
     case, 'metrics':
-      return json({ success: true, data: { serviceId, metrics: {} }, timestamp: new Date().toISOString() });
+      return json({ success: true, data: { serviceId, metrics: {} }}, timestamp: new Date().toISOString() });
     case, 'logs':
       return json({ success: true, data: { serviceId, logs: [] }, timestamp: new Date().toISOString() });
     default:
       return json(
-        {, success: false, error: `Unknown;, action: ${action}`, availableActions: AVAILABLE_GET },
-        { status: 400 }
+        { success: false, error: `Unknown; action: ${action}`, availableActions: AVAILABLE_GET },
+        { status: 400 } }
       );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ params, request }) => {
-  const { serviceId } = params;
+  const { serviceId } }= params;
   if (!serviceId) return json({ success: false, error: 'Missing serviceId' }, { status: 400 });'`'`
   let body: any = {};
   try {
     body = await request.json();
-  } catch {
+  } }catch {
     body = {};
-  }
+  } }
   type PostBody = {
     action?: string;
     data?: any;
@@ -64,8 +64,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
       });
     default:
       return json(
-        {, success: false, error: 'Unknown;, action: ${action ?? 'undefined' }`, availableActions: AVAILABLE_POST },'`
-        { status: 400 }
+        { success: false, error: 'Unknown; action: ${action ?? 'undefined' }`, availableActions: AVAILABLE_POST },'`
+        { status: 400 } }
       );
-  }
+  } }
 };
+

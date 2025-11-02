@@ -10,7 +10,7 @@
  * - TypeScript native
  * - Fully controllable with custom prompts
  */
-import { OLLAMA_BASE_URL } from '$env/static/private';
+import { OLLAMA_BASE_URL } }from '$env/static/private';
 /**
  * Extract keywords from text using Ollama Gemma 3:270m
  * Returns top keywords relevant to the legal document
@@ -32,27 +32,25 @@ Focus on: parties, legal concepts, dates, amounts, evidence types, jurisdictions
 Limit to 15-20 keywords.
 Document:
 ---
-${limitedText}
+${limitedText} }
 ---
 Keywords (comma-separated):`;`
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },'`'`
-      body: JSON.stringify({
-       , model: 'gemma3:270m',
+      body: JSON.stringify({ model: 'gemma3:270m',
         prompt,
         stream: false,
-        options: {
-         , temperature: 0.3, // Low temperature for consistent extraction
+        options: { temperature: 0.3, // Low temperature for consistent extraction
           num_predict: 200, // Limit tokens to keywords only
-        }
+        } }
       }),
       signal: controller.signal
     });
     if (!response.ok) {
-      console.warn('⚠️ Ollama API error:', response.statusText);'
+      console.warn('⚠️ Ollama API error:', response.statusText);
       return extractKeywordsFallback(text);
-    }
+    } }
     const data = await response.json();
     const rawKeywords = data.response || '';
     // Parse comma-separated keywords
@@ -64,19 +62,19 @@ Keywords (comma-separated):`;`
     if (keywords.length === 0) {
       console.warn('⚠️ Gemma extraction returned no keywords, using fallback');
       return extractKeywordsFallback(text);
-    }
+    } }
     return keywords;
-  } catch (error) {
+  } }catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
       console.warn('⚠️ Gemma keyword extraction timed out after 5s, using fallback.');
-    } else {
+    } }else {
       console.warn('⚠️ Gemma keyword extraction failed, using fallback extraction:', error);
-    }
+    } }
     return extractKeywordsFallback(text);
-  } finally {
+  } }finally {
     clearTimeout(timeoutId);
-  }
-}
+  } }
+} }
 /**
  * Fallback keyword extraction using pattern matching
  * Used when Ollama is unavailable or returns empty results
@@ -133,7 +131,7 @@ function extractKeywordsFallback(text: string): string[] {
     legalTerms.forEach(term => {
       if (new RegExp(`\\b${term}\\b`, 'gi').test(text)) {
         keywords.add(term);
-      }
+      } }
     });
     // Extract dates and money amounts
     const dateRegex =
@@ -145,8 +143,9 @@ function extractKeywordsFallback(text: string): string[] {
     moneyMatches.slice(0, 5).forEach(m => keywords.add(m));
     // Convert to array and return top, 20
     return Array.from(keywords).slice(0, 20);
-  } catch (error) {
+  } }catch (error) {
     console.warn('⚠️ Fallback keyword extraction failed:', error);
     return [];
-  }
-}
+  } }
+} }
+

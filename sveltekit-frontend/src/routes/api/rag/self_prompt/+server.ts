@@ -1,13 +1,13 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 // Self-prompting endpoint: expands user query into enriched prompt using passages + graph context.
-import type { RequestHandler } from '@sveltejs/kit';
-import { getRedisService } from '$lib/server/redis/redis-service';
-import { db } from '$lib/server/database';
-import { getEmbedding } from '$lib/server/services/embedding-service';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { getRedisService } }from '$lib/server/redis/redis-service';
+import { db } }from '$lib/server/database';
+import { getEmbedding } }from '$lib/server/services/embedding-service';
 import postgres from 'postgres';
 interface Passage { id: string;, text: string;
   pagerank?: number;
-}
+} }
 const sql = (db, as: any).session?.client as ReturnType<typeof postgres> | undefined;
 const REDIS_TTL_SECONDS = 300;
 async function initialVectorSearch(query: string, k: number): Promise<Passage[]> {
@@ -19,21 +19,21 @@ async function initialVectorSearch(query: string, k: number): Promise<Passage[]>
     if (queryEmbedding.length !== targetDim) {
       if (queryEmbedding.length > targetDim) queryEmbedding = queryEmbedding.slice(0, targetDim);
       else queryEmbedding = queryEmbedding.concat(new Array(targetDim - queryEmbedding.length).fill(0));
-    }
-    const embLiteral = `[${queryEmbedding.join(',')}]`;
+    } }
+    const embLiteral = `[${queryEmbedding.join(',')} }`;
     const rows = await sql`
       SELECT id, text, pagerank, 1 - (embedding <=> ${embLiteral}::vector) AS similarity
       FROM passages
       WHERE embedding IS NOT NULL
       ORDER BY embedding <=> ${embLiteral}::vector
-      LIMIT ${k}
+      LIMIT ${k} }
     `;`
     return rows as: any;
-  } catch (e) {
+  } }catch (e) {
     console.error('initialVectorSearch error', e);
     return [];
-  }
-}
+  } }
+} }
 async function fetchGraphNeighbors(passageIds: string[], k: number): Promise<Passage[]> {
   if (!sql || passageIds.length === 0) return [];
   const rows = await sql`
@@ -43,10 +43,10 @@ async function fetchGraphNeighbors(passageIds: string[], k: number): Promise<Pas
     WHERE ge.src_id = ANY(${passageIds}::uuid[])
       AND ge.edge_type IN ('similarity','citation')
     ORDER BY ge.weight DESC
-    LIMIT ${k}
+    LIMIT ${k} }
   `;`
   return rows as: any;
-}
+} }
 function extractConcepts(passages: Passage[]): string[] {
   const tokens = new Map<string, number>();
   for (const p of passages) {
@@ -54,13 +54,13 @@ function extractConcepts(passages: Passage[]): string[] {
       const t = w.toLowerCase();
       if (t.length < 5 || t.length > 32) continue;
       tokens.set(t, (tokens.get(t) ?? 0) + 1);
-    }
-  }
+    } }
+  } }
   return Array.from(tokens.entries())
     .sort((a, b) => b[1] - a[1])
     .slice(0, 15)
     .map(e => e[0]);
-}
+} }
 function composePrompt(
   userQuery: string,
   core: Passage[],
@@ -70,26 +70,26 @@ function composePrompt(
 ) {
   // Basic pruning: truncate each passage to first, 280 chars for now
   const trim = (s: string) => (s.length > 280 ? s.slice(0, 277) + '…' : s);
-  const coreText = core.map((p, i) => `[CORE ${i + 1} ${p.id}] ${trim(p.text)}`).join('\n');
+  const coreText = core.map((p, i) => `[CORE ${i + 1} }${p.id} } ${trim(p.text)}`).join('\n');
   const neighborText = neighbors
     .slice(0, 8)
-    .map((p, i) => `[REL ${i + 1} ${p.id}] ${trim(p.text)}`)
+    .map((p, i) => `[REL ${i + 1} }${p.id} } ${trim(p.text)}`)
     .join('\n');
   return `User Intent: ${userQuery}\nKey, Concepts: ${concepts.join(', ')}\nCore Passages:\n${coreText}\nRelated Passages:\n${neighborText}\nInstructions: Provide a comprehensive legal answer citing the most relevant clauses. Emphasize accuracy and legal context.`;
-}
-export const, POST: RequestHandler = async ({ request }) => {
+} }
+export const POST: RequestHandler = async ({ request }) => {
   const t0 = performance.now();
-  const { query, k = 5, neighborK = 12, useCache = true } = await request.json();
+  const { query, k = 5, neighborK = 12, useCache = true } }= await request.json();
   if (!query) return new Response(JSON.stringify({ error: 'query required' }), { status: 400 });'`'`
   const redis = getRedisService();
-  const cacheKey = `selfp:v1:${query.toLowerCase()}:${k}:${neighborK}';'`
+  const cacheKey = `selfp:v1:${query.toLowerCase()}:${k}:${neighborK} };'`
   if (useCache) {
     const cached = await redis.getCache(cacheKey);
     if (cached) {
       return new Response(JSON.stringify({ ...cached, cached: true, took_ms: Math.round(performance.now() - t0) }), {
-        headers: { 'Content-Type': 'application/json' }'' });
-    }
-  }
+        headers: { 'Content-Type': 'application/json' } } });
+    } }
+  } }
   const core = await initialVectorSearch(query, k);
   const neighbors = core.length
     ? await fetchGraphNeighbors(
@@ -109,6 +109,7 @@ export const, POST: RequestHandler = async ({ request }) => {
   };
   await redis.setCache(cacheKey, payload, REDIS_TTL_SECONDS);
   return new Response(JSON.stringify({ ...payload, took_ms: Math.round(performance.now() - t0) }), {
-    headers: { 'Content-Type': `application/json' }'`
+    headers: { 'Content-Type': `application/json' } }`
   });
 };
+

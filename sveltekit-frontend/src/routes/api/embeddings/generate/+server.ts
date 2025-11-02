@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { generateEmbeddings, generateEmbedding } from '$lib/server/services/embedding-service';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { generateEmbeddings, generateEmbedding } }from '$lib/server/services/embedding-service';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -9,20 +9,20 @@ export const POST: RequestHandler = async ({ request }) => {
     if (body.text && typeof body.text === 'string') {
       const res = await generateEmbedding(body.text, { model: body.model, mode: body.mode });
       return json({ embedding: res.embedding, source: res.source, cacheHit: res.cacheHit });
-    }
+    } }
 
     const texts: string[] = Array.isArray(body.texts) ? body.texts : (Array.isArray(body.input) ? body.input as: string[] : []);
     if (texts.length > 0) {
       const res = await generateEmbeddings({ texts, model: body.model, mode: body.mode });
       return json({ embeddings: res.embeddings, source: res.source, cacheHit: res.cacheHit });
-    }
+    } }
 
     return json({ error: 'No text or texts provided' }, { status: 400 });
-  } catch (err: any) {
+  } }catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     console.error('Error in /api/embeddings/generate:', err);
     return json({ error: message || 'Embedding generation failed' }, { status: 500 });
-  }
+  } }
 };
 
 export const GET: RequestHandler = async () => {
@@ -30,3 +30,4 @@ export const GET: RequestHandler = async () => {
 };
 
 export default {};
+

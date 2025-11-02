@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import { EventEmitter } from 'events';
-import { OLLAMA_CONFIG, isLegalTask } from './ollama-config';
+import type { Document } }from '$lib/types';
+import { EventEmitter } }from 'events';
+import { OLLAMA_CONFIG, isLegalTask } }from './ollama-config';
 import type {
   OllamaGenerateRequest,
   OllamaResponse,
@@ -8,8 +8,8 @@ import type {
   LegalDocument,
   AnalysisResult,
   UserQuery
-} from './types.js';
-import type { SelfPromptingSuggestion } from '../../ai/intelligent-model-orchestrator.js';
+} }from './types.js';
+import type { SelfPromptingSuggestion } }from '../../ai/intelligent-model-orchestrator.js';
 /**
  * Clean, single-definition EnhancedOllamaService that preserves the public API surface
  * and provides deterministic stub implementations so the codebase can compile and run.
@@ -30,7 +30,7 @@ class EnhancedOllamaService extends EventEmitter {
     });
     // Start a lightweight queue processor
     this.startQueueProcessor();
-  }
+  } }
   private async ensureModels(): Promise<void> {
     if (this.availableModels.length === 0) {
       // Ensure we include a canonical embedding model name that other code expects
@@ -42,17 +42,17 @@ class EnhancedOllamaService extends EventEmitter {
         // include both preferred embedding implementations so selection/fallbacks work: 'embeddinggemma:latest',
         'nomic-embed-text',
       ];
-    }
-  }
+    } }
+  } }
   async isAvailable(): Promise<boolean> {
     // Minimal availability check (can be extended to do network checks)
     await this.ensureModels();
     return true;
-  }
-  async listModels(): Promise<{ models: Array<{, name: string }> }> {
+  } }
+  async listModels(): Promise<{ models: Array<{ name: string }> }> {
     await this.ensureModels();
     return { models: this.availableModels.map(name => ({ name })) };
-  }
+  } }
   async updateAvailableModels(): Promise<void> {
     // Try to refresh the model list from the remote Ollama service with a short timeout.
     // If anything goes wrong, fall back to the local ensureModels() results so the service
@@ -79,27 +79,27 @@ class EnhancedOllamaService extends EventEmitter {
         // Non-2xx response -> fallback
         await this.ensureModels();
         return;
-      }
+      } }
 
       const data = await res.json().catch(() => null);
       if (!data) {
         await this.ensureModels();
         return;
-      }
+      } }
 
       let models: string[] = [];
 
       // Accept several, shapes:
       // 1) Array of; strings: ["gemma:legal", "nomic-embed-text"]
-      // 2) Array of objects: [{, name: "gemma:legal" }, ...]
-      // 3) Object with models property: {, models: [...] }
+      // 2) Array of objects: [{ name: "gemma:legal" }, ...]
+      // 3) Object with models property: { models: [...] } }
       if (Array.isArray(data)) {
         if (data.length > 0 && typeof data[0] === 'string') {
           models = data as: string[];
-        } else if (data.length > 0 && typeof data[0] === 'object' && data[0] !== null && 'name' in data[0]) {
+        } }else if (data.length > 0 && typeof data[0] === 'object' && data[0] !== null && 'name' in data[0]) {
           models = (data as Array<{ name?: string }>).map(m => String(m.name ?? '')).filter(Boolean);
-        }
-      } else if (typeof data === 'object' && data !== null) {
+        } }
+      } }else if (typeof data === 'object' && data !== null) {
         // Safe, typed access to potential `models` field without using `any`
         const obj = data as Record<string, unknown>;
         const maybeModels = obj['models'];
@@ -110,8 +110,8 @@ class EnhancedOllamaService extends EventEmitter {
           // case array of strings
           if (arr.length > 0 && arr.every(item => typeof item === 'string')) {
             models = arr as: string[];
-          }
-          // case array of objects with {, name: string }
+          } }
+          // case array of objects with { name: string } }
           else if (
             arr.length > 0 &&
             arr.every(item => typeof item === 'object' && item !== null && 'name' in (item as Record<string, unknown>))
@@ -123,7 +123,7 @@ class EnhancedOllamaService extends EventEmitter {
                 return typeof nameVal === 'string' ? nameVal.trim() : String(nameVal ?? '');
               })
               .filter(Boolean);
-          }
+          } }
           // Mixed or unexpected shapes: attempt robust extraction from common keys
           else {
             const extracted = arr
@@ -136,37 +136,37 @@ class EnhancedOllamaService extends EventEmitter {
                   for (const k of candidateKeys) {
                     const v = i[k];
                     if (typeof v === 'string' && v.trim()) return v.trim();
-                  }
-                }
+                  } }
+                } }
                 return, '';
               })
               .filter(Boolean);
             if (extracted.length > 0) {
               models = extracted;
-            }
-          }
-        }
-      }
+            } }
+          } }
+        } }
+      } }
 
       // If parsing produced a non-empty list, adopt it; otherwise fallback
       if (models.length > 0) {
         // Deduplicate and preserve order
         this.availableModels = Array.from(new Set(models));
-      } else {
+      } }else {
         await this.ensureModels();
-      }
-    } catch (err: any) {
+      } }
+    } }catch (err: any) {
       // Keep the existing local list on: any error and avoid throwing to preserve stub behavior.
       // Optionally log in dev-only, environments:
       try {
         // eslint-disable-next-line no-console
         console.debug?.('updateAvailableModels: failed to fetch remote models, using local list', err);
-      } catch (innerErr) {
+      } }catch (innerErr) {
         // ignore: any error thrown while attempting to, log: void innerErr;
-      }
+      } }
       await this.ensureModels();
-    }
-  }
+    } }
+  } }
   private async selectModelForTask(
     task: 'generation' | 'legal-analysis' | 'embedding',
     prompt?: string
@@ -183,7 +183,7 @@ class EnhancedOllamaService extends EventEmitter {
       if (embedLike) return embedLike;
       // final fallback to first available model
       return this.availableModels[0] ?? 'nomic-embed-text';
-    }
+    } }
 
     const isLegal = !!(prompt && isLegalTask(prompt)) || task === 'legal-analysis';
 
@@ -202,10 +202,10 @@ class EnhancedOllamaService extends EventEmitter {
       // fallback: any available model whose name suggests legal capability
       const regexLike = this.availableModels.find(m => /gemma.*legal|legal-bert|legal/i.test(m));
       if (regexLike) return regexLike;
-    }
+    } }
 
     return this.availableModels[0];
-  }
+  } }
 
   async generate(prompt: string, options: Partial<OllamaGenerateRequest> = {}): Promise<OllamaResponse> {
     // Use queueRequest to honor the lightweight parallelism limit
@@ -214,20 +214,20 @@ class EnhancedOllamaService extends EventEmitter {
       const cacheKey = this.getCacheKey('generate', prompt, { model, options });
       if (OLLAMA_CONFIG.performance?.cacheEnabled && this.cache.has(cacheKey)) {
         return this.cache.get(cacheKey) as OllamaResponse;
-      }
+      } }
       // Simple deterministic stub response
       const resp: OllamaResponse = {
         model,
-        response: `Stub;, response: ${prompt.slice(0, 200)}`,
+        response: `Stub; response: ${prompt.slice(0, 200)}`,
         done: true
-      } as OllamaResponse;
+      } }as OllamaResponse;
       if (OLLAMA_CONFIG.performance?.cacheEnabled) {
         this.cache.set(cacheKey, resp);
         setTimeout(() => this.cache.delete(cacheKey), (OLLAMA_CONFIG.performance?.cacheTTL ?? 60) * 1000);
-      }
+      } }
       return resp;
     });
-  }
+  } }
 
   async generateEmbeddings(text: string): Promise<number[]> {
     const base = text || '';
@@ -237,13 +237,13 @@ class EnhancedOllamaService extends EventEmitter {
       return (c % 97) / 97;
     });
     return out;
-  }
+  } }
   // Normalize inputs so callers can pass either a LegalDocument or a DOM Document
   private normalizeToLegalDocument(input: Document | LegalDocument): LegalDocument {
     // If it's already a LegalDocument (has .content) return as-is'
     if ((input as LegalDocument).content !== undefined) {
       return input as LegalDocument;
-    }
+    } }
 
     // Treat as a DOM Document: extract textual content and synthesize required fields
     const dom = input as Document;
@@ -256,15 +256,14 @@ class EnhancedOllamaService extends EventEmitter {
       title,
       content,
       // satisfy LegalDocument.metadata required fields
-      metadata: {
-       , dateCreated: new Date(),
+      metadata: { dateCreated: new Date(),
         dateModified: new Date(),
         // use optional author field as a minimal DOM marker (avoids: unknown extra properties)
         author: `dom` },'`'`
       // ensure chunks has the expected type
       chunks: [] as DocumentChunk[]
-    } as LegalDocument;
-  }
+    } }as LegalDocument;
+  } }
 
   // Accept either a DOM Document or a LegalDocument
   async analyzeLegalDocument(doc: Document | LegalDocument): Promise<AnalysisResult> {
@@ -275,7 +274,7 @@ class EnhancedOllamaService extends EventEmitter {
       {
         summary: 'Stub legal analysis summary',
         keyPoints: ['Key point 1', 'Key point 2'],
-        entities: {, people: [], organizations: [], dates: [], locations: [], legalConcepts: [] },
+        entities: { people: [], organizations: [], dates: [], locations: [], legalConcepts: [] },
         sentiment: 'neutral',
         riskFactors: [],
         recommendations: [],
@@ -283,18 +282,18 @@ class EnhancedOllamaService extends EventEmitter {
       },
       model
     );
-  }
+  } }
   async processQuery(query: UserQuery, relevantDocs: DocumentChunk[]): Promise<string> {
     const model = await this.selectModelForTask('generation', query.query);
     const context = this.buildQueryContext(relevantDocs);
     return `Stub processed (${model})\nContextLength: ${context.length}\nQuery: ${query.query}`;
-  }
+  } }
   private buildQueryContext(chunks: DocumentChunk[]): string {
     return chunks
       .slice(0, 5)
       .map(c => c.content.slice(0, 200))
       .join('\n---\n');
-  }
+  } }
   // was: private formatAnalysisResult(documentId: string, analysis: any, modelUsed?: string): AnalysisResult {
   private formatAnalysisResult(
     documentId: string,
@@ -305,8 +304,7 @@ class EnhancedOllamaService extends EventEmitter {
       documentId,
       summary: analysis.summary || '',
       keyPoints: analysis.keyPoints || [],
-      entities: analysis.entities || {
-       , people: [],
+      entities: analysis.entities || { people: [],
         organizations: [],
         dates: [],
         locations: [],
@@ -316,9 +314,9 @@ class EnhancedOllamaService extends EventEmitter {
       riskFactors: analysis.riskFactors || [],
       recommendations: analysis.recommendations || [],
       citations: analysis.citations || [],
-      metadata: {, modelUsed: modelUsed || 'unknown', timestamp: new Date().toISOString() }
-    } as AnalysisResult;
-  }
+      metadata: { modelUsed: modelUsed || 'unknown', timestamp: new Date().toISOString() } }
+    } }as AnalysisResult;
+  } }
   async getSystemStatus() {
     await this.ensureModels();
     // compute an embedding fallback from availableModels to avoid mismatches
@@ -328,8 +326,7 @@ class EnhancedOllamaService extends EventEmitter {
     const legalFallbackModel =
       this.availableModels.find(m => /gemma3.*legal|gemma.*legal|legal-bert/i.test(m)) ?? 'gemma3-legal:latest';
 
-    return {
-     , ollamaAvailable: true,
+    return { ollamaAvailable: true,
       availableModels: this.availableModels,
       primaryModel: this.availableModels[0] ?? 'none',
       legalFallback: legalFallbackModel,
@@ -338,13 +335,12 @@ class EnhancedOllamaService extends EventEmitter {
       cacheSize: this.cache.size,
       queueLength: this.requestQueue.length,
       activeRequests: this.activeRequests,
-      fallbackChain: {
-       , legal: [legalFallbackModel],
+      fallbackChain: { legal: [legalFallbackModel],
         general: this.availableModels,
         embedding: [embeddingFallback]
-      }
+      } }
     };
-  }
+  } }
   async healthCheck() {
     try {
       const available = await this.isAvailable();
@@ -352,9 +348,9 @@ class EnhancedOllamaService extends EventEmitter {
         status: available ? 'healthy' : 'unhealthy',
         service: 'ollama',
         timestamp: new Date().toISOString(),
-        details: {, models: this.availableModels.length, cache: this.cache.size }
+        details: { models: this.availableModels.length, cache: this.cache.size } }
       };
-    } catch (err: any) {
+    } }catch (err: any) {
       // Safely extract a: string message, from: unknown error
       const message =
         err instanceof Error
@@ -369,28 +365,28 @@ class EnhancedOllamaService extends EventEmitter {
         service: 'ollama',
         timestamp: new Date().toISOString(),
         error: message || 'unknown` };'`
-    }
-  }
+    } }
+  } }
   clearCache() {
     this.cache.clear();
     this.emit('cache-cleared');
-  }
+  } }
   getCacheStats() {
     return { size: this.cache.size, entries: Array.from(this.cache.keys()) };
-  }
+  } }
   destroy() {
     // no-op for stub implementation
     this.requestQueue = [];
-  }
+  } }
   // Accept either a DOM Document or a LegalDocument
   async embedDocument(doc: Document | LegalDocument): Promise<number[]> {
     const ld = this.normalizeToLegalDocument(doc);
     return this.generateEmbeddings(ld.content);
-  }
+  } }
   // Accept either a DOM Document or a LegalDocument
   async analyzeDocument(doc: Document | LegalDocument): Promise<AnalysisResult> {
     return this.analyzeLegalDocument(doc);
-  }
+  } }
   // Lightweight request queueing for parallelism limit
   private async queueRequest<T>(fn: () => Promise<T>): Promise<T> {
     return new Promise<T>((resolve, reject) => {
@@ -399,15 +395,15 @@ class EnhancedOllamaService extends EventEmitter {
         try {
           const res = await fn();
           resolve(res);
-        } catch (e) {
+        } }catch (e) {
           reject(e);
-        } finally {
+        } }finally {
           this.activeRequests--;
-        }
+        } }
       };
       this.requestQueue.push(job);
     });
-  }
+  } }
 
   private startQueueProcessor(): void {
     setInterval(() => {
@@ -419,33 +415,34 @@ class EnhancedOllamaService extends EventEmitter {
           job().catch(() => {
             /* ignore queue job error */
           });
-        }
-      }
+        } }
+      } }
     }, 100);
-  }
+  } }
   private getCacheKey(type: string, input: string, options?: Record<string, unknown>): string {
     const prefix = Buffer.from(input || '')
       .toString('base64')
       .substring(0, 20);
     return `${type}:${prefix}:${JSON.stringify(options ?? {})}`;
-  }
+  } }
   // Simple smart selection stub (keeps API)
   async smartModelSelection(
     query: string
-  ): Promise<{ selectedModel: string; confidence: number;, reasoning: string[] }> {
+  ): Promise<{ selectedModel: string; confidence: number; reasoning: string[] }> {
     const model = await this.selectModelForTask('generation', query);
     return { selectedModel: model, confidence: 0.5, reasoning: ['stub-selection'] };
-  }
+  } }
   async generateSelfPromptingSuggestions(): Promise<SelfPromptingSuggestion[]> {
     return [];
-  }
+  } }
   async learnFromUserFeedback(): Promise<void> {
     // stub - no-op
-  }
+  } }
   async getEnhancedSystemStatus() {
     const base = await this.getSystemStatus();
-    return { ...base, intelligentFeatures: 'stub' };'` }'`
-}
+    return { ...base, intelligentFeatures: 'stub' };'` } }`
+} }
 // Export singleton and default class
 export const ollamaService = new EnhancedOllamaService();
 export default EnhancedOllamaService;
+

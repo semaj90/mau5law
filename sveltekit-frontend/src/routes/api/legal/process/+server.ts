@@ -3,10 +3,10 @@
  *
  * Provides endpoints for legal document processing through the unified orchestration service
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { unifiedLegalOrchestrationService } from '$lib/services/unified-legal-orchestration-service.js';
-import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { unifiedLegalOrchestrationService } }from '$lib/services/unified-legal-orchestration-service.js';
+import { readBodyFastWithMetrics } }from '$lib/simd/simd-json-integration.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Use SIMD-accelerated JSON parsing for legal document payloads
@@ -19,10 +19,10 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata = {},
       evidenceCanvasId,
       analysisType = 'legal'
-    } = body;
+    } }= body;
     if (!content) {
       return json({ error: 'Content is required' }, { status: 400 });
-    }
+    } }
     // Process the legal document
     const result = await unifiedLegalOrchestrationService.processLegalDocument({
       documentId,
@@ -34,25 +34,26 @@ export const POST: RequestHandler = async ({ request }) => {
       analysisType
     });
     // Convert status stores to serializable format
-    const jobStatuses: { [key: string]: any } = {};
+    const jobStatuses: { [key: string]: any } }= {};
     for (const [jobId, store] of (result as { statusStores?: any; jobIds?: any; processingMetrics?: any })
       .statusStores) {
       jobStatuses[jobId] = {
-        subscriptionEndpoint: '/api/legal/status/${jobId}' };'` }'`
+        subscriptionEndpoint: '/api/legal/status/${jobId} } };'` } }`
     return json({
-     , success: true,
+  success: true,
       jobIds: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds,
       jobStatuses,
       aggregateStatusEndpoint: '/api/legal/status/aggregate/${(result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds.join(',')}`,'`
       processingMetrics: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).processingMetrics
     });
-  } catch (error) {
-    console.error('Legal processing error:', error);'
+  } }catch (error) {
+    console.error('Legal processing error:', error);
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

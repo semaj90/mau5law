@@ -10,9 +10,10 @@ declare module, 'drizzle-orm/expressions' {
   export const asc: any;
   export const desc: any;
   export, default: any;
-}
+} }
 
 declare module, 'drizzle-orm/sql' {
   export const sql: any;
   export, default: any;
-}
+} }
+

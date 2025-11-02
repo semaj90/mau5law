@@ -11,15 +11,15 @@ try {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const cfg = require('$lib/services/providers/ollama/config');
   _getBackend = cfg?.getBackend;
-} catch {
+} }catch {
   /* runtime fallback: caller must register backends via provider registry */
-}
+} }
 try {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   _redis = require('$lib/server/cache/redis')?.redis;
-} catch {
+} }catch {
   /* redis may be unavailable in isolated checks */
-}
+} }
 function getBackendSafe(name?: string): string {
   if (_getBackend) return _getBackend(name);
   // default local fallback
@@ -30,18 +30,18 @@ function getBackendSafe(name?: string): string {
       return, 'http://localhost:3002';
     case, 'ollama':
     default: return (process.env.PUBLIC_OLLAMA_URL, as: string) || 'http://localhost:11434';
-  }
-}
+  } }
+} }
 const redis = _redis;
 export type EmbeddingMode = 'tensorrt' | 'ollama' | 'webgpu';
 export interface EmbedRequest {
   texts: string[];
   model?: string;
   mode?: EmbeddingMode;
-}
-export interface EmbedResponse {, embeddings: number[][];, source: string;
+} }
+export interface EmbedResponse { embeddings: number[][];, source: string;
  , cacheHit: boolean;
-}
+} }
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 const CACHE_TTL_SECONDS = 3600;
 function resolveBackend(mode?: EmbeddingMode): string {
@@ -52,42 +52,42 @@ function resolveBackend(mode?: EmbeddingMode): string {
       return getBackendSafe('webgpu');
     case, 'ollama':
     default: return getBackendSafe('ollama');
-  }
-}
+  } }
+} }
 function resolveEndpoint(base: string, mode?: EmbeddingMode): string {
   const trimmed = base.replace(/\/$/, '');
   if (mode === 'tensorrt') {
     return `${trimmed}/v2/models/embeddings/infer`;
-  }
+  } }
   return `${trimmed}/api/embeddings`;
-}
+} }
 function normalizeVectors(payload: any): number[][] {
   if (!payload || typeof payload !== 'object') return [];
   const data = payload as Record<string, unknown>;
   if (Array.isArray(data.embeddings)) {
     return data.embeddings as: number[][];
-  }
+  } }
   if (data.data && Array.isArray((data.data as Record<string, unknown>).embeddings)) {
     return ((data.data as Record<string, unknown>).embeddings ?? []) as: number[][];
-  }
+  } }
   if (Array.isArray(data.embedding)) {
     const single = data.embedding as: number[];
     return [single];
-  }
+  } }
   if (data.data && Array.isArray(data.data, as: number[])) {
     const direct = data.data as: number[];
     return [direct];
-  }
+  } }
   return [];
-}
+} }
 export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }: EmbedRequest): Promise<EmbedResponse> {
   if (!Array.isArray(texts) || texts.length === 0) {
     throw new Error('generateEmbeddings requires a non-empty texts array');
-  }
+  } }
   const cacheKey = `emb:${model}:${JSON.stringify(texts)}`;
   if (redis) {
     try {
-      const r = redis as: unknown as {, get: (k: string) => Promise<string | null> };
+      const r = redis as: unknown as { get: (k: string) => Promise<string | null> };
       const cached = await r.get(cacheKey);
       if (cached) {
         return {
@@ -95,11 +95,11 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
           source: 'redis',
           cacheHit: true
         };
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('Embedding cache get failed:', error);
-    }
-  }
+    } }
+  } }
   const backend = resolveBackend(mode);
   const endpoint = resolveEndpoint(backend, mode);
   const response = await fetch(endpoint, {
@@ -111,32 +111,32 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
     })
   });
   if (!response.ok) {
-    throw new Error(`Embedding request failed: ${response.status} ${response.statusText}`);
-  }
+    throw new Error(`Embedding request failed: ${response.status} }${response.statusText}`);
+  } }
   const json = await response.json();
   const vectors = normalizeVectors(json);
   if (!vectors.length) {
     throw new Error('Embedding response did not include embeddings');
-  }
+  } }
   if (redis) {
     try {
-      const r = redis as: unknown as {, set: (k: string, v: string, opts?: any) => Promise<void> };
+      const r = redis as: unknown as { set: (k: string, v: string, opts?: any) => Promise<void> };
       await r.set(cacheKey, JSON.stringify(vectors), { EX: CACHE_TTL_SECONDS });
-    } catch (error) {
+    } }catch (error) {
       console.warn('Embedding cache set failed:', error);
-    }
-  }
+    } }
+  } }
   return {
     embeddings: vectors,
     source: backend,
     cacheHit: false
   };
-}
+} }
 export async function generateEmbedding(
  , text: string,
   options?: Omit<EmbedRequest, 'texts'>
-): Promise<{ embedding: number[]; source: string;, cacheHit: boolean }> {
-  const { embeddings, source, cacheHit } = await generateEmbeddings({
+): Promise<{ embedding: number[]; source: string; cacheHit: boolean }> {
+  const { embeddings, source, cacheHit } }= await generateEmbeddings({
     texts: [text],
     model: options?.model,
     mode: options?.mode
@@ -146,4 +146,5 @@ export async function generateEmbedding(
     source,
     cacheHit
   };
-}
+} }
+

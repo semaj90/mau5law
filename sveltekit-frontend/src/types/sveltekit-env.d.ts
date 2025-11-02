@@ -2,20 +2,21 @@
 declare module, '$env/dynamic/private' {
   const env: Record<string, string | undefined>;
   export { env };
-}
+} }
 
 declare module, '$env/static/private' {
   const env: Record<string, string | undefined>;
   export { env };
-}
+} }
 
 // Provide fallback public env shapes
 declare module, '$env/dynamic/public' {
   const env: Record<string, string | undefined>;
   export { env };
-}
+} }
 
 declare module, '$env/static/public' {
   const env: Record<string, string | undefined>;
   export { env };
-}
+} }
+

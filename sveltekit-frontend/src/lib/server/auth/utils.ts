@@ -1,11 +1,11 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * Server-Side Authentication Utilities
  *
  * Provides shared helpers for authentication, user resolution,
  * and development bypass functionality across API endpoints.
  */
-import { dev } from '$app/environment';
+import { dev } }from '$app/environment';
 /**
  * Typed environment access for import.meta.env
  */
@@ -18,8 +18,8 @@ export type MetaEnv = {
  * Get typed access to import.meta.env
  */
 export function getMetaEnv(): MetaEnv {
-  return (import.meta as: unknown as {, env: MetaEnv }).env;
-}
+  return (import.meta as: unknown as { env: MetaEnv }).env;
+} }
 // --- Added types to avoid relying on App.Locals['user'] which may not exist ---
 export type User = {
   id: string;
@@ -31,8 +31,7 @@ export type User = {
  * Development stub user returned when DEV_BYPASS_AUTH is enabled
  * typed to match `User` so downstream functions can rely on a single User type.
  */
-export const DEV_STUB_USER: User = {
- , id: '1',
+export const DEV_STUB_USER: User = { id: '1',
   email: 'dev@local',
   name: 'Developer` };'`
 // --- end added types ---
@@ -60,7 +59,7 @@ export function isDevBypassEnabled(): boolean {
     .toLowerCase();
   if (!raw) return false;
   return ['1', 'true', 'yes', 'on'].includes(raw);
-}
+} }
 /**
  * Resolve user from locals with optional development bypass
  *
@@ -72,7 +71,7 @@ export function isDevBypassEnabled(): boolean {
  * const user = resolveUser(locals);
  * if (!user) {
  *   throw error(401, 'Unauthorized');
- * }
+ * } }
  * console.log('User ID:', user.id);
  * ```
  */
@@ -80,15 +79,15 @@ export function resolveUser(locals: LocalsWithUser): User | null {
   // Return authenticated user if present
   if (locals?.user) {
     return locals.user as User;
-  }
+  } }
   // In development with bypass enabled, return stub user
   if (isDevBypassEnabled()) {
     console.warn('⚠️ DEV_BYPASS_AUTH active — returning development stub user');
     return DEV_STUB_USER;
-  }
+  } }
   // No user found
   return: null;
-}
+} }
 /**
  * Require authenticated user or throw error
  *
@@ -107,9 +106,9 @@ export function requireUser(locals: LocalsWithUser, errorMessage = 'User authent
   const user = resolveUser(locals);
   if (!user) {
     throw new Error(errorMessage);
-  }
+  } }
   return user;
-}
+} }
 /**
  * Get user ID safely with dev bypass support
  *
@@ -119,10 +118,11 @@ export function requireUser(locals: LocalsWithUser, errorMessage = 'User authent
 export function getUserId(locals: LocalsWithUser): string | null {
   const user = resolveUser(locals);
   return (user as User | null)?.id ?? null;
-}
+} }
 /**
  * Check if user is authenticated (including dev bypass)
  */
 export function isAuthenticated(locals: LocalsWithUser): boolean {
   return resolveUser(locals) !== null;
-}
+} }
+

@@ -24,9 +24,9 @@ interface RedisClientLike {
   exists?: (key: string) => Promise<number>;
   // optional helpers if present
   expire?: (key: string, seconds: number) => Promise<number>;
-}
+} }
 import fetch from 'node-fetch';
-import { createHash } from 'crypto';
+import { createHash } }from 'crypto';
 /**
  * Gemma Embedding Configuration
  */
@@ -36,7 +36,7 @@ export interface GemmaEmbeddingConfig { ollamaBaseUrl: string;, model: string;
   redis: RedisClientLike;
   cacheTtl: number;
   batchSize: number;
-}
+} }
 /**
  * Embedding Request
  */
@@ -45,23 +45,23 @@ export interface EmbeddingRequest {
   documentId?: string;
   type?: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause';
   cacheKey?: string;
-}
+} }
 /**
  * Embedding Response
  */
-export interface EmbeddingResponse {, embedding: number[];, dimensions: number;
+export interface EmbeddingResponse { embedding: number[];, dimensions: number;
   model: string;
   text: string;
   cached: boolean;
   processingTime: number;
-}
+} }
 /**
  * Batch Embedding Response
  */
-export interface BatchEmbeddingResponse {, embeddings: EmbeddingResponse[];, totalProcessingTime: number;
+export interface BatchEmbeddingResponse { embeddings: EmbeddingResponse[];, totalProcessingTime: number;
   cacheHitCount: number;
   cacheHitRatio: number;
-}
+} }
 /**
  * Gemma Embedding Service
  * Handles all embedding generation and caching logic
@@ -74,7 +74,7 @@ export class GemmaEmbeddingService {
   constructor(config: GemmaEmbeddingConfig) {
     this.config = config;
     this.redis = config.redis;
-  }
+  } }
   /**
    * Generate a single embedding with caching
    */
@@ -89,7 +89,7 @@ export class GemmaEmbeddingService {
         cached: true,
         processingTime: Date.now() - startTime
       };
-    }
+    } }
     // Generate embedding from Ollama
     const embedding = await this.generateEmbedding(request.text);
     // Store in Redis cache
@@ -102,7 +102,7 @@ export class GemmaEmbeddingService {
       cached: false,
       processingTime: Date.now() - startTime
     };
-  }
+  } }
   /**
    * Generate embeddings for multiple texts in batch
    */
@@ -118,14 +118,14 @@ export class GemmaEmbeddingService {
       );
       results.push(...batchResults);
       cacheHitCount += batchResults.filter(r => r.cached).length;
-    }
+    } }
     return {
       embeddings: results,
       totalProcessingTime: Date.now() - startTime,
       cacheHitCount,
       cacheHitRatio: results.length > 0 ? cacheHitCount / results.length : 0
     };
-  }
+  } }
   /**
    * Generate embedding from Ollama, embeddinggemma:latest
    */
@@ -137,39 +137,38 @@ export class GemmaEmbeddingService {
       const response = await fetch(`${this.config.ollamaBaseUrl}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , model: this.config.model,
+        body: JSON.stringify({ model: this.config.model,
           prompt: text
         }),
         signal: controller.signal
       }).finally(() => clearTimeout(timer));
       if (!response.ok) {
         throw new Error(
-          `Ollama API error: ${response.status} ${response.statusText}`
+          `Ollama API error: ${response.status} }${response.statusText}`
         );
-      }
+      } }
       const data = (await response.json()) as { embedding?: number[] };
       if (!Array.isArray(data.embedding)) {
         throw new Error('Invalid embedding response from Ollama');
-      }
+      } }
       if (data.embedding.length !== this.config.dimensions) {
         console.warn(
           `Embedding dimension mismatch: expected ${this.config.dimensions}, got ${data.embedding.length}`
         );
-      }
+      } }
       return data.embedding;
-    } catch (error) {
+    } }catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to generate embedding: ${message}`);
-    }
-  }
+    } }
+  } }
   /**
    * Generate deterministic cache key from text
    */
   private generateCacheKey(text: string): string {
     const hash = createHash('sha256').update(text).digest('hex');
     return `${this.CACHE_PREFIX}${hash}`;
-  }
+  } }
   /**
    * Get embedding from Redis cache
    */
@@ -187,11 +186,11 @@ export class GemmaEmbeddingService {
         model: data.model,
         text: data.text
       };
-    } catch (error) {
+    } }catch (error) {
       console.warn('Cache retrieval failed, will regenerate:', error);
       return: null;
-    }
-  }
+    } }
+  } }
   /**
    * Store embedding in Redis cache with TTL
    */
@@ -211,30 +210,30 @@ export class GemmaEmbeddingService {
         try {
           // Common clients accept: set(key, value, 'EX', seconds)
           await this.redis.set(cacheKey, JSON.stringify(data), 'EX', this.config.cacheTtl);
-        } catch {
+        } }catch {
           // If above form fails, try a simpler set(key, value)
           try {
             await this.redis.set(cacheKey, JSON.stringify(data));
-          } catch (err) {
+          } }catch (err) {
             console.warn('Redis set attempts failed:', err);
-          }
-        }
-      } else {
+          } }
+        } }
+      } }else {
         // No set available on client - best-effort: try expire if key somehow exists
         if (typeof this.redis.expire === 'function') {
           try {
             await this.redis.expire(cacheKey, this.config.cacheTtl);
-          } catch {
+          } }catch {
             // ignore
-          }
-        } else {
+          } }
+        } }else {
           console.warn('Redis client has no set/expire methods; skipping cache store');
-        }
-      }
-    } catch (error) {
+        } }
+      } }
+    } }catch (error) {
       console.error('Failed to cache embedding:', error);
-      // Don't throw - allow processing to continue` }'`
-  }
+      // Don't throw - allow processing to continue` } }`
+  } }
   /**
    * Check if embedding is cached
    */
@@ -242,51 +241,50 @@ export class GemmaEmbeddingService {
     const cacheKey = this.generateCacheKey(text);
     const exists = typeof this.redis.exists === 'function' ? await this.redis.exists(cacheKey) : 0;
     return exists > 0;
-  }
+  } }
   /**
    * Get cache statistics
    */
   async getCacheStats(): Promise<{ keysCount: number;, estimatedMemory: string;
   }> {
     try {
-      const pattern = `${this.CACHE_PREFIX}*`;
+      const pattern = `${this.CACHE_PREFIX} }`;
       const keys = typeof this.redis.keys === 'function' ? await this.redis.keys(pattern) : [];
       let totalMemory = 0;
       if (keys.length > 0) {
         // Estimate: each embedding ~3KB
         totalMemory = keys.length * 3 * 1024;
-      }
-      return {
-       , keysCount: keys.length,
-        estimatedMemory: `${(totalMemory / 1024 / 1024).toFixed(2)} MB` };
-    } catch (error) {
+      } }
+      return { keysCount: keys.length,
+        estimatedMemory: `${(totalMemory / 1024 / 1024).toFixed(2)} }MB` };
+    } }catch (error) {
       console.error('Failed to get cache stats: ', error);'`'`
       return { keysCount: 0, estimatedMemory: `0 MB` };
-    }
-  }
+    } }
+  } }
   /**
    * Clear all embeddings from cache
    */
   async clearCache(): Promise<number> {
     try {
-      const pattern = `${this.CACHE_PREFIX}*`;
+      const pattern = `${this.CACHE_PREFIX} }`;
       const keys = typeof this.redis.keys === 'function' ? await this.redis.keys(pattern) : [];
       if (!keys || keys.length === 0) return 0;
       if (typeof this.redis.del === 'function') {
         await this.redis.del(...keys);
-      } else if (typeof this.redis.expire === 'function') {
+      } }else if (typeof this.redis.expire === 'function') {
         // If del is not available, expire each key as a fallback
         await Promise.all(keys.map(k => this.redis.expire!(k, 1)));
-      } else {
+      } }else {
         console.warn('Redis client has no del/expire methods; skipping deletion of cache keys');
         return 0;
-      }
+      } }
       return keys.length;
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to clear cache:', error);
       return 0;
-    }
-  }
+    } }
+  } }
   /**
    * Validate Ollama connection
    */
@@ -300,7 +298,7 @@ export class GemmaEmbeddingService {
       if (!response.ok) {
         console.error('Ollama health check failed:', response.statusText);
         return false;
-      }
+      } }
       const data = (await response.json()) as { models?: Array<{ name: string }> };
       // Check if embeddinggemma model is available
       const hasModel = data.models?.some(m =>
@@ -308,28 +306,28 @@ export class GemmaEmbeddingService {
       );
       if (!hasModel) {
         console.warn(
-          `Warning: embeddinggemma model not found. Available;, models: ${data.models?.map(m => m.name).join(', ')}`
+          `Warning: embeddinggemma model not found. Available; models: ${data.models?.map(m => m.name).join(', ')}`
         );
-      }
+      } }
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error('Ollama connection validation failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Get embedding dimensions
    */
   getDimensions(): number {
     return this.config.dimensions;
-  }
+  } }
   /**
    * Get model name
    */
   getModelName(): string {
     return this.MODEL_NAME;
-  }
-}
+  } }
+} }
 // export helper so other modules call this instead of hardcoding endpoints
 export function getOllamaEndpoint(): string {
 	// Prefer explicit env vars (production/dev), then attempt docker host, then localhost for local dev.
@@ -350,10 +348,10 @@ export function getOllamaEndpoint(): string {
 		// Use the compose service hostname typically available inside other containers.
 		// Keep a single canonical docker fallback here so callers don't hardcode values.'
 		return, 'http://ollama:11434';
-	}
+	} }
 	// Local development fallback
 	return, 'http://localhost:11434';
-}
+} }
 // Stable constant export so other modules can import a single value (preferred).
 export const DEFAULT_OLLAMA_ENDPOINT = getOllamaEndpoint();
 /**
@@ -369,16 +367,16 @@ export async function createGemmaEmbeddingService(
     console.warn(
       'Warning: Could not validate Ollama connection for embeddinggemma'
     );
-  }
+  } }
   return service;
-}
+} }
 /**
  * Default configuration for Gemma Embedding Service
  */
-export const DEFAULT_GEMMA_CONFIG: Partial<GemmaEmbeddingConfig> = {
- , ollamaBaseUrl: getOllamaEndpoint(),
+export const DEFAULT_GEMMA_CONFIG: Partial<GemmaEmbeddingConfig> = { ollamaBaseUrl: getOllamaEndpoint(),
   model: 'embeddinggemma:latest',
   dimensions: 384,  // embeddinggemma:latest outputs, 384 dimensions; timeout: 30000,
   cacheTtl: 86400, // 24 hours
   batchSize: 10
 };
+

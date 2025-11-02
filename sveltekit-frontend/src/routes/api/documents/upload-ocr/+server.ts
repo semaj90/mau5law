@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
-import { db } from '$lib/server/database';
-import { documents, embeddings } from '$lib/server/db/schema-postgres';
-import { gpuRAGService } from '$lib/services/gpu-rag-service';
-import { QdrantVectorService } from '$lib/server/services';
-import { env } from '$env/dynamic/private';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types';
+import { json } }from '@sveltejs/kit';
+import { withValidationAndRate } }from '$lib/server/middleware/validate-and-rate';
+import { db } }from '$lib/server/database';
+import { documents, embeddings } }from '$lib/server/db/schema-postgres';
+import { gpuRAGService } }from '$lib/services/gpu-rag-service';
+import { QdrantVectorService } }from '$lib/server/services';
+import { env } }from '$env/dynamic/private';
 
 /**
  * OCR Document Upload API with GPU Embedding + Qdrant Integration
@@ -24,12 +24,12 @@ interface UploadResult {
   qdrantStored?: boolean;
   postgresStored?: boolean;
   error?: string;
-}
+} }
 
 //, Helper: safe type guard for OCR entity objects
-function isEntityObject(x: any): x is { type?: any } {
+function isEntityObject(x: any): x is { type?: any } }{
   return typeof x === 'object' && x !== null && 'type' in x;
-}
+} }
 
 /**
  * Extract text using Python GPU OCR Service (Surya + langextract-go)
@@ -45,12 +45,12 @@ async function extractTextFromFile(
   if (fileType === 'text/plain' || fileType === 'application/json') {
     const text = await file.text();
     return { text };
-  }
+  } }
 
   // For PDFs and images, use GPU OCR service
   if (fileType === 'application/pdf' || fileType.startsWith('image/')) {
     try {
-      console.log(`📄 Sending ${file.name} to GPU OCR service (${OCR_SERVICE_URL}/ocr)...`);
+      console.log(`📄 Sending ${file.name} }to GPU OCR service (${OCR_SERVICE_URL}/ocr)...`);
 
       const formData = new FormData();
       // Surya OCR expects: 'files' array param
@@ -64,32 +64,32 @@ async function extractTextFromFile(
 
       if (!response.ok) {
         const txt = await response.text().catch(() => '');
-        throw new Error(`OCR service error: ${response.status} ${txt}`);
-      }
+        throw new Error(`OCR service error: ${response.status} }${txt}`);
+      } }
 
       const payload = await response.json();
 
-      // Surya returns { results: [ { filename, text, confidence } ] }
+      // Surya returns { results: [ { filename, text, confidence } }] } }
       if (!payload?.results || !Array.isArray(payload.results) || payload.results.length === 0) {
         throw new Error('OCR processing returned empty results');
-      }
+      } }
 
       const first = payload.results[0];
-      console.log(`✅ OCR completed: ${first.filename} (confidence=${first.confidence})`);
+      console.log(`✅ OCR completed: ${first.filename} }(confidence=${first.confidence})`);
       return {
         text: first.text || '',
         entities: first.entities || undefined,
         embedding: first.embedding || undefined
       };
-    } catch (error: any) {
-      console.error('GPU OCR service error: ', error);'
+    } }catch (error: any) {
+      console.error('GPU OCR service error: ', error);
       // Fallback: Return placeholder
       return {
         text: '[OCR Service Unavailable] ${file.name}. Start Python GPU OCR service on port 8090.` };'`
-    }
-  }
+    } }
+  } }
 
-  throw new Error(`Unsupported file, type: ${fileType}');'' }'`
+  throw new Error(`Unsupported file, type: ${fileType} });'' } }`
 
 /**
  * Auto-tag document content
@@ -115,7 +115,7 @@ function generateTags(content: string): string[] {
   if (/\b(corporate|merger)\b/i.test(content)) tags.push('corporate');
 
   return [...new Set(tags)];
-}
+} }
 
 const handler: RequestHandler = async ({ request, fetch }) => {
   const results: UploadResult[] = [];
@@ -126,11 +126,11 @@ const handler: RequestHandler = async ({ request, fetch }) => {
 
     if (files.length === 0) {
       return json({ error: 'No files uploaded` }, { status: 400 });'`
-    }
+    } }
 
     for (const file of files) {
       const result: UploadResult = {
-       , success: false,
+  success: false,
         filename: file.name
       };
 
@@ -150,10 +150,10 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             ocrTags = (ents.entities as: unknown[])
               .map(e => (isEntityObject(e) && typeof e.type === 'string' ? e.type : undefined))
               .filter((t): t is: string => typeof t === 'string');
-          }
-        } catch {
+          } }
+        } }catch {
           ocrTags = [];
-        }
+        } }
         const tags = [...new Set([...regexTags, ...ocrTags])];
         result.tags = tags;
 
@@ -164,14 +164,14 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             const embeddingResult = await gpuRAGService.generateEmbedding(extractedText);
             embedding = embeddingResult.embedding;
             result.embeddingGenerated = true;
-          } catch (embErr) {
+          } }catch (embErr) {
             console.warn('GPU embedding generation failed, continuing without embedding:', embErr);
             result.embeddingGenerated = $state(false);
-          }
-        } else {
+          } }
+        } }else {
           result.embeddingGenerated = true;
           console.log('✅ Using embedding from OCR service');
-        }
+        } }
 
         // Step 4: Store in PostgreSQL
         const [doc] = await db
@@ -180,7 +180,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             filename: file.name,
             content: extractedText,
             metadata: {
-             , fileType: file.type,
+  fileType: file.type,
               fileSize: file.size,
               tags,
               uploadedAt: new Date().toISOString()
@@ -199,50 +199,50 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             content: extractedText.substring(0, 500), // First, 500 chars for chunk
             embedding,
             metadata: {
-             , chunkIndex: 0,
+  chunkIndex: 0,
               chunkCount: 1,
               tags
-            }
+            } }
           });
-        }
+        } }
 
         // Step 6: Store in Qdrant with quantization
         if (embedding) {
           try {
             const vectorPoint: VectorPoint = {
-             , id: doc.id,
+  id: doc.id,
               vector: embedding,
               payload: {
-               , documentId: doc.id,
+  documentId: doc.id,
                 content: extractedText,
                 filename: file.name,
                 tags,
                 metadata: {
-                 , fileType: file.type,
+  fileType: file.type,
                   fileSize: file.size
                 },
                 confidence: doc.confidence || 0.5,
                 timestamp: new Date().toISOString()
-              }
+              } }
             };
 
             // QdrantVectorService exposes upsertVector per-point
             await QdrantVectorService.upsertVector(String(vectorPoint.id), vectorPoint.vector, vectorPoint.payload);
             result.qdrantStored = true;
-          } catch (qdrantErr) {
+          } }catch (qdrantErr) {
             console.warn('Qdrant storage failed:', qdrantErr);
             result.qdrantStored = $state(false);
-          }
-        }
+          } }
+        } }
 
         result.success = true;
-      } catch (fileErr: any) {
+      } }catch (fileErr: any) {
         result.success = $state(false);
         result.error = fileErr instanceof Error ? fileErr.message : String(fileErr);
-        console.error(`Failed to process file ${file.name}: ', fileErr);'' }'`
+        console.error(`Failed to process file ${file.name}: ', fileErr);'' } }`
 
       results.push(result);
-    }
+    } }
 
     const successCount = results.filter(r => r.success).length;
 
@@ -253,13 +253,13 @@ const handler: RequestHandler = async ({ request, fetch }) => {
       failureCount: files.length - successCount,
       results
     });
-  } catch (error: any) {
-    console.error('Document upload error:', error);'
+  } }catch (error: any) {
+    console.error('Document upload error:', error);
     return json(
       { error: 'Upload failed', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const POST = withValidationAndRate(handler, null, {
@@ -270,32 +270,33 @@ export const POST = withValidationAndRate(handler, null, {
 /**
  * GET: Check upload endpoint health
  */
-export const, GET: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
   try {
     // probe Qdrant by performing a lightweight search for an empty vector (should not error)
     let qdrantHealthy = false;
     try {
       const probe = await QdrantVectorService.searchVector(Array(768).fill(0), 1);
       qdrantHealthy = Array.isArray(probe);
-    } catch (err) {
+    } }catch (err) {
       qdrantHealthy = false;
-    }
+    } }
     const dbConnected = !!db;
 
     return json({
       success: true,
       healthy: qdrantHealthy && dbConnected,
       services: {
-       , qdrant: qdrantHealthy,
+  qdrant: qdrantHealthy,
         postgres: dbConnected,
         gpu: true, // Assume GPU available
       },
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       { error: 'Health check failed', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

@@ -1,4 +1,4 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } }from '$lib/server/z-schemas';
 /*
  * Detective Mode Analysis API Routes
  * POST /api/v1/detective/analyze - Run detective analysis
@@ -6,10 +6,10 @@ import { cuidSchema } from '$lib/server/z-schemas';
  * POST /api/v1/detective/patterns - Detect suspicious patterns
  * POST /api/v1/detective/connections - Generate connection maps
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { CasesCRUDService, EvidenceCRUDService } }from '$lib/server/services/user-scoped-crud';
+import { z } }from 'zod';
 // Detective analysis request schemas
 const DetectiveAnalysisSchema = z.object({
   caseId: cuidSchema,
@@ -18,7 +18,7 @@ const DetectiveAnalysisSchema = z.object({
   focusAreas: z.array(z.enum(['people', 'locations', 'times', 'evidence', 'motives', 'opportunities'])).optional(),
   options: z
     .object({
-     , includeAI: z.boolean().default(true),
+  includeAI: z.boolean().default(true),
       confidenceThreshold: z.number().min(0).max(1).default(0.6),
       maxResults: z.number().min(1).max(100).default(20)
     })
@@ -44,15 +44,15 @@ const $DETECTIVE_MODEL = 'gemma3-legal:latest';
  * POST /api/v1/detective/analyze
  * Run comprehensive detective analysis on a case
  */
-export const, POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-    }
+    } }
     // Parse request body
     const body = await request.json();
-    const { caseId, analysisType, depth, focusAreas, options = {} } = DetectiveAnalysisSchema.parse(body);
+    const { caseId, analysisType, depth, focusAreas, options = {} }} }= DetectiveAnalysisSchema.parse(body);
     // Create service instances
     const casesService = new CasesCRUDService(getUserId(locals));
     const evidenceService = new EvidenceCRUDService(getUserId(locals));
@@ -60,7 +60,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
     const caseData = await casesService.getById(caseId);
     if (!caseData) {
       return error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
-    }
+    } }
     // Check if detective mode is enabled for this case
     if (!caseData.detectiveMode) {
       return error(
@@ -70,8 +70,8 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           code: 'DETECTIVE_MODE_DISABLED'
         })
       );
-    }
-    console.log(`Starting detective analysis for case ${caseId} with type: ${analysisType}`);
+    } }
+    console.log(`Starting detective analysis for case ${caseId} }with type: ${analysisType}`);
     // Get case evidence for analysis
     const evidenceResult = await evidenceService.listByCase(caseId, { page: 1, limit: 100 });
     const evidence = evidenceResult.data;
@@ -82,12 +82,12 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
       metadata: {
         ...caseData.metadata,
         lastDetectiveAnalysis: {
-         , timestamp: new Date().toISOString(),
+  timestamp: new Date().toISOString(),
           type: analysisType,
           depth,
           analyzedBy: getUserId(locals)
-        }
-      }
+        } }
+      } }
     });
     return json({
       success: true,
@@ -97,18 +97,18 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         depth,
         result: analysisResult,
         metadata: {
-         , evidenceCount: evidence.length,
+  evidenceCount: evidence.length,
           analysisTime: new Date().toISOString(),
           confidence: analysisResult.overallConfidence
-        }
+        } }
       },
       meta: {
-       , userId: getUserId(locals),
+  userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'detective_analysis_completed'
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error in detective analysis:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -119,7 +119,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     // Safely extract message/detail from: unknown
     const message = err instanceof Error ? err.message : String(err ?? 'Unknown error');
     return error(
@@ -130,7 +130,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         details: message
       })
     );
-  }
+  } }
 };
 /*
  * GET /api/v1/detective/insights
@@ -140,12 +140,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'` }'`
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'` } }`
     // Parse query parameters
     const caseId = url.searchParams.get('caseId');
     if (!caseId) {
-      return error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: `MISSING_CASE_ID` }));
-    }
+      return error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));
+    } }
     // Validate case ID format
     const validatedCaseId = cuidSchema.parse(caseId);
     // Create service instance
@@ -153,23 +153,23 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     // Verify case exists and user has access
     const caseData = await casesService.getById(validatedCaseId);
     if (!caseData) {
-      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND` }));
-    }
+      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
+    } }
     // Generate insights based on case data and previous analyses
     const insights = await generateCaseInsights(caseData, getUserId(locals));
     return json({
       success: true,
       data: {
-       , caseId: validatedCaseId,
+  caseId: validatedCaseId,
         insights,
         lastUpdated: new Date().toISOString()
       },
       meta: {
-       , userId: getUserId(locals),
+  userId: getUserId(locals),
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error getting detective insights:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -180,7 +180,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     const message = err instanceof Error ? err.message : String(err ?? 'Unknown error');
     return error(
       500,
@@ -190,12 +190,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         details: message
       })
     );
-  }
+  } }
 };
 // --- Added: small typed Locals to avoid `any` and make getUserId safer ---
 type ServiceLocals = {
-  user?: { id?: string } | null;
-  session?: { userId?: string } | null;
+  user?: { id?: string } }| null;
+  session?: { userId?: string } }| null;
   [key: string]: any;
 };
 
@@ -203,15 +203,15 @@ function getUserId(locals: ServiceLocals): string {
   // prefer explicit user.id, fallback to session userId, otherwise return a stable placeholder
   if (locals?.user && typeof locals.user.id === 'string') return locals.user.id;
   if (locals?.session && typeof locals.session.userId === 'string') return locals.session.userId;
-  // last resort: stringified user: object;, or: 'unknown'
+  // last resort: stringified user: object; or: 'unknown'
   try {
     if (locals?.user) return String(locals.user.id ?? JSON.stringify(locals.user));
-  } catch (err) {
+  } }catch (err) {
     // avoid empty catch - log for diagnostics
     console.warn('getUserId: failed to stringify locals.user', err);
-  }
+  } }
   return, 'unknown';
-}
+} }
 /*
  * Perform comprehensive detective analysis
  */
@@ -221,10 +221,10 @@ async function performDetectiveAnalysis(
   analysisType: string,
   depth: string,
   focusAreas?: string[],
-  $options: Record<string, unknown> = {}
+  $options: Record<string, unknown> = {} }
 ): Promise<DetectiveAnalysis> {
   const analysis: DetectiveAnalysis = {
-   , overallConfidence: 0,
+  overallConfidence: 0,
     findings: [],
     patterns: [],
     connections: [],
@@ -238,7 +238,7 @@ async function performDetectiveAnalysis(
     // mark case reference to, avoid: "declared but never used"
     if (caseData?.id) {
       (analysis as Record<string, unknown>).caseId = caseData.id;
-    }
+    } }
 
     // interpret options minimally (safe typed access)
     const opts = $options ?? {};
@@ -250,11 +250,11 @@ async function performDetectiveAnalysis(
     // Baseline confidence influenced by requested depth and options
     if (depth === 'comprehensive') {
       analysis.overallConfidence = 0.9;
-    } else if (depth === 'deep') {
+    } }else if (depth === 'deep') {
       analysis.overallConfidence = 0.8;
-    } else {
+    } }else {
       analysis.overallConfidence = 0.7;
-    }
+    } }
     // If AI processing disabled, decrease confidence slightly
     if (!includeAI) analysis.overallConfidence = Math.max(0, analysis.overallConfidence - 0.15);
 
@@ -264,21 +264,21 @@ async function performDetectiveAnalysis(
       analysis.timeline = timelineAnalysis.events;
       analysis.patterns.push(...timelineAnalysis.patterns);
       analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.8);
-    }
+    } }
     // Connection Analysis
     if (analysisType === 'full' || analysisType === 'connections') {
       const connectionAnalysis = analyzeConnections(evidence);
       analysis.connections = connectionAnalysis.connections;
       analysis.findings.push(...connectionAnalysis.findings);
       analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.75);
-    }
+    } }
     // Pattern Detection
     if (analysisType === 'full' || analysisType === 'patterns') {
       const patternAnalysis = detectPatterns(evidence, focusAreas);
       analysis.patterns.push(...patternAnalysis.patterns);
       analysis.anomalies.push(...patternAnalysis.anomalies);
       analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.72);
-    }
+    } }
 
     // Generate recommendations based on findings (may reference case title if available)
     analysis.recommendations = generateDetectiveRecommendations(analysis);
@@ -286,19 +286,19 @@ async function performDetectiveAnalysis(
 
     // small contextual hint placed into analysis for consumers
     if (caseData?.title && analysis.recommendations.length) {
-      analysis.recommendations = analysis.recommendations.map(r => `${r} (case ${caseData.title})`);
-    }
+      analysis.recommendations = analysis.recommendations.map(r => `${r} }(case ${caseData.title})`);
+    } }
 
     return analysis;
-  } catch (err) {
-    console.error('Detective analysis error:', err);'
+  } }catch (err) {
+    console.error('Detective analysis error:', err);
     return {
       ...analysis,
       error: 'Analysis failed',
       details: err instanceof Error ? err.message : String(err ?? 'Unknown error')
-    } as DetectiveAnalysis;
-  }
-}
+    } }as DetectiveAnalysis;
+  } }
+} }
 /*
  * Analyze timeline patterns in evidence
  */
@@ -318,12 +318,12 @@ function analyzeTimeline(evidence: EvidenceItem[]): TimelineAnalysis {
       timestamp,
       type,
       significance: Math.random() * 0.5 + 0.5, // Mock significance score
-      description: 'Evidence;, item: ${title ?? id ?? 'unknown' }' };
+      description: 'Evidence; item: ${title ?? id ?? 'unknown' } } };
   });
 
   const patterns: TimelinePattern[] = [
     {
-     , type: 'temporal_clustering',
+  type: 'temporal_clustering',
       confidence: 0.82,
       description: 'Evidence clustered around specific time periods',
       timeRanges: ['2024-01-01 to 2024-01-07', '2024-01-15 to 2024-01-20']
@@ -331,7 +331,7 @@ function analyzeTimeline(evidence: EvidenceItem[]): TimelineAnalysis {
   ];
 
   return { events, patterns };
-}
+} }
 // NEW: typed connection/pattern analysis shapes
 type Connection = {
   id?: string;
@@ -342,28 +342,28 @@ type Connection = {
   evidence: string[]; // short notes about why connected
 };
 
-type Finding = {, type: string;, confidence: number;
+type Finding = { type: string;, confidence: number;
   description: string;
- , items: (string | undefined)[];
+  items: (string | undefined)[];
 };
 
 type ConnectionAnalysis = { connections: Connection[];, findings: Finding[];
 };
 
-type Pattern = {, type: string;, confidence: number;
+type Pattern = { type: string;, confidence: number;
   description: string;
   occurrences?: number;
   significance?: 'low' | 'medium' | 'high' | string;
   coordinates?: string[];
 };
 
-type Anomaly = {, type: string;, confidence: number;
+type Anomaly = { type: string;, confidence: number;
   description: string;
   details?: string;
   severity?: 'low' | 'medium' | 'high' | string;
 };
 
-type PatternAnalysis = {, patterns: Pattern[];, anomalies: Anomaly[];
+type PatternAnalysis = { patterns: Pattern[];, anomalies: Anomaly[];
 };
 /*
  * Analyze connections between evidence items
@@ -386,12 +386,12 @@ function analyzeConnections(evidence: EvidenceItem[]): ConnectionAnalysis {
         item?.evidenceType ? `Type:${String(item.evidenceType)}` : 'Type: any',
         item?.createdAt ? `Timestamp:${String(item.createdAt)}` : 'Timestamp: any'
       ]
-    } as Connection;
+    } }as Connection;
   });
 
   const findings: Finding[] = [
     {
-     , type: 'strong_connection',
+  type: 'strong_connection',
       confidence: 0.89,
       description: 'Multiple evidence items share common characteristics',
       items: items.slice(0, 2).map(i => i?.id)
@@ -399,7 +399,7 @@ function analyzeConnections(evidence: EvidenceItem[]): ConnectionAnalysis {
   ];
 
   return { connections, findings };
-}
+} }
 
 /*
  * Detect suspicious patterns in evidence
@@ -410,7 +410,7 @@ function detectPatterns(evidence: EvidenceItem[], focusAreas: string[] = []): Pa
 
   const patterns: Pattern[] = [
     {
-     , type: 'behavioral',
+  type: 'behavioral',
       confidence: 0.76,
       description: `Consistent behavior pattern detected${focusAreas.length ? ` in ${focusAreas.join(', ')}` : `` }`,
       occurrences: Math.max(1, Math.floor(count / 2)),
@@ -427,15 +427,15 @@ function detectPatterns(evidence: EvidenceItem[], focusAreas: string[] = []): Pa
 
   const anomalies: Anomaly[] = [
     {
-     , type: 'timing_anomaly',
+  type: 'timing_anomaly',
       confidence: 0.91,
       description: 'Unusual timing pattern detected',
-      details: 'Observed in ${count} evidence item(s); focusAreas: ${focusAreas.join(', ') || 'none` }`,
-      severity: count > 5 ? 'high' : `medium` }
+      details: 'Observed in ${count} }evidence item(s); focusAreas: ${focusAreas.join(', ') || 'none` }`,
+      severity: count > 5 ? 'high' : `medium` } }
   ];
 
   return { patterns, anomalies };
-}
+} }
 
 // Add lightweight typed interfaces for case and insights to avoid `any`
 type CaseRecord = {
@@ -448,8 +448,8 @@ type CaseRecord = {
   [key: string]: any;
 };
 
-type CaseInsights = {, summary: string;, keyFindings: string[];
-  riskAssessment: {, level: 'low' | 'medium' | 'high';, factors: string[];
+type CaseInsights = { summary: string;, keyFindings: string[];
+  riskAssessment: { level: 'low' | 'medium' | 'high';, factors: string[];
     score: number;
   };
   nextSteps: string[];
@@ -469,7 +469,7 @@ async function generateCaseInsights(caseData: CaseRecord, _userId: string): Prom
       'Pattern analysis reveals behavioral consistency across multiple incidents',
     ],
     riskAssessment: {
-     , level: 'medium',
+  level: 'medium',
       factors: ['Evidence quality', 'Timeline consistency', 'Connection strength'],
       score: 0.73
     },
@@ -481,7 +481,7 @@ async function generateCaseInsights(caseData: CaseRecord, _userId: string): Prom
     confidence: 0.78,
     lastAnalyzed: caseData.metadata?.lastDetectiveAnalysis?.timestamp ?? null
   };
-}
+} }
 /*
  * Generate detective recommendations
  */
@@ -489,15 +489,15 @@ function generateDetectiveRecommendations(analysis: DetectiveAnalysis): string[]
   const recommendations: string[] = [];
   if (analysis.patterns.length > 0) {
     recommendations.push('Investigate identified patterns more thoroughly');
-  }
+  } }
   if (analysis.connections.length > 3) {
     recommendations.push('Map evidence connections for clearer case narrative');
-  }
+  } }
   if (analysis.overallConfidence < 0.7) {
     recommendations.push('Collect additional evidence to strengthen case');
-  }
+  } }
   return recommendations;
-}
+} }
 /*
  * Generate detective alerts
  */
@@ -505,12 +505,12 @@ function generateDetectiveAlerts(analysis: DetectiveAnalysis): string[] {
   const alerts: string[] = [];
   if (analysis.anomalies.length > 0) {
     alerts.push('ALERT: Suspicious anomalies detected - requires investigation');
-  }
+  } }
   if (analysis.overallConfidence < 0.5) {
     alerts.push('WARNING: Low confidence analysis - manual review critical');
-  }
+  } }
   return alerts;
-}
+} }
 
 // Add typed interfaces for evidence and timeline results
 type EvidenceItem = {
@@ -529,22 +529,23 @@ type TimelineEvent = {
   description: string;
 };
 
-type TimelinePattern = {, type: string;, confidence: number;
+type TimelinePattern = { type: string;, confidence: number;
   description: string;
   timeRanges?: string[];
 };
 
-type TimelineAnalysis = {, events: TimelineEvent[];, patterns: TimelinePattern[];
+type TimelineAnalysis = { events: TimelineEvent[];, patterns: TimelinePattern[];
 };
 
 // --- NEW: strongly-typed detective analysis result to avoid `any` usage ---
-type DetectiveAnalysis = {, overallConfidence: number;, findings: any[];
+type DetectiveAnalysis = { overallConfidence: number;, findings: any[];
   patterns: any[];
   connections: any[];
   anomalies: any[];
   timeline: TimelineEvent[];
   recommendations: string[];
- , alerts: string[];
+  alerts: string[];
   // allow flexible extra fields produced by analysis steps
   [key: string]: any;
 };
+

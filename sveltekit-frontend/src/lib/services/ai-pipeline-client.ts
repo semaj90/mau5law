@@ -8,23 +8,22 @@
  * 4. Progressive enhancement
  */
 
-import { browser } from '$app/environment';
+import { browser } }from '$app/environment';
 
 // Service availability tracking
 interface ServiceStatus { ollama: boolean;, embedding: boolean;
   qdrant: boolean;
   rag: boolean;
   lastCheck: number;
-}
+} }
 
 // Cache keys
-const CACHE_KEYS = {
- , SERVICE_STATUS: 'legal-ai:service-status',
+const CACHE_KEYS = { SERVICE_STATUS: 'legal-ai:service-status',
   EMBEDDINGS_CACHE: 'legal-ai:embeddings-cache',
   ANALYSIS_CACHE: 'legal-ai:analysis-cache',
   SEARCH_CACHE: 'legal-ai:search-cache',
   OFFLINE_QUEUE: 'legal-ai:offline-queue'
-} as const;
+} }as const;
 
 // Cache TTL (time to live)
 const CACHE_TTL = {
@@ -32,7 +31,7 @@ const CACHE_TTL = {
   EMBEDDINGS: 24 * 60 * 60 * 1000, // 24 hours
   ANALYSIS: 60 * 60 * 1000, // 1 hour
   SEARCH: 15 * 60 * 1000, // 15 minutes
-} as const;
+} }as const;
 
 /**
  * LocalStorage Manager with graceful fallback
@@ -42,7 +41,7 @@ class StorageManager {
 
   constructor() {
     this.isAvailable = this.checkAvailability();
-  }
+  } }
 
   private checkAvailability(): boolean {
     if (!browser) return false;
@@ -52,11 +51,11 @@ class StorageManager {
       localStorage.setItem(test, test);
       localStorage.removeItem(test);
       return true;
-    } catch {
+    } }catch {
       console.warn('[StorageManager] localStorage not available, using memory fallback');
       return false;
-    }
-  }
+    } }
+  } }
 
   set<T>(key: string, value: T, ttl?: number): boolean {
     try {
@@ -68,17 +67,17 @@ class StorageManager {
 
       if (this.isAvailable) {
         localStorage.setItem(key, JSON.stringify(item));
-      } else {
+      } }else {
         // Fallback to memory storage (session-only)
         (window as: any).__memoryStorage = (window as: any).__memoryStorage || {};
         (window as: any).__memoryStorage[key] = item;
-      }
+      } }
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error(`[StorageManager] Failed to set ${key}:`, error);
       return false;
-    }
-  }
+    } }
+  } }
 
   get<T>(key: string): T | null {
     try {
@@ -86,10 +85,10 @@ class StorageManager {
 
       if (this.isAvailable) {
         itemStr = localStorage.getItem(key);
-      } else {
+      } }else {
         const memStore = (window as: any).__memoryStorage?.[key];
         itemStr = memStore ? JSON.stringify(memStore) : null;
-      }
+      } }
 
       if (!itemStr) return: null;
 
@@ -99,39 +98,39 @@ class StorageManager {
       if (item.ttl && Date.now() - item.timestamp > item.ttl) {
         this.remove(key);
         return: null;
-      }
+      } }
 
       return item.value as T;
-    } catch (error) {
+    } }catch (error) {
       console.error(`[StorageManager] Failed to get ${key}:`, error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   remove(key: string): void {
     try {
       if (this.isAvailable) {
         localStorage.removeItem(key);
-      } else {
+      } }else {
         delete (window as: any).__memoryStorage?.[key];
-      }
-    } catch (error) {
-      console.error(`[StorageManager] Failed to remove ${key}: ', error);'' }'`
-  }
+      } }
+    } }catch (error) {
+      console.error(`[StorageManager] Failed to remove ${key}: ', error);'' } }`
+  } }
 
   clear(): void {
     try {
       if (this.isAvailable) {
         // Only clear our app's keys'
         Object.values(CACHE_KEYS).forEach(key => localStorage.removeItem(key));
-      } else {
+      } }else {
         (window as: any).__memoryStorage = {};
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('[StorageManager] Failed to clear storage:', error);
-    }
-  }
-}
+    } }
+  } }
+} }
 
 /**
  * AI Pipeline Client with Graceful Fallback
@@ -143,7 +142,7 @@ export class AIPs {
   constructor(baseUrl = '') {
     this.storage = new StorageManager();
     this.baseUrl = baseUrl || (browser ? window.location.origin : '');
-  }
+  } }
 
   /**
    * Check service availability with caching
@@ -153,11 +152,10 @@ export class AIPs {
     const cached = this.storage.get<ServiceStatus>(CACHE_KEYS.SERVICE_STATUS);
     if (cached && Date.now() - cached.lastCheck < CACHE_TTL.SERVICE_STATUS) {
       return cached;
-    }
+    } }
 
     // Check live services
-    const status: ServiceStatus = {
-     , ollama: false,
+    const status: ServiceStatus = { ollama: false,
       embedding: false,
       qdrant: false,
       rag: false,
@@ -176,20 +174,20 @@ export class AIPs {
         status.qdrant = data.services?.databases?.qdrant?.status === 'healthy';
         status.rag = data.services?.aiServices?.enhancedRAG?.status === 'healthy';
         status.embedding = status.ollama; // Embedding depends on Ollama
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('[AIPipelineClient] Service check failed, using cached status');
-    }
+    } }
 
     // Cache the status
     this.storage.set(CACHE_KEYS.SERVICE_STATUS, status, CACHE_TTL.SERVICE_STATUS);
     return status;
-  }
+  } }
 
   /**
    * Generate embeddings with fallback
    */
-  async generateEmbedding(text: string): Promise<{ embedding: number[] | null;, cached: boolean }> {
+  async generateEmbedding(text: string): Promise<{ embedding: number[] | null; cached: boolean }> {
     // Check cache first
     const cacheKey = `${CACHE_KEYS.EMBEDDINGS_CACHE}:${this.hashText(text)}`;
     const cached = this.storage.get<number[]>(cacheKey);
@@ -197,14 +195,14 @@ export class AIPs {
     if (cached) {
       console.log('[AIPipelineClient] Using cached embedding');
       return { embedding: cached, cached: true };
-    }
+    } }
 
     // Check service availability
     const status = await this.checkServiceStatus();
     if (!status.embedding) {
       console.warn('[AIPipelineClient] Embedding service unavailable, using fallback');
       return { embedding: null, cached: false };
-    }
+    } }
 
     // Try live API
     try {
@@ -224,13 +222,13 @@ export class AIPs {
         // Cache successful result
         this.storage.set(cacheKey, embedding, CACHE_TTL.EMBEDDINGS);
         return { embedding, cached: false };
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('[AIPipelineClient] Embedding generation failed:', error);
-    }
+    } }
 
     return { embedding: null, cached: false };
-  }
+  } }
 
   /**
    * Analyze document with fallback
@@ -238,7 +236,7 @@ export class AIPs {
   async analyzeDocument(
    , content: string,
     documentType: string = 'unknown'
-  ): Promise<{ analysis: any | null;, cached: boolean }> {
+  ): Promise<{ analysis: any | null; cached: boolean }> {
     // Check cache
     const cacheKey = `${CACHE_KEYS.ANALYSIS_CACHE}:${this.hashText(content)}`;
     const cached = this.storage.get<any>(cacheKey);
@@ -246,7 +244,7 @@ export class AIPs {
     if (cached) {
       console.log('[AIPipelineClient] Using cached analysis');
       return { analysis: cached, cached: true };
-    }
+    } }
 
     // Check service availability
     const status = await this.checkServiceStatus();
@@ -256,7 +254,7 @@ export class AIPs {
         analysis: this.getFallbackAnalysis(content, documentType),
         cached: false
       };
-    }
+    } }
 
     // Try live API
     try {
@@ -276,38 +274,38 @@ export class AIPs {
         // Cache successful result
         this.storage.set(cacheKey, analysis, CACHE_TTL.ANALYSIS);
         return { analysis, cached: false };
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('[AIPipelineClient] Analysis failed:', error);
-    }
+    } }
 
     return {
       analysis: this.getFallbackAnalysis(content, documentType),
       cached: false
     };
-  }
+  } }
 
   /**
    * Semantic search with fallback
    */
   async semanticSearch(
    , query: string,
-    options: { limit?: number; caseId?: string } = {}
-  ): Promise<{ results: any[];, cached: boolean }> {
+    options: { limit?: number; caseId?: string } }= {} }
+  ): Promise<{ results: any[]; cached: boolean }> {
     const cacheKey = `${CACHE_KEYS.SEARCH_CACHE}:${this.hashText(query)}:${options.caseId || 'all' }`;'`'`
     const cached = this.storage.get<any[]>(cacheKey);
 
     if (cached) {
       console.log('[AIPipelineClient] Using cached search results');
       return { results: cached, cached: true };
-    }
+    } }
 
     // Check service availability
     const status = await this.checkServiceStatus();
     if (!status.rag && !status.qdrant) {
       console.warn('[AIPipelineClient] Search services unavailable');
       return { results: [], cached: false };
-    }
+    } }
 
     // Try live search
     try {
@@ -326,26 +324,26 @@ export class AIPs {
       if (results.length > 0) {
         // Cache successful results
         this.storage.set(cacheKey, results, CACHE_TTL.SEARCH);
-      }
+      } }
 
       return { results, cached: false };
-    } catch (error) {
+    } }catch (error) {
       console.error('[AIPipelineClient] Search failed:', error);
       return { results: [], cached: false };
-    }
-  }
+    } }
+  } }
 
   /**
    * Queue operation for retry when offline
    */
-  queueOfflineOperation(operation: {, type: 'upload' | 'analyze' | 'search';, data: any;
+  queueOfflineOperation(operation: { type: 'upload' | 'analyze' | 'search';, data: any;
    , timestamp: number;
   }): void {
     const queue = this.storage.get<any[]>(CACHE_KEYS.OFFLINE_QUEUE) || [];
     queue.push(operation);
     this.storage.set(CACHE_KEYS.OFFLINE_QUEUE, queue);
     console.log(`[AIPipelineClient] Queued offline operation: ${operation.type}`);
-  }
+  } }
 
   /**
    * Process offline queue when services are back
@@ -359,7 +357,7 @@ export class AIPs {
     if (!status.ollama && !status.rag) {
       console.log('[AIPipelineClient] Services still unavailable, keeping queue');
       return 0;
-    }
+    } }
 
     let processed = 0;
     const remaining = [];
@@ -370,22 +368,22 @@ export class AIPs {
         if (operation.type === 'analyze') {
           await this.analyzeDocument(operation.data.content, operation.data.documentType);
           processed++;
-        } else if (operation.type === 'search') {
+        } }else if (operation.type === 'search') {
           await this.semanticSearch(operation.data.query, operation.data.options);
           processed++;
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error(`[AIPipelineClient] Failed to process queued operation:`, error);
         remaining.push(operation);
-      }
-    }
+      } }
+    } }
 
     // Update queue with remaining items
     this.storage.set(CACHE_KEYS.OFFLINE_QUEUE, remaining);
-    console.log(`[AIPipelineClient] Processed ${processed} offline operations`);
+    console.log(`[AIPipelineClient] Processed ${processed} }offline operations`);
 
     return processed;
-  }
+  } }
 
   /**
    * Clear all caches
@@ -393,7 +391,7 @@ export class AIPs {
   clearCache(): void {
     this.storage.clear();
     console.log('[AIPipelineClient] Cache cleared');
-  }
+  } }
 
   // Helper methods
   private hashText(text: string): string {
@@ -403,9 +401,9 @@ export class AIPs {
       const char = text.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash;
-    }
+    } }
     return Math.abs(hash).toString(36);
-  }
+  } }
 
   private getFallbackAnalysis(content: string, documentType: string): any {
     // Simple client-side analysis when services are down
@@ -422,7 +420,7 @@ export class AIPs {
     const keywords = words.filter(w => legalKeywords.includes(w)).slice(0, 5);
 
     return {
-      summary: `${documentType} document with approximately ${wordCount} words. Offline analysis mode.`,
+      summary: `${documentType} }document with approximately ${wordCount} }words. Offline analysis mode.`,
       risks: ['Full analysis unavailable - services offline'],
       entities,
       keywords: keywords.length > 0 ? keywords : ['document', documentType],
@@ -430,8 +428,8 @@ export class AIPs {
       recommendations: ['Retry analysis when services are available'],
       offline: true
     };
-  }
-}
+  } }
+} }
 
 // Export singleton instance
 export const aiPipelineClient = new AIPipelineClient();
@@ -439,10 +437,11 @@ export const aiPipelineClient = new AIPipelineClient();
 // Export service status checker
 export async function checkAIServices(): Promise<ServiceStatus> {
   return aiPipelineClient.checkServiceStatus();
-}
+} }
 
 // Export cache utilities
 export const cacheUtils = {
   clear: () => aiPipelineClient.clearCache(),
   processQueue: () => aiPipelineClient.processOfflineQueue()
 };
+

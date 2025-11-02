@@ -1,11 +1,11 @@
-import type { AIResponse } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { AIResponse } }from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * AutoGen Multi-Agent Service
  * Handles conversational AI agents with role-based interactions
  */
 import crypto from 'crypto';
-import { env } from '$env/dynamic/private'; // ADDED: Import SvelteKit environment variables
+import { env } }from '$env/dynamic/private'; // ADDED: Import SvelteKit environment variables
 // Removed problematic external type import (some TS configs/parsers choke on .js type imports)
 export interface AIResponse { id: string;, content: string;
   providerId?: string;
@@ -13,25 +13,25 @@ export interface AIResponse { id: string;, content: string;
   tokensUsed?: number;
   responseTime?: number;
   metadata?: Record<string, unknown>;
-}
+} }
 
 export interface AutoGenAgent { name: string;, systemMessage: string;
-  llmConfig: {, model: string;, temperature: number;
+  llmConfig: { model: string;, temperature: number;
     maxTokens: number;
     apiBase?: string;
   };
   humanInputMode: 'ALWAYS' | 'NEVER' | 'TERMINATE';
   maxConsecutiveAutoReply: number;
   tools?: string[];
-}
+} }
 
-export interface AutoGenMessage {, id: string;, sender: string;
+export interface AutoGenMessage { id: string;, sender: string;
   recipient?: string;
   content: string;
   timestamp: number;
  , messageType: 'text' | 'function_call' | 'function_response';
   metadata?: Record<string, unknown>;
-}
+} }
 
 export interface AutoGenConversation { id: string;, participants: AutoGenAgent[];
   messages: AutoGenMessage[];
@@ -39,12 +39,12 @@ export interface AutoGenConversation { id: string;, participants: AutoGenAgent[
   startTime: number;
   endTime?: number;
  , metadata: Record<string, unknown>;
-}
+} }
 
 export interface LegalAgentTeam { prosecutor: AutoGenAgent;, legalResearcher: AutoGenAgent;
   evidenceAnalyst: AutoGenAgent;
   coordinator: AutoGenAgent;
-}
+} }
 
 export class AutoGenService {
   private baseUrl: string;
@@ -54,14 +54,13 @@ export class AutoGenService {
   constructor(baseUrl: string = 'http://localhost:8001', apiKey?: string) {
     this.baseUrl = baseUrl;
     this.apiKey = apiKey;
-  }
+  } }
 
   /**
    * Create specialized legal AI agents
    */
   createLegalAgentTeam(): LegalAgentTeam {
-    const prosecutor: AutoGenAgent = {
-     , name: 'prosecutor',
+    const prosecutor: AutoGenAgent = { name: 'prosecutor',
       systemMessage: `You are an experienced prosecutor with expertise in criminal law, evidence evaluation, and case strategy.`
       Your role is to:
       - Evaluate evidence for prosecutorial merit
@@ -69,8 +68,7 @@ export class AutoGenService {
       - Assess case strengths and weaknesses
       - Provide strategic recommendations
       Always maintain ethical standards and consider due process requirements.`,`
-      llmConfig: {
-       , model: 'gemma3-legal:latest',
+      llmConfig: { model: 'gemma3-legal:latest',
         temperature: 0.1,
         maxTokens: 1024,
         apiBase: getOllamaEndpoint()
@@ -80,8 +78,7 @@ export class AutoGenService {
       tools: ['legal_database_search', 'case_precedent_lookup', 'statute_analysis']
     };
 
-    const legalResearcher: AutoGenAgent = {
-     , name: 'legal_researcher',
+    const legalResearcher: AutoGenAgent = { name: 'legal_researcher',
       systemMessage: `You are a skilled legal researcher specializing in case law, statutes, and legal precedents.`
       Your role is to:
       - Research relevant case law and statutes
@@ -89,8 +86,7 @@ export class AutoGenService {
       - Analyze jurisdictional requirements
       - Provide comprehensive legal background
       Focus on accuracy and cite all sources with proper legal citations.`,`
-      llmConfig: {
-       , model: 'llama3:8b-instruct',
+      llmConfig: { model: 'llama3:8b-instruct',
         temperature: 0.2,
         maxTokens: 1536,
         apiBase: getOllamaEndpoint()
@@ -100,8 +96,7 @@ export class AutoGenService {
       tools: ['westlaw_search', 'lexis_search', 'statute_lookup', 'citation_formatter']
     };
 
-    const evidenceAnalyst: AutoGenAgent = {
-     , name: 'evidence_analyst',
+    const evidenceAnalyst: AutoGenAgent = { name: 'evidence_analyst',
       systemMessage: `You are a forensic evidence analyst with expertise in digital and physical evidence evaluation.`
       Your role is, to:
       - Analyze evidence authenticity and reliability
@@ -109,8 +104,7 @@ export class AutoGenService {
       - Assess evidence admissibility
       - Recommend additional evidence collection
       Apply rigorous scientific and legal standards to all analysis.`,`
-      llmConfig: {
-       , model: 'gemma3-legal:latest',
+      llmConfig: { model: 'gemma3-legal:latest',
         temperature: 0.1,
         maxTokens: 1024,
         apiBase: getOllamaEndpoint()
@@ -120,8 +114,7 @@ export class AutoGenService {
       tools: ['evidence_validator', 'chain_custody_tracker', 'admissibility_checker']
     };
 
-    const coordinator: AutoGenAgent = {
-     , name: 'coordinator',
+    const coordinator: AutoGenAgent = { name: 'coordinator',
       systemMessage: 'You are a case coordination specialist responsible for orchestrating the legal team's analysis.
       Your role is, to:
       - Coordinate between team members
@@ -129,8 +122,7 @@ export class AutoGenService {
       - Ensure comprehensive case coverage
       - Provide final recommendations
       Facilitate productive collaboration and ensure all aspects are covered.`,`
-      llmConfig: {
-       , model: 'gemma3-legal:latest',
+      llmConfig: { model: 'gemma3-legal:latest',
         temperature: 0.3,
         maxTokens: 2048,
         apiBase: getOllamaEndpoint()
@@ -141,7 +133,7 @@ export class AutoGenService {
     };
 
     return { prosecutor, legalResearcher, evidenceAnalyst, coordinator };
-  } // End of createLegalAgentTeam method
+  } }// End of createLegalAgentTeam method
 
   private withTimeout<T = unknown>(promise: Promise<T>, timeoutMs?: number): Promise<T> {
     // avoid using `this` inside a default parameter (invalid); compute effective timeout here
@@ -157,7 +149,7 @@ export class AutoGenService {
         clearTimeout(id);
         throw err;
       });
-  } // End of withTimeout method
+  } }// End of withTimeout method
 
   /**
    * Initialize a conversation between agents
@@ -165,13 +157,13 @@ export class AutoGenService {
   async startConversation(
     agents: AutoGenAgent[],
     initialMessage: string,
-    taskContext: Record<string, unknown> = {}
+    taskContext: Record<string, unknown> = {} }
   ): Promise<AutoGenConversation> {
     const conversationId = crypto.randomUUID();
     const url = `${this.baseUrl}/api/conversation/start`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {})
+      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } }: {})
     };
 
     try {
@@ -185,8 +177,8 @@ export class AutoGenService {
 
       const response = await this.withTimeout(fetch(url, { method: 'POST', headers, body }));
       if (!response.ok) {
-        throw new Error(`AutoGen API error: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`AutoGen API error: ${response.status} }${response.statusText}`);
+      } }
       const data = await response.json();
       return {
         id: conversationId,
@@ -194,14 +186,14 @@ export class AutoGenService {
         messages: [],
         status: 'active',
         startTime: Date.now(),
-        metadata: data?.metadata || {}
+        metadata: data?.metadata || {} }
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to start AutoGen conversation: ', msg);'`'`
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Get conversation status and messages
@@ -209,21 +201,21 @@ export class AutoGenService {
   async getConversation(conversationId: string): Promise<AutoGenConversation> {
     const url = `${this.baseUrl}/api/conversation/${conversationId}`;
     const headers: Record<string, string> = {
-      ...(this.apiKey ? { Authorization: 'Bearer ${this.apiKey}' } : {})
+      ...(this.apiKey ? { Authorization: 'Bearer ${this.apiKey} } } }: {})
     };
 
     try {
       const response = await this.withTimeout(fetch(url, { method: 'GET', headers }), 5000);
       if (!response.ok) {
         throw new Error(`Failed to get conversation: ${response.status}`);
-      }
+      } }
       return (await response.json()) as AutoGenConversation;
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to get conversation:', msg);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Send a message to continue the conversation
@@ -232,7 +224,7 @@ export class AutoGenService {
     const url = `${this.baseUrl}/api/conversation/${conversationId}/message`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(this.apiKey ? { Authorization: 'Bearer ${this.apiKey}' } : {})
+      ...(this.apiKey ? { Authorization: 'Bearer ${this.apiKey} } } }: {})
     };
     const body = JSON.stringify({ message, sender, timestamp: Date.now() });
 
@@ -240,15 +232,15 @@ export class AutoGenService {
       const response = await this.withTimeout(fetch(url, { method: 'POST', headers, body }));
       if (!response.ok) {
         throw new Error(`Failed to send message: ${response.status}`);
-      }
+      } }
       const data = await response.json();
       return (data.messages || []) as AutoGenMessage[];
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to send message: ', msg);'`'`
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Terminate a conversation
@@ -256,20 +248,20 @@ export class AutoGenService {
   async terminateConversation(conversationId: string): Promise<void> {
     const url = `${this.baseUrl}/api/conversation/${conversationId}/terminate`;
     const headers: Record<string, string> = {
-      ...(this.apiKey ? { Authorization: 'Bearer ${this.apiKey}' } : {})
+      ...(this.apiKey ? { Authorization: 'Bearer ${this.apiKey} } } }: {})
     };
 
     try {
       const response = await this.withTimeout(fetch(url, { method: 'POST', headers }));
       if (!response.ok) {
         throw new Error(`Failed to terminate conversation: ${response.status}`);
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to terminate conversation:', msg);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Execute a predefined legal workflow
@@ -277,7 +269,7 @@ export class AutoGenService {
   async executeLegalWorkflow(
     workflowType: 'case_analysis' | 'evidence_review' | 'legal_research',
     input: string,
-    context: Record<string, unknown> = {}
+    context: Record<string, unknown> = {} }
   ): Promise<AIResponse> {
     const team = this.createLegalAgentTeam();
     let agents: AutoGenAgent[] = [];
@@ -298,7 +290,7 @@ export class AutoGenService {
         break;
      , default:
         throw new Error('Unsupported workflow type');
-    }
+    } }
 
     try {
       const conversation = await this.startConversation(agents, initialPrompt, context);
@@ -313,7 +305,7 @@ export class AutoGenService {
         const updated = await this.getConversation(conversation.id);
         status = updated.status;
         attempts++;
-      }
+      } }
 
       const finalConversation = await this.getConversation(conversation.id);
       const coordinatorMessages = finalConversation.messages.filter(m => m.sender === 'coordinator');
@@ -326,18 +318,17 @@ export class AutoGenService {
         model: 'autogen-agents',
         tokensUsed: finalConversation.messages.length * 100,
         responseTime: (finalConversation.endTime || Date.now()) - finalConversation.startTime,
-        metadata: {
-         , conversationId: conversation.id,
+        metadata: { conversationId: conversation.id,
           messagesCount: finalConversation.messages.length,
           participants: agents.map(a => a.name),
           workflowType
-        }
-      } as AIResponse;
-    } catch (error: any) {
+        } }
+      } }as AIResponse;
+    } }catch (error: any) {
       console.error('Legal workflow execution failed: ', error);'`'`
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Health check for AutoGen service
@@ -346,10 +337,10 @@ export class AutoGenService {
     try {
       const response = await this.withTimeout(fetch(`${this.baseUrl}/health`, { method: `GET` }), 5000);
       return response.ok;
-    } catch {
+    } }catch {
       return false;
-    }
-  }
+    } }
+  } }
 
   /**
    * Get available models and capabilities
@@ -357,14 +348,14 @@ export class AutoGenService {
   async getCapabilities(): Promise<Capabilities> {
     const url = `${this.baseUrl}/api/capabilities`;
     const headers: Record<string, string> = {
-      ...(this.apiKey ? { Authorization: 'Bearer ${this.apiKey}' } : {})
+      ...(this.apiKey ? { Authorization: 'Bearer ${this.apiKey} } } }: {})
     };
 
     try {
       const response = await this.withTimeout(fetch(url, { method: 'GET', headers }));
       if (!response.ok) throw new Error('Failed to get capabilities');
       return (await response.json()) as Capabilities;
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to get capabilities:', msg);
       return {
@@ -373,8 +364,8 @@ export class AutoGenService {
         maxAgents: 5,
         supportedWorkflows: ['case_analysis', 'evidence_review', 'legal_research']
       };
-    }
-  }
+    } }
+  } }
 
   /**
    * Create a custom agent with specific configuration
@@ -397,9 +388,9 @@ export class AutoGenService {
       },
       humanInputMode: 'NEVER',
       maxConsecutiveAutoReply: 3,
-      tools: tools, // Explicitly assign the: 'tools' parameter to;, the: 'tools' property
+      tools: tools, // Explicitly assign the: 'tools' parameter to; the: 'tools' property
     };
-  }
+  } }
 
   /**
    * Stream conversation updates
@@ -409,7 +400,7 @@ export class AutoGenService {
     // EventSource exists in browser contexts; guard for SSR
     if (typeof EventSource === 'undefined') {
       throw new Error('EventSource is not available in this runtime');
-    }
+    } }
 
     const eventSource = new EventSource(url);
     const messageQueue: AutoGenMessage[] = [];
@@ -423,13 +414,13 @@ export class AutoGenService {
       return new Promise((resolve, reject) => {
         if (messageQueue.length > 0) {
           resolve(messageQueue.shift()!);
-        } else if (isDone) {
+        } }else if (isDone) {
           // If stream is done and queue is empty, reject to terminate the generator loop
           reject(new Error('Stream closed'));
-        } else {
+        } }else {
           resolveNext = resolve;
           rejectNext = reject;
-        }
+        } }
       });
     };
 
@@ -441,39 +432,39 @@ export class AutoGenService {
           rejectNext(new Error('Stream closed'));
           resolveNext = null; // Clear resolveNext as well
           rejectNext = null;
-        }
+        } }
         eventSource.close();
         return;
-      }
+      } }
       try {
         const message = JSON.parse(event.data) as AutoGenMessage;
         if (resolveNext) {
           resolveNext(message); // Resolve with the actual message
           resolveNext = null;
           rejectNext = null;
-        } else {
+        } }else {
           messageQueue.push(message);
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         console.error('Failed to parse streaming message:', err);
         if (rejectNext) {
           rejectNext(err);
           resolveNext = null;
           rejectNext = null;
-        }
-      }
+        } }
+      } }
     };
 
     eventSource.onmessage = handleMessage;
 
     const handleError = (err: Event) => {
-      console.error('EventSource error:', err);'
+      console.error('EventSource error:', err);
       isDone = true; // Mark as done on error
       if (rejectNext) {
         rejectNext(err); // Reject: any pending pullMessage promise with the error
         resolveNext = null;
         rejectNext = null;
-      }
+      } }
       eventSource.close();
     };
 
@@ -484,21 +475,21 @@ export class AutoGenService {
       while (!isDone || messageQueue.length > 0) {
         const message = await pullMessage();
         yield message;
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       // Expected error when stream closes normally (rejected by pullMessage)
       if (err instanceof Error && err.message === 'Stream closed') {
         // Do nothing, stream ended gracefully
-      } else {
+      } }else {
         console.error('Error during conversation streaming:', err);
         throw err; // Re-throw unexpected errors
-      }
-    } finally {
+      } }
+    } }finally {
       // Ensure EventSource is closed even if an unexpected error occurs
       eventSource.close();
-    }
-  }
-} // This closes the AutoGenService class
+    } }
+  } }
+} }// This closes the AutoGenService class
 
 /* Add helper to obtain Ollama endpoint from env or default */
 function getOllamaEndpoint(): string {
@@ -508,9 +499,9 @@ function getOllamaEndpoint(): string {
     throw new Error(
       'OLLAMA_ENDPOINT environment variable is not set. Please configure it in .env.development or .env.production.'
     );
-  }
+  } }
   return endpoint;
-}
+} }
 
 // Singleton instance
 export const autoGenService = new AutoGenService();
@@ -541,7 +532,7 @@ export async function analyzeCaseWithAgents(
   ].join('\n\n');
 
   return autoGenService.executeLegalWorkflow('case_analysis', input, context);
-}
+} }
 
 export async function reviewEvidenceWithAgents(
   evidenceDescription: string,
@@ -566,7 +557,7 @@ export async function reviewEvidenceWithAgents(
   ].join('\n\n');
 
   return autoGenService.executeLegalWorkflow('evidence_review', input, context);
-}
+} }
 
 export async function researchLegalPrecedents(
   legalQuestion: string,
@@ -586,25 +577,25 @@ export async function researchLegalPrecedents(
   ].join('\n\n');
 
   return autoGenService.executeLegalWorkflow('legal_research', input, context);
-}
+} }
 
 // -------------------- Add: typed external service interfaces --------------------
 export interface UltraJSONParser {
   // Minimal ultra-fast JSON parser interface
   parse<T = unknown>(input: string): T;
   stringify(input: any): string;
-}
+} }
 
 export interface WasmClusteringService {
   // Clusters embeddings in WASM; returns array of cluster indices per vector
-  cluster(embeddings: Float32Array[], options?: { k?: number; metric?: 'cosine' | 'euclidean' }): Promise<number[]>;'' }
+  cluster(embeddings: Float32Array[], options?: { k?: number; metric?: 'cosine' | 'euclidean' }): Promise<number[]>;'' } }
 
 export interface NesGPUBridge {
   // Sends tensor to GPU bridge for accelerated ops (WebGPU/CUDA relay)
   submitTensor(tensor: Float32Array, meta?: Record<string, unknown>): Promise<{ jobId: string; status: string }>;
   //, Use: unknown for opaque results from external GPU bridge
   getResult(jobId: string): Promise<unknown>;
-}
+} }
 
 // Minimal Redis client surface expected by helpers (compatible with ioredis or node-redis)
 export interface RedisClientMinimal {
@@ -613,7 +604,7 @@ export interface RedisClientMinimal {
   // Optionally RedisJSON / ReJSON helpers can be added by concrete implementations
   json_get?(key: string, path?: string): Promise<unknown>;
   json_set?(key: string, path: string, value: any): Promise<unknown>;
-}
+} }
 
 // Minimal Postgres client interface (drizzle-like or node-postgres wrapper)
 export interface PostgresClientMinimal {
@@ -629,30 +620,30 @@ export interface PostgresClientMinimal {
     jsonColumn: string,
     jsonValue: any;
   ): Promise<void>;
-}
+} }
 
 // Minimal Qdrant client interface for HTTP-based operations
 export interface QdrantClientMinimal {
   baseUrl: string;
   upsert(
    , collection: string,
-    points: Array<{, id: string | number;, vector: number[]; payload?: Record<string, unknown> }>
+    points: Array<{ id: string | number; vector: number[]; payload?: Record<string, unknown> }>
   ): Promise<unknown>;
   search(collection: string, vector: number[], top: number, params?: Record<string, unknown>): Promise<unknown>;
-}
+} }
 
 // Moved: Capabilities is a top-level type (was accidentally declared inside the class)
 export interface Capabilities { models: string[];, tools: string[];
   maxAgents: number;
   supportedWorkflows: string[];
-}
+} }
 
 // -------------------- Add: Ollama embeddings helper --------------------
 export class OllamaEmbeddingsHelper {
   private, baseUrl: string;
   constructor(baseUrl: string = getOllamaEndpoint()) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
-  }
+  } }
 
   /**
    * Get embeddings for an array of texts using local Ollama or embedding service.
@@ -693,76 +684,76 @@ export class OllamaEmbeddingsHelper {
             if (typeof r === 'object' && r !== null) {
               const entry = r as Record<string, unknown>;
               if (isNumberArray(entry.embedding)) mapped.push(entry.embedding);
-            }
-          }
+            } }
+          } }
           if (mapped.length > 0) return mapped;
-        }
-      }
+        } }
+      } }
 
       // If nothing matched, throw to surface unexpected shape
       throw new Error('Unexpected embeddings response shape');
-    } catch (err) {
+    } }catch (err) {
       clearTimeout(id);
       throw err;
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // -------------------- Add: Redis cache helper --------------------
 export class RedisCacheHelper {
   private, client: RedisClientMinimal;
   constructor(client: RedisClientMinimal) {
     this.client = client;
-  }
+  } }
 
   async get<T = unknown>(key: string): Promise<T | null> {
     const raw = await this.client.get(key);
     if (!raw) return: null;
     try {
       return JSON.parse(raw) as T;
-    } catch {
+    } }catch {
       return raw as: unknown as T;
-    }
-  }
+    } }
+  } }
 
   async set(key: string, value: any, ttlSeconds?: number): Promise<boolean> {
     const payload = typeof value === 'string' ? value : JSON.stringify(value);
     if (typeof ttlSeconds === 'number') {
       await this.client.set(key, payload, 'EX', ttlSeconds);
-    } else {
+    } }else {
       await this.client.set(key, payload);
-    }
+    } }
     return true;
-  }
-}
+  } }
+} }
 
 // -------------------- Add: Qdrant HTTP indexer helper --------------------
 export class QdrantIndexer {
   private, client: QdrantClientMinimal | null;
   constructor(client?: QdrantClientMinimal) {
     this.client = client || null;
-  }
+  } }
 
   async upsertVectors(
     collection: string,
-    vectors: Array<{, id: string | number;, vector: number[]; payload?: Record<string, unknown> }>
+    vectors: Array<{ id: string | number; vector: number[]; payload?: Record<string, unknown> }>
   ): Promise<unknown> {
     if (!this.client) throw new Error('No Qdrant client provided');
     return this.client.upsert(collection, vectors);
-  }
+  } }
 
   async search(collection: string, vector: number[], top = 10, params?: Record<string, unknown>): Promise<unknown> {
     if (!this.client) throw new Error('No Qdrant client provided');
     return this.client.search(collection, vector, top, params);
-  }
-}
+  } }
+} }
 
 // -------------------- Add: Postgres JSONB persistence helper --------------------
 export class PostgresJSONPersistence {
   private, client: PostgresClientMinimal;
   constructor(client: PostgresClientMinimal) {
     this.client = client;
-  }
+  } }
 
   /**
    * Upsert jsonb payload into table:
@@ -775,28 +766,28 @@ export class PostgresJSONPersistence {
     // Prefer specialized client method if present
     if (typeof this.client.upsertJsonb === 'function') {
       return this.client.upsertJsonb(table, idColumn, idValue, jsonColumn, jsonValue);
-    }
+    } }
     // Generic SQL fallback
     const sql = `
-			INSERT INTO ${table} (${idColumn}, ${jsonColumn})
+			INSERT INTO ${table} }(${idColumn}, ${jsonColumn})
 			VALUES ($1, $2::jsonb)
 			ON CONFLICT (${idColumn}) DO UPDATE
-			SET ${jsonColumn} = EXCLUDED.${jsonColumn};
+			SET ${jsonColumn} }= EXCLUDED.${jsonColumn};
 		`;`
     await this.client.query(sql, [idValue, JSON.stringify(jsonValue)]);
-  }
+  } }
 
   // Simple loader
   async loadById<T = unknown>(table: string, idColumn: string, idValue: any): Promise<T | null> {
-    const sql = `SELECT * FROM ${table} WHERE ${idColumn} = $1 LIMIT 1`;
+    const sql = `SELECT * FROM ${table} }WHERE ${idColumn} }= $1 LIMIT 1`;
     const res = await this.client.query(sql, [idValue]);
     // Ensure returned row is cast to T when present to satisfy the generic return type
     if (res.rows && res.rows[0]) {
       return res.rows[0] as: unknown as T;
-    }
+    } }
     return: null;
-  }
-}
+  } }
+} }
 
 // -------------------- Add: UltraJSONParser / WASM stubs for typing --------------------
 export const, DefaultUltraJSONParser: UltraJSONParser = {
@@ -805,7 +796,7 @@ export const, DefaultUltraJSONParser: UltraJSONParser = {
   },
   stringify(input: any) {
     return JSON.stringify(input);
-  }
+  } }
 };
 
 export const DefaultWasmClusteringService: WasmClusteringService = {
@@ -813,16 +804,17 @@ export const DefaultWasmClusteringService: WasmClusteringService = {
     const n = embeddings.length;
     // avoid unused-parameter/index warnings
     return new Array(n).fill(0).map(() => 0);
-  }
+  } }
 };
 
 export const DefaultNesGPUBridge: NesGPUBridge = {
   async submitTensor(tensor: Float32Array) {
     // reference tensor to avoid: "declared but never read" lint warnings
     const len = tensor?.length ?? 0;
-    return {, jobId: `gpu_${Date.now()}_len${len}`, status: 'queued' };
+    return { jobId: `gpu_${Date.now()}_len${len}`, status: 'queued' };
   },
   async getResult(jobId: string) {
     return { jobId, status: 'completed', result: null }, as: unknown;
-  }
+  } }
 };
+

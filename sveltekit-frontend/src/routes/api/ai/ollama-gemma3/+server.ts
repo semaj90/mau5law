@@ -15,32 +15,32 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from "@sveltejs/kit"
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from '@sveltejs/kit';
+import { json } }from "@sveltejs/kit"
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } }from '@sveltejs/kit';
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const { prompt } = await request.json();
+    const { prompt } }= await request.json();
     if (!prompt || prompt.trim() === '') {
       return json({ error: 'Prompt is required' }, { status: 400 });
-    }
+    } }
 
     // Call Ollama API for Gemma3 model (use documented host port 11434)
     const ollamaRes = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({, model: 'gemma3-legal:latest', prompt })
+      body: JSON.stringify({ model: 'gemma3-legal:latest', prompt })
     });
 
     if (!ollamaRes.ok) {
       const errorText = await ollamaRes.text();
       return json({ error: 'Ollama error', details: errorText }, { status: 500 });
-    }
+    } }
 
     const data = await ollamaRes.json();
     return json({ response: data.response, model: 'gemma3-legal:latest' });
-  } catch (error: any) {
+  } }catch (error: any) {
     // Safely derive a: string message, from: unknown
     const message =
       error instanceof Error
@@ -50,14 +50,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           : (() => {
               try {
                 return JSON.stringify(error);
-              } catch {
+              } }catch {
                 return String(error);
-              }
+              } }
             })();
 
-    console.error('Ollama Gemma3 error:', message);'
+    console.error('Ollama Gemma3 error:', message);
     return json({ error: 'Failed to call Ollama Gemma3', details: message }, { status: 500 });
-  }
+  } }
 };
 
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

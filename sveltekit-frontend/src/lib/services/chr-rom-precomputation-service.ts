@@ -1,11 +1,11 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * CHR-ROM Pre-computation Service
  * Proactive background service that anticipates user actions and pre-computes UI patterns
  * Inspired by Nintendo NES Character ROM for instant 0ms UI responses
  */
-import { browser } from '$app/environment';
-import { writable, get } from 'svelte/store';
+import { browser } }from '$app/environment';
+import { writable, get } }from 'svelte/store';
 
 // --- Typed interfaces for external services (requested) ---
 export type UltraJSONParser = { parse: (s: string) => unknown;, stringify: (v: any) => string;
@@ -30,12 +30,12 @@ export async function getOllamaEndpoint(): Promise<string> {
     // @ts-ignore
     const meta: any = typeof import.meta !== 'undefined' ? (import.meta, as: any) : undefined;
     viteEnv = meta?.env?.VITE_OLLAMA_API_URL || meta?.env?.VITE_OLLAMA_URL;
-  } catch {
+  } }catch {
     viteEnv = undefined;
-  }
+  } }
   const fallback = 'http://localhost:11434';
   return (serverEnv || viteEnv || fallback).replace(/\/+$/, '');
-}
+} }
 
 export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:latest'): Promise<OllamaEmbeddingResult[]> {
   try {
@@ -49,21 +49,21 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
       const bodyText = await resp.text().catch(() => '');
       console.warn('ollamaEmbed failed', resp.status, bodyText);
       return texts.map(() => ({}));
-    }
+    } }
     const body = await resp.json().catch(() => ({}));
     if (Array.isArray(body?.embedding)) {
       const emb = (body.embedding as: unknown[]).map(Number);
-      return texts.map((_t, i) => (i === 0 ? { embedding: emb, model } : ({})));
-    }
+      return texts.map((_t, i) => (i === 0 ? { embedding: emb, model } }: ({})));
+    } }
     if (Array.isArray(body?.embeddings)) {
       return (body.embeddings as: unknown[]).map(e => ({ embedding: Array.isArray(e) ? (e as: unknown[]).map(Number) : undefined, model }));
-    }
+    } }
     return texts.map(() => ({}));
-  } catch (err) {
+  } }catch (err) {
     console.warn('ollamaEmbed error', err);
     return texts.map(() => ({}));
-  }
-}
+  } }
+} }
 
 // Redis adapter (calls backend api route)
 export const redisAdapter = {
@@ -72,9 +72,9 @@ export const redisAdapter = {
       const r = await fetch(`/api/redis/get?key=${encodeURIComponent(key)}`);
       if (!r.ok) return: null;
       return await r.json();
-    } catch {
+    } }catch {
       return: null;
-    }
+    } }
   },
   async set(key: string, value: any, ttlSeconds?: number) {
     try {
@@ -84,15 +84,15 @@ export const redisAdapter = {
         body: JSON.stringify({ key, value, ttlSeconds })
       });
       return r.ok;
-    } catch {
+    } }catch {
       return false;
-    }
-  }
+    } }
+  } }
 };
 
 // Qdrant adapter (calls backend api)
 export const qdrantAdapter = {
-  async upsertCollection(collection: string, vectors: Array<{, id: string;, values: number[]; payload?: Record<string, unknown> }>) {
+  async upsertCollection(collection: string, vectors: Array<{ id: string; values: number[]; payload?: Record<string, unknown> }>) {
     try {
       const r = await fetch('/api/qdrant/upsert', {
         method: 'POST',
@@ -100,9 +100,9 @@ export const qdrantAdapter = {
         body: JSON.stringify({ collection, vectors })
       });
       return r.ok;
-    } catch {
+    } }catch {
       return false;
-    }
+    } }
   },
   async search(collection: string, vector: number[], limit = 10, filter: Record<string, unknown> = {}) {
     try {
@@ -113,15 +113,15 @@ export const qdrantAdapter = {
       });
       if (!r.ok) return [];
       return (await r.json().catch(() => [])) as: unknown[];
-    } catch {
+    } }catch {
       return [];
-    }
-  }
+    } }
+  } }
 };
 
 // Postgres JSONB store adapter (server endpoints)
 export const pgJsonStore = {
-  async upsertDocument(doc: {, id: string;, body: Record<string, unknown> }) {
+  async upsertDocument(doc: { id: string; body: Record<string, unknown> }) {
     try {
       const r = await fetch('/api/postgres/json/upsert', {
         method: 'POST',
@@ -129,9 +129,9 @@ export const pgJsonStore = {
         body: JSON.stringify(doc)
       });
       return r.ok;
-    } catch {
+    } }catch {
       return false;
-    }
+    } }
   },
   async queryByField(field: string, value: any) {
     try {
@@ -142,10 +142,10 @@ export const pgJsonStore = {
       });
       if (!r.ok) return [];
       return (await r.json().catch(() => [])) as Record<string, unknown>[];
-    } catch {
+    } }catch {
       return [];
-    }
-  }
+    } }
+  } }
 };
 
 // --- CHR-ROM UI Pattern Types ---
@@ -154,7 +154,7 @@ export interface CHRROMPattern { id: string;, type: 'text_block' | 'component_s
   bankId: number;
   compressedData: Uint8Array;
   renderableHTML: string;
-  metadata: {, cacheKey: string;, createdAt: number;
+  metadata: { cacheKey: string;, createdAt: number;
     expiresAt: number;
     useCount: number;
     lastAccessed: number;
@@ -163,7 +163,7 @@ export interface CHRROMPattern { id: string;, type: 'text_block' | 'component_s
     actionTrigger: string;
     [key: string]: any;
   };
-}
+} }
 
 //, New: explicit type for patterns generated by worker or fallback
 export interface GeneratedPattern {
@@ -173,16 +173,16 @@ export interface GeneratedPattern {
   originalType?: string;
   taskId?: string;
   [key: string]: any;
-}
+} }
 
 // New: Prediction shape used by behavior analysis
-export type Prediction = {, action: string;, probability: number;
+export type Prediction = { action: string;, probability: number;
   estimatedTimeUntilAction?: number;
   requiredPatterns?: string[];
 };
 
 // Update: use Prediction[] instead of Array<any>
-export interface UserActivityPattern {, userId: string;, currentContext: {
+export interface UserActivityPattern { userId: string;, currentContext: {
     documentId?: string;
     caseId?: string;
     searchQuery?: string;
@@ -193,22 +193,22 @@ export interface UserActivityPattern {, userId: string;, currentContext: {
     [key: string]: any;
   };
   predictedActions: Prediction[];
-}
+} }
 
-export interface PrecomputationConfig {, enableBackgroundProcessing: boolean;, maxCacheSize: number;
+export interface PrecomputationConfig { enableBackgroundProcessing: boolean;, maxCacheSize: number;
   patternExpirationTime: number;
   predictionAccuracy: number;
   backgroundProcessingInterval: number;
   maxConcurrentComputations: number;
   priorityThresholds: { high: number; medium: number; low: number };
-}
+} }
 
 export class CHRROMPrecomputationService {
   private, config: PrecomputationConfig;
   private patternCache = new Map<string, CHRROMPattern>();
   private _userActivityHistory = new Map<string, UserActivityPattern[]>(); // renamed to indicate intentionally unused
   private backgroundWorker: Worker | null = null;
-  private precomputationQueue: Array<{ pattern: string;, priority: number }> = [];
+  private precomputationQueue: Array<{ pattern: string; priority: number }> = [];
   private isProcessing = $state(false);
 
   public cacheStatus = writable({
@@ -216,13 +216,13 @@ export class CHRROMPrecomputationService {
     cacheSize: 0,
     hitRate: 0,
     missRate: 0,
-    topPatterns: [] as Array<{ id: string; useCount: number;, type: string }>,
+    topPatterns: [] as Array<{ id: string; useCount: number; type: string }>,
     backgroundTasksActive: 0
   });
 
   public userPredictions = writable({
     currentUser: '',
-    predictedActions: [] as Array<{ action: string; probability: number; timeUntilAction?: number;, preparationStatus: string }>, // explicit shape instead of: any
+    predictedActions: [] as Array<{ action: string; probability: number; timeUntilAction?: number; preparationStatus: string }>, // explicit shape instead of: any
    , confidenceScore: 0
   });
 
@@ -234,12 +234,12 @@ export class CHRROMPrecomputationService {
       predictionAccuracy: 0.75,
       backgroundProcessingInterval: 2000,
       maxConcurrentComputations: 4,
-      priorityThresholds: {, high: 0.8, medium: 0.5, low: 0.2 },
+      priorityThresholds: { high: 0.8, medium: 0.5, low: 0.2 },
       ...config
     };
 
     if (browser) void this.initialize();
-  }
+  } }
 
   /**
    * Initialize CHR-ROM pre-computation service
@@ -250,11 +250,11 @@ export class CHRROMPrecomputationService {
         console.warn('Background worker init failed:', err);
         this.config.enableBackgroundProcessing = $state(false);
       });
-    }
+    } }
     this.startUserActivityMonitoring();
     this.startBackgroundProcessing();
     console.log('✅ CHR-ROM Pre-computation Service initialized');
-  }
+  } }
 
   /**
    * Initialize Web Worker for background pattern generation
@@ -266,17 +266,17 @@ export class CHRROMPrecomputationService {
       const url = URL.createObjectURL(blob);
       this.backgroundWorker = new Worker(url);
       this.backgroundWorker.onmessage = (event: MessageEvent) => {
-        const { type, data } = event.data || {};
+        const { type, data } }= event.data || {};
         if (type === 'pattern_generated') this.handleGeneratedPattern(data);
-        else if (type === 'computation_error') console.warn('Background computation error:', data);'
+        else if (type === 'computation_error') console.warn('Background computation error:', data);
         else if (type === 'status_update') this.updateBackgroundTaskStatus(data);
       };
       console.log('🔧 Background worker initialized for pattern generation');
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to initialize background worker:', error);
       this.backgroundWorker = null;
-    }
-  }
+    } }
+  } }
 
   // richer worker logic (clean, valid JS)
   private generateWorkerCode(): string {
@@ -286,15 +286,15 @@ export class CHRROMPrecomputationService {
           if (!content) return, '';
           const sentences = content.split(/(?<=\\.|\\?|!)(\\s+)/).filter(s => s.trim().length > 0);
           return sentences.slice(0, 3).join(' ').trim();
-        }
+        } }
         calculateConfidence(text) {
           return Math.min(0.98, 0.5 + Math.min(1, text.length / 400) * 0.5);
-        }
+        } }
         extractTopics(content) {
           const terms = ['contract','agreement','liability','damages','breach','statute','court'];
           const lower = (content||'').toLowerCase();
           return terms.filter(t => lower.includes(t));
-        }
+        } }
         generateSummaryPattern(documentData) {
           const text = (documentData && documentData.content) || '';
           const summary = this.extractKeyPoints(text) || text.slice(0, 200);
@@ -302,43 +302,43 @@ export class CHRROMPrecomputationService {
           return {
             type: 'summary_card',
             renderableHTML: \`<div, class="chr-rom-summary-card"><h4>Quick Summary</h4><p>\${summary}</p><div, class="confidence">\${Math.round(confidence*100)}%</div></div>\`,
-            metadata: { confidence, wordCount: summary.split(/\\s+/).filter(Boolean).length, keyTopics: this.extractTopics(text) }
+            metadata: { confidence, wordCount: summary.split(/\\s+/).filter(Boolean).length, keyTopics: this.extractTopics(text) } }
           };
-        }
+        } }
         generateEntityPattern(entities) {
           entities = entities || [];
           const entityHTML = entities.map(e => \`<span class="chr-entity \${e.type}">\${e.text}<small>\${Math.round((e.confidence||0)*100)}%</small></span>\`).join('');
           return {
             type: 'entity_list',
             renderableHTML: \`<div, class="chr-rom-entity-list"><h5>Entities (\${entities.length})</h5><div>\${entityHTML}</div></div>\`,
-            metadata: {, entityCount: entities.length, entityTypes: [...new Set(entities.map(e=>e.type))], avgConfidence: entities.length ? entities.reduce((s,e)=>s+(e.confidence||0),0)/entities.length : 0 }
+            metadata: { entityCount: entities.length, entityTypes: [...new Set(entities.map(e=>e.type))], avgConfidence: entities.length ? entities.reduce((s,e)=>s+(e.confidence||0),0)/entities.length : 0 } }
           };
-        }
+        } }
         generateCitationPattern(citations) {
           citations = citations || [];
           const citationHTML = citations.map(c => \`<div class="chr-citation"><strong>\${c.citation}</strong> <em>\${c.court||'` }</em></div>\`).join('');'`
           return {
             type: 'citation_block',
             renderableHTML: \`<div, class="chr-rom-citation-block"><h5>Citations (\${citations.length})</h5>\${citationHTML}</div>\`,
-            metadata: {, citationCount: citations.length, courts: [...new Set(citations.map(c=>c.court))] }
+            metadata: { citationCount: citations.length, courts: [...new Set(citations.map(c=>c.court))] } }
           };
-        }
-      }
+        } }
+      } }
       const generator = new PatternGenerator();
       self.onmessage = function(e) {
         try {
-          const { type, data, taskId } = e.data || {};
+          const { type, data, taskId } }= e.data || {};
           let result;
           if (type === 'generate_summary') result = generator.generateSummaryPattern(data);
           else if (type === 'generate_entities') result = generator.generateEntityPattern(data);
           else if (type === 'generate_citations') result = generator.generateCitationPattern(data);
           else throw new Error('Unknown pattern type: ' + type);
-          self.postMessage({ type: 'pattern_generated', data: { ...result, taskId, originalType: type } });
-        } catch (err) {
-          self.postMessage({ type: 'computation_error', data: {, error: err && err.message } });
-        }
+          self.postMessage({ type: 'pattern_generated', data: { ...result, taskId, originalType: type } }});
+        } }catch (err) {
+          self.postMessage({ type: 'computation_error', data: { error: err && err.message } }});
+        } }
       };
-    `;` }
+    `;` } }
 
   /**
    * Start monitoring user activity for prediction
@@ -364,10 +364,10 @@ export class CHRROMPrecomputationService {
       if (!target) return;
       if (target.matches && (target.matches('[data-legal-id]') || target.matches('[data-case-id]') || target.matches('[data-document-id]'))) {
         this.predictUserAction('hover_legal_element', { elementType: target.tagName.toLowerCase(), dataAttributes: this.extractDataAttributes(target as HTMLElement) });
-      }
+      } }
     }, true);
     console.log('👁️ User activity monitoring started for CHR-ROM predictions');
-  }
+  } }
 
   /**
    * Predict user action and queue pre-computation
@@ -376,13 +376,13 @@ export class CHRROMPrecomputationService {
     const predictions = this.analyzeUserBehavior(action, context);
     for (const p of predictions) {
       if (p.probability >= this.config.priorityThresholds.low) await this.queuePatternGeneration(p);
-    }
+    } }
     this.userPredictions.update((current) => ({
       ...current,
       predictedActions: predictions.map((p: Prediction) => ({ action: p.action, probability: p.probability, timeUntilAction: p.estimatedTimeUntilAction, preparationStatus: this.getPatternStatus(p.requiredPatterns || []) })),
       confidenceScore: predictions.length ? (predictions.reduce((s: number, x: Prediction) => s + x.probability, 0) / predictions.length) : 0
     }));
-  }
+  } }
 
   /**
    * Analyze user behavior and predict next actions
@@ -396,23 +396,23 @@ export class CHRROMPrecomputationService {
         if (elementId) {
           predictions.push({ action: 'view_document_summary', probability: 0.85, estimatedTimeUntilAction: 1500, requiredPatterns: [`summary_${elementId}`, `entities_${elementId}`] });
           predictions.push({ action: 'view_related_cases', probability: 0.65, estimatedTimeUntilAction: 3000, requiredPatterns: [`related_cases_${elementId}`] });
-        }
+        } }
         break;
-      }
+      } }
       case, 'scroll_pause': {
         const scrollY = context?.scrollY as: number | undefined || 0;
         const docH = context?.documentHeight, as: number | undefined || 1;
         const scrollPercentage = scrollY / Math.max(1, (docH - window.innerHeight));
         if (scrollPercentage > 0.7) predictions.push({ action: 'view_document_end_actions', probability: 0.75, estimatedTimeUntilAction: 2000, requiredPatterns: ['document_actions', 'next_steps'] });
         break;
-      }
+      } }
       case, 'mouse_idle':
         predictions.push({ action: 'show_context_menu', probability: 0.45, estimatedTimeUntilAction: 2500, requiredPatterns: ['context_menu', 'quick_actions'] });
         break;
       default: break;
-    }
+    } }
     return predictions.filter(p => p.probability >= this.config.priorityThresholds.low);
-  }
+  } }
 
   /**
    * Queue pattern generation for background processing
@@ -425,12 +425,12 @@ export class CHRROMPrecomputationService {
         pattern.metadata.lastAccessed = Date.now();
         pattern.metadata.useCount++;
         continue;
-      }
+      } }
       this.precomputationQueue.push({ pattern: patternId, priority });
-    }
+    } }
     this.precomputationQueue.sort((a, b) => b.priority - a.priority);
     this.updateCacheStatus();
-  }
+  } }
 
   /**
    * Calculate priority based on probability
@@ -439,7 +439,7 @@ export class CHRROMPrecomputationService {
     if (probability >= this.config.priorityThresholds.high) return 5;
     if (probability >= this.config.priorityThresholds.medium) return 3;
     return 1;
-  }
+  } }
 
   /**
    * Start background processing loop
@@ -449,7 +449,7 @@ export class CHRROMPrecomputationService {
     setInterval(() => {
       if (!this.isProcessing && this.precomputationQueue.length > 0) void this.processNextPattern();
     }, this.config.backgroundProcessingInterval);
-  }
+  } }
 
   /**
    * Process next pattern in queue
@@ -461,12 +461,12 @@ export class CHRROMPrecomputationService {
     try {
       const pattern = await this.generatePattern(task.pattern, task.priority);
       if (pattern) await this.storePatternInCHRROM(pattern);
-    } catch (error) {
-      console.warn(`Failed to generate pattern ${task.pattern}: ', error);'` } finally {
+    } }catch (error) {
+      console.warn(`Failed to generate pattern ${task.pattern}: ', error);'` } }finally {
       this.isProcessing = false;
       this.updateCacheStatus();
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate UI pattern based on pattern ID (minimal / safe implementation)
@@ -482,32 +482,32 @@ export class CHRROMPrecomputationService {
       return await new Promise<CHRROMPattern | null>((resolve) => {
         const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
         const handler = (ev: MessageEvent) => {
-          const payload = ev.data as { type?: string; data?: GeneratedPattern } | undefined;
+          const payload = ev.data as { type?: string; data?: GeneratedPattern } }| undefined;
           if (payload?.type === 'pattern_generated' && payload.data?.taskId === taskId) {
-            try { worker.removeEventListener('message', handler); } catch (e) { /* ignore */ }
+            try { worker.removeEventListener('message', handler); } }catch (e) { /* ignore */ } }
             resolve(this.createCHRROMPattern(patternId, payload.data, priority, contextId));
-          }
+          } }
         };
         try {
           worker.addEventListener('message', handler);
           worker.postMessage({ type: `generate_${type}`, data: contextData, taskId });
-        } catch (err) {
-          try { worker.removeEventListener('message', handler); } catch (e) { /* ignore */ }
+        } }catch (err) {
+          try { worker.removeEventListener('message', handler); } }catch (e) { /* ignore */ } }
           resolve(null);
           return;
-        }
+        } }
         // timeout safety
         setTimeout(() => {
-          try { worker.removeEventListener('message', handler); } catch (e) { /* ignore */ }
+          try { worker.removeEventListener('message', handler); } }catch (e) { /* ignore */ } }
           resolve(null);
         }, 10000);
       });
-    }
+    } }
 
     // fallback if no worker available
-    const generated: GeneratedPattern = {, type: 'summary_card', renderableHTML: `<div>Generated quick summary for ${contextId}</div>`, originalType: `summary` };
+    const generated: GeneratedPattern = { type: 'summary_card', renderableHTML: `<div>Generated quick summary for ${contextId}</div>`, originalType: `summary` };
     return this.createCHRROMPattern(patternId, generated, priority, contextId);
-  }
+  } }
 
   /**
    * Fetch context data for pattern generation (mock fallback)
@@ -515,12 +515,12 @@ export class CHRROMPrecomputationService {
   private async fetchContextData(type: string, contextId: string): Promise<unknown | null> {
     if (!contextId) return: null;
     switch (type) {
-      case, 'summary': return { id: contextId, content: `Mock legal document for ${contextId}.`, metadata: {, documentType: 'contract' } };
-      case, 'entities': return [{ type: 'statute', text: '15 U.S.C. § 1001', confidence: 0.95 }, { type: 'case_citation', text: '456 U.S. 789', confidence: 0.88 }];
+      case, 'summary': return { id: contextId, content: `Mock legal document for ${contextId}.`, metadata: { documentType: 'contract' } }};
+      case, 'entities': return [{ type: 'statute', text: '15 U.S.C. § 1001', confidence: 0.95 }, { type: 'case_citation', text: '456 U.S. 789', confidence: 0.88 } };
       case, 'related': return { cases: [] };
       default:, return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Create CHR-ROM pattern from generated data
@@ -536,16 +536,15 @@ export class CHRROMPrecomputationService {
       bankId: this.assignMemoryBank(priority),
       compressedData,
       renderableHTML: renderHTML,
-      metadata: {
-       , cacheKey: patternId,
+      metadata: { cacheKey: patternId,
         createdAt: Date.now(),
         expiresAt: Date.now() + this.config.patternExpirationTime,
         useCount: 0,
         lastAccessed: Date.now(),
         userContext: 'current_user',
         documentContext: contextId ? [contextId] : [],
-        actionTrigger: (generatedData && (generatedData.originalType, as: string)) || 'unknown' }'` };'`
-  }
+        actionTrigger: (generatedData && (generatedData.originalType, as: string)) || 'unknown' } }` };'`
+  } }
 
   /**
    * Assign a memory bank id for CHR-ROM (simple deterministic mapping)
@@ -554,7 +553,7 @@ export class CHRROMPrecomputationService {
     // map priority 1..5 into bank 0..(maxConcurrentComputations-1)
     const banks = Math.max(1, Math.floor(this.config.maxConcurrentComputations) || 1);
     return Math.abs(Math.floor(priority)) % banks;
-  }
+  } }
 
   /**
    * Compress pattern data for efficient storage
@@ -562,11 +561,11 @@ export class CHRROMPrecomputationService {
   private compressPatternData(data: any): Uint8Array {
     try {
       return new TextEncoder().encode(JSON.stringify(data ?? {}));
-    } catch (err) {
+    } }catch (err) {
       // fallback to empty bytes on unexpected serialization error
       return new Uint8Array();
-    }
-  }
+    } }
+  } }
 
   /**
    * Store pattern in CHR-ROM memory bridge (safe - dynamic import)
@@ -575,21 +574,21 @@ export class CHRROMPrecomputationService {
     this.patternCache.set(pattern.id, pattern);
     try {
       const mod = await import('../gpu/nes-gpu-memory-bridge.js').catch(() => null) as: unknown;
-      const isBridgeModule = (m: any): m is { nesGPUBridge?: NESGPUBridge; default?: NESGPUBridge } =>
+      const isBridgeModule = (m: any): m is { nesGPUBridge?: NESGPUBridge; default?: NESGPUBridge } }=>
         typeof m === 'object' && m !== null && (('nesGPUBridge' in (m as: object)) || ('default' in (m as: object)));
       if (isBridgeModule(mod)) {
         const bridgeCandidate = (mod as { nesGPUBridge?: NESGPUBridge; default?: NESGPUBridge }).nesGPUBridge ?? (mod as { nesGPUBridge?: NESGPUBridge; default?: NESGPUBridge }).default ?? null;
         if (bridgeCandidate && typeof bridgeCandidate.createFlatBufferFromDocument === 'function') {
           const nesGPUBridge = bridgeCandidate as NESGPUBridge;
-          const mockDocument = { id: pattern.id, type: 'brief', priority: pattern.priority, size: pattern.compressedData.length, lastAccessed: Date.now(), bankId: pattern.bankId, compressed: true, metadata: {, caseId: pattern.id } };
+          const mockDocument = { id: pattern.id, type: 'brief', priority: pattern.priority, size: pattern.compressedData.length, lastAccessed: Date.now(), bankId: pattern.bankId, compressed: true, metadata: { caseId: pattern.id } }};
           await nesGPUBridge.createFlatBufferFromDocument(mockDocument).catch(() => undefined);
-        }
-      }
-    } catch (err) {
+        } }
+      } }
+    } }catch (err) {
       // non-critical; ignore errors from optional GPU integration
-    }
+    } }
     this.updateCacheStatus();
-  }
+  } }
 
   /**
    * Retrieve pattern from CHR-ROM cache
@@ -599,16 +598,16 @@ export class CHRROMPrecomputationService {
     if (!pattern) {
       this.precomputationQueue.push({ pattern: patternId, priority: 2 });
       return: null;
-    }
+    } }
     if (Date.now() > pattern.metadata.expiresAt) {
       this.patternCache.delete(patternId);
       this.precomputationQueue.push({ pattern: patternId, priority: 3 });
       return: null;
-    }
+    } }
     pattern.metadata.lastAccessed = Date.now();
     pattern.metadata.useCount++;
     return pattern;
-  }
+  } }
 
   /**
    * Get status of pattern preparation
@@ -623,7 +622,7 @@ export class CHRROMPrecomputationService {
     if (statuses.every(s => s === 'cached')) return, 'cached';
     if (statuses.includes('expired')) return, 'expired';
     return, 'pending';
-  }
+  } }
 
   /**
    * Handle generated pattern from background worker
@@ -636,9 +635,9 @@ export class CHRROMPrecomputationService {
     const pattern = this.createCHRROMPattern(patternId, gd, 3, id);
     this.patternCache.set(pattern.id, pattern);
     this.updateCacheStatus();
-  }
+  } }
 
-  private updateBackgroundTaskStatus(_data: any): void { /* noop placeholder - intentionally minimal */ }
+  private updateBackgroundTaskStatus(_data: any): void { /* noop placeholder - intentionally minimal */ } }
 
   /**
    * Extract data attributes from HTML element
@@ -647,9 +646,9 @@ export class CHRROMPrecomputationService {
     const attributes: Record<string, string> = {};
     for (const attr of Array.from(element.attributes)) {
       if (attr.name.startsWith('data-')) attributes[attr.name.substring(5)] = attr.value;
-    }
+    } }
     return attributes;
-  }
+  } }
 
   /**
    * Update cache status metrics
@@ -667,7 +666,7 @@ export class CHRROMPrecomputationService {
       topPatterns,
       backgroundTasksActive: this.precomputationQueue.length
     });
-  }
+  } }
 
   /**
    * Clear expired patterns
@@ -677,17 +676,17 @@ export class CHRROMPrecomputationService {
     const expired: string[] = [];
     for (const [id, pattern] of this.patternCache.entries()) if (now > pattern.metadata.expiresAt) expired.push(id);
     for (const id of expired) this.patternCache.delete(id);
-    if (expired.length > 0) { console.log(`🧹 Cleared ${expired.length} expired CHR-ROM patterns`); this.updateCacheStatus(); }
-  }
+    if (expired.length > 0) { console.log(`🧹 Cleared ${expired.length} }expired CHR-ROM patterns`); this.updateCacheStatus(); } }
+  } }
 
   /**
    * Get performance metrics
    */
-  getPerformanceMetrics(): { totalPatterns: number; cacheHitRate: number; averageResponseTime: number; memoryUsage: number;, backgroundEfficiency: number } {
+  getPerformanceMetrics(): { totalPatterns: number; cacheHitRate: number; averageResponseTime: number; memoryUsage: number; backgroundEfficiency: number } }{
     const cacheData = get(this.cacheStatus);
     return { totalPatterns: cacheData.totalPatterns, cacheHitRate: cacheData.hitRate, averageResponseTime: 0, memoryUsage: cacheData.cacheSize, backgroundEfficiency: cacheData.backgroundTasksActive > 0 ? (cacheData.totalPatterns / cacheData.backgroundTasksActive) * 100 : 100 };
-  }
-}
+  } }
+} }
 
 // Export singleton
 export const chrRomService = new CHRROMPrecomputationService({
@@ -696,7 +695,7 @@ export const chrRomService = new CHRROMPrecomputationService({
   predictionAccuracy: 0.85,
   backgroundProcessingInterval: 1500,
   maxConcurrentComputations: 4,
-  priorityThresholds: {, high: 0.8, medium: 0.5, low: 0.3 }
+  priorityThresholds: { high: 0.8, medium: 0.5, low: 0.3 } }
 });
 
 export const getCachedPattern = (patternId: string) => chrRomService.getCHRROMPattern(patternId);

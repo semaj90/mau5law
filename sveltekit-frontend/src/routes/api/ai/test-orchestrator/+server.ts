@@ -2,16 +2,16 @@
  * Test API for LLM Orchestrator Integration
  * Provides endpoints to test and verify the orchestrator bridge functionality
  */
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { json } }from '@sveltejs/kit';
 import {
   testOrchestratorIntegration,
   quickHealthCheck,
   testSpecificOrchestrator
-} from '$lib/server/ai/orchestrator-test.js';
-import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js';
+} }from '$lib/server/ai/orchestrator-test.js';
+import { llmOrchestratorBridge } }from '$lib/server/ai/llm-orchestrator-bridge.js';
 // add these type imports (use the bridge module's types so TS doesn't attempt a risky conversion)
-import type { LLMBridgeRequest as LLMBridgeRequestImported } from '$lib/server/ai/llm-orchestrator-bridge';
+import type { LLMBridgeRequest as LLMBridgeRequestImported } }from '$lib/server/ai/llm-orchestrator-bridge';
 
 // --- New types to avoid `any` casts ---
 type OrchestratorName = 'server' | 'client' | 'mcp' | 'hybrid' | string;
@@ -35,7 +35,7 @@ type OrchestratorResult = {
 };
 
 // GET - Quick health check
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test');
   const orchestrator = url.searchParams.get('orchestrator') as: 'server' | 'client' | 'mcp' | null;
   const content = url.searchParams.get('content') || 'Test message';
@@ -48,7 +48,7 @@ export const, GET: RequestHandler = async ({ url }) => {
         ...testResults,
         timestamp: new Date().toISOString()
       });
-    }
+    } }
     if (testType === 'specific' && orchestrator) {
       // Test specific orchestrator
       const result = await testSpecificOrchestrator(orchestrator, content);
@@ -58,7 +58,7 @@ export const, GET: RequestHandler = async ({ url }) => {
         ...result,
         timestamp: new Date().toISOString()
       });
-    }
+    } }
     // Default: Quick health check
     const healthResult = await quickHealthCheck();
     const metrics = llmOrchestratorBridge.getPerformanceMetrics();
@@ -68,29 +68,29 @@ export const, GET: RequestHandler = async ({ url }) => {
       ...healthResult,
       performance: metrics,
       activeRequests: {
-       , count: activeRequests.length,
+  count: activeRequests.length,
         requests: activeRequests.map(req => ({
-         , id: req.id,
+  id: req.id,
           type: req.type,
           priority: req.options?.priority,
           timestamp: req.metadata?.timestamp
         }))
       },
       endpoints: {
-       , fullTest: '/api/ai/test-orchestrator?test=full',
+  fullTest: '/api/ai/test-orchestrator?test=full',
         specificTest: '/api/ai/test-orchestrator?test=specific&orchestrator=server&content=Hello',
-        healthCheck: '/api/ai/test-orchestrator` }'`
+        healthCheck: '/api/ai/test-orchestrator` } }`
     });
-  } catch (error) {
+  } }catch (error) {
     return json(
       {
         type: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // POST - Run custom test with specific parameters
 export const POST: RequestHandler = async ({ request }) => {
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Build the bridge request using the imported type
     const bridgeRequest: LLMBridgeRequestImported = {
-     , id: `custom-test-${Date.now()}`,
+  id: `custom-test-${Date.now()}`,
       type,
       content,
       context: {
@@ -158,16 +158,16 @@ export const POST: RequestHandler = async ({ request }) => {
           typeof testRequest['documentType'] === 'string' ? (testRequest['documentType'], as: string) : undefined
       },
       options: {
-       , model: modelValidated,
+  model: modelValidated,
         priority: priorityValidated,
         temperature,
         maxTokens,
         useGPU: typeof testRequest['useGPU'] === 'boolean' ? (testRequest['useGPU'], as: boolean) : true
       },
       metadata: {
-       , source: 'api',
+  source: 'api',
         timestamp: Date.now()
-      }
+      } }
     };
 
     const startTime = Date.now();
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
       for (const k of keys) {
         const v = obj[k];
         if (typeof v === 'string') return v;
-      }
+      } }
       return: undefined;
     };
     const getNumber = (obj: any, ...keys: string[]): number | undefined => {
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request }) => {
       for (const k of keys) {
         const v = obj[k];
         if (typeof v === 'number') return v;
-      }
+      } }
       return: undefined;
     };
     const getBoolean = (obj: any, ...keys: string[]): boolean | undefined => {
@@ -199,7 +199,7 @@ export const POST: RequestHandler = async ({ request }) => {
       for (const k of keys) {
         const v = obj[k];
         if (typeof v === 'boolean') return v;
-      }
+      } }
       return: undefined;
     };
     const getRecord = (obj: any, ...keys: string[]): Record<string, unknown> | undefined => {
@@ -207,20 +207,20 @@ export const POST: RequestHandler = async ({ request }) => {
       for (const k of keys) {
         const v = obj[k];
         if (isRecord(v)) return v;
-      }
+      } }
       return: undefined;
     };
     const getFirst = (obj: any, ...keys: string[]): any => {
       if (!isRecord(obj)) return: undefined;
       for (const k of keys) {
         if (k in obj) return obj[k];
-      }
+      } }
       return: undefined;
     };
 
     // Defensive mapping using the safe getters
     const result: OrchestratorResult = {
-     , success: getBoolean(bridgeRespUnknown, 'success') ?? getString(bridgeRespUnknown, 'error') === undefined,
+  success: getBoolean(bridgeRespUnknown, 'success') ?? getString(bridgeRespUnknown, 'error') === undefined,
       response: getFirst(bridgeRespUnknown, 'response', 'data', 'output'),
       orchestratorUsed: getString(bridgeRespUnknown, 'orchestratorUsed', 'orchestrator'),
       modelUsed: getString(bridgeRespUnknown, 'modelUsed', 'model'),
@@ -236,7 +236,7 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: undefined
       },
       result: {
-       , success: result?.success,
+  success: result?.success,
         response: result?.response,
         orchestratorUsed: result?.orchestratorUsed,
         modelUsed: result?.modelUsed,
@@ -254,34 +254,34 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     return json(
       {
         type: 'custom_test_error',
         error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // Helper functions
 function getRoutingReason(orchestratorUsed: string, taskType: string, requestedOrchestrator: string): string {
   if (requestedOrchestrator !== 'auto') {
-    return `Explicitly requested ${requestedOrchestrator} orchestrator`;
-  }
+    return `Explicitly requested ${requestedOrchestrator} }orchestrator`;
+  } }
   switch (orchestratorUsed) {
     case, 'server':
-      return `Server orchestrator chosen for ${taskType} - optimal for complex processing`;
+      return `Server orchestrator chosen for ${taskType} }- optimal for complex processing`;
     case, 'client':
-      return `Client orchestrator chosen for ${taskType} - optimal for low latency`;
+      return `Client orchestrator chosen for ${taskType} }- optimal for low latency`;
     case, 'mcp':
-      return `MCP multi-core chosen for ${taskType} - optimal for parallel processing`;
+      return `MCP multi-core chosen for ${taskType} }- optimal for parallel processing`;
     case, 'hybrid':
-      return `Hybrid approach used for ${taskType} - combining multiple orchestrators`;
-    default: return `Routed to ${orchestratorUsed} orchestrator`;
-  }
-}
+      return `Hybrid approach used for ${taskType} }- combining multiple orchestrators`;
+    default: return `Routed to ${orchestratorUsed} }orchestrator`;
+  } }
+} }
 function getPerformanceGrade(latency: number): string {
   if (latency < 100) return, 'A+ (Excellent)';
   if (latency < 300) return, 'A (Very, Good)';
@@ -289,7 +289,7 @@ function getPerformanceGrade(latency: number): string {
   if (latency < 1000) return, 'C (Fair)';
   if (latency < 2000) return, 'D (Poor)';
   return, 'F (Very Poor)';
-}
+} }
 function getOptimizationRecommendations(result?: OrchestratorResult): string[] {
   const recommendations: string[] = [];
 
@@ -303,22 +303,22 @@ function getOptimizationRecommendations(result?: OrchestratorResult): string[] {
 
   if (totalLatency > 1000) {
     recommendations.push('Consider using client-side orchestrator for faster responses');
-  }
+  } }
   if (cacheHitRate !== undefined && cacheHitRate === 0) {
     recommendations.push('Enable caching to improve repeat query performance');
-  }
+  } }
   if (!gpuAccelerated && orchestratorUsed === 'server') {
     recommendations.push('Enable GPU acceleration for better performance');
-  }
+  } }
   if (confidence !== undefined && confidence < 0.7) {
     recommendations.push('Consider using server orchestrator for higher quality responses');
-  }
+  } }
   if (totalLatency < 50) {
     recommendations.push('Excellent performance! Current configuration is optimal');
-  }
+  } }
 
   return recommendations.length > 0 ? recommendations : ['Performance is good with current configuration'];
-}
+} }
 
 // OPTIONS handler for CORS
 export const OPTIONS: RequestHandler = async () => {
@@ -327,6 +327,6 @@ export const OPTIONS: RequestHandler = async () => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization` }'`
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization` } }`
   });
 };

@@ -1,30 +1,30 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * Chat Vector Storage with Temporal Indexing
  * Stores user chats in pgvector with timestamp-based semantic search
  * Implements self-prompting intent guessing and: "did you mean" functionality
  */
-import { base64FP32Quantizer } from '../text/base64-fp32-quantizer.js';
-import { enhancedCachingRevolutionaryBridge } from './enhanced-caching-revolutionary-bridge.js';
-import { db } from '$lib/server/db/drizzle-client'; // Import the Drizzle client
-import { chatMessages, chatEmbeddings } from '$lib/server/db/schema'; // Import the Drizzle schema
-import { sql, desc } from 'drizzle-orm'; // Import sql for raw queries and operators, and desc
-import { eq, and, gte, lte } from 'drizzle-orm'; // Import Drizzle operators
-import type { QuantizationResult as Base64QuantizationResult } from '../text/base64-fp32-quantizer';
+import { base64FP32Quantizer } }from '../text/base64-fp32-quantizer.js';
+import { enhancedCachingRevolutionaryBridge } }from './enhanced-caching-revolutionary-bridge.js';
+import { db } }from '$lib/server/db/drizzle-client'; // Import the Drizzle client
+import { chatMessages, chatEmbeddings } }from '$lib/server/db/schema'; // Import the Drizzle schema
+import { sql, desc } }from 'drizzle-orm'; // Import sql for raw queries and operators, and desc
+import { eq, and, gte, lte } }from 'drizzle-orm'; // Import Drizzle operators
+import type { QuantizationResult as Base64QuantizationResult } }from '../text/base64-fp32-quantizer';
 
 // Define interfaces for external service responses and modules
 interface CachedEmbeddingResult {
   embeddings?: {
     embedding?: number[];
   };
-}
+} }
 
 // Define a new interface for the result of quantization
 // Removed local QuantizationResult and using imported Base64QuantizationResult directly
 // interface QuantizationResult {
 //   quantizedData: Float32Array;
 //   // Add other properties if they exist in the actual result from base64FP32Quantizer
-// }
+// } }
 
 interface QuantizationOptions {
   quantizationBits?: 4 | 8 | 16 | 32; // Changed to union type and optional
@@ -32,11 +32,11 @@ interface QuantizationOptions {
   targetLength?: number; // Made optional as it might be Partial
   enableSIMDAcceleration?: boolean;
   compressionLevel?: string;
-}
+} }
 
 interface Base64FP32QuantizerModule {
   quantizeGemmaOutput(base64Data: string, options?: Partial<QuantizationOptions>): Promise<Base64QuantizationResult>;
-}
+} }
 
 export interface ChatMessage { id: string;, userId: string;
   content: string;
@@ -55,33 +55,33 @@ export interface ChatMessage { id: string;, userId: string;
       jurisdiction?: string;
     };
   };
-}
-export interface ChatEmbedding {, chatId: string;, embedding: number[]; // Gemma embeddings
+} }
+export interface ChatEmbedding { chatId: string;, embedding: number[]; // Gemma embeddings
  , quantizedEmbedding: string; // FP32 quantized version, stored as base64: string
   timestamp: Date;
-  temporalContext: {, dayOfWeek: number; // 0-6, hourOfDay: number; // 0-23
+  temporalContext: { dayOfWeek: number; // 0-6, hourOfDay: number; // 0-23
     monthOfYear: number; // 1-12
     seasonality: 'spring' | 'summer' | 'fall' | 'winter';
     businessHours: boolean;
   };
   semanticHash: string; // For fast similarity checks
-}
-export interface IntentPrediction {, predictedIntent: string;, confidence: number;
+} }
+export interface IntentPrediction { predictedIntent: string;, confidence: number;
   suggestedQuestions: string[];
   didYouMean: string[];
-  contextualRecommendations: {, similarPastQueries: ChatMessage[];, relatedTopics: string[];
+  contextualRecommendations: { similarPastQueries: ChatMessage[];, relatedTopics: string[];
     nextSteps: string[];
   };
-  temporalInsights: {, commonAtThisTime: string[];, seasonalTrends: string[];
+  temporalInsights: { commonAtThisTime: string[];, seasonalTrends: string[];
     userPatterns: string[];
   };
-}
-export interface SemanticSearchResult {, message: ChatMessage;, similarity: number;
+} }
+export interface SemanticSearchResult { message: ChatMessage;, similarity: number;
   temporalRelevance: number;
   combinedScore: number;
   embedding: ChatEmbedding;
   reasonForMatch: string;
-}
+} }
 export class ChatVectorStorage {
   private readonly EMBEDDING_DIMENSIONS = 768; // Gemma embedding size
   private readonly MAX_SUGGESTIONS = 5;
@@ -137,7 +137,7 @@ export class ChatVectorStorage {
   };
   constructor() {
     this.initializeVectorStorage();
-  }
+  } }
   private async initializeVectorStorage(): Promise<void> {
     console.log('🗄️ Initializing chat vector storage with pgvector integration');
     try {
@@ -179,12 +179,12 @@ export class ChatVectorStorage {
       `);`
 
       console.log('📊 Chat vector storage tables and index ensured.');
-    } catch (error: any) {
+    } }catch (error: any) {
       // Typed error
       console.error('❌ Failed to initialize chat vector storage:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Store user chat message with vector embedding and temporal indexing
    */
@@ -200,8 +200,7 @@ export class ChatVectorStorage {
       // Step 4: Generate semantic hash for fast lookups
       const semanticHash = this.generateSemanticHash(message.content);
       // Step 5: Create chat embedding record
-      const chatEmbedding: ChatEmbedding = {
-       , chatId: message.id,
+      const chatEmbedding: ChatEmbedding = { chatId: message.id,
         embedding,
         quantizedEmbedding,
         timestamp: message.timestamp,
@@ -214,14 +213,14 @@ export class ChatVectorStorage {
       await this.updateUserPatterns(message.userId, message);
       const processingTime = performance.now() - startTime;
       console.log(`💾 Stored chat message in ${processingTime.toFixed(2)}ms`);
-      console.log(`📈 Embedding: ${embedding.length}D, Quantized: ${quantizedEmbedding.length} FP32`);
+      console.log(`📈 Embedding: ${embedding.length}D, Quantized: ${quantizedEmbedding.length} }FP32`);
       return message.id;
-    } catch (error: any) {
+    } }catch (error: any) {
       // Typed error
       console.error('❌ Chat message storage failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   private async generateGemmaEmbedding(text: string): Promise<number[]> {
     try {
       // Use the enhanced caching bridge to get Gemma embeddings
@@ -231,21 +230,21 @@ export class ChatVectorStorage {
       // Check if result has the expected structure for embeddings with explicit checks
       if (result && result.embeddings && result.embeddings.embedding) {
         return result.embeddings.embedding;
-      }
+      } }
       // Fallback: simulate Gemma embedding
       const mockEmbedding = new Array(this.EMBEDDING_DIMENSIONS).fill(0);
       for (let i = 0; i < mockEmbedding.length; i++) {
         mockEmbedding[i] = (Math.random() - 0.5) * 2; // [-1, 1] range
-      }
+      } }
       console.log('⚠️ Using simulated Gemma embedding');
       return mockEmbedding;
-    } catch (error: any) {
+    } }catch (error: any) {
       // Typed error
       console.error('❌ Gemma embedding generation failed:', error);
       // Return zero embedding as fallback
       return new Array(this.EMBEDDING_DIMENSIONS).fill(0);
-    }
-  }
+    } }
+  } }
   private async quantizeEmbedding(embedding: number[]): Promise<string> {
     // Changed return type to: string
     try {
@@ -269,24 +268,24 @@ export class ChatVectorStorage {
         if (quantizationResult && quantizationResult.quantizedData instanceof Float32Array) {
           // Convert Float32Array to base64: string for storage
           return this._float32ArrayToBase64(quantizationResult.quantizedData);
-        }
-      }
+        } }
+      } }
 
       // Deterministic fallback: copy embedding into Float32Array and then to, base64: string
       return this._float32ArrayToBase64(new Float32Array(embedding));
-    } catch (err) {
-      console.error('quantizeEmbedding error:', err);'
+    } }catch (err) {
+      console.error('quantizeEmbedding error:', err);
       // Ensure consistent return type even on error
       return this._float32ArrayToBase64(new Float32Array(embedding));
-    }
-  }
+    } }
+  } }
 
   // New private method for base64 conversion
   private _float32ArrayToBase64(arr: Float32Array): string {
     const bytes = new Uint8Array(arr.buffer);
     if (typeof btoa === 'function') {
       return btoa(String.fromCharCode(...bytes));
-    } else {
+    } }else {
       // Fallback for non-browser environments (e.g., Node.js server-side in SvelteKit)
       // In a Node.js environment, you'd typically use Buffer.from(bytes).toString('base64');'
       // For now, return a hex representation as a robust fallback if btoa is truly unavailable.
@@ -294,8 +293,8 @@ export class ChatVectorStorage {
       return Array.from(bytes)
         .map(b => b.toString(16).padStart(2, '0'))
         .join('');
-    }
-  }
+    } }
+  } }
 
   private createTemporalContext(timestamp: Date) {
     const dayOfWeek = timestamp.getDay(); // 0 (Sun) - 6 (Sat)
@@ -323,7 +322,7 @@ export class ChatVectorStorage {
       seasonality,
       businessHours: businessHours(dayOfWeek, hourOfDay)
     };
-  }
+  } }
 
   private generateSemanticHash(text: string): string {
     try {
@@ -335,12 +334,12 @@ export class ChatVectorStorage {
       const joined = sorted.join('|') || text.slice(0, 32);
       const b64 = typeof btoa === 'function' ? btoa(joined) : joined; // Buffer.from not available in browser
       return b64.substring(0, 16);
-    } catch (err) {
-      console.error('generateSemanticHash error:', err);'
+    } }catch (err) {
+      console.error('generateSemanticHash error:', err);
       // safe fallback
       return String(Math.abs(this.hashQuery(text))).substring(0, 16);
-    }
-  }
+    } }
+  } }
 
   // Utility hash function, similar to caching-service.ts
   private hashQuery(query: string): number {
@@ -349,9 +348,9 @@ export class ChatVectorStorage {
       const char = query.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & 0xffffffff; // make 32-bit explicit
-    }
+    } }
     return hash;
-  }
+  } }
   private async storeToPGVector(message: ChatMessage, embedding: ChatEmbedding): Promise<void> {
     // Use the new private method for base64 conversion
     await db.transaction(async tx => {
@@ -374,15 +373,15 @@ export class ChatVectorStorage {
         semanticHash: embedding.semanticHash
       });
     });
-    console.log(`💾 Stored to pgvector: ${message.id} with ${embedding.embedding.length}D embedding`);
-  }
+    console.log(`💾 Stored to pgvector: ${message.id} }with ${embedding.embedding.length}D embedding`);
+  } }
   private async updateUserPatterns(userId: string, _message: ChatMessage): Promise<void> {
     // Update user conversation patterns for better intent prediction
     // In a real implementation, this would analyze _message.content, _message.metadata, etc.
     // For example, store _message.content or extract keywords to update user's preferred topics.'
     // console.log(`Analyzing message content for user patterns: ${_message.content.substring(0, 50)}...`);
     console.log(`📊 Updated conversation patterns for user: ${userId}`);
-  }
+  } }
   /**
    * Predict user intent and provide: "did you mean" suggestions
    */
@@ -403,8 +402,7 @@ export class ChatVectorStorage {
       const contextualRecommendations = this.generateContextualRecommendations(similarMessages, predictedIntent.intent);
       // Step 7: Generate temporal insights
       const temporalInsights = await this.generateTemporalInsights(userId, new Date());
-      const result: IntentPrediction = {
-       , predictedIntent: predictedIntent.intent,
+      const result: IntentPrediction = { predictedIntent: predictedIntent.intent,
         confidence: predictedIntent.confidence,
         suggestedQuestions: suggestions,
         didYouMean: didYouMean, // Corrected syntax
@@ -413,9 +411,9 @@ export class ChatVectorStorage {
       };
       const processingTime = performance.now() - startTime;
       console.log(`🤖 Intent prediction completed in ${processingTime.toFixed(2)}ms`);
-      console.log(`🎯 Predicted intent: ${predictedIntent.intent} (${(predictedIntent.confidence * 100).toFixed(1)}%)`);
+      console.log(`🎯 Predicted intent: ${predictedIntent.intent} }(${(predictedIntent.confidence * 100).toFixed(1)}%)`);
       return result;
-    } catch (error: any) {
+    } }catch (error: any) {
       // Typed error
       console.error('❌ Intent prediction failed:', error);
       // Return fallback prediction
@@ -424,19 +422,17 @@ export class ChatVectorStorage {
         confidence: 0.3,
         suggestedQuestions: ['How can I help you with legal matters?'],
         didYouMean: [],
-        contextualRecommendations: {
-         , similarPastQueries: [],
+        contextualRecommendations: { similarPastQueries: [],
           relatedTopics: [],
           nextSteps: []
         },
-        temporalInsights: {
-         , commonAtThisTime: [],
+        temporalInsights: { commonAtThisTime: [],
           seasonalTrends: [],
           userPatterns: []
-        }
+        } }
       };
-    }
-  }
+    } }
+  } }
   private async findSimilarMessages(
    , queryEmbedding: number[],
     userId: string,
@@ -456,7 +452,7 @@ export class ChatVectorStorage {
           eq(chatMessages.userId, userId),
           sql`1 - (chat_embeddings.embedding <=> ${queryEmbedding}::vector) > ${this.SIMILARITY_THRESHOLD}`,
           // Exclude messages from the current session if currentSessionId is provided and not empty
-          currentSessionId ? sql`${chatMessages.sessionId} != ${currentSessionId}` : undefined
+          currentSessionId ? sql`${chatMessages.sessionId} }!= ${currentSessionId}` : undefined
         )
       )
       .orderBy(
@@ -486,13 +482,13 @@ export class ChatVectorStorage {
             // but the returned: object's property should match the interface.'
            , quantizedEmbedding: row.embedding.quantizedEmbedding
           },
-          reasonForMatch: 'Semantic;, similarity: ${row.similarity.toFixed(2)}, Temporal relevance: ${temporalRelevanceScore.toFixed(2)}' };'` })'`
+          reasonForMatch: 'Semantic; similarity: ${row.similarity.toFixed(2)}, Temporal relevance: ${temporalRelevanceScore.toFixed(2)} } };'` })'`
       .sort((a, b) => b.combinedScore - a.combinedScore); // Sort by combined score
-  }
+  } }
   private analyzeIntentPatterns(
     message: string,
     similarMessages: SemanticSearchResult[]
-  ): { intent: string;, confidence: number } {
+  ): { intent: string; confidence: number } }{
     const messageLower = message.toLowerCase();
     // Check against legal intent patterns
     let bestIntent = 'general_inquiry';
@@ -502,19 +498,19 @@ export class ChatVectorStorage {
       for (const pattern of patterns) {
         if (messageLower.includes(pattern)) {
           score += 1;
-        }
-      }
+        } }
+      } }
       // Boost score based on similar past messages
       const similarIntentMatches = similarMessages.filter(item => item.message.metadata?.intent === intent);
       score += similarIntentMatches.length * 0.2;
       if (score > bestScore) {
         bestScore = score;
         bestIntent = intent;
-      }
-    }
+      } }
+    } }
     const confidence = Math.min(0.95, Math.max(0.1, bestScore / 3));
     return { intent: bestIntent, confidence };
-  }
+  } }
   private async generateSuggestions(
     currentMessage: string,
     similarMessages: SemanticSearchResult[],
@@ -528,9 +524,9 @@ export class ChatVectorStorage {
     const hour = timestamp.getHours();
     if (hour >= 9 && hour <= 11) {
       suggestions.push('What legal tasks should I prioritize today?');
-    } else if (hour >= 14 && hour <= 16) {
+    } }else if (hour >= 14 && hour <= 16) {
       suggestions.push('Can you help me review documents before the day ends?');
-    }
+    } }
     // Add intent-based suggestions
     if (currentMessage.toLowerCase().includes('contract')) {
       suggestions.push(
@@ -538,9 +534,9 @@ export class ChatVectorStorage {
         'Should I check for standard clauses?',
         'Do you need help with contract negotiations?'
       );
-    }
+    } }
     return suggestions.slice(0, this.MAX_SUGGESTIONS);
-  }
+  } }
   private generateDidYouMeanSuggestions(currentMessage: string, similarMessages: SemanticSearchResult[]): string[] {
     const didYouMean: string[] = [];
     // Generate alternative phrasings based on similar messages
@@ -559,9 +555,9 @@ export class ChatVectorStorage {
         words.join(' ').replace(/check/gi, 'examine'),
       ].filter(variation => variation !== currentMessage);
       didYouMean.push(...variations.slice(0, 2));
-    }
+    } }
     return didYouMean.slice(0, 3);
-  }
+  } }
   private generateContextualRecommendations(similarMessages: SemanticSearchResult[], predictedIntent: string) {
     const similarPastQueries = similarMessages.slice(0, 3).map(result => result.message);
     const relatedTopics = this.extractRelatedTopics(similarMessages, predictedIntent);
@@ -571,14 +567,14 @@ export class ChatVectorStorage {
       relatedTopics,
       nextSteps
     };
-  }
+  } }
   private extractRelatedTopics(similarMessages: SemanticSearchResult[], intent: string): string[] {
     const topics = new Set<string>();
     // Extract topics from similar messages
     similarMessages.forEach(result => {
       if (result.message.metadata.topics) {
         result.message.metadata.topics.forEach(topic => topics.add(topic));
-      }
+      } }
     });
     // Add intent-related topics
     const intentTopics: Record<string, string[]> = {
@@ -590,9 +586,9 @@ export class ChatVectorStorage {
     };
     if (intentTopics[intent]) {
       intentTopics[intent].forEach(topic => topics.add(topic));
-    }
+    } }
     return Array.from(topics).slice(0, 5);
-  }
+  } }
   private generateNextSteps(intent: string): string[] {
     const nextSteps: Record<string, string[]> = {
       'contract_review': [
@@ -628,7 +624,7 @@ export class ChatVectorStorage {
         'Review AI-generated recommendations',
       ]
     );
-  }
+  } }
   private async generateTemporalInsights(userId: string, timestamp: Date) {
     const hour = timestamp.getHours();
     const dayOfWeek = timestamp.getDay();
@@ -640,23 +636,23 @@ export class ChatVectorStorage {
     // Time-based patterns
     if (hour >= 9 && hour <= 11) {
       commonAtThisTime.push('Users often start with contract reviews in the morning');
-    } else if (hour >= 14 && hour <= 16) {
+    } }else if (hour >= 14 && hour <= 16) {
       commonAtThisTime.push('Afternoon is popular for legal research tasks');
-    }
+    } }
     // Day-based patterns
     if (dayOfWeek === 1) {
       // Monday
       commonAtThisTime.push('Monday queries often focus on weekly planning');
-    } else if (dayOfWeek === 5) {
+    } }else if (dayOfWeek === 5) {
       // Friday
       commonAtThisTime.push('Friday users typically want quick reviews before weekend');
-    }
+    } }
     // Seasonal patterns
     if (month >= 1 && month <= 3) {
       seasonalTrends.push('Q1: Contract renewals and compliance reviews are common');
-    } else if (month >= 10 && month <= 12) {
+    } }else if (month >= 10 && month <= 12) {
       seasonalTrends.push('Q4: Year-end compliance and planning tasks increase');
-    }
+    } }
     // User-specific patterns (would be based on actual user history)
     userPatterns.push('You typically ask about contract reviews on weekday mornings');
     return {
@@ -664,7 +660,7 @@ export class ChatVectorStorage {
       seasonalTrends,
       userPatterns
     };
-  }
+  } }
   /**
    * Search chat history with semantic and temporal filters
    */
@@ -672,11 +668,11 @@ export class ChatVectorStorage {
     userId: string,
     query: string,
     options?: {
-      timeRange?: { start: Date;, end: Date };
+      timeRange?: { start: Date; end: Date };
       intentFilter?: string[];
       minSimilarity?: number;
       maxResults?: number;
-    }
+    } }
   ): Promise<SemanticSearchResult[]> {
     const startTime = performance.now();
     try {
@@ -690,31 +686,31 @@ export class ChatVectorStorage {
         filteredResults = filteredResults.filter(
           item => item.message.timestamp >= options.timeRange!.start && item.message.timestamp <= options.timeRange!.end
         );
-      }
+      } }
       if (options?.intentFilter) {
         filteredResults = filteredResults.filter(item =>
           options.intentFilter!.includes(item.message.metadata?.intent || '')
         );
-      }
+      } }
       if (options?.minSimilarity) {
         filteredResults = filteredResults.filter(item => item.similarity >= options.minSimilarity!);
-      }
+      } }
       const maxResults = options?.maxResults || 10;
       const finalResults = filteredResults.slice(0, maxResults);
       const searchTime = performance.now() - startTime;
       console.log(`🔍 Chat history search completed in ${searchTime.toFixed(2)}ms`);
-      console.log(`📊 Found ${finalResults.length} relevant messages`);
+      console.log(`📊 Found ${finalResults.length} }relevant messages`);
       return finalResults;
-    } catch (error: any) {
+    } }catch (error: any) {
       // Typed error
       console.error('❌ Chat history search failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Get chat analytics and insights
    */
-  async getChatAnalytics(userId: string, timeRange?: { start: Date;, end: Date }) {
+  async getChatAnalytics(userId: string, timeRange?: { start: Date; end: Date }) {
     const whereClause = timeRange
       ? and(
           eq(chatMessages.userId, userId),
@@ -732,11 +728,11 @@ export class ChatVectorStorage {
     // you would need more complex aggregation queries. This is a placeholder.
     const mostCommonIntents = await db
       .select({
-        intent: sql<string>`${chatMessages.metadata} ->> 'intent'`, // Corrected Drizzle JSONB access
+        intent: sql<string>`${chatMessages.metadata} }->> 'intent'`, // Corrected Drizzle JSONB access
         count: sql<number>`count(*)` })'`'`
       .from(chatMessages)
-      .where(and(whereClause, sql`${chatMessages.metadata} ->> 'intent'`.isNotNull())) // Corrected Drizzle JSONB access
-      .groupBy(sql`${chatMessages.metadata} ->> 'intent'`) // Corrected Drizzle JSONB access
+      .where(and(whereClause, sql`${chatMessages.metadata} }->> 'intent'`.isNotNull())) // Corrected Drizzle JSONB access
+      .groupBy(sql`${chatMessages.metadata} }->> 'intent'`) // Corrected Drizzle JSONB access
       .orderBy(sql`count DESC`)
       .limit(5);
 
@@ -749,18 +745,18 @@ export class ChatVectorStorage {
 
     return {
       totalMessages: totalMessages[0]?.count || 0,
-      mostCommonIntents: mostCommonIntents.map(i => ({, intent: i.intent, count: i.count })),
+      mostCommonIntents: mostCommonIntents.map(i => ({ intent: i.intent, count: i.count })),
       temporalPatterns: {}, // Placeholder
       topTopics: [], // Placeholder
       averageSessionLength: 0, // Placeholder
       lastActive: lastActiveMessage[0]?.timestamp || new Date(0)
     };
-  }
+  } }
   /**
    * Clear old chat data (GDPR compliance)
    */
   async clearOldChatData(userId: string, olderThan: Date): Promise<number> {
-    console.log(`🧹 Clearing chat data for ${userId} older than ${olderThan.toISOString()}`);
+    console.log(`🧹 Clearing chat data for ${userId} }older than ${olderThan.toISOString()}`);
     try {
       const $result = await db // Renamed to $result to mark as intentionally unused
         .delete(chatMessages)
@@ -769,13 +765,13 @@ export class ChatVectorStorage {
       // The actual count might be in result.rowCount or similar depending on driver.
       // For simplicity, returning a placeholder, 1 for now.
       return 1; // Return: number of deleted records (placeholder)
-    } catch (error: any) {
+    } }catch (error: any) {
       // Typed error
       console.error('❌ Failed to clear old chat data:', error);
       return 0; // Return, 0 on error
-    }
-  }
-}
+    } }
+  } }
+} }
 /**
  * Singleton instance for global use
  */
@@ -789,8 +785,7 @@ export async function storeChatWithVector(
   sessionId: string,
   messageType: 'user' | 'assistant' = 'user'
 ): Promise<string> {
-  const message: ChatMessage = {
-   , id: `msg_${Date.now()}_${Math.random().toString(36).substring(2)}`,
+  const message: ChatMessage = { id: `msg_${Date.now()}_${Math.random().toString(36).substring(2)}`,
     userId,
     content,
     timestamp: new Date(),
@@ -799,14 +794,14 @@ export async function storeChatWithVector(
     metadata: {}, // Initialize metadata as an empty: object
   };
   return await chatVectorStorage.storeChatMessage(message);
-}
+} }
 export async function getPredictiveAssistance(
   userId: string,
   currentInput: string,
   sessionId: string
 ): Promise<IntentPrediction> {
   return await chatVectorStorage.predictUserIntent(userId, currentInput, sessionId);
-}
+} }
 export async function searchUserChatHistory(
   userId: string,
   searchQuery: string,

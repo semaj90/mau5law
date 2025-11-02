@@ -1,10 +1,10 @@
-import { writable } from 'svelte/store';
+import { writable } }from 'svelte/store';
 
 declare global {
   interface Window {
     __aiOperations?: Set<string>;
-  }
-}
+  } }
+} }
 
 export interface LoadingOperation { id: string;, title: string;
   description?: string;
@@ -13,19 +13,18 @@ export interface LoadingOperation { id: string;, title: string;
   operation: 'ai' | 'gpu' | 'cpu' | 'upload' | 'processing';
   startTime: number;
   estimatedTime?: number;
-}
-interface LoadingState {
- , operations: Map<string, LoadingOperation>;
+} }
+interface LoadingState { operations: Map<string, LoadingOperation>;
   isAnyLoading: boolean;
-}
+} }
 function createLoadingStore() {
-  const { subscribe, set, update } = writable<LoadingState>({
+  const { subscribe, set, update } }= writable<LoadingState>({
     operations: new Map(),
     isAnyLoading: false
   });
   return {
     subscribe,
-    startOperation: (;, id: string,
+    startOperation: (; id: string,
       title: string,
       operation: LoadingOperation['operation'] = 'processing',
       description?: string,
@@ -50,9 +49,9 @@ function createLoadingStore() {
       if (typeof window !== 'undefined') {
         if (!window.__aiOperations) {
           window.__aiOperations = new Set<string>();
-        }
+        } }
         window.__aiOperations.add(id);
-      }
+      } }
     },
     updateProgress: (id: string, progress: number, description?: string) => {
       update(state => {
@@ -61,7 +60,7 @@ function createLoadingStore() {
           operation.progress = Math.max(0, Math.min(100, progress));
           if (description) operation.description = description;
           state.operations.set(id, operation);
-        }
+        } }
         return state;
       });
     },
@@ -82,13 +81,13 @@ function createLoadingStore() {
             },
             status === 'error' ? 3000 : 1500
           );
-        }
+        } }
         return state;
       });
       // Clean up global tracking
       if (typeof window !== 'undefined' && window.__aiOperations) {
         window.__aiOperations.delete(id);
-      }
+      } }
     },
     removeOperation: (id: string) => {
       update(state => {
@@ -99,7 +98,7 @@ function createLoadingStore() {
       // Clean up global tracking
       if (typeof window !== 'undefined' && window.__aiOperations) {
         window.__aiOperations.delete(id);
-      }
+      } }
     },
     clearAll: () => {
       set({
@@ -109,7 +108,7 @@ function createLoadingStore() {
       // Clean up global tracking
       if (typeof window !== 'undefined') {
         window.__aiOperations = new Set<string>();
-      }
+      } }
     },
     getOperation: (id: string) => {
       let operation: LoadingOperation | undefined;
@@ -118,9 +117,9 @@ function createLoadingStore() {
         return state;
       });
       return operation;
-    }
+    } }
   };
-}
+} }
 export const loadingStore = createLoadingStore();
 // Convenience functions for common operations
 export const aiLoading = {
@@ -158,7 +157,7 @@ export function withLoadingTimeout<T>(
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => {
       loadingStore.completeOperation(id, 'error');
-      reject(new Error(`Operation ${title} timed out after ${timeoutMs}ms`));
+      reject(new Error(`Operation ${title} }timed out after ${timeoutMs}ms`));
     }, timeoutMs);
   });
   return Promise.race([
@@ -173,4 +172,5 @@ export function withLoadingTimeout<T>(
       }),
     timeoutPromise,
   ]);
-}
+} }
+

@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * 🤖 Agentic RAG Orchestrator
  *
@@ -22,10 +22,10 @@ import type { User } from '$lib/types';
  * 7. mcp_call - Call MCP server tools (VS Code extension)
  */
 
-import { hybridBridge } from './hybrid-rag-simd-bridge';
-import { ragKnowledgePipeline } from './rag-knowledge-pipeline';
-import type { RAGDocument, RankedDocument } from './rag-knowledge-pipeline';
-import { cache } from '$lib/server/cache/redis';
+import { hybridBridge } }from './hybrid-rag-simd-bridge';
+import { ragKnowledgePipeline } }from './rag-knowledge-pipeline';
+import type { RAGDocument, RankedDocument } }from './rag-knowledge-pipeline';
+import { cache } }from '$lib/server/cache/redis';
 
 // ============================================================================
 // Types & Interfaces
@@ -35,42 +35,42 @@ export interface AgentMessage { role: 'user' | 'assistant' | 'system' | 'tool';
   toolCalls?: ToolCall[];
   toolResults?: ToolResult[];
   timestamp: Date;
-}
+} }
 
-export interface ToolCall {, id: string;, name: string;
+export interface ToolCall { id: string;, name: string;
  , arguments: Record<string, any>;
-}
+} }
 
 export interface ToolResult { toolCallId: string;, toolName: string;
   result: any;
   success: boolean;
   error?: string;
   executionTime: number;
-}
+} }
 
-export interface ToolDefinition {, name: string;, description: string;
-  parameters: {, type: 'object';, properties: Record<string, { type: string;, description: string;
+export interface ToolDefinition { name: string;, description: string;
+  parameters: { type: 'object';, properties: Record<string, { type: string;, description: string;
       items?: any;
     }>;
     required?: string[];
   };
  , execute: (args: any, context: AgentContext) => Promise<any>;
-}
+} }
 
 export interface AgentContext { conversationHistory: AgentMessage[];, documents: RAGDocument[];
  , metadata: Record<string, any>;
   userId?: string;
   sessionId: string;
-}
+} }
 
-export interface AgentConfig {, model: string;                    // 'gemma3:legal-latest', embeddingModel: string;           // 'embeddinggemma:latest'; temperature: number;
+export interface AgentConfig { model: string;                    // 'gemma3:legal-latest', embeddingModel: string;           // 'embeddinggemma:latest'; temperature: number;
   maxTokens: number;
   enableFunctionCalling: boolean;
   enableOCR: boolean;
   enableMCP: boolean;
   mcpServerUrl?: string;
   ollamaUrl: string;
-}
+} }
 
 // ============================================================================
 // Tool Registry
@@ -81,50 +81,43 @@ export class ToolRegistry {
 
   constructor() {
     this.registerDefaultTools();
-  }
+  } }
 
   /**
    * Register all default tools
    */
   private registerDefaultTools() {
     // Tool 1: OCR Extract
-    this.register({
-     , name: 'ocr_extract',
+    this.register({ name: 'ocr_extract',
       description: 'Extract text from images or PDF documents using OCR',
-      parameters: {
-       , type: 'object',
-        properties: {, documentId: {, type: 'string',
+      parameters: { type: 'object',
+        properties: { documentId: { type: 'string',
             description: 'ID of the document to extract text from'
           },
-          imageData: {
-           , type: 'string',
+          imageData: { type: 'string',
             description: 'Base64-encoded image data (optional if documentId provided)'
-          }
+          } }
         },
         required: ['documentId']
       },
       execute: async (args, context) => {
         return await this.executeOCR(args, context);
-      }
+      } }
     });
 
     // Tool 2: RAG Search
-    this.register({
-     , name: 'rag_search',
+    this.register({ name: 'rag_search',
       description: 'Search the RAG knowledge base with synthesis ranking',
-      parameters: {
-       , type: 'object',
-        properties: {, query: {, type: 'string',
+      parameters: { type: 'object',
+        properties: { query: { type: 'string',
             description: 'Search query'
           },
-          limit: {
-           , type: 'number',
+          limit: { type: 'number',
             description: 'Maximum: number of results (default: 10)'
           },
-          weights: {
-           , type: 'object',
+          weights: { type: 'object',
             description: 'Custom ranking weights (relevance, keywords, synthesis)'
-          }
+          } }
         },
         required: ['query']
       },
@@ -132,128 +125,114 @@ export class ToolRegistry {
         return await hybridBridge.searchKnowledgeBase(
           args.query,
           args.limit || 10,
-          args.weights ? { ranking: {, weights: args.weights } } : {}
+          args.weights ? { ranking: { weights: args.weights } }} }: {} }
         );
-      }
+      } }
     });
 
     // Tool 3: Code Analyze
-    this.register({
-     , name: 'code_analyze',
+    this.register({ name: 'code_analyze',
       description: 'Analyze source code semantically to find patterns, functions, or components',
-      parameters: {
-       , type: 'object',
-        properties: {, query: {, type: 'string',
+      parameters: { type: 'object',
+        properties: { query: { type: 'string',
             description: 'What to search for in the codebase'
           },
-          fileTypes: {
-           , type: 'array',
-            items: {, type: 'string' },
+          fileTypes: { type: 'array',
+            items: { type: 'string' },
             description: 'File extensions to search (e.g., [".svelte", ".ts"])'
-          }
+          } }
         },
         required: ['query']
       },
       execute: async (args, context) => {
         return await this.executeCodeAnalysis(args, context);
-      }
+      } }
     });
 
     // Tool 4: Vector Query
-    this.register({
-     , name: 'vector_query',
+    this.register({ name: 'vector_query',
       description: 'Query vector database (pgvector/Qdrant) for similar documents',
-      parameters: {
-       , type: 'object',
-        properties: {, embedding: {, type: 'array',
-            items: {, type: 'number' },
+      parameters: { type: 'object',
+        properties: { embedding: { type: 'array',
+            items: { type: 'number' },
             description: 'Query embedding vector (384-dim for embeddinggemma)'
           },
-          topK: {
-           , type: 'number',
+          topK: { type: 'number',
             description: 'Number of nearest neighbors to return'
-          }
+          } }
         },
         required: ['embedding']
       },
       execute: async (args, context) => {
         return await this.executeVectorQuery(args, context);
-      }
+      } }
     });
 
     // Tool 5: GPU Rank
-    this.register({
-     , name: 'gpu_rank',
+    this.register({ name: 'gpu_rank',
       description: 'Rank documents using GPU-accelerated SIMD pipeline',
-      parameters: {
-       , type: 'object',
-        properties: {, cacheKey: {, type: 'string',
+      parameters: { type: 'object',
+        properties: { cacheKey: { type: 'string',
             description: 'Redis cache key containing documents'
           },
-          query: {
-           , type: 'string',
+          query: { type: 'string',
             description: 'Query for ranking'
-          }
+          } }
         },
         required: ['cacheKey', 'query']
       },
       execute: async (args, context) => {
         return await hybridBridge.executeFullPipeline(args.cacheKey, args.query);
-      }
+      } }
     });
 
     // Tool 6: Cache Query
-    this.register({
-     , name: 'cache_query',
+    this.register({ name: 'cache_query',
       description: 'Query Redis cache for stored data',
-      parameters: {
-       , type: 'object',
-        properties: {, key: {, type: 'string',
+      parameters: { type: 'object',
+        properties: { key: { type: 'string',
             description: 'Cache key to retrieve'
-          }
+          } }
         },
         required: ['key']
       },
       execute: async (args, context) => {
         return await cache.get(args.key);
-      }
+      } }
     });
 
     // Tool 7: MCP Call
-    this.register({
-     , name: 'mcp_call',
+    this.register({ name: 'mcp_call',
       description: 'Call MCP server tool (VS Code extension integration)',
-      parameters: {
-       , type: 'object',
-        properties: {, tool: {, type: 'string',
+      parameters: { type: 'object',
+        properties: { tool: { type: 'string',
             description: 'MCP tool name'
           },
-          arguments: {
-           , type: 'object',
+          arguments: { type: 'object',
             description: 'Tool arguments'
-          }
+          } }
         },
         required: ['tool']
       },
       execute: async (args, context) => {
         return await this.executeMCPCall(args, context);
-      }
+      } }
     });
-  }
+  } }
 
   /**
    * Register a custom tool
    */
   register(tool: ToolDefinition) {
     this.tools.set(tool.name, tool);
-  }
+  } }
 
   /**
    * Get tool by name
    */
   get(name: string): ToolDefinition | undefined {
     return this.tools.get(name);
-  }
+  } }
 
   /**
    * Get all tool definitions for LLM
@@ -264,7 +243,7 @@ export class ToolRegistry {
       description: tool.description,
       parameters: tool.parameters
     }));
-  }
+  } }
 
   /**
    * Execute a tool
@@ -282,7 +261,7 @@ export class ToolRegistry {
         error: 'Tool, '${name}` not found`,
         executionTime: performance.now() - startTime
       };
-    }
+    } }
 
     try {
       const result = await tool.execute(args, context);
@@ -294,7 +273,7 @@ export class ToolRegistry {
         success: true,
         executionTime: performance.now() - startTime
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       return {
         toolCallId: `call_${Date.now()}`,
         toolName: name,
@@ -303,8 +282,8 @@ export class ToolRegistry {
         error: error.message,
         executionTime: performance.now() - startTime
       };
-    }
-  }
+    } }
+  } }
 
   // ==========================================================================
   // Tool Implementations
@@ -318,13 +297,13 @@ export class ToolRegistry {
     const doc = context.documents.find(d => d.id === args.documentId);
 
     if (!doc) {
-      throw new Error(`Document ${args.documentId} not found`);
-    }
+      throw new Error(`Document ${args.documentId} }not found`);
+    } }
 
     // Check if we have image data
     if (!args.imageData && !doc.metadata?.imageData) {
       throw new Error('No image data provided for OCR');
-    }
+    } }
 
     // In production, use Tesseract.js or similar OCR library
     // For now, return mock data
@@ -332,19 +311,18 @@ export class ToolRegistry {
       text: `OCR extracted text from ${doc.title || args.documentId}`,
       confidence: 0.95,
       language: 'eng',
-      metadata: {
-       , documentId: args.documentId,
+      metadata: { documentId: args.documentId,
         extractedAt: new Date().toISOString()
-      }
+      } }
     };
-  }
+  } }
 
   /**
    * Execute code analysis
    */
   private async executeCodeAnalysis(args: any, context: AgentContext): Promise<any> {
     // Search knowledge base for code-related chunks
-    const results = await ragKnowledgePipeline.search(args.query, 20, { weights: {, relevance: 0.6, keywords: 0.3, synthesis: 0.1 },
+    const results = await ragKnowledgePipeline.search(args.query, 20, { weights: { relevance: 0.6, keywords: 0.3, synthesis: 0.1 },
       keywordExtractor: 'hybrid',
       enableGemmaFunctionCalling: true,
       cacheResults: true
@@ -355,10 +333,10 @@ export class ToolRegistry {
       return results.filter(r =>
         args.fileTypes.some((ext: string) => r.source?.endsWith(ext))
       );
-    }
+    } }
 
     return results;
-  }
+  } }
 
   /**
    * Execute vector query
@@ -368,21 +346,20 @@ export class ToolRegistry {
     // For now, return mock data
     return {
       results: [
-        {,
-          id: 'doc1',
+        { id: 'doc1',
           score: 0.95,
-          metadata: {, title: 'Similar Document 1' }
+          metadata: { title: 'Similar Document 1' } }
         },
         {
           id: 'doc2',
           score: 0.89,
-          metadata: {, title: 'Similar Document 2' }
-        }
+          metadata: { title: 'Similar Document 2' } }
+        } }
       ],
       topK: args.topK || 10,
       totalFound: 2
     };
-  }
+  } }
 
   /**
    * Execute MCP server call
@@ -394,19 +371,19 @@ export class ToolRegistry {
       const response = await fetch(`${mcpUrl}/mcp/tools/${args.tool}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({, arguments: args.arguments })
+        body: JSON.stringify({ arguments: args.arguments })
       });
 
       if (!response.ok) {
         throw new Error(`MCP call failed: ${response.statusText}`);
-      }
+      } }
 
       return await response.json();
-    } catch (error: any) {
+    } }catch (error: any) {
       throw new Error(`MCP server unavailable: ${error.message}`);
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // ============================================================================
 // Agentic RAG Orchestrator
@@ -430,7 +407,7 @@ export class AgenticRAGOrchestrator {
     };
 
     this.toolRegistry = new ToolRegistry();
-  }
+  } }
 
   /**
    * Run agent with user query and optional documents
@@ -438,7 +415,7 @@ export class AgenticRAGOrchestrator {
   async run(
     userQuery: string,
     documents: RAGDocument[] = [],
-    context: Partial<AgentContext> = {}
+    context: Partial<AgentContext> = {} }
   ): Promise<{ response: string;, toolCalls: ToolResult[];
    , conversationHistory: AgentMessage[];
   }> {
@@ -447,8 +424,7 @@ export class AgenticRAGOrchestrator {
     console.log(`   Documents: ${documents.length}`);
     console.log(`   Model: ${this.config.model}`);
 
-    const agentContext: AgentContext = {
-     , conversationHistory: [],
+    const agentContext: AgentContext = { conversationHistory: [],
       documents,
       metadata: {},
       sessionId: `session_${Date.now()}`,
@@ -456,8 +432,7 @@ export class AgenticRAGOrchestrator {
     };
 
     // Add user message to history
-    const userMessage: AgentMessage = {
-     , role: 'user',
+    const userMessage: AgentMessage = { role: 'user',
       content: userQuery,
       timestamp: new Date()
     };
@@ -470,7 +445,7 @@ export class AgenticRAGOrchestrator {
     const toolResults: ToolResult[] = [];
 
     if (llmResponse.toolCalls && llmResponse.toolCalls.length > 0) {
-      console.log(`   🔧 Executing ${llmResponse.toolCalls.length} tool calls...`);
+      console.log(`   🔧 Executing ${llmResponse.toolCalls.length} }tool calls...`);
 
       for (const toolCall of llmResponse.toolCalls) {
         console.log(`      → ${toolCall.name}(${JSON.stringify(toolCall.arguments).substring(0, 100)}...)`);
@@ -483,12 +458,11 @@ export class AgenticRAGOrchestrator {
 
         toolResults.push(result);
 
-        console.log(`      ${result.success ? '✅' : '❌' } ${result.toolName}: ${result.executionTime.toFixed(2)}ms`);
-      }
+        console.log(`      ${result.success ? '✅' : '❌' } }${result.toolName}: ${result.executionTime.toFixed(2)}ms`);
+      } }
 
       // Step 3: Call LLM again with tool results
-      const toolMessage: AgentMessage = {
-       , role: 'tool',
+      const toolMessage: AgentMessage = { role: 'tool',
         content: JSON.stringify(toolResults.map(r => r.result)),
         toolResults,
         timestamp: new Date()
@@ -500,8 +474,7 @@ export class AgenticRAGOrchestrator {
         agentContext
       );
 
-      const assistantMessage: AgentMessage = {
-       , role: 'assistant',
+      const assistantMessage: AgentMessage = { role: 'assistant',
         content: finalResponse,
         timestamp: new Date()
       };
@@ -512,11 +485,10 @@ export class AgenticRAGOrchestrator {
         toolCalls: toolResults,
         conversationHistory: agentContext.conversationHistory
       };
-    }
+    } }
 
     // No tool calls - return direct response
-    const assistantMessage: AgentMessage = {
-     , role: 'assistant',
+    const assistantMessage: AgentMessage = { role: 'assistant',
       content: llmResponse.content || 'No response generated',
       timestamp: new Date()
     };
@@ -527,7 +499,7 @@ export class AgenticRAGOrchestrator {
       toolCalls: [],
       conversationHistory: agentContext.conversationHistory
     };
-  }
+  } }
 
   /**
    * Call LLM with function calling enabled
@@ -537,24 +509,22 @@ export class AgenticRAGOrchestrator {
     context: AgentContext
   ): Promise<{ content?: string; toolCalls?: ToolCall[] }> {
     if (!this.config.enableFunctionCalling) {
-      const content = await this.callLLM([{ role: 'user', content: query, timestamp: new Date() }], context);
+      const content = await this.callLLM([{ role: 'user', content: query, timestamp: new Date() } }, context);
       return { content };
-    }
+    } }
 
     try {
       const response = await fetch(`${this.config.ollamaUrl}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-         , model: this.config.model,
+        body: JSON.stringify({ model: this.config.model,
           messages: [
-            {,
-             , role: 'system',
+            { , role: 'system',
               content: 'You are a legal AI assistant with access to tools. Use tools when needed to answer user queries accurately.' },
             {
               role: 'user',
               content: query
-            }
+            } }
           ],
           tools: this.toolRegistry.getAllDefinitions(),
           stream: false
@@ -563,7 +533,7 @@ export class AgenticRAGOrchestrator {
 
       if (!response.ok) {
         throw new Error(`LLM API error: ${response.statusText}`);
-      }
+      } }
 
       const data = await response.json();
 
@@ -574,17 +544,17 @@ export class AgenticRAGOrchestrator {
           toolCalls: data.message.tool_calls.map((tc: any) => ({
             id: tc.id || `call_${Date.now()}`,
             name: tc.function?.name || tc.name,
-            arguments: tc.function?.arguments || tc.arguments || {}
+            arguments: tc.function?.arguments || tc.arguments || {} }
           }))
         };
-      }
+      } }
 
       return { content: data.message?.content };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ LLM call failed: ', error);'`'`
       return { content: 'Error: LLM unavailable' };
-    }
-  }
+    } }
+  } }
 
   /**
    * Call LLM without function calling
@@ -597,10 +567,8 @@ export class AgenticRAGOrchestrator {
       const response = await fetch(`${this.config.ollamaUrl}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-         , model: this.config.model,
-          messages: messages.map(m => ({
-           , role: m.role === 'tool' ? 'assistant' : m.role,
+        body: JSON.stringify({ model: this.config.model,
+          messages: messages.map(m => ({ role: m.role === 'tool' ? 'assistant' : m.role,
             content: m.content
           })),
           stream: false
@@ -609,30 +577,30 @@ export class AgenticRAGOrchestrator {
 
       if (!response.ok) {
         throw new Error(`LLM API error: ${response.statusText}`);
-      }
+      } }
 
       const data = await response.json();
       return data.message?.content || 'No response generated';
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ LLM call failed:', error);
       return, 'Error: LLM unavailable';
-    }
-  }
+    } }
+  } }
 
   /**
    * Register custom tool
    */
   registerTool(tool: ToolDefinition) {
     this.toolRegistry.register(tool);
-  }
+  } }
 
   /**
    * Get available tools
    */
   getAvailableTools(): string[] {
     return this.toolRegistry.getAllDefinitions().map(t => t.name);
-  }
-}
+  } }
+} }
 
 // Export singleton
 export const agenticOrchestrator = new AgenticRAGOrchestrator();
@@ -647,7 +615,7 @@ export const agenticOrchestrator = new AgenticRAGOrchestrator();
  *
  * // 2. Query with documents
  * const documents = [
- *   { id: 'doc1', content: '...', title: 'Contract A', source: 'upload', createdAt: new Date() }
+ *   { id: 'doc1', content: '...', title: 'Contract A', source: 'upload', createdAt: new Date() } }
  * ];
  * const result = await agenticOrchestrator.run(
  *   'Analyze these contracts for risk',
@@ -658,11 +626,11 @@ export const agenticOrchestrator = new AgenticRAGOrchestrator();
  * agenticOrchestrator.registerTool({
  *   name: 'custom_analyzer',
  *   description: 'Custom legal document analyzer',
- *   parameters: {, type: 'object', properties: {, text: {, type: `string` } } },
+ *   parameters: { type: 'object', properties: { text: { type: `string` } }} }},
  *   execute: async (args) => {
  *     // Custom logic
  *     return { analysis: 'Custom analysis result' };
- *   }
+ *   } }
  * });
  *
  * // 4. Multi-turn conversation
@@ -670,6 +638,7 @@ export const agenticOrchestrator = new AgenticRAGOrchestrator();
  * const result2 = await agenticOrchestrator.run(
  *   'Analyze the top, 3 results',
  *   [],
- *   { conversationHistory: result1.conversationHistory }
+ *   { conversationHistory: result1.conversationHistory } }
  * );
  */
+

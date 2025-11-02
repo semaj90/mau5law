@@ -9,16 +9,16 @@ interface SIMDJSONModule {
   minify(json: string): string;
   stringify(obj: any): string;
   getLastErrorMessage(): string;
-}
+} }
 // Cache Configuration
 interface CacheConfig { redisUrl: string;, defaultTTL: number;
   compressionEnabled: boolean;
   compressionThreshold: number; // bytes
   maxKeyLength: number;
   enableMetrics: boolean;
-}
+} }
 // Performance Metrics
-interface ParseMetrics {, totalParses: number;, simdParses: number;
+interface ParseMetrics { totalParses: number;, simdParses: number;
   nativeParses: number;
   cacheHits: number;
   cacheMisses: number;
@@ -27,13 +27,13 @@ interface ParseMetrics {, totalParses: number;, simdParses: number;
   averageNativeTime: number;
  , totalDataProcessed: number; // bytes,
   compressionRatio: number;
-}
+} }
 class SIMDJSONCache {
   private, simdModule: SIMDJSONModule | null = null;
   private simdLoaded = $state(false);
   private config: CacheConfig;
   private, metrics: ParseMetrics;
-  private cache = new Map<string, { data: any; timestamp: number;, ttl: number }>();
+  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
   constructor(config: Partial<CacheConfig> = {}) {
     this.config = {
       redisUrl: config.redisUrl || 'redis://localhost:6379',
@@ -43,8 +43,7 @@ class SIMDJSONCache {
       maxKeyLength: config.maxKeyLength || 250,
       enableMetrics: config.enableMetrics !== false
     };
-    this.metrics = {
-     , totalParses: 0,
+    this.metrics = { totalParses: 0,
       simdParses: 0,
       nativeParses: 0,
       cacheHits: 0,
@@ -56,7 +55,7 @@ class SIMDJSONCache {
       compressionRatio: 0
     };
     this.initializeSIMD();
-  }
+  } }
   private async initializeSIMD(): Promise<void> {
     try {
       // Try to load SIMD JSON module
@@ -69,14 +68,14 @@ class SIMDJSONCache {
           this.simdModule = module as: any;
           this.simdLoaded = true;
           console.log('✅ SIMD JSON parser loaded successfully');
-        } else {
+        } }else {
           console.warn('⚠️ SIMD not supported, falling back to native JSON');
-        }
-      }
-    } catch (error) {
+        } }
+      } }
+    } }catch (error) {
       console.warn('⚠️ Failed to load SIMD JSON, using native parser:', error);
-    }
-  }
+    } }
+  } }
   private async checkSIMDSupport(): Promise<boolean> {
     try {
       // Check if WebAssembly SIMD is supported
@@ -99,17 +98,17 @@ class SIMDJSONCache {
       ]);
       await WebAssembly.instantiate(wasmBytes);
       return true;
-    } catch {
+    } }catch {
       return false;
-    }
-  }
+    } }
+  } }
   private generateCacheKey(data: string, operation: string): string {
     // Create deterministic cache key
     const hash = this.fastHash(data + operation);
     const key = `simd_json:${operation}:${hash}`;
     // Ensure key doesn't exceed Redis limits'
     return key.length > this.config.maxKeyLength ? key.substring(0, this.config.maxKeyLength) : key;
-  }
+  } }
   private fastHash(str: string): string {
     let hash = 0;
     if (str.length === 0) return hash.toString(36);
@@ -117,13 +116,13 @@ class SIMDJSONCache {
       const char = str.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
-    }
+    } }
     return Math.abs(hash).toString(36);
-  }
+  } }
   private async compressData(data: string): Promise<string> {
     if (!this.config.compressionEnabled || data.length < this.config.compressionThreshold) {
       return data;
-    }
+    } }
     try {
       // Use CompressionStream if available (modern browsers)
       if (typeof CompressionStream !== 'undefined') {
@@ -137,27 +136,27 @@ class SIMDJSONCache {
         while (!result.done) {
           chunks.push(result.value);
           result = await reader.read();
-        }
+        } }
         const compressed = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
         let offset = 0;
         for (const chunk of chunks) {
           compressed.set(chunk, offset);
           offset += chunk.length;
-        }
+        } }
         return btoa(String.fromCharCode(...compressed));
-      }
+      } }
       // Fallback: LZ-string compression
       const LZString = await import('lz-string');
       return LZString.compressToBase64(data);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Compression failed, storing uncompressed:', error);
       return data;
-    }
-  }
+    } }
+  } }
   private async decompressData(compressedData: string): Promise<string> {
     if (!this.config.compressionEnabled) {
       return compressedData;
-    }
+    } }
     try {
       // Try to decompress with DecompressionStream
       if (typeof DecompressionStream !== 'undefined') {
@@ -172,23 +171,23 @@ class SIMDJSONCache {
         while (!result.done) {
           chunks.push(result.value);
           result = await reader.read();
-        }
+        } }
         const decompressed = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
         let offset = 0;
         for (const chunk of chunks) {
           decompressed.set(chunk, offset);
           offset += chunk.length;
-        }
+        } }
         return new TextDecoder().decode(decompressed);
-      }
+      } }
       // Fallback: LZ-string decompression
       const LZString = await import('lz-string');
       return LZString.decompressFromBase64(compressedData) || compressedData;
-    } catch (error) {
+    } }catch (error) {
       console.warn('Decompression failed, returning as-is:', error);
       return compressedData;
-    }
-  }
+    } }
+  } }
   private async getFromCache(_key: string): Promise<unknown | null> {
     try {
       // Check in-memory cache first
@@ -196,14 +195,14 @@ class SIMDJSONCache {
       if (memoryResult && Date.now() < memoryResult.timestamp + memoryResult.ttl * 1000) {
         if (this.config.enableMetrics) this.metrics.cacheHits++;
         return memoryResult.data;
-      } else if (memoryResult) {
+      } }else if (memoryResult) {
         this.cache.delete(_key); // Remove expired entry
-      }
+      } }
       // Check Redis cache
       const response = await fetch('/api/cache/get', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({, key: _key })
+        body: JSON.stringify({ key: _key })
       });
       if (response.ok) {
         const result = await response.json();
@@ -218,14 +217,14 @@ class SIMDJSONCache {
           });
           if (this.config.enableMetrics) this.metrics.cacheHits++;
           return parsed;
-        }
-      }
-    } catch (error) {
+        } }
+      } }
+    } }catch (error) {
       console.warn('Cache retrieval failed:', error);
-    }
+    } }
     if (this.config.enableMetrics) this.metrics.cacheMisses++;
     return: null;
-  }
+  } }
   private async setCache(_key: string, data: any, ttl: number = this.config.defaultTTL): Promise<void> {
     try {
       const serialized = JSON.stringify(data);
@@ -240,8 +239,7 @@ class SIMDJSONCache {
       await fetch('/api/cache/set', {
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({
-         , key: _key,
+        body: JSON.stringify({ key: _key,
           data: compressed,
           ttl,
           compressed: this.config.compressionEnabled
@@ -252,11 +250,11 @@ class SIMDJSONCache {
         const originalSize = serialized.length;
         const compressedSize = compressed.length;
         this.metrics.compressionRatio = compressedSize / originalSize;
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('Cache storage failed:', error);
-    }
-  }
+    } }
+  } }
   private updateMetrics(operation: string, parseTime: number, dataSize: number, usedSIMD: boolean): void {
     if (!this.config.enableMetrics) return;
     this.metrics.totalParses++;
@@ -264,12 +262,12 @@ class SIMDJSONCache {
     if (usedSIMD) {
       this.metrics.simdParses++;
       this.metrics.averageSIMDTime = (this.metrics.averageSIMDTime + parseTime) / 2;
-    } else {
+    } }else {
       this.metrics.nativeParses++;
       this.metrics.averageNativeTime = (this.metrics.averageNativeTime + parseTime) / 2;
-    }
+    } }
     this.metrics.averageParseTime = (this.metrics.averageParseTime + parseTime) / 2;
-  }
+  } }
   // Public API
   public async parse(jsonString: string, useCache: boolean = true): Promise<unknown> {
     const startTime = performance.now();
@@ -279,8 +277,8 @@ class SIMDJSONCache {
       const cached = await this.getFromCache(cacheKey);
       if (cached !== null) {
         return cached;
-      }
-    }
+      } }
+    } }
     let result: any;
     let usedSIMD = false;
     try {
@@ -288,18 +286,18 @@ class SIMDJSONCache {
         // Use SIMD JSON parser
         result = this.simdModule.parse(jsonString);
         usedSIMD = true;
-      } else {
+      } }else {
         // Fallback to native JSON
         result = JSON.parse(jsonString) as: unknown;
-      }
+      } }
       // Cache the result
       if (useCache) {
         await this.setCache(cacheKey, result);
-      }
+      } }
       const parseTime = performance.now() - startTime;
       this.updateMetrics('parse', parseTime, jsonString.length, usedSIMD);
       return result;
-    } catch (error) {
+    } }catch (error) {
       // Try fallback if SIMD fails
       if (usedSIMD) {
         try {
@@ -308,15 +306,15 @@ class SIMDJSONCache {
           this.updateMetrics('parse', parseTime, jsonString.length, false);
           if (useCache) {
             await this.setCache(cacheKey, result);
-          }
+          } }
           return result;
-        } catch (fallbackError) {
+        } }catch (fallbackError) {
           throw new Error(`JSON parsing failed: ${fallbackError}`);
-        }
-      }
+        } }
+      } }
       throw new Error(`JSON parsing failed: ${error}`);
-    }
-  }
+    } }
+  } }
   public async stringify(obj: any, useCache: boolean = true): Promise<string> {
     const startTime = performance.now();
     const objString = JSON.stringify(obj); // Quick serialization for cache key
@@ -327,36 +325,36 @@ class SIMDJSONCache {
       if (cached !== null) {
         // cached can be: string or other stored value; coerce, to: string for stringify
         return String(cached);
-      }
-    }
+      } }
+    } }
     let result: string;
     let usedSIMD = false;
     try {
       if (this.simdLoaded && this.simdModule) {
         result = this.simdModule.stringify(obj);
         usedSIMD = true;
-      } else {
+      } }else {
         result = JSON.stringify(obj);
-      }
+      } }
       if (useCache) {
         await this.setCache(cacheKey, result);
-      }
+      } }
       const parseTime = performance.now() - startTime;
       this.updateMetrics('stringify', parseTime, result.length, usedSIMD);
       return result;
-    } catch (error) {
+    } }catch (error) {
       if (usedSIMD) {
         result = JSON.stringify(obj);
         const parseTime = performance.now() - startTime;
         this.updateMetrics('stringify', parseTime, result.length, false);
         if (useCache) {
           await this.setCache(cacheKey, result);
-        }
+        } }
         return result;
-      }
+      } }
       throw new Error(`JSON stringification failed: ${error}`);
-    }
-  }
+    } }
+  } }
   public async validate(jsonString: string): Promise<{ valid: boolean; error?: string }> {
     try {
       if (this.simdLoaded && this.simdModule) {
@@ -365,16 +363,16 @@ class SIMDJSONCache {
           valid,
           error: valid ? undefined : this.simdModule.getLastErrorMessage()
         };
-      } else {
+      } }else {
         JSON.parse(jsonString);
         return { valid: true };
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       return {
         valid: false,
         error: error instanceof Error ? error.message : `Invalid JSON' };'`
-    }
-  }
+    } }
+  } }
   public async minify(jsonString: string, useCache: boolean = true): Promise<string> {
     const cacheKey = useCache ? this.generateCacheKey(jsonString, 'minify') : '';
     if (useCache) {
@@ -383,33 +381,33 @@ class SIMDJSONCache {
         // cached is: unknown; coerce, to: string safely to satisfy return type
         if (typeof cached === 'string') {
           return cached;
-        }
+        } }
         try {
           return JSON.stringify(cached);
-        } catch {
+        } }catch {
           return String(cached);
-        }
-      }
-    }
+        } }
+      } }
+    } }
     let result: string;
     try {
       if (this.simdLoaded && this.simdModule) {
         result = this.simdModule.minify(jsonString);
-      } else {
+      } }else {
         result = JSON.stringify(JSON.parse(jsonString));
-      }
+      } }
       if (useCache) {
         await this.setCache(cacheKey, result);
-      }
+      } }
       return result;
-    } catch (error) {
+    } }catch (error) {
       throw new Error(`JSON minification failed: ${error}`);
-    }
-  }
+    } }
+  } }
   public getMetrics(): ParseMetrics {
     return { ...this.metrics };
-  }
-  public getSIMDStatus(): { loaded: boolean; available: boolean;, performance: string } {
+  } }
+  public getSIMDStatus(): { loaded: boolean; available: boolean; performance: string } }{
     const simdPerformance =
       this.metrics.simdParses > 0 && this.metrics.nativeParses > 0
         ? `${Math.round((this.metrics.averageNativeTime / this.metrics.averageSIMDTime) * 100) / 100}x faster`
@@ -419,47 +417,46 @@ class SIMDJSONCache {
       available: this.simdModule !== null,
       performance: simdPerformance
     };
-  }
+  } }
   public clearCache(): void {
     this.cache.clear();
-  }
-  public getCacheStats(): { memoryEntries: number; hitRate: number; compressionRatio: number } {
+  } }
+  public getCacheStats(): { memoryEntries: number; hitRate: number; compressionRatio: number } }{
     const hitRate = this.metrics.totalParses > 0 ? this.metrics.cacheHits / this.metrics.totalParses : 0;
-    return {
-     , memoryEntries: this.cache.size,
+    return { memoryEntries: this.cache.size,
       hitRate: Math.round(hitRate * 100) / 100,
       compressionRatio: Math.round(this.metrics.compressionRatio * 100) / 100
     };
-  }
-}
+  } }
+} }
 // Singleton instance
 let simdJSONInstance: SIMDJSONCache | null = null;
 export function createSIMDJSONCache(config?: Partial<CacheConfig>): SIMDJSONCache {
   if (!simdJSONInstance) {
     simdJSONInstance = new SIMDJSONCache(config);
-  }
+  } }
   return simdJSONInstance;
-}
+} }
 export function getSIMDJSONCache(): SIMDJSONCache | null {
   return simdJSONInstance;
-}
+} }
 // Convenience functions
 export async function fastParse(jsonString: string, useCache = true): Promise<unknown> {
   const cache = getSIMDJSONCache() || createSIMDJSONCache();
   return cache.parse(jsonString, useCache);
-}
+} }
 export async function fastStringify(obj: any, useCache = true): Promise<string> {
   const cache = getSIMDJSONCache() || createSIMDJSONCache();
   return cache.stringify(obj, useCache);
-}
+} }
 export async function validateJSON(jsonString: string): Promise<{ valid: boolean; error?: string }> {
   const cache = getSIMDJSONCache() || createSIMDJSONCache();
   return cache.validate(jsonString);
-}
+} }
 export async function minifyJSON(jsonString: string, useCache = true): Promise<string> {
   const cache = getSIMDJSONCache() || createSIMDJSONCache();
   return cache.minify(jsonString, useCache);
-}
+} }
 // Export types
 export type { CacheConfig, ParseMetrics, SIMDJSONModule };
 export { SIMDJSONCache };

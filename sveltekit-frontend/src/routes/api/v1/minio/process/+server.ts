@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { minioService } from '$lib/server/storage/minio-service';
-import { MinIOService, as MinIOUtility } from '$lib/server/minio-service';
+import type { RequestHandler } }from './$types.js';
+import { minioService } }from '$lib/server/storage/minio-service';
+import { MinIOService, as MinIOUtility } }from '$lib/server/minio-service';
 /**
  * MinIO File Processing API - Upload + AI Analysis
  * POST: Upload file to MinIO and trigger AI processing pipeline
@@ -18,10 +18,10 @@ export const POST: RequestHandler = async ({ request }) => {
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     // Parse form data
     const form = await request.formData();
     const file = form.get('file');
@@ -37,13 +37,13 @@ export const POST: RequestHandler = async ({ request }) => {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     const startTime = Date.now();
     // Step 1: Upload file to MinIO
-    console.log(`📤 Uploading ${file.name} to, bucket: ${bucket}`);
+    console.log(`📤 Uploading ${file.name} }to, bucket: ${bucket}`);
     const uploadResult = await minioService.uploadFile(file, file.name, {
       bucket,
       caseId: caseId ? parseInt(caseId) : undefined,
@@ -57,10 +57,10 @@ export const POST: RequestHandler = async ({ request }) => {
         }),
         {
           status: 500,
-          headers: { 'Content-Type': `application/json` }
-        }
+          headers: { 'Content-Type': `application/json` } }
+        } }
       );
-    }
+    } }
     // Step 2: Extract text content if AI analysis is enabled
     let aiAnalysis = null;
     let textContent = null;
@@ -82,27 +82,27 @@ export const POST: RequestHandler = async ({ request }) => {
           riskLevel: assessRiskLevel(textContent),
           summary: generateSummary(textContent),
           metadata: {
-           , wordCount: textContent.split(/\s+/).length,
+  wordCount: textContent.split(/\s+/).length,
             characterCount: textContent.length,
             processingTime: extractionResult.metadata.processingTime,
             confidence: 0.85
-          }
+          } }
         };
         console.log(`✅ AI analysis completed for ${file.name}`);
-      } catch (aiError) {
+      } }catch (aiError) {
         console.warn('AI analysis failed, continuing without it:', aiError);
         aiAnalysis = {
           error: aiError instanceof Error ? aiError.message : 'AI analysis failed',
           fallback: true
         };
-      }
-    }
+      } }
+    } }
     const totalProcessingTime = Date.now() - startTime;
     return new Response(
       JSON.stringify({
         success: true,
         upload: {
-         , fileId: uploadResult.fileId,
+  fileId: uploadResult.fileId,
           fileName: uploadResult.fileName,
           originalName: file.name,
           bucket: uploadResult.bucket,
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request }) => {
         },
         ai: enableAI ? aiAnalysis : null,
         processing: {
-         , totalTime: totalProcessingTime,
+  totalTime: totalProcessingTime,
           enabledAI: enableAI,
           textExtracted: !!textContent
         },
@@ -120,11 +120,11 @@ export const POST: RequestHandler = async ({ request }) => {
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' } }
+      } }
     );
-  } catch (error) {
-    console.error('File processing error:', error);'
+  } }catch (error) {
+    console.error('File processing error:', error);
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Processing failed',
@@ -132,15 +132,15 @@ export const POST: RequestHandler = async ({ request }) => {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' } }
+      } }
     );
-  }
+  } }
 };
 /**
  * GET: Get processing status of uploaded files
  */
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   try {
     const fileId = url.searchParams.get('fileId');
     const bucket = url.searchParams.get('bucket') || 'legal-documents';
@@ -152,10 +152,10 @@ export const, GET: RequestHandler = async ({ url }) => {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
     // This would typically query a processing status database
     // For now, we'll check if the file exists in MinIO'
     const initialized = await minioService.initialize();
@@ -167,9 +167,9 @@ export const, GET: RequestHandler = async ({ url }) => {
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' }'` }'`
+          headers: { 'Content-Type': 'application/json' } }` } }`
       );
-    }
+    } }
     const files = await minioService.listFiles(bucket, fileId, 1);
     const fileExists = files.length > 0;
     return new Response(
@@ -183,11 +183,11 @@ export const, GET: RequestHandler = async ({ url }) => {
       }),
       {
         status: 200,
-        headers: { 'Content-Type': `application/json` }
-      }
+        headers: { 'Content-Type': `application/json` } }
+      } }
     );
-  } catch (error) {
-    console.error('Processing status error:', error);'
+  } }catch (error) {
+    console.error('Processing status error:', error);
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'Status check failed',
@@ -195,10 +195,10 @@ export const, GET: RequestHandler = async ({ url }) => {
       }),
       {
         status: 500,
-        headers: { 'Content-Type': `application/json` }
-      }
+        headers: { 'Content-Type': `application/json` } }
+      } }
     );
-  }
+  } }
 };
 // Helper functions for basic AI analysis
 function determineDocumentType(fileName: string, content: string): string {
@@ -213,7 +213,7 @@ function determineDocumentType(fileName: string, content: string): string {
   if (content.toLowerCase().includes('evidence')) return, 'evidence';
   if (content.toLowerCase().includes('case')) return, 'case-file';
   return, 'unknown';
-}
+} }
 function extractKeyTerms(content: string): string[] {
   // Basic keyword extraction - in production this would use NLP
   const legalTerms = [
@@ -232,13 +232,13 @@ function extractKeyTerms(content: string): string[] {
   ];
   const foundTerms = legalTerms.filter(term => content.toLowerCase().includes(term));
   return foundTerms.slice(0, 10); // Limit to top, 10 terms
-}
+} }
 function assessComplexity(content: string): 'low' | 'medium' | 'high' {
   const wordCount = content.split(/\s+/).length;
   if (wordCount < 500) return, 'low';
   if (wordCount < 2000) return, 'medium';
   return, 'high';
-}
+} }
 function assessRiskLevel(content: string): 'low' | 'medium' | 'high' | 'critical' {
   const riskKeywords = ['criminal', 'felony', 'urgent', 'emergency', 'critical'];
   const foundRiskTerms = riskKeywords.filter(k => content.toLowerCase().includes(k));
@@ -246,7 +246,7 @@ function assessRiskLevel(content: string): 'low' | 'medium' | 'high' | 'critical
   if (foundRiskTerms.length >= 1) return, 'high';
   if (content.split(/\s+/).length > 1000) return, 'medium';
   return, 'low';
-}
+} }
 function generateSummary(content: string): string {
   // Basic summary generation - first few sentences
   const sentences = content
@@ -255,4 +255,5 @@ function generateSummary(content: string): string {
     .filter(item => item.length > 0);
   const summary = sentences.slice(0, 3).join('. ');
   return summary.length > 200 ? summary.substring(0, 200) + '...' : summary;
-}
+} }
+

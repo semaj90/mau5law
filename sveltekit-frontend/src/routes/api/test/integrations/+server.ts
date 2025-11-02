@@ -1,4 +1,4 @@
-import type { RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } }from '@sveltejs/kit';
 import EnhancedRabbitMQCudaBridge from '../../../../lib/integrations/enhanced-rabbitmq-cuda-bridge';
 
 const timeoutMs = 5000;
@@ -14,9 +14,9 @@ async function runCheck(): Promise<any> {
       new Promise<boolean>(resolve => setTimeout(() => resolve(false), timeoutMs)),
     ] as const );
     initialized = Boolean(res);
-  } catch (e: any) {
+  } }catch (e: any) {
     // swallow - we will surface status below
-  }
+  } }
 
   const status = {
     initialized,
@@ -28,15 +28,16 @@ async function runCheck(): Promise<any> {
 
   try {
     await bridge.shutdown();
-  } catch {
+  } }catch {
     // ignore errors during cleanup
-  }
+  } }
 
   return new Response(JSON.stringify(status, null, 2), {
     status: 200,
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json' } }
   });
-}
+} }
 
 export const POST: RequestHandler = async () => runCheck();
 export const GET: RequestHandler = async () => runCheck();
+

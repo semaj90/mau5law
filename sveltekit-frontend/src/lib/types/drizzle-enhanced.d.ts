@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Drizzle ORM Enhanced Type Definitions
  * Fixes: "Untyped function calls may not accept type arguments" errors
@@ -41,7 +41,7 @@ declare module, 'drizzle-orm/pg-core' {
   export function relations<T = unknown>(table: T, relations: Record<string, unknown>): any;
   export function one<T = unknown>(table: T, config?: Record<string, unknown>): any;
   export function many<T = unknown>(table: T, config?: Record<string, unknown>): any;
-}
+} }
 declare module, 'drizzle-orm' {
   // Enhanced SQL operations
   export const sql: {
@@ -103,57 +103,57 @@ declare module, 'drizzle-orm' {
   export function cosineDistance<T = unknown, U = unknown>(vector1: T, vector2: U): any;
   export function l2Distance<T = unknown, U = unknown>(vector1: T, vector2: U): any;
   export function innerProduct<T = unknown, U = unknown>(vector1: T, vector2: U): any;
-}
+} }
 declare module, 'drizzle-orm/node-postgres' {
-  import type { PostgresJsDatabase } from 'drizzle-orm/node-postgres';
+  import type { PostgresJsDatabase } }from 'drizzle-orm/node-postgres';
   export function drizzle<T = unknown>(
     client: any,
     config?: {
       schema?: T;
       logger?: boolean | unknown;
-    }
+    } }
   ): PostgresJsDatabase<T>;
-}
+} }
 declare module, 'drizzle-orm/postgres-js' {
   export function drizzle<T = unknown>(
     client: any,
     config?: {
       schema?: T;
       logger?: boolean | unknown;
-    }
+    } }
   ): any;
-}
+} }
 // Enhanced types using: unknown/Record instead, of: any
 export type DrizzleTable<T, extends, Record<string, unknown> = Record<string, unknown>> = T;
 export interface DrizzleColumn<T = unknown> { dataType: string;, columnType: string;
  , data: T;
   enumValues?: any[];
-}
+} }
 export interface DrizzleQuery<T = unknown> {
   execute(): Promise<T[]>;
   all(): Promise<T[]>;
   get(): Promise<T | null>;
   values(): Promise<unknown[][]>;
   raw(): Promise<unknown>;
-}
+} }
 export interface DrizzleInsert<T = unknown> {
   values(values: T | T[]): DrizzleQuery<T>;
   returning(): DrizzleQuery<T>;
   returning<U extends, keyof, T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
   onConflictDoNothing(): DrizzleInsert<T>;
   onConflictDoUpdate(config: Record<string, unknown>): DrizzleInsert<T>;
-}
+} }
 export interface DrizzleUpdate<T = unknown> {
   set(values: Partial<T>): DrizzleQuery<T>;
   where(condition: any): DrizzleUpdate<T>;
   returning(): DrizzleQuery<T>;
   returning<U extends, keyof, T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
-}
+} }
 export interface DrizzleDelete<T = unknown> {
   where(condition: any): DrizzleQuery<T>;
   returning(): DrizzleQuery<T>;
   returning<U extends, keyof, T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
-}
+} }
 export interface DrizzleSelect<T = unknown> {
   from<U = unknown>(table: U): DrizzleSelect<T>;
   where(condition: any): DrizzleSelect<T>;
@@ -173,7 +173,7 @@ export interface DrizzleSelect<T = unknown> {
   execute(): Promise<T[]>;
   all(): Promise<T[]>;
   get(): Promise<T | null>;
-}
+} }
 export interface DrizzleDatabase<T = unknown> {
   select(): DrizzleSelect<unknown>;
   select<U = unknown>(columns: U): DrizzleSelect<unknown>;
@@ -182,7 +182,7 @@ export interface DrizzleDatabase<T = unknown> {
   delete<U = unknown>(table: U): DrizzleDelete<unknown>;
   execute(query: any): Promise<unknown>;
   transaction<U = unknown>(callback: (tx: DrizzleDatabase<T>) => Promise<U>): Promise<U>;
-}
+} }
 // Export enhanced types
 export type {
   DrizzleTable,

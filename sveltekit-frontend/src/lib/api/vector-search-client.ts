@@ -1,10 +1,10 @@
-import type { SearchResult } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { SearchResult } }from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Protocol Buffer Vector Search Client
  * High-performance client for vector search operations using binary protocol buffers
  */
-import { dev } from '$app/environment';
+import { dev } }from '$app/environment';
 
 export interface VectorSearchRequest {
   query?: {
@@ -34,18 +34,18 @@ export interface VectorSearchRequest {
     client_version?: string;
     debug_mode?: boolean;
   };
-}
-export interface VectorSearchResponse {, results: SearchResult[];, metadata: ResponseMetadata;
+} }
+export interface VectorSearchResponse { results: SearchResult[];, metadata: ResponseMetadata;
   analytics: QueryAnalytics;
   recommendations: Recommendation[];
-}
-export interface SearchResult {, id: string;, document: DocumentMetadata;
+} }
+export interface SearchResult { id: string;, document: DocumentMetadata;
   similarity_score: number;
   embedding?: number[];
   snippets: TextSnippet[];
   legal_context: LegalContext;
-}
-export interface DocumentMetadata {, title: string;, content_preview: string;
+} }
+export interface DocumentMetadata { title: string;, content_preview: string;
   type: DocumentType;
   created_at: number;
   updated_at: number;
@@ -55,54 +55,54 @@ export interface DocumentMetadata {, title: string;, content_preview: string;
   confidence_score: number;
   page_count: number;
   word_count: number;
-}
-export interface TextSnippet {, text: string;, highlights: HighlightRange[];
+} }
+export interface TextSnippet { text: string;, highlights: HighlightRange[];
   relevance_score: number;
   page_number: number;
-}
-export interface HighlightRange {, start: number;, end: number;
+} }
+export interface HighlightRange { start: number;, end: number;
   match_type: 'exact' | 'semantic' | 'keyword';
-}
-export interface LegalContext {, precedents: string[];, citations: Citation[];
+} }
+export interface LegalContext { precedents: string[];, citations: Citation[];
   key_terms: string[];
   practice_area: string;
   legal_weight: number;
-}
-export interface Citation {, citation_text: string;, source: string;
+} }
+export interface Citation { citation_text: string;, source: string;
   url: string;
   relevance: number;
-}
-export interface ResponseMetadata {, processing_time_ms: number;, total_results: number;
+} }
+export interface ResponseMetadata { processing_time_ms: number;, total_results: number;
   algorithm_used: string;
   from_cache: boolean;
   data_source: string;
   vector_dimensions: number;
   quality: SearchQuality;
   client_time_ms?: number;
-}
-export interface SearchQuality {, avg_similarity: number;, query_clarity: number;
+} }
+export interface SearchQuality { avg_similarity: number;, query_clarity: number;
   result_diversity: number;
   exact_matches: number;
   semantic_matches: number;
-}
-export interface QueryAnalytics {, query_id: string;, query_hash: string;
+} }
+export interface QueryAnalytics { query_id: string;, query_hash: string;
   expansion_terms: string[];
   clusters: SemanticCluster[];
   complexity: QueryComplexity;
-}
-export interface SemanticCluster {, cluster_id: string;, theme: string;
+} }
+export interface SemanticCluster { cluster_id: string;, theme: string;
   weight: number;
   representative_terms: string[];
-}
-export interface QueryComplexity {, complexity_score: number;, complexity_level: 'simple' | 'moderate' | 'complex';
+} }
+export interface QueryComplexity { complexity_score: number;, complexity_level: 'simple' | 'moderate' | 'complex';
   complexity_factors: string[];
-}
-export interface Recommendation {, type: string;, title: string;
+} }
+export interface Recommendation { type: string;, title: string;
   description: string;
   action_url: string;
   confidence: number;
  , tags: string[];
-}
+} }
 export enum DocumentType {
   UNKNOWN = 0,
   CONTRACT = 1,
@@ -113,7 +113,7 @@ export enum DocumentType {
   STATUTE = 6,
   CASE_LAW = 7,
   REGULATION = 8
-}
+} }
 /**
  * High-performance Vector Search Client
  */
@@ -123,7 +123,7 @@ export class VectorSearchClient {
   constructor(baseUrl = '/api/v1/vector', timeout = 30000) {
     this.baseUrl = baseUrl;
     this.timeout = timeout;
-  }
+  } }
   /**
    * Execute vector search with protocol buffers (high performance)
    */
@@ -145,8 +145,8 @@ export class VectorSearchClient {
       });
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Vector search failed: ${response.status} ${errorText}`);
-      }
+        throw new Error(`Vector search failed: ${response.status} }${errorText}`);
+      } }
       // Parse binary protocol buffer response
       const responseBuffer = await response.arrayBuffer();
       const searchResponse = await this.deserializeResponse(new Uint8Array(responseBuffer));
@@ -155,11 +155,11 @@ export class VectorSearchClient {
       // @ts-ignore - This property is added client-side
       searchResponse.metadata.client_time_ms = Math.round(clientTime);
       return searchResponse;
-    } catch (error) {
-      console.error('Protocol buffer vector search error:', error);'
+    } }catch (error) {
+      console.error('Protocol buffer vector search error:', error);
       throw new Error(`Vector search failed: ${error.message}`);
-    }
-  }
+    } }
+  } }
   /**
    * Execute vector search with JSON fallback (development)
    */
@@ -176,13 +176,13 @@ export class VectorSearchClient {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Vector search failed');
-      }
+      } }
       return await response.json();
-    } catch (error) {
-      console.error('JSON vector search error:', error);'
+    } }catch (error) {
+      console.error('JSON vector search error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Smart search method - uses protobuf for production, JSON for development
    */
@@ -190,22 +190,21 @@ export class VectorSearchClient {
     // Use protobuf in production for better performance
     if (!dev) {
       return this.searchProtobuf(request);
-    } else {
+    } }else {
       // Use JSON in development for easier debugging
       return this.searchJson(request);
-    }
-  }
+    } }
+  } }
   /**
    * Batch vector search for multiple queries
    */
   async batchSearch(requests: VectorSearchRequest[]): Promise<VectorSearchResponse[]> {
     const batchRequest = {
       requests,
-      batch_params: {
-       , parallel_processing: true,
+      batch_params: { parallel_processing: true,
         max_concurrent: 10,
         return_aggregated_analytics: true
-      }
+      } }
     };
     try {
       const response = await fetch(`${this.baseUrl}/batch`, {
@@ -218,14 +217,14 @@ export class VectorSearchClient {
       });
       if (!response.ok) {
         throw new Error(`Batch search failed: ${response.status}`);
-      }
+      } }
       const batchResponse = await response.json();
       return batchResponse.responses;
-    } catch (error) {
-      console.error('Batch vector search error:', error);'
+    } }catch (error) {
+      console.error('Batch vector search error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Search with auto-retry and fallback
    */
@@ -236,10 +235,10 @@ export class VectorSearchClient {
         // Try protobuf first, fallback to JSON
         if (attempt === 1) {
           return await this.searchProtobuf(request);
-        } else if (attempt === 2) {
+        } }else if (attempt === 2) {
           console.warn('Protobuf failed, falling back to JSON');
           return await this.searchJson(request);
-        } else {
+        } }else {
           // Final attempt with reduced parameters
           const fallbackRequest: VectorSearchRequest = {
             ...request,
@@ -247,21 +246,21 @@ export class VectorSearchClient {
               ...request.params,
               limit: Math.min(request.params?.limit || 10, 5),
               include_embeddings: false
-            }
+            } }
           };
           return await this.searchJson(fallbackRequest);
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         lastError = error as Error;
-        console.warn(`Vector search attempt ${attempt} failed: ', error.message);'`
+        console.warn(`Vector search attempt ${attempt} }failed: ', error.message);'`
         // Wait before retry (exponential backoff)
         if (attempt < maxRetries) {
           await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
-        }
-      }
-    }
+        } }
+      } }
+    } }
     throw lastError!;
-  }
+  } }
   /**
    * Mock serialization - replace with protobufjs in production
    */
@@ -269,7 +268,7 @@ export class VectorSearchClient {
     // In production, use protobuf serialization library
     const jsonString = JSON.stringify(request);
     return new TextEncoder().encode(jsonString).buffer;
-  }
+  } }
   /**
    * Mock deserialization - replace with protobufjs in production
    */
@@ -277,8 +276,8 @@ export class VectorSearchClient {
     // In production, use protobuf deserialization library
     const jsonString = new TextDecoder().decode(buffer);
     return JSON.parse(jsonString);
-  }
-}
+  } }
+} }
 // Singleton instance
 export const vectorSearchClient = new VectorSearchClient();
 // Convenience functions
@@ -291,7 +290,7 @@ export function isVectorSearchResponse(obj: any): obj is VectorSearchResponse {
   return (
     obj && typeof obj === 'object' && Array.isArray(obj.results) && obj.metadata && typeof obj.metadata === 'object'
   );
-}
+} }
 export function isSearchResult(obj: any): obj is SearchResult {
   return (
     obj &&
@@ -301,11 +300,11 @@ export function isSearchResult(obj: any): obj is SearchResult {
     typeof obj.document === 'object' &&
     typeof obj.similarity_score === 'number'
   );
-}
+} }
 // Utility functions
 export function formatSimilarityScore(score: number): string {
   return `${(score * 100).toFixed(1)}%`;
-}
+} }
 export function getDocumentTypeLabel(type: DocumentType): string {
   const labels: Record<DocumentType, string> = {
     [DocumentType.UNKNOWN]: 'Unknown',
@@ -318,7 +317,7 @@ export function getDocumentTypeLabel(type: DocumentType): string {
     [DocumentType.CASE_LAW]: 'Case Law',
     [DocumentType.REGULATION]: 'Regulation` };'`
   return labels[type] || 'Unknown';
-}
+} }
 export function highlightText(text: string, highlights: HighlightRange[]): string {
   if (!highlights.length) return text;
   let result = text;
@@ -334,6 +333,7 @@ export function highlightText(text: string, highlights: HighlightRange[]): strin
     result = `${before}<mark, class="highlight-${highlight.match_type}">${highlighted}</mark>${after}`;
     // Account for added markup in offset
     offset += `<mark, class="highlight-${highlight.match_type}"></mark>`.length;
-  }
+  } }
   return result;
-}
+} }
+

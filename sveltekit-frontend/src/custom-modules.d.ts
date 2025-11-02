@@ -25,13 +25,13 @@ declare module, 'lucide-svelte' {
   export const Zap: any;
   export const Trash: any;
   export const, Settings: any;
-}
+} }
 
 declare module, 'svelte-sonner' {
   export function toast(...args: any[]): any;
-  const mod: {, toast: (...args: any[]) => any };
+  const mod: { toast: (...args: any[]) => any };
   export default mod;
-}
+} }
 
 declare module, 'sveltekit-superforms';
 declare module, 'sveltekit-superforms/client';
@@ -41,7 +41,7 @@ declare module, 'sveltekit-superforms/adapters';
 declare module, '$lib/*' {
   const value: any;
   export default value;
-}
+} }
 
 // Fallback for other commonly-missing modules used across the UI
 declare module, 'sveltekit-superforms/*';
@@ -49,7 +49,7 @@ declare module, 'svelte-sonner/*';
 declare module, '$lib/*' {
   const whatever: any;
   export default whatever;
-}
+} }
 
 declare module, 'xstate' {
   // minimal declarations for focused typechecks
@@ -59,4 +59,5 @@ declare module, 'xstate' {
   // compatibility alias used in migration
   export type ActorRefFrom<$T = any> = any;
   export type ActorRefFromAny = ActorRefFrom<any>;
-}
+} }
+

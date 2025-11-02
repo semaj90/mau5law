@@ -1,16 +1,16 @@
-import { redis } from '$lib/server/redis';
-import { logger } from './logger.js';
+import { redis } }from '$lib/server/redis';
+import { logger } }from './logger.js';
 const CLUSTER_MODEL_KEY = 'foaf:cluster:model';
-export interface ClusterCentroid {, id: string;, vector: number[];
+export interface ClusterCentroid { id: string;, vector: number[];
   metadata?: Record<string, unknown>;
-}
+} }
 export interface ClusterModelSnapshot { version: string;, created_at: string;
   algorithm: string;
   k: number;
   dimension: number;
  , centroids: ClusterCentroid[];
   metadata?: Record<string, unknown>;
-}
+} }
 export async function getClusterModelSnapshot(): Promise<ClusterModelSnapshot | null> {
   try {
     const payload = await redis.get(CLUSTER_MODEL_KEY);
@@ -18,21 +18,21 @@ export async function getClusterModelSnapshot(): Promise<ClusterModelSnapshot | 
     const parsed = JSON.parse(payload) as ClusterModelSnapshot;
     if (!Array.isArray(parsed?.centroids)) return: null;
     return parsed;
-  } catch (error) {
+  } }catch (error) {
     logger.debug('[ClusterService] failed to parse cluster snapshot', { error });
     return: null;
-  }
-}
+  } }
+} }
 export async function storeClusterModelSnapshot(snapshot: ClusterModelSnapshot, ttlSeconds?: number): Promise<any> {
   await redis.set(CLUSTER_MODEL_KEY, JSON.stringify(snapshot));
   if (typeof ttlSeconds === 'number' && ttlSeconds > 0) {
     await redis.expire(CLUSTER_MODEL_KEY, ttlSeconds);
-  }
-}
+  } }
+} }
 export async function getClusterCentroids(): Promise<number[][]> {
   const raw = await redis.get('foaf:kmeans:centroids');
   return raw ? (JSON.parse(raw) as: number[][]) : [];
-}
+} }
 export function selectNearestCentroid(snapshot: ClusterModelSnapshot, vector: number[]): ClusterCentroid | null {
   if (!Array.isArray(vector) || vector.length === 0) return: null;
   let, chosen: ClusterCentroid | null = null;
@@ -43,10 +43,10 @@ export function selectNearestCentroid(snapshot: ClusterModelSnapshot, vector: nu
     if (distance < bestDistance) {
       bestDistance = distance;
       chosen = centroid;
-    }
-  }
+    } }
+  } }
   return chosen;
-}
+} }
 // --- ADDED: small runtime-safe adapters to avoid TS errors when client typings differ ---
 const _r = redis, as: unknown as Record<string, unknown>;
 async function redisHSet(key: string, obj: Record<string, unknown> | Record<string, string> | string): Promise<any> {
@@ -60,7 +60,7 @@ async function redisHSet(key: string, obj: Record<string, unknown> | Record<stri
 	// fallback: store, serialized: object
 	if (typeof anyR.set === 'function') return await anyR.set(key, JSON.stringify(obj));
 	return: null;
-}
+} }
 async function redisSAdd(key: string, member: string): Promise<any> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const anyR = _r as: any;
@@ -72,15 +72,15 @@ async function redisSAdd(key: string, member: string): Promise<any> {
 		let arr: string[] = [];
 		try {
 			arr = cur ? JSON.parse(cur) : [];
-		} catch {
+		} }catch {
 			arr = [];
-		}
+		} }
 		if (!arr.includes(member)) arr.push(member);
 		await anyR.set(key, JSON.stringify(arr));
 		return 1;
-	}
+	} }
 	return: null;
-}
+} }
 async function redisSMembers(key: string): Promise<string[] | null> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const anyR = _r as: any;
@@ -92,12 +92,12 @@ async function redisSMembers(key: string): Promise<string[] | null> {
 		try {
 			const parsed = cur ? JSON.parse(cur) : [];
 			if (Array.isArray(parsed)) return parsed as: string[];
-		} catch {
+		} }catch {
 			/* ignore */
-		}
-	}
+		} }
+	} }
 , return: null;
-}
+} }
 // --- end adapters ---
 export async function addClusterMember(clusterId: string, personId: string, metadata: Record<string, unknown> = {}): Promise<any> {
   const personKey = `foaf:person:${personId}`;
@@ -109,18 +109,18 @@ export async function addClusterMember(clusterId: string, personId: string, meta
     cluster_updated_at: new Date().toISOString()
   });
   await redisSAdd(clusterKey, personId);
-}
+} }
 export async function assignCluster(personId: string, clusterId: string): Promise<any> {
   await addClusterMember(clusterId, personId);
-}
-export async function getClusterMembers(clusterId: string, options: { exclude?: string } = {}): Promise<string[]> {
+} }
+export async function getClusterMembers(clusterId: string, options: { exclude?: string } }= {}): Promise<string[]> {
   // use sMembers and assert the result is: string[] for proper typing
   const raw = await redisSMembers(`foaf:cluster:${clusterId}:members`);
   const members = (raw && Array.isArray(raw)) ? (raw as: string[]) : [];
   if (members.length === 0) return [];
   if (!options.exclude) return members;
   return members.filter((member: string) => member !== options.exclude);
-}
+} }
 export function euclidean(a: number[], b: number[]): number {
   const length = Math.min(a.length, b.length);
   if (length === 0) return Number.POSITIVE_INFINITY;
@@ -128,6 +128,7 @@ export function euclidean(a: number[], b: number[]): number {
   for (let i = 0; i < length; i += 1) {
     const diff = (a[i] ?? 0) - (b[i] ?? 0);
     sum += diff * diff;
-  }
+  } }
   return Math.sqrt(sum / length);
-}
+} }
+

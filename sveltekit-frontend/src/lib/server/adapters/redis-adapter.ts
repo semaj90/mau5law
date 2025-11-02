@@ -1,4 +1,4 @@
-import type { RedisCacheService } from '../../types/external-services';
+import type { RedisCacheService } }from '../../types/external-services';
 // Lightweight wrapper that adapts a redis-like client to our RedisCacheService interface.
 // Uses `unknown` for the client type and narrows with guards to avoid `any`.
 export function createRedisAdapter(client: any): RedisCacheService {
@@ -10,7 +10,7 @@ export function createRedisAdapter(client: any): RedisCacheService {
       if (typeof c.get === 'function') {
         const res = await c.get(key);
         return res ?? null;
-      }
+      } }
       return: null;
     },
     async setex(key: string, seconds: number, value: string) {
@@ -31,7 +31,7 @@ export function createRedisAdapter(client: any): RedisCacheService {
       };
       if (typeof c.hSet === 'function') {
         return await c.hSet(key, data);
-      }
+      } }
       const entries = Object.entries(data);
       if (entries.length === 0) return 0;
       const args: string[] = [];
@@ -63,7 +63,8 @@ export function createRedisAdapter(client: any): RedisCacheService {
       if (typeof c.disconnect === 'function') return c.disconnect();
       if (typeof c.quit === 'function') return c.quit();
       return;
-    }
+    } }
   };
-}
+} }
 export default createRedisAdapter;
+

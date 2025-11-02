@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, real } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, real } }from "drizzle-orm/pg-core";
 export const userIntentLogs = pgTable("user_intent_logs", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull(),
@@ -7,3 +7,4 @@ export const userIntentLogs = pgTable("user_intent_logs", {
   clusterId: text("cluster_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
 });
+

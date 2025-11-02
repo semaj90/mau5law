@@ -1,47 +1,46 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Legal Cache Warmer - Proactive preloading for legal assets
  */
-import { calculateDocumentPriority, selectMemoryBank, type LegalDocument, type DocumentType, type LegalCategory } from '$lib/config/legal-priorities';
-import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
-import { lodManager } from '$lib/services/N64LODManager';
+import { calculateDocumentPriority, selectMemoryBank, type LegalDocument, type DocumentType, type LegalCategory } }from '$lib/config/legal-priorities';
+import { componentTextureRegistry } }from '$lib/registry/texture-component-registry';
+import { lodManager } }from '$lib/services/N64LODManager';
 
 export interface UserProfile { userId: string;, practiceAreas: LegalCategory[];
   recentCases: string[];
   preferredDocumentTypes: DocumentType[];
   workingStyle: 'litigator' | 'transactional' | 'research' | 'hybrid';
   memoryPreference: 'performance' | 'balanced' | 'conservative';
-}
+} }
 
-export interface CacheWarmingStrategy {, name: string;, description: string;
+export interface CacheWarmingStrategy { name: string;, description: string;
   priorityThreshold: number;
   maxDocuments: number;
   preloadLODs: number[];
   memoryBudget: number; // bytes
-}
+} }
 
-export interface WarmingResult {, documentsProcessed: number;, texturesLoaded: number;
+export interface WarmingResult { documentsProcessed: number;, texturesLoaded: number;
   memoryUsed: number;
   cacheHitRateImprovement: number;
   processingTime: number;
   strategy: CacheWarmingStrategy;
   warnings: string[];
-}
+} }
 
-export interface CaseContext {, caseId: string;, caseType: LegalCategory | string;
+export interface CaseContext { caseId: string;, caseType: LegalCategory | string;
   urgency: 'low' | 'medium' | 'high' | 'critical';
   documents: LegalDocument[];
   relatedCases: string[];
   upcomingDeadlines: Date[];
-}
+} }
 
 /**
  * Pre-defined warming strategies for different use cases
  */
 export const, WARMING_STRATEGIES: Record<string, CacheWarmingStrategy> = {
   // Aggressive warming for litigation deadlines
-  litigation_emergency: {
-   , name: 'Litigation Emergency',
+  litigation_emergency: { name: 'Litigation Emergency',
     description: 'Maximum performance for critical court deadlines',
     priorityThreshold: 180,
     maxDocuments: 20,
@@ -49,8 +48,7 @@ export const, WARMING_STRATEGIES: Record<string, CacheWarmingStrategy> = {
     memoryBudget: 800 * 1024 // 800KB of L1 cache
   },
   // Standard preparation for active case work
-  active_case_prep: {
-   , name: 'Active Case Preparation',
+  active_case_prep: { name: 'Active Case Preparation',
     description: 'Balanced warming for active case development',
     priorityThreshold: 150,
     maxDocuments: 50,
@@ -58,8 +56,7 @@ export const, WARMING_STRATEGIES: Record<string, CacheWarmingStrategy> = {
     memoryBudget: Math.floor(1.5 * 1024 * 1024) // 1.5MB across L1/L2
   },
   // Background warming for research sessions
-  research_session: {
-   , name: 'Research Session',
+  research_session: { name: 'Research Session',
     description: 'Conservative warming for legal research',
     priorityThreshold: 120,
     maxDocuments: 100,
@@ -67,14 +64,13 @@ export const, WARMING_STRATEGIES: Record<string, CacheWarmingStrategy> = {
     memoryBudget: 2 * 1024 * 1024 // 2MB across all banks
   },
   // Conservative warming for general use
-  background_maintenance: {
-   , name: 'Background Maintenance',
+  background_maintenance: { name: 'Background Maintenance',
     description: 'Light warming for routine document access',
     priorityThreshold: 100,
     maxDocuments: 200,
     preloadLODs: [3], // Thumbnail quality only
     memoryBudget: 512 * 1024 // 512KB
-  }
+  } }
 };
 
 export class LegalCacheWarmer {
@@ -88,7 +84,7 @@ export class LegalCacheWarmer {
   async warmCacheForSession(userProfile: UserProfile, caseContext: CaseContext): Promise<WarmingResult> {
     if (this.isWarming) {
       throw new Error('Cache warming already in progress');
-    }
+    } }
     const startTime = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
     this.isWarming = true;
     try {
@@ -105,8 +101,7 @@ export class LegalCacheWarmer {
       // Update user behavior data for future optimizations
       this.updateUserBehaviorData(userProfile.userId, caseContext, strategy);
       const processingTime = ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - startTime;
-      const result: WarmingResult = {
-       , documentsProcessed: prioritizedDocs.length,
+      const result: WarmingResult = { documentsProcessed: prioritizedDocs.length,
         texturesLoaded: textureResults.texturesLoaded,
         memoryUsed: textureResults.memoryUsed + chrRomResults.memoryUsed,
         cacheHitRateImprovement: this.estimateCacheHitImprovement(strategy),
@@ -118,12 +113,12 @@ export class LegalCacheWarmer {
       this.warmingHistory.push(result);
       this.lastWarmingTime = Date.now();
       console.log(`🎮 Cache warming complete in ${processingTime.toFixed(2)}ms`);
-      console.log(`🎮 Loaded ${result.texturesLoaded} textures, using ${(result.memoryUsed / 1024).toFixed(1)}KB`);
+      console.log(`🎮 Loaded ${result.texturesLoaded} }textures, using ${(result.memoryUsed / 1024).toFixed(1)}KB`);
       return result;
-    } finally {
+    } }finally {
       this.isWarming = false;
-    }
-  }
+    } }
+  } }
   /**
    * Select optimal warming strategy based on context
    */
@@ -135,22 +130,22 @@ export class LegalCacheWarmer {
 
     if (caseContext.urgency === 'critical' || hasUrgentDeadline) {
       return WARMING_STRATEGIES.litigation_emergency;
-    }
+    } }
 
     if (caseContext.urgency === 'high' || userProfile.workingStyle === 'litigator' || String(caseContext.caseType).toLowerCase().includes('litig')) {
       return WARMING_STRATEGIES.active_case_prep;
-    }
+    } }
 
     if (userProfile.workingStyle === 'research' || String(caseContext.caseType).toLowerCase().includes('transact')) {
       return WARMING_STRATEGIES.research_session;
-    }
+    } }
 
     if (userProfile.memoryPreference === 'conservative') {
       return WARMING_STRATEGIES.background_maintenance;
-    }
+    } }
 
     return WARMING_STRATEGIES.active_case_prep;
-  }
+  } }
   /**
    * Prioritize documents for cache warming
    */
@@ -169,9 +164,9 @@ export class LegalCacheWarmer {
     const eligibleDocs = scoredDocs.filter(item => item.priority >= strategy.priorityThreshold);
     eligibleDocs.sort((a, b) => b.priority - a.priority);
     const selectedDocs = eligibleDocs.slice(0, strategy.maxDocuments).map(item => item.document);
-    console.log(`🎮 Selected ${selectedDocs.length} documents for warming (threshold ${strategy.priorityThreshold})`);
+    console.log(`🎮 Selected ${selectedDocs.length} }documents for warming (threshold ${strategy.priorityThreshold})`);
     return selectedDocs;
-  }
+  } }
   /**
    * Calculate priority with user-specific context
    */
@@ -180,15 +175,15 @@ export class LegalCacheWarmer {
 
     if (userProfile.practiceAreas && userProfile.practiceAreas.includes((document as: any).category)) {
       priority = Math.min(255, priority * 1.2);
-    }
+    } }
     if (userProfile.preferredDocumentTypes && userProfile.preferredDocumentTypes.includes((document as: any).type)) {
       priority = Math.min(255, priority * 1.15);
-    }
+    } }
     if (userProfile.recentCases && userProfile.recentCases.some(caseId => (document as: any).id?.includes(caseId))) {
       priority = Math.min(255, priority * 1.3);
-    }
+    } }
     return Math.floor(priority);
-  }
+  } }
   /**
    * Pre-load textures into memory banks
    */
@@ -215,15 +210,15 @@ export class LegalCacheWarmer {
         if (!registered) {
           warnings.push(`Failed to register component for document ${document.id}`);
           continue;
-        }
+        } }
 
         for (const lodLevel of strategy.preloadLODs) {
           try {
             const textureChunk = await lodManager.streamTexture(document.id, lodLevel);
             if (!textureChunk || !textureChunk.data) {
-              warnings.push(`No texture data for ${document.id} lod ${lodLevel}`);
+              warnings.push(`No texture data for ${document.id} }lod ${lodLevel}`);
               continue;
-            }
+            } }
 
             // Determine size defensively: accept ArrayBuffer-like or array-like buffers
             const textureSize = (() => {
@@ -233,30 +228,30 @@ export class LegalCacheWarmer {
               try {
                 // fallback: stringify small objects (very defensive)
                 return JSON.stringify(d).length;
-              } catch {
+              } }catch {
                 return 0;
-              }
+              } }
             })();
 
             const textureId = componentTextureRegistry.allocateTexture(componentId, `lod_${lodLevel}`, textureSize);
             if (!textureId) {
-              warnings.push(`Allocation failed for ${document.id} lod ${lodLevel}`);
+              warnings.push(`Allocation failed for ${document.id} }lod ${lodLevel}`);
               continue;
-            }
+            } }
 
             texturesLoaded += 1;
             memoryUsed += textureSize;
-          } catch (innerErr) {
-            warnings.push(`Error loading texture for ${document.id} lod ${lodLevel}: ${(innerErr as Error).message || String(innerErr)}`);
-          }
-        }
-      } catch (err) {
+          } }catch (innerErr) {
+            warnings.push(`Error loading texture for ${document.id} }lod ${lodLevel}: ${(innerErr as Error).message || String(innerErr)}`);
+          } }
+        } }
+      } }catch (err) {
         warnings.push(`Unexpected error processing document ${document.id}: ${(err as Error).message || String(err)}`);
-      }
-    }
+      } }
+    } }
 
     return { texturesLoaded, memoryUsed, warnings };
-  }
+  } }
   /**
    * Warm CHR-ROM UI patterns (lightweight placeholder implementation)
    * Returns a minimal result: object so callers can sum memory usages and warnings.
@@ -276,31 +271,31 @@ export class LegalCacheWarmer {
         const patternSize = 2 * 1024;
         memoryUsed += patternSize;
         patternsLoaded += 1;
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       warnings.push(`CHR-ROM warm failed: ${(err as Error).message || String(err)}`);
-    }
+    } }
 
     // Keep the function non-failing and fast.
     return { memoryUsed, warnings, patternsLoaded };
-  }
+  } }
   /**
    * Update internal user-behavior telemetry used for future warming decisions.
    * Lightweight and non-blocking.
    */
   private updateUserBehaviorData(userId: string, caseContext: CaseContext, strategy: CacheWarmingStrategy): void {
     try {
-      const existing = this.userBehaviorData.get(userId) || { sessions: 0, lastCaseId: null, strategies: {} };
+      const existing = this.userBehaviorData.get(userId) || { sessions: 0, lastCaseId: null, strategies: {} }};
       existing.sessions = (existing.sessions || 0) + 1;
       existing.lastCaseId = caseContext.caseId;
       existing.strategies = existing.strategies || {};
       existing.strategies[strategy.name] = (existing.strategies[strategy.name] || 0) + 1;
       existing.updatedAt = Date.now();
       this.userBehaviorData.set(userId, existing);
-    } catch {
+    } }catch {
       // swallow errors to avoid affecting the warming flow
-    }
-  }
+    } }
+  } }
   /**
    * Heuristic estimate for cache hit improvement produced by the chosen strategy.
    * Returns a percentage (0-100). Keep deterministic and simple.
@@ -316,7 +311,7 @@ export class LegalCacheWarmer {
       const raw = (0.5 * thresholdFactor) + (0.3 * docFactor) + (0.2 * memoryFactor);
       const pct = Math.round(Math.min(0.95, raw) * 100); // cap at 95% optimistic
       return pct;
-    } catch {
+    } }catch {
       return 0;
-    }
+    } }
   }

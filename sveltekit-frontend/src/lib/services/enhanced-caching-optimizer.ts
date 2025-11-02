@@ -5,8 +5,8 @@
  * Replace the placeholder/simulated implementations (e.g., executeQueryForCache, getRecentDocumentsByType)
  * with real integration logic as needed.
  */
-import { EventEmitter } from 'events';
-import { createClient } from 'redis';
+import { EventEmitter } }from 'events';
+import { createClient } }from 'redis';
 // Use the concrete return type from createClient instead of RedisClientType (some redis versions don't export RedisClientType)'
 
 // Minimal RequestBatcher implementation (simple concurrency control + batch-size adjusters)
@@ -14,13 +14,13 @@ class RequestBatcher {
   private batchSize: number;
   private, maxConcurrency: number;
 
-  constructor(opts: { batchSize?: number; maxConcurrency?: number } = {}) {
+  constructor(opts: { batchSize?: number; maxConcurrency?: number } }= {}) {
     this.batchSize = Math.max(1, Math.floor(opts.batchSize ?? 50));
     this.maxConcurrency = Math.max(1, Math.floor(opts.maxConcurrency ?? 10));
-  }
+  } }
 
   // Execute an array of async tasks (task generators) in parallel batches honoring maxConcurrency.
-  async executeBatch<R = unknown>(tasks: Array<() => Promise<R>>): Promise<{ successful: number;, total: number }> {
+  async executeBatch<R = unknown>(tasks: Array<() => Promise<R>>): Promise<{ successful: number; total: number }> {
     const total = tasks.length;
     let successful = 0;
 
@@ -31,14 +31,14 @@ class RequestBatcher {
 
       for (const task of slice) {
         // create a tracked promise so we can tell when it settled without using `any`
-        const tracked: Tracked = {, settled: false, p: Promise.resolve() };
+        const tracked: Tracked = { settled: false, p: Promise.resolve() };
         tracked.p = (async () => {
           try {
             await task();
             successful += 1;
-          } catch {
+          } }catch {
             // swallow failures intentionally (count only successes)
-          }
+          } }
         })().finally(() => {
           tracked.settled = true;
         });
@@ -51,8 +51,8 @@ class RequestBatcher {
           await Promise.race(runners.map(r => r.p)).catch(() => {});
           // remove settled promises from the pool
           runners = runners.filter(r => !r.settled);
-        }
-      }
+        } }
+      } }
 
       // wait for: any remaining runners
       await Promise.all(runners.map(r => r.p));
@@ -62,34 +62,34 @@ class RequestBatcher {
     for (let i = 0; i < tasks.length; i += this.batchSize) {
       const slice = tasks.slice(i, i + this.batchSize);
       await runSlice(slice);
-    }
+    } }
 
     return { successful, total };
-  }
+  } }
 
   increaseBatchSize() {
     this.batchSize = Math.min(Math.floor(this.batchSize * 1.2) || 1, 500);
-  }
+  } }
   decreaseBatchSize() {
     this.batchSize = Math.max(Math.floor(this.batchSize * 0.8) || 1, 1);
-  }
-}
+  } }
+} }
 
-export interface CacheWarmerConfig { warmupSchedule: {, commonQueries: string[];
+export interface CacheWarmerConfig { warmupSchedule: { commonQueries: string[];
     documentTypes: string[];
     userPatterns: string[];
   };
-  priorities: {, legal: number;, evidence: number;
+  priorities: { legal: number;, evidence: number;
     reports: number;
     searches: number;
     [k: string]: number;
   };
-  performance: {, batchSize: number;, maxConcurrency: number;
+  performance: { batchSize: number;, maxConcurrency: number;
     gpuUtilizationTarget: number; // 0.0 to 1.0
   };
-}
+} }
 
-export interface CacheMetrics {, hitRate: number;, missRate: number;
+export interface CacheMetrics { hitRate: number;, missRate: number;
   evictionRate: number;
   averageLatency: number;
   gpuUtilization: number;
@@ -101,13 +101,13 @@ export interface CacheMetrics {, hitRate: number;, missRate: number;
   totalRequests: number;
   hits: number;
   misses: number;
-}
+} }
 
-export interface TTLStrategy {, documentType: string;, accessFrequency: number;
+export interface TTLStrategy { documentType: string;, accessFrequency: number;
   lastAccessed: Date;
   computedTTL: number;
  , priority: 'critical' | 'high' | 'medium' | 'low';
-}
+} }
 
 export class EnhancedCachingOptimizer extends EventEmitter {
   // use concrete return type of createClient to avoid missing RedisClientType symbol
@@ -121,7 +121,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
 
   constructor(config: Partial<CacheWarmerConfig> = {}) {
     super();
-    this.config = { warmupSchedule: {, commonQueries: [
+    this.config = { warmupSchedule: { commonQueries: [
           'legal precedent search',
           'evidence correlation',
           'case timeline analysis',
@@ -132,19 +132,17 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         userPatterns: ['recent_documents', 'frequent_searches', 'active_cases'],
         ...(config.warmupSchedule || {})
       },
-      priorities: {
-       , legal: 0.9,
+      priorities: { legal: 0.9,
         evidence: 0.8,
         reports: 0.6,
         searches: 0.7,
         ...(config.priorities || {})
       },
-      performance: {
-       , batchSize: 50,
+      performance: { batchSize: 50,
         maxConcurrency: 10,
         gpuUtilizationTarget: 0.85,
         ...(config.performance || {})
-      }
+      } }
     };
 
     this.metrics = this.initializeMetrics();
@@ -157,7 +155,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       console.error('Failed to init redis in ctor:', err);
     });
     this.startCacheOptimization();
-  }
+  } }
 
   private initializeMetrics(): CacheMetrics {
     return {
@@ -173,7 +171,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       hits: 0,
       misses: 0
     };
-  }
+  } }
 
   private async initializeRedis() {
     try {
@@ -190,11 +188,11 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       });
       await this.redis.connect();
       await this.setupCacheEventListeners();
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Failed to initialize Redis for cache optimization:', error);
       this.emit('initialization_error', error);
-    }
-  }
+    } }
+  } }
 
   private async setupCacheEventListeners() {
     // create a dedicated subscriber client instead of using duplicate()
@@ -206,29 +204,29 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       try {
         const payload = JSON.parse(message);
         this.handleCacheHit(payload);
-      } catch (e) {
+      } }catch (e) {
         console.warn('Invalid cache:hit message', e);
-      }
+      } }
     });
 
     await subscriber.subscribe('cache:miss', (message: string) => {
       try {
         const payload = JSON.parse(message);
         this.handleCacheMiss(payload);
-      } catch (e) {
+      } }catch (e) {
         console.warn('Invalid cache:miss message', e);
-      }
+      } }
     });
 
     await subscriber.subscribe('gpu:utilization', (message: string) => {
       try {
         const payload = JSON.parse(message);
         this.handleGPUUtilization(payload);
-      } catch (e) {
+      } }catch (e) {
         console.warn('Invalid gpu:utilization message', e);
-      }
+      } }
     });
-  }
+  } }
 
   /**
    * 1. WARM CACHE WITH COMMON QUERIES
@@ -240,23 +238,23 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     // Warm common queries
     for (const query of this.config.warmupSchedule.commonQueries) {
       warmupTasks.push(() => this.preloadQuery(query));
-    }
+    } }
 
     // Warm document types by priority
     for (const docType of this.config.warmupSchedule.documentTypes) {
       const priority = this.config.priorities[docType] ?? 0.5;
       warmupTasks.push(() => this.preloadDocumentType(docType, priority));
-    }
+    } }
 
     // Warm user patterns
     for (const pattern of this.config.warmupSchedule.userPatterns) {
       warmupTasks.push(() => this.preloadUserPattern(pattern));
-    }
+    } }
 
     const results = await this.requestBatcher.executeBatch(warmupTasks);
-    console.log(`✅ Cache warming completed: ${results.successful}/${results.total} tasks successful`);
+    console.log(`✅ Cache warming completed: ${results.successful}/${results.total} }tasks successful`);
     this.emit('cache_warmed', results);
-  }
+  } }
 
   private async preloadQuery(query: string): Promise<void> {
     const cacheKey = `query:${this.hashQuery(query)}`;
@@ -265,9 +263,9 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       const result = await this.executeQueryForCache(query);
       const ttl = this.calculateOptimalTTL('search', query);
       await this.redisSetEx(cacheKey, ttl, JSON.stringify(result));
-      console.log(`🔍 Pre-cached query: ${query} (TTL: ${ttl}s)`);
-    }
-  }
+      console.log(`🔍 Pre-cached query: ${query} }(TTL: ${ttl}s)`);
+    } }
+  } }
 
   private async preloadDocumentType(docType: string, priority: number): Promise<void> {
     const recentDocs = await this.getRecentDocumentsByType(docType, Math.ceil(50 * priority));
@@ -277,10 +275,10 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       if (!exists) {
         const ttl = this.calculateOptimalTTL(docType, doc.id);
         await this.redisSetEx(cacheKey, ttl, JSON.stringify(doc));
-      }
-    }
-    console.log(`📄 Pre-cached ${recentDocs.length} documents of type: ${docType}`);
-  }
+      } }
+    } }
+    console.log(`📄 Pre-cached ${recentDocs.length} }documents of type: ${docType}`);
+  } }
 
   /**
    * 2. DYNAMIC TTL TUNING BASED ON ACCESS PATTERNS
@@ -297,7 +295,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         priority: this.inferPriority(type)
       });
       return baseTTL;
-    }
+    } }
 
     const hoursSinceLastAccess = (Date.now() - strategy.lastAccessed.getTime()) / (1000 * 60 * 60);
     const frequencyMultiplier = Math.min(strategy.accessFrequency / 10, 3);
@@ -309,7 +307,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     strategy.computedTTL = computedTTL;
     strategy.lastAccessed = new Date();
     return Math.floor(computedTTL);
-  }
+  } }
 
   private getBaseTTL(type: string): number {
     const baseTTLs: Record<string, number> = {
@@ -321,7 +319,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       default: 3600
     };
     return baseTTLs[type] ?? baseTTLs.default;
-  }
+  } }
 
   private inferPriority(type: string): 'critical' | 'high' | 'medium' | 'low' {
     const priorityMap: Record<string, 'critical' | 'high' | 'medium' | 'low'> = {
@@ -331,7 +329,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       report: 'medium',
       embedding: 'high` };'`
     return priorityMap[type] ?? 'medium';
-  }
+  } }
 
   private getPriorityMultiplier(priority: 'critical' | 'high' | 'medium' | 'low'): number {
     const multipliers: Record<string, number> = {
@@ -341,7 +339,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       low: 0.7
     };
     return multipliers[priority];
-  }
+  } }
 
   /**
    * 3. CACHE HIT RATE MONITORING
@@ -354,8 +352,8 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     if (strategy) {
       strategy.accessFrequency += 1;
       strategy.lastAccessed = new Date();
-    }
-  }
+    } }
+  } }
 
   private handleCacheMiss(data: { key?: string; query?: string; latency?: number; timestamp?: number }) {
     this.updateMetrics('miss', data);
@@ -364,41 +362,41 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     // schedule proactive load of the query: string (if available)
     if (data.query) {
       void this.scheduleProactiveLoad(data.query);
-    }
-  }
+    } }
+  } }
 
-  private updateMetrics(type: 'hit' | 'miss', data: { latency?: number } = {}) {
+  private updateMetrics(type: 'hit' | 'miss', data: { latency?: number } }= {}) {
     this.metrics.totalRequests += 1;
     if (type === 'hit') {
       this.metrics.hits += 1;
-    } else {
+    } }else {
       this.metrics.misses += 1;
-    }
+    } }
     this.metrics.hitRate = this.metrics.hits / Math.max(1, this.metrics.totalRequests);
     this.metrics.missRate = this.metrics.misses / Math.max(1, this.metrics.totalRequests);
 
     if (typeof data.latency === 'number') {
       // exponential smoothing for average latency
       this.metrics.averageLatency = this.metrics.averageLatency * 0.9 + data.latency * 0.1;
-    }
+    } }
     this.emit('metrics_updated', { ...this.metrics });
-  }
+  } }
 
   /**
    * 4. REQUEST BATCHING WITH GPU OPTIMIZATION
    */
-  private handleGPUUtilization(data: {, utilization: number; temperature?: number; timestamp?: number }) {
+  private handleGPUUtilization(data: { utilization: number; temperature?: number; timestamp?: number }) {
     if (typeof data.utilization === 'number') {
       this.metrics.gpuUtilization = data.utilization;
       const target = this.config.performance.gpuUtilizationTarget;
       if (data.utilization < target - 0.1) {
         this.requestBatcher.increaseBatchSize();
-      } else if (data.utilization > target + 0.1) {
+      } }else if (data.utilization > target + 0.1) {
         this.requestBatcher.decreaseBatchSize();
-      }
+      } }
       this.emit('gpu_utilization_updated', data);
-    }
-  }
+    } }
+  } }
 
   /**
    * Start continuous cache optimization
@@ -413,7 +411,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     }, 300_000); // Every, 5 minutes
 
     console.log('🔄 Started continuous cache optimization');
-  }
+  } }
 
   private async optimizationCycle() {
     console.log('🔧 Running cache optimization cycle...');
@@ -424,32 +422,32 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       await this.cleanupStaleEntries();
       this.metrics.lastOptimized = new Date();
       console.log('✅ Cache optimization cycle completed');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Cache optimization cycle failed:', String(error));
       this.emit('optimization_error', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Get current cache performance metrics
    */
   getMetrics(): CacheMetrics {
     return { ...this.metrics };
-  }
+  } }
 
   /**
    * Get TTL strategies for debugging
    */
   getTTLStrategies(): Map<string, TTLStrategy> {
     return new Map(this.ttlStrategies);
-  }
+  } }
 
   /**
    * Manual cache warming trigger
    */
   async triggerWarmup(): Promise<void> {
     await this.warmCache();
-  }
+  } }
 
   /**
    * Cleanup resources
@@ -458,12 +456,12 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     if (this.warmupTimer) {
       clearInterval(this.warmupTimer);
       this.warmupTimer = null;
-    }
+    } }
     if (this.redis) {
       await this.redis.quit();
-    }
+    } }
     console.log('🧹 Cache optimizer cleaned up');
-  }
+  } }
 
   // Helper methods (implementation details)
   private hashQuery(query: string): string {
@@ -472,14 +470,14 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     for (let i = 0; i < query.length; i++) {
       h ^= query.charCodeAt(i);
       h = Math.imul(h, 16777619) >>> 0;
-    }
+    } }
     return (h >>> 0).toString(16);
-  }
+  } }
 
   // replace simulated query executor with API call
   private async executeQueryForCache(
     query: string
-  ): Promise<{ query: string; results: any[]; timestamp: number;, fromCache: boolean }> {
+  ): Promise<{ query: string; results: any[]; timestamp: number; fromCache: boolean }> {
     try {
       const res = await fetch('/api/search/execute', {
         method: 'POST',
@@ -489,7 +487,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       if (!res.ok) {
         const text = await res.text();
         throw new Error(`Search API error: ${text}`);
-      }
+      } }
       // assume backend returns a JSON: object with results
       const payload = await res.json();
       return {
@@ -498,7 +496,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         timestamp: Date.now(),
         fromCache: false
       };
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('Query execution failed, returning fallback result', String(err));
       // graceful fallback for resilience
       return {
@@ -507,24 +505,24 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         timestamp: Date.now(),
         fromCache: false
       };
-    }
-  }
+    } }
+  } }
 
   // call backend endpoint that returns recent documents by type
   private async getRecentDocumentsByType(
    , docType: string,
     limit: number
-  ): Promise<Array<{ id: string;, type: string; content?: string }>> {
+  ): Promise<Array<{ id: string; type: string; content?: string }>> {
     const effectiveLimit = Math.max(0, Math.min(limit, 50));
     try {
       const qs = new URLSearchParams({ type: docType, limit: String(effectiveLimit) });
       const res = await fetch(`/api/documents/recent?${qs.toString()}`, {
         method: 'GET',
-        headers: {, Accept: 'application/json' }'` });'`
+        headers: { Accept: 'application/json' } }` });'`
       if (!res.ok) {
         const text = await res.text();
         throw new Error(`Documents API error: ${text}`);
-      }
+      } }
       const payload = await res.json();
       // Expect payload.items or payload.data (backend may vary) — handle both
       const data = payload?.items ?? payload?.data ?? (Array.isArray(payload) ? payload : []);
@@ -541,16 +539,16 @@ export class EnhancedCachingOptimizer extends EventEmitter {
             content
           };
         });
-      }
+      } }
       return [];
-    } catch (err) {
+    } }catch (err) {
       console.warn('Failed to fetch recent documents, falling back to simulated list', String(err));
       // keep a minimal fallback so callers still work
       return Array.from({ length: Math.min(effectiveLimit, 10) }, (_, i) => ({
         id: `${docType}_${i}`,
         type: docType,
-        content: 'Sample ${docType} content ${i}' }));'` }'`
-  }
+        content: 'Sample ${docType} }content ${i} } }));'` } }`
+  } }
 
   // call backend to warm user-patterns (server will do DB work)
   private async preloadUserPattern(pattern: string): Promise<void> {
@@ -561,10 +559,10 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         body: JSON.stringify({ pattern })
       });
       console.log(`👤 Requested preload for user pattern: ${pattern}`);
-    } catch (err) {
+    } }catch (err) {
       console.warn('Failed to request user-pattern preload', String(err));
-    }
-  }
+    } }
+  } }
 
   // ask server to schedule proactive load for a query (server should validate/rate-limit)
   private async scheduleProactiveLoad(query: string): Promise<void> {
@@ -575,10 +573,10 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         body: JSON.stringify({ query })
       });
       console.log(`🔍 Proactive load requested for: ${query}`);
-    } catch (err) {
+    } }catch (err) {
       console.warn('Failed to schedule proactive load', String(err));
-    }
-  }
+    } }
+  } }
 
   // -------------------------
   // Minimal implementations for missing optimization methods
@@ -593,12 +591,12 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         this.metrics.topQueries = this.config.warmupSchedule.commonQueries
           .slice(0, 5)
           .map(q => ({ query: q, score: 1 }));
-      }
+      } }
       this.emit('performance_analyzed', { ...this.metrics });
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('analyzePerformance failed:', String(err));
-    }
-  }
+    } }
+  } }
 
   private async optimizeTTLStrategies(): Promise<void> {
     try {
@@ -610,28 +608,28 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         if (s.accessFrequency > 5) {
           // frequently accessed -> gently increase TTL (capped)
           s.computedTTL = Math.min(Math.floor(s.computedTTL * 1.1), 86400);
-        } else if (ageHours > 72) {
+        } }else if (ageHours > 72) {
           // not accessed for > 72 hours -> reduce TTL to save memory
           s.computedTTL = Math.max(Math.floor(s.computedTTL * 0.5), 300);
-        } else {
+        } }else {
           // small decay over time for mid-frequency items
           s.computedTTL = Math.max(Math.floor(s.computedTTL * 0.98), 300);
-        }
+        } }
 
         // prune very old, low-priority strategies to keep the map compact
         if (ageHours > 168 && s.priority === 'low') {
           this.ttlStrategies.delete(key);
           continue;
-        }
+        } }
 
         // update lastAccessed to now to avoid immediate repeated pruning
         s.lastAccessed = new Date(now);
-      }
+      } }
 
       this.emit('ttls_optimized', { count: this.ttlStrategies.size });
-    } catch (err: any) {
-      console.warn('optimizeTTLStrategies failed: ', String(err));'` }'`
-  }
+    } }catch (err: any) {
+      console.warn('optimizeTTLStrategies failed: ', String(err));'` } }`
+  } }
 
   // Lightweight Redis helpers used in other methods (redisExists, redisSetEx)
   private async redisExists(key: string): Promise<boolean> {
@@ -643,26 +641,26 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         const res = await client.exists(key);
         const n = typeof res === 'string' ? Number(res) : Number(res ?? 0);
         return n > 0;
-      }
+      } }
 
       // Fallback: send raw command if available
       if (typeof client.sendCommand === 'function') {
         const res = await client.sendCommand(['EXISTS', key]);
         return Number(res ?? 0) > 0;
-      }
+      } }
 
       // Last resort: try GET and treat non-null as existence
       if (typeof client.get === 'function') {
         const val = await client.get(key);
         return val != null;
-      }
+      } }
 
       return false;
-    } catch (err) {
+    } }catch (err) {
       console.warn('redisExists failed for', key, String(err));
       return false;
-    }
-  }
+    } }
+  } }
 
   private async redisSetEx(key: string, ttlSeconds: number, value: string): Promise<void> {
     try {
@@ -672,12 +670,12 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       if (typeof client.setEx === 'function') {
         await client.setEx(key, ttlSeconds, value);
         return;
-      }
+      } }
 
       if (typeof client.setex === 'function') {
         await client.setex(key, ttlSeconds, value);
         return;
-      }
+      } }
 
       // Try modern set with options: object
       if (typeof client.set === 'function') {
@@ -685,29 +683,29 @@ export class EnhancedCachingOptimizer extends EventEmitter {
           // Some clients support: set(key, value, { EX: ttl })
           await client.set(key, value, { EX: ttlSeconds });
           return;
-        } catch {
+        } }catch {
           // ignore and try alternate set signature
-        }
+        } }
         try {
           // Some clients support: set(key, value, 'EX', ttl)
           await client.set(key, value, 'EX', String(ttlSeconds));
           return;
-        } catch {
+        } }catch {
           // ignore and continue to next fallback
-        }
-      }
+        } }
+      } }
 
       // Fallback to raw command
       if (typeof client.sendCommand === 'function') {
         await client.sendCommand(['SET', key, value, 'EX', String(ttlSeconds)]);
         return;
-      }
+      } }
 
       console.warn('No compatible SET/SETEX variant found on redis client; key not set:', key);
-    } catch (err) {
+    } }catch (err) {
       console.warn('redisSetEx failed for', key, String(err));
-    }
-  }
+    } }
+  } }
 
   // Implement predictive preloading based on current metrics/topQueries
   private async predictivePreload(): Promise<void> {
@@ -726,17 +724,17 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       const tasks = candidates.map(query => async () => {
         try {
           await this.preloadQuery(query);
-        } catch (err) {
+        } }catch (err) {
           console.warn('predictivePreload task failed for', query, String(err));
-        }
+        } }
       });
 
       await this.requestBatcher.executeBatch(tasks);
       this.emit('predictive_preload_completed', { count: candidates.length });
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('predictivePreload failed:', String(err));
-    }
-  }
+    } }
+  } }
 
   // Cleanup stale strategies and associated redis keys
   private async cleanupStaleEntries(): Promise<void> {
@@ -749,8 +747,8 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         // Remove if extremely old or very low priority + moderately old
         if (ageHours > 720 || (s.priority === 'low' && ageHours > 168)) {
           toRemove.push(k);
-        }
-      }
+        } }
+      } }
 
       if (toRemove.length === 0) return;
 
@@ -762,28 +760,28 @@ export class EnhancedCachingOptimizer extends EventEmitter {
           if (await this.redisExists(docKey)) {
             if (this.redis) {
               await this.redis.del(docKey);
-            }
-          }
-        } catch (err) {
+            } }
+          } }
+        } }catch (err) {
           // ignore individual failures
-        }
-      }
+        } }
+      } }
 
       this.emit('stale_cleanup', { removed: toRemove.length });
-    } catch (err: any) {
-      console.warn('cleanupStaleEntries failed: ', String(err));'` }'`
-  }
-}
+    } }catch (err: any) {
+      console.warn('cleanupStaleEntries failed: ', String(err));'` } }`
+  } }
+} }
 
 // Add a small interface describing only the Redis client methods we rely on.
 type RedisClientLike = {
   exists?: (key: string) => Promise<number | string> | number | string;
   sendCommand?: (cmd: string[] | Array<string>) => Promise<unknown>;
   get?: (key: string) => Promise<string | null>;
-  setEx?: (key: string;, ttl: number;, value: string) => Promise<unknown>;
-  setex?: (key: string;, ttl: number;, value: string) => Promise<unknown>;
+  setEx?: (key: string; ttl: number; value: string) => Promise<unknown>;
+  setex?: (key: string; ttl: number; value: string) => Promise<unknown>;
   // changed: avoid `any[]` — use `unknown[]` to be type-safe while keeping variadic support
-  set?: (key: string;, value: string, ...rest: any[]) => Promise<unknown>;
+  set?: (key: string; value: string, ...rest: any[]) => Promise<unknown>;
   del?: (key: string) => Promise<number | null>;
   // allow other optional members without using `any`
   [k: string]: any;

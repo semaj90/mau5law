@@ -10,9 +10,9 @@ export interface PageRankConfig { dampingFactor: number;, maxIterations: number
   useSparseCaching: boolean;
   batchSize: number;
   parallelWorkers: number;
-}
+} }
 // === Graph Data Structures ===
-export interface GraphNode {, id: string;, type: 'document' | 'case' | 'evidence' | 'person' | 'concept';
+export interface GraphNode { id: string;, type: 'document' | 'case' | 'evidence' | 'person' | 'concept';
   metadata: {
     title?: string;
     content?: string;
@@ -25,21 +25,21 @@ export interface GraphNode {, id: string;, type: 'document' | 'case' | 'evidenc
   pageRankScore: number;
   inboundLinks: Set<string>;
   outboundLinks: Set<string>;
-  features: {, textLength: number;, citationCount: number;
+  features: { textLength: number;, citationCount: number;
     viewCount: number;
     recencyScore: number;
     authorityScore: number;
   };
-}
-export interface GraphEdge {, source: string;, target: string;
+} }
+export interface GraphEdge { source: string;, target: string;
   weight: number;
   type: 'citation' | 'similarity' | 'reference' | 'dependency' | 'semantic';
   confidence: number;
-  metadata: {, strength: number;, frequency: number;
+  metadata: { strength: number;, frequency: number;
     context: string[];
     timestamp: number;
   };
-}
+} }
 export interface SimilarityQuery {
   queryVector?: Float32Array;
   queryText?: string;
@@ -51,22 +51,22 @@ export interface SimilarityQuery {
     minPageRank?: number;
     tags?: string[];
   };
-  ranking: {, usePageRank: boolean;, useSemanticSimilarity: boolean;
+  ranking: { usePageRank: boolean;, useSemanticSimilarity: boolean;
     useRecencyBoost: boolean;
     useAuthorityBoost: boolean;
     combinationStrategy: 'weighted' | 'product' | 'harmonic' | 'adaptive';
   };
   limit: number;
   offset: number;
-}
-export interface SimilarityResult {, node: GraphNode;, scores: {, pageRank: number;, semanticSimilarity: number;
+} }
+export interface SimilarityResult { node: GraphNode;, scores: { pageRank: number;, semanticSimilarity: number;
     recencyScore: number;
     authorityScore: number;
     combinedScore: number;
   };
   rank: number;
   explanation: string[];
-}
+} }
 // === PageRank Similarity Retrieval System ===
 export class PageRankSimilarityRetrieval extends EventEmitter {
   private config: PageRankConfig;
@@ -78,11 +78,10 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
   private cudaServiceUrl = 'http://localhost:8095';
   // Caching for performance
   private similarityCache = new Map<string, SimilarityResult[]>();
-  private pageRankCache: {, scores: Map<string, number>; timestamp: number } | null = null;
+  private pageRankCache: { scores: Map<string, number>; timestamp: number } }| null = null;
   private cacheExpirationMs = 60 * 60 * 1000; // 1 hour
   // Performance metrics
-  private metrics = {
-   , graphNodes: 0,
+  private metrics = { graphNodes: 0,
     graphEdges: 0,
     pageRankIterations: 0,
     lastPageRankTime: 0,
@@ -94,7 +93,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
   constructor(config: PageRankConfig) {
     super();
     this.config = config;
-  }
+  } }
   // === Initialization ===
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -105,12 +104,12 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       // Perform initial PageRank calculation
       await this.calculatePageRank();
       this.isInitialized = true;
-      console.log(`✅ PageRank system initialized with ${this.graph.size} nodes and ${this.getTotalEdges()} edges`);
-    } catch (error: any) {
+      console.log(`✅ PageRank system initialized with ${this.graph.size} }nodes and ${this.getTotalEdges()} }edges`);
+    } }catch (error: any) {
       console.error('❌ Failed to initialize PageRank system:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   // === Graph Building ===
   async loadGraphFromSources(): Promise<void> {
     console.log('📚 Loading graph from multiple sources...');
@@ -121,14 +120,13 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       this.loadFromQdrant(),
       this.loadFromCacheSystem(),
     ]);
-    console.log(`📊 Loaded ${this.graph.size} nodes from all sources`);
-  }
+    console.log(`📊 Loaded ${this.graph.size} }nodes from all sources`);
+  } }
   private async loadFromPostgreSQL(): Promise<void> {
     console.log('🐘 Loading legal documents from PostgreSQL...');
     // Simulate loading legal documents with pgvector embeddings
     const sampleDocuments = [
-      {,
-        id: 'doc_legal_001',
+      { id: 'doc_legal_001',
         title: 'Contract Law Fundamentals',
         content: 'Comprehensive overview of contract formation, performance, and breach...',
         tags: ['contract', 'law', 'fundamentals'],
@@ -171,8 +169,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       this.addNode({
         id: doc.id,
         type: 'document',
-        metadata: {
-         , title: doc.title,
+        metadata: { title: doc.title,
           content: doc.content,
           tags: doc.tags,
           timestamp: Date.now(),
@@ -182,16 +179,15 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         pageRankScore: 0,
         inboundLinks: new Set(),
         outboundLinks: new Set(),
-        features: {
-         , textLength: doc.content.length,
+        features: { textLength: doc.content.length,
           citationCount: doc.citationCount,
           viewCount: doc.viewCount,
           recencyScore: 0.9,
           authorityScore: Math.min(1, doc.citationCount / 100)
-        }
+        } }
       });
-    }
-  }
+    } }
+  } }
   private async loadFromNeo4j(): Promise<void> {
     console.log('🕸️ Loading graph relationships from Neo4j...');
     // Simulate loading relationships between legal entities
@@ -200,14 +196,12 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       { source: 'doc_legal_002', target: 'doc_legal_003', type: 'reference', weight: 0.6 },
       { source: 'doc_legal_003', target: 'doc_legal_001', type: 'similarity', weight: 0.7 },
       { source: 'case_smith_v_jones', target: 'doc_legal_001', type: 'citation', weight: 0.9 },
-      { source: 'case_smith_v_jones', target: 'doc_legal_003', type: 'reference', weight: 0.5 }
+      { source: 'case_smith_v_jones', target: 'doc_legal_003', type: 'reference', weight: 0.5 } }
     ];
     // Add case nodes
-    this.addNode({
-     , id: 'case_smith_v_jones',
+    this.addNode({ id: 'case_smith_v_jones',
       type: 'case',
-      metadata: {
-       , title: 'Smith v. Jones',
+      metadata: { title: 'Smith v. Jones',
         content: 'Landmark contract dispute case...',
         tags: ['case', 'contract', 'dispute'],
         timestamp: Date.now() - 86400000, // 1 day ago
@@ -216,13 +210,12 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       pageRankScore: 0,
       inboundLinks: new Set(),
       outboundLinks: new Set(),
-      features: {
-       , textLength: 5000,
+      features: { textLength: 5000,
         citationCount: 120,
         viewCount: 3500,
         recencyScore: 0.95,
         authorityScore: 1.0
-      }
+      } }
     });
     // Add relationships
     for (const rel of sampleRelationships) {
@@ -232,50 +225,47 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         weight: rel.weight,
         type: rel.type, as: any,
         confidence: 0.8,
-        metadata: {
-         , strength: rel.weight,
+        metadata: { strength: rel.weight,
           frequency: 1,
           context: [rel.type],
           timestamp: Date.now()
-        }
+        } }
       });
-    }
-  }
+    } }
+  } }
   private async loadFromQdrant(): Promise<void> {
     console.log('🏷️ Loading tagged content from Qdrant...');
     // Simulate loading tagged legal concepts
     const concepts = [
       { id: 'concept_negligence', tags: ['negligence', 'tort', 'duty'], importance: 0.9 },
       { id: 'concept_contract_formation', tags: ['contract', 'offer', 'acceptance'], importance: 0.85 },
-      { id: 'concept_evidence_admissibility', tags: ['evidence', 'admissible', 'hearsay'], importance: 0.8 }
+      { id: 'concept_evidence_admissibility', tags: ['evidence', 'admissible', 'hearsay'], importance: 0.8 } }
     ];
     for (const concept of concepts) {
       this.addNode({
         id: concept.id,
         type: 'concept',
-        metadata: {
-         , tags: concept.tags,
+        metadata: { tags: concept.tags,
           timestamp: Date.now(),
           importance: concept.importance,
           category: `concept` }, as: any,
         pageRankScore: 0,
         inboundLinks: new Set(),
         outboundLinks: new Set(),
-        features: {
-         , textLength: 500,
+        features: { textLength: 500,
           citationCount: 0,
           viewCount: 100,
           recencyScore: 0.7,
           authorityScore: concept.importance
-        }
+        } }
       });
-    }
-  }
+    } }
+  } }
   private async loadFromCacheSystem(): Promise<void> {
     console.log('💾 Loading cached entities...');
     // This would load frequently accessed entities from cache
     // For now, just mark that cache integration is available
-  }
+  } }
   // === PageRank Algorithm Implementation ===
   async calculatePageRank(): Promise<Map<string, number>> {
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
@@ -285,14 +275,14 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       console.log('📊 Using cached PageRank scores');
       this.pageRankScores = new Map(this.pageRankCache.scores);
       return this.pageRankScores;
-    }
+    } }
     try {
       let scores: Map<string, number>;
       if (this.config.enableGPUAcceleration) {
         scores = await this.calculatePageRankWithGPU();
-      } else {
+      } }else {
         scores = await this.calculatePageRankWithCPU();
-      }
+      } }
       this.pageRankScores = scores;
       // Update cached scores
       this.pageRankCache = {
@@ -304,19 +294,19 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         const node = this.graph.get(nodeId);
         if (node) {
           node.pageRankScore = score;
-        }
-      }
+        } }
+      } }
       const processingTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime;
       this.metrics.lastPageRankTime = processingTime;
       console.log(`✅ PageRank completed in ${processingTime.toFixed(2)}ms`);
       console.log(`📈 Average PageRank score: ${this.calculateAverageScore(scores).toFixed(4)}`);
       this.emit('pageRankComplete', { scores, processingTime });
       return scores;
-    } catch (error: any) {
-      console.error('❌ PageRank calculation error:', error);'
+    } }catch (error: any) {
+      console.error('❌ PageRank calculation error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   private async calculatePageRankWithGPU(): Promise<Map<string, number>> {
     console.log('🚀 Using GPU acceleration for PageRank');
     try {
@@ -334,16 +324,15 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
             const targetIndex = nodeIds.indexOf(edge.target);
             if (targetIndex !== -1) {
               adjacencyArray[i * n + targetIndex] = edge.weight / outDegree;
-            }
-          }
-        }
-      }
+            } }
+          } }
+        } }
+      } }
       // Call CUDA service for PageRank computation
       const response = await fetch(`${this.cudaServiceUrl}/api/v2/gpu/pagerank`, {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , adjacencyMatrix: Array.from(adjacencyArray),
+        body: JSON.stringify({ adjacencyMatrix: Array.from(adjacencyArray),
           nodeCount: n,
           dampingFactor: this.config.dampingFactor,
           maxIterations: this.config.maxIterations,
@@ -356,18 +345,18 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         const returnedScores = Array.isArray(result.pageRankScores) ? result.pageRankScores : [];
         for (let i = 0; i < nodeIds.length; i++) {
           scores.set(nodeIds[i], returnedScores[i] ?? 0);
-        }
+        } }
         this.metrics.gpuAccelerationUsed++;
         this.metrics.pageRankIterations = result.iterations ?? this.metrics.pageRankIterations;
         return scores;
-      } else {
+      } }else {
         throw new Error(`GPU PageRank failed: ${response.status}`);
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       console.warn('⚠️ GPU PageRank failed, falling back to CPU:', error);
       return this.calculatePageRankWithCPU();
-    }
-  }
+    } }
+  } }
   private async calculatePageRankWithCPU(): Promise<Map<string, number>> {
     console.log('💻 Using CPU for PageRank calculation');
     const nodeIds = Array.from(this.graph.keys());
@@ -380,14 +369,14 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
     for (const nodeId of nodeIds) {
       scores.set(nodeId, initialScore);
       nextScores.set(nodeId, 0);
-    }
+    } }
     let iterations = 0;
     let convergence = $state<boolean>(false);
     while (iterations < this.config.maxIterations && !convergence) {
       // Reset next scores
       for (const nodeId of nodeIds) {
         nextScores.set(nodeId, (1 - this.config.dampingFactor) / n);
-      }
+      } }
       // Calculate new scores
       for (const sourceId of nodeIds) {
         const edges = this.edges.get(sourceId) || [];
@@ -398,25 +387,25 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
           for (const edge of edges) {
             const targetScore = nextScores.get(edge.target) || 0;
             nextScores.set(edge.target, targetScore + contribution * edge.weight);
-          }
-        }
-      }
+          } }
+        } }
+      } }
       // Check for convergence
       let totalDifference = 0;
       for (const nodeId of nodeIds) {
         const oldScore = scores.get(nodeId) || 0;
         const newScore = nextScores.get(nodeId) || 0;
         totalDifference += Math.abs(newScore - oldScore);
-      }
+      } }
       convergence = totalDifference < this.config.convergenceThreshold;
       // Swap score maps
       [scores, nextScores] = [nextScores, scores];
       iterations++;
-    }
+    } }
     this.metrics.pageRankIterations = iterations;
-    console.log(`🔄 PageRank converged in ${iterations} iterations`);
+    console.log(`🔄 PageRank converged in ${iterations} }iterations`);
     return scores;
-  }
+  } }
   // === Similarity Search ===
   async searchSimilar(query: SimilarityQuery): Promise<SimilarityResult[]> {
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
@@ -428,25 +417,25 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         console.log('📊 Cache hit for similarity query');
         this.updateCacheHitRatio(true);
         return this.similarityCache.get(cacheKey)!;
-      }
+      } }
       // Get query vector
       let queryVector: Float32Array;
       if (query.queryVector) {
         queryVector = query.queryVector;
-      } else if (query.queryText) {
+      } }else if (query.queryText) {
         queryVector = await this.generateEmbedding(query.queryText);
-      } else if (query.queryNodeId) {
+      } }else if (query.queryNodeId) {
         const node = this.graph.get(query.queryNodeId);
         if (!node || !node.embedding) {
           throw new Error('Query node not found or has no embedding');
-        }
+        } }
         queryVector = node.embedding;
-      } else {
+      } }else {
         throw new Error('No query vector, text, or node ID provided');
-      }
+      } }
       // Filter candidate nodes
       const candidates = this.filterCandidateNodes(query.filters);
-      console.log(`🎯 Found ${candidates.length} candidate nodes`);
+      console.log(`🎯 Found ${candidates.length} }candidate nodes`);
       // Calculate similarity scores
       const results: SimilarityResult[] = [];
       for (const node of candidates) {
@@ -469,7 +458,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
           explanation: this.generateExplanation(scores, query.ranking)
         };
         results.push(result);
-      }
+      } }
       // Sort by combined score
       results.sort((a, b) => b.scores.combinedScore - a.scores.combinedScore);
       // Set ranks and apply pagination
@@ -484,7 +473,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       this.metrics.averageQueryTime = (this.metrics.averageQueryTime + queryTime) / 2;
       this.metrics.queriesProcessed++;
       console.log(`✅ Similarity search completed in ${queryTime.toFixed(2)}ms`);
-      console.log(`📊 Returning ${paginatedResults.length} results`);
+      console.log(`📊 Returning ${paginatedResults.length} }results`);
       this.emit('similaritySearchComplete', {
         query,
         results: paginatedResults,
@@ -492,73 +481,73 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         queryTime
       });
       return paginatedResults;
-    } catch (error: any) {
-      console.error('❌ Similarity search error:', error);'
+    } }catch (error: any) {
+      console.error('❌ Similarity search error:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   // === Helper Methods ===
   private addNode(node: GraphNode): void {
     this.graph.set(node.id, node);
     this.metrics.graphNodes = this.graph.size;
-  }
+  } }
   private addEdge(edge: GraphEdge): void {
     // Add to edges map
     if (!this.edges.has(edge.source)) {
       this.edges.set(edge.source, []);
-    }
+    } }
     this.edges.get(edge.source)!.push(edge);
     // Update adjacency matrix
     if (!this.adjacencyMatrix.has(edge.source)) {
       this.adjacencyMatrix.set(edge.source, new Map());
-    }
+    } }
     this.adjacencyMatrix.get(edge.source)!.set(edge.target, edge.weight);
     // Update node connections
     const sourceNode = this.graph.get(edge.source);
     const targetNode = this.graph.get(edge.target);
     if (sourceNode) {
       sourceNode.outboundLinks.add(edge.target);
-    }
+    } }
     if (targetNode) {
       targetNode.inboundLinks.add(edge.source);
-    }
+    } }
     this.metrics.graphEdges = this.getTotalEdges();
-  }
+  } }
   private getTotalEdges(): number {
     return Array.from(this.edges.values()).reduce((sum, edges) => sum + edges.length, 0);
-  }
+  } }
   private filterCandidateNodes(filters: SimilarityQuery['filters']): GraphNode[] {
     const candidates = Array.from(this.graph.values());
     return candidates.filter(node => {
       // Node type filter
       if (filters.nodeTypes && !filters.nodeTypes.includes(node.type)) {
         return false;
-      }
+      } }
       // Category filter
       if (filters.categories && !filters.categories.includes(node.metadata.category)) {
         return false;
-      }
+      } }
       // Date range filter
       if (filters.dateRange) {
         const nodeDate = new Date(node.metadata.timestamp);
         if (nodeDate < filters.dateRange.start || nodeDate > filters.dateRange.end) {
           return false;
-        }
-      }
+        } }
+      } }
       // Minimum PageRank filter
       if (filters.minPageRank !== undefined && node.pageRankScore < filters.minPageRank) {
         return false;
-      }
+      } }
       // Tags filter
       if (filters.tags && filters.tags.length > 0) {
         const hasMatchingTag = filters.tags.some(tag => (node.metadata.tags || []).includes(tag));
         if (!hasMatchingTag) {
           return false;
-        }
-      }
+        } }
+      } }
       return true;
     });
-  }
+  } }
   private calculateCosineSimilarity(vec1: Float32Array, vec2: Float32Array): number {
     if (vec1.length !== vec2.length) return 0;
     let dotProduct = 0;
@@ -568,16 +557,16 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       dotProduct += vec1[i] * vec2[i];
       norm1 += vec1[i] * vec1[i];
       norm2 += vec2[i] * vec2[i];
-    }
+    } }
     const magnitude = Math.sqrt(norm1) * Math.sqrt(norm2);
     return magnitude === 0 ? 0 : dotProduct / magnitude;
-  }
+  } }
   private calculateRecencyScore(timestamp: number): number {
     const now = Date.now();
     const age = now - timestamp;
     const maxAge = 365 * 24 * 60 * 60 * 1000; // 1 year in ms
     return Math.max(0, 1 - age / maxAge);
-  }
+  } }
   private calculateCombinedScore(scores: SimilarityResult['scores'], ranking: SimilarityQuery['ranking']): number {
     const weights = {
       pageRank: ranking.usePageRank ? 0.3 : 0,
@@ -611,7 +600,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
           1 / (scores.recencyScore + 0.001) +
           1 / (scores.authorityScore + 0.001);
         return, 4 / reciprocalSum;
-      }
+      } }
       case, 'adaptive': {
         const maxScore = Math.max(
           scores.pageRank,
@@ -625,28 +614,28 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
             ...ranking,
             combinationStrategy: `weighted` }) * adaptiveWeight
         );
-      }
+      } }
       default: return this.calculateCombinedScore(scores, {
           ...ranking,
           combinationStrategy: `weighted` });
-    }
-  }
+    } }
+  } }
   private generateExplanation(scores: SimilarityResult['scores'], ranking: SimilarityQuery['ranking']): string[] {
     const explanations: string[] = [];
     if (ranking.usePageRank && scores.pageRank > 0) {
       explanations.push(`High authority score (${(scores.pageRank * 100).toFixed(1)}% PageRank)`);
-    }
+    } }
     if (ranking.useSemanticSimilarity && scores.semanticSimilarity > 0.7) {
       explanations.push(`Strong semantic similarity (${(scores.semanticSimilarity * 100).toFixed(1)}%)`);
-    }
+    } }
     if (ranking.useRecencyBoost && scores.recencyScore > 0.8) {
       explanations.push(`Recent content (${(scores.recencyScore * 100).toFixed(1)}% recency)`);
-    }
+    } }
     if (ranking.useAuthorityBoost && scores.authorityScore > 0.7) {
       explanations.push(`Authoritative source (${(scores.authorityScore * 100).toFixed(1)}% authority)`);
-    }
+    } }
     return explanations;
-  }
+  } }
   private generateCacheKey(query: SimilarityQuery): string {
     // Create a deterministic cache key from query parameters
     const keyParts = [
@@ -664,19 +653,19 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       const char = str.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
-    }
+    } }
     return `similarity_${Math.abs(hash).toString(36)}`;
-  }
+  } }
   private updateCacheHitRatio(isHit: boolean): void {
     const totalQueries = this.metrics.queriesProcessed + 1;
     const hits = isHit ? 1 : 0;
     this.metrics.cacheHitRatio = (this.metrics.cacheHitRatio * this.metrics.queriesProcessed + hits) / totalQueries;
-  }
+  } }
   private calculateAverageScore(scores: Map<string, number>): number {
     if (scores.size === 0) return 0;
     const total = Array.from(scores.values()).reduce((sum, score) => sum + score, 0);
     return total / scores.size;
-  }
+  } }
   private async generateEmbedding(text: string): Promise<Float32Array> {
     try {
       const response = await fetch(`${this.cudaServiceUrl}/api/v2/gpu/embedding`, {
@@ -688,24 +677,23 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         const result = await response.json();
         if (result && Array.isArray(result.embedding)) {
           return new Float32Array(result.embedding);
-        }
-      }
-    } catch (error: any) {
+        } }
+      } }
+    } }catch (error: any) {
       console.warn('Embedding generation failed:', error);
-    }
+    } }
     // Fallback: generate random embedding
     const fallback = new Float32Array(384);
     for (let i = 0; i < 384; i++) fallback[i] = Math.random();
     return fallback;
-  }
+  } }
   // === Public API ===
   async addDocument(id: string, content: string, metadata: any, embedding?: Float32Array): Promise<void> {
     const nodeEmbedding = embedding || (await this.generateEmbedding(content));
     this.addNode({
       id,
       type: 'document',
-      metadata: {
-       , title: metadata.title,
+      metadata: { title: metadata.title,
         content,
         tags: metadata.tags || [],
         timestamp: Date.now(),
@@ -715,18 +703,17 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       pageRankScore: 0,
       inboundLinks: new Set(),
       outboundLinks: new Set(),
-      features: {
-       , textLength: content.length,
+      features: { textLength: content.length,
         citationCount: metadata.citationCount || 0,
         viewCount: metadata.viewCount || 0,
         recencyScore: 1.0,
         authorityScore: metadata.authorityScore || 0.5
-      }
+      } }
     });
     // Invalidate PageRank cache
     this.pageRankCache = null;
     this.similarityCache.clear();
-  }
+  } }
   async addRelationship(
     sourceId: string,
     targetId: string,
@@ -739,39 +726,38 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       weight,
       type,
       confidence: 0.8,
-      metadata: {
-       , strength: weight,
+      metadata: { strength: weight,
         frequency: 1,
         context: [type],
         timestamp: Date.now()
-      }
+      } }
     });
     // Invalidate PageRank cache
     this.pageRankCache = null;
-  }
+  } }
   getNode(id: string): GraphNode | undefined {
     return this.graph.get(id);
-  }
+  } }
   getNodesByType(type: GraphNode['type']): GraphNode[] {
     return Array.from(this.graph.values()).filter(node => node.type === type);
-  }
+  } }
   getTopPageRankNodes(limit: number = 10): GraphNode[] {
     return Array.from(this.graph.values())
       .sort((a, b) => b.pageRankScore - a.pageRankScore)
       .slice(0, limit);
-  }
+  } }
   async refreshPageRank(): Promise<void> {
     this.pageRankCache = null;
     await this.calculatePageRank();
-  }
+  } }
   clearCache(): void {
     this.similarityCache.clear();
     this.pageRankCache = null;
     console.log('🧹 Cache cleared');
-  }
+  } }
   getMetrics() {
     return { ...this.metrics };
-  }
+  } }
   getGraphStats() {
     return {
       nodes: this.metrics.graphNodes,
@@ -783,8 +769,8 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
         pageRank: node.pageRankScore
       }))
     };
-  }
-}
+  } }
+} }
 // === Configuration Factory ===
 export const createDefaultPageRankConfig = (): PageRankConfig => ({
   dampingFactor: 0.85,
@@ -797,3 +783,4 @@ export const createDefaultPageRankConfig = (): PageRankConfig => ({
 });
 // === Export singleton ===
 export const pageRankSimilarityRetrieval = new PageRankSimilarityRetrieval(createDefaultPageRankConfig());
+

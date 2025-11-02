@@ -8,14 +8,14 @@
  * - case-navigation.ts
  *
  *, Usage:
- *   import { caseStore } from '$lib/stores/unified';
+ *   import { caseStore } }from '$lib/stores/unified';
  *
  *   await caseStore.loadCases();
  *   caseStore.selectCase(caseId);
  *   $: activeCase = $caseStore.activeCase;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } }from 'svelte/store';
 
 /**
  * Types
@@ -41,15 +41,15 @@ export interface Case { id: string;, title: string;
   citationCount: number;
   createdAt: number;
   updatedAt: number;
-}
+} }
 
-export interface CaseFilters {, statuses: CaseStatus[];, priorities: CasePriority[];
+export interface CaseFilters { statuses: CaseStatus[];, priorities: CasePriority[];
   jurisdictions: string[];
-  dateRange?: {, start: number;, end: number;
+  dateRange?: { start: number;, end: number;
   };
   tags?: string[];
   searchText?: string;
-}
+} }
 
 /**
  * Case Store State
@@ -81,17 +81,15 @@ interface CaseStoreState {
   isLoading: boolean;
   error: string | null;
   lastUpdated: number;
-}
+} }
 
-const initialFilters: CaseFilters = {
- , statuses: [],
+const initialFilters: CaseFilters = { statuses: [],
   priorities: [],
   jurisdictions: [],
   tags: []
 };
 
-const initialState: CaseStoreState = {
- , cases: [],
+const initialState: CaseStoreState = { cases: [],
   filteredCases: [],
   activeCase: null,
   activeCaseId: null,
@@ -112,7 +110,7 @@ const initialState: CaseStoreState = {
  * Create Case Store
  */
 function createCaseStore() {
-  const { subscribe, update } = writable<CaseStoreState>(initialState);
+  const { subscribe, update } }= writable<CaseStoreState>(initialState);
 
   return {
     subscribe,
@@ -143,13 +141,13 @@ function createCaseStore() {
             casesByPriority: this._groupByPriority(cases),
             isLoading: false
           }));
-        } else {
+        } }else {
           throw new Error('Failed to load cases');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to load cases';
         update(s => ({ ...s, error: errorMsg, isLoading: false }));
-      }
+      } }
     },
 
     // ========== CASE SELECTION ==========
@@ -287,13 +285,13 @@ function createCaseStore() {
           }));
 
           return newCase;
-        } else {
+        } }else {
           throw new Error('Failed to create case');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to create case';
         throw new Error(errorMsg);
-      }
+      } }
     },
 
     /**
@@ -312,19 +310,19 @@ function createCaseStore() {
 
           update(s => ({
             ...s,
-            cases: s.cases.map(c => (c.id === id ? { ...c, ...updated } : c)),
-            filteredCases: s.filteredCases.map(c => (c.id === id ? { ...c, ...updated } : c)),
-            activeCase: s.activeCase?.id === id ? { ...s.activeCase, ...updated } : s.activeCase
+            cases: s.cases.map(c => (c.id === id ? { ...c, ...updated } }: c)),
+            filteredCases: s.filteredCases.map(c => (c.id === id ? { ...c, ...updated } }: c)),
+            activeCase: s.activeCase?.id === id ? { ...s.activeCase, ...updated } }: s.activeCase
           }));
 
           return updated;
-        } else {
+        } }else {
           throw new Error('Failed to update case');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to update case';
         throw new Error(errorMsg);
-      }
+      } }
     },
 
     /**
@@ -344,13 +342,13 @@ function createCaseStore() {
             activeCase: s.activeCase?.id === id ? null : s.activeCase,
             totalCases: s.totalCases - 1
           }));
-        } else {
+        } }else {
           throw new Error('Failed to delete case');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to delete case';
         throw new Error(errorMsg);
-      }
+      } }
     },
 
     /**
@@ -416,11 +414,11 @@ function createCaseStore() {
             const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
             comparison = priorityOrder[a.priority] - priorityOrder[b.priority];
             break;
-          }
+          } }
           case, 'status':
             comparison = a.status.localeCompare(b.status);
             break;
-        }
+        } }
 
         return state.sortDirection === 'asc' ? comparison : -comparison;
       });
@@ -440,9 +438,9 @@ function createCaseStore() {
         grouped.set(c.priority, (grouped.get(c.priority) || 0) + 1);
       });
       return grouped;
-    }
+    } }
   };
-}
+} }
 
 /**
  * Export singleton instance
@@ -472,13 +470,14 @@ export const activeCase = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { cases, selectCase } from '$lib/stores/cases'
- *   import { casesStore } from '$lib/stores/casesStore'
+ *   import { cases, selectCase } }from '$lib/stores/cases'
+ *   import { casesStore } }from '$lib/stores/casesStore'
  *
  * New imports:
- *   import { caseStore, cases, filteredCases, activeCase } from '$lib/stores/unified'
+ *   import { caseStore, cases, filteredCases, activeCase } }from '$lib/stores/unified'
  *
  * Usage patterns:
- *  ;, Old: $cases, $casesStore
+ *  ; Old: $cases, $casesStore
  *   New: $cases or $filteredCases from unified
  */
+

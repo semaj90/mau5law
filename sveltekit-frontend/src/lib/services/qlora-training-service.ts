@@ -1,23 +1,23 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * QLorA Training Service - Enhanced with GPU-Aware Cache
  * Low-Rank Adaptation training integration for legal document fine-tuning
  * Supports checkbox toggle for .case files and reinforcement learning analytics
  * Now with RTX Tensor Core optimization and multi-tier caching
  */
-import { writable, derived } from 'svelte/store';
-import type { Writable, Readable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { writable, derived } }from 'svelte/store';
+import type { Writable, Readable } }from 'svelte/store';
+import { browser } }from '$app/environment';
 // Import existing services
-import { recommendationOrchestrator } from './recommendation-orchestrator.js';
-import { vectorService } from './postgresql-vector-service.js';
+import { recommendationOrchestrator } }from './recommendation-orchestrator.js';
+import { vectorService } }from './postgresql-vector-service.js';
 // Import GPU-aware cache system
-import { gpuAwareCache, type LegalGPUAwareCache } from './gpu-aware-legal-cache.js';
+import { gpuAwareCache, type LegalGPUAwareCache } }from './gpu-aware-legal-cache.js';
 
 // Define an interface for the recommendation orchestrator to avoid using: 'any'
 interface IRecommendationOrchestrator {
   addRecommendation(recommendation: Recommendation): void;
-}
+} }
 
 export interface Recommendation { id: string;, type: 'ai' | 'user' | 'system';
   title: string;
@@ -27,7 +27,7 @@ export interface Recommendation { id: string;, type: 'ai' | 'user' | 'system';
  , source: string;
   action?: () => unknown;
   createdAt: number;
-}
+} }
 
 export interface CaseFileContent {
   id?: string;
@@ -40,79 +40,79 @@ export interface CaseFileContent {
   precedents?: any[];
   jurisdiction?: string;
   practiceArea?: string;
-  legalIssues?: Array<{ description: string; analysis?: string } | string>;
-  evidence?: Array<{ description: string; type?: string; analysis?: string } | string>;
+  legalIssues?: Array<{ description: string; analysis?: string } }| string>;
+  evidence?: Array<{ description: string; type?: string; analysis?: string } }| string>;
   conclusions?: string;
-}
+} }
 
-interface WorkerProgressData {, progress: Partial<TrainingJob['progress']>;, metrics: Partial<TrainingJob['metrics']>;
+interface WorkerProgressData { progress: Partial<TrainingJob['progress']>;, metrics: Partial<TrainingJob['metrics']>;
   reinforcementLearning?: Partial<TrainingJob['reinforcementLearning']>;
-}
+} }
 
 interface WorkerCompletionData {
   finalLoss?: number;
   modelPath: string;
-}
+} }
 
 interface WorkerErrorData {
   error: string;
-}
+} }
 
-interface WorkerReinforcementData {, reward: number;, action: string;
+interface WorkerReinforcementData { reward: number;, action: string;
   state: any;
-}
+} }
 
 interface AnalyticsData {
   duration?: number;
   error?: string;
   [key: string]: any;
-}
+} }
 
-export interface QLorATrainingConfig {, enabled: boolean;, modelName: string;
+export interface QLorATrainingConfig { enabled: boolean;, modelName: string;
   rank: number;
   alpha: number;
   targetModules: string[];
-  trainingParams: {, learningRate: number;, batchSize: number;
+  trainingParams: { learningRate: number;, batchSize: number;
     epochs: number;
     warmupSteps: number;
     saveSteps: number;
   };
-  datasetConfig: {, maxLength: number;, promptTemplate: string;
+  datasetConfig: { maxLength: number;, promptTemplate: string;
     validationSplit: number;
   };
   outputDir: string;
   useReinforcementLearning: boolean;
   enableUserAnalytics: boolean;
-}
-export interface TrainingDataPoint {, id: string;, caseId: string;
+} }
+export interface TrainingDataPoint { id: string;, caseId: string;
   prompt: string;
   completion: string;
-  metadata: {, documentType: 'case' | 'evidence' | 'brief' | 'statute';, jurisdiction: string;
+  metadata: { documentType: 'case' | 'evidence' | 'brief' | 'statute';, jurisdiction: string;
     practiceArea: string;
     complexity: number;
-    userInteraction: {, timeSpent: number;, corrections: number;
+    userInteraction: { timeSpent: number;, corrections: number;
       confidence: number;
       feedback: string;
     };
   };
   createdAt: number;
   embedding?: Float32Array;
-}
-export interface TrainingJob {, id: string;, status: 'queued' | 'running' | 'completed' | 'failed' | 'paused';
+} }
+export interface TrainingJob { id: string;, status: 'queued' | 'running' | 'completed' | 'failed' | 'paused';
   config: QLorATrainingConfig;
   dataPoints: TrainingDataPoint[];
-  progress: {, currentEpoch: number;, totalEpochs: number;
+  progress: { currentEpoch: number;, totalEpochs: number;
     currentStep: number;
     totalSteps: number;
     loss: number;
     accuracy: number;
     validationLoss: number;
   };
-  metrics: {, trainingTime: number;, memoryUsage: number;
+  metrics: { trainingTime: number;, memoryUsage: number;
     gpuUtilization: number;
     throughput: number; // tokens/second
   };
-  reinforcementLearning: {, episodes: number;, averageReward: number;
+  reinforcementLearning: { episodes: number;, averageReward: number;
     bestReward: number;
     explorationRate: number;
   };
@@ -120,30 +120,30 @@ export interface TrainingJob {, id: string;, status: 'queued' | 'running' | 'co
   startedAt?: number;
   completedAt?: number;
   error?: string;
-}
+} }
 
-export interface UserInteraction {, timestamp: number;, action: string;
+export interface UserInteraction { timestamp: number;, action: string;
   target: string;
   duration: number;
   context: AnalyticsData;
   outcome: 'success' | 'failed';
-}
+} }
 
-export interface UserAnalytics {, userId: string;, sessionId: string;
+export interface UserAnalytics { userId: string;, sessionId: string;
   interactions: UserInteraction[];
-  preferences: {, preferredComplexity: number;, commonQueries: string[];
+  preferences: { preferredComplexity: number;, commonQueries: string[];
    , documentTypes: Record<string, number>;
     timePatterns: Record<string, number>;
   };
-  performance: {, averageTaskTime: number;, accuracyRate: number;
+  performance: { averageTaskTime: number;, accuracyRate: number;
     productivityScore: number;
     learningVelocity: number;
   };
-  reinforcementProfile: {, rewardHistory: number[];, actionPreferences: Record<string, number>;
+  reinforcementProfile: { rewardHistory: number[];, actionPreferences: Record<string, number>;
     explorationTendency: number;
     adaptationRate: number;
   };
-}
+} }
 export class QLorATrainingService {
   private config: Writable<QLorATrainingConfig>;
   private currentJob: Writable<TrainingJob | null>;
@@ -165,16 +165,14 @@ export class QLorATrainingService {
       rank: 16,
       alpha: 32,
       targetModules: ['c_attn', 'c_proj', 'c_fc'],
-      trainingParams: {
-       , learningRate: 2e-4,
+      trainingParams: { learningRate: 2e-4,
         batchSize: 4,
         epochs: 3,
         warmupSteps: 100,
         saveSteps: 500
       },
-      datasetConfig: {
-       , maxLength: 2048,
-        promptTemplate: 'Legal;, Context: {context}\nQuery: {query}\nResponse: {response}',
+      datasetConfig: { maxLength: 2048,
+        promptTemplate: 'Legal; Context: {context}\nQuery: {query}\nResponse: {response} },
         validationSplit: 0.1
       },
       outputDir: './models/qlora-legal',
@@ -185,7 +183,7 @@ export class QLorATrainingService {
     this.trainingHistory = writable<TrainingJob[]>([]);
     this.userAnalytics = writable<UserAnalytics | null>(null);
     this.initializeService();
-  }
+  } }
   /**
    * Initialize QLorA training service with analytics
    */
@@ -199,10 +197,10 @@ export class QLorATrainingService {
       // Load existing training history
       await this.loadTrainingHistory();
       console.log('🔬 QLorA Training Service initialized successfully');
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Failed to initialize QLorA Training Service:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Initialize Web Worker for training operations
    */
@@ -210,7 +208,7 @@ export class QLorATrainingService {
     try {
       this.worker = new Worker('/workers/qlora-trainer.js');
       this.worker.onmessage = event => {
-        const { type, data } = event.data;
+        const { type, data } }= event.data;
         switch (type) {
           case, 'training_progress':
             this.updateTrainingProgress(data);
@@ -224,21 +222,20 @@ export class QLorATrainingService {
           case, 'reinforcement_update':
             this.handleReinforcementUpdate(data);
             break;
-        }
+        } }
       }; // Corrected closing brace position
       // Initialize worker with configuration
       this.worker.postMessage({
         type: 'init',
-        config: {
-         , modelPath: '/models/legal-ai-base',
+        config: { modelPath: '/models/legal-ai-base',
           cachePath: '/cache/qlora-training',
           enableGPU: true
-        }
+        } }
       });
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to initialize training worker:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Setup user analytics collection with privacy considerations
    */
@@ -251,31 +248,28 @@ export class QLorATrainingService {
       userId,
       sessionId,
       interactions: [],
-      preferences: {
-       , preferredComplexity: 0.5,
+      preferences: { preferredComplexity: 0.5,
         commonQueries: [],
         documentTypes: {},
-        timePatterns: {}
+        timePatterns: {} }
       },
-      performance: {
-       , averageTaskTime: 0,
+      performance: { averageTaskTime: 0,
         accuracyRate: 0,
         productivityScore: 0,
         learningVelocity: 0
       },
-      reinforcementProfile: {
-       , rewardHistory: [],
+      reinforcementProfile: { rewardHistory: [],
         actionPreferences: {},
         explorationTendency: 0.3,
         adaptationRate: 0.1
-      }
+      } }
     };
     this.userAnalytics.set(analytics);
     // Start analytics collection timer
     this.analyticsTimer = setInterval(() => {
       this.collectPerformanceMetrics();
     }, 30000); // Every, 30 seconds
-  }
+  } }
   /**
    * Initialize GPU-aware cache system
    */
@@ -285,11 +279,11 @@ export class QLorATrainingService {
         await this.gpuCache.initialize();
         this.gpuCacheInitialized = true;
         console.log('🚀 QLorA Training Service: GPU cache initialized');
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('⚠️ QLorA GPU cache initialization failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Train model on .case files with checkbox toggle - Enhanced with GPU Cache
    */
@@ -297,20 +291,18 @@ export class QLorATrainingService {
     const config = this.getConfigValue(); // Use a helper to get current config value
     if (!config.enabled && !enableToggle) {
       throw new Error('QLorA training is disabled. Enable in settings or use training toggle.');
-    }
+    } }
     // Validate .case files
     const validCaseFiles = caseFiles.filter(file => file.name.endsWith('.case') || file.type === 'application/json');
     if (validCaseFiles.length === 0) {
       throw new Error('No valid .case files found for training');
-    }
+    } }
     // Create training job
-    const job: TrainingJob = {
-     , id: `qlora_job_${Date.now()}`,
+    const job: TrainingJob = { id: `qlora_job_${Date.now()}`,
       status: 'queued',
       config,
       dataPoints: [],
-      progress: {
-       , currentEpoch: 0,
+      progress: { currentEpoch: 0,
         totalEpochs: config.trainingParams.epochs,
         currentStep: 0,
         totalSteps: 0,
@@ -318,14 +310,12 @@ export class QLorATrainingService {
         accuracy: 0,
         validationLoss: 0
       },
-      metrics: {
-       , trainingTime: 0,
+      metrics: { trainingTime: 0,
         memoryUsage: 0,
         gpuUtilization: 0,
         throughput: 0
       },
-      reinforcementLearning: {
-       , episodes: 0,
+      reinforcementLearning: { episodes: 0,
         averageReward: 0,
         bestReward: 0,
         explorationRate: config.useReinforcementLearning ? 0.3 : 0
@@ -343,16 +333,15 @@ export class QLorATrainingService {
     if (this.worker) {
       this.worker.postMessage({
         type: 'start_training',
-        job: {
-         , id: job.id,
+        job: { id: job.id,
           config: job.config,
           dataPoints: job.dataPoints.map(dp => ({
             ...dp,
             embedding: dp.embedding ? Array.from(dp.embedding) : null
           })), // Corrected closing parenthesis
-        }
+        } }
       });
-    }
+    } }
     // Update job status
     job.status = 'running';
     job.startedAt = Date.now();
@@ -362,7 +351,7 @@ export class QLorATrainingService {
     // Generate training recommendations
     await this.generateTrainingRecommendations(job);
     return job;
-  }
+  } }
   /**
    * Process .case files into training data points - Enhanced with GPU Cache
    */
@@ -375,36 +364,33 @@ export class QLorATrainingService {
         const examples = this.extractTrainingExamples(caseData);
 
         for (const example of examples) {
-          const { prompt, completion } = example;
-          const embeddingArr = await this.generateEmbedding(`${prompt} ${completion}`);
-          const dataPoint: TrainingDataPoint = {
-           , id: `dp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          const { prompt, completion } }= example;
+          const embeddingArr = await this.generateEmbedding(`${prompt} }${completion}`);
+          const dataPoint: TrainingDataPoint = { id: `dp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
             caseId: caseData.id || file.name.replace('.case', ''),
             prompt,
             completion,
-            metadata: {
-             , documentType: 'case',
+            metadata: { documentType: 'case',
               jurisdiction: caseData.jurisdiction || 'unknown',
               practiceArea: caseData.practiceArea || 'general',
               complexity: this.calculateCaseComplexity(caseData),
-              userInteraction: {
-               , timeSpent: 0,
+              userInteraction: { timeSpent: 0,
                 corrections: 0,
                 confidence: 0.8,
                 feedback: ''
-              }
+              } }
             },
             createdAt: Date.now(),
             embedding: new Float32Array(embeddingArr)
           };
           dataPoints.push(dataPoint);
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.warn('Failed to process case file:', file.name, error);
-      }
-    }
+      } }
+    } }
     return dataPoints;
-  }
+  } }
   /**
    * Helper method to chunk array into batches
    */
@@ -412,9 +398,9 @@ export class QLorATrainingService {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += chunkSize) {
       chunks.push(array.slice(i, i + chunkSize));
-    }
+    } }
     return chunks;
-  }
+  } }
   /**
    * Calculate case complexity for GPU cache optimization
    */
@@ -429,11 +415,11 @@ export class QLorATrainingService {
     if (caseData.precedents) complexity += caseData.precedents.length * 0.2;
     if (caseData.jurisdiction === 'federal') complexity += 0.3;
     return Math.min(1.0, complexity); // Cap at 1.0
-  }
+  } }
   /**
    * Extract training examples from case data
    */
-  private extractTrainingExamples(caseData: CaseFileContent): Array<{ prompt: string;, completion: string }> {
+  private extractTrainingExamples(caseData: CaseFileContent): Array<{ prompt: string; completion: string }> {
     const examples = [];
     // Extract from case summary
     if (caseData.summary) {
@@ -441,7 +427,7 @@ export class QLorATrainingService {
         prompt: 'Summarize the key facts of this legal case ${caseData.title || 'Legal Case` }`,
         completion: caseData.summary
       });
-    }
+    } }
     // Extract from legal issues
     if (caseData.legalIssues && Array.isArray(caseData.legalIssues)) {
       caseData.legalIssues.forEach(issue => {
@@ -451,7 +437,7 @@ export class QLorATrainingService {
           completion:
             analysis || `This legal issue requires careful analysis of applicable statutes and precedent cases.` });
       });
-    }
+    } }
     // Extract from evidence analysis
     if (caseData.evidence && Array.isArray(caseData.evidence)) {
       caseData.evidence.forEach(evidence => {
@@ -463,16 +449,16 @@ export class QLorATrainingService {
             analysis ||
             `This evidence should be evaluated for relevance, authenticity, and admissibility under applicable rules of evidence.` });
       });
-    }
+    } }
     // Extract from conclusions
     if (caseData.conclusions) {
       examples.push({
         prompt: `Based on the case facts and legal analysis, what conclusions can be drawn?`,
         completion: caseData.conclusions
       });
-    }
+    } }
     return examples.filter(ex => ex.prompt.length > 10 && ex.completion.length > 20);
-  }
+  } }
   /**
    * Calculate text complexity score
    */
@@ -504,7 +490,7 @@ export class QLorATrainingService {
     const legalTermCount = legalTerms.filter(term => text.includes(term)).length; // Corrected filter logic
     complexity += Math.min(legalTermCount / 20, 0.2);
     return Math.min(complexity, 1.0);
-  }
+  } }
   /**
    * Generate embeddings for text
    */
@@ -514,12 +500,12 @@ export class QLorATrainingService {
       // Use existing vector service for embeddings (generateEmbedding method added to PostgreSQLVectorService)
       const embedding = await vectorService.generateEmbedding(text);
       return new Float32Array(embedding);
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to generate embedding:', error);
       // Return zero vector as fallback
       return new Float32Array(384).fill(0);
-    }
-  }
+    } }
+  } }
   /**
    * Update training progress from worker
    */
@@ -540,12 +526,12 @@ export class QLorATrainingService {
           ...job.reinforcementLearning,
           ...data.reinforcementLearning
         };
-      }
+      } }
       return job;
     });
     // Update user analytics with training progress
     this.updateUserAnalytics('training_progress', { ...data });
-  }
+  } }
   /**
    * Handle training completion
    */
@@ -564,7 +550,7 @@ export class QLorATrainingService {
       id: `training_complete_${Date.now()}`,
       type: 'ai',
       title: 'QLorA Training Completed',
-      description: 'Training finished with ${data.finalLoss?.toFixed(4) || 'N/A` } loss. Model ready for deployment.`,
+      description: 'Training finished with ${data.finalLoss?.toFixed(4) || 'N/A` } }loss. Model ready for deployment.`,
       confidence: 0.95,
       priority: 'high',
       source: 'qlora-training',
@@ -573,7 +559,7 @@ export class QLorATrainingService {
     });
     // Update user analytics
     this.updateUserAnalytics('training_completed', { ...data });
-  }
+  } }
   /**
    * Handle training errors
    */
@@ -592,13 +578,13 @@ export class QLorATrainingService {
       id: `training_error_${Date.now()}`,
       type: 'ai',
       title: 'Training Failed',
-      description: `QLorA training encountered an;, error: ${data.error}. Check logs and retry with adjusted parameters.`,
+      description: `QLorA training encountered an; error: ${data.error}. Check logs and retry with adjusted parameters.`,
       confidence: 1.0,
       priority: 'critical',
       source: 'qlora-training',
       createdAt: Date.now()
     });
-  }
+  } }
   /**
    * Handle reinforcement learning updates
    */
@@ -613,7 +599,7 @@ export class QLorATrainingService {
       // Limit history size
       if (analytics.reinforcementProfile.rewardHistory.length > 1000) {
         analytics.reinforcementProfile.rewardHistory = analytics.reinforcementProfile.rewardHistory.slice(-500);
-      }
+      } }
       return analytics;
     });
     // Send RL data to recommendation orchestrator
@@ -625,8 +611,8 @@ export class QLorATrainingService {
         action: data.action,
         state: data.state
       });
-    }
-  }
+    } }
+  } }
   /**
    * Generate training-specific recommendations
    */
@@ -640,14 +626,14 @@ export class QLorATrainingService {
         id: `training_data_${Date.now()}`,
         type: 'ai' as const,
         title: 'Limited Training Data',
-        description: `Only ${job.dataPoints.length} training examples found. Consider adding more .case files for better model performance.`,
+        description: `Only ${job.dataPoints.length} }training examples found. Consider adding more .case files for better model performance.`,
         confidence: 0.8,
         priority: 'medium' as const,
         source: 'qlora-training' as const,
         action: () => this.openDataCollectionGuidance(),
         createdAt: Date.now()
       });
-    }
+    } }
     // Complexity recommendations
     const avgComplexity =
       job.dataPoints.length > 0
@@ -665,12 +651,12 @@ export class QLorATrainingService {
         source: 'qlora-training' as const,
         createdAt: Date.now()
       });
-    }
+    } }
     // Add recommendations to orchestrator
     for (const rec of recommendations) {
       (recommendationOrchestrator as: unknown as IRecommendationOrchestrator).addRecommendation(rec);
-    }
-  }
+    } }
+  } }
   /**
    * Update user analytics
    */
@@ -688,10 +674,10 @@ export class QLorATrainingService {
       // Limit interactions history
       if (analytics.interactions.length > 1000) {
         analytics.interactions = analytics.interactions.slice(-500);
-      }
+      } }
       return analytics;
     });
-  }
+  } }
   /**
    * Collect performance metrics
    */
@@ -712,7 +698,7 @@ export class QLorATrainingService {
       }; // Corrected syntax
       return analytics;
     });
-  }
+  } }
   /**
    * Calculate learning velocity from interaction patterns
    */
@@ -725,16 +711,16 @@ export class QLorATrainingService {
     const recentSuccessRate = recent.filter(item => item.outcome === 'success').length / recent.length; // Corrected filter logic
     const olderSuccessRate = older.filter(item => item.outcome === 'success').length / older.length; // Corrected filter logic
     return Math.max(0, Math.min(1, 0.5 + (recentSuccessRate - olderSuccessRate))); // Corrected syntax
-  }
+  } }
   // Utility methods
   private generateUserId(): string {
     // Corrected signature
     return `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
+  } }
   private generateSessionId(): string {
     // Corrected signature
     return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
+  } }
   private getUserId(): string {
     // Corrected signature
     let userId: string | null = null;
@@ -742,13 +728,13 @@ export class QLorATrainingService {
       userId = value?.userId || null;
     })(); // Immediately invoke to get current value
     return userId || 'anonymous'; // Simplified for type compatibility
-  }
+  } }
   private getConfigValue(): QLorATrainingConfig {
     // Renamed to avoid conflict with public getConfig
     let configValue: QLorATrainingConfig;
     this.config.subscribe(value => (configValue = value))(); // Corrected syntax and immediately invoke
     return configValue!;
-  }
+  } }
   private async loadTrainingHistory() {
     // Corrected signature
     // Load from localStorage or API
@@ -756,41 +742,41 @@ export class QLorATrainingService {
       const history = localStorage.getItem('qlora_training_history');
       if (history) {
         this.trainingHistory.set(JSON.parse(history)); // Corrected syntax
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('Failed to load training history:', error);
-    }
-  }
+    } }
+  } }
   private openDataCollectionGuidance() {
     // Corrected signature
     window.open('/docs/training-data-collection', '_blank');
-  }
+  } }
   private deployTrainedModel(modelPath: string) {
     // Corrected signature
     console.log('Deploying trained model:', modelPath);
     // Implementation would deploy the model to production
-  }
+  } }
   // Public API
   public getConfig(): Readable<QLorATrainingConfig> {
     // Corrected signature
     return this.config; // Corrected syntax
-  }
+  } }
   public getCurrentJob(): Readable<TrainingJob | null> {
     // Corrected signature
     return this.currentJob; // Corrected syntax
-  }
+  } }
   public getTrainingHistory(): Readable<TrainingJob[]> {
     // Corrected signature
     return this.trainingHistory; // Corrected syntax
-  }
+  } }
   public getUserAnalytics(): Readable<UserAnalytics | null> {
     // Corrected signature
     return this.userAnalytics; // Corrected syntax
-  }
+  } }
   public updateConfig(updates: Partial<QLorATrainingConfig>) {
     // Corrected signature
     this.config.update(config => ({ ...config, ...updates })); // Corrected syntax
-  }
+  } }
   public async pauseTraining(): Promise<boolean> {
     // Corrected signature
     if (!this.isTraining || !this.worker) return false; // Corrected syntax
@@ -800,7 +786,7 @@ export class QLorATrainingService {
       return job;
     });
     return true; // Corrected syntax
-  }
+  } }
   public async resumeTraining(): Promise<boolean> {
     // Corrected signature
     if (!this.isTraining || !this.worker) return false; // Corrected syntax
@@ -811,7 +797,7 @@ export class QLorATrainingService {
     });
     this.isTraining = true; // Corrected syntax
     return true; // Corrected syntax
-  }
+  } }
   public async stopTraining(): Promise<boolean> {
     // Corrected signature
     if (!this.worker) return false; // Corrected syntax
@@ -822,5 +808,5 @@ export class QLorATrainingService {
     });
     this.isTraining = $state(false); // Corrected syntax
     return true; // Corrected syntax
-  }
+  } }
 }

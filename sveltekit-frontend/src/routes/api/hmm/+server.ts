@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import { hmmTransitionPredictor } from '$lib/server/ai/hmm-transition-predictor';
-import { emitClusterEvent } from '$lib/server/ai/cluster-stream';
+import { json } }from '@sveltejs/kit';
+import { hmmTransitionPredictor } }from '$lib/server/ai/hmm-transition-predictor';
+import { emitClusterEvent } }from '$lib/server/ai/cluster-stream';
 
 export async function POST({ request }): Promise<any> {
   const body = await request.json().catch(() => ({}));
@@ -8,7 +8,7 @@ export async function POST({ request }): Promise<any> {
   const topK = typeof body.topK === 'number' ? body.topK : 3;
   if (seq.length > 1 && body.observe !== false) {
     hmmTransitionPredictor.observeSequence(seq);
-  }
+  } }
   const current = seq[seq.length - 1];
   const predictions = current ? hmmTransitionPredictor.predictNext(current, topK) : [];
   const finalPredictions =
@@ -17,8 +17,9 @@ export async function POST({ request }): Promise<any> {
     type: 'hmm_predictions',
     sequence: seq,
     predictions: finalPredictions,
-    context: {, source: 'api:hmm', topK },
+    context: { source: 'api:hmm', topK },
     timestamp: new Date().toISOString()
   });
   return json({ predictions: finalPredictions });
-}
+} }
+

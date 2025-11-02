@@ -1,30 +1,30 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 import cluster from 'node:cluster';
 /*
  * Cluster Events API Endpoint (Server-Sent Events)
  * Provides real-time cluster health and worker metrics via SSE
  */
 export interface WorkerMetrics { connections: number;, requestsHandled: number;
- , memoryUsage: NodeJS.MemoryUsage | Record<string, number>;
+  memoryUsage: NodeJS.MemoryUsage | Record<string, number>;
   cpuUsage: NodeJS.CpuUsage | Record<string, number>;
   lastHealthCheck: number;
   errors: number;
   uptime: number;
   pid?: number;
   status?: string;
-}
-export interface Worker {, id: string;, status: string;
+} }
+export interface Worker { id: string;, status: string;
   metrics: WorkerMetrics;
-}
-export const, GET: RequestHandler = async ({ request }) => {
+} }
+export const GET: RequestHandler = async ({ request }) => {
   // Check if client accepts text/event-stream
   const acceptHeader = request.headers.get('accept');
   if (!acceptHeader?.includes('text/event-stream')) {
     return new Response('SSE endpoint - use Accept: text/event-stream', {
       status: 400,
-      headers: { 'Content-Type': 'text/plain' }
+      headers: { 'Content-Type': 'text/plain' } }
     });
-  }
+  } }
   // Only available from primary process
   if (!cluster.isPrimary) {
     return new Response('data: {"error": "SSE only available from primary process"}\n\n', {
@@ -33,9 +33,9 @@ export const, GET: RequestHandler = async ({ request }) => {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive'
-      }
+      } }
     });
-  }
+  } }
   // Create readable stream for SSE
   const stream = new ReadableStream({
     start(controller) {
@@ -61,19 +61,18 @@ export const, GET: RequestHandler = async ({ request }) => {
               totalRequests: 0,
               averageResponseTime: Math.random() * 50 + 25,
               memoryUsage: {
-               , total: process.memoryUsage().heapUsed,
+  total: process.memoryUsage().heapUsed,
                 average: process.memoryUsage().heapUsed,
                 peak: process.memoryUsage().heapTotal
               },
               cpuUsage: {
-               , total: 0,
+  total: 0,
                 average: 0
               },
-              errors: {, total: 0, rate: 0 }
+              errors: { total: 0, rate: 0 } }
             });
             sendSSEEvent(controller, 'workers', [
-              {,
-                workerId: 1,
+              { workerId: 1,
                 pid: process.pid,
                 status: 'online',
                 connections: 0,
@@ -85,29 +84,29 @@ export const, GET: RequestHandler = async ({ request }) => {
                 uptime: process.uptime()
               },
             ]);
-          } catch (error: any) {
+          } }catch (error: any) {
             const err = error instanceof Error ? error : new Error(String(error));
-            console.error('SSE fallback error:', err);'
-          }
+            console.error('SSE fallback error:', err);
+          } }
         }, 5000);
         // Store interval for cleanup
         globalThis.sseCleanupTasks = globalThis.sseCleanupTasks || [];
         globalThis.sseCleanupTasks.push(() => clearInterval(fallbackInterval));
         return;
-      }
+      } }
       // Send initial data
       try {
         const health = clusterManager.getHealth();
         const workers = clusterManager.getWorkerMetrics();
         sendSSEEvent(controller, 'health', health);
         sendSSEEvent(controller, 'workers', workers);
-      } catch (error: any) {
+      } }catch (error: any) {
         const err = error instanceof Error ? error : new Error(String(error));
-        console.error('SSE initial data error:', err);'
+        console.error('SSE initial data error:', err);
         sendSSEEvent(controller, 'error', {
           error: 'Failed to get initial cluster data'
         });
-      }
+      } }
       // Setup periodic updates
       const updateInterval = setInterval(() => {
         try {
@@ -121,14 +120,14 @@ export const, GET: RequestHandler = async ({ request }) => {
             timestamp: Date.now(),
             uptime: process.uptime()
           });
-        } catch (error: any) {
+        } }catch (error: any) {
           const err = error instanceof Error ? error : new Error(String(error));
-          console.error('SSE update error:', err);'
+          console.error('SSE update error:', err);
           sendSSEEvent(controller, 'error', {
             error: 'Failed to update cluster data',
             timestamp: Date.now()
           });
-        }
+        } }
       }, 5000); // Update every, 5 seconds
       // Setup cluster event listeners
       const clusterEventHandlers = setupClusterEventListeners(controller);
@@ -145,8 +144,8 @@ export const, GET: RequestHandler = async ({ request }) => {
       if (globalThis.sseCleanupTasks) {
         globalThis.sseCleanupTasks.forEach((cleanup: () => void) => cleanup());
         globalThis.sseCleanupTasks = [];
-      }
-    }
+      } }
+    } }
   });
   return new Response(stream, {
     headers: {
@@ -156,7 +155,7 @@ export const, GET: RequestHandler = async ({ request }) => {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': 'Accept, Cache-Control',
       'X-Accel-Buffering': 'no', // Disable Nginx buffering
-    }
+    } }
   });
 };
 /*
@@ -167,16 +166,16 @@ function sendSSEEvent(controller: ReadableStreamDefaultController, type: string,
     const payload = JSON.stringify(data);
     const event = `event: ${type}\ndata: ${payload}\n\n`;
     controller.enqueue(new TextEncoder().encode(event));
-  } catch (error: any) {
+  } }catch (error: any) {
     const err = error instanceof Error ? error : new Error(String(error));
     console.error('Failed to send SSE event:', err);
-  }
-}
+  } }
+} }
 /*
  * Setup cluster event listeners for real-time updates
  */
 function setupClusterEventListeners(controller: ReadableStreamDefaultController) {
-  type MinimalWorker = { id?: number; process?: { pid?: number } };
+  type MinimalWorker = { id?: number; process?: { pid?: number } }};
   const handlers: Record<string, (...args: any[]) => void> = {};
   // Worker online event
   handlers.online = (worker: MinimalWorker) => {
@@ -223,13 +222,13 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
     sendSSEEvent(controller, 'process_stats', {
       pid: process.pid,
       memory: {
-       , rss: memoryUsage.rss,
+  rss: memoryUsage.rss,
         heapUsed: memoryUsage.heapUsed,
         heapTotal: memoryUsage.heapTotal,
         external: memoryUsage.external
       },
       cpu: {
-       , user: cpuUsage.user,
+  user: cpuUsage.user,
         system: cpuUsage.system
       },
       uptime: process.uptime(),
@@ -238,7 +237,7 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
   }, 10000); // Every, 10 seconds
   // Custom cluster events (if cluster manager supports them)
   type ClusterManagerLike = {
-    on?: (event: string;, handler: (...args: any[]) => void) => void;
+    on?: (event: string; handler: (...args: any[]) => void) => void;
     removeAllListeners?: (...args: any[]) => void;
   };
   const clusterManager = globalThis.clusterManager as ClusterManagerLike | undefined;
@@ -258,13 +257,13 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
       },
       'restart-completed': (data: any) => {
         sendSSEEvent(controller, 'restart_completed', data);
-      }
+      } }
     };
     Object.entries(customHandlers).forEach(([event, handler]) => {
       // clusterManager.on exists by the type guard above
       clusterManager.on!(event, handler);
     });
-  }
+  } }
   // Return cleanup function
   return {
     cleanup: () => {
@@ -277,7 +276,8 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
       // Remove custom event listeners
       if (clusterManager && typeof clusterManager.removeAllListeners === 'function') {
         clusterManager.removeAllListeners();
-      }
-    }
+      } }
+    } }
   };
-}
+} }
+

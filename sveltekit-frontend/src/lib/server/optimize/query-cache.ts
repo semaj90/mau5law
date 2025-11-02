@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Query Cache for Legal AI Platform
  *
@@ -10,26 +10,26 @@ import type { Case } from '$lib/types';
  *
  * Expected improvement: 3.75x faster query responses (300ms → 80ms)
  */
-import { getRedisMetricsCache } from '../cache/redis-metrics';
-import type { RedisMetricsCache } from '../cache/redis-metrics';
+import { getRedisMetricsCache } }from '../cache/redis-metrics';
+import type { RedisMetricsCache } }from '../cache/redis-metrics';
 import crypto from 'crypto';
-export interface CacheConfig { redis: {, enabled: boolean;
+export interface CacheConfig { redis: { enabled: boolean;
     defaultTTL: number;      //, Default: 3600s (1 hour); maxTTL: number;          //, Max: 86400s (24 hours)
   };
-  semantic: {, enabled: boolean;, similarityThreshold: number;  // 0.0-1.0, default: 0.95
+  semantic: { enabled: boolean;, similarityThreshold: number;  // 0.0-1.0, default: 0.95
   };
-  warming: {, enabled: boolean;, patterns: string[];      // Common query patterns to pre-cache
+  warming: { enabled: boolean;, patterns: string[];      // Common query patterns to pre-cache
   };
-}
-export interface CachedQuery<T = any> {, data: T;, cachedAt: string;
+} }
+export interface CachedQuery<T = any> { data: T;, cachedAt: string;
   ttl: number;
   queryHash: string;
   semanticKey?: string;
-}
-export interface CacheHit {, hit: boolean;, source: 'redis' | 'semantic' | 'fallback' | 'miss';
+} }
+export interface CacheHit { hit: boolean;, source: 'redis' | 'semantic' | 'fallback' | 'miss';
   latency: number;
   cachedAt?: string;
-}
+} }
 /**
  * Query Cache Manager
  */
@@ -41,24 +41,22 @@ export class QueryCache {
   private semanticIndex = new Map<string, string[]>(); // pattern → [queryHashes]
   constructor(config?: Partial<CacheConfig>) {
     this.redis = getRedisMetricsCache();
-    this.config = { redis: {, enabled: config?.redis?.enabled ?? true,
+    this.config = { redis: { enabled: config?.redis?.enabled ?? true,
         defaultTTL: config?.redis?.defaultTTL ?? 3600,
         maxTTL: config?.redis?.maxTTL ?? 86400
       },
-      semantic: {
-       , enabled: config?.semantic?.enabled ?? true,
+      semantic: { enabled: config?.semantic?.enabled ?? true,
         similarityThreshold: config?.semantic?.similarityThreshold ?? 0.95
       },
-      warming: {
-       , enabled: config?.warming?.enabled ?? true,
+      warming: { enabled: config?.warming?.enabled ?? true,
         patterns: config?.warming?.patterns ?? [
           'recent-cases',
           'evidence-by-case',
           'legal-documents',
         ]
-      }
+      } }
     };
-  }
+  } }
   /**
    * Get cached query result or execute query function
    */
@@ -69,21 +67,20 @@ export class QueryCache {
       ttl?: number;
       namespace?: string;
       bypassCache?: boolean;
-    }
-  ): Promise<{ data: T;, cacheHit: CacheHit }> {
+    } }
+  ): Promise<{ data: T; cacheHit: CacheHit }> {
     const startTime = performance.now();
     // Bypass cache if requested
     if (options?.bypassCache || !this.config.redis.enabled) {
       const data = await queryFn();
       return {
         data,
-        cacheHit: {
-         , hit: false,
+        cacheHit: { hit: false,
           source: 'miss',
           latency: performance.now() - startTime
-        }
+        } }
       };
-    }
+    } }
     // Generate cache key
     const queryHash = this.hashQuery(query);
     const namespace = options?.namespace || 'query';
@@ -95,32 +92,30 @@ export class QueryCache {
         const parsed: CachedQuery<T> = JSON.parse(cached);
         return {
           data: parsed.data,
-          cacheHit: {
-           , hit: true,
+          cacheHit: { hit: true,
             source: 'redis',
             latency: performance.now() - startTime,
             cachedAt: parsed.cachedAt
-          }
+          } }
         };
-      } catch (error) {
+      } }catch (error) {
         console.warn('Failed to parse cached query, fetching fresh data');
-      }
-    }
+      } }
+    } }
     // 2. Try semantic similarity cache
     if (this.config.semantic.enabled) {
       const semanticResult = await this.findSemanticallyS imilar<T>(queryHash, namespace);
       if (semanticResult) {
         return {
           data: semanticResult.data,
-          cacheHit: {
-           , hit: true,
+          cacheHit: { hit: true,
             source: 'semantic',
             latency: performance.now() - startTime,
             cachedAt: semanticResult.cachedAt
-          }
+          } }
         };
-      }
-    }
+      } }
+    } }
     // 3. Cache miss - execute query
     const data = await queryFn();
     const latency = performance.now() - startTime;
@@ -130,16 +125,15 @@ export class QueryCache {
     // 5. Update semantic index
     if (this.config.semantic.enabled) {
       this.updateSemanticIndex(queryHash, namespace);
-    }
+    } }
     return {
       data,
-      cacheHit: {
-       , hit: false,
+      cacheHit: { hit: false,
         source: 'miss',
         latency
-      }
+      } }
     };
-  }
+  } }
   /**
    * Set cached query result
    */
@@ -151,7 +145,7 @@ export class QueryCache {
       queryHash
     };
     await this.redis.set(key, JSON.stringify(cachedQuery), ttl);
-  }
+  } }
   /**
    * Invalidate cache by key or pattern
    */
@@ -160,9 +154,9 @@ export class QueryCache {
       // Pattern-based invalidation (requires SCAN)
       // For now, just delete exact key
       return await this.redis.del(keyOrPattern);
-    }
+    } }
     return await this.redis.del(keyOrPattern);
-  }
+  } }
   /**
    * Invalidate cache by namespace
    */
@@ -171,14 +165,14 @@ export class QueryCache {
     // For production, consider using Redis keyspace notifications
     console.log(`Invalidating namespace: ${namespace}:*`);
     // TODO: Implement SCAN-based invalidation
-  }
+  } }
   /**
    * Hash query to, consistent: string
    */
   private hashQuery(query: string | object): string {
     const queryString = typeof query === 'string' ? query : JSON.stringify(query);
     return crypto.createHash('sha256').update(queryString).digest('hex');
-  }
+  } }
   /**
    * Find semantically similar cached queries
    */
@@ -191,7 +185,7 @@ export class QueryCache {
     const similarHashes = this.semanticIndex.get(pattern);
     if (!similarHashes || similarHashes.length === 0) {
       return: null;
-    }
+    } }
     // Try to find a valid cached result from similar queries
     for (const hash of similarHashes) {
       const cacheKey = `${namespace}:${hash}`;
@@ -199,13 +193,13 @@ export class QueryCache {
       if (cached) {
         try {
           return JSON.parse(cached) as CachedQuery<T>;
-        } catch {
+        } }catch {
           continue;
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return: null;
-  }
+  } }
   /**
    * Extract pattern from query hash (for semantic grouping)
    */
@@ -213,7 +207,7 @@ export class QueryCache {
     // Simple pattern: first, 8 chars of hash
     // In production, use actual semantic similarity (embeddings)
     return queryHash.substring(0, 8);
-  }
+  } }
   /**
    * Update semantic index
    */
@@ -227,16 +221,16 @@ export class QueryCache {
       // Limit to most recent, 10 hashes per pattern
       if (existing.length > 10) {
         existing.shift();
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Cache warming: Pre-cache common queries
    */
-  async warmCache(): Promise<{ warmed: number;, failed: number }> {
+  async warmCache(): Promise<{ warmed: number; failed: number }> {
     if (!this.config.warming.enabled || this.warmingInProgress) {
       return { warmed: 0, failed: 0 };
-    }
+    } }
     this.warmingInProgress = true;
     console.log('🔥 Starting cache warming...');
     let warmed = 0;
@@ -247,15 +241,15 @@ export class QueryCache {
         // This would integrate with your actual query functions
         console.log(`Warming pattern: ${pattern}`);
         warmed++;
-      } catch (error) {
+      } }catch (error) {
         console.error(`Failed to warm pattern ${pattern}:`, error);
         failed++;
-      }
-    }
+      } }
+    } }
     this.warmingInProgress = $state(false);
-    console.log(`✅ Cache warming complete: ${warmed} warmed, ${failed} failed`);
+    console.log(`✅ Cache warming complete: ${warmed} }warmed, ${failed} }failed`);
     return { warmed, failed };
-  }
+  } }
   /**
    * Get cache statistics
    */
@@ -264,23 +258,21 @@ export class QueryCache {
     const insights = this.redis.getPerformanceInsights();
     return {
       redis: redisMetrics,
-      semantic: {
-       , enabled: this.config.semantic.enabled,
+      semantic: { enabled: this.config.semantic.enabled,
         patterns: this.semanticIndex.size,
         totalHashes: Array.from(this.semanticIndex.values()).reduce(
           (sum, hashes) => sum + hashes.length,
           0
         )
       },
-      warming: {
-       , enabled: this.config.warming.enabled,
+      warming: { enabled: this.config.warming.enabled,
         patterns: this.config.warming.patterns.length,
         inProgress: this.warmingInProgress
       },
       insights
     };
-  }
-}
+  } }
+} }
 /**
  * Specialized caches for common use cases
  */
@@ -290,40 +282,39 @@ export class QueryCache {
  */
 export class VectorSearchCache extends QueryCache {
   constructor() {
-    super({ redis: {, enabled: true, defaultTTL: 1800 }, // 30 minutes
-      semantic: {, enabled: true, similarityThreshold: 0.98 }, // High similarity
-      warming: {, enabled: true, patterns: ['top-vectors', 'recent-searches'] }
+    super({ redis: { enabled: true, defaultTTL: 1800 }, // 30 minutes
+      semantic: { enabled: true, similarityThreshold: 0.98 }, // High similarity
+      warming: { enabled: true, patterns: ['top-vectors', 'recent-searches'] } }
     });
-  }
+  } }
   /**
    * Cache vector search with embedding-based deduplication
    */
   async cacheVectorSearch<T>(
     queryEmbedding: number[],
     searchFn: () => Promise<T>,
-    options?: { ttl?: number; caseId?: string }
+    options?: { ttl?: number; caseId?: string } }
   ): Promise<{ data: T; cacheHit: CacheHit }> {
     // Create query: object with rounded embeddings for deduplication
-    const query = {
-     , embedding: queryEmbedding.map(v => Math.round(v * 1000) / 1000), // Round to, 3 decimals
+    const query = { embedding: queryEmbedding.map(v => Math.round(v * 1000) / 1000), // Round to, 3 decimals
       caseId: options?.caseId,
       type: `vector-search` };
     return this.getOrQuery(query, searchFn, {
       ttl: options?.ttl,
       namespace: `vector-search' });'`
-  }
-}
+  } }
+} }
 /**
  * Case Query Cache
  * Caches case-related queries with automatic invalidation
  */
 export class CaseQueryCache extends QueryCache {
   constructor() {
-    super({ redis: {, enabled: true, defaultTTL: 3600 }, // 1 hour
-      semantic: {, enabled: false }, // Exact matches only for legal data
-      warming: {, enabled: true, patterns: ['active-cases', 'recent-evidence'] }
+    super({ redis: { enabled: true, defaultTTL: 3600 }, // 1 hour
+      semantic: { enabled: false }, // Exact matches only for legal data
+      warming: { enabled: true, patterns: ['active-cases', 'recent-evidence'] } }
     });
-  }
+  } }
   /**
    * Cache case query with automatic invalidation on updates
    */
@@ -331,8 +322,8 @@ export class CaseQueryCache extends QueryCache {
     caseId: string,
     queryType: string,
     queryFn: () => Promise<T>,
-    options?: { ttl?: number }
-  ): Promise<{ data: T;, cacheHit: CacheHit }> {
+    options?: { ttl?: number } }
+  ): Promise<{ data: T; cacheHit: CacheHit }> {
     const query = {
       caseId,
       type: queryType,
@@ -340,26 +331,26 @@ export class CaseQueryCache extends QueryCache {
     };
     return this.getOrQuery(query, queryFn, {
       ttl: options?.ttl,
-      namespace: `case:${caseId}' });'`
-  }
+      namespace: `case:${caseId} } });'`
+  } }
   /**
    * Invalidate all cache for a specific case
    */
   async invalidateCase(caseId: string): Promise<void> {
     await this.invalidateNamespace(`case:${caseId}`);
-  }
-}
+  } }
+} }
 /**
  * RAG Query Cache
  * Caches RAG (Retrieval Augmented Generation) results
  */
 export class RAGQueryCache extends QueryCache {
   constructor() {
-    super({ redis: {, enabled: true, defaultTTL: 600 }, // 10 minutes (fresh AI responses)
-      semantic: {, enabled: true, similarityThreshold: 0.95 },
-      warming: {, enabled: true, patterns: ['common-legal-questions'] }
+    super({ redis: { enabled: true, defaultTTL: 600 }, // 10 minutes (fresh AI responses)
+      semantic: { enabled: true, similarityThreshold: 0.95 },
+      warming: { enabled: true, patterns: ['common-legal-questions'] } }
     });
-  }
+  } }
   /**
    * Cache RAG query with context awareness
    */
@@ -367,17 +358,16 @@ export class RAGQueryCache extends QueryCache {
     userQuery: string,
     contextIds: string[],
     ragFn: () => Promise<T>,
-    options?: { ttl?: number }
+    options?: { ttl?: number } }
   ): Promise<{ data: T; cacheHit: CacheHit }> {
-    const query = {
-     , query: userQuery.toLowerCase().trim(),
+    const query = { query: userQuery.toLowerCase().trim(),
       contextIds: contextIds.sort(), // Sort for consistent hashing
       type: `rag-query` };
     return this.getOrQuery(query, ragFn, {
       ttl: options?.ttl,
       namespace: `rag' });'`
-  }
-}
+  } }
+} }
 // Export singleton instances
 export const vectorSearchCache = new VectorSearchCache();
 export const caseQueryCache = new CaseQueryCache();
@@ -388,44 +378,44 @@ export const defaultQueryCache = new QueryCache();
  */
 export const QUERY_CACHE_EXAMPLES = `
 // 1. BASIC QUERY CACHING
-import { defaultQueryCache } from '$lib/server/optimize/query-cache';
-const { data, cacheHit } = await defaultQueryCache.getOrQuery(
+import { defaultQueryCache } }from '$lib/server/optimize/query-cache';
+const { data, cacheHit } }= await defaultQueryCache.getOrQuery(
   { caseId: '123', type: 'evidence-list' },'`'`
   async () => {
     // Expensive database query
     return await db.select().from(evidence).where(eq(evidence.caseId, '123'));
   },
-  { ttl: 3600, namespace: `evidence' }'`
+  { ttl: 3600, namespace: `evidence' } }`
 );
-console.log(\`Cache \${cacheHit.hit ? 'HIT' : `MISS' } (\${cacheHit.source})\`);'`
+console.log(\`Cache \${cacheHit.hit ? 'HIT' : `MISS' } }(\${cacheHit.source})\`);'`
 console.log(\`Latency: \${cacheHit.latency.toFixed(2)}ms\`);
 // 2. VECTOR SEARCH CACHING
-import { vectorSearchCache } from '$lib/server/optimize/query-cache';
-const { data: searchResults, cacheHit } = await vectorSearchCache.cacheVectorSearch(
+import { vectorSearchCache } }from '$lib/server/optimize/query-cache';
+const { data: searchResults, cacheHit } }= await vectorSearchCache.cacheVectorSearch(
   queryEmbedding,
   async () => {
     // Expensive vector search
     return await faissGPU.search(queryEmbedding, 50);
   },
-  { ttl: 1800, caseId: `123' }'`
+  { ttl: 1800, caseId: `123' } }`
 );
 // 3. RAG QUERY CACHING
-import { ragQueryCache } from '$lib/server/optimize/query-cache';
-const { data: ragResponse, cacheHit } = await ragQueryCache.cacheRAGQuery(
+import { ragQueryCache } }from '$lib/server/optimize/query-cache';
+const { data: ragResponse, cacheHit } }= await ragQueryCache.cacheRAGQuery(
   "What are the key evidence in this case?",
   ['case_123', 'doc_456'],
   async () => {
     // Expensive RAG query
     return await performRAGQuery(query, contextIds);
   },
-  { ttl: 600 }
+  { ttl: 600 } }
 );
 // 4. CACHE INVALIDATION
-import { caseQueryCache } from '$lib/server/optimize/query-cache';
+import { caseQueryCache } }from '$lib/server/optimize/query-cache';
 // After updating case data
 await caseQueryCache.invalidateCase('123');
 // 5. CACHE WARMING (ON SERVER START)
-import { defaultQueryCache } from '$lib/server/optimize/query-cache';
+import { defaultQueryCache } }from '$lib/server/optimize/query-cache';
 // In hooks.server.ts
 await defaultQueryCache.warmCache();
 // 6. CACHE STATISTICS
@@ -433,3 +423,4 @@ const stats = await defaultQueryCache.getStats();
 console.log(\`Hit rate: \${stats.redis.hitRate.toFixed(1)}%\`);
 console.log(\`Avg latency: \${stats.redis.averageGetTime.toFixed(2)}ms\`);
 `;`
+

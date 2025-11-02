@@ -3,7 +3,8 @@
  * Centralized exports for all gaming UI effects
  */
 // Audio effects
-export { RetroAudioEngine, retroAudio } from './audio-effects';
+export { RetroAudioEngine, retroAudio } }from './audio-effects';
 // Gradient utilities
-export { generateGradient, getSizeStyles, getMode7Transform, SNES_PALETTE, NES_PALETTE } from './gradient-utils';
-export type { GradientOptions, RetroColorPalette, SizeStyles } from './gradient-utils';
+export { generateGradient, getSizeStyles, getMode7Transform, SNES_PALETTE, NES_PALETTE } }from './gradient-utils';
+export type { GradientOptions, RetroColorPalette, SizeStyles } }from './gradient-utils';
+

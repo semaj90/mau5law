@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import { writable } from 'svelte/store';
+import type { Case } }from '$lib/types';
+import { writable } }from 'svelte/store';
 export interface Dialog<T = unknown> { id: string;, type: 'info' | 'success' | 'warning' | 'error' | 'confirm' | 'prompt';
   title?: string;
   message?: string;
@@ -8,7 +8,7 @@ export interface Dialog<T = unknown> { id: string;, type: 'info' | 'success' | 
   persistent?: boolean;
   resolve?: (result: T) => void;
   reject?: (reason?: any) => void;
-}
+} }
 export interface Modal<T = unknown> {
   id: string;
   component?: any;
@@ -18,12 +18,12 @@ export interface Modal<T = unknown> {
   persistent?: boolean;
   resolve?: (result: T) => void;
   reject?: (reason?: any) => void;
-}
+} }
 function createDialogStore() {
-  const { subscribe, update } = writable<Dialog<unknown>[]>([]);
+  const { subscribe, update } }= writable<Dialog<unknown>[]>([]);
   function generateId(): string {
     return Math.random().toString(36).substring(2) + Date.now().toString(36);
-  }
+  } }
   function add<T = unknown>(dialog: Omit<Dialog<T>, 'id'>): Promise<T> {
     return new Promise((resolve, reject) => {
       const id = generateId();
@@ -35,35 +35,35 @@ function createDialogStore() {
       };
       update(dialogs => [...dialogs, newDialog]);
     });
-  }
+  } }
   function remove(id: string, result?: any) {
     update(dialogs => {
       const dialog = dialogs.find(d => d.id === id);
       if (dialog?.resolve) {
         dialog.resolve(result);
-      }
+      } }
       return dialogs.filter(d => d.id !== id);
     });
-  }
+  } }
   function reject(id: string, reason?: any) {
     update(dialogs => {
       const dialog = dialogs.find(d => d.id === id);
       if (dialog?.reject) {
         dialog.reject(reason);
-      }
+      } }
       return dialogs.filter(d => d.id !== id);
     });
-  }
+  } }
   function clear() {
     update(dialogs => {
       dialogs.forEach(dialog => {
         if (dialog.reject) {
           dialog.reject('cleared');
-        }
+        } }
       });
       return [];
     });
-  }
+  } }
   // Convenience methods
   function info(title: string, message?: string): Promise<void> {
     return add<void>({
@@ -72,7 +72,7 @@ function createDialogStore() {
       message,
       position: 'center'
     });
-  }
+  } }
   function success(title: string, message?: string): Promise<void> {
     return add<void>({
       type: 'success',
@@ -80,7 +80,7 @@ function createDialogStore() {
       message,
       position: 'center'
     });
-  }
+  } }
   function warning(title: string, message?: string): Promise<void> {
     return add<void>({
       type: 'warning',
@@ -88,7 +88,7 @@ function createDialogStore() {
       message,
       position: 'center'
     });
-  }
+  } }
   function error(title: string, message?: string): Promise<void> {
     return add<void>({
       type: 'error',
@@ -97,7 +97,7 @@ function createDialogStore() {
       position: 'center',
       persistent: true
     });
-  }
+  } }
   function confirm(title: string, message?: string): Promise<boolean> {
     return add<boolean>({
       type: 'confirm',
@@ -107,7 +107,7 @@ function createDialogStore() {
     })
       .then(() => true)
       .catch(() => false);
-  }
+  } }
   function prompt(title: string, message?: string, defaultValue?: string): Promise<string | null> {
     return add<{ value?: string }>({
       type: 'prompt',
@@ -118,20 +118,20 @@ function createDialogStore() {
     })
       .then(result => result?.value || null)
       .catch(() => null);
-  }
+  } }
   // Legal AI specific dialogs
   function confirmCaseDelete(caseId: string): Promise<boolean> {
     return confirm('Delete Case', `Are you sure you want to delete case ${caseId}? This action cannot be undone.`);
-  }
+  } }
   function confirmEvidenceDelete(evidenceId: string): Promise<boolean> {
     return confirm(
       'Delete Evidence',
       `Are you sure you want to delete evidence ${evidenceId}? This will remove all associated analysis.`
     );
-  }
+  } }
   function promptCaseName(): Promise<string | null> {
     return prompt('Create New Case', 'Enter a name for the new case:', 'Untitled Case');
-  }
+  } }
   function systemAlert(title: string, message: string): Promise<void> {
     return add<void>({
       type: 'error',
@@ -140,7 +140,7 @@ function createDialogStore() {
       position: 'center',
       persistent: true
     });
-  }
+  } }
   return {
     subscribe,
     add,
@@ -159,12 +159,12 @@ function createDialogStore() {
     promptCaseName,
     systemAlert
   };
-}
+} }
 function createModalStore() {
-  const { subscribe, update } = writable<Modal<unknown>[]>([]);
+  const { subscribe, update } }= writable<Modal<unknown>[]>([]);
   function generateId(): string {
     return Math.random().toString(36).substring(2) + Date.now().toString(36);
-  }
+  } }
   function add<T = unknown>(modal: Omit<Modal<T>, 'id'>): Promise<T> {
     return new Promise((resolve, reject) => {
       const id = generateId();
@@ -176,35 +176,35 @@ function createModalStore() {
       };
       update(modals => [...modals, newModal]);
     });
-  }
+  } }
   function remove(id: string, result?: any) {
     update(modals => {
       const modal = modals.find(m => m.id === id);
       if (modal?.resolve) {
         modal.resolve(result);
-      }
+      } }
       return modals.filter(m => m.id !== id);
     });
-  }
+  } }
   function reject(id: string, reason?: any) {
     update(modals => {
       const modal = modals.find(m => m.id === id);
       if (modal?.reject) {
         modal.reject(reason);
-      }
+      } }
       return modals.filter(m => m.id !== id);
     });
-  }
+  } }
   function clear() {
     update(modals => {
       modals.forEach(modal => {
         if (modal.reject) {
           modal.reject('cleared');
-        }
+        } }
       });
       return [];
     });
-  }
+  } }
   // Convenience method for opening custom component modals
   function open<T = unknown>(
     component: any,
@@ -218,7 +218,7 @@ function createModalStore() {
       type: options.type || 'default',
       persistent: options.persistent || false
     });
-  }
+  } }
   return {
     subscribe,
     add,
@@ -227,9 +227,10 @@ function createModalStore() {
     clear,
     open
   };
-}
+} }
 export const dialogStore = createDialogStore();
 export const modalStore = createModalStore();
 // Export convenience functions
 export const dialog = dialogStore;
 export const modal = modalStore;
+

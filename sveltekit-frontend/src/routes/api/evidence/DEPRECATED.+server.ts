@@ -19,14 +19,13 @@
  *, TODO: Remove this route after frontend migration is complete
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } }from '@sveltejs/kit';
 
 export const GET: RequestHandler = async () => {
   return json({
     deprecated: true,
     message: 'This endpoint is deprecated. Please use /api/v2/evidence',
-    migration: {
-     , list: 'GET /api/v2/evidence?action=list&caseId=xxx',
+    migration: { list: 'GET /api/v2/evidence?action=list&caseId=xxx',
       search: 'GET /api/v2/evidence?action=search&q=xxx',
       status: 'GET /api/v2/evidence?action=status&fileId=xxx',
       health: 'GET /api/v2/evidence?action=health'
@@ -37,7 +36,7 @@ export const GET: RequestHandler = async () => {
     headers: {
       'X-Deprecated': 'true',
       'X-Migrate-To': '/api/v2/evidence'
-    }
+    } }
   });
 };
 
@@ -61,3 +60,4 @@ export const DELETE: RequestHandler = async () => {
     message: 'This endpoint is deprecated. Please use DELETE /api/v2/evidence?id=xxx'
   }, { status: 410 });
 };
+

@@ -3,5 +3,6 @@ export const lokiButtonCache = {
   recordInteraction: (_key: string, event: any) => {
     // Simple in-memory cache implementation
     console.log('Button interaction recorded:', { key, event });
-  }
+  } }
 };
+

@@ -1,16 +1,16 @@
 /**
  * SvelteKit Ingestion Job Status API
  *
- * GET /api/ingest/{jobId}
+ * GET /api/ingest/{jobId} }
  *
  * Check the status of a queued ingestion job.
  * Jobs are tracked by the worker pool and database.
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { sharedWorkerPool } from, '$lib/server/ingest/worker-pool-simple.js';
-import { db, userDocuments } from, '$lib/server/index.js';
-import { eq, sql } from, 'drizzle-orm'; // Import eq and sql for type-safe Drizzle queries
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { sharedWorkerPool } }from '$lib/server/ingest/worker-pool-simple.js';
+import { db, userDocuments } }from '$lib/server/index.js';
+import { eq, sql } }from 'drizzle-orm'; // Import eq and sql for type-safe Drizzle queries
 
 // Define the structure of an active job in the worker pool
 interface WorkerJob {
@@ -18,22 +18,22 @@ interface WorkerJob {
   stage?: string;
   progress?: number;
   // Add other properties if known, e.g., payload, startTime
-}
+} }
 
 // Define the structure for worker pool statistics.
 // This type should ideally come from the worker-pool-simple.js definition.
 interface WorkerPoolStats { totalWorkers: number;, busyWorkers: number;
   freeWorkers: number;
   queuedJobs: number;
- , pendingCallbacks: number;
+  pendingCallbacks: number;
   activeJobs?: WorkerJob[];
-}
+} }
 
 // Define an interface for the sharedWorkerPool to provide type safety for its methods.
 interface SharedWorkerPoolInterface {
   getStats(): WorkerPoolStats;
   getQueuedJobIds?(): string[]; // Make it optional if not always present
-}
+} }
 
 // Define a type for the userDocuments table rows using Drizzle's inferSelect.'
 // This assumes `userDocuments` is a Drizzle table definition imported from `$lib/server/index.js`.
@@ -69,14 +69,14 @@ interface JobStatusResponse { success: boolean;, jobId: string; // jobId is alw
   error?: string;
   createdAt?: string;
   completedAt?: string;
-}
+} }
 
-export const GET: RequestHandler = async ({ params }: {, params: { jobId?: string } }) => {
+export const GET: RequestHandler = async ({ params }: { params: { jobId?: string } }}) => {
   try {
     const jobId = params.jobId;
     if (!jobId) {
       throw error(400, 'Job ID is required');
-    }
+    } }
 
     // First check worker pool for active/queued jobs
     // Cast to SharedWorkerPoolInterface to ensure type safety for method calls.
@@ -91,30 +91,30 @@ export const GET: RequestHandler = async ({ params }: {, params: { jobId?: strin
     const activeJob = activeJobs.find((job: WorkerJob) => job.id === jobId);
     if (activeJob) {
       const responseData: JobStatusResponse = {
-       , success: true,
+  success: true,
         jobId,
         status: 'processing',
         progress: {
-         , stage: activeJob.stage || 'processing',
+  stage: activeJob.stage || 'processing',
           percentage: activeJob.progress ?? 0
-        }
+        } }
       };
       return json(responseData);
-    }
+    } }
 
     // Check if the specific jobId is in the queue.
     if (queuedJobIds.includes(jobId)) {
       const responseData: JobStatusResponse = {
-       , success: true,
+  success: true,
         jobId,
         status: 'queued',
         progress: {
-         , stage: 'queued',
+  stage: 'queued',
           percentage: 0
-        }
+        } }
       };
       return json(responseData);
-    }
+    } }
 
     // Check database for completed jobs
     let foundDocument: UserDocument | undefined;
@@ -129,8 +129,8 @@ export const GET: RequestHandler = async ({ params }: {, params: { jobId?: strin
       const byIdColumn = await db.select().from(userDocuments).where(eq(userDocuments.id, numericId)).limit(1);
       if (byIdColumn.length > 0) {
         foundDocument = byIdColumn[0];
-      }
-    }
+      } }
+    } }
 
     // 2. If still not found, try querying within metadata for, 'jobId' or, 'job_id'.
     // This requires `userDocuments.metadata` to be a JSONB column in Drizzle.
@@ -140,13 +140,13 @@ export const GET: RequestHandler = async ({ params }: {, params: { jobId?: strin
         .select()
         .from(userDocuments)
         .where(
-          sql`${userDocuments.metadata} ->> 'jobId' = ${jobId} OR ${userDocuments.metadata} ->> 'job_id' = ${jobId}`
+          sql`${userDocuments.metadata} }->> 'jobId' = ${jobId} }OR ${userDocuments.metadata} }->> 'job_id' = ${jobId}`
         )
         .limit(1);
       if (byMetadata.length > 0) {
         foundDocument = byMetadata[0];
-      }
-    }
+      } }
+    } }
 
     if (foundDocument) {
       const doc: UserDocument = foundDocument;
@@ -157,12 +157,12 @@ export const GET: RequestHandler = async ({ params }: {, params: { jobId?: strin
       if (typeof doc.metadata === 'string') {
         try {
           parsedMetadata = JSON.parse(doc.metadata);
-        } catch {
+        } }catch {
           parsedMetadata = { raw: doc.metadata };
-        }
-      } else if (doc.metadata && typeof doc.metadata === 'object') {
+        } }
+      } }else if (doc.metadata && typeof doc.metadata === 'object') {
         parsedMetadata = doc.metadata as DocumentMetadata;
-      }
+      } }
 
       // Access properties directly from the typed `doc` object.
       // Drizzle returns Date objects for timestamp columns.
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async ({ params }: {, params: { jobId?: strin
       const embeddingStatus = doc.embedding != null ? 'generated' : 'none';
 
       const responseData: JobStatusResponse = {
-       , success: true,
+  success: true,
         jobId,
         status: 'completed',
         documentId: doc.id, as: number, // Cast to: number, assuming, 'id' is numeric in the schema
@@ -193,23 +193,24 @@ export const GET: RequestHandler = async ({ params }: {, params: { jobId?: strin
         completedAt
       };
       return json(responseData);
-    }
+    } }
 
     // Job not found in active, queued, or completed states
     const responseData: JobStatusResponse = {
-     , success: true,
+  success: true,
       jobId,
       status: 'not-found',
       error: 'Job not found in queue or database` };'`
     return json(responseData);
-  } catch (err) {
-    console.error('Job status check error:', err);'
+  } }catch (err) {
+    console.error('Job status check error:', err);
     const errorResponseData: JobStatusResponse = {
-     , success: false,
+  success: false,
       jobId: params.jobId || 'unknown',
       status: 'failed',
       error: err instanceof Error ? err.message : String(err)
     };
     return json(errorResponseData, { status: 500 });
-  }
+  } }
 };
+

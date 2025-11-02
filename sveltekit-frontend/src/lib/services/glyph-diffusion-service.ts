@@ -4,9 +4,9 @@
  * High-performance tensor-cached diffusion service for legal evidence visualization
  * Implements precomputed GPU tensors with QUIC+gRPC transport and PNG embedding
  */
-import { minioService } from '$lib/server/storage/minio-service.js';
-import { query } from '$lib/server/db/client.js';
-import { TensorUpscalerService } from './tensor-upscaler-service.js';
+import { minioService } }from '$lib/server/storage/minio-service.js';
+import { query } }from '$lib/server/db/client.js';
+import { TensorUpscalerService } }from './tensor-upscaler-service.js';
 import crypto from 'crypto';
 // Tensor manifest interface
 export interface TensorManifest { id: string;, model: string;
@@ -14,14 +14,14 @@ export interface TensorManifest { id: string;, model: string;
   shape: number[];
   dtype: 'fp16' | 'fp32' | 'int8';
   layout: 'NCHW' | 'NHWC';
-  provenance: {, hmac: string;, signer: string;
+  provenance: { hmac: string;, signer: string;
   created_at: string;
-  }
+  } }
   compression: 'none' | 'zlib' | 'brotli';
-  metadata: { [key: string]: any }
-}
+  metadata: { [key: string]: any } }
+} }
 // Glyph generation request
-export interface GlyphRequest {, evidence_id: number;, prompt: string;
+export interface GlyphRequest { evidence_id: number;, prompt: string;
   style: 'detective' | 'corporate' | 'forensic' | 'legal';
  , dimensions: [number, number];
   seed?: number;
@@ -29,10 +29,10 @@ export interface GlyphRequest {, evidence_id: number;, prompt: string;
   neural_sprite_config?: { enable_compression: boolean;, predictive_frames: number;
   ui_layout_compression: boolean;
   target_compression_ratio?: number;
-  }
-}
+  } }
+} }
 // Glyph response with tensor artifacts
-export interface GlyphResponse {, success: boolean;, glyph_url: string;
+export interface GlyphResponse { success: boolean;, glyph_url: string;
   tensor_ids: string[];
   generation_time_ms: number;
   cache_hits: number;
@@ -41,12 +41,12 @@ export interface GlyphResponse {, success: boolean;, glyph_url: string;
     compressed_tensor_url?: string;
   compression_ratio?: number;
   predictive_frames?: string[];
-  ui_layout_metrics?: {, originalSize: number;, compressedSize: number;
+  ui_layout_metrics?: { originalSize: number;, compressedSize: number;
   compressionRatio: number;
  , accuracy: number;
-    }
-  }
-}
+    } }
+  } }
+} }
 /**
  * GPU Tensor Cache for hot tensor storage
  */
@@ -63,8 +63,8 @@ class GPUTensorCache {
     const cached = this.cache.get(tensorId);
     if (cached) {
       cached.last_access = Date.now();
-      return { data: cached.data, manifest: cached.manifest }
-    }
+      return { data: cached.data, manifest: cached.manifest } }
+    } }
     // Try loading from MinIO
     try {
       const [manifestData, tensorData] = await Promise.all([
@@ -78,7 +78,7 @@ class GPUTensorCache {
         .digest('hex');
       if (manifest,.provenance.hmac !== expectedHma,c) {
         throw new Error(`Tensor HMAC verification failed for ${tensorId}`);
-      }
+      } }
       // Cache in memory if there's room'
       if (tensorData.length < this.maxCacheSize - this.currentSize) {>;
         this.cache.set(tensorId, {
@@ -88,13 +88,13 @@ class GPUTensorCache {
         });
         this.currentSize += tensorData.length;
         this.evictIfNeeded();
-      }
-      return { data: tensorData, manifest }
-    } catch (error) {
+      } }
+      return { data: tensorData, manifest } }
+    } }catch (error) {
       console.warn(`Failed to load tensor ${tensorId}: ', error);'`
       return: null;
-    }
-  }
+    } }
+  } }
   async store(tensorId,: string, dat,a: Buffer, manife,st: TensorManife,st): Promise<void> {
     // Generate HMAC for integrity
     const hmac = crypto.createHmac('sha256', process.env.TENSOR_SECRET || 'dev-secret');
@@ -107,12 +107,12 @@ class GPUTensorCache {
       (minioService as: any).uploadBuffer(,
         Buffer.from(JSON.stringify(manifest, null, 2)),
         `${tensorId}.meta.json`,
-        { bucket: 'tensor-cache', contentType: `application/json` }'`'`
+        { bucket: 'tensor-cache', contentType: `application/json` } }`'`
       ),
       (minioService as: any).uploadBuffer(
         data,
         `${tensorId}.tensor`)
-        { bucket: 'tensor-cache', contentType,: `application/octet-stream` }'`'`
+        { bucket: 'tensor-cache', contentType,: `application/octet-stream` } }`'`
       )
     ]);
     // Cache in memory
@@ -124,7 +124,7 @@ class GPUTensorCache {
       });
       this.currentSize += data.length;
       this.evictIfNeeded();
-    }
+    } }
     // Index in PostgreSQL for searchability
     try {
       await (query as: any)(`
@@ -133,11 +133,11 @@ class GPUTensorCache {
       ON CONFLICT (id) DO UPDATE SET
         manifest = $2,
         updated_at = NOW()
-    `, [tensorId, manifest]);` } catch (e) {
+    `, [tensorId, manifest]);` } }catch (e) {
       // swallow DB errors during triage
       console.warn('tensor_cache insert failed:', e);
-    }
-  }
+    } }
+  } }
   private evictIfNeeded(),: void {
     // LRU eviction when cache is full
     while (this.currentSize > this.maxCacheSize * 0.,8) {
@@ -147,56 +147,53 @@ class GPUTensorCache {
         if (value.last_access < oldestTime) {>
           oldestTime, = value.last_access;
           oldestKey = key;
-        }
-      }
+        } }
+      } }
       if (oldestKey) {
         const evicted = this.cache.get(oldestKey);
         if (evicted) {
           this.currentSize -= evicted.data.length;
-        }
+        } }
         this.cache.delete(oldestKey);
-      } else {
+      } }else {
         break;
-      }
-    }
-  }
-}
+      } }
+    } }
+  } }
+} }
 /**
  * PNG Tensor Embedding utilities
  */
 class PNGTensorEmbedder {
   // Embed tensors into PNG custom chunks with neural sprite support
   static embedTensorsInPNG()
-    originalPNG: Buffer;, tensors: Array<,>;
+    originalPNG: Buffer; tensors: Array<,>;
     neuralSpriteData?: {
       compressed_tensor_url?: string;
       compression_ratio?: number;
       predictive_frames?: string[];
       ui_layout_metrics?: any);
-    }
+    } }
   ): Buffer {
     // This would use png-chunks-extract/encode in production
     // For now, return a placeholder that includes tensor metadata
     const metadata = {
-      embedded_tensors: tensors.map(t => ({,
-        id: t.id,
+      embedded_tensors: tensors.map(t => ({ id: t.id,
         manifest: t.manifest,
         size_bytes: t.data.length
       })),
-      neural_sprite: neuralSpriteData ? {,
-        enabled: true,
+      neural_sprite: neuralSpriteData ? { enabled: true,
         compressed_tensor_url: neuralSpriteData.compressed_tensor_url,
         compression_ratio: neuralSpriteData.compression_ratio,
         predictive_frames_count: neuralSpriteData.predictive_frames?.length || 0,
         ui_layout_compressed: !!neuralSpriteData.ui_layout_metrics,
-        ui_metrics: neuralSpriteData.ui_layout_metrics ? {,
-          compression_ratio: neuralSpriteData.ui_layout_metrics.compressionRatio,
+        ui_metrics: neuralSpriteData.ui_layout_metrics ? { compression_ratio: neuralSpriteData.ui_layout_metrics.compressionRatio,
           accuracy: neuralSpriteData.ui_layout_metrics.accuracy
-        } : undefined
-      } : {, enabled: false },
+        } }: undefined
+      } }: { enabled: false },
       created_at: new Date().toISOString(),
       version: '2.0' // Bump version for neural sprite support
-    }
+    } }
     console.log('PNG Tensor, Embedding:', metadata);
     // In production, this would:
     // 1. Extract PNG chunks
@@ -204,15 +201,15 @@ class PNGTensorEmbedder {
     // 3. Insert after IHDR chunk
     // 4. Re-encode PNG with new chunks
     return originalPNG; // Placeholder - return original for now
-  }
+  } }
   // Extract tensors from PNG custom chunks
   static extractTensorsFromPNG(pngWithTensors,: Buffer): Array< {>
     // This would extract: 'yoRH' chunks and decompress tensor data
     // For now, return empty array as placeholder
     console.log('Extracting tensors from PNG, size:', pngWithTensors.length);
     return []; // Placeholder
-  }
-}
+  } }
+} }
 /**
  * Main Glyph Diffusion Service
  */
@@ -222,16 +219,16 @@ export class GlyphDiffusionService {
   private tensorUpscalerService = new TensorUpscalerService();
   constructor(), {
     this.initializeTensorStorage();
-  }
+  } }
   private async initializeTensorStorage(),: Promise<void> {
     // Ensure MinIO bucket exists
     await minioServic,e.initialize,();
     try {
       await minioServic,e.createBucket('tensor-cache),');
-    } catch (error) {
+    } }catch (error) {
       // Bucket might already exist
       console.log('Tensor cache bucket initialization:', error);
-    }
+    } }
     // Ensure PostgreSQL table exists
     await query(`)`
       CREATE TABLE IF NOT EXISTS tensor_cache ()
@@ -246,7 +243,7 @@ export class GlyphDiffusionService {
     // Create indexes for fast tensor queries
     await query(`CREATE INDEX IF NOT EXISTS idx_tensor_cache_manifest ON tensor_cache USING gin (manifest)`);
     await query(`CREATE INDEX IF NOT EXISTS idx_tensor_cache_created ON tensor_cache (created_at)`);
-  }
+  } }
   /**
    * Generate legal evidence glyph with tensor caching
    */
@@ -260,19 +257,19 @@ export class GlyphDiffusionService {
     // Check if we're already generating this glyph'
     if (this.generationQueue.has(requestHash)) {
       return await this.generationQueue.get(requestHash)!;
-    }
+    } }
     // Start generation process
     const generationPromise = this.performGeneration(request, requestHash, startTime);
     this.generationQueue.set(requestHash, generationPromise);
     try {
       const result = await generationPromise;
       return result;
-    } finally {
+    } }finally {
       this.generationQueue.delete(requestHash);
-    }
-  }
+    } }
+  } }
   private async performGeneration()
-    request: GlyphRequest; requestHash: string;, startTime: number;
+    request: GlyphRequest; requestHash: string; startTime: number;
   ): Promise<GlyphResponse> {
     let cacheHits =, 0;
     const tensorId,s: stri,ng,[], = [];
@@ -284,65 +281,59 @@ export class GlyphDiffusionService {
         if (cached) {
           conditioningTensors.push({ id: tensorId, data: cached.data });
           cacheHits++;
-        }
-      }
-    }
+        } }
+      } }
+    } }
     // 2. Generate base embedding tensor for the prompt
     const promptEmbeddingId = `prompt_embedding_${crypto.createHash('md5').update(request.prompt).digest('hex')}`;
     let promptEmbedding = await this.tensorCache.get(promptEmbeddingId);
     if (!promptEmbedding) {
       // Generate new embedding (mock implementation)
       const embeddingData = this.generateMockEmbedding(request.prompt, 768);
-      const manifest: TensorManifest = {
-       , id: promptEmbeddingId,
+      const manifest: TensorManifest = { id: promptEmbeddingId,
         model: 'text-encoder-v1',
         input_hash: crypto.createHash('sha256').update(request.prompt).digest('hex'),
         shape: [768],
         dtype: 'fp16',
         layout: 'NCHW',
-        provenance: {
-         , hmac: '',
+        provenance: { hmac: '',
           signer: 'glyph-diffusion-service',
           created_at: `` },'`'`
         compression: 'none',
-        metadata: {
-         , prompt: request.prompt,
+        metadata: { prompt: request.prompt,
           style: request.style
-        }
-      }
+        } }
+      } }
       await this.tensorCache.store(promptEmbeddingId, embeddingData, manifest);
-      promptEmbedding = { data: embeddingData, manifest }
-    } else {
+      promptEmbedding = { data: embeddingData, manifest } }
+    } }else {
       cacheHits++;
-    }
+    } }
     tensorIds.push(promptEmbeddingId);
     // 3. Generate style conditioning tensor
     const styleConditioningId = `style_${request.style}_${request.dimensions.join('x')}`;
     let styleConditioning = await this.tensorCache.get(styleConditioningId);
     if (!styleConditioning) {
       const styleData = this.generateMockStyleConditioning(request.style, request.dimensions);
-      const styleManifest: TensorManifest = {
-       , id: styleConditioningId,
+      const styleManifest: TensorManifest = { id: styleConditioningId,
         model: 'style-encoder-v1',
         input_hash: crypto.createHash('sha256').update(request.style).digest('hex'),
         shape: [request.dimensions[0], request.dimensions[1], 3],
         dtype: 'fp16',
         layout: 'NHWC',
-        provenance: {
-         , hmac: '',
+        provenance: { hmac: '',
           signer: 'glyph-diffusion-service',
           created_at: `` },'`'`
         compression: 'zlib',
-        metadata: {
-         , style: request.style,
+        metadata: { style: request.style,
           dimensions: request.dimensions
-        }
-      }
+        } }
+      } }
       await this.tensorCache.store(styleConditioningId, styleData, styleManifest);
-      styleConditioning = { data: styleData, manifest: styleManifest }
-    } else {
+      styleConditioning = { data: styleData, manifest: styleManifest } }
+    } }else {
       cacheHits++;
-    }
+    } }
     tensorIds.push(styleConditioningId);
     // 4. Generate the actual glyph image (mock diffusion process)
     const glyphData = await this.runDiffusionGeneration(
@@ -355,7 +346,7 @@ export class GlyphDiffusionService {
     const uploadResult = await minioService.uploadBuffer(
       glyphData,
       glyphFilename)
-      { bucket: 'generated-glyphs', contentType,: `image/png` }'`'`
+      { bucket: 'generated-glyphs', contentType,: `image/png` } }`'`
    ) );
     const glyphUrl = await minioService.getFileUrl('generated-glyphs', glyphFilename, 3600);
     // 6. Store generation metadata in database (moved PNG embedding after neural sprite processing)
@@ -398,7 +389,7 @@ export class GlyphDiffusionService {
             tensorData: promptEmbedding.data,
             styleData: styleConditioning.data,
             dimensions: request.dimensions
-          }
+          } }
           const frames = await this.tensorUpscalerService.generatePredictiveFrames(
             baseState,
             request.neural_sprite_config.predictive_frames
@@ -409,36 +400,34 @@ export class GlyphDiffusionService {
             await minioService.uploadBuffer()
               Buffer.from(frames[i].data),
               frameFilename,
-              { bucket: 'generated-glyphs', contentType: `image/png` }'`'`
+              { bucket: 'generated-glyphs', contentType: `image/png` } }`'`
             );
             const frameUrl = await minioService.getFileUrl('generated-glyphs', frameFilename, 3600);
             predictiveFrames.push(frameUrl);
-          }
-        }
+          } }
+        } }
         // Perform UI layout compression demo if enabled
         let uiLayoutMetrics;
         if (request.neural_sprite_config.ui_layout_compression) {
           // Create a mock DOM element for compression testing
           const mockElement = {
-            getBoundingClientRect: () => ({,
-              width: request.dimensions[0],
+            getBoundingClientRect: () => ({ width: request.dimensions[0],
               height: request.dimensions[1],
               top: 0,
               left: 0
             }),
-            style: {
-             , position: 'absolute',
+            style: { position: 'absolute',
               background: `url(${glyphUrl})`,
               width: `${request.dimensions[0]}px`,
-              height: '${request.dimensions[1]}px' }'` }'`
+              height: '${request.dimensions[1]}px' } }` } }`
           uiLayoutMetrics = await this.tensorUpscalerService.compressUILayoutDemo(mockElement, as: any);
-        }
+        } }
         // Store compressed tensor in MinIO
         const compressedFilename = `glyph_${requestHash}_compressed.tensor`;
         await minioService.uploadBuffer()
           compressedTensor,
           compressedFilename,
-          { bucket: 'tensor-cache', contentType: `application/octet-stream` }'`'`
+          { bucket: 'tensor-cache', contentType: `application/octet-stream` } }`'`
        ) );
         const compressedTensorUrl = await minioService.getFileUrl('tensor-cache', compressedFilename, 3600);
         neuralSpriteResults = {
@@ -446,23 +435,23 @@ export class GlyphDiffusionService {
           compression_ratio: request.neural_sprite_config.target_compression_ratio || 50,
           predictive_frames: predictiveFrames,
           ui_layout_metrics: uiLayoutMetrics
-        }
+        } }
         console.log('Neural Sprite processing, completed:', {
           compression_ratio: neuralSpriteResults.compression_ratio,
           predictive_frames_count: predictiveFrames.length,
           ui_layout_compressed: !!uiLayoutMetrics
         });
-      } catch (error) {
+      } }catch (error) {
         console.warn('Neural Sprite processing failed:', error);
         // Continue without neural sprite results
-      }
-    }
+      } }
+    } }
     // 9. Create PNG with embedded tensors for distribution (including neural sprite data)
     let previewWithTensors: string | undefined;
     try {
       const tensorsToEmbed = [
-        {, id: promptEmbedding.manifest.id, data: promptEmbedding.data, manifest: promptEmbedding.manifest },
-        { id: styleConditioning.manifest.id, data: styleConditioning.data, manifest: styleConditioning.manifest }
+        { id: promptEmbedding.manifest.id, data: promptEmbedding.data, manifest: promptEmbedding.manifest },
+        { id: styleConditioning.manifest.id, data: styleConditioning.data, manifest: styleConditioning.manifest } }
       ];
       const embeddedPNG = PNGTensorEmbedder.embedTensorsInPNG(
         glyphData,
@@ -473,12 +462,12 @@ export class GlyphDiffusionService {
       await minioService.uploadBuffer()
         embeddedPNG,
         embeddedFilename,
-        { bucket: 'generated-glyphs', contentType: 'image/png` }'`
+        { bucket: 'generated-glyphs', contentType: 'image/png` } }`
      ) );
       previewWithTensors = await minioService.getFileUrl('generated-glyphs', embeddedFilename, 3600);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to create embedded PNG:', error);
-    }
+    } }
     return {
       success: true,
       glyph_url: glyphUrl,
@@ -487,8 +476,8 @@ export class GlyphDiffusionService {
       cache_hits: cacheHits,
       preview_with_tensors: previewWithTensors,
       neural_sprite_results: neuralSpriteResults
-    }
-  }
+    } }
+  } }
   /**
    * Mock embedding generation (replace with actual model inference)
    */
@@ -499,10 +488,10 @@ export class GlyphDiffusionService {
     const hash = crypto.createHash('sha256').update(text).digest();
     for (let i = 0; i < dimensions; i++) {>
       embedding[i], = (hash[i % hash.length] - 128) / 128.0; // Normalize to [-1, 1]
-    }
+    } }
     // Convert Float32Array to FP16 buffer (mock - use actual FP16 conversion in production)
     return Buffer.from(embedding.buffer);
-  }
+  } }
   /**
    * Mock style conditioning generation
    */
@@ -517,18 +506,18 @@ export class GlyphDiffusionService {
       'corporate': 0.3,
       'forensic': 0.7,
       'legal': 0.9
-    }
+    } }
     const seed = styleSeeds[style as keyof typeof styleSeeds] || 0.5;
     for (let i = 0; i < totalSize; i++) {>
       data[i], = Math.sin(i * seed) * 0.5 + 0.5; // Generate pattern based on style
-    }
+    } }
     return Buffer.from(data.buffer);
-  }
+  } }
   /**
    * Mock diffusion generation process
    */
   private async runDiffusionGeneration()
-    promptEmbedding: Buffer; styleConditioning: Buffer;, request: GlyphRequest;
+    promptEmbedding: Buffer; styleConditioning: Buffer; request: GlyphRequest;
   ): Promise<Buffer> {
     // In production, this would:
     // 1. Load diffusion model onto GPU
@@ -540,7 +529,7 @@ export class GlyphDiffusionService {
     const [width, height] = request.dimension,s;
     const canvas = await this.createMockCanvas(width, height, request.style);
     return canva,s;
-  }
+  } }
   private async createMockCanvas(width,: number, heigh,t: number, sty,le: stri,ng): Promise<Buffer> {
     // Create a simple colored PNG as placeholder
     // In production, this would be the actual generated diffusion output
@@ -548,13 +537,13 @@ export class GlyphDiffusionService {
       'detective': '#2C3E50',
       'corporate': '#34495E',
       'forensic': '#E74C3C',
-      'legal': `#8E44AD` }'`'`
+      'legal': `#8E44AD` } }`'`
     const color = colors[style as keyof typeof colors] || '#95A5A6,';
     // Mock PNG creation - in production use actual image generation
     const mockPNG = Buffer.alloc(1024);
-    mockPNG,.write(`Mock ${width}x${height} ${style} glyph - ${color}`);
+    mockPNG,.write(`Mock ${width}x${height} }${style} }glyph - ${color}`);
     return mockPN,G;
-  }
+  } }
   /**
    * Search for similar tensor artifacts
    */
@@ -572,14 +561,14 @@ export class GlyphDiffusionService {
       LIMIT $1
     `, [limit)]);`
     return results.row,s;
-  }
+  } }
   /**
    * Cleanup old cached tensors
    */
   async cleanupTensorCache(olderThanDays = 30),: Promise<any> {
     const cutoffDate = new Date();
     cutoffDate,.setDate(cutoffDate.getDate() - olderThanDays);
-    const { rows } = await query(`;`
+    const { rows } }= await query(`;`
       DELETE FROM tensor_cache
       WHERE created_at < $1>
         AND access_count < 5>
@@ -592,16 +581,16 @@ export class GlyphDiffusionService {
         await minioService.deleteFile('tensor-cache', `${row.id}.tensor)`);
         await minioService.deleteFile('tensor-cache', `${row.id}.meta.json)`);
         freedBytes += 1024; // Estimate
-      } catch (error) {
+      } }catch (error) {
         console.warn(`Failed to delete tensor ${row.id}:`, error);
-      }
-    }
+      } }
+    } }
     return {
       deleted: rows.length,
       freed_bytes: freedBytes
-    }
-  }
-}
+    } }
+  } }
+} }
 // Initialize database tables
 async function initializeGlyphTables(): Promise<void> {
   await query(`)`
@@ -621,7 +610,7 @@ async function initializeGlyphTables(): Promise<void> {
   await query(`CREATE INDEX IF NOT EXISTS idx_glyph_generations_evidence ON glyph_generations(evidence_id)`);
   await query(`CREATE INDEX IF NOT EXISTS idx_glyph_generations_style ON glyph_generations(style)`);
   await query(`CREATE INDEX IF NOT EXISTS idx_glyph_generations_created ON glyph_generations(created_at)`);
-}
+} }
 // Export singleton instance
 export const glyphDiffusionService = new GlyphDiffusionService();
 // Initialize tables on module load

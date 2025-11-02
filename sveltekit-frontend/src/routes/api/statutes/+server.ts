@@ -1,11 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     // Mock statutes data - replace with actual database query
     const statutes = [
-      {,
-        id: '1',
+      { id: '1',
         title: 'Robbery - First Degree',
         code: 'PC 211',
         description:
@@ -37,11 +36,11 @@ export const GET: RequestHandler = async () => {
       },
     ];
     return json(statutes);
-  } catch (error: any) {
+  } }catch (error: any) {
     const err = error instanceof Error ? error : new Error(String(error));
     console.error('Error fetching statutes:', err);
     return json({ error: 'Failed to fetch statutes' }, { status: 500 });
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -53,9 +52,10 @@ export const POST: RequestHandler = async ({ request }) => {
       updatedAt: new Date().toISOString()
     };
     return json(newStatute, { status: 201 });
-  } catch (error: any) {
+  } }catch (error: any) {
     const err = error instanceof Error ? error : new Error(String(error));
     console.error('Error creating statute:', err);
     return json({ error: 'Failed to create statute' }, { status: 500 });
-  }
+  } }
 };
+

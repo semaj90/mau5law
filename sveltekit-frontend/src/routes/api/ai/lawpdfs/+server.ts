@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,14 +16,14 @@ import type { Document } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit'; // Added import for json
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit'; // Added import for json
 
 // Assuming App.Locals is globally available from src/app.d.ts
 // If not, you might need to define a minimal interface or import it.
-// For example: import type { Locals } from '@sveltejs/kit/types/hooks';
-// Or: declare namespace App { interface Locals extends Record<string, unknown> {} }
+// For example: import type { Locals } }from '@sveltejs/kit/types/hooks';
+// Or: declare namespace App { interface Locals extends Record<string, unknown> {} }} }
 
 /*
  * Enhanced AI Assistant API Route
@@ -38,32 +38,32 @@ export interface LawPdfRequest {
     summaryModel?: string;
     embeddingModel?: string;
   };
-}
+} }
 
 // Define specific types for entities and legal concepts
-export interface Entity {, text: string;, type: 'PERSON' | 'ORGANIZATION' | 'DATE' | 'LEGAL_CONCEPT';
+export interface Entity { text: string;, type: 'PERSON' | 'ORGANIZATION' | 'DATE' | 'LEGAL_CONCEPT';
   confidence: number;
-}
+} }
 
-export interface LegalConcept {, concept: string;, relevance: number;
-}
+export interface LegalConcept { concept: string;, relevance: number;
+} }
 
-export interface LawPdfResponse {, summary: string;, entities: Entity[]; // Changed from Array<any>
+export interface LawPdfResponse { summary: string;, entities: Entity[]; // Changed from Array<any>
   legalConcepts: LegalConcept[]; // Changed from Array<any>
   keyTerms: string[];
-  riskAssessment: {, riskLevel: 'low' | 'medium' | 'high';, riskFactors: string[];
+  riskAssessment: { riskLevel: 'low' | 'medium' | 'high';, riskFactors: string[];
     recommendations: string[];
   };
   embedding?: number[];
-  metadata: {, processingTime: number;, modelUsed: string;
+  metadata: { processingTime: number;, modelUsed: string;
     embeddingModel: string;
     localProcessing: boolean;
     confidence: number;
   };
-}
+} }
 
 // Define interface for file processing results
-interface FileProcessingResult {, filename: string;, success: boolean;
+interface FileProcessingResult { filename: string;, success: boolean;
   error?: string;
   documentId?: string;
   sessionId?: string;
@@ -72,14 +72,14 @@ interface FileProcessingResult {, filename: string;, success: boolean;
   embeddingGenerated?: boolean;
   processingTime?: string;
   webSocketUrl?: string;
-}
+} }
 
 // Define a type for redisOptimized to remove: 'any' cast
 interface RedisOptimizedMiddleware {
- , documentProcessing: (handler: RequestHandler) => RequestHandler;
+  documentProcessing: (handler: RequestHandler) => RequestHandler;
   // Add other methods if they exist, e.g.,
   // minimal: (handler: RequestHandler) => RequestHandler;
-}
+} }
 
 const originalPOSTHandler: RequestHandler = async ({ request, locals: _locals }) => {
   const startTime = Date.now();
@@ -89,7 +89,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals: _locals })
     if (contentType.includes('multipart/form-data')) {
       // Handle file upload with evidence processing pipeline
       return await handleFileUpload(request, _locals);
-    }
+    } }
     // Handle JSON request (existing API)
     const body: LawPdfRequest = await request.json();
     const {
@@ -97,20 +97,20 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals: _locals })
       fileName: _fileName = 'document.pdf', // Marked fileName as unused
       analysisType = 'comprehensive',
       useLocalModels = true,
-      modelPreferences = {}
-    } = body;
+      modelPreferences = {} }
+    } }= body;
     if (!content) {
       return json({ error: 'Content is required' }, { status: 400 });
-    }
+    } }
     // Model configuration with local preferences
     const summaryModel = modelPreferences.summaryModel || 'gemma3-legal:latest';
     const embeddingModel = modelPreferences.embeddingModel || 'nomic-embed-text:latest';
     let, response: LawPdfResponse;
     if (useLocalModels) {
       response = await processWithLocalModels(content, summaryModel, embeddingModel, analysisType);
-    } else {
+    } }else {
       response = await processWithCloudFallback(content, analysisType);
-    }
+    } }
     // Add processing metadata
     response.metadata = {
       ...response.metadata,
@@ -118,7 +118,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals: _locals })
       localProcessing: useLocalModels
     };
     return json(response);
-  } catch (error: any) {
+  } }catch (error: any) {
     // Changed: any to: unknown
     console.error('[LawPDF API] Processing, failed:', error);
     const message = error instanceof Error ? error.message : String(error);
@@ -126,14 +126,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals: _locals })
       {
         error: 'Document processing failed',
         details: message,
-        fallbackSuggestion: 'Try with;, useLocalModels: false for cloud processing'
+        fallbackSuggestion: 'Try with; useLocalModels: false for cloud processing'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 async function handleFileUpload(request: Request, _locals: App.Locals): Promise<Response> {
-  // Changed locals: any to;, _locals: App.Locals and Promise<any> to Promise<Response>
+  // Changed locals: any to; _locals: App.Locals and Promise<any> to Promise<Response>
   // locals is unused but kept for SvelteKit signature
   try {
     console.log('[LawPDF] Handling file upload with evidence processing pipeline');
@@ -144,7 +144,7 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
     const enableRAG = formData.get('enableRAG') === 'true';
     if (files.length === 0) {
       return json({ error: 'No files provided' }, { status: 400 });
-    }
+    } }
     const results: FileProcessingResult[] = []; // Explicitly typed results array
     for (const file of files) {
       if (!file.name.toLowerCase().endsWith('.pdf')) {
@@ -154,13 +154,13 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
           error: 'Only PDF files are supported'
         });
         continue;
-      }
+      } }
       try {
         // Generate evidence ID for this file
         const evidenceId = `pdf_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         // TODO: Save file to MinIO or file system
         // For now, we'll simulate file storage'
-        console.log(`[LawPDF] Saving file ${file.name} as evidence ${evidenceId}`);
+        console.log(`[LawPDF] Saving file ${file.name} }as evidence ${evidenceId}`);
         // Prepare processing steps
         const steps: ('ocr' | 'embedding' | 'analysis')[] = []; // Explicitly typed steps array
         if (enableOCR) steps.push('ocr');
@@ -168,7 +168,7 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
         if (enableRAG) steps.push('analysis');
         if (steps.length === 0) {
           steps.push('analysis'); // Default step
-        }
+        } }
         // Start evidence processing pipeline
         const processResponse = await fetch(`${new URL(request.url).origin}/api/evidence/process`, {
           method: 'POST',
@@ -183,8 +183,8 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
         });
         if (!processResponse.ok) {
           throw new Error(`Evidence processing failed: ${processResponse.status}`);
-        }
-        const { sessionId } = await processResponse.json();
+        } }
+        const { sessionId } }= await processResponse.json();
         results.push({
           filename: file.name,
           success: true,
@@ -195,7 +195,7 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
           embeddingGenerated: enableEmbedding,
           processingTime: 'In progress',
           webSocketUrl: '${new URL(request.url).origin.replace(/^http/, 'ws')}/api/evidence/stream/${sessionId}` });'`
-      } catch (error: any) {
+      } }catch (error: any) {
         // Changed: any, to: unknown
         console.error(`[LawPDF] Failed to process file ${file.name}:`, error);
         results.push({
@@ -203,18 +203,18 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
           success: false,
           error: error instanceof Error ? error.message : String(error)
         });
-      }
-    }
+      } }
+    } }
     const successCount = results.filter(item => item.success).length;
     return json({
       success: successCount > 0,
       results,
-      message: `${successCount}/${files.length} files queued for processing`,
+      message: `${successCount}/${files.length} }files queued for processing`,
       totalFiles: files.length,
       successfulFiles: successCount,
       failedFiles: files.length - successCount
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     // Changed: any to: unknown
     console.error('[LawPDF] File upload handling, failed:', error);
     return json(
@@ -223,10 +223,10 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
         error: 'File upload processing failed',
         details: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
-}
+  } }
+} }
 async function processWithLocalModels(
   content: string,
   summaryModel: string,
@@ -241,20 +241,20 @@ async function processWithLocalModels(
       method: 'POST',
       headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
-       , model: summaryModel.replace(':latest', ''),
+  model: summaryModel.replace(':latest', ''),
         prompt: legalPrompt,
         stream: false,
         options: {
-         , temperature: 0.3, // Lower temperature for legal accuracy
+  temperature: 0.3, // Lower temperature for legal accuracy
           top_p: 0.9,
           max_tokens: 1500,
           stop: ['<|end|>', '\n\n---']
-        }
+        } }
       })
     });
     if (!summaryResponse.ok) {
       throw new Error(`Ollama summary failed: ${summaryResponse.status}`);
-    }
+    } }
     const summaryData = await summaryResponse.json();
     const analysisText = summaryData.response || '';
     // 2. Generate embeddings with nomic-embed-text
@@ -264,18 +264,18 @@ async function processWithLocalModels(
         method: 'POST',
         headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
-         , model: embeddingModel.replace(':latest', ''),
+  model: embeddingModel.replace(':latest', ''),
           prompt: content.substring(0, 2000), // Limit for embedding
         })
       });
       if (embeddingResponse.ok) {
         const embeddingData = await embeddingResponse.json();
         embedding = embeddingData.embedding || embeddingData.embeddings;
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       // Changed: any to: unknown
       console.warn('[LawPDF] Embedding generation, failed:', error);
-    }
+    } }
     // 3. Parse the structured analysis from gemma3-legal response
     const parsedAnalysis = parseGemmaLegalResponse(analysisText);
     return {
@@ -286,20 +286,20 @@ async function processWithLocalModels(
       riskAssessment: parsedAnalysis.riskAssessment,
       embedding,
       metadata: {
-       , processingTime: 0, // Will be set by caller
+  processingTime: 0, // Will be set by caller
         modelUsed: summaryModel,
         embeddingModel,
         localProcessing: true,
         confidence: parsedAnalysis.confidence
-      }
+      } }
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     // Changed: any to: unknown
     console.error('[LawPDF] Local processing, failed:', error);
     // Fallback to basic processing
     return await processWithCloudFallback(content, analysisType);
-  }
-}
+  } }
+} }
 async function processWithCloudFallback(content: string, analysisType: string): Promise<LawPdfResponse> {
   // Basic fallback processing without external dependencies
   const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 10);
@@ -319,19 +319,19 @@ async function processWithCloudFallback(content: string, analysisType: string): 
     keyTerms,
     riskAssessment,
     metadata: {
-     , processingTime: 0,
+  processingTime: 0,
       modelUsed: 'fallback-processor',
       embeddingModel: 'none',
       localProcessing: false,
       confidence: 0.6
-    }
+    } }
   };
-}
+} }
 function buildLegalAnalysisPrompt(content: string, analysisType: string): string {
   const basePrompt = `As a legal AI assistant, analyze this document and provide a comprehensive legal analysis.`
 Document Content:
-${content.substring(0, 3000)}
-Please provide your analysis in the following structured format:;, SUMMARY:
+${content.substring(0, 3000)} }
+Please provide your analysis in the following structured format:; SUMMARY:
 [Provide a clear, concise summary of the document's main legal points]'
 ENTITIES:
 [List key persons, organizations, locations, and dates mentioned]
@@ -348,25 +348,25 @@ Focus on accuracy and legal precision. Use clear, professional language.`;`
     'legal-focused':
       basePrompt + '\n\nFocus particularly on contract terms, obligations, liabilities, and enforceability issues.` };'`
   return enhancedPrompts[analysisType] || enhancedPrompts['comprehensive'];
-}
+} }
 function parseGemmaLegalResponse(response: string): { summary: string;, entities: LawPdfResponse['entities'];
   legalConcepts: LawPdfResponse['legalConcepts'];
   keyTerms: string[];
   riskAssessment: LawPdfResponse['riskAssessment'];
   confidence: number;
-} {
-  const sections: {, summary: string;, entities: LawPdfResponse['entities'];
+} }{
+  const sections: { summary: string;, entities: LawPdfResponse['entities'];
     legalConcepts: LawPdfResponse['legalConcepts'];
     keyTerms: string[];
     riskAssessment: LawPdfResponse['riskAssessment'];
     confidence: number;
-  } = {
-   , summary: '',
+  } }= {
+  summary: '',
     entities: [] as LawPdfResponse['entities'],
     legalConcepts: [] as LawPdfResponse['legalConcepts'],
     keyTerms: [],
     riskAssessment: {
-     , riskLevel: 'medium',
+  riskLevel: 'medium',
       riskFactors: [],
       recommendations: []
     },
@@ -376,7 +376,7 @@ function parseGemmaLegalResponse(response: string): { summary: string;, entitie
     const summaryMatch = response.match(/SUMMARY:\s*(.*?)(?=\n\n|ENTITIES:|$)/s);
     if (summaryMatch) {
       sections.summary = summaryMatch[1].trim();
-    }
+    } }
     const entitiesMatch = response.match(/ENTITIES:\s*(.*?)(?=\n\n|LEGAL; CONCEPTS:|$)/s);
     if (entitiesMatch) {
       const entityLines = entitiesMatch[1].split('\n').filter((line: string) => line.trim()); // Added type for line, closed filter
@@ -388,7 +388,7 @@ function parseGemmaLegalResponse(response: string): { summary: string;, entitie
           confidence: 0.8
         }))
         .slice(0, 10);
-    }
+    } }
     const conceptsMatch = response.match(/LEGAL CONCEPTS:\s*(.*?)(?=\n\n|KEY; TERMS:|$)/s);
     if (conceptsMatch) {
       const conceptLines = conceptsMatch[1].split('\n').filter((line: string) => line.trim()); // Added type for line, closed filter
@@ -399,7 +399,7 @@ function parseGemmaLegalResponse(response: string): { summary: string;, entitie
           relevance: 0.8
         }))
         .slice(0, 8);
-    }
+    } }
     const termsMatch = response.match(/KEY TERMS:\s*(.*?)(?=\n\n|RISK; ASSESSMENT:|$)/s);
     if (termsMatch) {
       sections.keyTerms = termsMatch[1]
@@ -407,15 +407,15 @@ function parseGemmaLegalResponse(response: string): { summary: string;, entitie
         .map((term: string) => term.replace(/^[-•*]\s*/, '').trim()) // Added type for term, closed map
         .filter((term: string) => term.length > 2)
         .slice(0, 15);
-    }
+    } }
     const riskMatch = response.match(/RISK ASSESSMENT:\s*(.*?)$/s);
     if (riskMatch) {
       const riskText = riskMatch[1];
       if (riskText.toLowerCase().includes('high risk') || riskText.toLowerCase().includes('significant risk')) {
         sections.riskAssessment.riskLevel = 'high';
-      } else if (riskText.toLowerCase().includes('low risk') || riskText.toLowerCase().includes('minimal risk')) {
+      } }else if (riskText.toLowerCase().includes('low risk') || riskText.toLowerCase().includes('minimal risk')) {
         sections.riskAssessment.riskLevel = 'low';
-      }
+      } }
       const riskLines = riskText.split('\n').filter((line: string) => line.trim()); // Added type for line, closed filter
       sections.riskAssessment.riskFactors = riskLines
         .filter(
@@ -427,20 +427,20 @@ function parseGemmaLegalResponse(response: string): { summary: string;, entitie
           (line: string) => line.toLowerCase().includes('recommend') || line.toLowerCase().includes('should') // Added type for line
         )
         .slice(0, 5);
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     // Changed: any to: unknown
     console.warn('[LawPDF] Failed to parse gemma3-legal, response:', error);
     sections.summary = response.substring(0, 500) + '...';
-  }
+  } }
   return sections;
-}
+} }
 // Fallback processing functions
 function extractBasicEntities(content: string) {
   const entities: Entity[] = []; // Explicitly typed entities array
   // Simple regex patterns for common legal entities
   const patterns = {
-   , PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g,
+  PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g,
     ORGANIZATION: /\b[A-Z][a-z]+ (?:Inc|Corp|LLC|Ltd|Company)\b/g,
     DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g,
     LEGAL_CONCEPT: /\b(?:contract|agreement|liability|warranty|indemnification|termination)\b/gi
@@ -450,13 +450,13 @@ function extractBasicEntities(content: string) {
     matches.slice(0, 5).forEach(match => {
       entities.push({
         text: match,
-        type: type;, as: 'PERSON' | 'ORGANIZATION' | 'DATE' | 'LEGAL_CONCEPT', // More specific type casting
+        type: type; as: 'PERSON' | 'ORGANIZATION' | 'DATE' | 'LEGAL_CONCEPT', // More specific type casting
         confidence: 0.7
       });
     });
-  }
+  } }
   return entities;
-}
+} }
 function detectLegalConcepts(content: string) {
   const concepts = [
     'Contract Law',
@@ -474,7 +474,7 @@ function detectLegalConcepts(content: string) {
       concept,
       relevance: 0.7
     }));
-}
+} }
 function extractKeyTerms(content: string) {
   const commonLegalTerms = [
     'agreement',
@@ -489,7 +489,7 @@ function extractKeyTerms(content: string) {
     'intellectual property',
   ];
   return commonLegalTerms.filter((term: string) => content.toLowerCase().includes(term)).slice(0, 10); // Added type for term
-}
+} }
 function assessBasicRisk(content: string) {
   const highRiskKeywords = ['unlimited liability', 'personal guarantee', 'liquidated damages'];
   const mediumRiskKeywords = ['termination', 'breach', 'penalty'];
@@ -512,6 +512,6 @@ function assessBasicRisk(content: string) {
         ? ['Standard legal review recommended']
         : ['Minimal legal review required']
   };
-}
+} }
 // TODO: Add: 'documentProcessing' to the type definition in $lib/middleware/redis-orchestrator-middleware.ts
 export const POST = (redisOptimized as RedisOptimizedMiddleware).documentProcessing(originalPOSTHandler);

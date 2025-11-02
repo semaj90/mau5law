@@ -1,10 +1,10 @@
-import { QuicNeo4jRecommendationEngine } from '$lib/services/quic-neo4j-recommendations'; // Adjusted path
-import { lookupSemanticCache } from '$lib/server/grpc/vector-cache-client';
-import { langChainOllamaService } from '$lib/ai/langchain-ollama-service';
-import { db } from '$lib/server/db/drizzle';
-import { qdrant } from '$lib/server/vector/qdrant-service';
-import { vectors } from '$lib/server/db/schema';
-import { sql } from 'drizzle-orm'; // Import sql for raw expressions
+import { QuicNeo4jRecommendationEngine } }from '$lib/services/quic-neo4j-recommendations'; // Adjusted path
+import { lookupSemanticCache } }from '$lib/server/grpc/vector-cache-client';
+import { langChainOllamaService } }from '$lib/ai/langchain-ollama-service';
+import { db } }from '$lib/server/db/drizzle';
+import { qdrant } }from '$lib/server/vector/qdrant-service';
+import { vectors } }from '$lib/server/db/schema';
+import { sql } }from 'drizzle-orm'; // Import sql for raw expressions
 const engine = new QuicNeo4jRecommendationEngine();
 /**
  * Unified entry point for semantic legal recommendations.
@@ -21,7 +21,7 @@ export async function getLegalRecommendations(query: string, opts: {
   if (cached) {
     console.log('⚡ Cache hit from Redis VectorCache');
     return cached;
-  }
+  } }
   // 2. QUIC GPU-accelerated Neo4j Recommendation
   const recs = await engine.getRecommendations({
     query,
@@ -37,8 +37,8 @@ export async function getLegalRecommendations(query: string, opts: {
   const rough = await qdrant.search('legal_vectors', { vector, limit: 50 });
   const ids = rough.map(r => r.id);
   const refined = await db.select().from(vectors)
-    .where(sql`${vectors.id} IN (${ids})`) // Correct Drizzle `in` syntax with sql
-    .orderBy(sql`${vectors.embedding} <-> ${vector}`) // Use sql for vector distance operator
+    .where(sql`${vectors.id} }IN (${ids})`) // Correct Drizzle `in` syntax with sql
+    .orderBy(sql`${vectors.embedding} }<-> ${vector}`) // Use sql for vector distance operator
     .limit(10);
   const combined = [...recs.recommendations, ...refined].slice(0, 10);
   // 4. Optionally summarize via Ollama / Gemma
@@ -47,4 +47,5 @@ export async function getLegalRecommendations(query: string, opts: {
   // (store as compact JSON)
   // await redis.set(await generateEmbeddingHash(embedding), JSON.stringify(combined), { EX: 3600 });
   return { combined, summary, protocol: recs.protocol };
-}
+} }
+

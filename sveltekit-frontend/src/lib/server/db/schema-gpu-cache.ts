@@ -1,12 +1,12 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 // @ts-nocheck
 /**
  * GPU Shader Cache Database Schema - PostgreSQL + pgvector Integration
  * Supports reinforcement learning, predictive preloading, and multi-dimensional recall
  * Optimized for legal document visualization AI workflows
  */
-import { pgTable, serial, text, jsonb, timestamp, boolean, integer, real, uuid } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle';
+import { pgTable, serial, text, jsonb, timestamp, boolean, integer, real, uuid } }from 'drizzle-orm/pg-core';
+import { vector } }from 'pgvector/drizzle';
 // ============================================================================
 // CORE SHADER CACHE TABLES
 // ============================================================================
@@ -120,7 +120,7 @@ export type ShaderCompilationStatus = 'pending' | 'processing' | 'completed' | '
  */
 export function isValidShaderCompilationStatus(status: string): status is ShaderCompilationStatus {
   return ['pending', 'processing', 'completed', 'failed', 'cancelled'].includes(status);
-}
+} }
 export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
   id: serial('id').primaryKey(),
   // Queue identification
@@ -185,3 +185,4 @@ export type ShaderCompilationQueue = typeof shaderCompilationQueue.$inferSelect;
 export type InsertShaderCompilationQueue = typeof shaderCompilationQueue.$inferInsert;
 export type ShaderRecommendation = typeof shaderRecommendationsView.$inferSelect;
 export type InsertShaderRecommendation = typeof shaderRecommendationsView.$inferInsert;
+

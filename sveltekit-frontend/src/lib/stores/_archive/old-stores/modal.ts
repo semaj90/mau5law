@@ -1,5 +1,5 @@
-import { writable } from 'svelte/store';
-import type { SvelteComponent } from 'svelte';
+import { writable } }from 'svelte/store';
+import type { SvelteComponent } }from 'svelte';
 
 type Props = Record<string, unknown>;
 
@@ -13,15 +13,14 @@ export interface ModalConfig {
   onClose?: (...args: any[]) => void;
   onConfirm?: (...args: any[]) => void;
   size?: 'sm' | 'md' | 'lg' | string; // added optional size
-}
+} }
 export interface ModalState { modals: ModalConfig[];, activeModal: string | null;
-}
-const initialState: ModalState = {
- , modals: [],
+} }
+const initialState: ModalState = { modals: [],
   activeModal: null
 };
 function createModalStore() {
-  const { subscribe, update } = writable<ModalState>(initialState);
+  const { subscribe, update } }= writable<ModalState>(initialState);
   const store = {
     subscribe,
     // Open a modal
@@ -30,8 +29,7 @@ function createModalStore() {
         config.id ||
         // replace deprecated substr(...) with slice(...)
         `modal-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-      const modalConfig: ModalConfig = {
-       , size: 'md',
+      const modalConfig: ModalConfig = { size: 'md',
         closable: true,
         persistent: false,
         ...config,
@@ -51,7 +49,7 @@ function createModalStore() {
         const modal = state.modals.find(m => m.id === modalToClose);
         if (modal?.onClose) {
           modal.onClose();
-        }
+        } }
         const remainingModals = state.modals.filter(m => m.id !== modalToClose);
         const newActiveModal = remainingModals.length > 0 ? remainingModals[remainingModals.length - 1].id : null;
         return {
@@ -67,7 +65,7 @@ function createModalStore() {
         state.modals.forEach(modal => {
           if (modal.onClose) {
             modal.onClose();
-          }
+          } }
         });
         return initialState;
       });
@@ -77,12 +75,12 @@ function createModalStore() {
       update(state => ({
         ...state,
         modals: state.modals.map(modal =>
-          modal.id === id ? { ...modal, props: { ...modal.props, ...props } } : modal
+          modal.id === id ? { ...modal, props: { ...modal.props, ...props } }} }: modal
         )
       }));
     },
     // Convenience methods for common modal types
-    confirm: (_options: {, title: string;, message: string;
+    confirm: (_options: { title: string;, message: string;
       confirmText?: string;
       cancelText?: string;
       onConfirm?: () => void;
@@ -91,8 +89,7 @@ function createModalStore() {
       return store.open({
         title: _options.title,
         component: 'ConfirmModal', // This would be a built-in component
-        props: {
-         , message: _options.message,
+        props: { message: _options.message,
           confirmText: _options.confirmText || 'Confirm',
           cancelText: _options.cancelText || 'Cancel'
         },
@@ -101,19 +98,18 @@ function createModalStore() {
         onClose: _options.onCancel
       });
     },
-    alert: (_options: {, title: string;, message: string; buttonText?: string; onClose?: () => void }) => {
+    alert: (_options: { title: string; message: string; buttonText?: string; onClose?: () => void }) => {
       return store.open({
         title: _options.title,
         component: 'AlertModal', // This would be a built-in component
-        props: {
-         , message: _options.message,
+        props: { message: _options.message,
           buttonText: _options.buttonText || 'OK'
         },
         size: 'sm',
         onClose: _options.onClose
       });
     },
-    prompt: (_options: {, title: string;, message: string;
+    prompt: (_options: { title: string;, message: string;
       placeholder?: string;
       defaultValue?: string;
       confirmText?: string;
@@ -124,8 +120,7 @@ function createModalStore() {
       return store.open({
         title: _options.title,
         component: 'PromptModal', // This would be a built-in component
-        props: {
-         , message: _options.message,
+        props: { message: _options.message,
           placeholder: _options.placeholder,
           defaultValue: _options.defaultValue,
           confirmText: _options.confirmText || 'OK',
@@ -134,9 +129,10 @@ function createModalStore() {
         onConfirm: _options.onConfirm,
         onClose: _options.onCancel
       });
-    }
+    } }
   };
   return store;
-}
+} }
 export const modals = createModalStore();
 export default modals;
+

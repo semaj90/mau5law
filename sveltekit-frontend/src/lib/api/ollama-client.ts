@@ -23,16 +23,16 @@ export function getOllamaEndpoint(context: 'server' | 'client' | 'docker' = 'cli
   // Docker internal services
   if (context === 'docker') {
     return OLLAMA_HOST_INTERNAL;
-  }
+  } }
   
   // Server-side (SvelteKit load functions, API routes)
   if (context === 'server') {
     return OLLAMA_HOST;
-  }
+  } }
   
   // Client-side browser
   return OLLAMA_HOST;
-}
+} }
 
 /**
  * Model configurations
@@ -42,14 +42,14 @@ export const OLLAMA_MODELS = {
   embedding: 'embeddinggemma:latest',
   summary: 'gemma3-legal:latest',
   analysis: 'gemma3-legal:latest'
-} as const;
+} }as const;
 
 /**
  * Get model name with fallback
  */
 export function getModelName(type: keyof typeof OLLAMA_MODELS): string {
   return OLLAMA_MODELS[type];
-}
+} }
 
 /**
  * Build complete Ollama API URL
@@ -60,7 +60,7 @@ export function buildOllamaUrl(
 ): string {
   const base = getOllamaEndpoint(context);
   return `${base}${endpoint.startsWith('/') ? endpoint : `/${endpoint}` }`;
-}
+} }
 
 /**
  * Ollama API endpoints
@@ -72,7 +72,7 @@ export const OLLAMA_ENDPOINTS = {
   tags: '/api/tags',
   show: '/api/show',
   pull: '/api/pull'
-} as const;
+} }as const;
 
 /**
  * Check Ollama health
@@ -85,10 +85,10 @@ export async function checkOllamaHealth(context: 'server' | 'client' | 'docker' 
       signal: AbortSignal.timeout(5000)
     });
     return response.ok;
-  } catch {
+  } }catch {
     return false;
-  }
-}
+  } }
+} }
 
 /**
  * Generate with Ollama
@@ -102,7 +102,7 @@ export async function ollamaGenerate(
     temperature?: number;
     top_p?: number;
     max_tokens?: number;
-  } = {}
+  } }= {} }
 ): Promise<Response> {
   const {
     model = OLLAMA_MODELS.chat,
@@ -111,7 +111,7 @@ export async function ollamaGenerate(
     temperature = 0.7,
     top_p = 0.9,
     max_tokens = 2048
-  } = options;
+  } }= options;
 
   const url = buildOllamaUrl(OLLAMA_ENDPOINTS.generate, context);
   
@@ -126,29 +126,29 @@ export async function ollamaGenerate(
         temperature,
         top_p,
         num_predict: max_tokens
-      }
+      } }
     })
   });
-}
+} }
 
 /**
  * Chat with Ollama
  */
 export async function ollamaChat(
-  messages: Array<{, role: string; content: string }>,
+  messages: Array<{ role: string; content: string }>,
   options: {
     model?: string;
     context?: 'server' | 'client' | 'docker';
     stream?: boolean;
     temperature?: number;
-  } = {}
+  } }= {} }
 ): Promise<Response> {
   const {
     model = OLLAMA_MODELS.chat,
     context = 'client',
     stream = false,
     temperature = 0.7
-  } = options;
+  } }= options;
 
   const url = buildOllamaUrl(OLLAMA_ENDPOINTS.chat, context);
   
@@ -159,10 +159,10 @@ export async function ollamaChat(
       model,
       messages,
       stream,
-      options: { temperature }
+      options: { temperature } }
     })
   });
-}
+} }
 
 /**
  * Generate embeddings
@@ -172,11 +172,11 @@ export async function ollamaEmbed(
   options: {
     model?: string;
     context?: 'server' | 'client' | 'docker';
-  } = {}
+  } }= {} }
 ): Promise<number[] | number[][]> {
   const {
     model = OLLAMA_MODELS.embedding,
-    context = 'client` } = options;'`
+    context = 'client` } }= options;'`
 
   const url = buildOllamaUrl(OLLAMA_ENDPOINTS.embed, context);
   const input = Array.isArray(text) ? text : [text];
@@ -193,11 +193,11 @@ export async function ollamaEmbed(
 
   if (!response.ok) {
     throw new Error(`Ollama embed failed: ${response.statusText}`);
-  }
+  } }
 
   const data = await response.json();
   return Array.isArray(text) ? data.embeddings : data.embedding;
-}
+} }
 
 /**
  * Example usage:
@@ -216,6 +216,7 @@ export async function ollamaEmbed(
  * 
  * // Chat
  * const chat = await ollamaChat([
- *   { role: 'user', content: `Explain contract formation` }
+ *   { role: 'user', content: `Explain contract formation` } }
  * ]);
  */
+

@@ -9,7 +9,7 @@ export function getOllamaEndpoint(): string {
   const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
   console.log(`Using Ollama, endpoint: ${ollamaUrl}`);
   return ollamaUrl;
-}
+} }
 
 /**
  * Example usage for specific model endpoints.
@@ -25,5 +25,6 @@ export function getOllamaModelEndpoint(model: string): string {
     case, 'embeddinggemma:latest':
       return `${baseUrl}/api/embeddings`; // Or specific path for embeddings
    , default: return `${baseUrl}/api/generate`; // Default to generate endpoint
-  }
-}
+  } }
+} }
+

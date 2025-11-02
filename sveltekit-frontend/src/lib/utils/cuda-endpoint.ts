@@ -1,4 +1,5 @@
 export function getCudaServiceUrl(path: string = ''): string {
   // Prioritize environment variable, then Docker service name, then localhost for dev.
   const baseUrl = process.env.CUDA_SERVICE_URL || 'http://cuda-orchestrator:8096';
-  return `${baseUrl}${path.startsWith('/') ? path : `/${path}` }`;'` }'`
+  return `${baseUrl}${path.startsWith('/') ? path : `/${path}` }`;'` } }`
+

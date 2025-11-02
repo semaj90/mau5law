@@ -3,14 +3,14 @@
  * OCR.js → Text Extraction → Node API → Embeddings → Multi-dimensional Tensors
  * SIMD parsing via Service Worker for streaming performance
  */
-import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
-import { browser } from '$app/environment';
-import { ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } from '$lib/components/ui/gaming/constants/gaming-constants.js';
+import { shaderCacheManager } }from '$lib/webgpu/shader-cache-manager.js';
+import { browser } }from '$app/environment';
+import { ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } }from '$lib/components/ui/gaming/constants/gaming-constants.js';
 // replace loose `any` types with stricter input shapes
 type RecognizeInput = ImageBitmap | ImageData | HTMLCanvasElement | HTMLImageElement | string | Blob | OffscreenCanvas;
-type BBox = { x0: number; y0: number; x1: number; y1: number } | number[];
+type BBox = { x0: number; y0: number; x1: number; y1: number } }| number[];
 type Word = { text: string; bbox: BBox; confidence: number };
-type RecognizeResult = { data: { text: string; confidence: number;, words: Word[] } };
+type RecognizeResult = { data: { text: string; confidence: number; words: Word[] } }};
 type LoggerMessage = Record<string, unknown>;
 // accept both module shapes (default export or direct export) and expose common helpers optionally
 type TesseractLike = {
@@ -23,39 +23,38 @@ type TesseractLike = {
   OEM?: any;
   PSM?: any;
   imageType?: any;
-} & Record<string, unknown>;
+} }& Record<string, unknown>;
 declare global {
   interface Window {
     // use the stricter TesseractLike type instead of `any`
     Tesseract?: TesseractLike;
-  }
-}
+  } }
+} }
 export interface OCRResult { text: string;, confidence: number;
-  boundingBoxes: Array<{, text: string;, bbox: BBox;
+  boundingBoxes: Array<{ text: string;, bbox: BBox;
     confidence: number;
   }>;
-}
-export interface TensorData {, embeddings: Float32Array;, dimensions: number;
-  metadata: {, source: 'ocr' | 'manual' | 'api';, processed_at: number;
+} }
+export interface TensorData { embeddings: Float32Array;, dimensions: number;
+  metadata: { source: 'ocr' | 'manual' | 'api';, processed_at: number;
     tensor_id: string;
     confidence: number;
   };
-}
-export interface ProcessingResult {, ocr: OCRResult;, embeddings: TensorData;
+} }
+export interface ProcessingResult { ocr: OCRResult;, embeddings: TensorData;
   searchIndex: Float32Array;
   processingTime: number;
   cacheHit: boolean;
-}
+} }
 // New interfaces for API responses and options
-export interface EmbeddingAPIResponse {
- , embedding: number[]; // API returns array of numbers, convert to Float32Array
+export interface EmbeddingAPIResponse { embedding: number[]; // API returns array of numbers, convert to Float32Array
   fromCache?: boolean;
   model?: string;
   type?: string;
   result?: any;
   error?: string;
   tensor_id?: string;
-}
+} }
 export interface OCRProcessOptions {
   language?: string;
   oem?: number;
@@ -65,10 +64,10 @@ export interface OCRProcessOptions {
   tessjs_create_pdf?: boolean;
   tessjs_create_hocr?: boolean;
   tessjs_create_tsv?: boolean;
-}
+} }
 export interface BatchProcessingItem { image: ImageData | HTMLCanvasElement | File;, priority: number;
  , options: OCRProcessOptions;
-}
+} }
 export class OCRTensorProcessor {
   // worker may be a Dedicated Worker or a ServiceWorker (registration.active)
   private worker?: Worker | ServiceWorker;
@@ -88,7 +87,7 @@ export class OCRTensorProcessor {
     // Initialize Service Worker for SIMD parsing
     await this.initializeServiceWorker();
     console.log('✅ OCR Tensor Processor initialized with Gemma 270MB + Gaming LOD');
-  }
+  } }
   private async initializeLODOptimization(): Promise<void> {
     // Monitor memory pressure using gaming era specs
     this.updateMemoryPressure();
@@ -99,14 +98,14 @@ export class OCRTensorProcessor {
       const totalMemoryMB = memoryInfo.totalJSHeapSize / (1024 * 1024);
       if (totalMemoryMB < GAMING_ERA_SPECS.n64.memoryMB) {
         this.currentLODLevel = 'low'; // Use 8-bit NES level optimization
-      } else if (totalMemoryMB < 512) {
+      } }else if (totalMemoryMB < 512) {
         this.currentLODLevel = 'medium'; // Use 16-bit SNES level optimization
-      } else {
+      } }else {
         this.currentLODLevel = 'high'; // Use N64 level optimization
-      }
-    }
+      } }
+    } }
     console.log(`🎮 LOD Level set to: ${this.currentLODLevel}`);
-  }
+  } }
   private updateMemoryPressure(): void {
     const memoryInfo = performance.memory; // Removed: 'as: any' cast
     if (memoryInfo) {
@@ -114,28 +113,28 @@ export class OCRTensorProcessor {
       // Adapt LOD based on memory pressure using gaming thresholds
       if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.adaptiveTuning.thresholds.criticalMemory) {
         this.currentLODLevel = 'low';
-      } else if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.adaptiveTuning.thresholds.lowMemory) {
+      } }else if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.adaptiveTuning.thresholds.lowMemory) {
         this.currentLODLevel = 'medium';
-      }
-    }
-  }
+      } }
+    } }
+  } }
   private async initializeOCR(): Promise<void> {
     if (!browser || this.ocrInitialized) return;
     try {
       // Load Tesseract.js dynamically and handle both `default` and direct export shapes
       const rawModule = (await import('tesseract.js')) as: unknown;
       // If the module has a default export use it, otherwise treat rawModule as the runtime shape
-      const modWithDefault = rawModule as { default?: TesseractLike } & Record<string, unknown>;
+      const modWithDefault = rawModule as { default?: TesseractLike } }& Record<string, unknown>;
       const runtime: TesseractLike = modWithDefault.default ?? (rawModule as TesseractLike);
       // assign to window with correct typing (avoid `any`)
       const win = window as Window & { Tesseract?: TesseractLike };
       win.Tesseract = runtime;
       this.ocrInitialized = true;
       console.log('✅ OCR.js loaded');
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to load OCR.js, using fallback:', error);
-    }
-  }
+    } }
+  } }
   private async initializeWebGPU(): Promise<void> {
     if (!browser || !navigator.gpu) return;
     try {
@@ -145,12 +144,12 @@ export class OCRTensorProcessor {
       // fix: add missing parentheses
       if (this.webgpuDevice) {
         await shaderCacheManager.initialize(this.webgpuDevice);
-      }
+      } }
       console.log('✅ WebGPU initialized for tensor processing');
-    } catch (error) {
+    } }catch (error) {
       console.warn('WebGPU initialization failed:', error);
-    }
-  }
+    } }
+  } }
   private async initializeServiceWorker(): Promise<void> {
     if (!browser || !('serviceWorker' in navigator)) return;
     try {
@@ -160,10 +159,10 @@ export class OCRTensorProcessor {
       // keep reference to the underlying ServiceWorker (may be: undefined until activated)
       this.worker = activeWorker ?? undefined;
       console.log('✅ SIMD Service Worker initialized');
-    } catch (error) {
+    } }catch (error) {
       console.warn('Service Worker initialization failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Process image with OCR and convert to embeddings
    */
@@ -174,7 +173,7 @@ export class OCRTensorProcessor {
       oem?: number;
       psm?: number;
       useCache?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<ProcessingResult> {
     const startTime = performance.now();
     try {
@@ -194,18 +193,18 @@ export class OCRTensorProcessor {
         processingTime: totalTime,
         cacheHit: embeddingResult.fromCache
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('OCR Tensor processing failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   private async performOCR(
     imageData: ImageData | HTMLCanvasElement | File,
     options: OCRProcessOptions // Use OCRProcessOptions
   ): Promise<OCRResult> {
     if (!this.ocrInitialized || !window.Tesseract) {
       throw new Error('OCR.js not initialized');
-    }
+    } }
     // Update memory pressure before processing
     this.updateMemoryPressure();
     try {
@@ -213,17 +212,16 @@ export class OCRTensorProcessor {
       const tesseractInstance = window.Tesseract as TesseractLike;
       if (!tesseractInstance || typeof tesseractInstance.recognize !== 'function') {
         throw new Error('Tesseract runtime does not expose recognize()');
-      }
+      } }
       const recognize = tesseractInstance.recognize.bind(tesseractInstance);
       // Apply LOD-based OCR optimization
       const ocrOptions = this.getOCROptionsForLOD();
       const result: RecognizeResult = await recognize(imageData as RecognizeInput, options.language || 'eng', {
         // Type logger message
-        logger: (m: LoggerMessage) => console.log(`OCR [${this.currentLODLevel}]: ', m),'`
+        logger: (m: LoggerMessage) => console.log(`OCR [${this.currentLODLevel} }: ', m),'`
         ...ocrOptions
       });
-      const ocrResult: OCRResult = {
-       , text: result.data.text,
+      const ocrResult: OCRResult = { text: result.data.text,
         confidence: result.data.confidence,
         boundingBoxes: result.data.words.map((word: Word) => ({
           text: word.text,
@@ -237,11 +235,11 @@ export class OCRTensorProcessor {
         wordsFound: ocrResult.boundingBoxes.length
       });
       return ocrResult;
-    } catch (error) {
+    } }catch (error) {
       console.error('OCR processing failed: ', error);'`'`
       throw error;
-    }
-  }
+    } }
+  } }
   // tighten return type from `any` to OCRProcessOptions
   private getOCROptionsForLOD(): OCRProcessOptions {
     // Use gaming memory architecture to optimize OCR based on current LOD level
@@ -274,8 +272,8 @@ export class OCRTensorProcessor {
           tessjs_create_tsv: true
         };
      , default: return {};
-    }
-  }
+    } }
+  } }
   private async selectOptimalModel(): Promise<{
     model?: string;
     fallback?: string[];
@@ -303,7 +301,7 @@ export class OCRTensorProcessor {
           parallelism: 4,
           cacheSize: 128
         };
-      }
+      } }
       // Determine model based on available GPU memory
       if (availableMemory > 2048) {
         // 2GB+ GPU memory
@@ -313,7 +311,7 @@ export class OCRTensorProcessor {
           parallelism: 8, // High parallelism for powerful GPU
           cacheSize: 512, // Large cache for complex models
         };
-      } else if (availableMemory > 1024) {
+      } }else if (availableMemory > 1024) {
         // 1GB+ GPU memory
         return {
           model: 'gemma:270m', // Gemma 270MB optimal for this range
@@ -322,7 +320,7 @@ export class OCRTensorProcessor {
           parallelism: 6, // Balanced parallelism
           cacheSize: 256, // Medium cache size
         };
-      } else if (availableMemory > 512) {
+      } }else if (availableMemory > 512) {
         // 512MB+ GPU memory
         return {
           model: 'gemma:270m', // Still use 270MB - it fits with cache
@@ -331,7 +329,7 @@ export class OCRTensorProcessor {
           parallelism: 3, // Conservative parallelism
           cacheSize: 128, // Smaller cache to prevent OOM
         };
-      } else {
+      } }else {
         // Very low GPU memory - use lightweight model with CrewAI fallback
         return {
           model: 'nomic-embed-text', // Lightweight model
@@ -340,8 +338,8 @@ export class OCRTensorProcessor {
           parallelism: 2, // Minimal parallelism
           cacheSize: 64, // Small cache
         };
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('Failed to check Ollama status, using Gemma 270MB fallback:', error);
       // Always fallback to Gemma 270MB - reliable and fits in memory
       return {
@@ -351,11 +349,11 @@ export class OCRTensorProcessor {
         parallelism: 4, // Safe parallelism level
         cacheSize: 128, // Safe cache size for 270MB model
       };
-    }
-  }
+    } }
+  } }
   private async generateEmbeddings(
     text: string
-  ): Promise<{ embeddings: Float32Array; fromCache: boolean;, model: string }> {
+  ): Promise<{ embeddings: Float32Array; fromCache: boolean; model: string }> {
     try {
       // Intelligent model selection based on Ollama GPU memory and system state
       const modelConfig = await this.selectOptimalModel();
@@ -377,30 +375,29 @@ export class OCRTensorProcessor {
         })
       });
       if (!response.ok) {
-        throw new Error(`Embedding API failed: ${response.status}`); // No need for: 'as { ok?: any; ... }' }
+        throw new Error(`Embedding API failed: ${response.status}`); // No need for: 'as { ok?: any; ... } } } }
       const, data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
       return {
         embeddings: new Float32Array(data.embedding), // Access properties directly
         fromCache: data.fromCache || false,
-        model: data?.model || 'unknown' };'` } catch (error) {'`
+        model: data?.model || 'unknown' };'` } }catch (error) {'`
       console.error('Embedding generation failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   private async processTensors(embeddings: Float32Array): Promise<TensorData> {
     if (!this.webgpuDevice) {
       // Fallback to CPU processing
       return {
         embeddings,
         dimensions: embeddings.length,
-        metadata: {
-         , source: 'ocr',
+        metadata: { source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
           confidence: 0.8
-        }
+        } }
       };
-    }
+    } }
     try {
       // Get SIMD parsing shader
       const simdShader = await shaderCacheManager.createTensorShader('simd_parse', embeddings.length);
@@ -430,27 +427,25 @@ export class OCRTensorProcessor {
       return {
         embeddings: processedData.slice(),
         dimensions: processedData.length,
-        metadata: {
-         , source: 'ocr',
+        metadata: { source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
           confidence: 0.9
-        }
+        } }
       };
-    } catch (error) {
+    } }catch (error) {
       console.warn('WebGPU tensor processing failed, using CPU fallback:', error);
       return {
         embeddings,
         dimensions: embeddings.length,
-        metadata: {
-         , source: 'ocr',
+        metadata: { source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
           confidence: 0.8
-        }
+        } }
       };
-    }
-  }
+    } }
+  } }
   private async createSearchIndex(tensorData: TensorData): Promise<Float32Array> {
     // Create quantized search index for Fuse.js client-side search
     const quantized = new Float32Array(Math.ceil(tensorData.dimensions / 4));
@@ -459,17 +454,17 @@ export class OCRTensorProcessor {
       let sum = 0;
       for (let j = 0; j < 4 && baseIdx + j < tensorData.embeddings.length; j++) {
         sum += tensorData.embeddings[baseIdx + j];
-      }
+      } }
       quantized[i] = sum / 4; // Average pooling for dimension reduction
-    }
+    } }
     return quantized;
-  }
+  } }
   /**
    * Asynchronous batch processing with intelligent scheduling
    */
   async batchProcessImages(
     images: Array<ImageData | HTMLCanvasElement | File>,
-    options: OCRProcessOptions = {} // Use OCRProcessOptions
+    options: OCRProcessOptions = {} }// Use OCRProcessOptions
   ): Promise<ProcessingResult[]> {
     const results: ProcessingResult[] = [];
     // Adaptive chunk size based on LOD level and memory pressure
@@ -490,10 +485,10 @@ export class OCRTensorProcessor {
       const chunkPromises = chunk.map(async item => {
         try {
           return await this.processImageAsync(item.image, item.options); // Access properties directly
-        } catch (error) {
+        } }catch (error) {
           console.warn(`Failed to process image ${i}: ', error);'`
           return: null;
-        }
+        } }
       });
       const chunkResults = await Promise.allSettled(chunkPromises);
       // Extract successful results
@@ -508,30 +503,30 @@ export class OCRTensorProcessor {
       const delay = this.calculateAdaptiveDelay();
       if (delay > 0) {
         await new Promise(resolve => setTimeout(resolve, delay));
-      }
+      } }
       // Update memory pressure after each chunk
       this.updateMemoryPressure();
-    }
+    } }
     return results;
-  }
+  } }
   /**
    * Asynchronous single image processing with Web Workers
    */
   private async processImageAsync(
     imageData: ImageData | HTMLCanvasElement | File,
-    options: OCRProcessOptions = {} // Use OCRProcessOptions
+    options: OCRProcessOptions = {} }// Use OCRProcessOptions
   ): Promise<ProcessingResult> {
     // Try Web Worker processing for better performance
     if (this.worker && 'transferControlToOffscreen' in HTMLCanvasElement.prototype) {
       try {
         return await this.processImageInWorker(imageData, options);
-      } catch (error) {
+      } }catch (error) {
         console.warn('Web Worker processing failed, falling back to main thread:', error);
-      }
-    }
+      } }
+    } }
     // Fallback to main thread processing
     return await this.processImage(imageData, options);
-  }
+  } }
   /**
    * Process image in Web Worker for non-blocking execution
    */
@@ -543,32 +538,32 @@ export class OCRTensorProcessor {
       if (!this.worker && !this.serviceWorkerRegistration) {
         reject(new Error('Web Worker / Service Worker not available'));
         return;
-      }
+      } }
       const handleMessage = (ev: MessageEvent) => {
         const payload = ev?.data ?? {};
         if (payload.type === 'ocr-result') {
           cleanup();
           resolve(payload.result as ProcessingResult);
-        } else if (payload.type === 'ocr-error') {
+        } }else if (payload.type === 'ocr-error') {
           cleanup();
           reject(new Error(String(payload.error || 'unknown')));
-        }
+        } }
       };
       const cleanup = () => {
         // remove listeners for both possible listener types
         try {
           if (this.worker && 'removeEventListener' in this.worker) {
             (this.worker as Worker).removeEventListener('message', handleMessage);
-          }
-        } catch (err) {
+          } }
+        } }catch (err) {
           // keep minimal debug logging instead of swallowing errors
           console.debug('[OCRTensorProcessor.cleanup] failed to remove worker listener', err);
-        }
+        } }
         try {
           navigator.serviceWorker.removeEventListener('message', handleMessage);
-        } catch (err) {
+        } }catch (err) {
           console.debug('[OCRTensorProcessor.cleanup] failed to remove serviceWorker listener', err);
-        }
+        } }
       };
       // Attach listener depending on type
       if (this.worker && 'postMessage' in (this.worker as Worker) && 'terminate' in (this.worker as Worker)) {
@@ -581,7 +576,7 @@ export class OCRTensorProcessor {
           lodLevel: this.currentLODLevel,
           memoryPressure: this.memoryPressure
         });
-      } else {
+      } }else {
         // ServiceWorker path: listen on navigator.serviceWorker and post to active worker if available
         navigator.serviceWorker.addEventListener('message', handleMessage);
         const target = this.serviceWorkerRegistration?.active || navigator.serviceWorker.controller;
@@ -589,7 +584,7 @@ export class OCRTensorProcessor {
           cleanup();
           reject(new Error('ServiceWorker not active'));
           return;
-        }
+        } }
         try {
           target.postMessage({
             type: 'process-ocr',
@@ -598,11 +593,11 @@ export class OCRTensorProcessor {
             lodLevel: this.currentLODLevel,
             memoryPressure: this.memoryPressure
           });
-        } catch (err) {
+        } }catch (err) {
           cleanup();
           reject(err);
-        }
-      }
+        } }
+      } }
       // Timeout after, 30 seconds
       const timer = setTimeout(() => {
         cleanup();
@@ -617,7 +612,7 @@ export class OCRTensorProcessor {
         realCleanup();
       };
     });
-  }
+  } }
   private getOptimalChunkSize(): number {
     // Adaptive chunk size based on gaming memory architecture
     switch (this.currentLODLevel) {
@@ -628,8 +623,8 @@ export class OCRTensorProcessor {
       case, 'high':
         return GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 6 : 8;
       default: return 3;
-    }
-  }
+    } }
+  } }
   private calculateProcessingPriority(image: ImageData | HTMLCanvasElement | File, index: number): number {
     let priority = 1.0;
     // Boost priority for legal documents (larger files typically)
@@ -637,26 +632,26 @@ export class OCRTensorProcessor {
       if (image.size > 1024 * 1024) priority += 0.5; // Large files (>1MB)
       if (image.type.includes('pdf')) priority += 0.3; // PDF documents
       if (image.name.toLowerCase().includes('legal')) priority += 0.4; // Legal documents
-    }
+    } }
     // Process smaller images first for better user experience
     if (image instanceof ImageData) {
       const pixels = image.width * image.height;
       if (pixels < 300000) priority += 0.2; // Small, images (<300K, pixels)
-    }
+    } }
     // Slight preference for earlier items in the queue
     priority += (1.0 / (index + 1)) * 0.1;
     return priority;
-  }
+  } }
   private calculateAdaptiveDelay(): number {
     // Calculate delay based on memory pressure and system load
     if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.adaptiveTuning.thresholds.criticalMemory) {
       return 1000; // 1 second delay under critical memory pressure
-    } else if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.adaptiveTuning.thresholds.lowMemory) {
+    } }else if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.adaptiveTuning.thresholds.lowMemory) {
       return 500; // 500ms delay under moderate memory pressure
-    } else {
+    } }else {
       return 100; // 100ms delay under normal conditions
-    }
-  }
+    } }
+  } }
   /**
    * Store results in database via Node API
    */ async storeResults(results: ProcessingResult[], metadata: Record<string, unknown> = {}): Promise<void> {
@@ -664,7 +659,7 @@ export class OCRTensorProcessor {
       const response = await fetch('/api/tensor/store', {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({, results: results.map(r => ({, text: r.ocr.text,
+        body: JSON.stringify({ results: results.map(r => ({ text: r.ocr.text,
             embeddings: Array.from(r.embeddings.embeddings),
             dimensions: r.embeddings.dimensions,
             confidence: r.ocr.confidence,
@@ -675,29 +670,30 @@ export class OCRTensorProcessor {
             ...metadata,
             processed_at: Date.now(),
             batch_size: results.length
-          }
+          } }
         })
       });
       if (!response.ok) {
         throw new Error(`Storage API failed: ${response.status}`);
-      }
+      } }
       console.log('✅ Results stored successfully');
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to store results:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   dispose(): void {
     // terminate dedicated worker if present
     if (this.worker && 'terminate' in (this.worker as Worker)) {
       try {
         (this.worker as Worker).terminate();
-      } catch (err) {
+      } }catch (err) {
         console.debug('[OCRTensorProcessor.dispose] worker termination failed', err);
-      }
-    }
+      } }
+    } }
     shaderCacheManager.dispose();
-  }
-}
+  } }
+} }
 // Singleton instance
 export const ocrTensorProcessor = new OCRTensorProcessor();
+

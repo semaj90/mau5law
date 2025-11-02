@@ -1,43 +1,43 @@
 // Enhanced GRPO-thinking processor with structured reasoning feedback
 // Extends existing thinking-processor.ts with advanced reasoning pipeline
-import { ThinkingProcessor, type ThinkingAnalysis, type AnalysisOptions } from './thinking-processor.js';
-import { db } from '$lib/db/connection';
-import { aiResponses, grpoFeedback } from '$lib/db/enhanced-ai-schema';
-import { sql } from 'drizzle-orm';
+import { ThinkingProcessor, type ThinkingAnalysis, type AnalysisOptions } }from './thinking-processor.js';
+import { db } }from '$lib/db/connection';
+import { aiResponses, grpoFeedback } }from '$lib/db/enhanced-ai-schema';
+import { sql } }from 'drizzle-orm';
 // Type definitions for Ollama API responses
 interface OllamaGenerateResponse {
   response: string;
   // Add other expected properties if available
-}
+} }
 interface OllamaEmbeddingResponse {
   embedding: number[];
   // Add other expected properties if available
-}
+} }
 // Type definition for feedback data rows
-interface FeedbackDataRow {, user_rating: number;, feedback_text: string;
+interface FeedbackDataRow { user_rating: number;, feedback_text: string;
   accuracy: number;
   clarity: number;
   completeness: number;
   relevance: number;
-}
+} }
 // Type definition for recommendation rows
-interface RecommendationRow {, id: string;, response: string;
+interface RecommendationRow { id: string;, response: string;
   confidence: number;
   created_at: string;
   distance: number;
   user_preference_score?: number;
-}
+} }
 // Type definition for trending topic rows
-interface TrendingTopicRow {, topic: string;, count: string;
+interface TrendingTopicRow { topic: string;, count: string;
   avg_rating: string;
-}
-interface MappedTrendingTopic {, topic: string;, count: number;
+} }
+interface MappedTrendingTopic { topic: string;, count: number;
   avgRating: number;
-}
+} }
 // Enhanced analysis with GRPO context
 export interface GRPOAnalysis extends ThinkingAnalysis {
   grpoId?: string;
-  structuredReasoning: {, premises: string[];, inferences: string[];
+  structuredReasoning: { premises: string[];, inferences: string[];
     conclusions: string[];
     legalPrinciples: string[];
     counterArguments: string[];
@@ -45,26 +45,25 @@ export interface GRPOAnalysis extends ThinkingAnalysis {
   };
   temporalScore: number;
   recommendationContext: RecommendationContext[];
-  feedbackLoop: {, previousRatings: number[];, userPreferences: string[];
+  feedbackLoop: { previousRatings: number[];, userPreferences: string[];
     improvementSuggestions: string[];
   };
-}
-export interface RecommendationContext {, responseId: string;, similarity: number;
+} }
+export interface RecommendationContext { responseId: string;, similarity: number;
   contextRelevance: number;
   temporalFactor: number;
   finalScore: number;
   snippet: string;
-}
+} }
 // GRPO enhancement configuration
-export interface GRPOConfig {, enableStructuredReasoning: boolean;, enableFeedbackLoop: boolean;
+export interface GRPOConfig { enableStructuredReasoning: boolean;, enableFeedbackLoop: boolean;
   enableRecommendations: boolean;
   maxRecommendations: number;
   temporalDecayDays: number;
   semanticSimilarityThreshold: number;
-}
+} }
 export class EnhancedGRPOProcessor extends ThinkingProcessor {
-  private static readonly DEFAULT_CONFIG: GRPOConfig = {
-   , enableStructuredReasoning: true,
+  private static readonly DEFAULT_CONFIG: GRPOConfig = { enableStructuredReasoning: true,
     enableFeedbackLoop: true,
     enableRecommendations: true,
     maxRecommendations: 5,
@@ -76,7 +75,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
    */
   static async analyzeDocumentEnhanced(
    , text: string,
-    options: AnalysisOptions & { config?: Partial<GRPOConfig> } = {}
+    options: AnalysisOptions & { config?: Partial<GRPOConfig> } }= {} }
   ): Promise<GRPOAnalysis> {
     const config = { ...this.DEFAULT_CONFIG, ...options.config };
     // Get base thinking analysis
@@ -104,8 +103,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
       ? await this.getFeedbackLoopData(text)
       : { previousRatings: [], userPreferences: [], improvementSuggestions: [] };
     // Save enhanced analysis to database
-    const grpoId = await this.saveGRPOAnalysis({
-     , query: text,
+    const grpoId = await this.saveGRPOAnalysis({ query: text,
       response:
         typeof baseAnalysis.analysis === 'string' ? baseAnalysis.analysis : JSON.stringify(baseAnalysis.analysis),
       thinkingContent: baseAnalysis.thinking,
@@ -124,7 +122,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
       recommendationContext,
       feedbackLoop
     };
-  }
+  } }
   /**
    * Extract structured reasoning components from thinking content
    */
@@ -133,11 +131,11 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
   ): Promise<GRPOAnalysis['structuredReasoning']> {
     if (!thinkingContent) {
       return this.getEmptyStructuredReasoning();
-    }
+    } }
     try {
       // Use Gemma3-Legal to parse the thinking content into structured components
       const structurePrompt = `Parse this legal reasoning into structured components:`
-${thinkingContent}
+${thinkingContent} }
 Extract and format as, JSON:;
 {
   "premises": ["premise 1", "premise 2"],
@@ -150,8 +148,7 @@ Extract and format as, JSON:;
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({
-         , model: 'gemma3-legal:latest',
+        body: JSON.stringify({ model: 'gemma3-legal:latest',
           prompt: structurePrompt,
           stream: false
         })
@@ -167,14 +164,14 @@ Extract and format as, JSON:;
           Array.isArray(parsed.inferences)
         ) {
           return parsed;
-        }
-      }
-    } catch (error) {
+        } }
+      } }
+    } }catch (error) {
       console.warn('Failed to extract structured reasoning:', error);
-    }
+    } }
     // Fallback: basic extraction from thinking content
     return this.fallbackStructureExtraction(thinkingContent);
-  }
+  } }
   /**
    * Generate embedding using nomic-embed-text
    */
@@ -183,20 +180,19 @@ Extract and format as, JSON:;
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({
-         , model: 'nomic-embed-text',
+        body: JSON.stringify({ model: 'nomic-embed-text',
           prompt: text.slice(0, 2048), // Limit length
         })
       });
       if (response.ok) {
         const data = (await response.json()) as OllamaEmbeddingResponse;
         return data.embedding || [];
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('Failed to generate embedding:', error);
-    }
+    } }
     return new Array(768).fill(0); // Fallback zero vector
-  }
+  } }
   /**
    * Get recommendation context from similar previous responses
    */
@@ -215,9 +211,9 @@ Extract and format as, JSON:;
           (r.query_embedding <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
         FROM ai_responses r
         WHERE r.query_embedding IS NOT NULL
-          AND (r.query_embedding <=> ${JSON.stringify(queryEmbedding)}::vector) < ${1 - config.semanticSimilarityThreshold}
+          AND (r.query_embedding <=> ${JSON.stringify(queryEmbedding)}::vector) < ${1 - config.semanticSimilarityThreshold} }
         ORDER BY similarity ASC
-        LIMIT ${config.maxRecommendations}
+        LIMIT ${config.maxRecommendations} }
       `);`
       const recommendations: RecommendationContext[] = [];
       for (const row of similarResponses) {
@@ -232,13 +228,13 @@ Extract and format as, JSON:;
           contextRelevance: (row.confidence, as: number) || 0.8,
           temporalFactor,
           finalScore: similarity * 0.6 + temporalFactor * 0.2 + ((row.confidence, as: number) || 0.8) * 0.2,
-          snippet: (row.response, as: string).slice(0, 200) + '...' });'' }
+          snippet: (row.response, as: string).slice(0, 200) + '...' });'' } }
       return recommendations.sort((a, b) => b.finalScore - a.finalScore);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to get recommendation context:', error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Calculate temporal decay score
    */
@@ -248,7 +244,7 @@ Extract and format as, JSON:;
     // Exponential decay: score = e^(-ln(2) * age / halfLife)
     const decayFactor = Math.exp((-Math.LN2 * ageDays) / halfLifeDays);
     return Math.max(0.1, Math.min(1.0, decayFactor)); // Clamp between 0.1 and 1.0
-  }
+  } }
   /**
    * Get feedback loop data for learning
    */
@@ -284,19 +280,19 @@ Extract and format as, JSON:;
         userPreferences,
         improvementSuggestions
       };
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to get feedback loop data:', error);
       return {
         previousRatings: [],
         userPreferences: [],
         improvementSuggestions: []
       };
-    }
-  }
+    } }
+  } }
   /**
    * Save GRPO analysis to database
    */
-  private static async saveGRPOAnalysis(data: {, query: string;, response: string;
+  private static async saveGRPOAnalysis(data: { query: string;, response: string;
    , thinkingContent: string;
    , structuredReasoning: GRPOAnalysis['structuredReasoning'];
    , queryEmbedding: number[];
@@ -324,25 +320,23 @@ Extract and format as, JSON:;
           caseType: data.options.documentType || 'unknown',
           sessionId: data.options.evidenceId,
           caseId: data.options.caseId,
-          metadata: {
-           , useThinkingStyle: data.options.useThinkingStyle,
+          metadata: { useThinkingStyle: data.options.useThinkingStyle,
             contextDocuments: data.options.contextDocuments || []
-          }
+          } }
         })
         .returning({ id: aiResponses.id });
       return result.id;
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to save GRPO analysis:', error);
       throw new Error('Database save failed');
-    }
-  }
+    } }
+  } }
   /**
    * Record user feedback for GRPO learning
    */
   static async recordFeedback(
     responseId: string,
-    feedback: {
-     , userRating: number;
+    feedback: { userRating: number;
       feedbackText?: string;
       accuracy?: number;
       clarity?: number;
@@ -350,7 +344,7 @@ Extract and format as, JSON:;
       relevance?: number;
       userId?: string;
       userRole?: string;
-    }
+    } }
   ): Promise<void> {
     try {
       await db.insert(grpoFeedback).values({
@@ -368,12 +362,12 @@ Extract and format as, JSON:;
       await db.execute(sql`
         UPDATE ai_responses
         SET usage_count = COALESCE(usage_count, 0) + 1,
-            success_metric = ${feedback.userRating / 5.0}
-        WHERE id = ${responseId}
-      `);' } catch (error) {'`
+            success_metric = ${feedback.userRating / 5.0} }
+        WHERE id = ${responseId} }
+      `);' } }catch (error) {'`
       console.error('Failed to record feedback:', error);
-    }
-  }
+    } }
+  } }
   // Helper methods
   private static getEmptyStructuredReasoning(): GRPOAnalysis['structuredReasoning'] {
     return {
@@ -384,7 +378,7 @@ Extract and format as, JSON:;
       counterArguments: [],
       confidenceFactors: []
     };
-  }
+  } }
   private static fallbackStructureExtraction(thinkingContent: string): GRPOAnalysis['structuredReasoning'] {
     const lines = thinkingContent.split('\n');
     return {
@@ -405,7 +399,7 @@ Extract and format as, JSON:;
         line => line.toLowerCase().includes('confident') || line.toLowerCase().includes('certain')
       )
     };
-  }
+  } }
   private static generateImprovementSuggestions(feedbackRows: FeedbackDataRow[]): string[] {
     const suggestions: string[] = [];
     // Analyze low ratings
@@ -416,8 +410,8 @@ Extract and format as, JSON:;
     if (lowClarity) suggestions.push('Use clearer language and better structure');
     if (lowCompleteness) suggestions.push('Provide more comprehensive analysis');
     return suggestions;
-  }
-}
+  } }
+} }
 /**
  * Utility functions for GRPO processing
  */
@@ -439,7 +433,7 @@ export const GRPOUtils = {
           AVG(f.user_rating) as avg_rating
         FROM ai_responses r
         JOIN grpo_feedback f ON r.id = f.response_id
-        WHERE f.user_id = ${userId}
+        WHERE f.user_id = ${userId} }
         GROUP BY r.legal_domain, r.case_type
         HAVING AVG(f.user_rating) >= 4
       ),
@@ -450,7 +444,7 @@ export const GRPOUtils = {
         FROM ai_responses r
         WHERE r.query_embedding IS NOT NULL
         ORDER BY distance ASC
-        LIMIT ${limit * 3}
+        LIMIT ${limit * 3} }
       )
       SELECT
         sr.*,
@@ -460,7 +454,7 @@ export const GRPOUtils = {
       ORDER BY
         (1 - sr.distance) * 0.4 +
         COALESCE(up.avg_rating, 3.0) / 5.0 * 0.6 DESC
-      LIMIT ${limit}
+      LIMIT ${limit} }
     `);`
     return (recommendations as: unknown as RecommendationRow[]).map(row => ({
       responseId: row.id,
@@ -479,7 +473,7 @@ export const GRPOUtils = {
         COUNT(*) as count,
         AVG(COALESCE(success_metric, 0.6)) as avg_rating
       FROM ai_responses
-      WHERE created_at >= NOW() - INTERVAL: '${days} days'
+      WHERE created_at >= NOW() - INTERVAL: '${days} }days'
         AND legal_domain IS NOT NULL
       GROUP BY legal_domain
       ORDER BY count DESC, avg_rating DESC
@@ -490,5 +484,6 @@ export const GRPOUtils = {
       count: parseInt(row.count),
       avgRating: parseFloat(row.avg_rating)
     }));
-  }
+  } }
 };
+

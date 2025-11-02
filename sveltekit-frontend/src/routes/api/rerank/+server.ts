@@ -1,12 +1,12 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { serverRerank } from '$lib/server/ai/reranker';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { serverRerank } }from '$lib/server/ai/reranker';
 
 export const POST: RequestHandler = async ({ request, headers }) => {
-  const input = (await request.json()) as { query?: string; candidates?: { id: string;, text: string }[] };
+  const input = (await request.json()) as { query?: string; candidates?: { id: string; text: string } }] };
 
   if (!input?.query || !Array.isArray(input.candidates)) {
     return new Response(JSON.stringify({ error: 'Invalid input' }), { status: 400 });
-  }
+  } }
 
   try {
     const result = await serverRerank({ query: input.query, candidates: input.candidates });
@@ -14,15 +14,15 @@ export const POST: RequestHandler = async ({ request, headers }) => {
     respHeaders.set('Content-Type', 'application/json');
     respHeaders.set('X-Cache-Hit', 'miss');
     return new Response(JSON.stringify(result), { headers: respHeaders });
-  } catch (err) {
+  } }catch (err) {
     console.error('rerank endpoint error', err);
     return new Response(JSON.stringify({ error: String(err) }), { status: 500 });
-  }
+  } }
 };
-import type { RequestHandler } from '@sveltejs/kit';
-import { serverRerank, webgpuRerankFallback } from '$lib/server/ai/ai-assistant-input-synthesizer';
-import type { RerankRequest, Candidate } from '$lib/types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { serverRerank, webgpuRerankFallback } }from '$lib/server/ai/ai-assistant-input-synthesizer';
+import type { RerankRequest, Candidate } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {
   // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\routes\api\rerank\+server.ts
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const result = await serverRerank(body);
     return json(result, { status: 200 });
-  } catch (err) {
+  } }catch (err) {
     console.error('Server rerank failed:', err);
 
     // Fallback to WebGPU client-side stub (or a simplified server-side fallback)
@@ -41,5 +41,6 @@ export const POST: RequestHandler = async ({ request }) => {
     // Here, we'll use it as a simplified server-side fallback if the main rerank fails.'
     const fallback = await webgpuRerankFallback(body.query, body.candidates);
     return json(fallback, { status: 200 });
-  }
+  } }
 };
+

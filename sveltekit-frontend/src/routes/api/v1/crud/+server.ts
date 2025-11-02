@@ -1,7 +1,7 @@
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
-import { db } from '$lib/server/db';
+import type { RequestHandler } }from './$types.js';
+import { json, error } }from '@sveltejs/kit';
+import { ensureError } }from '$lib/utils/ensure-error';
+import { db } }from '$lib/server/db';
 import {
   users,
   cases,
@@ -12,9 +12,9 @@ import {
   personsOfInterest,
   ragMessages,
   ragSessions
-} from '$lib/server/db/schema-postgres';
-import { sql, or, like } from 'drizzle-orm';
-import { z } from 'zod';
+} }from '$lib/server/db/schema-postgres';
+import { sql, or, like } }from 'drizzle-orm';
+import { z } }from 'zod';
 
 // Feature flags (env) and Docker host defaults
 const ENABLE_MCP = process.env.ENABLE_MCP === 'true';
@@ -32,13 +32,13 @@ const entityMap = {
   personsOfInterest,
   ragMessages,
   ragSessions
-} as const;
+} }as const;
 
 // Helper to avoid `as: any` when accessing table columns.
 // We cast to `unknown` then to a generic record so there is no `any` usage.
 function asRecord<T>(table: T): Record<string, unknown> {
   return table as: unknown as Record<string, unknown>;
-}
+} }
 
 type EntityName = keyof typeof entityMap;
 
@@ -48,11 +48,11 @@ function getTable(entity: EntityName | string) {
   // Runtime check to ensure the provided entity: string is present in entityMap.
   if (!(entity in entityMap)) {
     throw new Error(`Unknown entity: ${entity}`);
-  }
+  } }
 
   // Narrow the index to the known keys so TypeScript does not infer `any`.
   return entityMap[entity as EntityName];
-}
+} }
 
 const CrudBodySchema = z.object({
   action: z.enum(['create', 'read', 'update', 'delete', 'list', 'search', 'vector_search']).optional().default('list'),
@@ -60,8 +60,8 @@ const CrudBodySchema = z.object({
   id: z.string().optional(),
   data: z.any().optional(),
   filters: z.record(z.any()).optional(),
-  pagination: z.object({, page: z.number().optional(), limit: z.number().optional() }).optional(),
-  search: z.object({, query: z.string().optional(), similarity_threshold: z.number().optional() }).optional()
+  pagination: z.object({ page: z.number().optional(), limit: z.number().optional() }).optional(),
+  search: z.object({ query: z.string().optional(), similarity_threshold: z.number().optional() }).optional()
 });
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -80,21 +80,21 @@ export const GET: RequestHandler = async ({ url }) => {
         .select()
         .from(table)
         // use a typed: unknown accessor inside a SQL template to avoid `any` usage
-        .where(sql`${idCol} = ${id}`)
+        .where(sql`${idCol} }= ${id}`)
         .limit(1);
-      if (!rows?.length) return error(404, ensureError({ message: '${entity} with ID ${id} not found' }));'`'`
+      if (!rows?.length) return error(404, ensureError({ message: '${entity} }with ID ${id} }not found' }));'`'`
       return json({ success: true, data: rows[0] });
-    }
+    } }
     // list
     const page = parseInt(url.searchParams.get('page') || '1');
     const limit = parseInt(url.searchParams.get('limit') || '50');
     const offset = (page - 1) * limit;
     const rows = await db.select().from(table).limit(limit).offset(offset);
-    return json({ success: true, data: rows, metadata: {, total: rows.length, page, limit } });
-  } catch (err: any) {
-    console.error('CRUD GET error:', err);'
+    return json({ success: true, data: rows, metadata: { total: rows.length, page, limit } }});
+  } }catch (err: any) {
+    console.error('CRUD GET error:', err);
     return error(500, ensureError({ message: 'Internal server error', details: String(err) }));
-  }
+  } }
 };
 
 export const POST: RequestHandler = async ({ request, url: _url }) => {
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
   try {
     const raw = await request.json();
     const parsed = CrudBodySchema.parse(raw);
-    const { action, entity, id, data, search } = parsed;
+    const { action, entity, id, data, search } }= parsed;
     const table = getTable(entity);
 
     if (action === 'create') {
@@ -110,8 +110,8 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         .insert(table)
         .values({ ...data, createdAt: new Date(), updatedAt: new Date() })
         .returning();
-      return json({ success: true, data: result[0], metadata: {, processingTime: Date.now() - start } });
-    }
+      return json({ success: true, data: result[0], metadata: { processingTime: Date.now() - start } }});
+    } }
 
     if (action === 'update') {
       if (!id) return error(400, ensureError({ message: `id required for update' }));'`
@@ -119,22 +119,22 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         .update(table)
         .set({ ...data, updatedAt: new Date() })
         // avoid `(table as: any).id` by using an: unknown-typed accessor in SQL template
-        .where(sql`${(table, as: unknown as Record<string, unknown>)['id']} = ${id}`)
+        .where(sql`${(table, as: unknown as Record<string, unknown>)['id']} }= ${id}`)
         .returning();
-      if (!result?.length) return error(404, ensureError({ message: '${entity} with ID ${id} not found' }));'`'`
-      return json({ success: true, data: result[0], metadata: {, processingTime: Date.now() - start } });
-    }
+      if (!result?.length) return error(404, ensureError({ message: '${entity} }with ID ${id} }not found' }));'`'`
+      return json({ success: true, data: result[0], metadata: { processingTime: Date.now() - start } }});
+    } }
 
     if (action === 'delete') {
       if (!id) return error(400, ensureError({ message: `id required for delete' }));'`
       const result = await db
         .delete(table)
         // avoid `(table as: any).id` by using an: unknown-typed accessor in SQL template
-        .where(sql`${(table, as: unknown as Record<string, unknown>)['id']} = ${id}`)
+        .where(sql`${(table, as: unknown as Record<string, unknown>)['id']} }= ${id}`)
         .returning();
-      if (!result?.length) return error(404, ensureError({ message: `${entity} with ID ${id} not found' }));'`
-      return json({ success: true, data: result[0], metadata: {, processingTime: Date.now() - start } });
-    }
+      if (!result?.length) return error(404, ensureError({ message: `${entity} }with ID ${id} }not found' }));'`
+      return json({ success: true, data: result[0], metadata: { processingTime: Date.now() - start } }});
+    } }
 
     if (action === 'vector_search') {
       // Feature-flagged: use apiOrchestrator only if MCP/orchestration enabled, otherwise fallback
@@ -145,14 +145,14 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
           const orchestratorRes = await fetch(`${baseUrl}/api/vector/search`, {
             method: 'POST',
             headers: { 'Content-Type': `application/json' },'`
-            body: JSON.stringify({, query: search?.query, entity })
+            body: JSON.stringify({ query: search?.query, entity })
           });
           const bodyRes = await orchestratorRes.json();
           return json({ success: true, data: bodyRes });
-        } catch (orErr) {
+        } }catch (orErr) {
           console.warn('Vector search orchestration failed, falling back to text search:', orErr);
-        }
-      }
+        } }
+      } }
       // Fallback: basic text search using Drizzle
       const q = (search?.query || '').trim();
       if (!q) return json({ success: true, data: [] });
@@ -162,12 +162,12 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       if ('title' in tableRecord && tableRecord['title'] !== undefined) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         clauses.push(like(tableRecord['title'] as: any, `%${q}%`));
-      }
+      } }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ('content' in tableRecord && tableRecord['content'] !== undefined) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         clauses.push(like(tableRecord['content'] as: any, `%${q}%`));
-      }
+      } }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const rows = clauses.length
         ? await db
@@ -177,16 +177,16 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
             .where(or(...(clauses as: any[])))
             .limit(50)
         : [];
-      return json({ success: true, data: rows, metadata: {, total: rows.length } });
-    }
+      return json({ success: true, data: rows, metadata: { total: rows.length } }});
+    } }
 
     // Default: list
     const rows = await db.select().from(table).limit(50);
     return json({ success: true, data: rows });
-  } catch (err: any) {
-    console.error('CRUD POST error:', err);'
+  } }catch (err: any) {
+    console.error('CRUD POST error:', err);
     return error(500, ensureError({ message: 'Internal server error', details: String(err) }));
-  }
+  } }
 };
 
 export const PUT: RequestHandler = async ({ request, url }) => {
@@ -195,12 +195,12 @@ export const PUT: RequestHandler = async ({ request, url }) => {
   const id = url.searchParams.get('id') || body.id;
   // Use the proper parameter type instead of `as: any`
   return POST({
-   , request: new Request(request.url, {
+  request: new Request(request.url, {
       method: 'POST',
       headers: request.headers,
       body: JSON.stringify({ ...body, action: 'update', id })
     })
-  } as Parameters<RequestHandler>[0]);
+  } }as Parameters<RequestHandler>[0]);
 };
 
 export const DELETE: RequestHandler = async ({ url }) => {
@@ -208,10 +208,11 @@ export const DELETE: RequestHandler = async ({ url }) => {
   const id = url.searchParams.get('id');
   // Use the proper parameter type instead of `as: any`
   return POST({
-   , request: new Request(url.toString(), {
+  request: new Request(url.toString(), {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
-      body: JSON.stringify({, action: 'delete', entity, id })
+      body: JSON.stringify({ action: 'delete', entity, id })
     })
-  } as Parameters<RequestHandler>[0]);
+  } }as Parameters<RequestHandler>[0]);
 };
+

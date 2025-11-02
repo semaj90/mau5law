@@ -10,8 +10,8 @@
  * - XState workflows
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { unifiedVectorOrchestrator, type UnifiedVectorRequest } from '$lib/services/unified-vector-orchestrator';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { unifiedVectorOrchestrator, type UnifiedVectorRequest } }from '$lib/services/unified-vector-orchestrator';
 
 /**
  * POST /api/unified/vector
@@ -28,11 +28,11 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Invalid;, request: type and payload are required'
+          error: 'Invalid; request: type and payload are required'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Process through unified orchestrator
     const response = await unifiedVectorOrchestrator.process(body);
@@ -44,17 +44,17 @@ export const POST: RequestHandler = async ({ request }) => {
       embedding_dimensions: 512,
       processing_time_ms: Date.now() - startTime
     });
-  } catch (error) {
-    console.error('Unified vector API error:', error);'
+  } }catch (error) {
+    console.error('Unified vector API error:', error);
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Processing failed',
         processing_time_ms: Date.now() - startTime
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
             'Redis caching',
           ]
         });
-      }
+      } }
 
       case, 'stats': {
         const stats = await unifiedVectorOrchestrator.getStatistics();
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           statistics: stats
         });
-      }
+      } }
 
       case, 'performance': {
         const performance = unifiedVectorOrchestrator.getPerformanceAnalytics();
@@ -101,24 +101,25 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           performance
         });
-      }
+      } }
 
       default: return json(
           {
-           , success: false,
+  success: false,
             error: 'Unknown action'
           },
-          { status: 400 }
+          { status: 400 } }
         );
-    }
-  } catch (error) {
-    console.error('Unified vector status API error:', error);'
+    } }
+  } }catch (error) {
+    console.error('Unified vector status API error:', error);
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Status check failed'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

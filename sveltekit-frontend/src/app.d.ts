@@ -4,14 +4,14 @@ interface ProcessEnv {
   NODE_ENV: string;
   BROWSER?: string;
   [key: string]: string | undefined;
-}
+} }
 interface Process {
   env: ProcessEnv;
   browser?: boolean;
   version?: string;
   versions?: { node: string; [key: string]: string };
   cwd(): string;
-}
+} }
 declare const process: Process;
 
 // Declare global functions or properties here
@@ -35,11 +35,11 @@ declare global {
       rabbitmqChannel?: any | null;
       // Add other locals properties as needed
       [key: string]: any; // This index signature helps satisfy generic type checks
-    }
-    // interface PageData {}
-    // interface Error {}
-    // interface Platform {}
-  }
-}
+    } }
+    // interface PageData {} }
+    // interface Error {} }
+    // interface Platform {} }
+  } }
+} }
 
 export {};

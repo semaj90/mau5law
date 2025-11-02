@@ -1,19 +1,19 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } }from '$lib/server/z-schemas';
 /*
  * Evidence Connections API Routes
  * POST /api/v1/evidence/connections - Create evidence connections
  * GET /api/v1/evidence/connections - Get evidence connections
  * DELETE /api/v1/evidence/connections - Remove evidence connection
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { EvidenceCRUDService } }from '$lib/server/services/user-scoped-crud';
+import { z } }from 'zod';
 
 // Helper: safely extract user id from locals
 type LocalsWithUser = {
-  user?: { id?: string } | undefined;
-  session?: { user?: { id?: string } } | undefined;
+  user?: { id?: string } }| undefined;
+  session?: { user?: { id?: string } }} }| undefined;
   [key: string]: any;
 };
 
@@ -24,17 +24,17 @@ function getUserId(locals: any): string {
   if (l?.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
   // fallback to a stable anonymous id or empty: string as appropriate
   return, 'unknown';
-}
+} }
 
 // Helper: convert: unknown error, to: string message
 function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
-  } catch {
+  } }catch {
     return String(err);
-  }
-}
+  } }
+} }
 
 // Evidence connection schema
 const EvidenceConnectionSchema = z.object({
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-    }
+    } }
     // Parse request body
     const body = await request.json();
     const connectionData = EvidenceConnectionSchema.parse(body);
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         404,
         makeHttpErrorPayload({ message: 'One or both evidence items not found', code: 'EVIDENCE_NOT_FOUND' })
       );
-    }
+    } }
     // Prevent self-connections
     if (connectionData.evidenceId1 === connectionData.evidenceId2) {
       return error(
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           code: 'INVALID_CONNECTION'
         })
       );
-    }
+    } }
     // Create connection record (this would need to be implemented in the service)
     const connection = {
       id: crypto.randomUUID(),
@@ -100,11 +100,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         ...connectionData.metadata,
         createdBy: getUserId(locals),
         createdAt: new Date().toISOString()
-      }
+      } }
     };
     // Log the connection creation for audit trail
     console.log(
-      `Evidence connection created between ${connectionData.evidenceId1} and ${connectionData.evidenceId2} by user ${getUserId(locals)}`
+      `Evidence connection created between ${connectionData.evidenceId1} }and ${connectionData.evidenceId2} }by user ${getUserId(locals)}`
     );
     return json(
       {
@@ -112,25 +112,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         data: {
           connection,
           evidence1: {
-           , id: evidence1.id,
+  id: evidence1.id,
             title: evidence1.title,
             evidenceType: evidence1.evidenceType
           },
           evidence2: {
-           , id: evidence2.id,
+  id: evidence2.id,
             title: evidence2.title,
             evidenceType: evidence2.evidenceType
-          }
+          } }
         },
         meta: {
-         , userId: getUserId(locals),
+  userId: getUserId(locals),
           timestamp: new Date().toISOString(),
           action: 'evidence_connection_created'
-        }
+        } }
       },
-      { status: 201 }
+      { status: 201 } }
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error creating evidence connection:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     return error(
       500,
       makeHttpErrorPayload({
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         details: getErrorMessage(err)
       })
     );
-  }
+  } }
 };
 /*
  * GET /api/v1/evidence/connections
@@ -160,32 +160,31 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'` }'`
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'` } }`
     // Parse query parameters
     const queryParams = Object.fromEntries(url.searchParams.entries());
-    const { evidenceId, caseId, connectionType, minStrength } = ConnectionsQuerySchema.parse(queryParams);
+    const { evidenceId, caseId, connectionType, minStrength } }= ConnectionsQuerySchema.parse(queryParams);
     // This would need to be implemented in the service to fetch connections
     // For now, return a mock structure to show the expected format
     const mockConnections = [
-      {,
-        id: '12345',
+      { id: '12345',
         evidenceId1: 'evidence-1',
         evidenceId2: 'evidence-2',
         connectionType: 'related',
         strength: 0.8,
         notes: 'Both items found at the same location',
         metadata: {
-         , createdBy: getUserId(locals),
+  createdBy: getUserId(locals),
           createdAt: new Date().toISOString()
         },
         evidence1: {
-         , id: 'evidence-1',
+  id: 'evidence-1',
           title: 'Physical Evidence A',
           evidenceType: `physical` },
         evidence2: {
-         , id: 'evidence-2',
+  id: 'evidence-2',
           title: 'Physical Evidence B',
-          evidenceType: `physical` }
+          evidenceType: `physical` } }
       },
     ];
     // Filter connections based on query parameters
@@ -194,21 +193,21 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       filteredConnections = filteredConnections.filter(
         conn => conn.evidenceId1 === evidenceId || conn.evidenceId2 === evidenceId
       );
-    }
+    } }
     if (connectionType) {
       filteredConnections = filteredConnections.filter(conn => conn.connectionType === connectionType);
-    }
+    } }
     filteredConnections = filteredConnections.filter(conn => conn.strength >= minStrength);
     return json({
       success: true,
       data: filteredConnections,
       meta: {
-       , userId: getUserId(locals),
+  userId: getUserId(locals),
         filters: { evidenceId, caseId, connectionType, minStrength },
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Error fetching evidence connections:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -219,7 +218,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     return error(
       500,
       makeHttpErrorPayload({
@@ -228,5 +227,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         details: getErrorMessage(err)
       })
     );
-  }
+  } }
 };
+

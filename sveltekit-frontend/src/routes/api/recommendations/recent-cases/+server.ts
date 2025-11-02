@@ -1,13 +1,13 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * 🎯 Recent Cases Recommendation API
  * Returns the most recent, 5 cases with priority scoring
  */
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem';
-import { calculateDocumentPriority } from '$lib/config/legal-priorities';
-import type { LegalDocument } from '$lib/config/legal-priorities'; // added import
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { multiLayerCache } }from '$lib/cache/MultiLayerCacheSystem';
+import { calculateDocumentPriority } }from '$lib/config/legal-priorities';
+import type { LegalDocument } }from '$lib/config/legal-priorities'; // added import
 interface CaseRecommendation { id: string;, title: string;
   status: 'active' | 'pending' | 'closed';
   lastAccessed: string;
@@ -16,16 +16,16 @@ interface CaseRecommendation { id: string;, title: string;
   caseType: string;
   urgency: 'low' | 'medium' | 'high' | 'critical';
   glyphSignature?: string;
-  metadata: {, clientName: string;, practiceArea: string;
+  metadata: { clientName: string;, practiceArea: string;
     daysOpen: number;
     documentCount: number;
     lastActivity: string;
   };
-}
+} }
 // Mock database - in production this would query PostgreSQL
 const mockCases: CaseRecommendation[] = [
   {
-   , id: 'case-001',
+  id: 'case-001',
     title: 'Smith vs. Corporate Dynamics LLC',
     status: 'active',
     lastAccessed: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
@@ -34,12 +34,12 @@ const mockCases: CaseRecommendation[] = [
     caseType: 'litigation',
     urgency: 'critical',
     metadata: {
-     , clientName: 'John Smith',
+  clientName: 'John Smith',
       practiceArea: 'Employment Law',
       daysOpen: 45,
       documentCount: 127,
       lastActivity: 'Evidence review session'
-    }
+    } }
   },
   {
     id: 'case-002',
@@ -51,12 +51,12 @@ const mockCases: CaseRecommendation[] = [
     caseType: 'corporate',
     urgency: 'high',
     metadata: {
-     , clientName: 'TechStart Inc.',
+  clientName: 'TechStart Inc.',
       practiceArea: 'Corporate Law',
       daysOpen: 12,
       documentCount: 89,
       lastActivity: 'Contract negotiations'
-    }
+    } }
   },
   {
     id: 'case-003',
@@ -68,12 +68,12 @@ const mockCases: CaseRecommendation[] = [
     caseType: 'estate',
     urgency: 'medium',
     metadata: {
-     , clientName: 'Johnson Family',
+  clientName: 'Johnson Family',
       practiceArea: 'Estate Planning',
       daysOpen: 23,
       documentCount: 34,
       lastActivity: 'Asset valuation'
-    }
+    } }
   },
   {
     id: 'case-004',
@@ -85,12 +85,12 @@ const mockCases: CaseRecommendation[] = [
     caseType: 'intellectual-property',
     urgency: 'high',
     metadata: {
-     , clientName: 'InnovateTech Corp',
+  clientName: 'InnovateTech Corp',
       practiceArea: 'Intellectual Property',
       daysOpen: 78,
       documentCount: 203,
       lastActivity: 'Prior art research'
-    }
+    } }
   },
   {
     id: 'case-005',
@@ -102,12 +102,12 @@ const mockCases: CaseRecommendation[] = [
     caseType: 'real-estate',
     urgency: 'low',
     metadata: {
-     , clientName: 'Metro Properties LLC',
+  clientName: 'Metro Properties LLC',
       practiceArea: 'Real Estate',
       daysOpen: 156,
       documentCount: 67,
       lastActivity: 'Lease execution'
-    }
+    } }
   },
   {
     id: 'case-006',
@@ -119,12 +119,12 @@ const mockCases: CaseRecommendation[] = [
     caseType: 'criminal',
     urgency: 'critical',
     metadata: {
-     , clientName: 'Michael Rodriguez',
+  clientName: 'Michael Rodriguez',
       practiceArea: 'Criminal Defense',
       daysOpen: 89,
       documentCount: 178,
       lastActivity: 'Witness interviews'
-    }
+    } }
   },
 ];
 export const GET: RequestHandler = async ({ url }) => {
@@ -140,12 +140,12 @@ export const GET: RequestHandler = async ({ url }) => {
         fromCache: true,
         timestamp: new Date().toISOString()
       });
-    }
+    } }
     // Calculate priorities for each case
     const casesWithPriorities = mockCases.map(caseItem => {
       // Build a properly typed LegalDocument to satisfy calculateDocumentPriority
       const docForPriority: LegalDocument = {
-       , id: caseItem.id,
+  id: caseItem.id,
         type: caseItem.caseType, as: unknown as LegalDocument['type'],
         category: caseItem.metadata.practiceArea
           .toLowerCase()
@@ -187,19 +187,18 @@ export const GET: RequestHandler = async ({ url }) => {
       fromCache: false,
       timestamp: new Date().toISOString(),
       meta: {
-       , totalCases: mockCases.length,
+  totalCases: mockCases.length,
         returnedCases: sortedCases.length,
         highestPriority: sortedCases[0]?.priority || 0,
         algorithm: 'priority-weighted-recency',
         cacheExpiry: 60
-      }
+      } }
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error fetching recent cases:', error);
     // Return mock data with: "failure default to mock" error message
     const mockFallbackCases = [
-      {,
-        id: 'mock-case-001',
+      { id: 'mock-case-001',
         title: 'Mock Employment Dispute',
         status: 'active' as const,
         lastAccessed: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
@@ -209,12 +208,12 @@ export const GET: RequestHandler = async ({ url }) => {
         urgency: 'high' as const,
         glyphSignature: '6d6f636b',
         metadata: {
-         , clientName: 'Mock Client',
+  clientName: 'Mock Client',
           practiceArea: 'Employment Law',
           daysOpen: 30,
           documentCount: 85,
           lastActivity: 'Mock evidence review'
-        }
+        } }
       },
       {
         id: 'mock-case-002',
@@ -227,12 +226,12 @@ export const GET: RequestHandler = async ({ url }) => {
         urgency: 'normal' as const,
         glyphSignature: '6d6f636b',
         metadata: {
-         , clientName: 'Mock Corp',
+  clientName: 'Mock Corp',
           practiceArea: 'Corporate Law',
           daysOpen: 15,
           documentCount: 45,
           lastActivity: 'Mock contract review'
-        }
+        } }
       },
     ];
     return json(
@@ -243,29 +242,29 @@ export const GET: RequestHandler = async ({ url }) => {
         fromCache: false,
         timestamp: new Date().toISOString(),
         meta: {
-         , totalCases: mockFallbackCases.length,
+  totalCases: mockFallbackCases.length,
           returnedCases: mockFallbackCases.length,
           highestPriority: 200,
           algorithm: 'mock-fallback',
           cacheExpiry: 0
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { caseId, action } = body;
+    const { caseId, action } }= body;
     if (!caseId || !action) {
       return json(
         {
           success: false,
-          error: 'Missing required;, fields: caseId, action` },'`
-        { status: 400 }
+          error: 'Missing required; fields: caseId, action` },'`
+        { status: 400 } }
       );
-    }
+    } }
     // Update case based on action
     const caseIndex = mockCases.findIndex(c => c.id === caseId);
     if (caseIndex === -1) {
@@ -273,9 +272,9 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: `Case not found` },
-        { status: 404 }
+        { status: 404 } }
       );
-    }
+    } }
     const caseItem = mockCases[caseIndex];
     switch (action) {
       case, 'access':
@@ -292,30 +291,30 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
       default: return json(
           {
-           , success: false,
+  success: false,
             error: `Invalid action` },
-          { status: 400 }
+          { status: 400 } }
         );
-    }
+    } }
     // Clear caches to force refresh. multiLayerCache.clear expects a storage target ('memory'|'indexeddb'|'redis'|'all')
     await multiLayerCache.clear('all');
     return json({
       success: true,
-      message: `Case ${caseId} updated with, action: ${action}`,
+      message: `Case ${caseId} }updated with, action: ${action}`,
       updatedCase: caseItem,
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error updating case:', error);
     return json(
       {
         success: false,
         error: 'failure default to mock - case update simulated',
-        message: 'Mock;, update: Case action processed locally',
+        message: 'Mock; update: Case action processed locally',
         updatedCase: null,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };

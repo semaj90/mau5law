@@ -8,13 +8,13 @@
  * - report-export.ts
  *
  *, Usage:
- *   import { reportStore } from '$lib/stores/unified';
+ *   import { reportStore } }from '$lib/stores/unified';
  *
  *   await reportStore.createReport('legal_memo');
  *   $: reports = $reportStore.reports;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } }from 'svelte/store';
 
 /**
  * Types
@@ -27,7 +27,7 @@ export interface ReportSection { id: string;, title: string;
   order: number;
  , type: 'text' | 'table' | 'image' | 'code' | 'divider';
   metadata?: Record<string, unknown>;
-}
+} }
 
 export interface Report { id: string;, title: string;
   type: ReportType;
@@ -43,7 +43,7 @@ export interface Report { id: string;, title: string;
   citations: string[];
  , evidenceReferences: string[];
   metadata?: Record<string, unknown>;
-}
+} }
 
 /**
  * Report Store State
@@ -77,10 +77,9 @@ interface ReportStoreState {
   isPublishing: boolean;
   error: string | null;
   lastUpdated: number;
-}
+} }
 
-const initialState: ReportStoreState = {
- , reports: [],
+const initialState: ReportStoreState = { reports: [],
   reportsByType: new Map(),
   activeReportId: null,
   activeReport: null,
@@ -103,7 +102,7 @@ const initialState: ReportStoreState = {
  * Create Report Store
  */
 function createReportStore() {
-  const { subscribe, update } = writable<ReportStoreState>(initialState);
+  const { subscribe, update } }= writable<ReportStoreState>(initialState);
 
   return {
     subscribe,
@@ -131,13 +130,13 @@ function createReportStore() {
             lastUpdated: Date.now(),
             isLoading: false
           }));
-        } else {
+        } }else {
           throw new Error('Failed to load reports');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to load reports';
         update(s => ({ ...s, error: errorMsg, isLoading: false }));
-      }
+      } }
     },
 
     // ========== CREATE REPORT ==========
@@ -146,14 +145,13 @@ function createReportStore() {
      * Create a new report
      */
     async createReport(type: ReportType, caseId: string, title?: string) {
-      const reportTitle = title || `${type.replace('_', ' ')} - ${new Date().toLocaleDateString()}`;
+      const reportTitle = title || `${type.replace('_', ' ')} }- ${new Date().toLocaleDateString()}`;
 
       try {
         const response = await fetch('/api/reports', {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({
-           , title: reportTitle,
+          body: JSON.stringify({ title: reportTitle,
             type,
             caseId
           }),
@@ -173,14 +171,14 @@ function createReportStore() {
           }));
 
           return newReport;
-        } else {
+        } }else {
           throw new Error('Failed to create report');
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to create report';
         update(s => ({ ...s, error: errorMsg }));
         throw new Error(errorMsg);
-      }
+      } }
     },
 
     // ========== EDIT REPORT ==========
@@ -280,7 +278,7 @@ function createReportStore() {
       update(s => ({ ...s, isSaving: true }));
 
       try {
-        const state: { editorContent: ReportSection[] } = {, editorContent: [] };
+        const state: { editorContent: ReportSection[] } }= { editorContent: [] };
         subscribe(s => {
           state.editorContent = s.editorContent;
         })();
@@ -288,8 +286,7 @@ function createReportStore() {
         const response = await fetch(`/api/reports/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({
-           , sections: state.editorContent
+          body: JSON.stringify({ sections: state.editorContent
           }),
           credentials: `include` });
 
@@ -302,24 +299,24 @@ function createReportStore() {
             isDirty: false,
             isSaving: false
           }));
-        } else {
+        } }else {
           throw new Error('Save failed');
-        }
-      } catch (error) {
-        console.error('Save error:', error);'
+        } }
+      } }catch (error) {
+        console.error('Save error:', error);
         update(s => ({ ...s, isSaving: false }));
-      }
+      } }
     },
 
     /**
      * Insert citation into report
      */
-    insertCitation(sectionId: string, citation: {, id: string;, text: string }) {
+    insertCitation(sectionId: string, citation: { id: string; text: string }) {
       update(s => {
         const section = s.editorContent.find(sec => sec.id === sectionId);
         if (!section) return s;
 
-        const citationText = `[Citation: ${citation.text}](citation://${citation.id})`;
+        const citationText = `[Citation: ${citation.text} }(citation://${citation.id})`;
         section.content += `\n\n${citationText}`;
 
         return { ...s, isDirty: true };
@@ -329,12 +326,12 @@ function createReportStore() {
     /**
      * Insert evidence reference into report
      */
-    insertEvidence(sectionId: string, evidence: {, id: string;, name: string }) {
+    insertEvidence(sectionId: string, evidence: { id: string; name: string }) {
       update(s => {
         const section = s.editorContent.find(sec => sec.id === sectionId);
         if (!section) return s;
 
-        const evidenceText = `[Evidence: ${evidence.name}](evidence://${evidence.id})`;
+        const evidenceText = `[Evidence: ${evidence.name} }(evidence://${evidence.id})`;
         section.content += `\n\n${evidenceText}`;
 
         return { ...s, isDirty: true };
@@ -357,17 +354,17 @@ function createReportStore() {
         if (response.ok) {
           update(s => ({
             ...s,
-            reports: s.reports.map(r => (r.id === reportId ? { ...r, isPublished: true, publishedAt: Date.now() } : r)),
-            activeReport: s.activeReport?.id === reportId ? { ...s.activeReport, isPublished: true, publishedAt: Date.now() } : s.activeReport,
+            reports: s.reports.map(r => (r.id === reportId ? { ...r, isPublished: true, publishedAt: Date.now() } }: r)),
+            activeReport: s.activeReport?.id === reportId ? { ...s.activeReport, isPublished: true, publishedAt: Date.now() } }: s.activeReport,
             isPublishing: false
           }));
-        } else {
+        } }else {
           throw new Error('Publish failed');
-        }
-      } catch (error) {
-        console.error('Publish error:', error);'
+        } }
+      } }catch (error) {
+        console.error('Publish error:', error);
         update(s => ({ ...s, isPublishing: false }));
-      }
+      } }
     },
 
     /**
@@ -385,11 +382,11 @@ function createReportStore() {
           update(s => ({
             ...s,
             reports: s.reports.map(r =>
-              r.id === reportId ? { ...r, isShared: true, sharedWith: userIds } : r
+              r.id === reportId ? { ...r, isShared: true, sharedWith: userIds } }: r
             )
           }));
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Share error:', error);` }`'
     },
 
@@ -414,8 +411,8 @@ function createReportStore() {
           a.download = `report.${format}`;
           a.click();
           URL.revokeObjectURL(url);
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Export error:', error);` }`'
     },
 
@@ -438,8 +435,8 @@ function createReportStore() {
             activeReportId: s.activeReportId === reportId ? null : s.activeReportId,
             totalReports: s.totalReports - 1
           }));
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         console.error('Delete error:', error);` }`'
     },
 
@@ -460,9 +457,9 @@ function createReportStore() {
         id = s.activeReportId;
       })();
       return id;
-    }
+    } }
   };
-}
+} }
 
 /**
  * Export singleton instance
@@ -492,9 +489,10 @@ export const editorContent = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { reports, createReport } from '$lib/stores/reports'
- *   import { reportStore } from '$lib/stores/reportStore'
+ *   import { reports, createReport } }from '$lib/stores/reports'
+ *   import { reportStore } }from '$lib/stores/reportStore'
  *
  * New imports:
- *   import { reportStore, reports, activeReport } from '$lib/stores/unified'
+ *   import { reportStore, reports, activeReport } }from '$lib/stores/unified'
  */
+

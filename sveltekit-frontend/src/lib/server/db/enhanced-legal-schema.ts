@@ -3,7 +3,7 @@
  * Enhanced Legal Schema for Hybrid Vector Storage (Qdrant + PGVector)
  * Implements Phase, 8 architecture with legal-specific AI enhancements
  */
-import { relations, sql } from "drizzle-orm";
+import { relations, sql } }from "drizzle-orm";
 import {
   boolean,
   decimal,
@@ -15,8 +15,8 @@ import {
   timestamp,
   uuid,
   varchar
-} from "drizzle-orm/pg-core";
-import { vector } from "pgvector/drizzle-orm";
+} }from "drizzle-orm/pg-core";
+import { vector } }from "pgvector/drizzle-orm";
 // === ENHANCED LEGAL EVIDENCE WITH HYBRID VECTOR STORAGE ===
 export const enhancedEvidence = pgTable("enhanced_evidence", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -28,7 +28,7 @@ export const enhancedEvidence = pgTable("enhanced_evidence", {
   caseType: varchar("case_type", { length: 50 }).notNull(), // contract, litigation, compliance, regulatory
   jurisdiction: varchar("jurisdiction", { length: 50 }).default("federal"),
   // AI Analysis Results
-  entities: jsonb("entities").$type().default(sql`'{"parties":[],"dates":[],"monetary":[],"clauses":[],"jurisdictions":[],"caseTypes":[]}'::jsonb`),
+  entities: jsonb("entities").$type().default(sql`'{"parties":[],"dates":[],"monetary":[],"clauses":[],"jurisdictions":[],"caseTypes":[]} }::jsonb`),
   tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
   riskScore: integer("risk_score").default(0), // 0-100
   confidenceScore: decimal("confidence_score", { precision: 3, scale: 2 }).default("0.75"),
@@ -104,7 +104,7 @@ export const qdrantVectorMetadata = pgTable("qdrant_vector_metadata", {
   vectorDimensions: integer("vector_dimensions").default(384),
   vectorModel: varchar("vector_model", { length: 100 }).default("nomic-embed-text"),
   // Legal Metadata for Qdrant Payload
-  legalMetadata: jsonb("legal_metadata").$type().default(sql`'{"caseType":"","jurisdiction":"","riskScore":0,"entities": { [key: string]: any },"tags":[],"legalPrecedent":false}'::jsonb`),
+  legalMetadata: jsonb("legal_metadata").$type().default(sql`'{"caseType":"","jurisdiction":"","riskScore":0,"entities": { [key: string]: any },"tags":[],"legalPrecedent":false} }::jsonb`),
   // Sync Status
   syncStatus: varchar("sync_status", { length: 50 }).default("synced"), // synced, pending, error
   lastSyncAt: timestamp("last_sync_at", { mode: "date" }).defaultNow(),
@@ -120,7 +120,7 @@ export const legalProcessingQueue = pgTable("legal_processing_queue", {
   stage: varchar("stage", { length: 50 }).default("queued"), // queued, extracting, analyzing, embedding, storing, completed
   priority: varchar("priority", { length: 20 }).default("medium"), // low, medium, high, urgent
   // Processing Options
-  processingOptions: jsonb("processing_options").$type().default(sql`'{"extractEntities":true,"generateSummary":true,"assessRisk":true,"generateEmbedding":true,"storeInQdrant":true,"useContext7":false}'::jsonb`),
+  processingOptions: jsonb("processing_options").$type().default(sql`'{"extractEntities":true,"generateSummary":true,"assessRisk":true,"generateEmbedding":true,"storeInQdrant":true,"useContext7":false} }::jsonb`),
   // Progress Tracking;
   progress: integer("progress").default(0), // 0-100
   currentTask: varchar("current_task", { length: 100 }),
@@ -179,7 +179,7 @@ export const legalSystemMetrics = pgTable("legal_system_metrics", {
   value: decimal("value", { precision: 10, scale: 4 }).notNull(),
   unit: varchar("unit", { length: 20 }).notNull(), // ms, percentage, count
   // Context
-  context: jsonb("context").default(sql`'{}'::jsonb`),
+  context: jsonb("context").default(sql`'{} }::jsonb`),
   tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
   // Aggregation Support
   timeWindow: varchar("time_window", { length: 20 }).default("1min"), // 1min, 5min, 1hour, 1day

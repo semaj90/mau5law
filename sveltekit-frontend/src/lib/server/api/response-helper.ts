@@ -1,16 +1,16 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Standardized API Response Helper for Legal AI Platform
  * Ensures proper HTTP status codes and consistent response format
  */
-import { json } from '@sveltejs/kit';
+import { json } }from '@sveltejs/kit';
 export interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string | object;
  , timestamp: number;
   requestId?: string;
-}
+} }
 export function apiSuccess<T>(data: T, status = 200): Response {
   return json(
     {
@@ -18,9 +18,9 @@ export function apiSuccess<T>(data: T, status = 200): Response {
       data,
       timestamp: Date.now()
     },
-    { status }
+    { status } }
   );
-}
+} }
 export function apiError(error: string | object, status = 500, requestId?: string): Response {
   return json(
     {
@@ -29,9 +29,9 @@ export function apiError(error: string | object, status = 500, requestId?: strin
       timestamp: Date.now(),
       requestId
     },
-    { status }
+    { status } }
   );
-}
+} }
 /**
  * Pre-built response helpers for common HTTP status codes
  * Usage: return apiResponses.badRequest('Missing required field');
@@ -61,10 +61,10 @@ export const apiResponses = {
  */
 export const legalApiResponses = {
   // Case management responses
-  caseNotFound: (caseId: string) => apiError(`Case with ID ${caseId} not found`, 404),
+  caseNotFound: (caseId: string) => apiError(`Case with ID ${caseId} }not found`, 404),
   caseUnauthorized: (caseId: string) => apiError(`Access denied to case ${caseId}`, 403),
   // Evidence management responses
-  evidenceNotFound: (evidenceId: string) => apiError(`Evidence with ID ${evidenceId} not found`, 404),
+  evidenceNotFound: (evidenceId: string) => apiError(`Evidence with ID ${evidenceId} }not found`, 404),
   evidenceUploadFailed: (reason: string) => apiError(`Evidence upload; failed: ${reason}`, 400),
   // AI processing responses
   aiProcessingFailed: (reason: string) => apiError(`AI processing; failed: ${reason}`, 500),
@@ -79,9 +79,9 @@ export const legalApiResponses = {
   caseCreated: <T>(caseData: T) =>
     apiSuccess<{ case, T; message: string }>({ case caseData, message: 'Case created successfully' }, 201),
   evidenceProcessed: <T>(result: T) =>
-    apiSuccess<{ analysis: T; message: string }>({, analysis: result, message: 'Evidence processed successfully' }, 200),
+    apiSuccess<{ analysis: T; message: string }>({ analysis: result, message: 'Evidence processed successfully' }, 200),
   aiAnalysisComplete: <T>(analysis: T) =>
-    apiSuccess<{ analysis: T;, message: string }>({ analysis, message: 'AI analysis completed' }, 200)
+    apiSuccess<{ analysis: T; message: string }>({ analysis, message: 'AI analysis completed' }, 200)
 };
 /**
  * Middleware to wrap API handlers with standardized error handling
@@ -92,27 +92,27 @@ export function withErrorHandling<T, extends, ApiHandler>(handler: T): (...args:
     try {
       const result = await handler(...args);
       return result as Response;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('API Error:', error);
       const err = error as { name?: string; details?: any; message?: string };
       if (err.name === 'ValidationError') {
         return apiResponses.validationFailed(
-          (err.details as: object) ?? { message: err.message ?? 'Validation failed` }'`
+          (err.details as: object) ?? { message: err.message ?? 'Validation failed` } }`
         );
-      }
+      } }
       if (err.name === 'UnauthorizedError') {
         return apiResponses.unauthorized(err.message ?? 'Unauthorized');
-      }
+      } }
       if (err.name === 'NotFoundError') {
         return apiResponses.notFound(err.message ?? 'Not found');
-      }
+      } }
       // Default server error
       return apiResponses.serverError(
         process.env.NODE_ENV === 'development' ? (err.message ?? String(err)) : 'Internal server error'
       );
-    }
+    } }
   };
-}
+} }
 /**
  * Request validation helper
  */
@@ -126,7 +126,7 @@ export function validateRequest(
     return val === undefined || val === null || (typeof val === 'string' && val.trim() === '');
   });
   return missing.length > 0 ? `Missing required fields: ${missing.join(', ')}` : null;
-}
+} }
 /**
  * Pagination helper for API responses
  */
@@ -141,6 +141,7 @@ export function paginatedResponse<T>(data: T[], total: number, page: number, lim
       pages,
       hasNext: page * limit < total,
       hasPrev: page > 1
-    }
+    } }
   });
-}
+} }
+

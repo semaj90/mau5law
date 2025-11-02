@@ -1,6 +1,6 @@
-import { json, error } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
-import { uploadMinioObject } from '$lib/server/services/minio';
+import { json, error } }from '@sveltejs/kit';
+import { auth } }from '$lib/server/auth';
+import { uploadMinioObject } }from '$lib/server/services/minio';
 
 // Ensure upload directory exists
 const UPLOAD_DIR = './uploads';
@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const file = formData.get('file') as File;
     if (!file) {
       return json({ error: 'No file provided' }, { status: 400 });
-    }
+    } }
     const fileId = randomUUID();
     const fileName = `${fileId}_${file.name}`;
     const filePath = path.join(UPLOAD_DIR, fileName);
@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Ensure upload directory exists
     if (!existsSync(UPLOAD_DIR)) {
       await mkdir(UPLOAD_DIR, { recursive: true });
-    }
+    } }
 
     // Save file
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -34,13 +34,13 @@ export const POST: RequestHandler = async ({ request }) => {
       filePath,
       size: file.size
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     if (error instanceof Error) {
-      console.error('Upload error:', error.message);'
-    } else {
-      console.error('Upload error:', error);'
-    }
-    return json({ error: 'Upload failed' }, { status: 500 });'` }'`
+      console.error('Upload error:', error.message);
+    } }else {
+      console.error('Upload error:', error);
+    } }
+    return json({ error: 'Upload failed' }, { status: 500 });'` } }`
 };
 
 // Authenticated upload handler
@@ -54,3 +54,4 @@ export const POST_AUTHENTICATED = auth.handle(async ({ locals, request }) => {
   const minioUrl = await uploadMinioObject('uploads', file.name, file, locals.user.id);
   return json({ success: true, url: minioUrl });
 });
+

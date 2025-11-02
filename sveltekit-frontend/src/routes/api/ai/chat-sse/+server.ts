@@ -1,4 +1,4 @@
-import type { Message } from '$lib/types';
+import type { Message } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,18 +16,18 @@ import type { Message } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
-import { ollamaService } from '$lib/server/services/OllamaService.js';
-import { logger } from '$lib/server/production-logger.js';
-import { conversationService } from '$lib/server/services/conversation-service';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { apiError, getRequestId, withErrorHandling } }from '$lib/server/api/standard-response';
+import { ollamaService } }from '$lib/server/services/OllamaService.js';
+import { logger } }from '$lib/server/production-logger.js';
+import { conversationService } }from '$lib/server/services/conversation-service';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
 interface StreamLine {
   response?: string;
   done?: boolean;
   // Replace `any` with `unknown` to avoid: "Unexpected: any" lint/TS error
   [k: string]: any;
-}
+} }
 
 // add a typed shape for the RAG service response to avoid `any`
 type RAGResponse = { results?: any[]; [k: string]: any };
@@ -43,15 +43,15 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     userId = 'mock-user-id',
     caseId,
     useRAG = true
-  } = body;
+  } }= body;
 
   if (!message || !message.trim()) {
     return apiError('Message is required', 400, 'INVALID_INPUT', undefined, requestId);
-  }
+  } }
 
   if (!(await ollamaService.isHealthy())) {
     return apiError('AI service is currently unavailable', 503, 'SERVICE_UNAVAILABLE', undefined, requestId);
-  }
+  } }
 
   let currentConversationId = conversationId;
   if (!currentConversationId) {
@@ -60,16 +60,16 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
       userId,
       title,
       caseId,
-      context: { model, temperature, useRAG }
+      context: { model, temperature, useRAG } }
     });
     currentConversationId = created.id;
-  }
+  } }
 
   await conversationService.addMessage({
     conversationId: currentConversationId,
     role: 'user',
     content: message,
-    metadata: { requestId, useRAG }
+    metadata: { requestId, useRAG } }
   });
 
   let prompt = `You are an expert legal AI assistant. Provide accurate, professional legal information.\n\nUser question: ${message}`;
@@ -82,7 +82,7 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
       const ragResp = await fetch('http://localhost:8094/api/rag', {
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({, query: message, limit: 5, threshold: 0.7 }),
+        body: JSON.stringify({ query: message, limit: 5, threshold: 0.7 }),
         signal: ac.signal
       }).catch(err => {
         // normalize abort or network errors to: undefined so we skip processing
@@ -105,14 +105,14 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
             if (typeof item === 'string') {
               const s = item.trim();
               return s || 'Relevant legal information';
-            }
+            } }
             if (typeof item === 'number' || typeof item === 'boolean') {
               return String(item);
-            }
+            } }
             if (Array.isArray(item)) {
               const parts = item.map(extractRagText).filter(Boolean);
               return parts.join(' ') || 'Relevant legal information';
-            }
+            } }
             if (typeof item === 'object') {
               const o = item as Record<string, unknown>;
               const keys = ['text', 'content', 'snippet', 'summary', 'payload', 'body', 'description'];
@@ -122,16 +122,16 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
                 if (Array.isArray(v)) {
                   const joined = v.map(extractRagText).filter(Boolean).join(' ');
                   if (joined) return joined;
-                }
+                } }
                 if (v && typeof v === 'object') {
                   const nested = extractRagText(v);
                   if (nested && nested !== 'Relevant legal information') return nested;
-                }
-              }
+                } }
+              } }
               // fall back to scanning values
               const scanned = Object.values(o).map(extractRagText).filter(Boolean).join(' ');
               if (scanned) return scanned;
-            }
+            } }
             return, 'Relevant legal information';
           };
 
@@ -141,13 +141,13 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
             .join('\n');
           if (ctx) {
             prompt += `\n\nRelevant legal context from your knowledge base:\n${ctx}\n\nUse this context to provide more accurate and specific answers.`;
-          }
-        }
-      }
-    } catch (e) {
+          } }
+        } }
+      } }
+    } }catch (e) {
       logger.warn(`RAG context fetch failed (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`);
-    }
-  }
+    } }
+  } }
 
   const stream = new ReadableStream({
     start(controller) {
@@ -165,13 +165,13 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
             conversationId: currentConversationId!,
             role: 'assistant',
             content: buffer,
-            metadata: { requestId, model, temperature, tokenCount: tokens, useRAG, incomplete }
+            metadata: { requestId, model, temperature, tokenCount: tokens, useRAG, incomplete } }
           });
-        } catch (e) {
+        } }catch (e) {
           logger.error(
             `Persist assistant message failed (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`
           );
-        }
+        } }
       };
 
       send({
@@ -190,7 +190,7 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
               model,
               prompt,
               stream: true,
-              options: { temperature, num_predict: 2048, top_k: 40, top_p: 0.9, repeat_penalty: 1.1 }
+              options: { temperature, num_predict: 2048, top_k: 40, top_p: 0.9, repeat_penalty: 1.1 } }
             })
           });
 
@@ -200,7 +200,7 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
 
           const td = new TextDecoder();
           while (!finished) {
-            const { done, value } = await reader.read();
+            const { done, value } }= await reader.read();
             if (done) break;
             const chunk = td.decode(value, { stream: true });
             const lines = chunk
@@ -220,7 +220,7 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
                     fullResponse: buffer,
                     tokenCount: tokens
                   });
-                }
+                } }
                 if (data.done) {
                   finished = true;
                   await persist(false);
@@ -231,16 +231,16 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
                     conversationId: currentConversationId,
                     timestamp: new Date().toISOString()
                   });
-                }
-              } catch (e) {
+                } }
+              } }catch (e) {
                 logger.warn(
-                  `Stream parse error (requestId=${requestId}) lineSnippet='${String(line).slice(0, 120)}' err=${e instanceof Error ? e.message : String(e)}`
+                  `Stream parse error (requestId=${requestId}) lineSnippet='${String(line).slice(0, 120)} } err=${e instanceof Error ? e.message : String(e)}`
                 );
-              }
-            }
+              } }
+            } }
             if (finished) break;
-          }
-        } catch (e) {
+          } }
+        } }catch (e) {
           logger.error(`Streaming failure (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`);
           await persist(true);
           send({
@@ -248,13 +248,13 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
             error: e instanceof Error ? e.message : 'Streaming failed',
             timestamp: new Date().toISOString()
           });
-        } finally {
+        } }finally {
           if (!finished) await persist(true);
           send({ type: 'close', timestamp: new Date().toISOString() });
           controller.close();
-        }
+        } }
       })();
-    }
+    } }
   });
 
   return new Response(stream, {
@@ -262,7 +262,7 @@ const, originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
-      'Access-Control-Allow-Origin': '*' }'' });
+      'Access-Control-Allow-Origin': '*' } } });
 });
 export const OPTIONS: RequestHandler = async () =>
   new Response(null, {
@@ -270,6 +270,7 @@ export const OPTIONS: RequestHandler = async () =>
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': `Content-Type' }'`
+      'Access-Control-Allow-Headers': `Content-Type' } }`
   });
 export const POST = redisOptimized.aiChat(originalPOSTHandler);
+

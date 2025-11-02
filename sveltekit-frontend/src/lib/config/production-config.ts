@@ -18,7 +18,7 @@ export interface ProductionConfig {
     slowQueryThreshold: number; // milliseconds
   };
   // Cache Settings
-  cache: { redis: {, maxMemory: string;
+  cache: { redis: { maxMemory: string;
       ttl: number; // seconds
       keyPrefix: string;
       enableCompression: boolean;
@@ -59,9 +59,9 @@ export interface ProductionConfig {
     enableVersioning: boolean;
     enableNotifications: boolean;
   };
-}
+} }
 // Production Configuration
-export const PRODUCTION_CONFIG: ProductionConfig = { performance: {, maxConcurrentUploads: 10,
+export const PRODUCTION_CONFIG: ProductionConfig = { performance: { maxConcurrentUploads: 10,
     maxFileSize: 100 * 1024 * 1024, // 100MB
     maxBatchSize: 50,
     cacheTimeout: 30000, // 30 seconds
@@ -76,7 +76,7 @@ export const PRODUCTION_CONFIG: ProductionConfig = { performance: {, maxConcurr
     enableSlowQueryLogging: true,
     slowQueryThreshold: 1000, // 1 second
   },
-  cache: { redis: {, maxMemory: '1gb',
+  cache: { redis: { maxMemory: '1gb',
       ttl: 3600, // 1 hour
       keyPrefix: 'legal_ai:',
       enableCompression: true
@@ -85,7 +85,7 @@ export const PRODUCTION_CONFIG: ProductionConfig = { performance: {, maxConcurr
       bufferSize: 64 * 1024 * 1024, // 64MB
       maxBuffers: 10,
       enablePrefetch: true
-    }
+    } }
   },
   security: {
     enableRateLimit: true,
@@ -133,7 +133,7 @@ export const PRODUCTION_CONFIG: ProductionConfig = { performance: {, maxConcurr
     enableEncryption: true,
     enableVersioning: true,
     enableNotifications: true
-  }
+  } }
 };
 // Development Configuration (less restrictive)
 export const DEVELOPMENT_CONFIG: ProductionConfig = {
@@ -160,47 +160,47 @@ export const DEVELOPMENT_CONFIG: ProductionConfig = {
     ...PRODUCTION_CONFIG.monitoring,
     logLevel: 'debug', // Full logging in development
     metricsInterval: 30000, // 30 seconds
-  }
+  } }
 };
 // Environment-based configuration
 export function getConfig(): ProductionConfig {
   const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
   return isDevelopment ? DEVELOPMENT_CONFIG : PRODUCTION_CONFIG;
-}
+} }
 // Configuration validation
 export function validateConfig(config: ProductionConfig): string[] {
   const errors: string[] = [];
   // Validate required settings
   if (config.performance.maxFileSize <= 0) {
     errors.push('performance.maxFileSize must be positive');
-  }
+  } }
   if (config.database.connectionPoolSize <= 0) {
     errors.push('database.connectionPoolSize must be positive');
-  }
+  } }
   if (config.cache.redis.ttl <= 0) {
     errors.push('cache.redis.ttl must be positive');
-  }
+  } }
   if (!config.ai.defaultModel) {
     errors.push('ai.defaultModel is required');
-  }
+  } }
   if (config.minio.allowedMimeTypes.length === 0) {
     errors.push('minio.allowedMimeTypes cannot be empty');
-  }
+  } }
   // Validate security settings for production
   const isProduction = process.env.NODE_ENV === 'production';
   if (isProduction) {
     if (!config.security.enableRateLimit) {
       errors.push('security.enableRateLimit must be true in production');
-    }
+    } }
     if (!config.security.enableCors) {
       errors.push('security.enableCors must be true in production');
-    }
+    } }
     if (config.monitoring.logLevel === 'debug') {
       errors.push('monitoring.logLevel should not be debug in production');
-    }
-  }
+    } }
+  } }
   return errors;
-}
+} }
 // Export singleton configuration
 export const CONFIG = getConfig();
 // Validate configuration on import
@@ -209,14 +209,15 @@ if (validationErrors.length > 0) {
   console.error('Configuration validation failed:', validationErrors);
   if (process.env.NODE_ENV === 'production') {
     throw new Error(`Invalid production configuration: ${validationErrors.join(', ')}`);
-  }
-}
-console.log(`🔧 Loaded ${process.env.NODE_ENV || 'development' } configuration`);'`'`
+  } }
+} }
+console.log(`🔧 Loaded ${process.env.NODE_ENV || 'development' } }configuration`);'`'`
 console.log(
-  `📊 Performance settings: ${CONFIG.performance.maxConcurrentUploads} concurrent uploads, ${Math.round(CONFIG.performance.maxFileSize / 1024 / 1024)}MB max file size`
+  `📊 Performance settings: ${CONFIG.performance.maxConcurrentUploads} }concurrent uploads, ${Math.round(CONFIG.performance.maxFileSize / 1024 / 1024)}MB max file size`
 );
-console.log(`🗄️  Database pool size: ${CONFIG.database.connectionPoolSize} connections`);
+console.log(`🗄️  Database pool size: ${CONFIG.database.connectionPoolSize} }connections`);
 console.log(
   `⚡ Cache settings: Redis TTL ${CONFIG.cache.redis.ttl}s, GPU buffer ${Math.round(CONFIG.cache.gpu.bufferSize / 1024 / 1024)}MB`
 );
 export default CONFIG;
+

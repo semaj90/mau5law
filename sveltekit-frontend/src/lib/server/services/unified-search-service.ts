@@ -1,9 +1,9 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } }from '$lib/types';
 import pgClient from '$lib/server/db-shim';
-import { cache } from '$lib/server/cache/redis';
-import { publishToQueue } from '$lib/server/rabbitmq';
-import { jobTracker } from '$lib/services/job-tracker';
-import { createHash } from 'crypto';
+import { cache } }from '$lib/server/cache/redis';
+import { publishToQueue } }from '$lib/server/rabbitmq';
+import { jobTracker } }from '$lib/services/job-tracker';
+import { createHash } }from 'crypto';
 // Type definitions for unified service
 export interface UnifiedDocument { id: string;, title: string;
   content: string;
@@ -38,18 +38,18 @@ export interface UnifiedDocument { id: string;, title: string;
     last_accessed?: string;
     access_count?: number;
   };
-}
+} }
 
 // New typed Recommendation interface
-export interface Recommendation {, type: string;, documents: string[]; // list of related document IDs (or empty)
+export interface Recommendation { type: string;, documents: string[]; // list of related document IDs (or empty)
   confidence: number;
   reasoning?: string;
   // allow extra fields added in future while keeping a strong base type
   [key: string]: any;
-}
+} }
 
 // Ingest result type: explicit success / failure shapes instead of `any`
-export type IngestResult = { success: true; documentId: string; jobId: string } | { success: false; error: string };
+export type IngestResult = { success: true; documentId: string; jobId: string } }| { success: false; error: string };
 
 export interface SearchQuery {
   text?: string;
@@ -69,18 +69,17 @@ export interface SearchQuery {
     useCache?: boolean;
     neo4jRecommendations?: boolean;
   };
-}
+} }
 
-export interface SearchResult {, documents: UnifiedDocument[];, total: number;
-  facets?: {
-   , categories: Record<string, number>;
+export interface SearchResult { documents: UnifiedDocument[];, total: number;
+  facets?: { categories: Record<string, number>;
     tags: Record<string, number>;
     users: Record<string, number>;
   };
   recommendations?: Recommendation[]; // changed from: any[]
   cached: boolean;
   processingTime: number;
-}
+} }
 
 // Add a small explicit type for the postgres-js client subset we call
 type PostgresJsClient = {
@@ -114,7 +113,7 @@ class UnifiedSearchService {
     this.pg = pgClient as: unknown as PostgresJsClient;
     //, NOTE: `drizzle` initialization removed here because the instance `db` was never used.
     // If you later need drizzle, initialize it with the proper postgres-js client type instead of casting to `any`.
-  }
+  } }
 
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -122,15 +121,15 @@ class UnifiedSearchService {
     try {
       if (typeof this.pg.unsafe === 'function') {
         await this.pg.unsafe('SELECT 1');
-      }
+      } }
       console.log('✅ Database connection established');
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Database connection failed:', error);
       throw error;
-    }
+    } }
     this.isInitialized = true;
     console.log('✅ Unified Search Service initialized');
-  }
+  } }
 
   // === DOCUMENT INGESTION ===
   async ingestDocument(document: Omit<UnifiedDocument, 'id' | 'searchable' | 'cached'>): Promise<IngestResult> {
@@ -210,32 +209,29 @@ class UnifiedSearchService {
               ].includes(k)
             ) {
               (acc as Record<string, unknown>)[k] = incomingMeta[k];
-            }
+            } }
             return acc;
           },
-          {} as Record<string, unknown>
+          {} }as Record<string, unknown>
         )
       };
 
       // Build unified document explicitly to avoid accidental shape mismatches
-      const unifiedDoc: UnifiedDocument = {
-       , id: documentId,
+      const unifiedDoc: UnifiedDocument = { id: documentId,
         title: document.title || '',
         content: document.content || '',
         filePath: document.filePath,
         mimeType: document.mimeType,
         fileSize: document.fileSize || 0,
         metadata,
-        searchable: {
-         , fulltext: this.extractFulltext(document),
+        searchable: { fulltext: this.extractFulltext(document),
           keywords: this.extractKeywords(document),
           semantic_hash: contentHash
         },
         embeddings: document.embeddings,
-        cached: {
-         , last_accessed: new Date().toISOString(),
+        cached: { last_accessed: new Date().toISOString(),
           access_count: 0
-        }
+        } }
       };
       // Store in database (basic metadata first) using pgClient for simplicity
       await this.pg.unsafe(
@@ -272,14 +268,14 @@ class UnifiedSearchService {
         success: true,
         documentId,
         jobId: `processing_${documentId}` };
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Error ingesting document:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error)
       };
-    }
-  }
+    } }
+  } }
 
   // === UNIFIED SEARCH ===
   async search(query: SearchQuery): Promise<SearchResult> {
@@ -299,21 +295,21 @@ class UnifiedSearchService {
             cached: true,
             processingTime: Date.now() - startTime
           };
-        }
-      }
+        } }
+      } }
       let results: UnifiedDocument[] = [];
       // Hybrid, search: combine fulltext, vector, and filters
       if (query.vector && query.vector.length > 0) {
         // Placeholder vector search - TODO: implement pgvector-based similarity search
         console.warn('⚠️ vectorSearch is not fully implemented; returning empty results for now');
         results = await this.vectorSearch(query);
-      } else if (query.text) {
+      } }else if (query.text) {
         // Text-based search (fulltext)
         results = await this.textSearch(query);
-      } else {
+      } }else {
         // Filter-only search
         results = await this.filterSearch(query);
-      }
+      } }
       const total = results.length;
       // Apply pagination
       const limit = query.options?.limit || 20;
@@ -325,11 +321,10 @@ class UnifiedSearchService {
       let recommendations: Recommendation[] = []; // typed, no: any[]
       if (query.options?.neo4jRecommendations && paginatedResults.length > 0) {
         recommendations = await this.getNeo4jRecommendations(paginatedResults);
-      }
+      } }
       // Update access counts
       await this.updateAccessCounts(paginatedResults.map(doc => doc.id));
-      const searchResult: SearchResult = {
-       , documents: paginatedResults,
+      const searchResult: SearchResult = { documents: paginatedResults,
         total,
         facets,
         recommendations,
@@ -339,11 +334,11 @@ class UnifiedSearchService {
       // Cache serialized result to avoid driver/object mismatches
       await cache.set(`search:${cacheKey}`, JSON.stringify(searchResult), 600); // 10 minutes
       return searchResult;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Error in unified search:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   private async vectorSearch(query: SearchQuery): Promise<UnifiedDocument[]> {
     // If no vector provided, nothing to do.
@@ -354,22 +349,22 @@ class UnifiedSearchService {
 
       // Coerce values to numbers and build a safe numeric literal for pgvector.
       const numericVec = query.vector.map(v => Number(v) || 0);
-      const vecLiteral = `[${numericVec.join(',')}]`;
+      const vecLiteral = `[${numericVec.join(',')} }`;
 
       // Try a few common column names for pgvector embeddings.
       // These queries inline the vector literal but parameterize the limit to avoid accidental injection from the limit.
       const candidateQueries = [
         // common single-column name: embedding,
-        `SELECT d.*, (d.embedding <-> '${vecLiteral}'::vector) AS similarity`
+        `SELECT d.*, (d.embedding <-> '${vecLiteral} }::vector) AS similarity`
          FROM documents d
          WHERE d.embedding IS NOT NULL
-         ORDER BY d.embedding <-> '${vecLiteral}'::vector
+         ORDER BY d.embedding <-> '${vecLiteral} }::vector
          LIMIT $1`,`
         // alternative column name: embedding_vector
-        `SELECT d.*, (d.embedding_vector <-> '${vecLiteral}'::vector) AS similarity`
+        `SELECT d.*, (d.embedding_vector <-> '${vecLiteral} }::vector) AS similarity`
          FROM documents d
          WHERE d.embedding_vector IS NOT NULL
-         ORDER BY d.embedding_vector <-> '${vecLiteral}'::vector
+         ORDER BY d.embedding_vector <-> '${vecLiteral} }::vector
          LIMIT $1`,`
         // last-resort: return recent documents (no vector available)
         `SELECT d.*, NULL::double precision AS similarity`
@@ -384,17 +379,17 @@ class UnifiedSearchService {
           rows = await this.pg.unsafe(candidateQueries[i], [limit]);
           // If we got results (or the query ran successfully returning empty array), use it.
           break;
-        } catch (e) {
+        } }catch (e) {
           // Try next candidate if column doesn't exist or query fails.'
           // Do not surface DB errors; just log for debugging.
-          console.debug(`vectorSearch attempt ${i} failed:`, (e as Error).message || e);
-        }
-      }
+          console.debug(`vectorSearch attempt ${i} }failed:`, (e as Error).message || e);
+        } }
+      } }
 
       if (!rows || rows.length === 0) {
         // Nothing found (or no vector column available) — return empty list gracefully.
         return [];
-      }
+      } }
 
       // Convert DB rows to UnifiedDocument using the existing converter to keep types consistent.
       const docs = rows.map(r => this.convertToUnifiedDocument(r as DbDocumentRow));
@@ -404,11 +399,11 @@ class UnifiedSearchService {
       // Optionally you could attach raw similarity scores to some `cached` or `searchable` field here.
 
       return docs;
-    } catch (error) {
+    } }catch (error) {
       console.warn('⚠️ vectorSearch failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   private async textSearch(query: SearchQuery): Promise<UnifiedDocument[]> {
     if (!query.text) return [];
@@ -421,11 +416,11 @@ class UnifiedSearchService {
       );
       // cast to DbDocumentRow instead of `any`
       return rows.map(r => this.convertToUnifiedDocument(r as DbDocumentRow));
-    } catch (error) {
+    } }catch (error) {
       console.warn('⚠️ textSearch failed, returning empty results:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   private async filterSearch(query: SearchQuery): Promise<UnifiedDocument[]> {
     try {
@@ -439,19 +434,19 @@ class UnifiedSearchService {
       let docs = rows.map(r => this.convertToUnifiedDocument(r as DbDocumentRow));
       if (query.filters?.category && query.filters.category.length > 0) {
         docs = docs.filter(d => query.filters!.category!.includes(d.metadata.category || 'other'));
-      }
+      } }
       if (query.filters?.userId) {
         docs = docs.filter(d => d.metadata.userId === query.filters!.userId);
-      }
+      } }
       if (typeof query.filters?.confidenceMin === 'number') {
         docs = docs.filter(d => (d.metadata.confidenceLevel || 0) >= query.filters!.confidenceMin!);
-      }
+      } }
       return docs.slice(0, query.options?.limit || 20);
-    } catch (error) {
+    } }catch (error) {
       console.warn('⚠️ filterSearch failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   // === NEO4J INTEGRATION ===
   private async getNeo4jRecommendations(docs: UnifiedDocument[]): Promise<Recommendation[]> {
@@ -483,35 +478,34 @@ class UnifiedSearchService {
 
       // Placeholder recommendations - now strongly typed and influenced by extracted signals
       return [
-        {,
-          type: 'related_cases',
+        { type: 'related_cases',
           documents: [],
           confidence: primaryConfidence,
-          reasoning: `Based on ${uniqueEntities.length} unique extracted entities (${topEntitiesStr}) and dominant category: "${mostFrequentCategory}".` },
+          reasoning: `Based on ${uniqueEntities.length} }unique extracted entities (${topEntitiesStr}) and dominant category: "${mostFrequentCategory}".` },
         {
           type: 'similar_precedents',
           documents: [],
           confidence: secondaryConfidence,
-          reasoning: `Precedent similarity inferred from entity overlap and category distribution (${mostFrequentCategory}).` }
+          reasoning: `Precedent similarity inferred from entity overlap and category distribution (${mostFrequentCategory}).` } }
       ];
-    } catch (error) {
+    } }catch (error) {
       console.warn('⚠️ getNeo4jRecommendations failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   // --- Helper utilities (lightweight, safe defaults) ---
   private generateContentHash(content?: string): string {
     const src = content || '';
     return createHash('sha256').update(src).digest('hex').slice(0, 20);
-  }
+  } }
 
   private extractFulltext(doc: Partial<UnifiedDocument>): string {
     // Combine title + content as a simple fulltext field
     const title = doc.title || '';
     const content = doc.content || '';
     return `${title}\n\n${content}`.trim();
-  }
+  } }
 
   private extractKeywords(doc: Partial<UnifiedDocument>): string[] {
     const text = (doc.title || '') + ' ' + (doc.content || '');
@@ -553,18 +547,18 @@ class UnifiedSearchService {
       .sort((a, b) => b[1] - a[1])
       .slice(0, 8)
       .map(([k]) => k);
-  }
+  } }
 
   private generateSearchCacheKey(query: SearchQuery): string {
     // Stable key by JSON-stringifying canonical shape and hashing it
     const canonical = {
       text: query.text || null,
       filters: query.filters || {},
-      options: query.options || {}
+      options: query.options || {} }
     };
     const raw = JSON.stringify(canonical, Object.keys(canonical).sort());
     return createHash('md5').update(raw).digest('hex');
-  }
+  } }
 
   private generateFacets(docs: UnifiedDocument[]) {
     const categories: Record<string, number> = {};
@@ -575,9 +569,9 @@ class UnifiedSearchService {
       categories[cat] = (categories[cat] || 0) + 1;
       (d.metadata.tags || []).forEach(t => (tags[t] = (tags[t] || 0) + 1));
       if (d.metadata.userId) users[d.metadata.userId] = (users[d.metadata.userId] || 0) + 1;
-    }
+    } }
     return { categories, tags, users };
-  }
+  } }
 
   private async updateAccessCounts(ids: string[]): Promise<void> {
     if (!ids || ids.length === 0) return;
@@ -595,10 +589,10 @@ class UnifiedSearchService {
           await cache.set(key, JSON.stringify(parsed), 3600);
         })
       );
-    } catch (e) {
+    } }catch (e) {
       console.warn('⚠️ updateAccessCounts failed:', e);
-    }
-  }
+    } }
+  } }
 
   private convertToUnifiedDocument(row: DbDocumentRow): UnifiedDocument {
     // Safe conversions and defaults
@@ -607,12 +601,12 @@ class UnifiedSearchService {
     if (typeof metadataRaw === 'string') {
       try {
         parsedMeta = JSON.parse(metadataRaw);
-      } catch {
+      } }catch {
         parsedMeta = {};
-      }
-    } else if (typeof metadataRaw === 'object' && metadataRaw !== null) {
+      } }
+    } }else if (typeof metadataRaw === 'object' && metadataRaw !== null) {
       parsedMeta = metadataRaw as Record<string, unknown>;
-    }
+    } }
 
     // Strongly-typed view over the parsed metadata (runtime-checked below)
     type ParsedMetaView = {
@@ -663,7 +657,7 @@ class UnifiedSearchService {
       filePath: (row.file_path, as: string) || undefined,
       mimeType: (row.mime_type, as: string) || undefined,
       fileSize: typeof row.file_size === 'number' ? row.file_size : undefined,
-      metadata: {, source: source, as: 'upload' | 'manual' | 'api' | 'evidence',
+      metadata: { source: source, as: 'upload' | 'manual' | 'api' | 'evidence',
         userId,
         tags,
         category,
@@ -675,7 +669,7 @@ class UnifiedSearchService {
         shaderData
       },
       embeddings: undefined,
-      searchable: {, fulltext: this.extractFulltext({, title: (row.title, as: string) || '', content: (row.content, as: string) || '' }),
+      searchable: { fulltext: this.extractFulltext({ title: (row.title, as: string) || '', content: (row.content, as: string) || '' }),
         keywords: this.extractKeywords({ title: (row.title, as: string) || '', content: (row.content, as: string) || '` }),'`
         semantic_hash: semanticHash
       },
@@ -685,19 +679,20 @@ class UnifiedSearchService {
         search_results: [],
         related_documents: [],
         recommendations: []
-      }
+      } }
     };
-  }
+  } }
 
   // Normalize arbitrary input into the allowed category union to satisfy TS.
   private normalizeCategory(value: any): 'contract' | 'evidence' | 'brief' | 'citation' | 'other' {
     const allowed = new Set(['contract', 'evidence', 'brief', 'citation', 'other']);
     if (typeof value === 'string' && allowed.has(value)) {
       return value as: 'contract' | 'evidence' | 'brief' | 'citation' | 'other';
-    }
+    } }
     return, 'other';
-  }
-}
+  } }
+} }
 
 // Export a default instance for convenience
 export default new UnifiedSearchService();
+

@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 
 /**
  * Legal Document Processing State Machine
  * XState workflow for comprehensive legal document analysis pipeline
  */
-import { createMachine, assign, type ActorRefFrom } from 'xstate';
+import { createMachine, assign, type ActorRefFrom } }from 'xstate';
 // Orphaned content: import type { LegalDocument, LegalEntities, LegalRAGOptions
-import type { EnhancedContext7Service } from '$lib/services/enhancedContext7Service';
+import type { EnhancedContext7Service } }from '$lib/services/enhancedContext7Service';
 // Orphaned content: import type { QdrantService
 // Context interface for the state machine
 export interface LegalDocumentContext {
@@ -25,10 +25,10 @@ export interface LegalDocumentContext {
   riskScore?: number;
   confidenceScore?: number;
   // AI Analysis
-  aiAnalysis?: {, keyFindings: string[];, complianceStatus: any;
+  aiAnalysis?: { keyFindings: string[];, complianceStatus: any;
     recommendedActions: string[];
     legalPrecedents: any[];
-  }
+  } }
   // Context7 MCP results
   mcpAnalysis?: any;
   stackRecommendations?: string[];
@@ -40,62 +40,60 @@ export interface LegalDocumentContext {
   startTime?: number;
   processingDuration?: number;
   // Options
-  options: {, extractEntities: boolean;, generateSummary: boolean;
+  options: { extractEntities: boolean;, generateSummary: boolean;
     assessRisk: boolean;
     generateEmbedding: boolean;
     storeInQdrant: boolean;
     useContext7: boolean;
     useSemanticSearch: boolean;
-  }
-}
+  } }
+} }
 // Events for the state machine
 export type LegalDocumentEvent =
-  | { type: 'START_PROCESSING'; document: Partial<LegalDocument>; options?: Partial<LegalDocumentContext['options']> }
-  | { type: 'CONTENT_EXTRACTED' }
-  | { type: 'ANALYSIS_COMPLETE'; analysis: any }
-  | { type: 'ENTITIES_EXTRACTED'; entities: LegalEntities }
-  | { type: 'SUMMARY_GENERATED'; summary: string }
-  | { type: 'EMBEDDING_GENERATED'; embedding: number[] }
-  | { type: 'RISK_ASSESSED'; riskScore: number; confidenceScore: number }
-  | { type: 'MCP_ANALYSIS_COMPLETE'; mcpAnalysis: any; recommendations: string[] }
-  | { type: 'STORAGE_COMPLETE'; documentId: string }
-  | { type: 'RETRY' }
-  | { type: 'CANCEL' }
-  | { type: 'ERROR'; error: string }
+  | { type: 'START_PROCESSING'; document: Partial<LegalDocument>; options?: Partial<LegalDocumentContext['options']> } }
+  | { type: 'CONTENT_EXTRACTED' } }
+  | { type: 'ANALYSIS_COMPLETE'; analysis: any } }
+  | { type: 'ENTITIES_EXTRACTED'; entities: LegalEntities } }
+  | { type: 'SUMMARY_GENERATED'; summary: string } }
+  | { type: 'EMBEDDING_GENERATED'; embedding: number[] } }
+  | { type: 'RISK_ASSESSED'; riskScore: number; confidenceScore: number } }
+  | { type: 'MCP_ANALYSIS_COMPLETE'; mcpAnalysis: any; recommendations: string[] } }
+  | { type: 'STORAGE_COMPLETE'; documentId: string } }
+  | { type: 'RETRY' } }
+  | { type: 'CANCEL' } }
+  | { type: 'ERROR'; error: string } }
 // Services for async operations
-const services = {
- , extractContent: async (context: LegalDocumentContext) => {
+const services = { extractContent: async (context: LegalDocumentContext) => {
     // Simulate content extraction (OCR, PDF parsing, etc.)
     await new Promise((resolve: any) => setTimeout(resolve, 1000);
-    return { content: context.content, title: context.title }
+    return { content: context.content, title: context.title } }
   },
   analyzeWithAI: async (context: LegalDocumentContext) => {
     // This would integrate with your Ollama service
     const mockAnalysis = {
       keyFindings: ['Contract terms identified', 'Liability clauses present'],
-      complianceStatus: {, gdpr: 'Under Review', contractLaw: 'Requires Review' },
+      complianceStatus: { gdpr: 'Under Review', contractLaw: 'Requires Review' },
       recommendedActions: ['Legal review recommended', 'Compliance verification needed'],
       legalPrecedents: []
-    }
+    } }
     await new Promise((resolve: any) => setTimeout(resolve, 2000);
     return mockAnalysis;
   },
   extractEntities: async (context: LegalDocumentContext) => {
     // This would integrate with your Context7 MCP service
-    const mockEntities: LegalEntities = {
-     , parties: ['John Smith', 'ABC Corporation'],
+    const mockEntities: LegalEntities = { parties: ['John Smith', 'ABC Corporation'],
       dates: ['2023-01-15', '2023-12-31'],
       monetary: ['$50,000', '$10,000'],
       clauses: ['Section 3.1', 'Clause 7.2'],
       jurisdictions: [context.jurisdiction],
       caseTypes: [context.caseType]
-    }
+    } }
     await new Promise((resolve: any) => setTimeout(resolve, 1500);
     return mockEntities;
   },
   generateSummary: async (context: LegalDocumentContext) => {
     // This would integrate with your Ollama service
-    const mockSummary = `Legal document summary for ${context.caseType} case in ${context.jurisdiction} jurisdiction. Contains ${context.entities?.parties.length || 0} parties and ${context.entities?.clauses.length || 0} legal clauses.`;
+    const mockSummary = `Legal document summary for ${context.caseType} }case in ${context.jurisdiction} }jurisdiction. Contains ${context.entities?.parties.length || 0} }parties and ${context.entities?.clauses.length || 0} }legal clauses.`;
     await new Promise((resolve: any) => setTimeout(resolve, 1000);
     return mockSummary;
   },
@@ -111,7 +109,7 @@ const services = {
     const riskScore = hasLiability ? 85 : 35;
     const confidenceScore = 0.87;
     await new Promise((resolve: any) => setTimeout(resolve, 800);
-    return { riskScore, confidenceScore }
+    return { riskScore, confidenceScore } }
   },
   analyzWithMCP: async (context: LegalDocumentContext) => {
     // This would integrate with your Context7 MCP service
@@ -126,27 +124,26 @@ const services = {
         'Cache frequently accessed legal precedents',
         'Use parallel processing for entity extraction'
       ]
-    }
+    } }
     await new Promise((resolve: any) => setTimeout(resolve, 1200);
     return {
       mcpAnalysis: mockMCPAnalysis,
       recommendations: mockMCPAnalysis.legalSpecificRecommendations
-    }
+    } }
   },
   storeDocument: async (context: LegalDocumentContext) => {
     // This would integrate with your database and Qdrant services
     const documentId = `legal_doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     await new Promise((resolve: any) => setTimeout(resolve, 800);
-    return { documentId }
-  }
-}
+    return { documentId } }
+  } }
+} }
 // Legal Document Processing State Machine
 export const legalDocumentProcessingMachine = createMachine({
   id: 'legalDocumentProcessing',
-  types: { [key,: strin,g]: any } as { context: LegalDocumentContext;, events: LegalDocumentEvent;
+  types: { [key,: strin,g]: any } }as { context: LegalDocumentContext;, events: LegalDocumentEvent;
   },
-  context: {
-   , caseId: '',
+  context: { caseId: '',
     content: '',
     title: '',
     caseType: 'contract',
@@ -154,20 +151,18 @@ export const legalDocumentProcessingMachine = createMachine({
     errors: [],
     retryCount: 0,
     maxRetries: 3,
-    options: {
-     , extractEntities: true,
+    options: { extractEntities: true,
       generateSummary: true,
       assessRisk: true,
       generateEmbedding: true,
       storeInQdrant: true,
       useContext7: true,
       useSemanticSearch: false
-    }
+    } }
   },
   initial: 'idle',
-  states: {, idle: {, on: {, START_PROCESSING: {, target: 'initializing',
-          actions: assign({
-           , caseId: ({ event }) => event.document.caseId || '',
+  states: { idle: { on: { START_PROCESSING: { target: 'initializing',
+          actions: assign({ caseId: ({ event }) => event.document.caseId || '',
             content: ({ event }) => event.document.content || '',
             title: ({ event }) => event.document.title || '',
             caseType: ({ event }) => event.document.caseType || 'contract',
@@ -180,268 +175,217 @@ export const legalDocumentProcessingMachine = createMachine({
             errors: () => [],
             retryCount: () => 0
           })
-        }
-      }
+        } }
+      } }
     },
-    initializing: {
-     , always: [
-        {,
-          target: 'extractingContent',
+    initializing: { always: [
+        { target: 'extractingContent',
           guard: ({ context }) => !!context.content && context.content.length > 0
         },
         {
           target: 'error',
-          actions: assign({
-           , errors: ({ context }) => [...context.errors, 'No content provided for processing']
+          actions: assign({ errors: ({ context }) => [...context.errors, 'No content provided for processing']
           })
-        }
+        } }
       ]
     },
-    extractingContent: {, invoke: {, id: 'extractContent',
+    extractingContent: { invoke: { id: 'extractContent',
         src: services.extractContent,
-        onDone: {
-         , target: 'analyzing',
-          actions: assign({
-           , content: ({ event }) => event.output.content,
+        onDone: { target: 'analyzing',
+          actions: assign({ content: ({ event }) => event.output.content,
             title: ({ event }) => event.output.title
           })
         },
-        onError: {
-         , target: 'error',
-          actions: assign({
-           , errors: ({ context, event }) => [...context.errors, `Content extraction failed: ${event.error}`]
+        onError: { target: 'error',
+          actions: assign({ errors: ({ context, event }) => [...context.errors, `Content extraction failed: ${event.error}`]
           })
-        }
-      }
+        } }
+      } }
     },
-    analyzing: {
-     , type: 'parallel',
-      states: {, aiAnalysis: {, initial: 'processing',
-          states: {, processing: {, invoke: {
-               , id: 'analyzeWithAI',
+    analyzing: { type: 'parallel',
+      states: { aiAnalysis: { initial: 'processing',
+          states: { processing: { invoke: { id: 'analyzeWithAI',
                 src: services.analyzeWithAI,
-                onDone: {
-                 , target: 'completed',
-                  actions: assign({
-                   , aiAnalysis: ({ event }) => event.output
+                onDone: { target: 'completed',
+                  actions: assign({ aiAnalysis: ({ event }) => event.output
                   })
                 },
-                onError: {
-                 , target: 'failed',
-                  actions: assign({
-                   , errors: ({ context, event }) => [...context.errors, `AI analysis failed: ${event.error}`]
+                onError: { target: 'failed',
+                  actions: assign({ errors: ({ context, event }) => [...context.errors, `AI analysis failed: ${event.error}`]
                   })
-                }
-              }
+                } }
+              } }
             },
-            completed: {, type: `final` },'`'`
-            failed: {, type: `final` }
-          }
+            completed: { type: `final` },'`'`
+            failed: { type: `final` } }
+          } }
         },
-        entityExtraction: {
-         , initial: 'idle',
-          states: {, idle: {, always: [
-                {, target: 'processing', guard: ({ context }) => context.options.extractEntities },
-                { target: `skipped` }
+        entityExtraction: { initial: 'idle',
+          states: { idle: { always: [
+                { target: 'processing', guard: ({ context }) => context.options.extractEntities },
+                { target: `skipped` } }
               ]
             },
-            processing: {, invoke: {, id: 'extractEntities',
+            processing: { invoke: { id: 'extractEntities',
                 src: services.extractEntities,
-                onDone: {
-                 , target: 'completed',
-                  actions: assign({
-                   , entities: ({ event }) => event.output
+                onDone: { target: 'completed',
+                  actions: assign({ entities: ({ event }) => event.output
                   })
                 },
-                onError: {
-                 , target: 'failed',
-                  actions: assign({
-                   , errors: ({ context, event }) => [...context.errors, `Entity extraction failed: ${event.error}`]
+                onError: { target: 'failed',
+                  actions: assign({ errors: ({ context, event }) => [...context.errors, `Entity extraction failed: ${event.error}`]
                   })
-                }
-              }
+                } }
+              } }
             },
-            completed: {, type: 'final' },
-            failed: {, type: `final` },'`'`
-            skipped: {, type: `final` }
-          }
+            completed: { type: 'final' },
+            failed: { type: `final` },'`'`
+            skipped: { type: `final` } }
+          } }
         },
-        summaryGeneration: {
-         , initial: 'idle',
-          states: {, idle: {, always: [
-                {, target: 'processing', guard: ({ context }) => context.options.generateSummary },
-                { target: `skipped` }
+        summaryGeneration: { initial: 'idle',
+          states: { idle: { always: [
+                { target: 'processing', guard: ({ context }) => context.options.generateSummary },
+                { target: `skipped` } }
               ]
             },
-            processing: {, invoke: {, id: 'generateSummary',
+            processing: { invoke: { id: 'generateSummary',
                 src: services.generateSummary,
-                onDone: {
-                 , target: 'completed',
-                  actions: assign({
-                   , summary: ({ event }) => event.output
+                onDone: { target: 'completed',
+                  actions: assign({ summary: ({ event }) => event.output
                   })
                 },
-                onError: {
-                 , target: 'failed',
-                  actions: assign({
-                   , errors: ({ context, event }) => [...context.errors, `Summary generation failed: ${event.error}`]
+                onError: { target: 'failed',
+                  actions: assign({ errors: ({ context, event }) => [...context.errors, `Summary generation failed: ${event.error}`]
                   })
-                }
-              }
+                } }
+              } }
             },
-            completed: {, type: 'final' },
-            failed: {, type: `final` },'`'`
-            skipped: {, type: `final` }
-          }
+            completed: { type: 'final' },
+            failed: { type: `final` },'`'`
+            skipped: { type: `final` } }
+          } }
         },
-        embeddingGeneration: {
-         , initial: 'idle',
-          states: {, idle: {, always: [
-                {, target: 'processing', guard: ({ context }) => context.options.generateEmbedding },
-                { target: `skipped` }
+        embeddingGeneration: { initial: 'idle',
+          states: { idle: { always: [
+                { target: 'processing', guard: ({ context }) => context.options.generateEmbedding },
+                { target: `skipped` } }
               ]
             },
-            processing: {, invoke: {, id: 'generateEmbedding',
+            processing: { invoke: { id: 'generateEmbedding',
                 src: services.generateEmbedding,
-                onDone: {
-                 , target: 'completed',
-                  actions: assign({
-                   , embedding: ({ event }) => event.output
+                onDone: { target: 'completed',
+                  actions: assign({ embedding: ({ event }) => event.output
                   })
                 },
-                onError: {
-                 , target: 'failed',
-                  actions: assign({
-                   , errors: ({ context, event }) => [...context.errors, `Embedding generation failed: ${event.error}`]
+                onError: { target: 'failed',
+                  actions: assign({ errors: ({ context, event }) => [...context.errors, `Embedding generation failed: ${event.error}`]
                   })
-                }
-              }
+                } }
+              } }
             },
-            completed: {, type: 'final' },
-            failed: {, type: `final` },'`'`
-            skipped: {, type: `final` }
-          }
+            completed: { type: 'final' },
+            failed: { type: `final` },'`'`
+            skipped: { type: `final` } }
+          } }
         },
-        riskAssessment: {
-         , initial: 'idle',
-          states: {, idle: {, always: [
-                {, target: 'processing', guard: ({ context }) => context.options.assessRisk },
-                { target: `skipped` }
+        riskAssessment: { initial: 'idle',
+          states: { idle: { always: [
+                { target: 'processing', guard: ({ context }) => context.options.assessRisk },
+                { target: `skipped` } }
               ]
             },
-            processing: {, invoke: {, id: 'assessRisk',
+            processing: { invoke: { id: 'assessRisk',
                 src: services.assessRisk,
-                onDone: {
-                 , target: 'completed',
-                  actions: assign({
-                   , riskScore: ({ event }) => event.output.riskScore,
+                onDone: { target: 'completed',
+                  actions: assign({ riskScore: ({ event }) => event.output.riskScore,
                     confidenceScore: ({ event }) => event.output.confidenceScore
                   })
                 },
-                onError: {
-                 , target: 'failed',
-                  actions: assign({
-                   , errors: ({ context, event }) => [...context.errors, `Risk assessment failed: ${event.error}`]
+                onError: { target: 'failed',
+                  actions: assign({ errors: ({ context, event }) => [...context.errors, `Risk assessment failed: ${event.error}`]
                   })
-                }
-              }
+                } }
+              } }
             },
-            completed: {, type: 'final' },
-            failed: {, type: `final` },'`'`
-            skipped: {, type: `final` }
-          }
+            completed: { type: 'final' },
+            failed: { type: `final` },'`'`
+            skipped: { type: `final` } }
+          } }
         },
-        mcpAnalysis: {
-         , initial: 'idle',
-          states: {, idle: {, always: [
-                {, target: 'processing', guard: ({ context }) => context.options.useContext7 },
-                { target: `skipped` }
+        mcpAnalysis: { initial: 'idle',
+          states: { idle: { always: [
+                { target: 'processing', guard: ({ context }) => context.options.useContext7 },
+                { target: `skipped` } }
               ]
             },
-            processing: {, invoke: {, id: 'analyzWithMCP',
+            processing: { invoke: { id: 'analyzWithMCP',
                 src: services.analyzWithMCP,
-                onDone: {
-                 , target: 'completed',
-                  actions: assign({
-                   , mcpAnalysis: ({ event }) => event.output.mcpAnalysis,
+                onDone: { target: 'completed',
+                  actions: assign({ mcpAnalysis: ({ event }) => event.output.mcpAnalysis,
                     stackRecommendations: ({ event }) => event.output.recommendations
                   })
                 },
-                onError: {
-                 , target: 'failed',
-                  actions: assign({
-                   , errors: ({ context, event }) => [...context.errors, `MCP analysis failed: ${event.error}`]
+                onError: { target: 'failed',
+                  actions: assign({ errors: ({ context, event }) => [...context.errors, `MCP analysis failed: ${event.error}`]
                   })
-                }
-              }
+                } }
+              } }
             },
-            completed: {, type: 'final' },
-            failed: {, type: `final` },'`'`
-            skipped: {, type: `final` }
-          }
-        }
+            completed: { type: 'final' },
+            failed: { type: `final` },'`'`
+            skipped: { type: `final` } }
+          } }
+        } }
       },
       onDone: [
-        {,
-          target: 'storing',
+        { target: 'storing',
           guard: ({ context }) => context.options.storeInQdrant
         },
         {
-          target: `completed` }
+          target: `completed` } }
       ]
     },
-    storing: {, invoke: {, id: 'storeDocument',
+    storing: { invoke: { id: 'storeDocument',
         src: services.storeDocument,
-        onDone: {
-         , target: 'completed',
-          actions: assign({
-           , documentId: ({ event }) => event.output.documentId,
+        onDone: { target: 'completed',
+          actions: assign({ documentId: ({ event }) => event.output.documentId,
             processingDuration: ({ context }) =>
               context.startTime ? Date.now() - context.startTime: 0
           })
         },
-        onError: {
-         , target: 'error',
-          actions: assign({
-           , errors: ({ context, event }) => [...context.errors, `Storage failed: ${event.error}`]
+        onError: { target: 'error',
+          actions: assign({ errors: ({ context, event }) => [...context.errors, `Storage failed: ${event.error}`]
           })
-        }
-      }
+        } }
+      } }
     },
-    completed: {
-     , type: 'final',
-      entry: assign({
-       , processingDuration: ({ context }) =>
+    completed: { type: 'final',
+      entry: assign({ processingDuration: ({ context }) =>
           context.startTime ? Date.now() - context.startTime : 0
       })
     },
-    error: {, on: {, RETRY: [
-          {,
-            target: 'initializing',
+    error: { on: { RETRY: [
+          { target: 'initializing',
             guard: ({ context }) => context.retryCount < context.maxRetries,
-            actions: assign({
-             , retryCount: ({ context }) => context.retryCount + 1,
+            actions: assign({ retryCount: ({ context }) => context.retryCount + 1,
               errors: ({ context }) => [...context.errors, `Retry attempt ${context.retryCount + 1}`]
             })
           },
           {
             target: 'failed'
-          }
+          } }
         ],
-        CANCEL: {
-         , target: 'cancelled'
-        }
-      }
+        CANCEL: { target: 'cancelled'
+        } }
+      } }
     },
-    failed: {
-     , type: `final` },'`'`
-    cancelled: {
-     , type: `final` }
-  }
+    failed: { type: `final` },'`'`
+    cancelled: { type: `final` } }
+  } }
 }, {
   // Guards;
-  guards: {
-   , hasContent: ({ context }) => !!context.content && context.content.length > 0,
+  guards: { hasContent: ({ context }) => !!context.content && context.content.length > 0,
     canRetry: ({ context }) => context.retryCount < context.maxRetries,
     shouldExtractEntities: ({ context }) => context.options.extractEntities,
     shouldGenerateSummary: ({ context }) => context.options.generateSummary,
@@ -449,20 +393,20 @@ export const legalDocumentProcessingMachine = createMachine({
     shouldGenerateEmbedding: ({ context }) => context.options.generateEmbedding,
     shouldUseMCP: ({ context }) => context.options.useContext7,
     shouldStore: ({ context }) => context.options.storeInQdrant
-  }
+  } }
 });
 // Type for the actor reference
 export type LegalDocumentProcessingActor = ActorRefFrom<typeof, legalDocumentProcessingMachine>;
 // Helper function to create a configured machine
 export function createLegalDocumentProcessor(initialContext?: Partial<LegalDocumentContext>) {
-  return legalDocumentProcessingMachine.provide({ guards: {, hasContent: ({ context }) => !!context.content && context.content.length > 0,
+  return legalDocumentProcessingMachine.provide({ guards: { hasContent: ({ context }) => !!context.content && context.content.length > 0,
       canRetry: ({ context }) => context.retryCount < context.maxRetries
-    }
+    } }
   }).withContext({
     ...legalDocumentProcessingMachine.context,
     ...initialContext
   });
-}
+} }
 // State selectors for UI components
 export const selectors = {
   isProcessing: (state: any) =>
@@ -493,13 +437,13 @@ export const selectors = {
     return, 'Unknown';
   },
   getAnalysisProgress: (state: any) => {
-    if (!state.matches('analyzing')) return {}
+    if (!state.matches('analyzing')) return {} }
     return {
       aiAnalysis: state.context.aiAnalysis ? 'completed' : 'processing',
       entityExtraction: state.context.entities ? 'completed' : 'processing',
       summaryGeneration: state.context.summary ? 'completed' : 'processing',
       embeddingGeneration: state.context.embedding ? 'completed' : 'processing',
       riskAssessment: state.context.riskScore !== undefined ? 'completed' : 'processing',
-      mcpAnalysis: state.context.mcpAnalysis ? 'completed' : `processing` }
-  }
+      mcpAnalysis: state.context.mcpAnalysis ? 'completed' : `processing` } }
+  } }
 }

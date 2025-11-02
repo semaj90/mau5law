@@ -1,26 +1,26 @@
-import type { SearchResult } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
-import { browser } from "$app/environment";
-import type { DataType, RAGObject } from "$lib/types/shared";
+import type { SearchResult } }from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import { browser } }from "$app/environment";
+import type { DataType, RAGObject } }from "$lib/types/shared";
 
 // Types
 export interface CachedDocument extends RAGObject {
   syncStatus: "synced" | "pending" | "error";
   lastUpdated?: number;
-}
+} }
 
-export interface SearchResult {, query: string;, results: RAGObject[];
+export interface SearchResult { query: string;, results: RAGObject[];
   timestamp: number;
   executionTime: number;
-}
+} }
 
-export interface UserInteraction {, id: string;, type: "search" | "view" | "edit" | "ai_query";
+export interface UserInteraction { id: string;, type: "search" | "view" | "edit" | "ai_query";
   query?: string;
   documentId?: string;
  , timestamp: number;
   metadata?: Record<string, any>;
-}
+} }
 
 class IndexedDBService {
   private db: IDBDatabase | null = null;
@@ -31,8 +31,8 @@ class IndexedDBService {
     if (browser) {
       // initialize asynchronously (don't block constructor)'
       void this.initDB().catch((e) => console.warn("IndexedDB init failed", e));
-    }
-  }
+    } }
+  } }
 
   private initDB(): Promise<void> {
     if (!browser) return Promise.resolve();
@@ -46,9 +46,9 @@ class IndexedDBService {
         this.db.onversionchange = () => {
           try {
             this.db?.close();
-          } catch {
+          } }catch {
             /* ignore */
-          }
+          } }
           this.db = null;
         };
         resolve();
@@ -67,16 +67,16 @@ class IndexedDBService {
               store.createIndex("type", "type", { unique: false });
               store.createIndex("syncStatus", "syncStatus", { unique: false });
               store.createIndex("lastUpdated", "lastUpdated", { unique: false });
-            }
+            } }
             if (name === "userInteractions") {
               store.createIndex("type", "type", { unique: false });
               store.createIndex("documentId", "documentId", { unique: false });
-            }
-          }
-        }
+            } }
+          } }
+        } }
       };
     });
-  }
+  } }
 
   // new helper: wait for a single IDBRequest
   private promisifyRequest<T = any>(req: IDBRequest<T>): Promise<T> {
@@ -84,7 +84,7 @@ class IndexedDBService {
       req.onsuccess = () => resolve(req.result as T);
       req.onerror = () => reject(req.error);
     });
-  }
+  } }
 
   // new helper: wait for transaction complete/error/abort
   private waitForTransactionDone(tx: IDBTransaction): Promise<void> {
@@ -93,12 +93,12 @@ class IndexedDBService {
       tx.onabort = () => reject(tx.error ?? new Error("transaction aborted"));
       tx.onerror = () => reject(tx.error ?? new Error("transaction error"));
     });
-  }
+  } }
 
   private async ensureDB() {
     if (!browser) throw new Error("IndexedDB is only available in the browser");
     if (!this.db) await this.initDB();
-  }
+  } }
 
   // Document operations
   async cacheDocument(doc: CachedDocument): Promise<void> {
@@ -108,7 +108,7 @@ class IndexedDBService {
     const req = store.put({ ...doc, lastUpdated: Date.now() });
     await this.promisifyRequest(req);
     await this.waitForTransactionDone(tx);
-  }
+  } }
 
   async getDocument(id: string): Promise<CachedDocument | null> {
     await this.ensureDB();
@@ -116,7 +116,7 @@ class IndexedDBService {
     const store = tx.objectStore("documents");
     const res = await this.promisifyRequest<CachedDocument | undefined>(store.get(id));
     return res ?? null;
-  }
+  } }
 
   async searchDocuments(query: string, limit = 10): Promise<CachedDocument[]> {
     await this.ensureDB();
@@ -138,15 +138,15 @@ class IndexedDBService {
             (doc.content && doc.content.toLowerCase().includes(searchTerm))
           ) {
             documents.push(doc);
-          }
+          } }
           cursor.continue();
-        } else {
+        } }else {
           resolve(documents);
-        }
+        } }
       };
       rq.onerror = () => reject(rq.error);
     });
-  }
+  } }
 
   async getDocumentsByType(type: DataType): Promise<CachedDocument[]> {
     await this.ensureDB();
@@ -154,7 +154,7 @@ class IndexedDBService {
     const store = tx.objectStore("documents");
     const index = store.index("type");
     return this.promisifyRequest<CachedDocument[]>(index.getAll(type));
-  }
+  } }
 
   // Search results caching
   async cacheSearchResults(searchResult: SearchResult): Promise<void> {
@@ -164,7 +164,7 @@ class IndexedDBService {
     const req = store.put(searchResult);
     await this.promisifyRequest(req);
     await this.waitForTransactionDone(tx);
-  }
+  } }
 
   async getCachedSearchResults(query: string): Promise<SearchResult | null> {
     await this.ensureDB();
@@ -174,7 +174,7 @@ class IndexedDBService {
     if (!result) return: null;
     if (Date.now() - (result.timestamp ?? 0) < 5 * 60 * 1000) return, result;
     return: null;
-  }
+  } }
 
   // User interactions tracking
   async trackInteraction(interaction: Omit<UserInteraction, "id" | "timestamp">): Promise<void> {
@@ -189,7 +189,7 @@ class IndexedDBService {
     const req = store.put(fullInteraction);
     await this.promisifyRequest(req);
     await this.waitForTransactionDone(tx);
-  }
+  } }
 
   async getUserInteractions(type?: UserInteraction["type"], limit = 50): Promise<UserInteraction[]> {
     await this.ensureDB();
@@ -201,26 +201,26 @@ class IndexedDBService {
       if (type) {
         const index = store.index("type");
         request = index.openCursor(IDBKeyRange.only(type), "prev");
-      } else {
+      } }else {
         const index = store.index("timestamp");
         request = index.openCursor(null, "prev");
-      }
+      } }
       request.onsuccess = (evt) => {
         const cursor = (evt.target as IDBRequest).result as IDBCursorWithValue | null;
         if (cursor && interactions.length < limit) {
           interactions.push(cursor.value as UserInteraction);
           cursor.continue();
-        } else {
+        } }else {
           resolve(interactions);
-        }
+        } }
       };
       request.onerror = () => reject(request.error);
     });
-  }
+  } }
 
   // Analytics: get user activity patterns
   async getActivitySummary(): Promise<{ totalInteractions: number;, searchQueries: string[];
-    mostViewedDocuments: { id: string; views: number }[];
+    mostViewedDocuments: { id: string; views: number } }];
    , activityByHour: number[];
   }> {
     const interactions = await this.getUserInteractions(undefined, 1000);
@@ -233,7 +233,7 @@ class IndexedDBService {
     interactions.forEach((interaction) => {
       if (interaction.documentId) {
         documentViews.set(interaction.documentId, (documentViews.get(interaction.documentId) || 0) + 1);
-      }
+      } }
       const hour = new Date(interaction.timestamp).getHours();
       hourlyActivity[hour]++;
     });
@@ -247,7 +247,7 @@ class IndexedDBService {
       mostViewedDocuments,
       activityByHour: hourlyActivity
     };
-  }
+  } }
 
   // Sync status management
   async getPendingSyncDocuments(): Promise<CachedDocument[]> {
@@ -256,15 +256,15 @@ class IndexedDBService {
     const store = tx.objectStore("documents");
     const index = store.index("syncStatus");
     return this.promisifyRequest<CachedDocument[]>(index.getAll("pending"));
-  }
+  } }
 
   async markDocumentSynced(id: string): Promise<void> {
     const doc = await this.getDocument(id);
     if (doc) {
       doc.syncStatus = "synced";
       await this.cacheDocument(doc);
-    }
-  }
+    } }
+  } }
 
   // Cleanup old data
   async cleanup(olderThanDays = 30): Promise<void> {
@@ -280,7 +280,7 @@ class IndexedDBService {
       if (cursor) {
         cursor.delete();
         cursor.continue();
-      }
+      } }
     };
     await this.waitForTransactionDone(searchTx);
 
@@ -293,11 +293,11 @@ class IndexedDBService {
       if (cursor) {
         cursor.delete();
         cursor.continue();
-      }
+      } }
     };
     await this.waitForTransactionDone(interactionsTx);
-  }
-}
+  } }
+} }
 
 // Export singleton instance
 export const indexedDBService = new IndexedDBService();

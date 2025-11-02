@@ -1,30 +1,29 @@
-import type { Message } from '$lib/types';
+import type { Message } }from '$lib/types';
 /**
  * Redis-Optimized AI Chat Endpoint
  * Example integration showing how to apply Redis orchestrator to existing endpoints
  * This demonstrates the pattern for all other AI endpoints
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import { callOllamaApi } from '$lib/services/ollama-client';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import { callOllamaApi } }from '$lib/services/ollama-client';
 /**
  * Original AI Chat Handler (without Redis optimization)
  */
 const originalChatHandler: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { message, caseId, userId, model = 'gemma3:legal-latest' } = body;
+    const { message, caseId, userId, model = 'gemma3:legal-latest' } }= body;
     if (!message) {
       throw error(400, 'Message is required');
-    }
+    } }
     console.log(`🤖 Processing AI chat: "${message.substring(0, 50)}..."`);
     // Direct Ollama API call (slow, no caching)
     const response = await callOllamaApi({
       model,
       messages: [
-        {,
-         , role: 'system',
+        { role: 'system',
           content: `You are a legal AI assistant. Provide accurate, helpful legal information while noting that this is not legal advice.` },'`'`
         {
           role: 'user',
@@ -32,13 +31,13 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
         },
       ],
       options: {
-       , temperature: 0.7,
+  temperature: 0.7,
         max_tokens: 1000
-      }
+      } }
     });
     if (!response?.message?.content) {
       throw error(500, 'Invalid response from AI model');
-    }
+    } }
     return json({
       response: response.message.content,
       model,
@@ -48,9 +47,9 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
       cached: false,
       timestamp: new Date().toISOString()
     });
-  } catch (err) {
-    console.error('AI chat error:', err);'
-    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
+  } }catch (err) {
+    console.error('AI chat error:', err);
+    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` } }`
 };
 /**
  * Redis-Optimized Version
@@ -72,3 +71,4 @@ export const POST = redisOptimized.aiChat(originalChatHandler);
  * 6. Provides Nintendo-style memory optimization
  * 7. Adds comprehensive Redis statistics to responses
  */
+

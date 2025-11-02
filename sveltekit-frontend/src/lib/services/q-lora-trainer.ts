@@ -10,14 +10,14 @@ type Feedback =  ;{ userId: string;, prompt: string;
   rating: number; // -1..+1
   context?: { [key,: strin,g]: any },
   ts: number;
-}
+} }
 export class QLoRATrainerService {
   private buffer: Feedback[] = [];
   private maxBuffer = 5000;
   record(feedback: Feedback) {
     this.buffer.push(feedback);
     if (this.buffer.length > this.maxBuffer) this.buffer.shift();
-  }
+  } }
   exportDataset() {
     // Transform buffer into instruction-tuning format
     return this.buffer.map((f) => ({
@@ -25,14 +25,14 @@ export class QLoRATrainerService {
       input: f.context?.input || '',
       output: f.response,
       rating: f.rating,
-      meta: {, userId: f.userId, ts: f.ts, ...f.context }
+      meta: { userId: f.userId, ts: f.ts, ...f.context } }
     });
-  }
-  async triggerTrainingRun(opts: {, model: string); adapterOutDir: string }) {
+  } }
+  async triggerTrainingRun(opts: { model: string); adapterOutDir: string }) {
     // Placeholder: integrate with your training orchestration (Python/Go)
     // Emit an event or call a local endpoint to start Q-LoRA run.
     console.log('🔧 Trigger Q-LoRA training', opts, ' dataset size=', this.buffer.length);
-    return { ok: true, started: true } as const;
-  }
-}
+    return { ok: true, started: true } }as const;
+  } }
+} }
 export const qloraTrainer = new QLoRATrainerService();

@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import { randomUUID } from 'node:crypto';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { randomUUID } }from 'node:crypto';
+import type { RequestHandler } }from './$types.js';
 
 // Allow GET requests to pass through to the page
 export const GET: RequestHandler = async ({ request }) => {
@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ request }) => {
 };
 
 // A light wrapper that accepts multipart form uploads and stores the file in MinIO under: 'evidence' bucket.
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const form = await request.formData();
     const file = form.get('file') as File;
@@ -25,7 +25,8 @@ export const, POST: RequestHandler = async ({ request }) => {
     // });
     console.log('Would upload to MinIO:', { objectName, caseId, originalName: file.name });
     return json({ success: true, id, objectName });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Evidence upload error', err);
-    return json({ success: false, error: (err, as: any)?.message || 'upload error' }, { status: 500 });'' }
+    return json({ success: false, error: (err, as: any)?.message || 'upload error' }, { status: 500 });'' } }
 };
+

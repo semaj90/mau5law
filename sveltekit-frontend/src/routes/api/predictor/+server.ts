@@ -1,31 +1,31 @@
 // SvelteKit API endpoint for Redis-cached Markov predictor
 // Integrates with CUDA + pgvector + SIMD acceleration
-import { json } from '@sveltejs/kit'
-import { predictor } from '$lib/server/chrrom/predictor.js'
-import type { RequestHandler } from './$types.js'
+import { json } }from '@sveltejs/kit'
+import { predictor } }from '$lib/server/chrrom/predictor.js'
+import type { RequestHandler } }from './$types.js'
 interface RecordRequest { userId: string, action: string
   context?: {
     docId?: string
     query?: string
     timestamp?: number
-  }
-}
+  } }
+} }
 interface PredictRequest {
   action: string
   context?: {
     docId?: string
     query?: string
-  }
+  } }
   topK?: number
   enhancedMode?: boolean
-}
+} }
 // Record user action for learning
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as RecordRequest;
     if (!body.userId || !body.action) {
       return json({ error: 'Missing required, fields: userId, action' }, { status: 400 });
-    }
+    } }
     // Record the action in Redis-cached predictor
     await predictor.record(body.userId, body.action);
     // Get current stats for response
@@ -36,17 +36,17 @@ export const, POST: RequestHandler = async ({ request }) => {
       userId: body.userId,
       context: body.context,
       stats: {
-       , totalTransitions: stats.totalTransitions,
+  totalTransitions: stats.totalTransitions,
         uniqueActions: stats.uniqueActions,
         redisConnected: stats.redisConnected,
         pendingUpdates: stats.pendingUpdates
       },
       timestamp: Date.now()
     });
-  } catch (error) {
-    console.error('Predictor recording error:', error);'
+  } }catch (error) {
+    console.error('Predictor recording error:', error);
     return json({ error: 'Failed to record action' }, { status: 500 });
-  }
+  } }
 };
 // Get predictions for next actions
 export const GET: RequestHandler = async ({ url }) => {
@@ -58,15 +58,15 @@ export const GET: RequestHandler = async ({ url }) => {
     const query = url.searchParams.get('query');
     if (!action) {
       return json({ error: 'Missing required, parameter: action' }, { status: 400 });
-    }
+    } }
     const context = { docId: docId || undefined, query: query || undefined };
     let predictions;
     // Use enhanced predictions with SIMD acceleration if requested
     if (enhancedMode && (context.docId || context.query)) {
       predictions = await predictor.predictNextWithSimilarity(action, context, topK);
-    } else {
+    } }else {
       predictions = await predictor.predictNext(action, topK);
-    }
+    } }
     const stats = await predictor.getStats();
     return json({
       action,
@@ -75,23 +75,23 @@ export const GET: RequestHandler = async ({ url }) => {
       enhancedMode,
       topK,
       stats: {
-       , totalTransitions: stats.totalTransitions,
+  totalTransitions: stats.totalTransitions,
         uniqueActions: stats.uniqueActions,
         cacheEnabled: stats.cacheEnabled,
         redisConnected: stats.redisConnected,
         lastSync: stats.lastSync
       },
       performance: {
-       , predictionsGenerated: predictions.length,
+  predictionsGenerated: predictions.length,
         cacheHit: predictions.length > 0,
         simdAccelerated: enhancedMode && (context.docId || context.query)
       },
       timestamp: Date.now()
     });
-  } catch (error) {
-    console.error('Predictor prediction error:', error);'
+  } }catch (error) {
+    console.error('Predictor prediction error:', error);
     return json({ error: 'Failed to generate predictions' }, { status: 500 });
-  }
+  } }
 };
 // Bulk prediction endpoint for multiple actions
 export const PUT: RequestHandler = async ({ request }) => {
@@ -99,7 +99,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const body = (await request.json()) as PredictRequest[];
     if (!Array.isArray(body) || body.length === 0) {
       return json({ error: 'Expected array of prediction requests' }, { status: 400 });
-    }
+    } }
     const results = await Promise.all(
       body.map(async req => {
         const context = req.context || {};
@@ -107,9 +107,9 @@ export const PUT: RequestHandler = async ({ request }) => {
         let predictions;
         if (req.enhancedMode && (context.docId || context.query)) {
           predictions = await predictor.predictNextWithSimilarity(req.action, context, topK);
-        } else {
+        } }else {
           predictions = await predictor.predictNext(req.action, topK);
-        }
+        } }
         return {
           action: req.action,
           predictions,
@@ -123,14 +123,14 @@ export const PUT: RequestHandler = async ({ request }) => {
       results,
       totalRequests: body.length,
       stats: {
-       , totalTransitions: stats.totalTransitions,
+  totalTransitions: stats.totalTransitions,
         uniqueActions: stats.uniqueActions,
         redisConnected: stats.redisConnected
       },
       timestamp: Date.now()
     });
-  } catch (error) {
-    console.error('Bulk prediction error:', error);'
+  } }catch (error) {
+    console.error('Bulk prediction error:', error);
     return json({ error: 'Failed to process bulk predictions' }, { status: 500 });
-  }
+  } }
 };

@@ -1,12 +1,12 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 // Modern authentication store using Svelte, 5 runes
 // Integrates with Lucia, MCP GPU orchestrator, and legal AI features
-import { browser } from '$app/environment';
-import { goto } from '$app/navigation';
-import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
+import { browser } }from '$app/environment';
+import { goto } }from '$app/navigation';
+import { mcpGPUOrchestrator } }from '$lib/services/mcp-gpu-orchestrator.js';
 
 // New: typed response and result shapes to avoid `any` casts
-type ResponseLike<T = unknown> = { ok: boolean;, json: () => Promise<T> };
+type ResponseLike<T = unknown> = { ok: boolean; json: () => Promise<T> };
 type AuthApiResult = { user?: User; error?: string };
 
 // Added: explicit operation result for auth flows
@@ -25,10 +25,10 @@ const orchestratorAdapter = {
     const anyOrch = mcpGPUOrchestrator as: unknown as OrchestratorLike;
     if (typeof anyOrch.makeRequest === 'function') {
       return anyOrch.makeRequest(path, body, opts);
-    }
+    } }
     if (typeof anyOrch.request === 'function') {
       return anyOrch.request(path, body, opts);
-    }
+    } }
     // Fallback: best-effort fire-and-forget POST to the path (keeps behavior safe)
     try {
       await fetch(path, {
@@ -37,17 +37,17 @@ const orchestratorAdapter = {
         body: JSON.stringify({ body, opts }),
         credentials: `include` });
       return { ok: true };
-    } catch {
-      return {, ok: false };
-    }
+    } }catch {
+      return { ok: false };
+    } }
   },
   async processLegalDocument(content: string, opts?: Record<string, unknown>) {
     const anyOrch = mcpGPUOrchestrator as: unknown as OrchestratorLike;
     if (typeof anyOrch.processLegalDocument === 'function') {
       return anyOrch.processLegalDocument(content, opts);
-    }
+    } }
     return this.makeRequest('/api/processing/process-legal-document', { content, opts });
-  }
+  } }
 };
 
 // Declare the Svelte, 5 $state rune for TS in this module (minimal, non-invasive)
@@ -64,11 +64,11 @@ export interface User { id: string;, email: string;
   emailVerified?: Date | boolean;
   createdAt: Date;
   updatedAt: Date;
-}
-export interface AuthState {, user: User | null;, loading: boolean;
+} }
+export interface AuthState { user: User | null;, loading: boolean;
   error: string | null;
  , isAuthenticated: boolean;
-}
+} }
 // Reactive authentication state using $state rune (browser-only)
 const authState = browser
   ? $state<AuthState>({
@@ -86,7 +86,7 @@ const authState = browser
 // Derived state functions for common auth checks
 export function isAdmin(): boolean {
   return authState.user?.role === 'admin' || authState.user?.role === 'lead_prosecutor' || false;
-}
+} }
 export function canCreateCases(): boolean {
   return (
     authState.user?.role === 'admin' ||
@@ -94,16 +94,16 @@ export function canCreateCases(): boolean {
     authState.user?.role === 'prosecutor' ||
     false
   );
-}
+} }
 export function canViewEvidence(): boolean {
   return authState.isAuthenticated;
-}
+} }
 // Auth service with reactive methods
 export class AuthService {
   // Get current state (reactive)
   get state() {
     return authState;
-  }
+  } }
   // Initialize auth state (checks existing session)
   async initialize() {
     if (!browser) return;
@@ -115,34 +115,34 @@ export class AuthService {
       });
       const res = response as ResponseLike<AuthApiResult>;
       if (res.ok) {
-        const { user } = await res.json();
+        const { user } }= await res.json();
         authState.user = user ?? null;
         authState.isAuthenticated = true;
         // Log successful session restore with AI analytics (use adapter)
         await orchestratorAdapter.makeRequest(
           '/api/analytics/session-restore',
           { userId: user!.id, timestamp: new Date().toISOString() },
-          { userId: user!.id, analyticsLevel: `session` }'`'`
+          { userId: user!.id, analyticsLevel: `session` } }`'`
         );
-      } else {
+      } }else {
         authState.user = null;
         authState.isAuthenticated = $state(false);
-      }
-    } catch (error: any) {
-      console.error('Auth initialization error:', error);'
+      } }
+    } }catch (error: any) {
+      console.error('Auth initialization error:', error);
       authState.error = 'Failed to initialize authentication';
       authState.user = null;
       authState.isAuthenticated = $state(false);
-    } finally {
+    } }finally {
       authState.loading = false;
-    }
-  }
+    } }
+  } }
   // Login with email and password
   async login(email: string, password: string): Promise<AuthOperationResult> {
     authState.loading = true;
     authState.error = null;
     try {
-      const { sessionManager } = await import('./sessionManager.svelte.js');
+      const { sessionManager } }= await import('./sessionManager.svelte.js');
       const securityContext = {
         email,
         timestamp: new Date().toISOString(),
@@ -164,33 +164,33 @@ export class AuthService {
         authState.error = null;
         const sessionId = `sess_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
         await sessionManager.startSession(result.user, sessionId);
-        await orchestratorAdapter.processLegalDocument(`Successful login: ${email} at ${new Date().toISOString()}`, {
+        await orchestratorAdapter.processLegalDocument(`Successful login: ${email} }at ${new Date().toISOString()}`, {
           userId: result.user!.id,
           includeRAG: false,
           includeGraph: true,
           generateSummary: false
         });
         return { success: true, sessionId };
-      } else {
+      } }else {
         authState.error = result.error ?? 'Login failed';
         await orchestratorAdapter.makeRequest(
           '/api/security/failed-login',
           { ...securityContext, error: result.error },
-          { securityLevel: `high` }'`'`
+          { securityLevel: `high` } }`'`
         );
         return { success: false, error: result.error };
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const errorMessage = 'Network error during login';
       authState.error = errorMessage;
-      console.error('Login error:', error);'
+      console.error('Login error:', error);
       return { success: false, error: errorMessage };
-    } finally {
+    } }finally {
       authState.loading = false;
-    }
-  }
+    } }
+  } }
   // Register new user
-  async register(userData: {, email: string;, password: string;
+  async register(userData: { email: string;, password: string;
    , firstName: string;
    , lastName: string;
   }): Promise<AuthOperationResult> {
@@ -223,25 +223,25 @@ export class AuthService {
           generateSummary: true
         });
         return { success: true };
-      } else {
+      } }else {
         authState.error = result.error ?? 'Registration failed';
-        return {, success: false, error: result.error };
-      }
-    } catch (error: any) {
+        return { success: false, error: result.error };
+      } }
+    } }catch (error: any) {
       const errorMessage = 'Network error during registration';
       authState.error = errorMessage;
-      console.error('Registration error:', error);'
+      console.error('Registration error:', error);
       return { success: false, error: errorMessage };
-    } finally {
+    } }finally {
       authState.loading = false;
-    }
-  }
+    } }
+  } }
   // Logout current user
   async logout() {
     authState.loading = true;
     try {
       // Import session manager dynamically
-      const { sessionManager } = await import('./sessionManager.svelte.js');
+      const { sessionManager } }= await import('./sessionManager.svelte.js');
       // Log logout event for analytics (use adapter to avoid direct orchestrator typing issues)
       if (authState.user) {
         await orchestratorAdapter.makeRequest(
@@ -251,9 +251,9 @@ export class AuthService {
             timestamp: new Date().toISOString(),
             sessionDuration: this.calculateSessionDuration()
           },
-          { userId: authState.user.id, analyticsLevel: 'session' }
+          { userId: authState.user.id, analyticsLevel: 'session' } }
         );
-      }
+      } }
       // End session management
       await sessionManager.endSession();
       // Perform logout request (no unused variable)
@@ -267,15 +267,15 @@ export class AuthService {
       authState.error = null;
       // Redirect to login page
       await goto('/login');
-    } catch (error: any) {
-      console.error('Logout error:', error);'
+    } }catch (error: any) {
+      console.error('Logout error:', error);
       // Still clear state on error
       authState.user = null;
       authState.isAuthenticated = $state(false);
-    } finally {
+    } }finally {
       authState.loading = false;
-    }
-  }
+    } }
+  } }
   // Update user profile
   async updateProfile(updates: Partial<User>): Promise<AuthOperationResult> {
     if (!authState.user) return { success: false, error: 'Not authenticated' };
@@ -297,22 +297,22 @@ export class AuthService {
             changes: Object.keys(updates),
             timestamp: new Date().toISOString()
           },
-          { userId: authState.user.id, analyticsLevel: `profile` }
+          { userId: authState.user.id, analyticsLevel: `profile` } }
         );
         return { success: true };
-      } else {
+      } }else {
         authState.error = result.error ?? 'Profile update failed';
-        return {, success: false, error: result.error };
-      }
-    } catch (error: any) {
+        return { success: false, error: result.error };
+      } }
+    } }catch (error: any) {
       const errorMessage = 'Failed to update profile';
       authState.error = errorMessage;
-      console.error('Profile update error:', error);'
+      console.error('Profile update error:', error);
       return { success: false, error: errorMessage };
-    } finally {
+    } }finally {
       authState.loading = false;
-    }
-  }
+    } }
+  } }
   // Check if user has specific permission
   hasPermission(permission: string): boolean {
     if (!authState.user) return false;
@@ -326,15 +326,15 @@ export class AuthService {
     };
     const userPermissions = rolePermissions[authState.user.role as keyof typeof rolePermissions] || [];
     return userPermissions.includes('all') || userPermissions.includes(permission);
-  }
+  } }
   // Require authentication (for use in components)
   requireAuth(): User {
     if (!authState.isAuthenticated || !authState.user) {
       goto('/login');
       throw new Error('Authentication required');
-    }
+    } }
     return authState.user;
-  }
+  } }
   // Private helper methods
   private async getClientInfo() {
     try {
@@ -345,22 +345,22 @@ export class AuthService {
         language: navigator.language,
         platform: navigator.platform
       };
-    } catch {
+    } }catch {
       return {};
-    }
-  }
+    } }
+  } }
   private calculateSessionDuration(): number {
     // Calculate session duration in minutes
     // This would need to be tracked from login time
     return 0; // Placeholder
-  }
-}
+  } }
+} }
 // Create singleton auth service
 export const authService = new AuthService();
 // Initialize auth state when module loads
 if (browser) {
   authService.initialize();
-}
+} }
 // Export reactive getters for use in components
 export const user = () => authState.user;
 export const isAuthenticated = () => authState.isAuthenticated;
@@ -368,7 +368,7 @@ export const isLoading = () => authState.loading;
 export const authError = () => authState.error;
 
 // ===== Context API Utilities (merged from auth.ts) =====
-import { setContext, getContext } from 'svelte';
+import { setContext, getContext } }from 'svelte';
 
 const AUTH_CONTEXT_KEY = Symbol('auth');
 
@@ -392,7 +392,7 @@ export const getAuthContext = (): typeof authService => {
     throw new Error(
       'Auth context not found. Make sure to call setAuthContext in your root layout.'
     );
-  }
+  } }
   return auth;
 };
 
@@ -409,4 +409,5 @@ export const hasRole = (user: User | null, role: string): boolean => {
 export const hasAnyRole = (user: User | null, roles: string[]): boolean => {
   return user ? roles.includes(user.role) : false;
 };
+
 

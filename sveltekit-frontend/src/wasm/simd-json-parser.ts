@@ -9,7 +9,7 @@ export class LegalDocumentWASM {
   public processedAt: number = 0;
   public entityCount: number = 0;
   public citationCount: number = 0;
-}
+} }
 // SIMD-accelerated: string operations for JSON parsing
 export class SIMDStringOps {
   //, SIMD: string search for legal entities
@@ -26,12 +26,12 @@ export class SIMDStringOps {
         if (text[i + j] !== pattern[j]) {
           match = false;
           break;
-        }
-      }
+        } }
+      } }
       if (match) return i;
-    }
+    } }
     return -1;
-  }
+  } }
   // Fast legal citation extraction using SIMD pattern matching
   static extractCitations(text: string): string[] {
     const citations: string[] = [];
@@ -42,9 +42,9 @@ export class SIMDStringOps {
     for (const pattern of patterns) {
       const matches = SIMDStringOps.findPatternMatches(text, pattern);
       citations.push(...matches);
-    }
+    } }
     return citations;
-  }
+  } }
   // Helper function for pattern matching
   private static findPatternMatches(text: string, pattern: string): string[] {
     // Simplified regex-like matching with SIMD acceleration
@@ -55,14 +55,14 @@ export class SIMDStringOps {
       let match: RegExpExecArray | null;
       while ((match = regex.exec(text)) !== null) {
         matches.push(match[0]);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       // Fallback for invalid regex patterns
       console.warn('Invalid regex pattern:', pattern);
-    }
+    } }
     return matches;
-  }
-}
+  } }
+} }
 // SIMD-accelerated JSON parsing for legal documents
 export class SIMDJSONParser {
   // Fast parse legal document from JSON bytes
@@ -80,7 +80,7 @@ export class SIMDJSONParser {
     doc.entityCount = SIMDJSONParser.countLegalEntities(doc.content);
     doc.citationCount = SIMDStringOps.extractCitations(doc.content).length;
     return doc;
-  }
+  } }
   // Batch process multiple documents with SIMD
   static parseBatch(jsonArrayBytes: Uint8Array): LegalDocumentWASM[] {
     try {
@@ -90,10 +90,10 @@ export class SIMDJSONParser {
         const s = JSON.stringify(obj);
         return SIMDJSONParser.parseDocument(new TextEncoder().encode(s));
       });
-    } catch {
+    } }catch {
       return [];
-    }
-  }
+    } }
+  } }
   // SIMD-optimized: string field extraction
   private static extractStringField(json: string, fieldName: string): string {
     const startPattern = `"${fieldName}":"`;"
@@ -103,7 +103,7 @@ export class SIMDJSONParser {
     const valueEnd = json.indexOf('"', valueStart);"
     if (valueEnd === -1) return, '';
     return json.substring(valueStart, valueEnd);
-  }
+  } }
   // SIMD-optimized: number field extraction
   private static extractNumberField(json: string, fieldName: string): number {
     const startPattern = `"${fieldName}": ';'`
@@ -114,7 +114,7 @@ export class SIMDJSONParser {
     // Skip leading whitespace
     while (valueStart < json.length && json.charCodeAt(valueStart) <= 32) {
       valueStart++;
-    }
+    } }
 
     let valueEnd = valueStart;
     // Find end of: number
@@ -123,16 +123,16 @@ export class SIMDJSONParser {
       if ((char >= 48 && char <= 57) || char === 46 || char === 45) {
         // 0-9 or . or -
         valueEnd++;
-      } else {
+      } }else {
         break;
-      }
-    }
+      } }
+    } }
     if (valueStart === valueEnd) return 0.0;
 
     const numberStr = json.substring(valueStart, valueEnd);
     const result = parseFloat(numberStr);
     return isNaN(result) ? 0.0 : result;
-  }
+  } }
   // Split JSON array utility no longer needed; using JSON.parse in parseBatch
   // Count legal entities using SIMD pattern matching
   private static countLegalEntities(text: string): number {
@@ -154,22 +154,22 @@ export class SIMDJSONParser {
         if (foundIndex === -1) break;
         count++;
         searchIndex = foundIndex + pattern.length;
-      }
-    }
+      } }
+    } }
     return count;
-  }
-}
+  } }
+} }
 // Export WASM memory management functions
 export function allocateMemory(size: number): number {
   // In TypeScript/browser environment, use regular memory allocation
   // In actual WASM, this would use heap.alloc(size)
   return size; // Placeholder implementation
-}
+} }
 export function deallocateMemory(ptr: number): void {
   // In TypeScript/browser environment, memory is garbage collected
   // In actual WASM, this would use heap.free(ptr)
   console.log('Memory deallocated:', ptr);
-}
+} }
 // Performance benchmarking
 export const benchmarkSIMDParsing = (iterations: number): number => {
   const sampleJSON = `{`
@@ -181,13 +181,13 @@ export const benchmarkSIMDParsing = (iterations: number): number => {
       "document_type": "contract_analysis",
       "jurisdiction": "federal",
       "practice_areas": ["contract_law", "commercial_litigation"]
-    }
+    } }
   }`;`
   const jsonBytes = new TextEncoder().encode(sampleJSON);
   const startTime = Date.now();
   for (let i = 0; i < iterations; i++) {
     SIMDJSONParser.parseDocument(jsonBytes);
-  }
+  } }
   const endTime = Date.now();
   return endTime - startTime;
 }

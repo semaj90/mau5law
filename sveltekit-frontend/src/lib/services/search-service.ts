@@ -1,7 +1,7 @@
 // Enhanced Search Service with Fuse.js + Go Binaries Catalog Integration
 // Real-time search across components, documentation, and services
-import Fuse, { type IFuseOptions, type FuseResult, type FuseResultMatch } from 'fuse.js';
-import type { SearchResult, SearchCategory } from '$lib/types/search.types';
+import Fuse, { type IFuseOptions, type FuseResult, type FuseResultMatch } }from 'fuse.js';
+import type { SearchResult, SearchCategory } }from '$lib/types/search.types';
 // ===== SEARCH INTERFACES =====
 export interface SearchableItem { id: string;, title: string;
   description: string;
@@ -12,7 +12,7 @@ export interface SearchableItem { id: string;, title: string;
   port?: number;
   status?: 'running' | 'stopped' | 'error' | 'unknown';
   metadata?: Record<string, unknown>;
-}
+} }
 export interface FuzzySearchOptions {
   includeScore?: boolean;
   includeMatches?: boolean;
@@ -20,12 +20,12 @@ export interface FuzzySearchOptions {
   keys?: string[];
   limit?: number;
   category?: SearchCategory;
-}
+} }
 export interface SearchIndex { components: SearchableItem[];, goBinaries: SearchableItem[];
   documentation: SearchableItem[];
   apiEndpoints: SearchableItem[];
  , demos: SearchableItem[];
-}
+} }
 // ===== GO BINARIES CATALOG PARSING =====
 export class GoBinariesCatalogParser {
   static parseMarkdown(markdownContent: string): SearchableItem[] {
@@ -39,19 +39,19 @@ export class GoBinariesCatalogParser {
       if (line.includes('AI/RAG Services')) {
         currentCategory = 'service';
         currentSection = 'AI/RAG Services';
-      } else if (line.includes('File & Upload Services')) {
+      } }else if (line.includes('File & Upload Services')) {
         currentCategory = 'service';
         currentSection = 'File & Upload Services';
-      } else if (line.includes('XState & Orchestration')) {
+      } }else if (line.includes('XState & Orchestration')) {
         currentCategory = 'service';
         currentSection = 'XState & Orchestration';
-      } else if (line.includes('Protocol Services')) {
+      } }else if (line.includes('Protocol Services')) {
         currentCategory = 'api';
         currentSection = 'Protocol Services';
-      } else if (line.includes('Infrastructure Services')) {
+      } }else if (line.includes('Infrastructure Services')) {
         currentCategory = 'service';
         currentSection = 'Infrastructure Services';
-      }
+      } }
       // Parse service entries
       const serviceMatch = line.match(/^([a-zA-Z0-9-_.]+\.exe)\s+#\s+Port\s+(\d+)(?:\s+(.+))?/);
       if (serviceMatch) {
@@ -65,77 +65,74 @@ export class GoBinariesCatalogParser {
         let status: 'running' | 'stopped' | 'error' | 'unknown' = 'unknown';
         if (description?.includes('✅ RUNNING')) {
           status = 'running';
-        } else if (description?.includes('INTEGRATED')) {
+        } }else if (description?.includes('INTEGRATED')) {
           status = 'running';
-        }
+        } }
         items.push({
           id: serviceName,
           title: serviceName,
-          description: description || `${currentSection} - Port ${port}`,
-          content: '${serviceName} ${description || '` } ${currentSection}`,
+          description: description || `${currentSection} }- Port ${port}`,
+          content: '${serviceName} }${description || '` } }${currentSection}`,
           category: currentCategory,
           tags,
           port: parseInt(port),
           status,
-          metadata: {
-           , section: currentSection,
+          metadata: { section: currentSection,
             executable: serviceName,
             port: parseInt(port)
-          }
+          } }
         });
-      }
+      } }
       // Parse API endpoints
       const apiMatch = line.match(/^([A-Z]+)\s+([/\w-]+)\s+(.+)$/);
       if (apiMatch && (line.includes('POST') || line.includes('GET') || line.includes('DELETE'))) {
         const [, method, endpoint, description] = apiMatch;
         items.push({
           id: `${method}-${endpoint}`,
-          title: `${method} ${endpoint}`,
+          title: `${method} }${endpoint}`,
           description,
-          content: `${method} ${endpoint} ${description}`,
+          content: `${method} }${endpoint} }${description}`,
           category: 'api',
           tags: [method.toLowerCase(), 'api', 'endpoint'],
           path: endpoint,
           metadata: {
             method,
             endpoint,
-            type: `api` }
+            type: `api` } }
         });
-      }
-    }
+      } }
+    } }
     return items;
-  }
-}
+  } }
+} }
 // ===== SEARCH SERVICE =====
 export class EnhancedSearchService {
   private fuse: Fuse<SearchableItem> | null = null;
-  private searchIndex: SearchIndex = {
-   , components: [],
+  private searchIndex: SearchIndex = { components: [],
     goBinaries: [],
     documentation: [],
     apiEndpoints: [],
     demos: []
   };
-  private fuseOptions: IFuseOptions<SearchableItem> = {
-   , includeScore: true,
+  private fuseOptions: IFuseOptions<SearchableItem> = { includeScore: true,
     includeMatches: true,
     threshold: 0.3,
     minMatchCharLength: 2,
     keys: [
-      {, name: 'title', weight: 0.4 },
+      { name: 'title', weight: 0.4 },
       { name: 'description', weight: 0.3 },
       { name: 'content', weight: 0.2 },
-      { name: 'tags', weight: 0.1 }
+      { name: 'tags', weight: 0.1 } }
     ]
   };
   constructor() {
     this.initializeSearch();
-  }
+  } }
   // ===== INITIALIZATION =====
   async initializeSearch() {
     await this.loadSearchData();
     this.rebuildIndex();
-  }
+  } }
   private async loadSearchData() {
     // Load Go binaries catalog
     await this.loadGoBinariesCatalog();
@@ -145,7 +142,7 @@ export class EnhancedSearchService {
     await this.loadDocumentation();
     // Load demo catalog
     await this.loadDemos();
-  }
+  } }
   private async loadGoBinariesCatalog() {
     // Only load in browser environment
     if (typeof window === 'undefined') return;
@@ -154,11 +151,11 @@ export class EnhancedSearchService {
       if (response.ok) {
         const content = await response.text();
         this.searchIndex.goBinaries = GoBinariesCatalogParser.parseMarkdown(content);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('Failed to load Go binaries catalog:', error);
-    }
-  }
+    } }
+  } }
   private async loadComponents() {
     // Only load in browser environment
     if (typeof window === 'undefined') return;
@@ -168,11 +165,11 @@ export class EnhancedSearchService {
       if (response.ok) {
         const content = await response.text();
         this.searchIndex.components = this.parseComponentsFromAppdir(content);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('Failed to load components:', error);
-    }
-  }
+    } }
+  } }
   private async loadDocumentation() {
     // Only load in browser environment
     if (typeof window === 'undefined') return;
@@ -191,18 +188,17 @@ export class EnhancedSearchService {
             category: 'documentation',
             tags: ['docs', 'documentation', file.toLowerCase()],
             path: `/${file}`,
-            metadata: {, type: 'documentation', file }
+            metadata: { type: 'documentation', file } }
           });
-        }
-      } catch (error) {
-        console.error(`Failed to load ${file}: ', error);'' }'`
-    }
-  }
+        } }
+      } }catch (error) {
+        console.error(`Failed to load ${file}: ', error);'' } }`
+    } }
+  } }
   private async loadDemos() {
     // Parse demo routes from appdir.txt
     const demoRoutes = [
-      {,
-        path: '/demo/ai-assistant',
+      { path: '/demo/ai-assistant',
         title: 'AI Assistant Demo',
         description: 'Primary AI assistant with Ollama integration'
       },
@@ -226,19 +222,18 @@ export class EnhancedSearchService {
         title: 'Component Gallery',
         description: `Comprehensive UI component showcase` },'`'`
       { path: '/yorha', title: 'YoRHa Interface', description: `Main YoRHa command center` },
-      { path: '/yorha/dashboard', title: 'YoRHa Dashboard', description: `Real-time system monitoring` }
+      { path: '/yorha/dashboard', title: 'YoRHa Dashboard', description: `Real-time system monitoring` } }
     ];
-    this.searchIndex.demos = demoRoutes.map(demo => ({
-     , id: demo.path,
+    this.searchIndex.demos = demoRoutes.map(demo => ({ id: demo.path,
       title: demo.title,
       description: demo.description,
-      content: `${demo.title} ${demo.description}`,
+      content: `${demo.title} }${demo.description}`,
       category: 'demo' as SearchCategory,
       tags: ['demo', 'interface', 'ui'],
       path: demo.path,
-      metadata: {, type: `demo` }
+      metadata: { type: `demo` } }
     }));
-  }
+  } }
   private parseComponentsFromAppdir(content: string): SearchableItem[] {
     const components: SearchableItem[] = [];
     const lines = content.split('\n');
@@ -250,13 +245,13 @@ export class EnhancedSearchService {
         components.push({
           id: fileName,
           title: fileName.replace('.svelte', ''),
-          description: description || `Svelte;, component: ${fileName}`,
-          content: `${fileName} ${description}`,
+          description: description || `Svelte; component: ${fileName}`,
+          content: `${fileName} }${description}`,
           category: 'component',
           tags: ['svelte', 'component', 'ui'],
-          metadata: {, type: 'component', file: fileName }
+          metadata: { type: 'component', file: fileName } }
         });
-      }
+      } }
       // Parse service references
       const serviceMatch = line.match(/([A-Z][a-zA-Z\s]+):\s*([^(]+)\(/);
       if (serviceMatch) {
@@ -265,15 +260,15 @@ export class EnhancedSearchService {
           id: serviceName.toLowerCase().replace(/\s+/g, '-'),
           title: serviceName,
           description: description.trim(),
-          content: `${serviceName} ${description}`,
+          content: `${serviceName} }${description}`,
           category: 'service',
           tags: ['service', serviceName.toLowerCase().replace(/\s+/g, '-')],
-          metadata: {, type: 'service' }
+          metadata: { type: 'service' } }
         });
-      }
-    }
+      } }
+    } }
     return components;
-  }
+  } }
   // ===== SEARCH OPERATIONS =====
   private rebuildIndex() {
     const allItems = [
@@ -284,18 +279,18 @@ export class EnhancedSearchService {
       ...this.searchIndex.demos,
     ];
     this.fuse = new Fuse(allItems, this.fuseOptions);
-  }
+  } }
   async search(query: string, options: FuzzySearchOptions = {}): Promise<SearchResult[]> {
     if (!this.fuse || !query.trim()) {
       return [];
-    }
+    } }
 
     let results = this.fuse.search(query);
 
     // Filter by category if specified
     if (options.category) {
       results = results.filter(result => result.item.category === options.category);
-    }
+    } }
 
     const limitedResults = results.slice(0, options.limit || 20);
 
@@ -314,7 +309,7 @@ export class EnhancedSearchService {
       metadata: result.item.metadata,
       tags: result.item.tags
     }));
-  }
+  } }
   async searchByCategory(category: SearchCategory, query?: string): Promise<SearchResult[]> {
     const categoryItems = this.getItemsByCategory(category);
     if (!query) {
@@ -329,7 +324,7 @@ export class EnhancedSearchService {
         metadata: item.metadata,
         tags: item.tags
       }));
-    }
+    } }
     const categoryFuse = new Fuse(categoryItems, this.fuseOptions);
     const results = categoryFuse.search(query);
     return results.map((result: FuseResult<SearchableItem>) => ({
@@ -347,7 +342,7 @@ export class EnhancedSearchService {
       metadata: result.item.metadata,
       tags: result.item.tags
     }));
-  }
+  } }
   private getItemsByCategory(category: SearchCategory): SearchableItem[] {
     switch (category) {
       case, 'component':
@@ -361,8 +356,8 @@ export class EnhancedSearchService {
       case, 'demo':
         return this.searchIndex.demos;
       default: return [];
-    }
-  }
+    } }
+  } }
   // ===== SPECIALIZED SEARCH METHODS =====
   async searchGoServices(query: string): Promise<SearchResult[]> {
     const runningServices = this.searchIndex.goBinaries.filter(item => item.status === 'running');
@@ -378,7 +373,7 @@ export class EnhancedSearchService {
         metadata: item.metadata,
         tags: item.tags
       }));
-    }
+    } }
     const serviceFuse = new Fuse(runningServices, this.fuseOptions);
     const results = serviceFuse.search(query);
     return results.map((result: FuseResult<SearchableItem>) => ({
@@ -395,7 +390,7 @@ export class EnhancedSearchService {
       metadata: result.item.metadata,
       tags: result.item.tags
     }));
-  }
+  } }
   async searchByPort(port: number): Promise<SearchResult[]> {
     const portResults = this.searchIndex.goBinaries.filter(item => item.port === port);
     return portResults.map(item => ({
@@ -409,7 +404,7 @@ export class EnhancedSearchService {
       metadata: item.metadata,
       tags: item.tags
     }));
-  }
+  } }
   async searchByTag(tag: string): Promise<SearchResult[]> {
     const tagResults = Object.values(this.searchIndex)
       .flat()
@@ -425,25 +420,25 @@ export class EnhancedSearchService {
       metadata: item.metadata,
       tags: item.tags
     }));
-  }
+  } }
   // ===== DATA REFRESH =====
   async refreshIndex() {
     await this.loadSearchData();
     this.rebuildIndex();
-  }
+  } }
   // ===== UTILITIES =====
   getAvailableCategories(): SearchCategory[] {
     return ['component', 'service', 'documentation', 'api', 'demo'];
-  }
+  } }
   getAvailableTags(): string[] {
     const allTags = Object.values(this.searchIndex)
       .flat()
       .flatMap(item => item.tags || []);
     return [...new Set(allTags)].sort();
-  }
+  } }
   getRunningServices(): SearchableItem[] {
     return this.searchIndex.goBinaries.filter(item => item.status === 'running');
-  }
+  } }
   getServicesByPort(): Map<number, SearchableItem[]> {
     const portMap = new Map<number, SearchableItem[]>();
     this.searchIndex.goBinaries
@@ -452,27 +447,28 @@ export class EnhancedSearchService {
         const port = item.port!;
         if (!portMap.has(port)) {
           portMap.set(port, []);
-        }
+        } }
         portMap.get(port)!.push(item);
       });
     return portMap;
-  }
-}
+  } }
+} }
 // ===== SINGLETON INSTANCE =====
 export const searchService = new EnhancedSearchService();
 // ===== CONVENIENCE FUNCTIONS =====
 export async function globalSearch(query: string, options?: FuzzySearchOptions): Promise<SearchResult[]> {
   return searchService.search(query, options);
-}
+} }
 export async function searchServices(query?: string): Promise<SearchResult[]> {
   return searchService.searchGoServices(query || '');
-}
+} }
 export async function searchComponents(query?: string): Promise<SearchResult[]> {
   return searchService.searchByCategory('component', query);
-}
+} }
 export async function searchDocumentation(query?: string): Promise<SearchResult[]> {
   return searchService.searchByCategory('documentation', query);
-}
+} }
 export async function searchDemos(query?: string): Promise<SearchResult[]> {
   return searchService.searchByCategory('demo', query);
-}
+} }
+

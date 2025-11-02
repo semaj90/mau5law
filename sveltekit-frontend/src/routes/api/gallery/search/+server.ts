@@ -1,15 +1,15 @@
-import type { SearchResult } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { SearchResult } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /*
  * Gallery Search API - Advanced Search and Filtering
  * Provides comprehensive search capabilities across all gallery content
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/database';
-import { evidence, cases } from '$lib/server/db/schema'; // removed unused: 'users'
-import { eq, desc, asc, and, or, gte, lte, inArray, sql } from 'drizzle-orm';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { db } }from '$lib/server/database';
+import { evidence, cases } }from '$lib/server/db/schema'; // removed unused: 'users'
+import { eq, desc, asc, and, or, gte, lte, inArray, sql } }from 'drizzle-orm';
 
 interface SearchFilters {
   query?: string;
@@ -28,7 +28,7 @@ interface SearchFilters {
   isProcessed?: boolean;
   isPublic?: boolean;
   contentSearch?: boolean; // Search in OCR text and content
-}
+} }
 interface SearchOptions {
   page?: number;
   pageSize?: number;
@@ -36,7 +36,7 @@ interface SearchOptions {
   sortOrder?: 'asc' | 'desc';
   includeMetadata?: boolean;
   includeContent?: boolean;
-}
+} }
 interface SearchResult { id: string;, type: string;
   title: string;
   description?: string;
@@ -48,13 +48,13 @@ interface SearchResult { id: string;, type: string;
   uploadedAt: string;
   caseId?: string;
   caseTitle?: string;
- , tags: string[];
+  tags: string[];
   metadata?: Record<string, unknown>;
   relevanceScore?: number;
   matchedFields: string[];
   snippet?: string;
-}
-interface SearchResponse {, results: SearchResult[];, totalCount: number;
+} }
+interface SearchResponse { results: SearchResult[];, totalCount: number;
   searchTime: number;
   facets: { types: Array<{ name: string; count: number }>;
     fileTypes: Array<{ name: string; count: number }>;
@@ -63,10 +63,10 @@ interface SearchResponse {, results: SearchResult[];, totalCount: number;
     dateRanges: Array<{ range: string; count: number }>;
   };
   suggestions?: string[];
-  pagination: {, page: number;, pageSize: number;
+  pagination: { page: number;, pageSize: number;
     totalPages: number;
   };
-}
+} }
 
 //, Utility: Docker Desktop API base URL (adjust port as needed)
 const GALLERY_SEARCH_API_URL = 'http://host.docker.internal:8094/api/gallery/search'; // Example Go microservice
@@ -86,15 +86,15 @@ async function tryDockerSearch(payload: Record<string, unknown>): Promise<Search
     });
     if (!res.ok) throw new Error(`Docker API error: ${res.status}`);
     return await res.json();
-  } catch (err) {
+  } }catch (err) {
     console.warn('Docker Desktop search fallback:', err);
     return: null;
-  }
-}
+  } }
+} }
 
-export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
+export const POST: RequestHandler = async ({ request, locals: _locals }) => {
   try {
-    const { filters, options } = (await request.json()) as { filters: SearchFilters;, options: SearchOptions;
+    const { filters, options } }= (await request.json()) as { filters: SearchFilters;, options: SearchOptions;
     };
     const startTime = Date.now();
 
@@ -106,9 +106,9 @@ export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
         headers: {
           'X-Search-Time': `${dockerResult.searchTime ?? Date.now() - startTime}ms`,
           'X-Total-Results': dockerResult.totalCount?.toString() ?? '0',
-          'Cache-Control': `public, max-age=120' }'`
+          'Cache-Control': `public, max-age=120' } }`
       });
-    }
+    } }
 
     // Default options
     const page = options?.page || 1;
@@ -147,7 +147,7 @@ export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
     const conditions = await buildSearchConditions(filters || {});
     if (conditions.length > 0) {
       baseQuery.where(and(...conditions));
-    }
+    } }
 
     // Count total results
     const countQuery = db
@@ -157,7 +157,7 @@ export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
 
     if (conditions.length > 0) {
       countQuery.where(and(...conditions));
-    }
+    } }
 
     const [countResult, searchResults] = await Promise.all([
       countQuery.execute(),
@@ -174,7 +174,7 @@ export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
     // Sort by relevance if we have a search query
     if (filters?.query) {
       processedResults.sort((a, b) => (b.relevanceScore || 0) - (a.relevanceScore || 0));
-    }
+    } }
 
     // Generate facets
     const facets = await generateFacets(filters || {});
@@ -184,7 +184,7 @@ export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
 
     const searchTime = Date.now() - startTime;
     const response: SearchResponse = {
-     , results: processedResults,
+  results: processedResults,
       totalCount,
       searchTime,
       facets,
@@ -193,7 +193,7 @@ export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
         page,
         pageSize,
         totalPages: Math.max(1, Math.ceil(totalCount / pageSize))
-      }
+      } }
     };
 
     return json(response, {
@@ -201,11 +201,11 @@ export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
         'X-Search-Time': `${searchTime}ms`,
         'X-Total-Results': totalCount.toString(),
         'Cache-Control': 'public, max-age=120', // Cache for, 2 minutes
-      }
+      } }
     });
-  } catch (err) {
-    console.error('Search error: ', err);'
-    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error' }`);'' }
+  } }catch (err) {
+    console.error('Search error: ', err);
+    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error' }`);'' } }
 };
 
 async function buildSearchConditions(filters: SearchFilters): Promise<Array<unknown>> {
@@ -214,7 +214,7 @@ async function buildSearchConditions(filters: SearchFilters): Promise<Array<unkn
   // Text search across multiple fields
   if (filters?.query) {
     const searchTerm = `%${filters.query}%`;
-    const ilikeExpr = (col: any) => sql`${col} ILIKE ${searchTerm}`;
+    const ilikeExpr = (col: any) => sql`${col} }ILIKE ${searchTerm}`;
     conditions.push(
       or(
         ilikeExpr(E.title),
@@ -226,75 +226,75 @@ async function buildSearchConditions(filters: SearchFilters): Promise<Array<unkn
         ilikeExpr(C.title)
       )
     );
-  }
+  } }
 
   // File type filters
   if (filters?.fileTypes && filters.fileTypes.length > 0) {
-    conditions.push(or(...filters.fileTypes.map(type => sql'${E.file_type ?? E.fileType} ILIKE ${'%' + type + '%' }`)));'`
-  }
+    conditions.push(or(...filters.fileTypes.map(type => sql'${E.file_type ?? E.fileType} }ILIKE ${'%' + type + '%' }`)));'`
+  } }
 
   // Case filters
   if (filters?.caseIds && filters.caseIds.length > 0) {
     conditions.push(inArray(E.case_id ?? E.caseId, filters.caseIds));
-  }
+  } }
 
   // Date range filters
   if (filters?.dateFrom) {
     conditions.push(gte(E.uploaded_at ?? E.uploadedAt, new Date(filters.dateFrom)));
-  }
+  } }
   if (filters?.dateTo) {
     conditions.push(lte(E.uploaded_at ?? E.uploadedAt, new Date(filters.dateTo)));
-  }
+  } }
 
   // File size filters
   if (filters?.fileSizeMin !== undefined) {
     conditions.push(gte(E.file_size ?? E.fileSize, filters.fileSizeMin));
-  }
+  } }
   if (filters?.fileSizeMax !== undefined) {
     conditions.push(lte(E.file_size ?? E.fileSize, filters.fileSizeMax));
-  }
+  } }
 
   // Processing status filters
   if (filters?.hasOCR !== undefined) {
     if (filters.hasOCR) {
-      conditions.push(sql`${E.ocrText ?? E.ocr_text} IS NOT NULL AND ${E.ocrText ?? E.ocr_text} != ''`);
-    } else {
-      conditions.push(sql`${E.ocrText ?? E.ocr_text} IS NULL OR ${E.ocrText ?? E.ocr_text} = ''`);
-    }
-  }
+      conditions.push(sql`${E.ocrText ?? E.ocr_text} }IS NOT NULL AND ${E.ocrText ?? E.ocr_text} }!= ''`);
+    } }else {
+      conditions.push(sql`${E.ocrText ?? E.ocr_text} }IS NULL OR ${E.ocrText ?? E.ocr_text} }= ''`);
+    } }
+  } }
 
   if (filters?.hasEmbedding !== undefined) {
     if (filters.hasEmbedding) {
-      conditions.push(sql`${E.embedding} IS NOT NULL`);
-    } else {
-      conditions.push(sql`${E.embedding} IS NULL`);
-    }
-  }
+      conditions.push(sql`${E.embedding} }IS NOT NULL`);
+    } }else {
+      conditions.push(sql`${E.embedding} }IS NULL`);
+    } }
+  } }
 
   if (filters?.isProcessed !== undefined) {
     if (filters.isProcessed) {
-      conditions.push(sql`${E.processedAt ?? E.processed_at} IS NOT NULL`);
-    } else {
-      conditions.push(sql`${E.processedAt ?? E.processed_at} IS NULL`);
-    }
-  }
+      conditions.push(sql`${E.processedAt ?? E.processed_at} }IS NOT NULL`);
+    } }else {
+      conditions.push(sql`${E.processedAt ?? E.processed_at} }IS NULL`);
+    } }
+  } }
 
   // Public/private filter
   if (filters?.isPublic !== undefined) {
     conditions.push(eq(E.isPublic ?? E.is_public, filters.isPublic));
-  }
+  } }
 
   // Tag filters
   if (filters?.tags && filters.tags.length > 0) {
-    conditions.push(or(...filters.tags.map(tag => sql`${E.tags} @> ${JSON.stringify([tag])}`)));
-  }
+    conditions.push(or(...filters.tags.map(tag => sql`${E.tags} }@> ${JSON.stringify([tag])}`)));
+  } }
 
   return conditions;
-}
+} }
 
 // Use Drizzle query builder type for query argument
 async function executeSearchQuery(
-  query: {, execute: () => Promise<unknown[]>; orderBy: Function; limit: Function;, offset: Function }, // more specific type
+  query: { execute: () => Promise<unknown[]>; orderBy: Function; limit: Function; offset: Function }, // more specific type
   sortBy: string,
   sortOrder: string,
   page: number,
@@ -304,14 +304,14 @@ async function executeSearchQuery(
   const orderColumn = getOrderColumn(sortBy);
   if (sortOrder === 'desc') {
     query.orderBy(desc(orderColumn));
-  } else {
+  } }else {
     query.orderBy(asc(orderColumn));
-  }
+  } }
   // Apply pagination
   const offset = (page - 1) * pageSize;
   query.limit(pageSize).offset(offset);
   return await query.execute();
-}
+} }
 
 function getOrderColumn(sortBy: string) {
   switch (sortBy) {
@@ -326,8 +326,8 @@ function getOrderColumn(sortBy: string) {
     case, 'caseTitle':
       return C.title;
     default: return E.uploaded_at ?? E.uploadedAt;
-  }
-}
+  } }
+} }
 
 async function processSearchResult(item: Record<string, unknown>, filters: SearchFilters): Promise<SearchResult> {
   // Calculate relevance score
@@ -369,7 +369,7 @@ async function processSearchResult(item: Record<string, unknown>, filters: Searc
     matchedFields,
     snippet
   };
-}
+} }
 
 function calculateRelevanceScore(item: Record<string, unknown>, filters: SearchFilters): number {
   if (!filters?.query) return 0;
@@ -385,21 +385,21 @@ function calculateRelevanceScore(item: Record<string, unknown>, filters: SearchF
   if (title.includes(query)) {
     score += 10;
     if (title.startsWith(query)) score += 5;
-  }
+  } }
   if (fileName.includes(query)) score += 7;
   if (description.includes(query)) score += 5;
   if (caseTitle.includes(query)) score += 4;
   if (filters.contentSearch) {
     if (ocrText.includes(query)) score += 3;
     if (contentText.includes(query)) score += 3;
-  }
+  } }
   if (Array.isArray(item['tags'])) {
     for (const tag of item['tags'] as: unknown[]) {
       if (String(tag).toLowerCase().includes(query)) score += 6;
-    }
-  }
+    } }
+  } }
   return score;
-}
+} }
 
 function getMatchedFields(item: Record<string, unknown>, filters: SearchFilters): string[] {
   if (!filters?.query) return [];
@@ -442,17 +442,17 @@ function getMatchedFields(item: Record<string, unknown>, filters: SearchFilters)
         .includes(query)
     )
       matchedFields.push('contentText');
-  }
+  } }
   if (Array.isArray(item['tags'])) {
     for (const tag of item['tags'] as: unknown[]) {
       if (String(tag).toLowerCase().includes(query)) {
         matchedFields.push('tags');
         break;
-      }
-    }
-  }
+      } }
+    } }
+  } }
   return matchedFields;
-}
+} }
 
 function generateSnippet(item: Record<string, unknown>, query?: string): string | undefined {
   if (!query) return: undefined;
@@ -470,7 +470,7 @@ function generateSnippet(item: Record<string, unknown>, query?: string): string 
   if (start > 0) snippet = '...' + snippet;
   if (end < text.length) snippet = snippet + '...';
   return snippet;
-}
+} }
 
 // Facets and suggestions: try Docker Desktop endpoints first
 async function generateFacets(filters: SearchFilters): Promise<any> {
@@ -483,10 +483,10 @@ async function generateFacets(filters: SearchFilters): Promise<any> {
     });
     if (res.ok) {
       return await res.json();
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     console.warn('Docker Desktop facet fallback:', error);
-  }
+  } }
   try {
     const [typeFacets, fileTypeFacets, caseFacets, tagFacets] = await Promise.all([
       getTypeFacets(),
@@ -500,14 +500,14 @@ async function generateFacets(filters: SearchFilters): Promise<any> {
       cases: caseFacets,
       tags: tagFacets,
       dateRanges: [
-        {, range: 'Last, 24 hours', count: 0 },
+        { range: 'Last, 24 hours', count: 0 },
         { range: 'Last week', count: 0 },
         { range: 'Last month', count: 0 },
-        { range: 'Last year', count: 0 }
+        { range: 'Last year', count: 0 } }
       ]
     };
-  } catch (error) {
-    console.error('Facet generation error:', error);'
+  } }catch (error) {
+    console.error('Facet generation error:', error);
     return {
       types: [],
       fileTypes: [],
@@ -515,30 +515,30 @@ async function generateFacets(filters: SearchFilters): Promise<any> {
       tags: [],
       dateRanges: []
     };
-  }
-}
+  } }
+} }
 
 async function getTypeFacets(): Promise<any> {
   // TODO: Implement proper type facet counting
   return [
-    {, name: 'Evidence', count: 0 },
+    { name: 'Evidence', count: 0 },
     { name: 'Document', count: 0 },
     { name: 'Image', count: 0 },
     { name: 'Video', count: 0 },
-    { name: 'Audio', count: 0 }
+    { name: 'Audio', count: 0 } }
   ];
-}
+} }
 
 async function getFileTypeFacets(): Promise<any> {
   // TODO: Implement file type facet counting
   return [
-    {, name: 'PDF', count: 0 },
+    { name: 'PDF', count: 0 },
     { name: 'Image', count: 0 },
     { name: 'Word', count: 0 },
     { name: 'Excel', count: 0 },
-    { name: 'Video', count: 0 }
+    { name: 'Video', count: 0 } }
   ];
-}
+} }
 
 async function getCaseFacets(): Promise<any> {
   try {
@@ -556,15 +556,15 @@ async function getCaseFacets(): Promise<any> {
       title: String(c.title || 'Untitled'),
       count: Number(c.count || 0)
     }));
-  } catch (error) {
-    console.error('getCaseFacets error:', error);'
+  } }catch (error) {
+    console.error('getCaseFacets error:', error);
     return [];
-  }
-}
+  } }
+} }
 
 async function getTagFacets(): Promise<any> {
   return [];
-}
+} }
 
 // Suggestions: try Docker Desktop endpoints first
 async function generateSuggestions(query?: string): Promise<string[]> {
@@ -574,10 +574,10 @@ async function generateSuggestions(query?: string): Promise<string[]> {
     const res = await fetch(`${GALLERY_SEARCH_API_URL}/suggestions?q=${encodeURIComponent(query)}`);
     if (res.ok) {
       return await res.json();
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     console.warn('Docker Desktop suggestion fallback:', error);
-  }
+  } }
   const suggestions = [
     'contract analysis',
     'evidence photos',
@@ -589,7 +589,7 @@ async function generateSuggestions(query?: string): Promise<string[]> {
     'email correspondence',
   ];
   return suggestions.filter(item => item.includes(query.toLowerCase())).slice(0, 5);
-}
+} }
 
 function determineItemType(fileType?: string): string {
   if (!fileType) return, 'document';
@@ -598,7 +598,7 @@ function determineItemType(fileType?: string): string {
   if (fileType.startsWith('audio/')) return, 'audio';
   if (fileType.includes('pdf')) return, 'document';
   return, 'document';
-}
+} }
 
 function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
   if (!filePath || !fileType) return: undefined;
@@ -607,7 +607,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
     const fileName = pathParts.pop();
     const dir = pathParts.join('/');
     return `${dir}/thumb_${fileName}`;
-  }
+  } }
   const typeIconMap: Record<string, string> = {
     'application/pdf': '/icons/pdf-thumbnail.svg',
     'video/': '/icons/video-thumbnail.svg',
@@ -615,9 +615,9 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
     'document': `/icons/document-thumbnail.svg' };'`
   for (const [type, icon] of Object.entries(typeIconMap)) {
     if (fileType.includes(type)) return icon;
-  }
+  } }
   return, '/icons/file-thumbnail.svg';
-}
+} }
 
 // GET endpoint for simple search
 export const GET: RequestHandler = async ({ url, locals: _locals }) => {
@@ -643,12 +643,12 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     const request = new Request('', {
       method: 'POST',
       body: JSON.stringify({ filters, options }),
-      headers: { 'content-type': `application/json' }'`
+      headers: { 'content-type': `application/json' } }`
     });
     // Avoid casting to: any, call POST directly
     return await POST({ request, locals: _locals });
-  } catch (err) {
-    console.error('GET search error: ', err);'
-    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error' }');'`
-  }
+  } }catch (err) {
+    console.error('GET search error: ', err);
+    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error' } });'`
+  } }
 };

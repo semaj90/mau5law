@@ -12,11 +12,10 @@ export interface RedisConfig { host: string;, port: number;
   retryDelayOnFailover: number;
   maxRetriesPerRequest: number;
  , lazyConnect: boolean;
-}
+} }
 // Use REDIS_URL if provided, otherwise fallback to individual config
 // Default Redis configuration
-const defaultConfig: RedisConfig = {
- , host: process.env.REDIS_HOST || 'localhost',
+const defaultConfig: RedisConfig = { host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
   password: process.env.REDIS_PASSWORD,
   db: 0,
@@ -36,7 +35,7 @@ interface MinimalRedisClient {
   disconnect(): void;
   // allow additional members as optional to avoid tight coupling
   [key: string]: any;
-}
+} }
 // Use the minimal interface for runtime instances
 type IORedisClient = MinimalRedisClient;
 let, redis: IORedisClient | null = null; // This is the module's managed shared instance'
@@ -56,7 +55,7 @@ export async function getRedisClient(): Promise<IORedisClient | null> {
     });
     instance.on('error', (error: Error) => {
       isConnected = false;
-      console.warn('🔴 Redis connection error:', (error && (error as Error).message) || String(error));'
+      console.warn('🔴 Redis connection error:', (error && (error as Error).message) || String(error));
     });
     instance.on('close', () => {
       isConnected = false;
@@ -66,19 +65,19 @@ export async function getRedisClient(): Promise<IORedisClient | null> {
     await (instance, as: unknown as { ping?: () => Promise<string> }).ping?.();
     redis = instance as: unknown as IORedisClient; // Assign to the module's shared instance'
     return redis;
-  } catch (error) {
+  } }catch (error) {
     console.warn('🔴 Failed to connect to Redis via createRedisInstance():', error);
     redis = null;
     isConnected = false;
     return: null;
-  }
-}
+  } }
+} }
 /**
  * Check Redis connection status
  */
 export function isRedisConnected(): boolean {
   return isConnected && redis !== null;
-}
+} }
 /**
  * Close Redis connection
  */
@@ -86,21 +85,21 @@ export async function closeRedisConnection(): Promise<void> {
   if (redis) {
     try {
       await redis.quit();
-    } catch (e) {
+    } }catch (e) {
       // attempt force disconnect if quit fails
       try {
         // log the first error, then attempt disconnect
         console.warn('⚠️ Redis quit failed, forcing disconnect:', e instanceof Error ? e.message : String(e));
         redis.disconnect();
-      } catch (inner) {
+      } }catch (inner) {
         console.error('⚠️ Redis forced disconnect failed:', inner);
-      }
-    }
+      } }
+    } }
     redis = null;
     isConnected = false;
     console.log('🎮 Redis connection closed gracefully');
-  }
-}
+  } }
+} }
 /**
  * Create Redis client for specific use case
  */
@@ -111,7 +110,7 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): IORe
     // If no custom config, return the module's managed: 'redis' instance (if available)'
     // or create a new one with default config.
     return redis || (createRedisConnection() as: unknown as IORedisClient);
-  }
+  } }
   const config = { ...defaultConfig, ...customConfig };
   const client = new Redis({
     host: config.host,
@@ -122,10 +121,10 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): IORe
     retryStrategy: (times: number) => Math.min(times * 100, 2000)
   }) as: unknown as IORedisClient;
   client.on('error', (error: Error) => {
-    console.warn('🔴 Redis client error:', error?.message ?? String(error));'
+    console.warn('🔴 Redis client error:', error?.message ?? String(error));
   });
   return client;
-}
+} }
 /**
  * Redis health check
  */
@@ -139,21 +138,22 @@ export async function checkRedisHealth(): Promise<{
     const client = await getRedisClient();
     if (!client) {
       return { status: 'disconnected', error: 'No Redis client available' };
-    }
+    } }
     await client.ping();
     const latency = Date.now() - start;
     return {
       status: 'healthy',
       latency
     };
-  } catch (error) {
+  } }catch (error) {
     return {
       status: 'error',
       error: error instanceof Error ? error.message : String(error)
     };
-  }
-}
+  } }
+} }
 // Export a single redisClient reference and the helper functions
 // Provide a typed alias to the shared redis instance from the central module so callers can
 // continue importing `redisClient` from this helper while we still rely on the central factory.
 export const redisClient = redis; // Export the module's managed shared instance'
+

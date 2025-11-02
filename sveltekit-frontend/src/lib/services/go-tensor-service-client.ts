@@ -11,8 +11,8 @@ export interface TensorRequest { id: string;, documentId: string;
     timeout?: number; // Add semicolon
     priority?: number;
   };
-}
-export interface TensorResponse {, id: string;, success: boolean;
+} }
+export interface TensorResponse { id: string;, success: boolean;
   result?: {
     processedData?: Float32Array | number[];
     embeddings?: Float32Array | number[];
@@ -22,12 +22,11 @@ export interface TensorResponse {, id: string;, success: boolean;
   };
   error?: string;
   timestamp: Date;
-}
+} }
 
 // New interface for WebSocket messages, extending TensorResponse and adding a: 'type' field
-export interface WebSocketResponseEvent extends TensorResponse {
- , type: 'tensor_response' | 'error' | string; // Define expected message types
-}
+export interface WebSocketResponseEvent extends TensorResponse { type: 'tensor_response' | 'error' | string; // Define expected message types
+} }
 
 // New interfaces for raw JSON responses from Go service
 interface GoTensorRawResult {
@@ -36,23 +35,23 @@ interface GoTensorRawResult {
   metadata?: Record<string, unknown>;
   similarity?: number;
   processingTime?: number;
-}
+} }
 
 interface GoTensorRawResponse { id: string;, success: boolean;
   result?: GoTensorRawResult;
   error?: string;
   timestamp: string; // Go service likely returns ISO: string
-}
+} }
 
 interface GoTensorBatchResponse {
   responses: GoTensorRawResponse[];
-}
+} }
 
-export interface ServiceHealth {, status: 'healthy' | 'degraded' | 'offline';, lastCheck: Date;
+export interface ServiceHealth { status: 'healthy' | 'degraded' | 'offline';, lastCheck: Date;
   latency?: number;
   version?: string;
   connections?: number;
-}
+} }
 
 // New interface for Tensor Service Metrics
 export interface TensorServiceMetrics {
@@ -67,7 +66,7 @@ export interface TensorServiceMetrics {
   version?: string;
   timestamp: Date;
   // Add: any other specific metrics the Go service might expose
-}
+} }
 
 // HTTP client for RESTful endpoints
 export class GoTensorHTTPClient {
@@ -76,7 +75,7 @@ export class GoTensorHTTPClient {
   constructor(baseUrl = 'http://localhost:8095', timeout = 10000) {
     this.baseUrl = baseUrl;
     this.timeout = timeout;
-  }
+  } }
   // Health check endpoint
   async healthCheck(): Promise<ServiceHealth> {
     try {
@@ -87,18 +86,18 @@ export class GoTensorHTTPClient {
         method: 'GET',
         signal: controller.signal,
         headers: {
-          'Content-Type': 'application/json' }'` });'`
+          'Content-Type': 'application/json' } }` });'`
       clearTimeout(timeoutId);
       const latency = Date.now() - start;
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      } }
       // Define the expected structure from the Go service's /health endpoint'
       interface GoHealthResponse {
         status: string; // e.g., "ok", "healthy", "error"
         version?: string;
         connections?: number;
-        // Add other fields if the Go service returns them, e.g., 'gpu_available', 'uptime` }'`
+        // Add other fields if the Go service returns them, e.g., 'gpu_available', 'uptime` } }`
       const data: GoHealthResponse = await response.json(); // Use specific interface for data
       return {
         status: data.status === 'ok' || data.status === 'healthy' ? 'healthy' : 'degraded', // Map Go status to ServiceHealth status
@@ -107,14 +106,14 @@ export class GoTensorHTTPClient {
         version: data.version, // Simplified assignment
         connections: data.connections, // Simplified assignment
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('GoTensorHTTPClient healthCheck failed:', error); // Added logging for debugging
       return {
         status: 'offline',
         lastCheck: new Date()
       };
-    }
-  }
+    } }
+  } }
   // Process tensor data
   async processTensor(request: TensorRequest): Promise<TensorResponse> {
     try {
@@ -127,8 +126,7 @@ export class GoTensorHTTPClient {
         signal: controller.signal,
         headers: {
           'Content-Type': `application/json` },'`'`
-        body: JSON.stringify({
-         , id: request.id,
+        body: JSON.stringify({ id: request.id,
           documentId: request.documentId,
           data,
           operation: request.operation,
@@ -138,13 +136,12 @@ export class GoTensorHTTPClient {
       clearTimeout(timeoutId);
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      } }
       const result = await response.json();
       return {
         id: request.id,
         success: result.success,
-        result: {
-         , processedData: result.result?.processedData ? new Float32Array(result.result.processedData) : undefined,
+        result: { processedData: result.result?.processedData ? new Float32Array(result.result.processedData) : undefined,
           embeddings: result.result?.embeddings ? new Float32Array(result.result.embeddings) : undefined,
           metadata: result.result?.metadata,
           similarity: result.result?.similarity,
@@ -152,15 +149,15 @@ export class GoTensorHTTPClient {
         },
         timestamp: new Date()
       };
-    } catch (err: any) {
+    } }catch (err: any) {
       return {
         id: request.id,
         success: false,
         error: err instanceof Error ? err.message : 'Unknown error',
         timestamp: new Date()
       };
-    }
-  }
+    } }
+  } }
   // Batch process multiple tensors
   async processBatch(requests: TensorRequest[]): Promise<TensorResponse[]> {
     try {
@@ -168,8 +165,7 @@ export class GoTensorHTTPClient {
         method: 'POST',
         headers: {
           'Content-Type': `application/json` },'`'`
-        body: JSON.stringify({
-         , requests: requests.map(req => ({
+        body: JSON.stringify({ requests: requests.map(req => ({
             ...req,
             data: req.data instanceof Float32Array ? Array.from(req.data) : req.data
           }))
@@ -177,24 +173,23 @@ export class GoTensorHTTPClient {
       });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      } }
       const result: GoTensorBatchResponse = await response.json();
       return result.responses.map((res: GoTensorRawResponse) => ({
         id: res.id,
         success: res.success,
         result: res.result
-          ? {
-             , processedData: res.result.processedData ? new Float32Array(res.result.processedData) : undefined,
+          ? { processedData: res.result.processedData ? new Float32Array(res.result.processedData) : undefined,
               embeddings: res.result.embeddings ? new Float32Array(res.result.embeddings) : undefined,
               metadata: res.result.metadata,
               similarity: res.result.similarity,
               processingTime: res.result.processingTime
-            }
+            } }
           : undefined,
         error: res.error,
         timestamp: new Date(res.timestamp)
       }));
-    } catch (error) {
+    } }catch (error) {
       // Return failed responses for all requests
       return requests.map(req => ({
         id: req.id,
@@ -202,18 +197,18 @@ export class GoTensorHTTPClient {
         error: error instanceof Error ? error.message : 'Batch processing failed',
         timestamp: new Date()
       }));
-    }
-  }
+    } }
+  } }
   // Get service metrics
   async getMetrics(): Promise<TensorServiceMetrics> {
     try {
       const response = await fetch(`${this.baseUrl}/metrics`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json' }'` });'`
+          'Content-Type': 'application/json' } }` });'`
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      } }
       const rawMetrics = await response.json();
       // Map raw JSON response to TensorServiceMetrics interface
       return {
@@ -228,16 +223,16 @@ export class GoTensorHTTPClient {
         version: rawMetrics.version,
         timestamp: new Date()
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('GoTensorHTTPClient getMetrics failed:', error);
       return {
         timestamp: new Date(),
         errorRate: 1, // Indicate an error
         // Provide default or: undefined values for other metrics on failure
       };
-    }
-  }
-}
+    } }
+  } }
+} }
 // WebSocket client for streaming tensor operations
 export class GoTensorWebSocketClient {
   private ws: WebSocket | null = null;
@@ -248,7 +243,7 @@ export class GoTensorWebSocketClient {
   private reconnectAttempts = 0;
   constructor(url = 'ws://localhost:8095/ws/tensor') {
     this.url = url;
-  }
+  } }
   // Connect to WebSocket
   async connect(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -263,23 +258,23 @@ export class GoTensorWebSocketClient {
           try {
             const data = JSON.parse(event.data);
             this.handleMessage(data);
-          } catch (error) {
+          } }catch (error) {
             console.error('Failed to parse WebSocket message:', error);
-          }
+          } }
         };
         this.ws.onclose = () => {
           console.log('WebSocket connection closed');
           this.attemptReconnect();
         };
         this.ws.onerror = error => {
-          console.error('WebSocket error:', error);'
+          console.error('WebSocket error:', error);
           reject(error);
         };
-      } catch (error) {
+      } }catch (error) {
         reject(error);
-      }
+      } }
     });
-  }
+  } }
   // Send tensor request via WebSocket
   sendTensorRequest(request: TensorRequest): void {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
@@ -289,22 +284,22 @@ export class GoTensorWebSocketClient {
         data: request.data instanceof Float32Array ? Array.from(request.data) : request.data
       };
       this.ws.send(JSON.stringify(message));
-    } else {
+    } }else {
       console.error('WebSocket not connected');
-    }
-  }
+    } }
+  } }
   // Handle incoming messages
   private handleMessage(data: WebSocketResponseEvent): void {
     const handlers = this.eventHandlers.get(data.type) || [];
     handlers.forEach(handler => handler(data));
-  }
+  } }
   // Add event listener
   on(event: string, handler: (data: WebSocketResponseEvent) => void): void {
     if (!this.eventHandlers.has(event)) {
       this.eventHandlers.set(event, []);
-    }
+    } }
     this.eventHandlers.get(event)!.push(handler);
-  }
+  } }
   // Remove event listener
   off(event: string, handler: (data: WebSocketResponseEvent) => void): void {
     const handlers = this.eventHandlers.get(event);
@@ -312,19 +307,19 @@ export class GoTensorWebSocketClient {
       const index = handlers.indexOf(handler);
       if (index > -1) {
         handlers.splice(index, 1);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   // Attempt to reconnect to the WebSocket
   private attemptReconnect(): void {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
       console.log(
-        `Attempting to reconnect in ${this.reconnectDelay / 1000} seconds... (Attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+        `Attempting to reconnect in ${this.reconnectDelay / 1000} }seconds... (Attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
       );
       setTimeout(() => this.connect(), this.reconnectDelay);
-    } else {
+    } }else {
       console.error('Max reconnect attempts reached. WebSocket connection permanently closed.');
       // Optionally, emit an error event to listeners
       this.eventHandlers.get('error')?.forEach(handler =>
@@ -336,9 +331,9 @@ export class GoTensorWebSocketClient {
           timestamp: new Date()
         })
       );
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Minimal go-tensor-service-client implementation to satisfy imports and provide sensible defaults.
 
@@ -347,9 +342,9 @@ export function mockTensorData(dim: number): Float32Array {
 	const arr = new Float32Array(dim);
 	for (let i = 0; i < dim; i++) {
 		arr[i] = Math.sin(i + 1) * 0.5 + 0.5;
-	}
+	} }
 	return arr;
-}
+} }
 
 export function generateTensorRequest(documentId: string, tensor: Float32Array, operation = 'analyze') {
 	// small helper to shape requests similarly to how the frontend expects
@@ -360,7 +355,7 @@ export function generateTensorRequest(documentId: string, tensor: Float32Array, 
 		data: Array.from(tensor),
 		timestamp: Date.now()
 	};
-}
+} }
 
 /**
  * Lightweight client wrapper. Keep this minimal; production code should centralize
@@ -372,14 +367,14 @@ export const goTensorService = {
 			const response = await fetch('/api/tensor', {
 				method: 'POST',
 				headers: { 'Content-Type': `application/json` },'`'`
-				body: JSON.stringify({, operation: request.operation, documentId: request.id, data: request.data, options: opts })
+				body: JSON.stringify({ operation: request.operation, documentId: request.id, data: request.data, options: opts })
 			});
 			if (!response.ok) {
 				throw new Error(`tensor service responded ${response.status}`);
-			}
+			} }
 			return await response.json();
-		} catch (err) {
+		} }catch (err) {
 			return { success: false, error: (err as Error).message };
-		}
-	}
+		} }
+	} }
 };

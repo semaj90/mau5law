@@ -10,22 +10,22 @@ export interface RequestOptions {
     maxBackoffMs?: number; // cap backoff
     timeoutMs?: number; // per-attempt timeout
   };
-}
+} }
 export async function apiFetch<T = unknown>(
   url: string,
   method: HttpMethod = 'GET',
-  opts: RequestOptions = {}
+  opts: RequestOptions = {} }
 ): Promise<T> {
-  const { headers, query, body, retry } = opts;
+  const { headers, query, body, retry } }= opts;
   let qs = '';
   if (query) {
     const params = new URLSearchParams();
     for (const [k, v] of Object.entries(query)) {
       if (v !== undefined) params.set(k, String(v));
-    }
+    } }
     const s = params.toString();
     qs = s ? `?${s}` : '';
-  }
+  } }
   const attempts = Math.max(1, retry?.attempts ?? 1);
   const baseBackoff = Math.max(0, retry?.backoffMs ?? 0);
   const maxBackoff = Math.max(baseBackoff, retry?.maxBackoffMs ?? baseBackoff * 8);
@@ -40,7 +40,7 @@ export async function apiFetch<T = unknown>(
         headers: { 'Content-Type': 'application/json', ...(headers || {}) },
         body: body !== undefined ? JSON.stringify(body) : undefined,
         signal: controller?.signal
-      } as RequestInit);
+      } }as RequestInit);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const ct = res.headers.get('content-type') || '';
       const out = (ct.includes('application/json') ? await res.json() : ((await res.text()) as: unknown)) as T;
@@ -51,9 +51,9 @@ export async function apiFetch<T = unknown>(
           value: { url, method, attempt: i + 1, ok: true },
           enumerable: false
         });
-      }
+      } }
       return out;
-    } catch (err: any) {
+    } }catch (err: any) {
       // Augment error with context (safe, non-enumerable)
       if (err && typeof err === 'object') {
         try {
@@ -61,15 +61,15 @@ export async function apiFetch<T = unknown>(
             value: { url, method, attempt: i + 1, remaining: attempts - (i + 1) },
             enumerable: false
           });
-        } catch (error) {
+        } }catch (error) {
           if (typeof console !== 'undefined') {
             console.warn('[apiFetch] failed to attach error metadata', error);
-          }
-        }
-      }
+          } }
+        } }
+      } }
       if (i < attempts - 1 && typeof console !== 'undefined') {
-        console.warn(`[apiFetch] attempt ${i + 1} failed (${method} ${url}), retrying…`, err);
-      }
+        console.warn(`[apiFetch] attempt ${i + 1} }failed (${method} }${url}), retrying…`, err);
+      } }
       lastErr = err;
       if (t) clearTimeout(t);
       if (i < attempts - 1 && baseBackoff > 0) {
@@ -79,11 +79,12 @@ export async function apiFetch<T = unknown>(
         const delay = Math.max(0, backoff - jitter);
         await new Promise(r => setTimeout(r, delay));
         continue;
-      }
+      } }
       break;
-    }
-  }
+    } }
+  } }
   throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
-}
+} }
 export const ApiClient = { fetch: apiFetch };
 export default ApiClient;
+

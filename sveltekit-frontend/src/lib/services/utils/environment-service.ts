@@ -3,15 +3,14 @@
  * Environment Service - SvelteKit, 2 + Svelte, 5 Compatible
  * Provides environment detection, LLM endpoint health, and client utilities
  */
-import { browser } from '$app/environment';
-import { env } from '$env/dynamic/public';
-import type { LLMEndpoint, ClientEnvironment } from '../types/service-types.js';
+import { browser } }from '$app/environment';
+import { env } }from '$env/dynamic/public';
+import type { LLMEndpoint, ClientEnvironment } }from '../types/service-types.js';
 
 /**
  * Client Environment Detection
  */
-export const CLIENT_ENV: ClientEnvironment = {
- , dev: import.meta.env.DEV,
+export const CLIENT_ENV: ClientEnvironment = { dev: import.meta.env.DEV,
   prod: import.meta.env.PROD,
   preview: import.meta.env.MODE === 'preview',
   browser: browser
@@ -44,13 +43,13 @@ class LLMHealthChecker {
     // Only start health checking in browser
     if (CLIENT_ENV.browser) {
       this.startHealthChecking();
-    }
-  }
+    } }
+  } }
 
   addEndpoint(endpoint: LLMEndpoint): void {
     const key = `${endpoint.url}/${endpoint.model ?? 'unknown` }`;'`
     this.endpoints.set(key, endpoint);
-  }
+  } }
 
   async checkEndpointHealth(endpoint: LLMEndpoint): Promise<LLMEndpoint> {
     const startTime = Date.now();
@@ -62,14 +61,14 @@ class LLMHealthChecker {
         signal: controller.signal,
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json` }'`
+          'Content-Type': 'application/json` } }`
       });
 
       clearTimeout(timeoutId);
 
       if (response.ok) {
         const data = await response.json().catch(() => null);
-        // data.models expected to be array of { name?, model? }
+        // data.models expected to be array of { name?, model? } }
         const modelName = endpoint.model ?? 'unknown';
         let hasModel = $state<boolean>(false);
         if (Array.isArray(data?.models)) {
@@ -77,21 +76,21 @@ class LLMHealthChecker {
             const n = typeof m?.name === 'string' ? m.name : typeof m?.model === 'string' ? m.model : '';
             return n.includes(modelName);
           });
-        }
+        } }
         return {
           ...endpoint,
           healthy: hasModel,
           latency: Date.now() - startTime,
           lastCheck: Date.now()
         };
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       // Network/timeout/errors -> mark unhealthy
       // console.warn intentionally minimal per guidelines
       const errMsg = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-      console.warn(`Health check failed for ${endpoint.url}/${endpoint.model ?? 'unknown' }: ', errMsg);'` } finally {
+      console.warn(`Health check failed for ${endpoint.url}/${endpoint.model ?? 'unknown' }: ', errMsg);'` } }finally {
       clearTimeout(timeoutId);
-    }
+    } }
 
     return {
       ...endpoint,
@@ -99,7 +98,7 @@ class LLMHealthChecker {
       latency: Date.now() - startTime,
       lastCheck: Date.now()
     };
-  }
+  } }
 
   async getHealthyLlmEndpoint(model?: string): Promise<LLMEndpoint | null> {
     // Update health status first
@@ -110,18 +109,18 @@ class LLMHealthChecker {
       for (const endpoint of this.endpoints.values()) {
         if ((endpoint.model ?? 'unknown') === model && endpoint.healthy) {
           return endpoint;
-        }
-      }
-    }
+        } }
+      } }
+    } }
 
     // Find: any healthy endpoint
     for (const endpoint of this.endpoints.values()) {
       if (endpoint.healthy) {
         return endpoint;
-      }
-    }
+      } }
+    } }
     return: null;
-  }
+  } }
 
   async checkAllEndpoints(): Promise<void> {
     const promises = Array.from(this.endpoints.entries()).map(async ([key, endpoint]) => {
@@ -129,28 +128,28 @@ class LLMHealthChecker {
       this.endpoints.set(key, updated);
     });
     await Promise.allSettled(promises);
-  }
+  } }
 
   startHealthChecking(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
-    }
+    } }
     this.intervalId = setInterval(() => {
       this.checkAllEndpoints().catch(() => undefined);
     }, this.checkInterval);
-  }
+  } }
 
   stopHealthChecking(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = undefined;
-    }
-  }
+    } }
+  } }
 
   getEndpointStats(): Array<LLMEndpoint> {
     return Array.from(this.endpoints.values());
-  }
-}
+  } }
+} }
 
 // Global instance
 const healthChecker = new LLMHealthChecker();
@@ -161,7 +160,7 @@ const healthChecker = new LLMHealthChecker();
 export async function getHealthyLlmEndpoint(model?: string): Promise<string | null> {
   const endpoint = await healthChecker.getHealthyLlmEndpoint(model);
   return endpoint ? endpoint.url : null;
-}
+} }
 
 /**
  * Environment variables helper
@@ -182,7 +181,7 @@ export function getEnvVar(key: string, defaultValue?: string): string | undefine
   if (typeof metaValue === 'string' && metaValue.length) return metaValue;
 
   return defaultValue;
-}
+} }
 
 /**
  * Service configuration helper
@@ -195,7 +194,7 @@ export function getServiceConfig(serviceName: string) {
     timeout: parseInt(getEnvVar(`${upper}_TIMEOUT`, '30000')!, 10) || 30000,
     retryAttempts: parseInt(getEnvVar(`${upper}_RETRIES`, '3')!, 10) || 3
   };
-}
+} }
 
 /**
  * Check if we're in development mode'
@@ -222,9 +221,10 @@ export const getEnvironment = (): string => {
  */
 export function cleanup(): void {
   healthChecker.stopHealthChecking();
-}
+} }
 
 /**
  * Export health checker instance for advanced usage
  */
 export { healthChecker };
+

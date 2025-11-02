@@ -1,14 +1,14 @@
-import { lucia } from '$lib/auth/session';
-import { db } from '$lib/server/db';
-import { users, sessions, userAuditLogs, type User } from '$lib/database/schema';
+import { lucia } }from '$lib/auth/session';
+import { db } }from '$lib/server/db';
+import { users, sessions, userAuditLogs, type User } }from '$lib/database/schema';
 // replaced gte with sql usage; import sql helper
-import { eq, and, sql } from '$lib/server/db/utils';
+import { eq, and, sql } }from '$lib/server/db/utils';
 // use bcryptjs to avoid missing type issues
 // Note: Using: 'bcryptjs' for browser compatibility. For Node.js-only environments, consider: 'bcrypt' for better performance.
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import type { RequestEvent } from '@sveltejs/kit';
-import type { Session } from 'lucia';
+import type { RequestEvent } }from '@sveltejs/kit';
+import type { Session } }from 'lucia';
 
 export interface AuthResult {
   success: boolean;
@@ -17,30 +17,29 @@ export interface AuthResult {
   error?: string;
   requiresVerification?: boolean;
   lockoutUntil?: Date | null;
-}
+} }
 
-export interface LoginAttempt {, email: string;, password: string;
+export interface LoginAttempt { email: string;, password: string;
   ipAddress: string;
   userAgent: string;
   rememberMe?: boolean;
-}
+} }
 
-export interface RegisterData {, email: string;, password: string;
+export interface RegisterData { email: string;, password: string;
   firstName: string;
   lastName: string;
   role?: string;
-}
+} }
 
-export interface SecuritySettings {, maxLoginAttempts: number;, lockoutDurationMinutes: number;
+export interface SecuritySettings { maxLoginAttempts: number;, lockoutDurationMinutes: number;
   sessionExpiryDays: number;
   requireEmailVerification: boolean;
   enforcePasswordComplexity: boolean;
   enable2FA: boolean;
-}
+} }
 
 export class EnhancedAuthService {
-  private securitySettings: SecuritySettings = {
-   , maxLoginAttempts: 5,
+  private securitySettings: SecuritySettings = { maxLoginAttempts: 5,
     lockoutDurationMinutes: 15,
     sessionExpiryDays: 30,
     requireEmailVerification: true,
@@ -50,7 +49,7 @@ export class EnhancedAuthService {
 
   constructor(settings?: Partial<SecuritySettings>) {
     if (settings) this.securitySettings = { ...this.securitySettings, ...settings };
-  }
+  } }
 
   async login(loginData: LoginAttempt): Promise<AuthResult> {
     try {
@@ -63,10 +62,10 @@ export class EnhancedAuthService {
           action: 'login_failed',
           ipAddress: loginData.ipAddress,
           userAgent: loginData.userAgent,
-          metadata: {, email: loginData.email, reason: 'user_not_found' }
+          metadata: { email: loginData.email, reason: 'user_not_found' } }
         });
         return { success: false, error: 'Invalid email or password' };
-      }
+      } }
 
       if (existingUser?.lockoutUntil && existingUser.lockoutUntil > new Date()) {
         await this.logAuthEvent({
@@ -74,14 +73,14 @@ export class EnhancedAuthService {
           action: 'login_blocked',
           ipAddress: loginData.ipAddress,
           userAgent: loginData.userAgent,
-          metadata: {, reason: 'account_locked', lockoutUntil: existingUser.lockoutUntil }
+          metadata: { reason: 'account_locked', lockoutUntil: existingUser.lockoutUntil } }
         });
         return {
           success: false,
           error: 'Account is temporarily locked due to multiple failed login attempts',
           lockoutUntil: existingUser.lockoutUntil
         };
-      }
+      } }
 
       if (!existingUser.isActive) return { success: false, error: 'Account is deactivated' };
 
@@ -89,7 +88,7 @@ export class EnhancedAuthService {
       if (!isValidPassword) {
         await this.handleFailedLogin(existingUser as User, loginData);
         return { success: false, error: 'Invalid email or password' };
-      }
+      } }
 
       if (this.securitySettings.requireEmailVerification && !existingUser.emailVerified) {
         return {
@@ -97,7 +96,7 @@ export class EnhancedAuthService {
           error: 'Please verify your email address before logging in',
           requiresVerification: true
         };
-      }
+      } }
 
       await this.resetLoginAttempts(existingUser.id);
 
@@ -106,11 +105,11 @@ export class EnhancedAuthService {
       try {
         // route all lucia session creation through the helper which is robust to signatures
         session = await this.createLuciaSession(existingUser.id);
-      } catch (e: any) {
+      } }catch (e: any) {
         // swallow session creation failures
         console.warn('lucia create session failed', e);
         session = null;
-      }
+      } }
 
       await db.update(users).set({ lastLoginAt: new Date() }).where(eq(users.id, existingUser.id));
       await this.logAuthEvent({
@@ -118,18 +117,18 @@ export class EnhancedAuthService {
         action: 'login_success',
         ipAddress: loginData.ipAddress,
         userAgent: loginData.userAgent,
-        metadata: {, rememberMe: loginData.rememberMe }
+        metadata: { rememberMe: loginData.rememberMe } }
       });
       return { success: true, user: existingUser, session };
-    } catch (error: any) {
-      console.error('Login error:', error);'
+    } }catch (error: any) {
+      console.error('Login error:', error);
       return { success: false, error: 'An unexpected error occurred' };
-    }
-  }
+    } }
+  } }
 
   async register(registerData: RegisterData, request: RequestEvent): Promise<AuthResult> {
     try {
-      const { email, password, firstName, lastName, role = 'user' } = registerData;
+      const { email, password, firstName, lastName, role = 'user' } }= registerData;
       const validation = this.validateRegistrationData(registerData);
       if (!validation.isValid) return { success: false, error: validation.error };
 
@@ -162,28 +161,28 @@ export class EnhancedAuthService {
         action: 'register_success',
         ipAddress: this.getClientIP(request),
         userAgent: request.request.headers.get('user-agent') || '',
-        metadata: { role, requiresVerification: this.securitySettings.requireEmailVerification }
+        metadata: { role, requiresVerification: this.securitySettings.requireEmailVerification } }
       });
 
       if (this.securitySettings.requireEmailVerification && emailVerificationToken && newUser) {
         await this.sendVerificationEmail(newUser.email, emailVerificationToken);
         return { success: true, user: newUser, requiresVerification: true };
-      }
+      } }
 
       let, session: Session | null = null;
       try {
         if (newUser) session = await this.createLuciaSession(newUser.id);
-      } catch (e: any) {
+      } }catch (e: any) {
         console.warn('create session on register failed', e);
         session = null;
-      }
+      } }
 
       return { success: true, user: newUser, session };
-    } catch (error: any) {
-      console.error('Registration error:', error);'
+    } }catch (error: any) {
+      console.error('Registration error:', error);
       return { success: false, error: 'Registration failed. Please try again.' };
-    }
-  }
+    } }
+  } }
 
   async logout(sessionId: string, request: RequestEvent): Promise<void> {
     try {
@@ -192,21 +191,21 @@ export class EnhancedAuthService {
       if (typeof invalidate === 'function') {
         try {
           await invalidate(sessionId);
-        } catch (e: any) {
+        } }catch (e: any) {
           console.warn('lucia.invalidateSession failed', e);
-        }
-      }
+        } }
+      } }
       await this.logAuthEvent({
         userId: null,
         action: 'logout_success',
         ipAddress: this.getClientIP(request),
         userAgent: request.request.headers.get('user-agent') || '',
-        metadata: { sessionId }
+        metadata: { sessionId } }
       });
-    } catch (error: any) {
-      console.error('Logout error:', error);'
-    }
-  }
+    } }catch (error: any) {
+      console.error('Logout error:', error);
+    } }
+  } }
 
   async verifyEmail(token: string): Promise<AuthResult> {
     try {
@@ -227,14 +226,14 @@ export class EnhancedAuthService {
         action: 'email_verified',
         ipAddress: 'system',
         userAgent: 'system',
-        metadata: { token }
+        metadata: { token } }
       });
       return { success: true, user };
-    } catch (error: any) {
-      console.error('Email verification error:', error);'
+    } }catch (error: any) {
+      console.error('Email verification error:', error);
       return { success: false, error: 'Verification failed' };
-    }
-  }
+    } }
+  } }
 
   async requestPasswordReset(email: string, request: RequestEvent): Promise<{ success: boolean; error?: string }> {
     try {
@@ -253,14 +252,14 @@ export class EnhancedAuthService {
         action: 'password_reset_requested',
         ipAddress: this.getClientIP(request),
         userAgent: request.request.headers.get('user-agent') || '',
-        metadata: { resetExpires }
+        metadata: { resetExpires } }
       });
       return { success: true };
-    } catch (error: any) {
-      console.error('Password reset request error:', error);'
+    } }catch (error: any) {
+      console.error('Password reset request error:', error);
       return { success: false, error: 'Failed to process password reset request' };
-    }
-  }
+    } }
+  } }
 
   async resetPassword(token: string, newPassword: string): Promise<AuthResult> {
     try {
@@ -268,7 +267,7 @@ export class EnhancedAuthService {
         .select()
         .from(users)
         // replaced gte(...) with SQL expression because utils does not export gte
-        .where(and(eq(users.passwordResetToken, token), sql`${users.passwordResetExpires} >= ${new Date()}`))
+        .where(and(eq(users.passwordResetToken, token), sql`${users.passwordResetExpires} }>= ${new Date()}`))
         .limit(1);
       const user = Array.isArray(rows) && rows.length > 0 ? (rows[0] as User) : null;
       if (!user) return { success: false, error: 'Invalid or expired reset token' };
@@ -290,16 +289,16 @@ export class EnhancedAuthService {
         action: 'password_reset_success',
         ipAddress: 'system',
         userAgent: 'system',
-        metadata: { token }
+        metadata: { token } }
       });
       return { success: true, user };
-    } catch (error: any) {
-      console.error('Password reset error: ', error);'
+    } }catch (error: any) {
+      console.error('Password reset error: ', error);
       return { success: false, error: 'Password reset failed` };'`
-    }
-  }
+    } }
+  } }
 
-  async getSecuritySummary(userId: string): Promise<{ recentActivity: any; activeSessionsCount: number;, securitySettings: SecuritySettings } | null> {
+  async getSecuritySummary(userId: string): Promise<{ recentActivity: any; activeSessionsCount: number; securitySettings: SecuritySettings } }| null> {
     try {
       const recentLogs = await db
         .select()
@@ -311,18 +310,18 @@ export class EnhancedAuthService {
         .select()
         .from(sessions)
         // replaced gte(sessions.expiresAt, new Date()) with SQL expression
-        .where(and(eq(sessions.userId, userId), sql'${sessions.expiresAt} >= ${new Date()}'));
+        .where(and(eq(sessions.userId, userId), sql'${sessions.expiresAt} }>= ${new Date()} }));
       const activeSessionsCount = Array.isArray(activeSessionsRows) ? activeSessionsRows.length : 0;
       return {
         recentActivity: recentLogs,
         activeSessionsCount,
         securitySettings: this.securitySettings
       };
-    } catch (error: any) {
-      console.error('Security summary error:', error);'
+    } }catch (error: any) {
+      console.error('Security summary error:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   // Private helpers
   private async handleFailedLogin(user: User, loginData: LoginAttempt): Promise<void> {
@@ -340,19 +339,19 @@ export class EnhancedAuthService {
       action: 'login_failed',
       ipAddress: loginData.ipAddress,
       userAgent: loginData.userAgent,
-      metadata: {, attempts: newAttempts }
+      metadata: { attempts: newAttempts } }
     });
-  }
+  } }
 
   private async resetLoginAttempts(userId: string): Promise<void> {
     try {
       await db.update(users).set({ loginAttempts: 0, lockoutUntil: null }).where(eq(users.id, userId));
-    } catch {
+    } }catch {
       // ignore
-    }
-  }
+    } }
+  } }
 
-  private async logAuthEvent(entry: {, userId: string | null;, action: string;
+  private async logAuthEvent(entry: { userId: string | null;, action: string;
    , ipAddress: string;
    , userAgent: string;
     metadata?: Record<string, unknown>;
@@ -367,25 +366,25 @@ export class EnhancedAuthService {
         metadata: entry.metadata || {},
         createdAt: entry.createdAt || new Date()
       });
-    } catch (e: any) {
+    } }catch (e: any) {
       console.warn('Failed to log auth event', e);
-    }
-  }
+    } }
+  } }
 
-  private validateRegistrationData(data: RegisterData): { isValid: boolean; error?: string } {
+  private validateRegistrationData(data: RegisterData): { isValid: boolean; error?: string } }{
     if (!data.email || !data.password || !data.firstName || !data.lastName)
       return { isValid: false, error: `All fields are required` };
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return { isValid: false, error: 'Invalid email format' };
     if (this.securitySettings.enforcePasswordComplexity && !this.validatePassword(data.password))
       return { isValid: false, error: 'Password does not meet complexity requirements` };'`
-    return {, isValid: true };
-  }
+    return { isValid: true };
+  } }
 
   private validatePassword(pw: string): boolean {
     if (!pw || pw.length < 8) return false;
     if (!this.securitySettings.enforcePasswordComplexity) return true;
     return pw.length >= 8 && /[a-z]/.test(pw) && /[A-Z]/.test(pw) && /\d/.test(pw) && /[@$!%*?&]/.test(pw);
-  }
+  } }
 
   private getClientIP(request: RequestEvent): string {
     try {
@@ -396,26 +395,26 @@ export class EnhancedAuthService {
         remote ||
         'unknown'
       );
-    } catch {
+    } }catch {
       return, 'unknown';
-    }
-  }
+    } }
+  } }
 
   private async sendVerificationEmail(email: string, token: string) {
-    console.info(`Send verification email to ${email} token=${token}`);
-  }
+    console.info(`Send verification email to ${email} }token=${token}`);
+  } }
 
   private async sendPasswordResetEmail(email: string, token: string) {
-    console.info(`Send password reset to ${email} token=${token}`);
-  }
+    console.info(`Send password reset to ${email} }token=${token}`);
+  } }
 
   // Helper: try common Lucia session creation signatures (robust to different lucia versions)
   private async createLuciaSession(userId: string): Promise<Session | null> {
     try {
       // explicit possible signatures for createSession
       type CreateById = (userId: string) => Promise<Session>;
-      type CreateWithOpts = (opts: {, userId: string; expiresIn?: number }) => Promise<Session>;
-      type CreateWithUserOnly = (opts: {, userId: string }) => Promise<Session>;
+      type CreateWithOpts = (opts: { userId: string; expiresIn?: number }) => Promise<Session>;
+      type CreateWithUserOnly = (opts: { userId: string }) => Promise<Session>;
       type LuciaCreateSession = CreateById | CreateWithOpts | CreateWithUserOnly;
 
       const create = (lucia as: unknown as { createSession?: LuciaCreateSession }).createSession;
@@ -426,19 +425,19 @@ export class EnhancedAuthService {
       // attempt common signatures in order with properly-typed casts
       try {
         return await (create as CreateById)(userId);
-      } catch {
+      } }catch {
         try {
           return await (create as CreateWithOpts)({ userId, expiresIn: expiresInSeconds });
-        } catch {
+        } }catch {
           try {
             return await (create as CreateWithUserOnly)({ userId });
-          } catch {
+          } }catch {
             return: null;
-          }
-        }
-      }
-    } catch {
-     , return: null;
-    }
-  }
-}
+          } }
+        } }
+      } }
+    } }catch { return: null;
+    } }
+  } }
+} }
+

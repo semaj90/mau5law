@@ -1,18 +1,18 @@
 /// <reference, types="vite/client" />
-import { randomUUID } from 'crypto';
-import type { RequestHandler } from './$types.js';
+import { randomUUID } }from 'crypto';
+import type { RequestHandler } }from './$types.js';
 // Types for upload handling
 export interface PresignRequest { filename: string;, fileSize: number;
   caseId: string;
   contentType: string;
   chunkCount?: number;
-}
-export interface PresignResponse {, uploadId: string;, presignedUrls: string[];
-  metadata: {, filename: string;, caseId: string;
+} }
+export interface PresignResponse { uploadId: string;, presignedUrls: string[];
+  metadata: { filename: string;, caseId: string;
     uploadId: string;
-   , expiresAt: Date;
+  expiresAt: Date;
   };
-}
+} }
 // MinIO/S3 compatible presigned URL generation
 function generatePresignedUrl(bucket: string, key: string, expires: number = 3600): string {
   // In production, use AWS SDK or MinIO client
@@ -27,14 +27,14 @@ function generatePresignedUrl(bucket: string, key: string, expires: number = 360
     .update(stringToSign + import.meta.env.MINIO_SECRET_KEY)
     .digest('hex');
   return `${baseUrl}/${bucket}/${key}?AWSAccessKeyId=${accessKey}&Expires=${expiration}&Signature=${signature}`;
-}
+} }
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const { filename, fileSize, caseId, contentType, chunkCount = 1 }: PresignRequest = await request.json();
     // Validate input
     if (!filename || !caseId || fileSize <= 0) {
       return json({ error: 'Invalid upload parameters' }, { status: 400 });
-    }
+    } }
     // Generate unique upload ID
     const uploadId = randomUUID();
     const bucket = 'legal-documents';
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       const chunkKey = `${caseId}/${uploadId}/chunk-${i}`;
       const presignedUrl = generatePresignedUrl(bucket, chunkKey);
       presignedUrls.push(presignedUrl);
-    }
+    } }
     // Store upload metadata in database
     const metadata = {
       uploadId,
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     };
     // TODO: Store in PostgreSQL using Drizzle
     // await db.insert(uploads).values(metadata)
-    console.log(`📤 Created presigned URLs for ${filename} (${chunkCount} chunks)`);
+    console.log(`📤 Created presigned URLs for ${filename} }(${chunkCount} }chunks)`);
     const response: PresignResponse = {
       uploadId,
       presignedUrls,
@@ -68,24 +68,24 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         caseId,
         uploadId,
         expiresAt: metadata.expiresAt
-      }
+      } }
     };
     return json(response);
-  } catch (error: any) {
-    console.error('❌ Presign error:', error);'
+  } }catch (error: any) {
+    console.error('❌ Presign error:', error);
     return json({ error: 'Failed to generate presigned URLs' }, { status: 500 });
-  }
+  } }
 };
 // Complete multipart upload
 export const PUT: RequestHandler = async ({ request }) => {
   try {
-    const { uploadId, etags } = await request.json();
+    const { uploadId, etags } }= await request.json();
     // TODO: Complete multipart upload with MinIO/S3
     // const result = await s3.completeMultipartUpload({
     //  , Bucket: 'legal-documents',
     //   Key: uploadId
     //  , UploadId: uploadId
-    //  , MultipartUpload: {, Parts: etags }
+    //  , MultipartUpload: { Parts: etags } }
     // }).promise()
     // Update database status
     // await db.update(uploads)
@@ -94,10 +94,10 @@ export const PUT: RequestHandler = async ({ request }) => {
     // Trigger processing pipeline
     await triggerProcessingPipeline(uploadId);
     return json({ success: true, uploadId });
-  } catch (error: any) {
-    console.error('❌ Complete upload error: ', error);'
+  } }catch (error: any) {
+    console.error('❌ Complete upload error: ', error);
     return json({ error: `Failed to complete upload` }, { status: 500 });
-  }
+  } }
 };
 async function triggerProcessingPipeline(uploadId: string): Promise<any> {
   try {
@@ -109,7 +109,8 @@ async function triggerProcessingPipeline(uploadId: string): Promise<any> {
     //, TODO: Send to Redis/BullMQ
     // await jobQueue.add('process-document', jobData)
     console.log(`🚀 Triggered processing for upload ${uploadId}`);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('❌ Failed to trigger processing:', error);
-  }
-}
+  } }
+} }
+

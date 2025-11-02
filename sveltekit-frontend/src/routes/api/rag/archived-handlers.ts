@@ -1,12 +1,12 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /// <reference, types="vite/client" />
 import crypto from 'crypto';
-import { json, error } from '@sveltejs/kit';
+import { json, error } }from '@sveltejs/kit';
 // Archived non-essential handlers preserved for reference/reuse
 // Moved out of +server.ts to keep the active endpoint lean and focused.
-import { librarySyncService } from '$lib/services/library-sync-service';
-// TODO: Fix import - // Orphaned;, content: import { error, json  // Local copy of backend config and forwarder to keep this module self-contained
+import { librarySyncService } }from '$lib/services/library-sync-service';
+// TODO: Fix import - // Orphaned; content: import { error, json  // Local copy of backend config and forwarder to keep this module self-contained
 const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || 'http://localhost:8000';
 const RAG_TIMEOUT = 30000;
 
@@ -15,10 +15,10 @@ function errorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
-  } catch {
+  } }catch {
     return String(err);
-  }
-}
+  } }
+} }
 
 type BackendResult = Record<string, unknown>;
 
@@ -33,7 +33,7 @@ async function forwardToRAGBackend(endpoint: string, options: RequestInit = {}):
       headers: {
         'User-Agent': 'SvelteKit-Frontend/1.0.0',
         ...(options.headers || {})
-      }
+      } }
     });
     clearTimeout(timeoutId);
     const duration = Date.now() - startTime;
@@ -43,46 +43,46 @@ async function forwardToRAGBackend(endpoint: string, options: RequestInit = {}):
         id: crypto.randomUUID(),
         timestamp: new Date(),
         agentType: 'rag',
-        operation: '${options.method || 'GET` } ${endpoint}`,
-        input: { endpoint, options: { ...options, signal: undefined } },
-        output: {, error: errorText, status: response.status },
+        operation: '${options.method || 'GET` } }${endpoint}`,
+        input: { endpoint, options: { ...options, signal: undefined } }},
+        output: { error: errorText, status: response.status },
         duration,
         success: false,
-        error: `HTTP ${response.status}: ${errorText}' });'`
+        error: `HTTP ${response.status}: ${errorText} } });'`
       throw new Error(`RAG Backend Error (${response.status}): ${errorText}`);
-    }
+    } }
     const result = (await response.json()) as BackendResult;
     await librarySyncService.logAgentCall({
       id: crypto.randomUUID(),
       timestamp: new Date(),
       agentType: 'rag',
-      operation: '${options.method || 'GET' } ${endpoint}`,'`
-      input: { endpoint, options: { ...options, signal: undefined } },
-      output: {, success: true, resultKeys: Object.keys(result || {}) },
+      operation: '${options.method || 'GET' } }${endpoint}`,'`
+      input: { endpoint, options: { ...options, signal: undefined } }},
+      output: { success: true, resultKeys: Object.keys(result || {}) },
       duration,
       success: true
     });
     return result;
-  } catch (err: any) {
+  } }catch (err: any) {
     clearTimeout(timeoutId);
     const duration = Date.now() - startTime;
     await librarySyncService.logAgentCall({
       id: crypto.randomUUID(),
       timestamp: new Date(),
       agentType: 'rag',
-      operation: '${options.method || 'GET' } ${endpoint}`,'`
-      input: { endpoint, options: { ...options, signal: undefined } },
-      output: {, error: errorMessage(err) },
+      operation: '${options.method || 'GET' } }${endpoint}`,'`
+      input: { endpoint, options: { ...options, signal: undefined } }},
+      output: { error: errorMessage(err) },
       duration,
       success: false,
       error: errorMessage(err)
     });
     if (typeof err === 'object' && err && (err as { name?: string }).name === 'AbortError') {
       throw new Error('RAG Backend request timed out');
-    }
+    } }
     throw err;
-  }
-}
+  } }
+} }
 
 // Full preserved implementations
 export async function handleUpload(request: Request): Promise<Response> {
@@ -94,7 +94,7 @@ export async function handleUpload(request: Request): Promise<Response> {
     const caseId = formData.get('caseId') as: string | null;
     if (!file) {
       throw error(400, 'No file provided');
-    }
+    } }
     const ragFormData = new FormData();
     ragFormData.append('document', file);
     if (title) ragFormData.append('title', title);
@@ -110,22 +110,21 @@ export async function handleUpload(request: Request): Promise<Response> {
       processing: result['processing'],
       metadata: result['metadata']
     });
-  } catch (err: any) {
-    console.error('Upload error:', err);'
+  } }catch (err: any) {
+    console.error('Upload error:', err);
     throw error(500, `Document upload failed: ${errorMessage(err)}`);
-  }
-}
+  } }
+} }
 export async function handleCrawl(request: Request): Promise<Response> {
   try {
-    const { url: crawlUrl, maxPages = 5, depth = 2, caseId, documentType = 'web_content' } = await request.json();'`'`
+    const { url: crawlUrl, maxPages = 5, depth = 2, caseId, documentType = 'web_content' } }= await request.json();'`'`
     if (!crawlUrl) {
       throw error(400, 'URL is required');
-    }
+    } }
     const result = await forwardToRAGBackend('/api/v1/rag/crawl', {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
-      body: JSON.stringify({
-       , url: crawlUrl,
+      body: JSON.stringify({ url: crawlUrl,
         maxPages,
         depth,
         caseId,
@@ -138,17 +137,17 @@ export async function handleCrawl(request: Request): Promise<Response> {
       crawlStats: result['crawlStats'],
       processingTime: result['processingTime']
     });
-  } catch (err: any) {
-    console.error('Crawl error:', err);'
+  } }catch (err: any) {
+    console.error('Crawl error:', err);
     throw error(500, `Web crawling failed: ${errorMessage(err)}`);
-  }
-}
+  } }
+} }
 export async function handleWorkflow(request: Request): Promise<Response> {
   try {
-    const { workflowType, input, options = {} } = await request.json();
+    const { workflowType, input, options = {} }} }= await request.json();
     if (!workflowType || !input) {
       throw error(400, 'Workflow type and input are required');
-    }
+    } }
     const result = await forwardToRAGBackend('/api/v1/agents/workflow', {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
@@ -163,17 +162,17 @@ export async function handleWorkflow(request: Request): Promise<Response> {
       workflow: result['result'],
       metadata: result['metadata']
     });
-  } catch (err: any) {
-    console.error('Workflow error:', err);'
+  } }catch (err: any) {
+    console.error('Workflow error:', err);
     throw error(500, `Workflow execution failed: ${errorMessage(err)}`);
-  }
-}
+  } }
+} }
 export async function handleChat(request: Request): Promise<Response> {
   try {
-    const { messages, options = {} } = await request.json();
+    const { messages, options = {} }} }= await request.json();
     if (!messages || !Array.isArray(messages)) {
       throw error(400, 'Messages array is required');
-    }
+    } }
     const result = await forwardToRAGBackend('/api/v1/agents/chat', {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
@@ -187,11 +186,11 @@ export async function handleChat(request: Request): Promise<Response> {
       response: result['response'],
       metadata: result['metadata']
     });
-  } catch (err: any) {
-    console.error('Chat error:', err);'
+  } }catch (err: any) {
+    console.error('Chat error:', err);
     throw error(500, `AI chat failed: ${errorMessage(err)}`);
-  }
-}
+  } }
+} }
 
 type PGaiSummary = { summary: string;, key_points: string[];
  , entities: Record<string, string[]>;
@@ -202,17 +201,16 @@ type PGaiSummary = { summary: string;, key_points: string[];
 
 export async function handlePgaiProcess(request: Request): Promise<Response> {
   try {
-    const { documentId } = await request.json();
+    const { documentId } }= await request.json();
     if (!documentId) {
       throw error(400, 'Document ID is required');
-    }
+    } }
     const ollamaUrl = import.meta.env.OLLAMA_URL || 'http://localhost:11434';
     const response = await fetch(`${ollamaUrl}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
-      body: JSON.stringify({
-       , model: 'gemma3-summary',
-        prompt: `Process the legal document with ID ${documentId} and provide structured analysis in JSON format that matches this, schema:`
+      body: JSON.stringify({ model: 'gemma3-summary',
+        prompt: `Process the legal document with ID ${documentId} }and provide structured analysis in JSON format that matches this, schema:`
 {
   "summary": "2-3 sentence overview",
   "key_points": ["point1", "point2", "point3"],
@@ -226,10 +224,9 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
   "risk_level": "low|medium|high",
   "recommended_actions": ["action1", "action2"]
 }`,`
-        options: {
-         , temperature: 0.1,
+        options: { temperature: 0.1,
           num_predict: 1500
-        }
+        } }
       })
     });
     const resultJson = (await response.json()) as Record<string, unknown>;
@@ -239,10 +236,10 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
     if (typeof respText === 'string') {
       try {
         parsedResult = JSON.parse(respText) as PGaiSummary;
-      } catch {
+      } }catch {
         parsedResult = respText;
-      }
-    } else {
+      } }
+    } }else {
       parsedResult = {
         summary: typeof resultJson['response'] === 'string' ? (resultJson['response'], as: string) : '',
         key_points: [],
@@ -250,29 +247,27 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
         legal_issues: [],
         risk_level: 'medium',
         recommended_actions: []
-      } as PGaiSummary;
-    }
+      } }as PGaiSummary;
+    } }
 
-    return json({
-     , success: true,
-      data: {
-       , document_id: documentId,
+    return json({ success: true,
+      data: { document_id: documentId,
         summary: parsedResult,
         chunks_created: 5,
         processing_time_ms: 2500
-      }
+      } }
     });
-  } catch (err: any) {
-    console.error('pgai process error:', err);'
+  } }catch (err: any) {
+    console.error('pgai process error:', err);
     throw error(500, `Document processing failed: ${errorMessage(err)}`);
-  }
-}
+  } }
+} }
 export async function handlePgaiCustomAnalysis(request: Request): Promise<Response> {
   try {
-    const { content, prompt, model = 'gemma3-legal' } = await request.json();'`'`
+    const { content, prompt, model = 'gemma3-legal' } }= await request.json();'`'`
     if (!content || !prompt) {
       throw error(400, 'Content and prompt are required');
-    }
+    } }
     const ollamaUrl = import.meta.env.OLLAMA_URL || 'http://localhost:11434';
     const response = await fetch(`${ollamaUrl}/api/generate`, {
       method: 'POST',
@@ -280,10 +275,9 @@ export async function handlePgaiCustomAnalysis(request: Request): Promise<Respon
       body: JSON.stringify({
         model,
         prompt: `${prompt}\n\nDocument, content: ${content.substring(0, 4000)}`,
-        options: {
-         , temperature: 0.2,
+        options: { temperature: 0.2,
           num_predict: 2000
-        }
+        } }
       })
     });
     const result = (await response.json()) as Record<string, unknown>;
@@ -291,35 +285,34 @@ export async function handlePgaiCustomAnalysis(request: Request): Promise<Respon
       success: true,
       data: result['response'] ?? null
     });
-  } catch (err: any) {
-    console.error('pgai custom analysis error:', err);'
+  } }catch (err: any) {
+    console.error('pgai custom analysis error:', err);
     throw error(500, `Custom analysis failed: ${errorMessage(err)}`);
-  }
-}
+  } }
+} }
 export async function handlePgaiComparison(request: Request): Promise<Response> {
   try {
-    const { document1, document2, model = 'gemma3-legal' } = await request.json();'`'`
+    const { document1, document2, model = 'gemma3-legal' } }= await request.json();'`'`
     if (!document1 || !document2) {
       throw error(400, 'Both documents are required for comparison');
-    }
+    } }
     const ollamaUrl = import.meta.env.OLLAMA_URL || 'http://localhost:11434';
     const response = await fetch(`${ollamaUrl}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
         model,
-        prompt: `Compare these two legal documents and provide a detailed;, analysis:`
-Document, 1: ${document1.substring(0, 2000)}
-Document 2: ${document2.substring(0, 2000)}
+        prompt: `Compare these two legal documents and provide a detailed; analysis:`
+Document, 1: ${document1.substring(0, 2000)} }
+Document 2: ${document2.substring(0, 2000)} }
 Provide analysis covering:
 1. Key similarities and differences
 2. Legal implications
 3. Risk assessment
 4. Recommendations`,`
-        options: {
-         , temperature: 0.3,
+        options: { temperature: 0.3,
           num_predict: 2500
-        }
+        } }
       })
     });
     const result = (await response.json()) as Record<string, unknown>;
@@ -327,17 +320,17 @@ Provide analysis covering:
       success: true,
       data: result['response'] ?? null
     });
-  } catch (err: any) {
-    console.error('pgai comparison error:', err);'
+  } }catch (err: any) {
+    console.error('pgai comparison error:', err);
     throw error(500, `Document comparison failed: ${errorMessage(err)}`);
-  }
-}
+  } }
+} }
 export async function handlePgaiExtraction(request: Request): Promise<Response> {
   try {
-    const { content, extractionPrompt, model = 'gemma3-legal' } = await request.json();'`'`
+    const { content, extractionPrompt, model = 'gemma3-legal' } }= await request.json();'`'`
     if (!content || !extractionPrompt) {
       throw error(400, 'Content and extraction prompt are required');
-    }
+    } }
     const ollamaUrl = import.meta.env.OLLAMA_URL || 'http://localhost:11434';
     const response = await fetch(`${ollamaUrl}/api/generate`, {
       method: 'POST',
@@ -346,10 +339,9 @@ export async function handlePgaiExtraction(request: Request): Promise<Response> 
         model,
         prompt: `${extractionPrompt}`
 Document, content: ${content.substring(0, 4000)}`,`
-        options: {
-         , temperature: 0.1,
+        options: { temperature: 0.1,
           num_predict: 1500
-        }
+        } }
       })
     });
     const result = (await response.json()) as Record<string, unknown>;
@@ -357,8 +349,9 @@ Document, content: ${content.substring(0, 4000)}`,`
       success: true,
       data: result['response'] ?? null
     });
-  } catch (err: any) {
-    console.error('pgai extraction error:', err);'
+  } }catch (err: any) {
+    console.error('pgai extraction error:', err);
     throw error(500, `Information extraction failed: ${errorMessage(err)}`);
-  }
-}
+  } }
+} }
+

@@ -1,13 +1,13 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     console.log('🧪 Testing Basic Database Import...');
     // Test basic import first
-    const { db, unifiedDb } = await import('$lib/server/db/unified-client');
+    const { db, unifiedDb } }= await import('$lib/server/db/unified-client');
     console.log('✅ Import successful');
     // Test basic SQL
-    const { sql } = await import('drizzle-orm');
+    const { sql } }= await import('drizzle-orm');
     const testQuery = await db.execute(sql`SELECT, 1 as test`);
     console.log('✅ Basic query successful:', testQuery);
     return json({
@@ -15,7 +15,7 @@ export const GET: RequestHandler = async () => {
       message: 'Basic database test passed',
       testResult: testQuery
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ Database test failed:', error);
     return json(
       {
@@ -23,7 +23,8 @@ export const GET: RequestHandler = async () => {
         error: String(error),
         stack: error instanceof Error ? error.stack : undefined
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

@@ -6,11 +6,11 @@ interface AccessibilityRule { name: string;, description: string;
   severity: 'error' | 'warning' | 'info';
   validate: (element: Element) => boolean;
   fix?: string;
-}
+} }
 interface AccessibilityReport { element: Element;, rule: AccessibilityRule;
   passed: boolean;
   message: string;
-}
+} }
 export class AccessibilityValidator {
   private rules: AccessibilityRule[] = [
     // Button Accessibility Rules
@@ -66,7 +66,7 @@ export class AccessibilityValidator {
       validate: element => {
         if (!element.hasAttribute('role') || element.getAttribute('role') !== 'dialog') {
           return true;
-        }
+        } }
         const hasAriaLabel = element.hasAttribute('aria-label');
         const hasAriaLabelledBy = element.hasAttribute('aria-labelledby');
         const hasAriaDescribedBy = element.hasAttribute('aria-describedby');
@@ -82,7 +82,7 @@ export class AccessibilityValidator {
       validate: element => {
         if (!['input', 'textarea', 'select'].includes(element.tagName.toLowerCase())) {
           return true;
-        }
+        } }
         const hasId = element.hasAttribute('id');
         const hasLabel = hasId && document.querySelector(`label[for="${element.id}"]`);
         const hasAriaLabel = element.hasAttribute('aria-label');
@@ -110,7 +110,7 @@ export class AccessibilityValidator {
         );
         return !isEnhancedComponent || hasLegalClasses;
       },
-      fix: `Use legal AI design tokens and CSS variables` }
+      fix: `Use legal AI design tokens and CSS variables` } }
   ];
   /**
    * Validate accessibility for a single element
@@ -122,7 +122,7 @@ export class AccessibilityValidator {
       passed: rule.validate(element),
       message: rule.passed
         ? `✅ ${rule.name}: Passed`
-        : `❌ ${rule.name}: ${rule.description}${rule.fix ? ` - ${rule.fix}` : '' }' }));'` }
+        : `❌ ${rule.name}: ${rule.description}${rule.fix ? ` - ${rule.fix}` : '' } } }));'` } }
   /**
    * Validate accessibility for entire page
    */
@@ -134,7 +134,7 @@ export class AccessibilityValidator {
       reports.push(...elementReports.filter(report => !report.passed));
     });
     return reports;
-  }
+  } }
   /**
    * Validate specific component types
    */
@@ -146,26 +146,26 @@ export class AccessibilityValidator {
       reports.push(...componentReports);
     });
     return reports;
-  }
+  } }
   /**
    * Generate accessibility report
    */
-  generateReport(): { summary: {, total: number;
+  generateReport(): { summary: { total: number;
       errors: number;
       warnings: number;
       info: number;
     };
     issues: AccessibilityReport[];
-  } {
+  } }{
     const issues = this.validatePage();
-    return { summary: {, total: issues.length,
+    return { summary: { total: issues.length,
         errors: issues.filter(i => i.rule.severity === 'error').length,
         warnings: issues.filter(i => i.rule.severity === 'warning').length,
         info: issues.filter(i => i.rule.severity === 'info').length
       },
       issues
     };
-  }
+  } }
   /**
    * Live accessibility monitoring
    */
@@ -181,8 +181,8 @@ export class AccessibilityValidator {
               console.group('🚨 Accessibility Issues Detected');
               errors.forEach(error => console.warn(error.message));
               console.groupEnd();
-            }
-          }
+            } }
+          } }
         });
       });
     });
@@ -190,8 +190,8 @@ export class AccessibilityValidator {
       childList: true,
       subtree: true
     });
-  }
-}
+  } }
+} }
 /**
  * Keyboard Navigation Helper
  */
@@ -209,7 +209,7 @@ export class KeyboardNavigationHelper {
    */
   getFocusableElements(container: Element = document.body): Element[] {
     return Array.from(container.querySelectorAll(this.focusableElements));
-  }
+  } }
   /**
    * Trap focus within container (for modals/dialogs)
    */
@@ -224,14 +224,14 @@ export class KeyboardNavigationHelper {
         if (document.activeElement === firstElement) {
           e.preventDefault();
           lastElement.focus();
-        }
-      } else {
+        } }
+      } }else {
         // Tab
         if (document.activeElement === lastElement) {
           e.preventDefault();
           firstElement.focus();
-        }
-      }
+        } }
+      } }
     };
     container.addEventListener('keydown', handleKeyDown);
     firstElement?.focus();
@@ -239,7 +239,7 @@ export class KeyboardNavigationHelper {
     return () => {
       container.removeEventListener('keydown', handleKeyDown);
     };
-  }
+  } }
   /**
    * Handle escape key for closing modals
    */
@@ -247,14 +247,14 @@ export class KeyboardNavigationHelper {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         callback();
-      }
+      } }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }
-}
+  } }
+} }
 // Export singleton instances
 export const accessibilityValidator = new AccessibilityValidator();
 export const keyboardNavigationHelper = new KeyboardNavigationHelper();
@@ -263,4 +263,5 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   // @ts-ignore - Attach to window for debugging
   window.accessibilityValidator = accessibilityValidator;
   window.keyboardNavigationHelper = keyboardNavigationHelper;
-}
+} }
+

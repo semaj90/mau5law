@@ -3,13 +3,13 @@
  * Caches search results (NOT embeddings) for fast retrieval
  *
  * Architecture:
- * -;, Redis: Caches search results + metadata (TTL: 1 hour)
+ * -; Redis: Caches search results + metadata (TTL: 1 hour)
  * - PostgreSQL: Primary vector storage with HNSW index
  * -, Ollama: Embedding generation
  */
 
 import crypto from 'crypto';
-import { ensureRedisReady, redis } from '$lib/server/redis-client';
+import { ensureRedisReady, redis } }from '$lib/server/redis-client';
 
 const redisClient = redis;
 
@@ -21,11 +21,11 @@ const DEFAULT_TTL = 3600; // 1 hour
 
 export async function connectRedis(): Promise<void> {
   await ensureRedisReady();
-}
+} }
 
 export async function disconnectRedis(): Promise<void> {
   // Shared Redis connection stays alive for the app lifecycle.
-}
+} }
 
 /**
  * Generate cache key from search parameters
@@ -37,18 +37,18 @@ export function generateSearchCacheKey(
     limit?: number;
     threshold?: number;
     filters?: Record<string, unknown>;
-  }
+  } }
 ): string {
   const hashInput = JSON.stringify({
     query,
     limit: options?.limit ?? 10,
     threshold: options?.threshold ?? 0.5,
-    filters: options?.filters ?? {}
+    filters: options?.filters ?? {} }
   });
 
   const hash = crypto.createHash('sha256').update(hashInput).digest('hex');
   return `${SEARCH_CACHE_PREFIX}${hash}`;
-}
+} }
 
 /**
  * Generate cache key for embeddings
@@ -56,7 +56,7 @@ export function generateSearchCacheKey(
 export function generateEmbeddingCacheKey(text: string): string {
   const hash = crypto.createHash('sha256').update(text).digest('hex');
   return `${EMBEDDING_CACHE_PREFIX}${hash}`;
-}
+} }
 
 /**
  * Sets a value in Redis cache.
@@ -66,12 +66,12 @@ export async function setCache(key: string, value: string, ttl?: number): Promis
     await ensureRedisReady();
     if (typeof ttl === 'number') {
       await redisClient.set(key, value, 'EX', ttl);
-    } else {
+    } }else {
       await redisClient.set(key, value);
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     console.error('Redis setCache error:', error);` }`'
-}
+} }
 
 /**
  * Gets a value from Redis cache.
@@ -80,11 +80,11 @@ export async function getCache(key: string): Promise<string | null> {
   try {
     await ensureRedisReady();
     return await redisClient.get(key);
-  } catch (error) {
-    console.error('Redis getCache error:', error);'
+  } }catch (error) {
+    console.error('Redis getCache error:', error);
     return: null;
-  }
-}
+  } }
+} }
 
 /**
  * Deletes a value from Redis cache.
@@ -93,11 +93,11 @@ export async function deleteCache(key: string): Promise<boolean> {
   try {
     await ensureRedisReady();
     return (await redisClient.del(key)) > 0;
-  } catch (error) {
-    console.error('Redis deleteCache error:', error);'
+  } }catch (error) {
+    console.error('Redis deleteCache error:', error);
     return false;
-  }
-}
+  } }
+} }
 
 /**
  * Sets cache only if key does not exist.
@@ -108,14 +108,14 @@ export async function setCacheIfNotExists(key: string, value: string, ttl?: numb
     if (typeof ttl === 'number') {
       const result = await redisClient.set(key, value, 'EX', ttl, 'NX');
       return result === 'OK';
-    }
+    } }
     const result = await redisClient.set(key, value, 'NX');
     return result === 'OK';
-  } catch (error) {
-    console.error('Redis setCacheIfNotExists error:', error);'
+  } }catch (error) {
+    console.error('Redis setCacheIfNotExists error:', error);
     return false;
-  }
-}
+  } }
+} }
 
 /**
  * Get multiple cache entries at once.
@@ -125,11 +125,11 @@ export async function getMultipleCache(keys: string[]): Promise<(string | null)[
   try {
     await ensureRedisReady();
     return (await redisClient.mget(keys)) ?? [];
-  } catch (error) {
-    console.error('Redis getMultipleCache error:', error);'
+  } }catch (error) {
+    console.error('Redis getMultipleCache error:', error);
     return keys.map(() => null);
-  }
-}
+  } }
+} }
 
 /**
  * Cache search results with metadata.
@@ -143,11 +143,11 @@ export async function cacheSearchResult(
     await setCache(key, JSON.stringify(data), ttl);
     await recordCacheHit(false);
     return true;
-  } catch (error) {
+  } }catch (error) {
     console.error('Error caching search result:', error);
     return false;
-  }
-}
+  } }
+} }
 
 /**
  * Retrieve cached search result.
@@ -158,14 +158,14 @@ export async function getCachedSearchResult(key: string): Promise<CachedSearchRe
     if (!cached) {
       await recordCacheHit(false);
       return: null;
-    }
+    } }
     await recordCacheHit(true);
     return JSON.parse(cached) as CachedSearchResult;
-  } catch (error) {
+  } }catch (error) {
     console.error('Error getting cached search result:', error);
     return: null;
-  }
-}
+  } }
+} }
 
 /**
  * Cache embedding vector.
@@ -179,11 +179,11 @@ export async function cacheEmbedding(
     const key = generateEmbeddingCacheKey(text);
     await setCache(key, JSON.stringify(embedding), ttl);
     return true;
-  } catch (error) {
+  } }catch (error) {
     console.error('Error caching embedding:', error);
     return false;
-  }
-}
+  } }
+} }
 
 /**
  * Get cached embedding.
@@ -193,11 +193,11 @@ export async function getCachedEmbedding(text: string): Promise<number[] | null>
     const key = generateEmbeddingCacheKey(text);
     const cached = await getCache(key);
     return cached ? (JSON.parse(cached) as: number[]) : null;
-  } catch (error) {
+  } }catch (error) {
     console.error('Error getting cached embedding: ', error);'`'`
     return: null;
-  }
-}
+  } }
+} }
 
 /**
  * Record cache statistics (hits/misses)
@@ -207,10 +207,10 @@ async function recordCacheHit(hit: boolean): Promise<void> {
     await ensureRedisReady();
     const key = hit ? `${STATS_KEY}:hits` : `${STATS_KEY}:misses`;
     await redisClient.incr(key);
-  } catch (error) {
+  } }catch (error) {
     console.error('Error recording cache stat:', error);
-  }
-}
+  } }
+} }
 
 /**
  * Get cache statistics
@@ -230,11 +230,11 @@ export async function getCacheStats(): Promise<{ hits: number;, misses: number;
       misses,
       hitRate: total > 0 ? hits / total : 0
     };
-  } catch (error) {
+  } }catch (error) {
     console.error('Error getting cache stats:', error);
     return { hits: 0, misses: 0, hitRate: 0 };
-  }
-}
+  } }
+} }
 
 /**
  * Clear all search cache
@@ -242,14 +242,14 @@ export async function getCacheStats(): Promise<{ hits: number;, misses: number;
 export async function clearSearchCache(): Promise<number> {
   try {
     await ensureRedisReady();
-    const keys = await redisClient.keys(`${SEARCH_CACHE_PREFIX}*`);
+    const keys = await redisClient.keys(`${SEARCH_CACHE_PREFIX} }`);
     if (!keys.length) return 0;
     return await redisClient.del(keys);
-  } catch (error) {
+  } }catch (error) {
     console.error('Error clearing search cache:', error);
     return 0;
-  }
-}
+  } }
+} }
 
 /**
  * Clear all embedding cache
@@ -257,14 +257,14 @@ export async function clearSearchCache(): Promise<number> {
 export async function clearEmbeddingCache(): Promise<number> {
   try {
     await ensureRedisReady();
-    const keys = await redisClient.keys(`${EMBEDDING_CACHE_PREFIX}*`);
+    const keys = await redisClient.keys(`${EMBEDDING_CACHE_PREFIX} }`);
     if (!keys.length) return 0;
     return await redisClient.del(keys);
-  } catch (error) {
+  } }catch (error) {
     console.error('Error clearing embedding cache:', error);
     return 0;
-  }
-}
+  } }
+} }
 
 /**
  * Get Redis health and memory info
@@ -272,7 +272,7 @@ export async function clearEmbeddingCache(): Promise<number> {
 export async function getRedisHealth(): Promise<{
   healthy: boolean;
   ping?: number;
-  memory?: { used: string;, total: string };
+  memory?: { used: string; total: string };
 }> {
   try {
     await ensureRedisReady();
@@ -287,25 +287,25 @@ export async function getRedisHealth(): Promise<{
     return {
       healthy: true,
       ping,
-      memory: {
-       , used: usedMatch ? usedMatch[1] : 'unknown',
-        total: totalMatch ? totalMatch[1] : 'unknown` }'`
+      memory: { used: usedMatch ? usedMatch[1] : 'unknown',
+        total: totalMatch ? totalMatch[1] : 'unknown` } }`
     };
-  } catch (error) {
+  } }catch (error) {
     console.error('Error checking Redis health:', error);
     return { healthy: false };
-  }
-}
+  } }
+} }
 
 /**
  * Search result interface for caching
  */
-export interface CachedSearchResult {, query: string;, results: Array<{, id: string;, title: string;
+export interface CachedSearchResult { query: string;, results: Array<{ id: string;, title: string;
     content?: string;
     similarity: number;
   }>;
-  stats: {, totalResults: number;, processingTimeMs: number;
+  stats: { totalResults: number;, processingTimeMs: number;
   };
   timestamp: number;
  , ttl: number;
-}
+} }
+

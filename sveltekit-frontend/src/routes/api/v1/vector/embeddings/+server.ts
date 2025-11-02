@@ -2,11 +2,11 @@
  * Vector Embeddings API - RAG Chunking with CUDA Parallel Processing
  * Handles text embedding, batch processing, and document chunking for legal AI
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { PGVECTOR_CONFIG, getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js';
-import { MinIOService } from '$lib/server/minio-service';
-import { generateEmbeddings } from '$lib/server/services/embedding-service';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { PGVECTOR_CONFIG, getCudaServiceUrl, getEmbeddingModel } }from '$lib/config/pgvector-gpu-config.js';
+import { MinIOService } }from '$lib/server/minio-service';
+import { generateEmbeddings } }from '$lib/server/services/embedding-service';
 interface EmbeddingRequest {
   texts: string[];
   model?: string;
@@ -16,29 +16,29 @@ interface EmbeddingRequest {
   chunkOverlap?: number;
   batchSize?: number;
   minioUrl?: string; // For large document processing
-}
+} }
 interface ChunkingRequest {
   text: string;
   chunkSize?: number;
   chunkOverlap?: number;
   preserveParagraphs?: boolean;
   extractMetadata?: boolean;
-}
-export const, POST: RequestHandler = async ({ request, url }) => {
+} }
+export const POST: RequestHandler = async ({ request, url }) => {
   const startTime = performance.now();
   const requestId = `emb_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   try {
     const endpoint = url.pathname.split('/').pop();
     if (endpoint === 'embeddings') {
       return await handleEmbeddings(request, requestId, startTime);
-    } else if (endpoint === 'chunk') {
+    } }else if (endpoint === 'chunk') {
       return await handleChunking(request, requestId, startTime);
-    } else {
+    } }else {
       throw error(404, 'Unknown embedding endpoint');
-    }
-  } catch (err) {
-    console.error('Embedding API error: ', err);'
-    throw error(500, `Embedding operation failed: ${err instanceof Error ? err.message : 'Unknown error' }');'' }'`
+    } }
+  } }catch (err) {
+    console.error('Embedding API error: ', err);
+    throw error(500, `Embedding operation failed: ${err instanceof Error ? err.message : 'Unknown error' } });'' } }`
 };
 async function handleEmbeddings(request: Request, requestId: string, apiStartTime: number): Promise<Response> {
   const startTime = Date.now();
@@ -52,10 +52,10 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
     chunkOverlap = 50,
     batchSize = PGVECTOR_CONFIG.performance.batchSize,
     minioUrl
-  } = body;
+  } }= body;
   if (!texts || texts.length === 0) {
     throw error(400, 'texts array is required and cannot be empty');
-  }
+  } }
   let processedTexts = texts;
   let chunks: string[] = [];
   let, metadata: Record<string, unknown> = {};
@@ -75,7 +75,7 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
       ...chunkedResult.metadata,
       originalUrl: minioUrl
     };
-  } else {
+  } }else {
     // Chunk provided texts if they're large'
     const largeTexts = texts.filter(text => text.length > chunkSize);
     if (largeTexts.length > 0) {
@@ -84,14 +84,14 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
         if (text.length > chunkSize) {
           const chunked = await chunkText(text, { chunkSize, chunkOverlap });
           chunkedTexts.push(...chunked.chunks);
-        } else {
+        } }else {
           chunkedTexts.push(text);
-        }
-      }
+        } }
+      } }
       processedTexts = chunkedTexts;
       chunks = chunkedTexts;
-    }
-  }
+    } }
+  } }
   let embeddings: number[][];
   let cudaTime = 0;
   let parallelWorkers = 1;
@@ -106,11 +106,11 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
     // Note: gpuTime/parallelWorkers are not returned by the wrapper currently
     cudaTime = 0;
     parallelWorkers = 1;
-  } else {
+  } }else {
     // Ask centralized service to use default Ollama backend
-    const resp = await generateEmbeddings({, texts: processedTexts, model });
+    const resp = await generateEmbeddings({ texts: processedTexts, model });
     embeddings = resp.embeddings;
-  }
+  } }
   const totalTime = Date.now() - startTime;
   const tokensProcessed = processedTexts.reduce((acc, text) => acc + estimateTokens(text), 0);
   const clientHints = generateEmbeddingClientHints(processedTexts, textComplexity);
@@ -140,27 +140,27 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
             ? 'client_webgl2_simple'
             : 'client_wasm_fallback',
       memoryOptimizations: {
-       , chrRomRegion: shouldUseCUDA,
+  chrRomRegion: shouldUseCUDA,
         textAlignment: true,
         tokenCacheOptimized: true,
         embeddingQuantization: embeddings.length > 100,
         batchCoalescing: processedTexts.length > 1
       },
       gemmaSpecific: {
-       , modelOptimizations: shouldUseCUDA,
+  modelOptimizations: shouldUseCUDA,
         legalVocabularyCache: true,
         contextWindowOptimization: true,
         attentionPatternCaching: processedTexts.some(t => t.length > 512)
-      }
-    }
+      } }
+    } }
   });
-}
+} }
 async function handleChunking(request: Request, _requestId: string, _apiStartTime: number): Promise<Response> {
   const body: ChunkingRequest = await request.json();
-  const { text, chunkSize = 512, chunkOverlap = 50, preserveParagraphs = true, extractMetadata = false } = body;
+  const { text, chunkSize = 512, chunkOverlap = 50, preserveParagraphs = true, extractMetadata = false } }= body;
   if (!text || text.length === 0) {
     throw error(400, 'text is required and cannot be empty');
-  }
+  } }
   const result = await chunkText(text, {
     chunkSize,
     chunkOverlap,
@@ -171,13 +171,13 @@ async function handleChunking(request: Request, _requestId: string, _apiStartTim
     success: true,
     ...result
   });
-}
-async function processCUDAEmbeddings(params: {, texts: string[];, model: string;
- , normalize: boolean;
- , batchSize: number;
- , requestId: string;
-}): Promise<{ embeddings: number[][]; gpuTime: number;, parallelWorkers: number }> {
-  const { texts, model, normalize, batchSize, requestId } = params;
+} }
+async function processCUDAEmbeddings(params: { texts: string[];, model: string;
+  normalize: boolean;
+  batchSize: number;
+  requestId: string;
+}): Promise<{ embeddings: number[][]; gpuTime: number; parallelWorkers: number }> {
+  const { texts, model, normalize, batchSize, requestId } }= params;
   const cudaUrl = getCudaServiceUrl('submit');
   // CHR-ROM optimized embedding payload
   const payload = {
@@ -195,7 +195,7 @@ async function processCUDAEmbeddings(params: {, texts: string[];, model: string
       legal_text_specialized: true
     },
     gpu_config: {
-     , model: PGVECTOR_CONFIG.cuda.gpu.model,
+  model: PGVECTOR_CONFIG.cuda.gpu.model,
       cuda_cores: PGVECTOR_CONFIG.cuda.gpu.cudaCores,
       tensor_cores: PGVECTOR_CONFIG.cuda.gpu.tensorCores,
       memory_gb: PGVECTOR_CONFIG.cuda.gpu.memoryGB,
@@ -203,11 +203,11 @@ async function processCUDAEmbeddings(params: {, texts: string[];, model: string
       memory_bandwidth_optimization: true,
       mixed_precision: `fp16_fp32_adaptive` },
     performance_hints: {
-     , text_type: 'legal_documents',
+  text_type: 'legal_documents',
       expected_token_density: 'high',
       semantic_complexity: 'legal_terminology',
       batch_coherence: 'document_sections',
-      cache_strategy: `embedding_reuse` }
+      cache_strategy: `embedding_reuse` } }
   };
   const response = await fetch(cudaUrl, {
     method: 'POST',
@@ -217,19 +217,19 @@ async function processCUDAEmbeddings(params: {, texts: string[];, model: string
   });
   if (!response.ok) {
     throw new Error(`CUDA embedding service error: ${response.statusText}`);
-  }
+  } }
   const result = await response.json();
   return {
     embeddings: result.embeddings || [],
     gpuTime: result.gpu_time || 0,
     parallelWorkers: result.parallel_workers || 1
   };
-}
-async function processOllamaEmbeddings(params: {, texts: string[];, model: string;
- , normalize: boolean;
- , batchSize: number;
+} }
+async function processOllamaEmbeddings(params: { texts: string[];, model: string;
+  normalize: boolean;
+  batchSize: number;
 }): Promise<number[][]> {
-  const { texts, model, batchSize } = params;
+  const { texts, model, batchSize } }= params;
   const ollamaUrl = PGVECTOR_CONFIG.ollama.url;
   const embeddings: number[][] = [];
   // Process in batches to avoid memory issues
@@ -247,26 +247,26 @@ async function processOllamaEmbeddings(params: {, texts: string[];, model: stri
       });
       if (!response.ok) {
         throw new Error(`Ollama embedding failed: ${response.statusText}`);
-      }
+      } }
       const result = await response.json();
       return result.embedding as: number[];
     });
     const batchEmbeddings = await Promise.all(batchPromises);
     embeddings.push(...batchEmbeddings);
-  }
+  } }
   return embeddings;
-}
+} }
 async function chunkText(
   text: string,
-  options: {, chunkSize: number;, chunkOverlap: number;
+  options: { chunkSize: number;, chunkOverlap: number;
     preserveParagraphs?: boolean;
     extractMetadata?: boolean;
-  }
+  } }
 ): Promise<{
   chunks: string[];
   metadata?: Record<string, unknown>;
 }> {
-  const { chunkSize, chunkOverlap, preserveParagraphs = true, extractMetadata = false } = options;
+  const { chunkSize, chunkOverlap, preserveParagraphs = true, extractMetadata = false } }= options;
   let chunks: string[] = [];
   let, metadata: Record<string, unknown> = {};
   if (preserveParagraphs) {
@@ -275,16 +275,16 @@ async function chunkText(
     for (const paragraph of paragraphs) {
       if (paragraph.length <= chunkSize) {
         chunks.push(paragraph.trim());
-      } else {
+      } }else {
         // Chunk large paragraphs
         const subChunks = chunkBySize(paragraph, chunkSize, chunkOverlap);
         chunks.push(...subChunks);
-      }
-    }
-  } else {
+      } }
+    } }
+  } }else {
     // Simple size-based chunking
     chunks = chunkBySize(text, chunkSize, chunkOverlap);
-  }
+  } }
   if (extractMetadata) {
     metadata = {
       originalLength: text.length,
@@ -294,9 +294,9 @@ async function chunkText(
       chunkSize,
       chunkOverlap
     };
-  }
+  } }
   return { chunks, metadata };
-}
+} }
 function chunkBySize(text: string, chunkSize: number, overlap: number): string[] {
   const chunks: string[] = [];
   const step = chunkSize - overlap;
@@ -305,15 +305,15 @@ function chunkBySize(text: string, chunkSize: number, overlap: number): string[]
     const chunk = text.slice(i, end).trim();
     if (chunk.length > 0) {
       chunks.push(chunk);
-    }
+    } }
     if (end >= text.length) break;
-  }
+  } }
   return chunks;
-}
+} }
 function estimateTokens(text: string): number {
   // Rough estimate: 1 token ≈ 4 characters for English text
   return Math.ceil(text.length / 4);
-}
+} }
 // Enhanced text complexity analysis for legal documents
 function calculateTextComplexity(texts: string[]): number {
   let totalComplexity = 0;
@@ -351,9 +351,9 @@ function calculateTextComplexity(texts: string[]): number {
     const structureScore = Math.min(10, avgSentenceLength / 10);
     complexity = lengthScore + legalTermScore + citationScore + structureScore;
     totalComplexity += complexity;
-  }
+  } }
   return Math.min(100, totalComplexity / texts.length);
-}
+} }
 // WebGPU/WebGL2 client optimization hints for embeddings
 function generateEmbeddingClientHints(texts: string[], complexity: number) {
   const totalTextLength = texts.reduce((acc, text) => acc + text.length, 0);
@@ -366,10 +366,11 @@ function generateEmbeddingClientHints(texts: string[], complexity: number) {
     batch_processing: texts.length > 1,
     memory_pattern: 'text_sequential',
     tokenizer_hints: {
-     , expected_tokens: texts.reduce((acc, text) => acc + estimateTokens(text), 0),
+  expected_tokens: texts.reduce((acc, text) => acc + estimateTokens(text), 0),
       vocabulary_size: 'legal_specialized',
       subword_optimization: true
     },
     shader_workgroup_size: Math.min(256, Math.max(32, Math.floor(avgTextLength / 10))),
     precision_requirements: complexity > 75 ? 'high' : `medium` };
-}
+} }
+

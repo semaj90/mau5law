@@ -1,27 +1,27 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import { eq, and, inArray } from 'drizzle-orm';
-import { createClient, type RedisClientType } from 'redis';
-import { randomUUID } from 'crypto';
-import { createActor, createMachine, fromPromise, assign, type ActorReffrom type SnapshotFrom } from 'xstate'; // Added SnapshotFrom
-import { REDIS_URL } from '$env/static/private';
-import { getOllamaEndpoint } from '$lib/server/endpoints';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db/index';
+import { eq, and, inArray } }from 'drizzle-orm';
+import { createClient, type RedisClientType } }from 'redis';
+import { randomUUID } }from 'crypto';
+import { createActor, createMachine, fromPromise, assign, type ActorReffrom type SnapshotFrom } }from 'xstate'; // Added SnapshotFrom
+import { REDIS_URL } }from '$env/static/private';
+import { getOllamaEndpoint } }from '$lib/server/endpoints';
 
 // Import proper schemas - adjust paths based on your actual schema location
-import { cases, evidence } from '$lib/server/db/schema';
+import { cases, evidence } }from '$lib/server/db/schema';
 
 // Import enhanced RAG service (matches pattern from search API)
-import { enhancedVectorSearchService } from '$lib/server/vector/enhanced-vector-search-service';
+import { enhancedVectorSearchService } }from '$lib/server/vector/enhanced-vector-search-service';
 
 // Type definitions
 interface EvidenceItem { id: string;, title: string;
   description: string | null;
   caseId: string;
   evidenceType: string;
- , subType: string | null;
+  subType: string | null;
   aiAnalysis?: Record<string, unknown>;
   aiSummary?: string | null;
   summary?: string | null;
@@ -32,7 +32,7 @@ interface EvidenceItem { id: string;, title: string;
   confidentialityLevel?: string;
   collectedAt?: Date | string | null;
   location?: string | null;
-}
+} }
 
 // Define a type for the items in the evidenceContext array
 interface SynthesizedEvidenceContextItem { id: string;, title: string;
@@ -41,53 +41,53 @@ interface SynthesizedEvidenceContextItem { id: string;, title: string;
   type: string;
   subType: string | null | undefined;
   tags: string[] | undefined;
- , aiAnalysis: Record<string, unknown> | undefined;
+  aiAnalysis: Record<string, unknown> | undefined;
   collectedAt: Date | string | null | undefined;
   location: string | null | undefined;
-}
+} }
 
 // Define a type for the results from enhancedVectorSearchService.search
-interface EnhancedVectorSearchResult {, id: string;, score: number;
- , content: string; // Explicitly include content
+interface EnhancedVectorSearchResult { id: string;, score: number;
+  content: string; // Explicitly include content
   metadata?: Record<string, unknown>;
   payload?: Record<string, unknown>;
-}
+} }
 
 interface RAGResult { answer: string;, confidence: number;
   sources: Array<{ content: string }>;
   metadata: { ragScore: number };
-}
+} }
 
 interface EmbeddingOptions {
   model?: string;
   provider?: string;
   legalDomain?: boolean;
-}
+} }
 
 // New interface for the synthesized evidence: object
-interface SynthesizedEvidence {, summary: string;, analysis: string;
+interface SynthesizedEvidence { summary: string;, analysis: string;
   recommendations: string[];
   methodology: string;
   sourceCount: number;
   correlations: Array<{ type: string; description: string; items: string[] }>;
-  timeline: {, events: Array<{, date: Date | string;
+  timeline: { events: Array<{ date: Date | string;
       evidenceId: string;
       title: string;
       type: string;
       location?: string | null;
     }>;
-    timespan: {, start: Date | string;, end: Date | string;
+    timespan: { start: Date | string;, end: Date | string;
     };
     gaps: Array<{ start: string; end: string; days: number }>;
-  } | null;
-  patterns: Array<{, type: string;, description: string;
+  } }| null;
+  patterns: Array<{ type: string;, description: string;
     data: Array<{ type?: string; tag?: string; count: number }>;
   }>;
-}
+} }
 
 // AI service for embeddings - use Ollama integration
 const aiService = {
- , generateEmbedding: async (text: string, options?: EmbeddingOptions): Promise<number[]> => {
+  generateEmbedding: async (text: string, options?: EmbeddingOptions): Promise<number[]> => {
     try {
       const model = options?.model || 'embeddinggemma:latest';
       const response = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
@@ -98,16 +98,16 @@ const aiService = {
 
       if (!response.ok) {
         throw new Error(`Ollama embedding failed: ${response.statusText}`);
-      }
+      } }
 
       const data = (await response.json()) as { embedding?: number[] };
       return data.embedding || new Array(768).fill(0);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Embedding generation failed:', error);
       // Fallback to zero vector
       return new Array(768).fill(0);
-    }
-  }
+    } }
+  } }
 };
 
 const enhancedRAGService = {
@@ -118,26 +118,26 @@ const enhancedRAGService = {
       const results: EnhancedVectorSearchResult[] = await enhancedVectorSearchService.search({
         embedding,
         limit: 10,
-        filter: options.caseId ? {, caseId: options.caseId } : undefined
+        filter: options.caseId ? { caseId: options.caseId } }: undefined
       });
 
       return {
         answer: results.length > 0 ? results[0].content : 'No analysis available',
         confidence: results.length > 0 ? results[0].score : 0.5,
-        sources: results.map(r => ({, content: r.content })),
-        metadata: {, ragScore: results.length > 0 ? results[0].score : 0.5 }
+        sources: results.map(r => ({ content: r.content })),
+        metadata: { ragScore: results.length > 0 ? results[0].score : 0.5 } }
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('RAG query failed:', error);
       return {
         answer: 'AI analysis temporarily unavailable',
         confidence: 0.5,
         sources: [],
-        metadata: {, ragScore: 0.5 }
+        metadata: { ragScore: 0.5 } }
       };
-    }
+    } }
   },
-  indexDocument: async (doc: {, id: string;, content: string;, metadata: Record<string, unknown> }) => {
+  indexDocument: async (doc: { id: string; content: string; metadata: Record<string, unknown> }) => {
     try {
       // Index document for future RAG queries
       const embedding = (doc.metadata?.embedding as: number[]) || (await aiService.generateEmbedding(doc.content));
@@ -148,36 +148,36 @@ const enhancedRAGService = {
         metadata: doc.metadata
       });
       console.log('Indexed document:', doc.id);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Document indexing failed:', error);
-    }
-  }
+    } }
+  } }
 };
 
 // Helper to get user ID from locals
 function getUserId(locals: App.Locals): string {
   return locals.user?.id || 'anonymous';
-}
+} }
 
 export interface SynthesisRequest { evidenceIds: string[];, synthesisType: 'merge' | 'compare' | 'timeline' | 'correlation';
   prompt?: string;
   caseId: string;
   title: string;
   description?: string;
-}
+} }
 
-export interface SynthesisResult {, synthesizedEvidence: SynthesizedEvidence;, embedding: number[];
+export interface SynthesisResult { synthesizedEvidence: SynthesizedEvidence;, embedding: number[];
   ragScore: number;
   confidence: number;
   sources: string[];
-}
+} }
 
 // New: XState types for synthesis machine
 type SynthesisContext = { request: SynthesisRequest & {; userId: string };
   evidenceItems: EvidenceItem[];
   synthesisResult: SynthesisResult | null;
   synthesizedEvidenceRecord: EvidenceItem | null;
-  error: { message: string; code: string; details?: string; stage?: string } | null;
+  error: { message: string; code: string; details?: string; stage?: string } }| null;
   cachedAt: string | null;
   userId: string;
 };
@@ -194,12 +194,12 @@ async function initRedis(): Promise<void> {
       redisClient = createClient({
         url: REDIS_URL || 'redis://localhost:6379` }) as RedisClientType;'`
       await redisClient.connect();
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Redis connection failed:', error);
       redisClient = null; // Reset on failure
-    }
-  }
-}
+    } }
+  } }
+} }
 
 async function publishSynthesisUpdate(type: string, data: Record<string, unknown>, userId?: string): Promise<void> {
   if (redisClient && redisClient.isOpen) {
@@ -213,16 +213,16 @@ async function publishSynthesisUpdate(type: string, data: Record<string, unknown
           ...data
         })
       );
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Failed to publish synthesis update:', error);
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // XState v5 Synthesis Machine
 const synthesisMachine = createMachine({
-  types: {} as {, context: SynthesisContext;, events: SynthesisEvents;
-   , input: SynthesisRequest & {, userId: string };
+  types: {} }as { context: SynthesisContext;, events: SynthesisEvents;
+  input: SynthesisRequest & { userId: string };
   },
   id: 'evidenceSynthesis',
   initial: 'idle',
@@ -236,59 +236,57 @@ const synthesisMachine = createMachine({
     cachedAt: null,
     userId: input.userId, // Initialize userId from input
   }),
-  states: {, idle: {, on: {, START_SYNTHESIS: `checkingCache` }
+  states: { idle: { on: { START_SYNTHESIS: `checkingCache` } }
     },
-    checkingCache: {, invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({, input: context }) => {
+    checkingCache: { invoke: { input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           const cacheKey = `synthesis:cache:${context.request.caseId}:${context.request.synthesisType}:${context.request.evidenceIds.sort().join(',')}`;
           const cached = await redisClient?.get(cacheKey);
           return cached ? JSON.parse(cached) : null;
         }),
         onDone: [
-          {,
-            guard: ({ event }) => event.output !== null,
+          { guard: ({ event }) => event.output !== null,
             target: 'success',
             actions: assign({
-             , synthesizedEvidenceRecord: ({ event }) => event.output.synthesizedEvidence,
+  synthesizedEvidenceRecord: ({ event }) => event.output.synthesizedEvidence,
               synthesisResult: ({ event }) => event.output.synthesisResult,
               cachedAt: ({ event }) => event.output.cachedAt
             })
           },
-          { target: `validatingInput` }
+          { target: `validatingInput` } }
         ],
         onError: {
-         , target: 'validatingInput', // Continue even if cache check fails
+  target: 'validatingInput', // Continue even if cache check fails
           actions: assign({
-           , error: ({ event }) => ({ message: `Cache check, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
+  error: ({ event }) => ({ message: `Cache check, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
               code: 'CACHE_ERROR',
               stage: 'checkingCache'
             })
           })
-        }
-      }
+        } }
+      } }
     },
     validatingInput: {
-     , always: [
-        {,
-          guard: ({ context }) => !context.request.evidenceIds || context.request.evidenceIds.length < 2,
+  always: [
+        { guard: ({ context }) => !context.request.evidenceIds || context.request.evidenceIds.length < 2,
           target: 'failure',
-          actions: assign({, error: {, message: 'At least, 2 evidence items required for synthesis',
+          actions: assign({ error: { message: 'At least, 2 evidence items required for synthesis',
               code: 'INVALID_INPUT',
               stage: 'validatingInput'
-            }
+            } }
           })
         },
         {
           guard: ({ context }) => !context.request.caseId || !context.request.title,
           target: 'failure',
-          actions: assign({, error: {, message: 'Case ID and title are required', code: 'INVALID_INPUT', stage: 'validatingInput' }
+          actions: assign({ error: { message: 'Case ID and title are required', code: 'INVALID_INPUT', stage: 'validatingInput' } }
           })
         },
-        { target: 'verifyingCaseAccess' }
+        { target: 'verifyingCaseAccess' } }
       ]
     },
-    verifyingCaseAccess: {, invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({, input: context }) => {
+    verifyingCaseAccess: { invoke: { input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           // userId is now in context
           const caseRecord = await db
             .select()
@@ -297,22 +295,22 @@ const synthesisMachine = createMachine({
             .limit(1);
           if (!caseRecord.length) {
             throw new Error('Case not found or access denied');
-          }
+          } }
           return true;
         }),
         onDone: 'fetchingEvidence',
         onError: {
-         , target: 'failure',
+  target: 'failure',
           actions: assign({
-           , error: ({ event }) => ({
+  error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'ACCESS_DENIED',
               stage: 'verifyingCaseAccess' })'` })'`
-        }
-      }
+        } }
+      } }
     },
-    fetchingEvidence: {, invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({, input: context }) => {
+    fetchingEvidence: { invoke: { input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           const evidenceItems = (await db
             .select()
             .from(evidence)
@@ -322,26 +320,26 @@ const synthesisMachine = createMachine({
 
           if (evidenceItems.length !== context.request.evidenceIds.length) {
             throw new Error('Some evidence items not found');
-          }
+          } }
           return evidenceItems;
         }),
         onDone: {
-         , target: 'performingAISynthesis',
-          actions: assign({, evidenceItems: ({ event }) => event.output })
+  target: 'performingAISynthesis',
+          actions: assign({ evidenceItems: ({ event }) => event.output })
         },
         onError: {
-         , target: 'failure',
+  target: 'failure',
           actions: assign({
-           , error: ({ event }) => ({
+  error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'EVIDENCE_FETCH_FAILED',
               stage: `fetchingEvidence` })
           })
-        }
-      }
+        } }
+      } }
     },
-    performingAISynthesis: {, invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({, input: context }) => {
+    performingAISynthesis: { invoke: { input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           // userId is now in context
           return await synthesizeEvidence(
             context.evidenceItems,
@@ -352,22 +350,22 @@ const synthesisMachine = createMachine({
           );
         }),
         onDone: {
-         , target: 'persistingSynthesis',
-          actions: assign({, synthesisResult: ({ event }) => event.output })
+  target: 'persistingSynthesis',
+          actions: assign({ synthesisResult: ({ event }) => event.output })
         },
         onError: {
-         , target: 'failure',
+  target: 'failure',
           actions: assign({
-           , error: ({ event }) => ({
+  error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'AI_SYNTHESIS_FAILED',
               stage: `performingAISynthesis` })
           })
-        }
-      }
+        } }
+      } }
     },
-    persistingSynthesis: {, invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({, input: context }) => {
+    persistingSynthesis: { invoke: { input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           // userId is now in context
           if (!context.synthesisResult) throw new Error('Synthesis result missing');
 
@@ -376,12 +374,12 @@ const synthesisMachine = createMachine({
             .values({
               title: context.request.title,
               description:
-                context.request.description || `Synthesized from ${context.evidenceItems.length} evidence items`,
+                context.request.description || `Synthesized from ${context.evidenceItems.length} }evidence items`,
               caseId: context.request.caseId,
               evidenceType: 'synthesized',
               subType: context.request.synthesisType,
               aiAnalysis: {
-               , synthesisMethod: context.request.synthesisType,
+  synthesisMethod: context.request.synthesisType,
                 sourceEvidenceIds: context.request.evidenceIds,
                 synthesisTimestamp: new Date().toISOString(),
                 confidence: context.synthesisResult.confidence,
@@ -391,14 +389,13 @@ const synthesisMachine = createMachine({
               summary: context.synthesisResult.synthesizedEvidence.analysis,
               tags: ['synthesized', context.request.synthesisType, ...extractTagsFromEvidence(context.evidenceItems)],
               chainOfCustody: [
-                {,
-                  action: 'synthesis_created',
+                { action: 'synthesis_created',
                   userId: context.userId, // Use userId from context
                   timestamp: new Date().toISOString(),
                   details: {
-                   , sourceCount: context.evidenceItems.length,
+  sourceCount: context.evidenceItems.length,
                     method: context.request.synthesisType
-                  }
+                  } }
                 },
               ],
               uploadedBy: context.userId, // Use userId from context
@@ -408,22 +405,22 @@ const synthesisMachine = createMachine({
           return synthesizedEvidence[0];
         }),
         onDone: {
-         , target: 'indexingRAG',
-          actions: assign({, synthesizedEvidenceRecord: ({ event }) => event.output })
+  target: 'indexingRAG',
+          actions: assign({ synthesizedEvidenceRecord: ({ event }) => event.output })
         },
         onError: {
-         , target: 'failure',
+  target: 'failure',
           actions: assign({
-           , error: ({ event }) => ({
+  error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'PERSISTENCE_FAILED',
               stage: `persistingSynthesis` })
           })
-        }
-      }
+        } }
+      } }
     },
-    indexingRAG: {, invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({, input: context }) => {
+    indexingRAG: { invoke: { input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           if (!context.synthesizedEvidenceRecord || !context.synthesisResult)
             throw new Error('Missing data for RAG indexing');
           await addToEnhancedRAG(
@@ -436,17 +433,17 @@ const synthesisMachine = createMachine({
         }),
         onDone: 'publishingUpdate',
         onError: {
-         , target: 'publishingUpdate', // Continue even if RAG indexing fails
+  target: 'publishingUpdate', // Continue even if RAG indexing fails
           actions: assign({
-           , error: ({ event }) => ({ message: `RAG indexing, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
+  error: ({ event }) => ({ message: `RAG indexing, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
               code: 'RAG_INDEXING_FAILED',
               stage: `indexingRAG` })
           })
-        }
-      }
+        } }
+      } }
     },
-    publishingUpdate: {, invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({, input: context }) => {
+    publishingUpdate: { invoke: { input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           // userId is now in context
           if (!context.synthesizedEvidenceRecord) throw new Error('Missing synthesized evidence record for publishing');
           await publishSynthesisUpdate(
@@ -465,17 +462,17 @@ const synthesisMachine = createMachine({
         }),
         onDone: 'cachingResults',
         onError: {
-         , target: 'cachingResults', // Continue even if publishing fails
+  target: 'cachingResults', // Continue even if publishing fails
           actions: assign({
-           , error: ({ event }) => ({ message: `Publishing update, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
+  error: ({ event }) => ({ message: `Publishing update, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
               code: 'PUBLISH_FAILED',
               stage: `publishingUpdate` })
           })
-        }
-      }
+        } }
+      } }
     },
-    cachingResults: {, invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({, input: context }) => {
+    cachingResults: { invoke: { input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           if (context.synthesizedEvidenceRecord && context.synthesisResult) {
             const cacheKey = `synthesis:cache:${context.request.caseId}:${context.request.synthesisType}:${context.request.evidenceIds.sort().join(',')}`;
             const cacheObj = {
@@ -484,16 +481,16 @@ const synthesisMachine = createMachine({
               cachedAt: new Date().toISOString()
             };
             await redisClient?.setex(cacheKey, SYNTHESIS_CACHE_TTL, JSON.stringify(cacheObj));
-          }
+          } }
           return true;
         }),
         onDone: 'success',
         onError: 'success', // Continue even if caching fails
-      }
+      } }
     },
-    success: {, type: 'final' },
-    failure: {, type: `final` }'`'`
-  }
+    success: { type: 'final' },
+    failure: { type: `final` } }`'`
+  } }
 });
 
 // Type helper for XState snapshot
@@ -505,7 +502,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   if (!locals.user) {
     return json({ error: `Unauthorized` }, { status: 401 });
-  }
+  } }
 
   try {
     await initRedis();
@@ -516,7 +513,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       input: {
         ...body,
         userId: getUserId(locals), // Pass userId as part of the input
-      }
+      } }
     });
 
     actor.start();
@@ -528,11 +525,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     );
 
     await Promise.race([
-      new Promise<void>(resolve => {,
-        actor.subscribe((snapshot: SynthesisSnapshot) => {
+      new Promise<void>(resolve => { actor.subscribe((snapshot: SynthesisSnapshot) => {
           if (snapshot.value === 'success' || snapshot.value === 'failure') {
             resolve();
-          }
+          } }
         });
       }),
       timeoutPromise,
@@ -542,7 +538,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     if (snapshot.value === 'failure') {
       const error = snapshot.context.error;
-      console.error(`❌ [${requestId}] XState synthesis failure in stage ${error?.stage || 'unknown` }: ', error);
+      console.error(`❌ [${requestId} } XState synthesis failure in stage ${error?.stage || 'unknown` }: ', error);
       return json(
         {
           error: error?.message || 'Evidence synthesis failed',
@@ -550,22 +546,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           stage: error?.stage,
           details: error?.details
         },
-        { status: 500 }
+        { status: 500 } }
       );
-    }
+    } }
 
     const processingTime = Date.now() - startTime;
     const isCached = !!snapshot.context.cachedAt;
 
     console.log(
-      `✅ Synthesis: ${snapshot.context.synthesizedEvidenceRecord?.id} (${snapshot.context.request.synthesisType}) in ${processingTime}ms (cached: ${isCached})`
+      `✅ Synthesis: ${snapshot.context.synthesizedEvidenceRecord?.id} }(${snapshot.context.request.synthesisType}) in ${processingTime}ms (cached: ${isCached})`
     );
 
     return json({
       success: true,
       synthesizedEvidence: snapshot.context.synthesizedEvidenceRecord,
       metadata: {
-       , ragScore: snapshot.context.synthesisResult?.ragScore,
+  ragScore: snapshot.context.synthesisResult?.ragScore,
         confidence: snapshot.context.synthesisResult?.confidence,
         sources: snapshot.context.synthesisResult?.sources,
         embeddingDimensions: snapshot.context.synthesisResult?.embedding.length,
@@ -574,10 +570,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         processingTime,
         cached: isCached,
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  } catch (error: any) {
-    console.error(`❌ [${requestId}] Evidence synthesis error: ', error);'`
+  } }catch (error: any) {
+    console.error(`❌ [${requestId} } Evidence synthesis error: ', error);'`
     return json(
       {
         error: 'Evidence synthesis failed',
@@ -585,9 +581,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         requestId,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // Core synthesis logic with Ollama/TensorRT-LLM/Transformer.js integration
@@ -637,7 +633,7 @@ async function synthesizeEvidence(
   // Calculate high RAG score
   const ragScore = calculateHighRAGScore(evidenceItems, ragResult, embedding, synthesisType);
 
-  return { synthesizedEvidence: {, summary: analysis,
+  return { synthesizedEvidence: { summary: analysis,
       analysis: 'Synthesis Analysis (${synthesisType}):\n\n${analysis}\n\nRecommendations:\n- ${recommendations.join('\n- ')}`,'`
       recommendations: recommendations,
       methodology: synthesisType,
@@ -651,7 +647,7 @@ async function synthesizeEvidence(
     confidence: ragResult.confidence || 0.8,
     sources: ragResult.sources.map(s => s.content) || []
   };
-}
+} }
 
 function generateSynthesisPrompt(
   evidenceContext: SynthesizedEvidenceContextItem[],
@@ -659,43 +655,43 @@ function generateSynthesisPrompt(
   customPrompt?: string
 ): string {
   const basePrompt = `Legal Evidence Synthesis Task`
-Synthesis Type: ${synthesisType}
-Evidence Items: ${evidenceContext.length}
+Synthesis Type: ${synthesisType} }
+Evidence Items: ${evidenceContext.length} }
 
 Evidence, Data:
 ${evidenceContext
   .map(
     (item, idx) => `
-  ${idx + 1}. Title: ${item.title}
-    , Type: ${item.type}${item.subType ? ` (${item.subType})` : `' }'`
-     Content: ${item.content}
-    , Tags: ${item.tags?.join(', ') || 'None` }'`
-     ${item.collectedAt ? `Collected: ${new Date(item.collectedAt).toLocaleDateString()}` : `` }
-     ${item.location ? `Location: ${item.location}` : `` }
+  ${idx + 1}. Title: ${item.title} }
+  Type: ${item.type}${item.subType ? ` (${item.subType})` : `' } }`
+     Content: ${item.content} }
+  Tags: ${item.tags?.join(', ') || 'None` } }`
+     ${item.collectedAt ? `Collected: ${new Date(item.collectedAt).toLocaleDateString()}` : `` } }
+     ${item.location ? `Location: ${item.location}` : `` } }
   `
   )
-  .join('\n')}
+  .join('\n')} }
 
-${customPrompt || ''}
+${customPrompt || ''} }
 
 Instructions:
-- Perform ${synthesisType} synthesis of the evidence
+- Perform ${synthesisType} }synthesis of the evidence
 - Identify patterns, correlations, and inconsistencies
 - Provide legal analysis with supporting reasoning
 - Generate actionable recommendations
 - Assess evidentiary value and admissibility implications
-${synthesisType === 'timeline' ? '- Create chronological sequence with gaps identified' : ''}
-${synthesisType === 'correlation' ? '- Focus on connections and causal relationships' : `` }'`'`
-${synthesisType === 'compare' ? '- Highlight similarities, differences, and contradictions' : `` }
-${synthesisType === 'merge' ? '- Combine evidence into coherent narrative' : `` }
+${synthesisType === 'timeline' ? '- Create chronological sequence with gaps identified' : ''} }
+${synthesisType === 'correlation' ? '- Focus on connections and causal relationships' : `` } }`'`
+${synthesisType === 'compare' ? '- Highlight similarities, differences, and contradictions' : `` } }
+${synthesisType === 'merge' ? '- Combine evidence into coherent narrative' : `` } }
 
 Provide comprehensive analysis: ';'
 
   return basePrompt;
-}
+} }
 
 function calculateHighRAGScore(
- , evidenceItems: EvidenceItem[],
+  evidenceItems: EvidenceItem[],
   ragResult: RAGResult,
   embedding: number[],
   synthesisType: string
@@ -733,25 +729,25 @@ function calculateHighRAGScore(
   if (embedding.length >= 384) {
     const embeddingMagnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
     if (embeddingMagnitude > 0.8) score += 0.1;
-  }
+  } }
 
   // Source diversity bonus
   const evidenceTypes = new Set(evidenceItems.map(item => item.evidenceType));
   if (evidenceTypes.size > 2) score += 0.05;
 
   return Math.min(0.95, Math.max(0.1, score));
-}
+} }
 
 function extractTagsFromEvidence(evidenceItems: EvidenceItem[]): string[] {
   const allTags = evidenceItems.flatMap(item => item.tags || []);
   const uniqueTags = [...new Set(allTags)];
   return uniqueTags.slice(0, 10);
-}
+} }
 
 function identifyCorrelations(evidenceItems: EvidenceItem[]): Array<{ type: string;, description: string;
   items: string[];
 }> {
-  const correlations: Array<{ type: string; description: string;, items: string[] }> = [];
+  const correlations: Array<{ type: string; description: string; items: string[] }> = [];
 
   const datedItems = evidenceItems.filter(item => item.collectedAt);
   if (datedItems.length > 1) {
@@ -760,7 +756,7 @@ function identifyCorrelations(evidenceItems: EvidenceItem[]): Array<{ type: stri
       description: 'Evidence items with overlapping timeframes',
       items: datedItems.map(item => item.id)
     });
-  }
+  } }
 
   const locatedItems = evidenceItems.filter(item => item.location);
   if (locatedItems.length > 1) {
@@ -769,7 +765,7 @@ function identifyCorrelations(evidenceItems: EvidenceItem[]): Array<{ type: stri
       description: 'Evidence items from related locations',
       items: locatedItems.map(item => item.id)
     });
-  }
+  } }
 
   const taggedItems = evidenceItems.filter(item => item.tags && item.tags.length > 0);
   if (taggedItems.length > 1) {
@@ -778,45 +774,45 @@ function identifyCorrelations(evidenceItems: EvidenceItem[]): Array<{ type: stri
       description: 'Evidence items with common themes',
       items: taggedItems.map(item => item.id)
     });
-  }
+  } }
 
   return correlations;
-}
+} }
 
-function buildTimeline(evidenceItems: EvidenceItem[]): { events: Array<{, date: Date | string;
+function buildTimeline(evidenceItems: EvidenceItem[]): { events: Array<{ date: Date | string;
     evidenceId: string;
     title: string;
     type: string;
     location?: string | null;
   }>;
-  timespan: {, start: Date | string;, end: Date | string;
+  timespan: { start: Date | string;, end: Date | string;
   };
-  gaps: Array<{ start: string; end: string;, days: number }>;
-} | null {
+  gaps: Array<{ start: string; end: string; days: number }>;
+} }| null {
   const datedItems = evidenceItems
-    .filter((item): item is EvidenceItem & { collectedAt: Date | string } => !!item.collectedAt)
+    .filter((item): item is EvidenceItem & { collectedAt: Date | string } }=> !!item.collectedAt)
     .sort((a, b) => new Date(a.collectedAt).getTime() - new Date(b.collectedAt).getTime());
 
   if (datedItems.length === 0) return: null;
 
-  return {, events: datedItems.map(item => ({, date: item.collectedAt,
+  return { events: datedItems.map(item => ({ date: item.collectedAt,
       evidenceId: item.id,
       title: item.title,
       type: item.evidenceType,
       location: item.location
     })),
     timespan: {
-     , start: datedItems[0].collectedAt,
+  start: datedItems[0].collectedAt,
       end: datedItems[datedItems.length - 1].collectedAt
     },
     gaps: identifyTimelineGaps(datedItems)
   };
-}
+} }
 
 function identifyTimelineGaps(
-  datedItems: Array<EvidenceItem & {, collectedAt: Date | string }>
+  datedItems: Array<EvidenceItem & { collectedAt: Date | string }>
 ): Array<{ start: string; end: string; days: number }> {
-  const gaps: Array<{ start: string; end: string;, days: number }> = [];
+  const gaps: Array<{ start: string; end: string; days: number }> = [];
   for (let i = 1; i < datedItems.length; i++) {
     const prev = new Date(datedItems[i - 1].collectedAt);
     const curr = new Date(datedItems[i].collectedAt);
@@ -828,16 +824,16 @@ function identifyTimelineGaps(
         end: curr.toISOString(),
         days: Math.floor(diffDays)
       });
-    }
-  }
+    } }
+  } }
   return gaps;
-}
+} }
 
 function identifyPatterns(evidenceItems: EvidenceItem[]): Array<{ type: string;, description: string;
   data: Array<{ type?: string; tag?: string; count: number }>;
 }> {
-  const patterns: Array<{, type: string;, description: string;
-    data: Array<{ type?: string; tag?: string;, count: number }>;
+  const patterns: Array<{ type: string;, description: string;
+    data: Array<{ type?: string; tag?: string; count: number }>;
   }> = [];
 
   // Evidence type patterns
@@ -846,7 +842,7 @@ function identifyPatterns(evidenceItems: EvidenceItem[]): Array<{ type: string;
       acc[item.evidenceType] = (acc[item.evidenceType] || 0) + 1;
       return acc;
     },
-    {} as Record<string, number>
+    {} }as Record<string, number>
   );
 
   const dominantTypes = Object.entries(typeFreq)
@@ -859,7 +855,7 @@ function identifyPatterns(evidenceItems: EvidenceItem[]): Array<{ type: string;
       description: 'Dominant evidence types identified',
       data: dominantTypes
     });
-  }
+  } }
 
   // Tag patterns
   const allTags = evidenceItems.flatMap(item => item.tags || []);
@@ -868,7 +864,7 @@ function identifyPatterns(evidenceItems: EvidenceItem[]): Array<{ type: string;
       acc[tag] = (acc[tag] || 0) + 1;
       return acc;
     },
-    {} as Record<string, number>
+    {} }as Record<string, number>
   );
 
   const commonTags = Object.entries(tagFreq)
@@ -881,10 +877,10 @@ function identifyPatterns(evidenceItems: EvidenceItem[]): Array<{ type: string;
       description: 'Common themes across evidence',
       data: commonTags
     });
-  }
+  } }
 
   return patterns;
-}
+} }
 
 async function addToEnhancedRAG(
   synthesizedEvidence: EvidenceItem,
@@ -900,7 +896,7 @@ async function addToEnhancedRAG(
       id: synthesizedEvidence.id,
       content: synthesizedEvidence.summary || synthesizedEvidence.description || '',
       metadata: {
-       , evidenceId: synthesizedEvidence.id,
+  evidenceId: synthesizedEvidence.id,
         caseId: synthesizedEvidence.caseId,
         ragScore,
         priority: ragScore > 0.8 ? 'high' : ragScore > 0.6 ? 'medium' : 'normal',
@@ -910,24 +906,24 @@ async function addToEnhancedRAG(
         tags: synthesizedEvidence.tags || [],
         synthesisMethod: synthesisType,
         sourceCount
-      }
+      } }
     });
 
     console.log(`✅ Added synthesized evidence to RAG with score: ${ragScore}`);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Failed to add to enhanced RAG:', error);
-  }
-}
+  } }
+} }
 
 // Get synthesis suggestions endpoint
 export const GET: RequestHandler = async ({ url, locals }) => {
   if (!locals.user) {
-    return json({ error: 'Unauthorized' }, { status: 401 });'` }'`
+    return json({ error: 'Unauthorized' }, { status: 401 });'` } }`
 
   const caseId = url.searchParams.get('caseId');
   if (!caseId) {
     return json({ error: `Case ID required` }, { status: 400 });
-  }
+  } }
 
   try {
     const caseEvidence = (await db.select().from(evidence).where(eq(evidence.caseId, caseId))) as EvidenceItem[];
@@ -937,20 +933,20 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json({
       suggestions,
       metadata: {
-       , totalEvidence: caseEvidence.length,
+  totalEvidence: caseEvidence.length,
         suggestionsGenerated: suggestions.length,
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Failed to generate synthesis suggestions:', error);
     return json(
       {
         error: 'Failed to generate suggestions',
         details: error instanceof Error ? error.message : `Unknown error` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Promise<
@@ -959,7 +955,7 @@ async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Prom
     description: string;
     confidence: number;
     priority: string;
-   , estimatedValue: number;
+  estimatedValue: number;
   }>
 > {
   if (evidenceItems.length < 2) return [];
@@ -981,7 +977,7 @@ async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Prom
       priority: 'high',
       estimatedValue: calculateSuggestionValue(timelineItems, 'timeline')
     });
-  }
+  } }
 
   // Correlation opportunities
   const digitalItems = evidenceItems.filter(
@@ -998,7 +994,7 @@ async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Prom
       priority: 'high',
       estimatedValue: calculateSuggestionValue(digitalItems, 'correlation')
     });
-  }
+  } }
 
   // Comparison opportunities
   const similarItems = findSimilarEvidence(evidenceItems);
@@ -1012,7 +1008,7 @@ async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Prom
       priority: 'medium',
       estimatedValue: calculateSuggestionValue(similarItems, 'compare')
     });
-  }
+  } }
 
   // Merge opportunities
   const fragmentedItems = evidenceItems.filter(
@@ -1029,10 +1025,10 @@ async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Prom
       priority: 'medium',
       estimatedValue: calculateSuggestionValue(fragmentedItems, 'merge')
     });
-  }
+  } }
 
   return suggestions.sort((a, b) => b.estimatedValue - a.estimatedValue).slice(0, 5);
-}
+} }
 
 function findSimilarEvidence(evidenceItems: EvidenceItem[]): EvidenceItem[] {
   const typeGroups = evidenceItems.reduce(
@@ -1042,7 +1038,7 @@ function findSimilarEvidence(evidenceItems: EvidenceItem[]): EvidenceItem[] {
       acc[key].push(item);
       return acc;
     },
-    {} as Record<string, EvidenceItem[]>
+    {} }as Record<string, EvidenceItem[]>
   );
 
   const largestGroup = Object.values(typeGroups).reduce(
@@ -1051,7 +1047,7 @@ function findSimilarEvidence(evidenceItems: EvidenceItem[]): EvidenceItem[] {
   );
 
   return largestGroup.length >= 2 ? largestGroup : [];
-}
+} }
 
 function calculateSuggestionValue(items: EvidenceItem[], synthesisType: string): number {
   let value = items.length * 0.2;
@@ -1081,4 +1077,5 @@ function calculateSuggestionValue(items: EvidenceItem[], synthesisType: string):
   value *= typeMultipliers[synthesisType as keyof typeof typeMultipliers] || 1.0;
 
   return Math.round(value * 100) / 100;
-}
+} }
+

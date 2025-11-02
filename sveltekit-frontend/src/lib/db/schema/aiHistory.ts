@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, jsonb, real } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, jsonb, real } }from 'drizzle-orm/pg-core';
 export const aiHistory = pgTable('ai_history', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: text('user_id'),
@@ -24,3 +24,4 @@ export const indexedFiles = pgTable('indexed_files', {
   metadata: jsonb('metadata'), // Additional metadata (e.g., size, modTime)
   indexedAt: timestamp('indexed_at').defaultNow()
 });
+

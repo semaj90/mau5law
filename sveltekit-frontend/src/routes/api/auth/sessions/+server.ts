@@ -2,11 +2,11 @@
  * Sessions management endpoint - List all active sessions for a user
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
-import { db } from '$lib/server/db';
-import { sessions, as sessionsTable } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { auth } }from '$lib/server/auth';
+import { db } }from '$lib/server/db';
+import { sessions, as sessionsTable } }from '$lib/server/db/schema';
+import { eq } }from 'drizzle-orm';
 
 export const GET: RequestHandler = async (event) => {
   try {
@@ -17,29 +17,29 @@ export const GET: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-           , message: 'Not authenticated',
+  message: 'Not authenticated',
             code: 'NO_SESSION',
             status: 401
-          }
+          } }
         },
-        { status: 401 }
+        { status: 401 } }
       );
-    }
+    } }
 
-    const { session, user } = await auth.validateSession(sessionId);
+    const { session, user } }= await auth.validateSession(sessionId);
     if (!session || !user) {
       return json(
         {
           success: false,
           error: {
-           , message: 'Invalid session',
+  message: 'Invalid session',
             code: 'INVALID_SESSION',
             status: 401
-          }
+          } }
         },
-        { status: 401 }
+        { status: 401 } }
       );
-    }
+    } }
 
     // Get all sessions for this user
     const userSessions = await db
@@ -59,20 +59,20 @@ export const GET: RequestHandler = async (event) => {
     }));
 
     return json(formattedSessions);
-  } catch (error) {
+  } }catch (error) {
     console.error('Error fetching sessions:', error);
     return json(
       {
         success: false,
         error: {
-         , message: 'Failed to fetch sessions',
+  message: 'Failed to fetch sessions',
           code: 'FETCH_ERROR',
           status: 500
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -86,14 +86,14 @@ export const DELETE: RequestHandler = async (event) => {
       {
         success: false,
         error: {
-         , message: 'Session ID required',
+  message: 'Session ID required',
           code: 'NO_SESSION_ID',
           status: 400
-        }
+        } }
       },
-      { status: 400 }
+      { status: 400 } }
     );
-  }
+  } }
 
   try {
     // Validate current session
@@ -103,29 +103,29 @@ export const DELETE: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-           , message: 'Not authenticated',
+  message: 'Not authenticated',
             code: 'NO_SESSION',
             status: 401
-          }
+          } }
         },
-        { status: 401 }
+        { status: 401 } }
       );
-    }
+    } }
 
-    const { session, user } = await auth.validateSession(currentSessionId);
+    const { session, user } }= await auth.validateSession(currentSessionId);
     if (!session || !user) {
       return json(
         {
           success: false,
           error: {
-           , message: 'Invalid session',
+  message: 'Invalid session',
             code: 'INVALID_SESSION',
             status: 401
-          }
+          } }
         },
-        { status: 401 }
+        { status: 401 } }
       );
-    }
+    } }
 
     // Prevent revoking current session
     if (sessionId === currentSessionId) {
@@ -133,14 +133,14 @@ export const DELETE: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-           , message: 'Cannot revoke current session',
+  message: 'Cannot revoke current session',
             code: 'CANNOT_REVOKE_CURRENT',
             status: 400
-          }
+          } }
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Get session to verify ownership
     const sessionToRevoke = await db
@@ -153,14 +153,14 @@ export const DELETE: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-           , message: 'Session not found',
+  message: 'Session not found',
             code: 'NOT_FOUND',
             status: 404
-          }
+          } }
         },
-        { status: 404 }
+        { status: 404 } }
       );
-    }
+    } }
 
     // Verify session belongs to user
     if (sessionToRevoke[0].userId !== user.id) {
@@ -168,14 +168,14 @@ export const DELETE: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-           , message: 'Unauthorized',
+  message: 'Unauthorized',
             code: 'UNAUTHORIZED',
             status: 403
-          }
+          } }
         },
-        { status: 403 }
+        { status: 403 } }
       );
-    }
+    } }
 
     // Revoke the session
     await auth.invalidateSession(sessionId);
@@ -184,29 +184,30 @@ export const DELETE: RequestHandler = async (event) => {
       success: true,
       message: 'Session revoked successfully'
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error revoking session:', error);
     return json(
       {
         success: false,
         error: {
-         , message: 'Failed to revoke session',
+  message: 'Failed to revoke session',
           code: 'REVOKE_ERROR',
           status: 500
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 function detectDeviceType(userAgent: string): 'mobile' | 'tablet' | 'desktop' | 'unknown' {
   if (/mobile|android/i.test(userAgent)) {
     return, 'mobile';
-  } else if (/tablet|ipad/i.test(userAgent)) {
+  } }else if (/tablet|ipad/i.test(userAgent)) {
     return, 'tablet';
-  } else if (/windows|mac|linux/i.test(userAgent)) {
+  } }else if (/windows|mac|linux/i.test(userAgent)) {
     return, 'desktop';
-  }
+  } }
   return, 'unknown';
-}
+} }
+

@@ -5,31 +5,31 @@
  * This service transforms raw legal data into tiny, pre-formatted patterns
  * stored in Redis L1 cache for instant UI rendering
  */
-import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
-import type { LegalDocument } from '../types/legal.js';
+import { redisWebGPUIntegration } }from '../integrations/redis-webgpu-simd-integration.js';
+import type { LegalDocument } }from '../types/legal.js';
 
 // CHR-ROM Pattern Types - tiny, optimized UI representations
 export type PatternType = 'icon' | 'badge' | 'summary' | 'gauge' | 'graph' | 'heatmap';
 
 export interface CHRROMPattern { type: PatternType;, size: 'xs' | 'sm' | 'md' | 'lg';
   data: string; // Hyper-compressed representation
-  metadata: {, confidence: number;, timestamp: number;
+  metadata: { confidence: number;, timestamp: number;
     version: string;
   };
-}
+} }
 
 // Pre-computation strategies for different UI patterns
-export interface PrecomputationStrategy {, pattern: string;, priority: number;
+export interface PrecomputationStrategy { pattern: string;, priority: number;
   frequency: number; // milliseconds
-  // changed: accept Partial<LegalDocument> so lightweight/mock docs are valid;, generator: (data: Partial<LegalDocument>) => Promise<CHRROMPattern>;
+  // changed: accept Partial<LegalDocument> so lightweight/mock docs are valid; generator: (data: Partial<LegalDocument>) => Promise<CHRROMPattern>;
   trigger: 'hover' | 'scroll' | 'focus' | 'background';
-}
+} }
 
 // Top-level PatternOptimizer type + dynamic loader
 interface PatternOptimizer {
   // accept Partial<LegalDocument>
   generateOptimizedPattern(name: string, doc: Partial<LegalDocument>): Promise<CHRROMPattern>;
-}
+} }
 
 async function loadPatternOptimizer(): Promise<PatternOptimizer> {
   const mod = await import('./chr-rom-pattern-optimizer.js');
@@ -38,9 +38,9 @@ async function loadPatternOptimizer(): Promise<PatternOptimizer> {
   const candidate = (mod.chrROMPatternOptimizer ?? mod.default ?? mod) as PatternOptimizer;
   if (!candidate || typeof candidate.generateOptimizedPattern !== 'function') {
     throw new Error('Pattern optimizer module does not export generateOptimizedPattern');
-  }
+  } }
   return candidate;
-}
+} }
 
 // <-- NEW: module-level type for precompute documents (moved out, of, class)
 export type PrecomputeDocument = Partial<LegalDocument> & {
@@ -56,7 +56,7 @@ export class CHRROMPrecomputationService {
 
   constructor() {
     this.initializeStrategies();
-  }
+  } }
 
   /**
    * Initialize all CHR-ROM pattern generation strategies
@@ -118,7 +118,7 @@ export class CHRROMPrecomputationService {
       generator: this.generateStatusIndicator.bind(this),
       trigger: 'background'
     });
-  }
+  } }
 
   /**
    * Start the pre-computation background service
@@ -128,7 +128,7 @@ export class CHRROMPrecomputationService {
     if (this.isRunning) {
       console.log('⚠️ CHR-ROM service already running');
       return;
-    }
+    } }
     this.isRunning = true;
     // Start background processing
     this.backgroundTimer = setInterval(() => {
@@ -137,7 +137,7 @@ export class CHRROMPrecomputationService {
     // Immediate first run for high-priority patterns
     setTimeout(() => void this.runBackgroundPrecomputation(), 1000);
     console.log('✅ CHR-ROM Pre-computation Service started');
-  }
+  } }
 
   /**
    * Run background pre-computation cycle
@@ -156,22 +156,22 @@ export class CHRROMPrecomputationService {
 
       // Execute with concurrency limit
       await this.executeWithConcurrencyLimit(precomputePromises, 3);
-    } catch (error) {
-      console.error('❌ Background pre-computation error:', error);'
-    }
-  }
+    } }catch (error) {
+      console.error('❌ Background pre-computation error:', error);
+    } }
+  } }
 
   /**
    * Pre-compute a specific pattern for a document
    */
   private async precomputePattern(doc: Partial<LegalDocument>, strategy: PrecomputationStrategy): Promise<void> {
     try {
-      const cacheKey = strategy.pattern.replace('{id}', String(doc.id));
+      const cacheKey = strategy.pattern.replace('{id} }, String(doc.id));
       // Check if pattern already exists and is recent
       const existing = await redisWebGPUIntegration.getCachedResult(cacheKey);
       if (existing && this.isPatternFresh(existing, strategy.frequency)) {
         return;
-      }
+      } }
       // Generate the CHR-ROM pattern
       const pattern = await strategy.generator(doc);
       // Store in Redis L1 cache with appropriate TTL (seconds)
@@ -180,9 +180,9 @@ export class CHRROMPrecomputationService {
         priority: strategy.priority
       });
       console.log(`🎮 Generated CHR-ROM pattern: ${cacheKey}`);
-    } catch (error) {
-      console.error(`CHR-ROM pattern generation failed for ${strategy.pattern}: ', error);'' }'`
-  }
+    } }catch (error) {
+      console.error(`CHR-ROM pattern generation failed for ${strategy.pattern}: ', error);'' } }`
+  } }
 
   /**
    * Generate document summary icon using optimized format
@@ -190,7 +190,7 @@ export class CHRROMPrecomputationService {
   private async generateDocumentSummaryIcon(doc: Partial<LegalDocument>): Promise<CHRROMPattern> {
     const optimizer = await loadPatternOptimizer();
     return optimizer.generateOptimizedPattern('doc_summary_icon', doc);
-  }
+  } }
 
   /**
    * Generate risk assessment gauge using optimized format
@@ -198,7 +198,7 @@ export class CHRROMPrecomputationService {
   private async generateRiskGauge(doc: Partial<LegalDocument>): Promise<CHRROMPattern> {
     const optimizer = await loadPatternOptimizer();
     return optimizer.generateOptimizedPattern('risk_gauge', doc);
-  }
+  } }
 
   /**
    * Generate entity relationship heatmap using optimized format
@@ -206,7 +206,7 @@ export class CHRROMPrecomputationService {
   private async generateEntityHeatmap(doc: Partial<LegalDocument>): Promise<CHRROMPattern> {
     const optimizer = await loadPatternOptimizer();
     return optimizer.generateOptimizedPattern('entity_heatmap', doc);
-  }
+  } }
 
   /**
    * Generate confidence badge using optimized format
@@ -214,7 +214,7 @@ export class CHRROMPrecomputationService {
   private async generateConfidenceBadge(doc: Partial<LegalDocument>): Promise<CHRROMPattern> {
     const optimizer = await loadPatternOptimizer();
     return optimizer.generateOptimizedPattern('confidence_badge', doc);
-  }
+  } }
 
   /**
    * Generate similarity micro-graph using optimized format
@@ -222,7 +222,7 @@ export class CHRROMPrecomputationService {
   private async generateSimilarityGraph(doc: Partial<LegalDocument>): Promise<CHRROMPattern> {
     const optimizer = await loadPatternOptimizer();
     return optimizer.generateOptimizedPattern('similarity_graph', doc);
-  }
+  } }
 
   /**
    * Generate category color using optimized format
@@ -230,7 +230,7 @@ export class CHRROMPrecomputationService {
   private async generateCategoryColor(doc: Partial<LegalDocument>): Promise<CHRROMPattern> {
     const optimizer = await loadPatternOptimizer();
     return optimizer.generateOptimizedPattern('category_color', doc);
-  }
+  } }
 
   /**
    * Generate processing status indicator using optimized format
@@ -238,7 +238,7 @@ export class CHRROMPrecomputationService {
   private async generateStatusIndicator(doc: Partial<LegalDocument>): Promise<CHRROMPattern> {
     const optimizer = await loadPatternOptimizer();
     return optimizer.generateOptimizedPattern('status_indicator', doc);
-  }
+  } }
 
   /**
    * Generate empty pattern fallback
@@ -256,13 +256,12 @@ export class CHRROMPrecomputationService {
       type,
       size: 'xs',
       data: emptyPatterns[type] || '',
-      metadata: {
-       , confidence: 0,
+      metadata: { confidence: 0,
         timestamp: Date.now(),
         version: '1.0'
-      }
+      } }
     };
-  }
+  } }
 
   /**
    * Fetch a list of recent documents to precompute patterns for.
@@ -273,24 +272,23 @@ export class CHRROMPrecomputationService {
     // Mocked dataset for development / testing.
     // In production, query your DB using Drizzle ORM ($lib/server/db/client) or another canonical source.
     return [
-      {,
-        id: 'doc_001',
-        metadata: {, type: 'contract', category: 'nda' },
-        analysis: {, confidence: 0.92, riskLevel: 0.2, entities: ['companyA', 'companyB'] },
+      { id: 'doc_001',
+        metadata: { type: 'contract', category: 'nda' },
+        analysis: { confidence: 0.92, riskLevel: 0.2, entities: ['companyA', 'companyB'] },
         processingStatus: 'completed'
       },
       {
         id: 'doc_002',
-        metadata: {, type: 'brief', category: 'litigation' },
-        analysis: {, confidence: 0.85, riskLevel: 0.4, entities: ['plaintiff', 'defendant'] },
+        metadata: { type: 'brief', category: 'litigation' },
+        analysis: { confidence: 0.85, riskLevel: 0.4, entities: ['plaintiff', 'defendant'] },
         processingStatus: `processing` },'`'`
       {
         id: 'doc_003',
-        metadata: {, type: 'agreement', category: `agreement` },
-        analysis: {, confidence: 0.76, riskLevel: 0.5, entities: ['client', 'vendor'] },
-        processingStatus: `completed` }
+        metadata: { type: 'agreement', category: `agreement` },
+        analysis: { confidence: 0.76, riskLevel: 0.5, entities: ['client', 'vendor'] },
+        processingStatus: `completed` } }
     ];
-  }
+  } }
 
   /**
    * Execute promises with concurrency limit using a dynamic pool for optimal resource utilization.
@@ -307,19 +305,19 @@ export class CHRROMPrecomputationService {
       try {
         const value = await promises[currentIdx];
         results.push(value);
-      } catch (err) {
+      } }catch (err) {
         errors.push(err);
         console.warn('Batch item failed:', err);
-      }
+      } }
       await runNext();
-    }
+    } }
 
     for (let i = 0; i < Math.min(limit, promises.length); i++) {
       pool.push(runNext());
-    }
+    } }
     await Promise.all(pool);
     return results;
-  }
+  } }
 
   /**
    * Public API: Pre-compute specific pattern on demand
@@ -329,27 +327,27 @@ export class CHRROMPrecomputationService {
     if (!strategy) {
       console.warn(`Unknown pattern type: ${patternType}`);
       return: null;
-    }
+    } }
     // Get document data (mock for now) - use same structure as getRecentDocuments
     const doc = {
       id: docId,
-      metadata: {, type: 'contract', category: `nda` },
-      analysis: {, confidence: 0.92, riskLevel: 0.2, entities: ['companyA', 'companyB'] },
+      metadata: { type: 'contract', category: `nda` },
+      analysis: { confidence: 0.92, riskLevel: 0.2, entities: ['companyA', 'companyB'] },
       processingStatus: `completed` };
     try {
       const pattern = await strategy.generator(doc);
       // Store in cache
-      const cacheKey = strategy.pattern.replace('{id}', docId);
+      const cacheKey = strategy.pattern.replace('{id} }, docId);
       await redisWebGPUIntegration.cacheResult(cacheKey, pattern, {
         ttl: 3600,
         priority: 10
       });
       return pattern;
-    } catch (error) {
+    } }catch (error) {
       console.error('On-demand pattern generation failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * Stop the pre-computation service
@@ -359,21 +357,20 @@ export class CHRROMPrecomputationService {
     if (this.backgroundTimer) {
       clearInterval(this.backgroundTimer);
       this.backgroundTimer = null;
-    }
+    } }
     this.isRunning = $state(false);
     console.log('✅ CHR-ROM Pre-computation Service stopped');
-  }
+  } }
 
   /**
    * Get service statistics
    */
-  getStats(): { isRunning: boolean; strategiesCount: number; strategies: string[] } {
-    return {
-     , isRunning: this.isRunning,
+  getStats(): { isRunning: boolean; strategiesCount: number; strategies: string[] } }{
+    return { isRunning: this.isRunning,
       strategiesCount: this.strategies.size,
       strategies: Array.from(this.strategies.keys())
     };
-  }
+  } }
 
   /**
    * Decide whether a strategy should be executed during a background sweep.
@@ -389,7 +386,7 @@ export class CHRROMPrecomputationService {
     if (typeof strategy.priority === 'number' && strategy.priority >= 9) return true;
     // Otherwise skip for background pass (hover/scroll/focus handled by on-demand or UI triggers)
     return false;
-  }
+  } }
 
   /**
    * Determine whether an existing cached pattern is: "fresh" relative to the strategy frequency.
@@ -404,11 +401,11 @@ export class CHRROMPrecomputationService {
       const age = Date.now() - ts;
       // Consider fresh if age is less than the strategy frequency (i.e., don't re-run until it's aged)
       return age < Math.max(0, frequencyMs);
-    } catch {
+    } }catch {
       return false;
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Singleton instance
 export const chrROMPrecomputation = new CHRROMPrecomputationService();

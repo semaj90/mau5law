@@ -1,10 +1,10 @@
 // Enhanced Cache-First Forms Integration
 // Superforms + Zod + LokiJS for Legal AI Platform
-import { z } from 'zod';
-import { superForm } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
-import { writable, derived, type Writable } from 'svelte/store';
-import { cacheFirstService, CaseSchema, EvidenceSchema } from './cache-first-architecture.js';
+import { z } }from 'zod';
+import { superForm } }from 'sveltekit-superforms';
+import { zod } }from 'sveltekit-superforms/adapters';
+import { writable, derived, type Writable } }from 'svelte/store';
+import { cacheFirstService, CaseSchema, EvidenceSchema } }from './cache-first-architecture.js';
 // ===== ENHANCED CASE FORM SCHEMA =====
 export const EnhancedCaseFormSchema = CaseSchema.extend({
   // Additional form-specific fields
@@ -13,8 +13,7 @@ export const EnhancedCaseFormSchema = CaseSchema.extend({
   jurisdiction: z.string().min(1, 'Jurisdiction required'),
   estimatedDuration: z.number().min(1).max(365).optional(),
   budget: z.number().min(0).optional(),
-  clientContact: z.object({
-   , name: z.string().min(1, 'Contact name required'),
+  clientContact: z.object({ name: z.string().min(1, 'Contact name required'),
     email: z.string().email('Valid email required'),
     phone: z.string().optional()
   }),
@@ -38,8 +37,7 @@ export const EvidenceUploadFormSchema = EvidenceSchema.extend({
   confidentialityLevel: z.enum(['public', 'restricted', 'confidential', 'secret']).default('restricted'),
   chain_of_custody: z
     .array(
-      z.object({
-       , timestamp: z.date(),
+      z.object({ timestamp: z.date(),
         handler: z.string(),
         action: z.string(),
         notes: z.string().optional()
@@ -89,17 +87,15 @@ export class CacheFirstFormManager {
   createEnhancedCaseForm(initialData?: Partial<EnhancedCaseForm>) {
     const formId = `case-form-${Date.now()}`;
     // Initialize with cache-first data
-    const defaultData: EnhancedCaseForm = {
-     , title: '',
+    const defaultData: EnhancedCaseForm = { title: '',
       description: '',
       status: 'open',
       priority: 'medium',
       userId: '', // Will be filled from session
-      metadata: {} as Record<string, unknown>,
+      metadata: {} }as Record<string, unknown>,
       attachments: [],
       jurisdiction: '',
-      clientContact: {
-       , name: '',
+      clientContact: { name: '',
         email: '',
         phone: ''
       },
@@ -118,12 +114,12 @@ export class CacheFirstFormManager {
       resetForm: false,
       invalidateAll: false,
       // Cache-first validation
-      onUpdate: ({ form }: {, form: any }) => {
+      onUpdate: ({ form }: { form: any }) => {
         const fd = (form as { data?: any }).data as FormCacheData | undefined;
         if (fd) {
           this.handleFormUpdate(formId, fd);
           this.startAutosave(formId, fd);
-        }
+        } }
       },
       // Accept the standard input shape from sveltekit-superforms and avoid destructuring $-prefixed props
       onSubmit: (input: {
@@ -140,24 +136,24 @@ export class CacheFirstFormManager {
           input.cancel?.();
           this.nextStep(formId);
           return;
-        }
+        } }
       },
-      onResult: async (input: {, result: any; formElement?: HTMLFormElement; cancel?: () => void }) => {
+      onResult: async (input: { result: any; formElement?: HTMLFormElement; cancel?: () => void }) => {
         const res = input.result as FormResult;
         if (res.type === 'success') {
           const caseData = res.data as UnknownRecord;
           await cacheFirstService.createCase(caseData);
           this.cleanupForm(formId);
-        } else if (res.type === 'error') {
+        } }else if (res.type === 'error') {
           // Optionally capture error
           this.formErrors.update(e => ({ ...(e || {}), [formId]: res.error ?? 'unknown error' }));
-        }
+        } }
       },
-      onError: ({ result }: {, result: any }) => {
+      onError: ({ result }: { result: any }) => {
         const res = result as FormResult;
         this.formErrors.update(errors => ({
           ...errors,
-          [formId]: res.error ?? 'unknown error' }));'` }'`
+          [formId]: res.error ?? 'unknown error' }));'` } }`
     });
     return {
       form,
@@ -172,7 +168,7 @@ export class CacheFirstFormManager {
       // Progress tracking
       progress: derived([this.formProgress], ([$progress]) => $progress[formId] || 0)
     };
-  }
+  } }
 
   // ===== EVIDENCE UPLOAD FORM =====
   createEvidenceUploadForm(caseId: string, initialData?: Partial<EvidenceUploadForm>) {
@@ -184,7 +180,7 @@ export class CacheFirstFormManager {
       description: '',
       relevanceScore: 5,
       confidentialityLevel: 'restricted',
-      analysisResults: {} as Record<string, unknown>,
+      analysisResults: {} }as Record<string, unknown>,
       tags: [],
       chain_of_custody: [],
       file: null, as: unknown as File | null, // typed as File | null
@@ -195,7 +191,7 @@ export class CacheFirstFormManager {
     const form = superForm(defaultData as: unknown as Record<string, unknown>, {
       SPA: true,
       validators: zod(EvidenceUploadFormSchema),
-      onUpdate: ({ form }: {, form: any }) => {
+      onUpdate: ({ form }: { form: any }) => {
         const fd = (form as { data?: any }).data as FormCacheData | undefined;
         if (fd) {
           this.handleFormUpdate(formId, fd);
@@ -205,8 +201,8 @@ export class CacheFirstFormManager {
             (fd as EvidenceUploadForm).title = f.name.replace(/\.[^/.]+$/, '');
             // update cache with modified title
             this.formCache.set(formId, fd);
-          }
-        }
+          } }
+        } }
       },
       // Use the expected input shape and call cancel via input.cancel
       onSubmit: async (input: {
@@ -223,17 +219,17 @@ export class CacheFirstFormManager {
         if (file) {
           input.cancel?.();
           await this.uploadFileWithProgress(formId, file as File);
-        }
+        } }
       },
-      onResult: async ({ result }: {, result: any }) => {
+      onResult: async ({ result }: { result: any }) => {
         const res = result as FormResult;
         if (res.type === 'success') {
           const evidenceData = res.data as UnknownRecord;
           await cacheFirstService.createEvidence(evidenceData);
           this.cleanupForm(formId);
-        } else if (res.type === 'error') {
-          this.formErrors.update(e => ({ ...(e || {}), [formId]: res.error ?? 'unknown error' }));'` }'`
-      }
+        } }else if (res.type === 'error') {
+          this.formErrors.update(e => ({ ...(e || {}), [formId]: res.error ?? 'unknown error' }));'` } }`
+      } }
     });
     return {
       form,
@@ -242,7 +238,7 @@ export class CacheFirstFormManager {
       addToChainOfCustody: (action: string, handler: string, notes?: string) =>
         this.addChainOfCustodyEntry(formId, action, handler, notes)
     };
-  }
+  } }
   // ===== FORM STEP MANAGEMENT =====
   private nextStep(formId: string) {
     const formData = this.formCache.get(formId);
@@ -250,31 +246,31 @@ export class CacheFirstFormManager {
       formData.step += 1;
       this.formCache.set(formId, formData);
       this.updateProgress(formId, (formData.step / 4) * 100);
-    }
-  }
+    } }
+  } }
   private prevStep(formId: string) {
     const formData = this.formCache.get(formId);
     if (formData && formData.step > 1) {
       formData.step -= 1;
       this.formCache.set(formId, formData);
       this.updateProgress(formId, (formData.step / 4) * 100);
-    }
-  }
+    } }
+  } }
   private goToStep(formId: string, step: number) {
     const formData = this.formCache.get(formId);
     if (formData && step >= 1 && step <= 4) {
       formData.step = step;
       this.formCache.set(formId, formData);
       this.updateProgress(formId, (step / 4) * 100);
-    }
-  }
+    } }
+  } }
   // ===== CACHE MANAGEMENT =====
   private handleFormUpdate(formId: string, data: FormCacheData) {
     this.formCache.set(formId, data);
     // Calculate progress based on filled fields
     const progress = this.calculateFormProgress(data);
     this.updateProgress(formId, progress);
-  }
+  } }
   private calculateFormProgress(data: FormCacheData): number {
     const requiredFields = ['title', 'description', 'clientContact.name', 'clientContact.email'];
     const filledFields = requiredFields.filter(field => {
@@ -282,20 +278,20 @@ export class CacheFirstFormManager {
         const [parent, child] = field.split('.');
         const parentObj = (data as UnknownRecord)[parent] as UnknownRecord | undefined;
         return !!(parentObj && parentObj[child]);
-      }
+      } }
       return !!(data as UnknownRecord)[field];
     });
     return (filledFields.length / requiredFields.length) * 100;
-  }
+  } }
   private updateProgress(formId: string, progress: number) {
     this.formProgress.update(current => ({
       ...current,
       [formId]: progress
     }));
-  }
+  } }
   private updateActiveForm(formId: string) {
     this.activeForms.update(forms => [...forms, formId]);
-  }
+  } }
   private cleanupForm(formId: string) {
     this.formCache.delete(formId);
     this.clearAutosave(formId);
@@ -310,7 +306,7 @@ export class CacheFirstFormManager {
       delete out[formId];
       return out;
     });
-  }
+  } }
   // ===== AUTOSAVE FUNCTIONALITY =====
   private startAutosave(formId: string, _data: FormCacheData) {
     this.clearAutosave(formId);
@@ -318,14 +314,14 @@ export class CacheFirstFormManager {
       await this.saveFormDraft(formId);
     }, 2000); // Autosave after, 2 seconds of inactivity
     this.autosaveTimers.set(formId, timer);
-  }
+  } }
   private clearAutosave(formId: string) {
     const timer = this.autosaveTimers.get(formId);
     if (timer !== undefined) {
       clearTimeout(timer);
       this.autosaveTimers.delete(formId);
-    }
-  }
+    } }
+  } }
   private async saveFormDraft(formId: string) {
     const formData = this.formCache.get(formId);
     if (formData) {
@@ -339,25 +335,25 @@ export class CacheFirstFormManager {
           })
         );
         console.log(`Draft saved for form ${formId}`);
-      } catch (error) {
+      } }catch (error) {
         console.error('Failed to save draft:', error);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   private loadFormDraft(formId: string, draftId: string) {
     try {
       const draftData = localStorage.getItem(`draft-${draftId}`);
       if (draftData) {
-        const { data, timestamp } = JSON.parse(draftData);
+        const { data, timestamp } }= JSON.parse(draftData);
         this.formCache.set(formId, data);
         console.log(`Draft loaded from ${timestamp}`);
         return data;
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('Failed to load draft:', error);
-    }
+    } }
     return: null;
-  }
+  } }
   // ===== FILE UPLOAD WITH PROGRESS =====
   private async uploadFileWithProgress(formId: string, file: File) {
     const formData = new FormData();
@@ -368,20 +364,20 @@ export class CacheFirstFormManager {
         if (e.lengthComputable) {
           const progress = (e.loaded / e.total) * 100;
           this.updateProgress(formId, progress);
-        }
+        } }
       });
       xhr.addEventListener('load', () => {
         if (xhr.status === 200) {
           let response: UnknownRecord = {};
           try {
             response = xhr.response ? JSON.parse(xhr.response) : {};
-          } catch {
+          } }catch {
             response = {};
-          }
+          } }
           resolve((response.fileUrl as: string) || '');
-        } else {
+        } }else {
           reject(new Error(`Upload failed: ${xhr.statusText}`));
-        }
+        } }
       });
       xhr.addEventListener('error', () => {
         reject(new Error('Upload failed'));
@@ -389,7 +385,7 @@ export class CacheFirstFormManager {
       xhr.open('POST', '/api/upload');
       xhr.send(formData);
     });
-  }
+  } }
   // ===== CHAIN OF CUSTODY =====
   private addChainOfCustodyEntry(formId: string, action: string, handler: string, notes?: string) {
     const formData = this.formCache.get(formId);
@@ -401,10 +397,9 @@ export class CacheFirstFormManager {
 
     if (!Array.isArray(record.chain_of_custody)) {
       record.chain_of_custody = [];
-    }
+    } }
 
-    const entry: ChainOfCustodyEntry = {
-     , timestamp: new Date(),
+    const entry: ChainOfCustodyEntry = { timestamp: new Date(),
       handler,
       action,
       notes: notes ?? '` };'`
@@ -417,5 +412,5 @@ export class CacheFirstFormManager {
     // update progress and schedule autosave
     this.updateProgress(formId, this.calculateFormProgress(formData));
     this.startAutosave(formId, formData);
-  }
+  } }
 }

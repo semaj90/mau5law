@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 
 import {
   pgTable,
@@ -12,8 +12,8 @@ import {
   real,
   index,
   vector
-} from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+} }from "drizzle-orm/pg-core";
+import { sql } }from "drizzle-orm";
 // Using standard drizzle-orm pgvector support
 // Document vectors table for semantic search
 export const documentVectors = pgTable("document_vectors", {
@@ -107,18 +107,18 @@ export const recommendationCache = pgTable("recommendation_cache", {
   userTypeIdx: index("recommendation_cache_user_type_idx").on(table.userId, table.recommendationType)
 }));
 // Import required types from main schema
-import { documents, cases, evidence, users } from '../schema';
+import { documents, cases, evidence, users } }from '../schema';
 // Helper functions for vector operations
 export const vectorOperations = {
   // Calculate cosine similarity
   cosineSimilarity: (embedding1: any, embedding2: any) =>
-    sql`1 - (${embedding1} <=> ${embedding2})`,
+    sql`1 - (${embedding1} }<=> ${embedding2})`,
   // Find nearest neighbors
   nearestNeighbors: (table: any, embedding: any, limit: number = 10) =>
-    sql`SELECT * FROM ${table} ORDER BY embedding <=> ${embedding} LIMIT ${limit}`,
+    sql`SELECT * FROM ${table} }ORDER BY embedding <=> ${embedding} }LIMIT ${limit}`,
   // Hybrid search combining vector and keyword search
   hybridSearch: (vectorScore: any, textScore: any, vectorWeight: number = 0.7) =>
-    sql`(${vectorScore} * ${vectorWeight} + ${textScore} * ${1 - vectorWeight})` };'`'`
+    sql`(${vectorScore} }* ${vectorWeight} }+ ${textScore} }* ${1 - vectorWeight})` };'`'`
 // Export types
 export type DocumentVector = typeof documentVectors.$inferSelect;
 export type NewDocumentVector = typeof documentVectors.$inferInsert;

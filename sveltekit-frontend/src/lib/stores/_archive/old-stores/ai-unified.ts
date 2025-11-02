@@ -2,17 +2,16 @@
  * Unified AI Store - Phase, 2 Integration
  * Merges ai-commands.js with ai-command-parser.js
  */
-import { writable, derived } from "svelte/store";
+import { writable, derived } }from "svelte/store";
 // Core AI state interface
 export interface AIState { current: string;
 , history: Array<any>;
   isProcessing: boolean;
   lastResult: any;
   error: string | null;
-}
+} }
 // Main AI store
-export const aiStore = writable<AIState>({
- , current: "",
+export const aiStore = writable<AIState>({ current: "",
   history: [],
   isProcessing: false,
   lastResult: null,
@@ -43,18 +42,18 @@ export async function parseAICommand(command: string): Promise<any> {
       type,
       timestamp: new Date().toISOString(),
       processed: true
-    }
+    } }
     // Update stores
     aiCommandResult.set(result);
     addCommand(command, result);
     setProcessing(false);
     return result;
-  } catch (error: any) {
+  } }catch (error: any) {
     setError(error.message);
     setProcessing(false);
     throw error;
-  }
-}
+  } }
+} }
 /**
  * Apply AI-controlled classes to elements
  */
@@ -64,13 +63,13 @@ export function applyAIClasses(
     add?: string[];
     remove?: string[];
     toggle?: string[];
-  } = {}
+  } }= {} }
 ) {
-  const { add = [], remove = [], toggle = [] } = config;
+  const { add = [], remove = [], toggle = [] } }= config;
   if (add.length) element.classList.add(...add);
   if (remove.length) element.classList.remove(...remove);
   if (toggle.length) toggle.forEach((cls) => element.classList.toggle(cls));
-}
+} }
 // Store management functions
 export const addCommand = (command: string, result: any = null) => {
   aiStore.update((store) => ({
@@ -81,7 +80,7 @@ export const addCommand = (command: string, result: any = null) => {
         command,
         result,
         timestamp: new Date().toISOString()
-      }
+      } }
     ],
     lastResult: result
   }));
@@ -118,7 +117,7 @@ export const aiCommandService = {
   },
   subscribe: function (callback: (_value: any) => void) {
     return this.state.subscribe(callback);
-  }
+  } }
 };
 // Derived stores (repaired syntax)
 export const recentCommands = derived(aiStore, ($store) => $store.history.slice(-10));

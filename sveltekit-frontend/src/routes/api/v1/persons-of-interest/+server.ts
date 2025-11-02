@@ -1,8 +1,8 @@
-import { cuidSchema } from '$lib/server/z-schemas';
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { db, sql } from '$lib/server/db';
-import { personsOfInterest } from '$lib/server/db/schema-postgres';
-import { z } from 'zod';
+import { cuidSchema } }from '$lib/server/z-schemas';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { db, sql } }from '$lib/server/db';
+import { personsOfInterest } }from '$lib/server/db/schema-postgres';
+import { z } }from 'zod';
 // Query parameters schema for GET requests
 const PersonsOfInterestQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -26,35 +26,35 @@ const CreatePersonOfInterestSchema = z.object({
 });
 type CreatePersonOfInterestData = z.infer<typeof, CreatePersonOfInterestSchema>;
 class PersonsOfInterestCRUDService {
-  constructor(private userId: string) {}
-  async list({ page, limit }: { page: number;, limit: number }) {
+  constructor(private userId: string) {} }
+  async list({ page, limit }: { page: number; limit: number }) {
     const offset = (page - 1) * limit;
     const [totalRow] = (await db.execute(
       sql`SELECT COUNT(*)::int AS count FROM persons_of_interest`
-    )) as: unknown as Array<{, count: number }>;
+    )) as: unknown as Array<{ count: number }>;
     const rows = await db.select().from(personsOfInterest).limit(limit).offset(offset);
     const total = totalRow?.count ?? rows.length;
     const totalPages = Math.max(1, Math.ceil(total / limit));
     return { data: rows, page, limit, total, totalPages };
-  }
+  } }
   async listByRiskLevel(
     riskLevel: 'low' | 'medium' | 'high' | 'critical',
-    { page, limit }: { page: number;, limit: number }
+    { page, limit }: { page: number; limit: number } }
   ) {
     const offset = (page - 1) * limit;
     const [totalRow] = (await db.execute(
       sql`SELECT COUNT(*)::int AS count FROM persons_of_interest WHERE threat_level = ${riskLevel}`
-    )) as: unknown as Array<{, count: number }>;
+    )) as: unknown as Array<{ count: number }>;
     const rows = await db
       .select()
       .from(personsOfInterest)
-      .where(sql`${personsOfInterest.threatLevel} = ${riskLevel}`)
+      .where(sql`${personsOfInterest.threatLevel} }= ${riskLevel}`)
       .limit(limit)
       .offset(offset);
     const total = totalRow?.count ?? rows.length;
     const totalPages = Math.max(1, Math.ceil(total / limit));
     return { data: rows, page, limit, total, totalPages };
-  }
+  } }
   async create(data: CreatePersonOfInterestData) {
     const caseId = data.caseId || data.caseIds?.[0] || null;
     const [row] = await db
@@ -73,16 +73,16 @@ class PersonsOfInterestCRUDService {
       })
       .returning({ id: personsOfInterest.id });
     return row?.id as: string;
-  }
+  } }
   async getById(id: string) {
     const rows = await db
       .select()
       .from(personsOfInterest)
-      .where(sql`${personsOfInterest.id} = ${id}`)
+      .where(sql`${personsOfInterest.id} }= ${id}`)
       .limit(1);
     return rows[0] ?? null;
-  }
-}
+  } }
+} }
 /*
  * GET /api/v1/persons-of-interest
  * List user's persons of interest with pagination and filtering'
@@ -96,9 +96,9 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           success: false,
           message: 'Authentication required',
           code: 'AUTH_REQUIRED` },'`
-        { status: 401 }
+        { status: 401 } }
       );
-    }
+    } }
     const userId = locals.user.id;
     // Parse query parameters
     const url = new URL(request.url);
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           limit: validatedQuery.limit
         });
 
-    const { data, page, limit, total, totalPages } = result;
+    const { data, page, limit, total, totalPages } }= result;
 
     return json(
       {
@@ -135,11 +135,11 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           userId,
           riskLevel: validatedQuery.riskLevel || null,
           timestamp: new Date().toISOString()
-        }
+        } }
       },
-      { status: 200 }
+      { status: 200 } }
     );
-  } catch (err) {
+  } }catch (err) {
     console.error('Error fetching persons of interest:', err);
     if (err instanceof z.ZodError) {
       return json(
@@ -149,9 +149,9 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           code: 'INVALID_QUERY',
           details: err.errors
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     return json(
       {
         success: false,
@@ -159,9 +159,9 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         code: 'FETCH_FAILED',
         details: err instanceof Error ? err.message : String(err)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 /*
  * POST /api/v1/persons-of-interest
@@ -175,10 +175,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         {
           success: false,
           message: 'Authentication required',
-          code: `AUTH_REQUIRED` },
-        { status: 401 }
+          code: 'AUTH_REQUIRED' },
+        { status: 401 } }
       );
-    }
+    } }
     const userId = locals.user.id;
     // Parse request body
     const body = await request.json();
@@ -198,11 +198,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           userId,
           caseIds: validatedData.caseIds,
           timestamp: new Date().toISOString()
-        }
+        } }
       },
-      { status: 201 }
+      { status: 201 } }
     );
-  } catch (err) {
+  } }catch (err) {
     console.error('Error creating person of interest:', err);
     if (err instanceof z.ZodError) {
       return json(
@@ -212,19 +212,19 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           code: 'INVALID_DATA',
           details: err.errors
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     const errorMessage = err instanceof Error ? err.message : String(err);
     if (errorMessage.includes('not found') || errorMessage.includes('access denied')) {
       return json(
         {
           success: false,
           message: errorMessage,
-          code: `ACCESS_DENIED` },
-        { status: 403 }
+          code: 'ACCESS_DENIED' },
+        { status: 403 } }
       );
-    }
+    } }
     return json(
       {
         success: false,
@@ -232,7 +232,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         code: 'CREATE_FAILED',
         details: errorMessage
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

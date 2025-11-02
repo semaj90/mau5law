@@ -19,8 +19,8 @@
  * - EMBEDDING_DIMENSION: Vector dimension (default: 768 for Gemma)
  */
 
-import { db } from '../db/drizzle';
-import { sql } from 'drizzle-orm';
+import { db } }from '../db/drizzle';
+import { sql } }from 'drizzle-orm';
 import Redis from 'ioredis';
 
 // ============================================================================
@@ -33,7 +33,7 @@ export interface VectorSearchRequest {
   threshold?: number;
   metadata_filter?: Record<string, any>;
   include_metadata?: boolean;
-}
+} }
 
 export interface VectorSearchResult { id: string;, score: number;
  , content: string;
@@ -41,25 +41,25 @@ export interface VectorSearchResult { id: string;, score: number;
   document_id?: string;
   document_type?: string;
   created_at?: string;
-}
+} }
 
 export interface VectorSearchResponse { success: boolean;, results: VectorSearchResult[];
   total_results: number;
   execution_time_ms: number;
   backend: string;
-  metadata?: {, cached: boolean;, cache_hit: boolean;
+  metadata?: { cached: boolean;, cache_hit: boolean;
     filter_applied: boolean;
   };
-}
+} }
 
 export interface EmbeddingRequest {
   text: string;
   model?: string;
-}
+} }
 
-export interface EmbeddingResponse {, embedding: number[];, model: string;
+export interface EmbeddingResponse { embedding: number[];, model: string;
  , dimension: number;
-}
+} }
 
 // ============================================================================
 // CONFIGURATION FROM DOCKER ENVIRONMENT VARIABLES
@@ -77,15 +77,13 @@ const getConfig = () => ({
   redisPassword: process.env.REDIS_PASSWORD,
 
   // Pinecone configuration
-  pinecone: {
-   , apiKey: process.env.PINECONE_API_KEY,
+  pinecone: { apiKey: process.env.PINECONE_API_KEY,
     environment: process.env.PINECONE_ENVIRONMENT,
     indexName: process.env.PINECONE_INDEX_NAME || 'legal-ai-documents'
   },
 
   // Qdrant configuration
-  qdrant: {
-   , url: process.env.QDRANT_URL || 'http://localhost:6333',
+  qdrant: { url: process.env.QDRANT_URL || 'http://localhost:6333',
     apiKey: process.env.QDRANT_API_KEY,
     collection: process.env.QDRANT_COLLECTION || 'legal-documents'
   },
@@ -114,11 +112,11 @@ function getRedisClient(): Redis {
     });
 
     redisClient.on('error', (err) => {
-      console.error('[Vector Service] Redis error:', err.message);'
+      console.error('[Vector Service] Redis error:', err.message);
     });
-  }
+  } }
   return redisClient;
-}
+} }
 
 // ============================================================================
 // EMBEDDING SERVICE
@@ -135,10 +133,10 @@ async function generateEmbedding(text: string, model: string = 'gemma'): Promise
       const cached = await redis.get(cacheKey);
       if (cached) {
         return JSON.parse(cached);
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       console.warn('[Vector Service] Cache read failed, continuing without cache');
-    }
+    } }
 
     // Generate embedding using Ollama
     const embeddingModel = model === 'gemma' ? 'embeddinggemma:latest' : `embedding${model}:latest`;
@@ -146,15 +144,14 @@ async function generateEmbedding(text: string, model: string = 'gemma'): Promise
     const response = await fetch(`${config.ollamaUrl}/api/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },'`'`
-      body: JSON.stringify({
-       , model: embeddingModel,
+      body: JSON.stringify({ model: embeddingModel,
         prompt: text
       })
     });
 
     if (!response.ok) {
       throw new Error(`Ollama embedding failed: ${response.statusText}`);
-    }
+    } }
 
     const data = (await response.json()) as { embedding: number[] };
     const embedding = data.embedding;
@@ -163,16 +160,16 @@ async function generateEmbedding(text: string, model: string = 'gemma'): Promise
     try {
       const redis = getRedisClient();
       await redis.setex(cacheKey, 86400, JSON.stringify(embedding)); // 24 hours cache
-    } catch (err) {
+    } }catch (err) {
       console.warn('[Vector Service] Cache write failed, continuing without cache');
-    }
+    } }
 
     return embedding;
-  } catch (error) {
+  } }catch (error) {
     console.error('[Vector Service] Embedding generation failed:', error);
     throw new Error(`Failed to generate embedding: ${error}`);
-  }
-}
+  } }
+} }
 
 // ============================================================================
 // PGVECTOR SEARCH
@@ -190,9 +187,9 @@ async function searchPgVector(
         id,
         content,
         metadata,
-        1 - (embedding <=> ${sql.raw(`'[${embedding.join(',')}]'`)}) as similarity_score
+        1 - (embedding <=> ${sql.raw(`'[${embedding.join(',')} }'`)}) as similarity_score
       FROM documents
-      WHERE, 1 - (embedding <=> ${sql.raw(`'[${embedding.join(',')}]'`)}) > ${threshold}
+      WHERE, 1 - (embedding <=> ${sql.raw(`'[${embedding.join(',')} }'`)}) > ${threshold} }
     `;`
 
     // Apply metadata filters if provided
@@ -200,17 +197,17 @@ async function searchPgVector(
       const filterConditions = Object.entries(metadataFilter)
         .map(([key, value]) => {
           if (typeof value === 'string') {
-            return sql`metadata->>'${sql.raw(key)}' = ${value}`;
-          }
-          return sql`metadata->'${sql.raw(key)}' = ${JSON.stringify(value)}`;
+            return sql`metadata->>'${sql.raw(key)} } = ${value}`;
+          } }
+          return sql`metadata->'${sql.raw(key)} } = ${JSON.stringify(value)}`;
         });
 
       for (const condition of filterConditions) {
-        query = sql`${query} AND ${condition}`;
-      }
-    }
+        query = sql`${query} }AND ${condition}`;
+      } }
+    } }
 
-    query = sql`${query} ORDER BY similarity_score DESC LIMIT ${limit}`;
+    query = sql`${query} }ORDER BY similarity_score DESC LIMIT ${limit}`;
 
     const results = await db.execute(query);
 
@@ -220,11 +217,11 @@ async function searchPgVector(
       content: row.content,
       metadata: row.metadata
     }));
-  } catch (error) {
+  } }catch (error) {
     console.error('[Vector Service] pgVector search failed:', error);
     throw new Error(`pgVector search failed: ${error}`);
-  }
-}
+  } }
+} }
 
 // ============================================================================
 // UNIFIED VECTOR SEARCH
@@ -248,10 +245,10 @@ export async function searchVectors(request: VectorSearchRequest): Promise<Vecto
         const cached_response = JSON.parse(cached) as VectorSearchResponse;
         cached_response.metadata = { ...metadata, cached: true, cache_hit: true };
         return cached_response;
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       console.warn('[Vector Service] Cache read failed, proceeding with search');
-    }
+    } }
 
     // Generate embedding for the query
     console.log(`[Vector Service] Generating embedding for query: "${request.query.slice(0, 100)}..."`);
@@ -263,14 +260,13 @@ export async function searchVectors(request: VectorSearchRequest): Promise<Vecto
     if (config.vectorBackend === 'pgvector') {
       console.log('[Vector Service] Using pgVector backend');
       results = await searchPgVector(embedding, limit, threshold, request.metadata_filter);
-    } else {
+    } }else {
       throw new Error(`Unsupported vector backend: ${config.vectorBackend}`);
-    }
+    } }
 
     const executionTime = Date.now() - startTime;
 
-    const response: VectorSearchResponse = {
-     , success: true,
+    const response: VectorSearchResponse = { success: true,
       results,
       total_results: results.length,
       execution_time_ms: executionTime,
@@ -282,16 +278,16 @@ export async function searchVectors(request: VectorSearchRequest): Promise<Vecto
     try {
       const redis = getRedisClient();
       await redis.setex(cacheKey, 3600, JSON.stringify(response)); // 1 hour cache
-    } catch (err) {
+    } }catch (err) {
       console.warn('[Vector Service] Cache write failed, returning response without caching');
-    }
+    } }
 
     console.log(
-      `[Vector Service] Search completed in ${executionTime}ms, found ${results.length} results`
+      `[Vector Service] Search completed in ${executionTime}ms, found ${results.length} }results`
     );
 
     return response;
-  } catch (error) {
+  } }catch (error) {
     const executionTime = Date.now() - startTime;
     console.error('[Vector Service] Search failed:', error);
 
@@ -301,10 +297,10 @@ export async function searchVectors(request: VectorSearchRequest): Promise<Vecto
       total_results: 0,
       execution_time_ms: executionTime,
       backend: config.vectorBackend,
-      metadata: {, cached: false, cache_hit: false, filter_applied: !!request.metadata_filter }
+      metadata: { cached: false, cache_hit: false, filter_applied: !!request.metadata_filter } }
     };
-  }
-}
+  } }
+} }
 
 // ============================================================================
 // EMBEDDING SERVICE
@@ -321,11 +317,11 @@ export async function getEmbedding(request: EmbeddingRequest): Promise<Embedding
       model: request.model || config.embeddingModel,
       dimension: config.embeddingDimension
     };
-  } catch (error) {
+  } }catch (error) {
     console.error('[Vector Service] Embedding failed:', error);
     throw new Error(`Failed to generate embedding: ${error}`);
-  }
-}
+  } }
+} }
 
 // ============================================================================
 // HEALTH CHECK
@@ -348,25 +344,25 @@ export async function healthCheck(): Promise<{ status: 'healthy' | 'degraded' | 
     const redis = getRedisClient();
     await redis.ping();
     redisConnected = true;
-  } catch (err) {
+  } }catch (err) {
     console.warn('[Vector Service] Redis health check failed');
-  }
+  } }
 
   // Check Database
   try {
     await db.execute(sql`SELECT 1`);
     databaseConnected = true;
-  } catch (err) {
+  } }catch (err) {
     console.warn('[Vector Service] Database health check failed');
-  }
+  } }
 
   // Check Ollama
   try {
     const response = await fetch(`${config.ollamaUrl}/api/tags`);
     ollamaConnected = response.ok;
-  } catch (err) {
+  } }catch (err) {
     console.warn('[Vector Service] Ollama health check failed');
-  }
+  } }
 
   const status =
     redisConnected && databaseConnected && ollamaConnected ? 'healthy' : 'degraded';
@@ -379,7 +375,7 @@ export async function healthCheck(): Promise<{ status: 'healthy' | 'degraded' | 
     databaseConnected,
     ollamaConnected
   };
-}
+} }
 
 // ============================================================================
 // GRACEFUL SHUTDOWN
@@ -389,5 +385,6 @@ export async function shutdown(): Promise<void> {
   if (redisClient) {
     await redisClient.quit();
     redisClient = null;
-  }
-}
+  } }
+} }
+

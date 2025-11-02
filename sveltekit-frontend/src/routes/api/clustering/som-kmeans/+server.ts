@@ -1,13 +1,13 @@
-import type { Document } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Document } }from '$lib/types';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const ragData = await request.json();
     if (!ragData) {
       throw error(400, 'No RAG data provided');
-    }
+    } }
     // Extract features from RAG data
     const features = extractFeaturesForClustering(ragData);
     // Perform K-means clustering (k=5)
@@ -22,20 +22,20 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       processedAt: new Date().toISOString(),
       kmeans: {
-       , clusters: kmeansClusters,
+  clusters: kmeansClusters,
         clusterCount: kmeansClusters.length,
         silhouetteScore: qualityMetrics.silhouetteScore,
         inertia: qualityMetrics.inertia
       },
       som: {
-       , grid: somResults.grid,
+  grid: somResults.grid,
         gridSize: `${somResults.width}x${somResults.height}`,
         neurons: somResults.neurons,
         trainingEpochs: somResults.trainingEpochs,
         quantizationError: somResults.quantizationError
       },
       insights: {
-       , dominantTopics: identifyDominantTopics(kmeansClusters),
+  dominantTopics: identifyDominantTopics(kmeansClusters),
         documentSimilarity: calculateDocumentSimilarity(ragData, kmeansClusters),
         clusterCharacteristics: analyzeClusterCharacteristics(kmeansClusters),
         anomalies: detectAnomalies(features, kmeansClusters)
@@ -46,21 +46,21 @@ export const POST: RequestHandler = async ({ request }) => {
         categories: categorizeSuggestions(suggestions)
       },
       metrics: {
-       , accuracy: qualityMetrics.accuracy,
+  accuracy: qualityMetrics.accuracy,
         precision: qualityMetrics.precision,
         recall: qualityMetrics.recall,
         processingTime: qualityMetrics.processingTime,
         featureCount: features.vectors.length,
         dimensionality: features.dimensions
-      }
+      } }
     };
 
     return json(result);
-  } catch (err: any) {
+  } }catch (err: any) {
     const msg = getErrorMessage(err);
-    console.error('Clustering analysis error:', msg);'
+    console.error('Clustering analysis error:', msg);
     throw error(500, `Clustering analysis failed: ${msg}`);
-  }
+  } }
 };
 
 // --- Types ---
@@ -81,7 +81,7 @@ type RagInput = {
       keyTopics?: string[];
     };
     vectorData?: { chunks?: number; dimensions?: number; similarity_threshold?: number };
-    metadata?: { quality?: { ocr_confidence?: number; semantic_coherence?: number; document_completeness?: number } };
+    metadata?: { quality?: { ocr_confidence?: number; semantic_coherence?: number; document_completeness?: number } }};
     performance?: { processingTime?: number; confidence?: number };
     documentId?: string;
   };
@@ -103,7 +103,7 @@ type Document = {
     keyTopics?: string[];
   };
   vectorData?: { chunks?: number; dimensions?: number; similarity_threshold?: number };
-  metadata?: { quality?: { ocr_confidence?: number; semantic_coherence?: number; document_completeness?: number } };
+  metadata?: { quality?: { ocr_confidence?: number; semantic_coherence?: number; document_completeness?: number } }};
   performance?: { processingTime?: number; confidence?: number };
   documentId?: string;
 };
@@ -120,22 +120,22 @@ type Cluster = { id: string;, centroid: number[];
   characteristics?: ClusterCharacteristics;
   quality?: number;
 };
-type SOMResult = {, grid: number[][][];, width: number;
+type SOMResult = { grid: number[][][];, width: number;
   height: number;
   neurons: number;
   trainingEpochs: number;
   quantizationError: number;
   topology?: SOMTopology;
 };
-type ClusteringQuality = {, silhouetteScore: number;, inertia: number;
+type ClusteringQuality = { silhouetteScore: number;, inertia: number;
   accuracy: number;
   precision: number;
   recall: number;
   processingTime: number;
 };
-type SOMTopology = {, gridSize: string;, totalNeurons: number;
+type SOMTopology = { gridSize: string;, totalNeurons: number;
   topology: 'rectangular' | 'hexagonal';
- , neighborhoodFunction: string;
+  neighborhoodFunction: string;
 };
 
 // --- Normalizer & Feature extraction (single coherent implementations) ---
@@ -153,12 +153,12 @@ function normalizeRagToDocument(ragData: any): Document {
     performance: docCandidate.performance,
     documentId: docCandidate.documentId
   };
-}
+} }
 
 function extractFeaturesForClustering(ragData: any): { vectors: number[][];, dimensions: number;
   labels: string[];
-  metadata: { documentId: string; processingTime: number;, confidence: number };
-} {
+  metadata: { documentId: string; processingTime: number; confidence: number };
+} }{
   const document = normalizeRagToDocument(ragData);
   const textFeatures = extractTextFeatures(document);
   const semanticFeatures = extractSemanticFeatures(document);
@@ -169,12 +169,12 @@ function extractFeaturesForClustering(ragData: any): { vectors: number[][];, di
     dimensions: vectors[0]?.length ?? 0,
     labels: generateFeatureLabels(document),
     metadata: {
-     , documentId: document.documentId ?? 'unknown',
+  documentId: document.documentId ?? 'unknown',
       processingTime: document.performance?.processingTime ?? 0,
       confidence: document.performance?.confidence ?? 0
-    }
+    } }
   };
-}
+} }
 
 function extractTextFeatures(document: Document): number[] {
   const features: number[] = [];
@@ -191,7 +191,7 @@ function extractTextFeatures(document: Document): number[] {
   const complexity = document.legalContext?.complexity_level;
   features.push(complexity === 'high' ? 1 : complexity === 'medium' ? 0.5 : 0);
   return features;
-}
+} }
 
 function extractSemanticFeatures(document: Document): number[] {
   const features: number[] = [];
@@ -209,7 +209,7 @@ function extractSemanticFeatures(document: Document): number[] {
   const topics = Array.isArray(semanticAnalysis.keyTopics) ? semanticAnalysis.keyTopics : [];
   features.push(topics.length / 10); // Normalized topic count
   return features;
-}
+} }
 
 function extractStructuralFeatures(document: Document): number[] {
   const features: number[] = [];
@@ -225,7 +225,7 @@ function extractStructuralFeatures(document: Document): number[] {
   features.push((quality.semantic_coherence ?? 0) / 100);
   features.push((quality.document_completeness ?? 0) / 100);
   return features;
-}
+} }
 
 function generateFeatureLabels(document: Document): string[] {
   const labels: string[] = [];
@@ -233,9 +233,9 @@ function generateFeatureLabels(document: Document): string[] {
   const practiceArea = document.legalContext?.practice_area ?? 'general';
   for (let i = 0; i < 10; i++) {
     labels.push(`${docType}_${practiceArea}_${i}`);
-  }
+  } }
   return labels;
-}
+} }
 
 // Add lightweight types used by the helper functions
 type ClusterCharacteristics = {
@@ -252,7 +252,7 @@ type Cluster = { id: string;, centroid: number[];
   quality?: number;
 };
 
-type SOMResult = {, grid: number[][][];, width: number;
+type SOMResult = { grid: number[][][];, width: number;
   height: number;
   neurons: number;
   trainingEpochs: number;
@@ -260,24 +260,24 @@ type SOMResult = {, grid: number[][][];, width: number;
   topology?: SOMTopology;
 };
 
-type ClusteringQuality = {, silhouetteScore: number;, inertia: number;
+type ClusteringQuality = { silhouetteScore: number;, inertia: number;
   accuracy: number;
   precision: number;
   recall: number;
 };
 
-type SOMTopology = {, gridSize: string;, totalNeurons: number;
+type SOMTopology = { gridSize: string;, totalNeurons: number;
   topology: 'rectangular' | 'hexagonal';
   neighborhoodFunction: string;
 };
 
 // Internal intermediate cluster shape used during K-means iterations
-type InternalCluster = {, centroid: number[];, points: number[][];
+type InternalCluster = { centroid: number[];, points: number[][];
   labels: string[];
 };
 
 async function performKMeansClustering(
-  features: { vectors: number[][]; dimensions: number;, labels: string[] },
+  features: { vectors: number[][]; dimensions: number; labels: string[] },
   k: number
 ): Promise<Cluster[]> {
   const vectors = features.vectors;
@@ -292,11 +292,11 @@ async function performKMeansClustering(
     const newCentroids = updateCentroids(clusters);
     // Check for convergence
     if (centroidsConverged(centroids, newCentroids)) {
-      console.log(`K-means converged after ${iteration + 1} iterations`);
+      console.log(`K-means converged after ${iteration + 1} }iterations`);
       break;
-    }
+    } }
     centroids = newCentroids;
-  }
+  } }
   return clusters.map((cluster, index) => ({
     id: `cluster_${index}`,
     centroid: cluster.centroid,
@@ -305,14 +305,14 @@ async function performKMeansClustering(
     characteristics: analyzeClusterContent(cluster.points, features.labels),
     quality: calculateClusterQuality(cluster.points, cluster.centroid)
   }));
-}
+} }
 
 // Adjusted to return SOMResult instead of: any and make trainingEpochs const
 async function performSOMAnalysis(
-  features: { vectors: number[][];, dimensions: number },
-  config: {, width: number;, height: number }
+  features: { vectors: number[][]; dimensions: number },
+  config: { width: number; height: number } }
 ): Promise<SOMResult> {
-  const { width, height } = config;
+  const { width, height } }= config;
   const vectors = features.vectors;
   const dimensions = features.dimensions;
   // Initialize SOM grid
@@ -327,11 +327,11 @@ async function performSOMAnalysis(
       const bmu = findBestMatchingUnit(vector, neurons, width, height);
       // Update BMU and its neighbors
       updateSOMWeights(neurons, vector, bmu, learningRate, neighborhoodRadius, width, height);
-    }
+    } }
     // Decay learning rate and neighborhood radius
     learningRate = 0.1 * Math.exp(-epoch / trainingEpochs);
     neighborhoodRadius = (Math.min(width, height) / 2) * Math.exp(-epoch / (trainingEpochs / 2));
-  }
+  } }
   // Calculate quantization error
   const quantizationError = calculateQuantizationError(vectors, neurons, width, height);
   return {
@@ -343,7 +343,7 @@ async function performSOMAnalysis(
     quantizationError,
     topology: generateSOMTopology(neurons, width, height)
   };
-}
+} }
 
 // type ClusteringQuality already exists above
 
@@ -359,7 +359,7 @@ function calculateClusteringQuality(clusters: Cluster[], som: SOMResult): Cluste
       recall: 0,
       processingTime: 0
     };
-  }
+  } }
 
   //, Helper: squared Euclidean distance
   const sqDist = (a: number[], b: number[]) => {
@@ -368,7 +368,7 @@ function calculateClusteringQuality(clusters: Cluster[], som: SOMResult): Cluste
     for (let i = 0; i < n; i++) {
       const d = (a[i] ?? 0) - (b[i] ?? 0);
       s += d * d;
-    }
+    } }
     return s;
   };
 
@@ -380,10 +380,10 @@ function calculateClusteringQuality(clusters: Cluster[], som: SOMResult): Cluste
     const centroid = c.centroid ?? [];
     for (const p of c.points ?? []) {
       inertia += sqDist(p, centroid);
-    }
+    } }
     totalPoints += c.points?.length ?? 0;
     qualitySum += c.quality ?? 0;
-  }
+  } }
 
   const avgQuality = totalPoints > 0 ? qualitySum / clusters.length : 0;
   // Heuristic silhouette-like score: normalize avgQuality to [0,1]
@@ -406,7 +406,7 @@ function calculateClusteringQuality(clusters: Cluster[], som: SOMResult): Cluste
     recall,
     processingTime
   };
-}
+} }
 
 // Helper: safely extract a human-readable message, from: unknown errors
 function getErrorMessage(err: any): string {
@@ -419,7 +419,8 @@ function getErrorMessage(err: any): string {
     if (typeof maybeObj.message === 'string') return maybeObj.message as: string;
     // Fall back to JSON.stringify but guard against circular refs
     return JSON.stringify(err);
-  } catch {
+  } }catch {
     return String(err);
-  }
-}
+  } }
+} }
+

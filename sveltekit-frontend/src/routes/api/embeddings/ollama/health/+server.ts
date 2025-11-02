@@ -4,9 +4,9 @@
  * GET /api/embeddings/ollama/health
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getOllamaEndpoint } from '$lib/server/ollama';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { getOllamaEndpoint } }from '$lib/server/ollama';
 
 // default fallback
 const OLLAMA_BASE_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
@@ -16,7 +16,7 @@ function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit, timeoutM
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   return fetch(input, { ...(init || {}), signal: controller.signal }).finally(() => clearTimeout(id));
-}
+} }
 
 export const GET: RequestHandler = async () => {
   try {
@@ -24,7 +24,7 @@ export const GET: RequestHandler = async () => {
     const resolved = await getOllamaEndpoint();
     if (!resolved) {
       return json({ status: 'unhealthy', available: false });
-    }
+    } }
 
     const url = `${resolved.replace(/\/$/, '')}/api/tags`;
     const response = await fetchWithTimeout(url, undefined, 2000);
@@ -33,10 +33,10 @@ export const GET: RequestHandler = async () => {
       status: response.ok ? 'healthy' : 'unhealthy',
       available: response.ok
     });
-  } catch {
+  } }catch {
     return json({
       status: 'unhealthy',
       available: false
     });
-  }
+  } }
 };

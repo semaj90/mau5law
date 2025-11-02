@@ -1,10 +1,10 @@
 // Database schema for chat functionality with pgvector support
-import { pgTable, uuid, text, timestamp, jsonb, boolean, integer, decimal } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+import { pgTable, uuid, text, timestamp, jsonb, boolean, integer, decimal } }from 'drizzle-orm/pg-core';
+import { sql } }from 'drizzle-orm';
 export const chatSessions = pgTable('chat_sessions', {
   id: uuid('id').primaryKey(),
   model: text('model').notNull().default('gemma3-legal'),
-  metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+  metadata: jsonb('metadata').default(sql`'{} }::jsonb`),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   messageCount: integer('message_count').default(0).notNull(),
@@ -19,7 +19,7 @@ export const chatMessages = pgTable('chat_messages', {
   role: text('role').notNull(), // 'user' | 'assistant' | 'system'
   timestamp: timestamp('timestamp').defaultNow().notNull(),
   embedding: text('embedding'), // JSON: string of embedding vector for pgvector
- , metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+ , metadata: jsonb('metadata').default(sql`'{} }::jsonb`),
   model: text('model'),
   confidence: decimal('confidence', { precision: 5, scale: 4 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -36,7 +36,7 @@ export const legalDocuments = pgTable('legal_documents', {
   content: text('content'), // Full text content for search
   summary: text('summary'), // AI-generated summary
   embedding: text('embedding'), // JSON: string of embedding vector
- , metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+ , metadata: jsonb('metadata').default(sql`'{} }::jsonb`),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
@@ -73,3 +73,4 @@ export type LegalDocument = typeof legalDocuments.$inferSelect;
 export type NewLegalDocument = typeof legalDocuments.$inferInsert;
 export type DocumentRelationship = typeof documentRelationships.$inferSelect;
 export type RAGQuery = typeof ragQueries.$inferSelect;
+

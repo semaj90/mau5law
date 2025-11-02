@@ -1,6 +1,6 @@
 // XState Machine for Session Management with Production Services Integration
-import { createMachine, assign } from 'xstate';
-import type { User } from '../stores/auth.svelte.js';
+import { createMachine, assign } }from 'xstate';
+import type { User } }from '../stores/auth.svelte.js';
 // Session context interface
 export interface SessionContext { user: User | null;, sessionId: string | null;
   expiresAt: Date | null;
@@ -9,82 +9,76 @@ export interface SessionContext { user: User | null;, sessionId: string | null;
   permissions: string[];
   currentRoute: string;
   deviceFingerprint?: string;
-  sessionHealth: {, isValid: boolean;, warningCount: number;
+  sessionHealth: { isValid: boolean;, warningCount: number;
     lastHealthCheck: Date | null;
   };
-  analyticsData: {, loginTime: Date | null;, activityCount: number;
+  analyticsData: { loginTime: Date | null;, activityCount: number;
     featuresUsed: string[];
   };
-}
+} }
 // Session events
 type SessionEvent =
-  | { type: 'AUTHENTICATE'; user: User; sessionId: string }
-  | { type: 'REFRESH_SESSION' }
-  | { type: 'LOGOUT' }
-  | { type: 'SESSION_EXPIRED' }
-  | { type: 'ACTIVITY'; route: string; action: string }
-  | { type: 'SECURITY_CHECK' }
-  | { type: 'PERMISSION_CHECK'; permission: string }
-  | { type: 'EXTEND_SESSION' }
-  | { type: 'ELEVATE_SECURITY'; reason: string }
+  | { type: 'AUTHENTICATE'; user: User; sessionId: string } }
+  | { type: 'REFRESH_SESSION' } }
+  | { type: 'LOGOUT' } }
+  | { type: 'SESSION_EXPIRED' } }
+  | { type: 'ACTIVITY'; route: string; action: string } }
+  | { type: 'SECURITY_CHECK' } }
+  | { type: 'PERMISSION_CHECK'; permission: string } }
+  | { type: 'EXTEND_SESSION' } }
+  | { type: 'ELEVATE_SECURITY'; reason: string } }
   | { type: 'HEALTH_CHECK' };
 // Define expected return types for services
-interface AuthenticationResult {, expiresAt: string;, permissions: string[];
+interface AuthenticationResult { expiresAt: string;, permissions: string[];
   valid: boolean;
-}
+} }
 interface RefreshSessionResult {
   expiresAt: string;
-}
+} }
 interface ExtendSessionResult {
   expiresAt: string;
-}
+} }
 interface ElevateSecurityLevelResult {
   newLevel: 'elevated';
-}
+} }
 interface PerformSecurityCheckResult {
   warningCount: number;
-}
+} }
 interface PerformHealthCheckResult {
   healthy: boolean;
-}
-export const sessionMachine = createMachine({
- , id: 'sessionManager',
+} }
+export const sessionMachine = createMachine({ id: 'sessionManager',
   initial: 'unauthenticated',
-  context: {
-   , user: null,
+  context: { user: null,
     sessionId: null,
     expiresAt: null,
     lastActivity: null,
     securityLevel: 'standard',
     permissions: [],
     currentRoute: '/',
-    sessionHealth: {
-     , isValid: false,
+    sessionHealth: { isValid: false,
       warningCount: 0,
       lastHealthCheck: null
     },
-    analyticsData: {
-     , loginTime: null,
+    analyticsData: { loginTime: null,
       activityCount: 0,
       featuresUsed: []
-    }
-  } as SessionContext,
-  states: {, unauthenticated: {, entry: ['clearSessionData'],
-      on: {, AUTHENTICATE: {, target: 'authenticating',
+    } }
+  } }as SessionContext,
+  states: { unauthenticated: { entry: ['clearSessionData'],
+      on: { AUTHENTICATE: { target: 'authenticating',
           actions: assign(authenticateAssign)
-        }
-      }
+        } }
+      } }
     },
-    authenticating: {, invoke: {, src: 'performAuthentication',
+    authenticating: { invoke: { src: 'performAuthentication',
         input: ({ event }) => {
           const authEvent = event as Extract<SessionEvent, { type: 'AUTHENTICATE' }>;
-          return {
-           , user: authEvent.user,
+          return { user: authEvent.user,
             sessionId: authEvent.sessionId
           };
         },
-        onDone: {
-         , target: 'authenticated',
+        onDone: { target: 'authenticated',
           actions: assign(({ context, event }) => {
             const authResult = event.output as AuthenticationResult;
             return {
@@ -99,15 +93,14 @@ export const sessionMachine = createMachine({
               analyticsData: {
                 ...context.analyticsData,
                 loginTime: new Date()
-              }
+              } }
             };
           })
         },
         onError: 'unauthenticated'
-      }
+      } }
     },
-    authenticated: {
-     , initial: 'active',
+    authenticated: { initial: 'active',
       entry: ['logSessionStart'],
       on: {
         // Target top-level sibling states using absolute machine id to avoid
@@ -117,7 +110,7 @@ export const sessionMachine = createMachine({
         SECURITY_CHECK: '.security_validation',
         HEALTH_CHECK: '.health_checking'
       },
-      states: {, active: {, on: {, ACTIVITY: {, actions: ['recordActivity', 'updateLastActivity']
+      states: { active: { on: { ACTIVITY: { actions: ['recordActivity', 'updateLastActivity']
             },
             REFRESH_SESSION: 'refreshing',
             EXTEND_SESSION: 'extending',
@@ -126,19 +119,17 @@ export const sessionMachine = createMachine({
           },
           // Automatic session timeout check every, 5 minutes
           after: {
-            300000: {
-             , target: 'checking_timeout',
+            300000: { target: 'checking_timeout',
               actions: ['checkSessionTimeout']
-            }
-          }
+            } }
+          } }
         },
-        refreshing: {, invoke: {, src: 'refreshSession',
+        refreshing: { invoke: { src: 'refreshSession',
             input: ({ context }) => ({
               sessionId: context.sessionId,
               user: context.user
             }),
-            onDone: {
-             , target: 'active',
+            onDone: { target: 'active',
               actions: assign(({ context, event }) => {
                 const refreshResult = event.output as RefreshSessionResult;
                 return {
@@ -147,20 +138,19 @@ export const sessionMachine = createMachine({
                   sessionHealth: {
                     ...context.sessionHealth,
                     lastHealthCheck: new Date()
-                  }
+                  } }
                 };
               })
             },
             onError: '#sessionManager.expired'
-          }
+          } }
         },
-        extending: {, invoke: {, src: 'extendSession',
+        extending: { invoke: { src: 'extendSession',
             input: ({ context }) => ({
               sessionId: context.sessionId,
               requestedDuration: 3600000, // 1 hour
             }),
-            onDone: {
-             , target: 'active',
+            onDone: { target: 'active',
               actions: assign(({ event }) => {
                 const extendResult = event.output as ExtendSessionResult;
                 return {
@@ -169,37 +159,33 @@ export const sessionMachine = createMachine({
               })
             },
             onError: 'active'
-          }
+          } }
         },
-        checking_permissions: {, invoke: {, src: 'validatePermissions',
+        checking_permissions: { invoke: { src: 'validatePermissions',
             input: ({ context, event }) => {
               const permissionEvent = event as Extract<SessionEvent, { type: 'PERMISSION_CHECK' }>;
-              return {
-               , user: context.user,
+              return { user: context.user,
                 permission: permissionEvent.permission,
                 securityLevel: context.securityLevel
               };
             },
             onDone: 'active',
             onError: 'permission_denied'
-          }
+          } }
         },
         permission_denied: {
-          after: {
-           , 2000: 'active'
-          }
+          after: { 2000: 'active'
+          } }
         },
-        elevating_security: {, invoke: {, src: 'elevateSecurityLevel',
+        elevating_security: { invoke: { src: 'elevateSecurityLevel',
             input: ({ context, event }) => {
               const elevateEvent = event as Extract<SessionEvent, { type: 'ELEVATE_SECURITY' }>;
-              return {
-               , sessionId: context.sessionId,
+              return { sessionId: context.sessionId,
                 reason: elevateEvent.reason,
                 currentLevel: context.securityLevel
               };
             },
-            onDone: {
-             , target: 'active',
+            onDone: { target: 'active',
               actions: assign(({ event }) => {
                 const elevateResult = event.output as ElevateSecurityLevelResult;
                 return {
@@ -208,9 +194,9 @@ export const sessionMachine = createMachine({
               })
             },
             onError: 'active'
-          }
+          } }
         },
-        checking_timeout: {, invoke: {, src: 'checkSessionValidity',
+        checking_timeout: { invoke: { src: 'checkSessionValidity',
             input: ({ context }) => ({
               sessionId: context.sessionId,
               expiresAt: context.expiresAt,
@@ -218,16 +204,15 @@ export const sessionMachine = createMachine({
             }),
             onDone: 'active',
             onError: '#sessionManager.expired'
-          }
+          } }
         },
-        security_validation: {, invoke: {, src: 'performSecurityCheck',
+        security_validation: { invoke: { src: 'performSecurityCheck',
             input: ({ context }) => ({
               user: context.user,
               deviceFingerprint: context.deviceFingerprint,
               sessionHealth: context.sessionHealth
             }),
-            onDone: {
-             , target: 'active',
+            onDone: { target: 'active',
               actions: assign(({ context, event }) => {
                 const securityCheckResult = event.output as PerformSecurityCheckResult;
                 return {
@@ -235,36 +220,33 @@ export const sessionMachine = createMachine({
                     ...context.sessionHealth,
                     warningCount: securityCheckResult.warningCount,
                     lastHealthCheck: new Date()
-                  }
+                  } }
                 };
               })
             },
-            onError: {
-             , target: 'security_compromised',
+            onError: { target: 'security_compromised',
               actions: assign(({ context }) => ({
                 sessionHealth: {
                   ...context.sessionHealth,
                   isValid: false,
                   warningCount: context.sessionHealth.warningCount + 1
-                }
+                } }
               }))
-            }
-          }
+            } }
+          } }
         },
-        security_compromised: {
-         , entry: ['alertSecurityBreach'],
+        security_compromised: { entry: ['alertSecurityBreach'],
           after: {
             // After a delay, move to the top-level logging_out state
             5000: '#sessionManager.logging_out'
-          }
+          } }
         },
-        health_checking: {, invoke: {, src: 'performHealthCheck',
+        health_checking: { invoke: { src: 'performHealthCheck',
             input: ({ context }) => ({
               sessionId: context.sessionId,
               analyticsData: context.analyticsData
             }),
-            onDone: {
-             , target: 'active',
+            onDone: { target: 'active',
               actions: assign(({ context, event }) => {
                 const healthCheckResult = event.output as PerformHealthCheckResult;
                 return {
@@ -272,30 +254,28 @@ export const sessionMachine = createMachine({
                     ...context.sessionHealth,
                     lastHealthCheck: new Date(),
                     isValid: healthCheckResult.healthy
-                  }
+                  } }
                 };
               })
             },
             onError: 'active'
-          }
-        }
-      }
+          } }
+        } }
+      } }
     },
-    logging_out: {, invoke: {, src: 'performLogout',
+    logging_out: { invoke: { src: 'performLogout',
         input: ({ context }) => ({
           sessionId: context.sessionId,
           user: context.user,
           sessionDuration: context.analyticsData.loginTime ? Date.now() - context.analyticsData.loginTime.getTime() : 0
         }),
         onDone: 'unauthenticated',
-        onError: 'unauthenticated` }'`
+        onError: 'unauthenticated` } }`
     },
-    expired: {
-     , entry: ['logSessionExpired'],
-      after: {
-       , 3000: `unauthenticated` }
-    }
-  }
+    expired: { entry: ['logSessionExpired'],
+      after: { 3000: `unauthenticated` } }
+    } }
+  } }
 });
 // Action implementations
 export const sessionActions = {
@@ -304,16 +284,15 @@ export const sessionActions = {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('sessionHealth');
       sessionStorage.removeItem('currentRoute');
-    }
+    } }
   },
-  logSessionStart: ({ context }: {, context: SessionContext }) => {
+  logSessionStart: ({ context }: { context: SessionContext }) => {
     console.log('Session started for user:', context.user?.email);
     if (typeof window !== 'undefined') {
       localStorage.setItem('sessionStartTime', Date.now().toString());
-    }
+    } }
   },
-  recordActivity: ({
-   , context: _context,
+  recordActivity: ({ context: _context,
     event
   }: { context: SessionContext;, event: Extract<SessionEvent, { type: `ACTIVITY` }>;
   }) => {
@@ -325,27 +304,26 @@ export const sessionActions = {
     // Log activity for analytics
     console.log('User activity: ', activity);'`'`
   },
-  updateLastActivity: assign({
-   , lastActivity: () => new Date(),
+  updateLastActivity: assign({ lastActivity: () => new Date(),
     currentRoute: ({ event }) => (event as Extract<SessionEvent, { type: `ACTIVITY` }>).route,
     analyticsData: ({ context }) => ({
       ...context.analyticsData,
       activityCount: context.analyticsData.activityCount + 1
     })
   }),
-  checkSessionTimeout: ({ context }: {, context: SessionContext }) => {
+  checkSessionTimeout: ({ context }: { context: SessionContext }) => {
     const now = new Date();
     if (context.expiresAt && now > context.expiresAt) {
       console.warn('Session expired due to timeout');
-    }
+    } }
   },
-  alertSecurityBreach: ({ context }: {, context: SessionContext }) => {
+  alertSecurityBreach: ({ context }: { context: SessionContext }) => {
     console.error('Security breach detected for session:', context.sessionId);
     // Could trigger notifications, alerts, etc.
   },
-  logSessionExpired: ({ context }: {, context: SessionContext }) => {
+  logSessionExpired: ({ context }: { context: SessionContext }) => {
     console.log('Session expired for user:', context.user?.email);
-  }
+  } }
 };
 // Assign function for AUTHENTICATE event
 function authenticateAssign({
@@ -378,9 +356,9 @@ function authenticateAssign({
       isValid: false,
       lastHealthCheck: null,
       warningCount: 0
-    }
+    } }
   };
-}
+} }
 // Helper function to get user permissions based on role
 function getUserPermissions(role: string): string[] {
   const permissions = {
@@ -392,4 +370,5 @@ function getUserPermissions(role: string): string[] {
     viewer: ['view_cases', 'view_evidence']
   };
   return permissions[role as keyof typeof permissions] || permissions.viewer;
-}
+} }
+

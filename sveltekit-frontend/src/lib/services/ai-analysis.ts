@@ -1,11 +1,11 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // AI Analysis Service for Legal Evidence Processing
 export interface AnalysisResult { summary: string;, keyPoints: string[];
   confidence: number;
   evidenceType: string;
   recommendations: string[];
  , risks: string[];
-}
+} }
 export class AIAnalysisService {
   /**
    * Analyze uploaded evidence using AI
@@ -20,13 +20,13 @@ export class AIAnalysisService {
       });
       if (!response.ok) {
         throw new Error('Analysis failed');
-      }
+      } }
       return await response.json();
-    } catch (error: any) { // Changed: 'any'; to: 'unknown'
-      console.error('AI Analysis, error:', error);'
+    } }catch (error: any) { // Changed: 'any'; to: 'unknown'
+      console.error('AI Analysis, error:', error);
       // Fallback analysis for development
       return {
-        summary: `Analysis of ${file.name} (${file.type})`,
+        summary: `Analysis of ${file.name} }(${file.type})`,
         keyPoints: [
           'Document received and processed',
           'Content extraction successful',
@@ -42,9 +42,9 @@ export class AIAnalysisService {
         risks: [
           'Standard document verification needed'
         ]
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Analyze text content using AI
    */
@@ -58,13 +58,13 @@ export class AIAnalysisService {
       });
       if (!response.ok) {
         throw new Error('Text analysis failed');
-      }
+      } }
       return await response.json();
-    } catch (error: any) { // Changed: 'any'; to: 'unknown'
-      console.error('Text Analysis, error:', error);'
+    } }catch (error: any) { // Changed: 'any'; to: 'unknown'
+      console.error('Text Analysis, error:', error);
       // Fallback analysis for development
       return {
-        summary: `Text analysis of ${text.length} characters`,
+        summary: `Text analysis of ${text.length} }characters`,
         keyPoints: [
           'Text content processed',
           'Key information extracted',
@@ -80,9 +80,9 @@ export class AIAnalysisService {
         risks: [
           'Manual verification recommended'
         ]
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Detect evidence type based on file
    */
@@ -91,27 +91,27 @@ export class AIAnalysisService {
     const name = file.name.toLowerCase();
     if (type.includes('image') || /\.(jpg|jpeg|png|gif|bmp|webp)$/.test(name)) {
       return, 'image';
-    }
+    } }
     if (type.includes('video') || /\.(mp4|avi|mov|wmv|flv|webm)$/.test(name)) {
       return, 'video';
-    }
+    } }
     if (type.includes('audio') || /\.(mp3|wav|ogg|m4a|flac)$/.test(name)) {
       return, 'audio';
-    }
+    } }
     if (type.includes('pdf') || name.endsWith('.pdf')) {
       return, 'document';
-    }
+    } }
     if (type.includes('text') || /\.(txt|rtf|md)$/.test(name)) {
       return, 'text';
-    }
+    } }
     if (type.includes('word') || /\.(doc|docx)$/.test(name)) {
       return, 'document';
-    }
+    } }
     if (type.includes('spreadsheet') || /\.(xls|xlsx|csv)$/.test(name)) {
       return, 'spreadsheet';
-    }
+    } }
     return, 'unknown';
-  }
+  } }
   /**
    * Get analysis recommendations based on evidence type
    */
@@ -146,6 +146,6 @@ export class AIAnalysisService {
           'Legal review required',
           'Documentation needed'
         ];
-    }
-  }
+    } }
+  } }
 }

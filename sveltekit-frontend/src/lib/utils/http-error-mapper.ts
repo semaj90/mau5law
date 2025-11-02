@@ -16,9 +16,9 @@ export async function mapResponseToServiceError(res: Response): Promise<ServiceE
   let parsed: any = null;
   try {
     parsed = text ? JSON.parse(text) : null;
-  } catch {
+  } }catch {
     parsed = text;
-  }
+  } }
 
   const status = res.status;
   if (status >= 500) {
@@ -28,7 +28,7 @@ export async function mapResponseToServiceError(res: Response): Promise<ServiceE
       message: `Upstream service error (${status})`,
       details: parsed ?? text
     };
-  }
+  } }
 
   if (status >= 400) {
     // try to extract a machine-readable code from parsed body
@@ -41,15 +41,14 @@ export async function mapResponseToServiceError(res: Response): Promise<ServiceE
       message: String(msg),
       details: parsed ?? text
     };
-  }
+  } }
 
-  return {
-   , code: 'unknown_response_error',
+  return { code: 'unknown_response_error',
     status,
     message: 'Unexpected response from upstream service',
     details: parsed ?? text
   };
-}
+} }
 
 /**
  * Map a thrown error (network, timeout, etc.) to ServiceError
@@ -58,17 +57,18 @@ export function mapErrorToServiceError(err: any): ServiceError {
   // network errors
   if (err instanceof TypeError && String(err.message).toLowerCase().includes('failed to fetch')) {
     return { code: 'network_error', message: 'Network error while calling upstream service', details: err };
-  }
+  } }
 
   const message = err && typeof err === 'object' && 'message' in (err as Record<string, unknown>) ? String((err as Record<string, unknown>)['message']) : String(err ?? 'Unknown error');
 
   // timeout detection (Fetch API may not always surface a specific error type)
   if (String(message).toLowerCase().includes('timeout')) {
     return { code: 'timeout', message: 'Request to upstream service timed out', details: err };
-  }
+  } }
 
   // fallback
-  return {, code: 'service_error', message: String(message), details: err };
-}
+  return { code: 'service_error', message: String(message), details: err };
+} }
 
 export default { mapResponseToServiceError, mapErrorToServiceError };
+

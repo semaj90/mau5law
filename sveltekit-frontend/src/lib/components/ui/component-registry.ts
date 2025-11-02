@@ -7,15 +7,14 @@ export interface ComponentInfo { name: string;, package: 'bits-ui' | 'enhanced-
   legalAIUseCase: string[];
   priority: 'essential' | 'important' | 'optional';
   implemented: boolean;
-}
+} }
 /**
  * Complete Bits UI v2 Component Array
  * Organized by category and prioritized for legal AI platform
  */
 export const BITS_UI_COMPONENTS: ComponentInfo[] = [
   // === ESSENTIAL NAVIGATION & INTERACTION ===
-  {
-   , name: 'Button',
+  { name: 'Button',
     package: 'bits-ui',
     svelte5Compatible: true,
     legalAIUseCase: ['case-actions', 'form-submission', 'evidence-upload', 'ai-queries'],
@@ -242,7 +241,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     legalAIUseCase: ['evidence-images', 'document-preview', 'media-display'],
     priority: 'optional',
     implemented: false
-  }
+  } }
 ];
 /**
  * Get components by priority level
@@ -291,5 +290,5 @@ export const LEGAL_AI_RECOMMENDATIONS = {
   userInterface: ['Navigation Menu', 'Avatar', 'Tooltip', 'Alert Dialog'],
   dataEntry: ['Checkbox', 'Radio Group', 'Select', 'PIN Input', 'Calendar', 'Time Field'],
   workflow: ['Progress', 'Toolbar', 'Switch', 'Slider']
-}
+} }
 export default BITS_UI_COMPONENTS;

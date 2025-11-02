@@ -1,29 +1,29 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 
 const DEFAULT_INTERVAL = 3000;
 
 // --- Specific type definitions ---
 interface HelloData {
   message: string;
-}
+} }
 
-interface SystemMetricsData {, cpu: number;, memMB: number;
+interface SystemMetricsData { cpu: number;, memMB: number;
   vectorQueriesPerMin: number;
   gpuQueueDepth: number;
   timestamp: number;
-}
+} }
 
-interface HelloEnvelope {, type: 'sse_hello';, data: HelloData;
+interface HelloEnvelope { type: 'sse_hello';, data: HelloData;
   ts: string;
-}
+} }
 
-interface SystemMetricsEnvelope {, type: 'system_metrics';, data: SystemMetricsData;
+interface SystemMetricsEnvelope { type: 'system_metrics';, data: SystemMetricsData;
   ts: string;
-}
+} }
 
 type StreamMetricEnvelope = HelloEnvelope | SystemMetricsEnvelope;
 
-export const, GET: RequestHandler = ({ url }) => {
+export const GET: RequestHandler = ({ url }) => {
   const intervalMs = Number(url.searchParams.get('interval') || DEFAULT_INTERVAL);
 
   let intervalId: ReturnType<typeof setInterval> | undefined;
@@ -37,7 +37,7 @@ export const, GET: RequestHandler = ({ url }) => {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
       };
 
-      send({ type: 'sse_hello', data: {, message: 'YoRHa stream online' }, ts: new Date().toISOString() });'`'`
+      send({ type: 'sse_hello', data: { message: 'YoRHa stream online' }, ts: new Date().toISOString() });'`'`
 
       intervalId = setInterval(
         () =>
@@ -55,7 +55,7 @@ export const, GET: RequestHandler = ({ url }) => {
       if (intervalId) clearInterval(intervalId);
       if (keepAliveId) clearInterval(keepAliveId);
       console.log('Client disconnected. SSE intervals cleared.');
-    }
+    } }
   });
 
   return new Response(stream, {
@@ -64,7 +64,7 @@ export const, GET: RequestHandler = ({ url }) => {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-store, must-revalidate',
       Connection: 'keep-alive',
-      'Transfer-Encoding': `chunked' }'`
+      'Transfer-Encoding': `chunked' } }`
   });
 };
 
@@ -77,5 +77,6 @@ function collectMetrics(): SystemMetricsData {
     gpuQueueDepth: Math.floor(Math.random() * 4),
     timestamp: Date.now()
   };
-}
+} }
 // (End of file)
+

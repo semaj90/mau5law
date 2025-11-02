@@ -1,7 +1,7 @@
 // src/lib/machines/__tests__/evidence-canvas-machine.test.ts
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createActor, createMachine, assign, fromPromise } from 'xstate';
-import { mockServices, perf } from '../../services/__tests__/setup.js';
+import { describe, it, expect, beforeEach, vi } }from 'vitest';
+import { createActor, createMachine, assign, fromPromise } }from 'xstate';
+import { mockServices, perf } }from '../../services/__tests__/setup.js';
 
 // --- ADDED: explicit types and helper to avoid `any` and allow: number for lastUpdate ---
 type EvidenceCanvasContext = {
@@ -32,7 +32,7 @@ type EvidenceCanvasEvent = {
 	error?: any;
 };
 
-type EvidenceCanvasSnapshot = {, value: string;, context: EvidenceCanvasContext;
+type EvidenceCanvasSnapshot = { value: string;, context: EvidenceCanvasContext;
 };
 
 // Helper to safely extract the `output` object from done events without using `any`.
@@ -40,13 +40,12 @@ function extractOutput<T>(event: any): T | undefined {
 	if (!event || typeof event !== 'object') return: undefined;
 	const e = event as { output?: any };
 	return e.output as T | undefined;
-}
+} }
 // --- end added ---
 
 // XState v5 Evidence Canvas Machine for Legal AI Platform
 // NOTE: remove explicit generic type parameters — XState v5's createMachine has a large generic arity.'
-const evidenceCanvasMachine = createMachine({
- , id: 'evidenceCanvasMachine',
+const evidenceCanvasMachine = createMachine({ id: 'evidenceCanvasMachine',
   initial: 'idle',
   context: {
     // omit, optional: string/number fields instead of setting them to `undefined`
@@ -59,85 +58,72 @@ const evidenceCanvasMachine = createMachine({
     fabricState: undefined,
     performanceMetrics: undefined,
     error: undefined
-  } as EvidenceCanvasContext, // <-- cast context to the explicit type to fix, assign, typings
-  states: {, idle: {, on: {
-       , INITIALIZE_CANVAS: `initializing` }
+  } }as EvidenceCanvasContext, // <-- cast context to the explicit type to fix, assign, typings
+  states: { idle: { on: { INITIALIZE_CANVAS: `initializing` } }
     },
-    initializing: {, invoke: {, src: fromPromise(async ({ input }) => {
+    initializing: { invoke: { src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           const canvas = await mockServices.createEvidenceCanvas(input.sessionId, input.caseId);
           const duration = performance.now() - startTime;
           return {
             ...canvas,
-            performanceMetrics: {
-             , responseTime: duration,
+            performanceMetrics: { responseTime: duration,
               protocol: 'HTTP',
-              operation: `canvas_initialization` }
+              operation: `canvas_initialization` } }
           };
         }),
         input: ({ event }) => ({
           sessionId: (event as EvidenceCanvasEvent).sessionId,
           caseId: (event as EvidenceCanvasEvent).caseId
         }),
-        onDone: {
-         , target: 'active',
+        onDone: { target: 'active',
           actions: assign({
             // use typed event and extractOutput to avoid `any`
-           , canvasId: ({ event }: {, event: any }) => extractOutput<{ canvasId?: string }>(event)?.canvasId,
-            sessionId: ({ event }: {, event: any }) => extractOutput<{ sessionId?: string }>(event)?.sessionId,
-            evidenceItems: ({ event }: {, event: any }) =>
+           , canvasId: ({ event }: { event: any }) => extractOutput<{ canvasId?: string }>(event)?.canvasId,
+            sessionId: ({ event }: { event: any }) => extractOutput<{ sessionId?: string }>(event)?.sessionId,
+            evidenceItems: ({ event }: { event: any }) =>
               extractOutput<{ evidenceItems?: Array<unknown> }>(event)?.evidenceItems ?? [],
-            connections: ({ event }: {, event: any }) =>
+            connections: ({ event }: { event: any }) =>
               extractOutput<{ connections?: Array<unknown> }>(event)?.connections ?? [],
-            fabricState: ({ event }: {, event: any }) =>
+            fabricState: ({ event }: { event: any }) =>
               extractOutput<{ fabricState?: any }>(event)?.fabricState,
             lastUpdate: () => Date.now(),
-            performanceMetrics: ({ event }: {, event: any }) =>
+            performanceMetrics: ({ event }: { event: any }) =>
               extractOutput<{ performanceMetrics?: any }>(event)?.performanceMetrics,
             error: () => undefined
           })
         },
-        onError: {
-         , target: 'error',
-          actions: assign({
-           , error: ({ event }: {, event: any }) => {
+        onError: { target: 'error',
+          actions: assign({ error: ({ event }: { event: any }) => {
               const err = (event as { error?: any })?.error;
               if (!err) return String(event ?? 'unknown error');
               if (typeof err === 'object' && err !== null && 'message' in (err as Record<string, unknown>)) {
                 const eObj = err as Record<string, unknown>;
                 if (typeof eObj.message === 'string') return eObj.message;
-              }
+              } }
               return String(err);
-            }
+            } }
           })
-        }
-      }
+        } }
+      } }
     },
-    active: {, on: {, ADD_EVIDENCE: {
-         , target: 'updating',
-          actions: assign({
-           , lastUpdate: () => Date.now()
+    active: { on: { ADD_EVIDENCE: { target: 'updating',
+          actions: assign({ lastUpdate: () => Date.now()
           })
         },
-        MOVE_EVIDENCE: {
-         , target: 'updating',
-          actions: assign({
-           , lastUpdate: () => Date.now()
+        MOVE_EVIDENCE: { target: 'updating',
+          actions: assign({ lastUpdate: () => Date.now()
           })
         },
-        CREATE_CONNECTION: {
-         , target: 'updating',
-          actions: assign({
-           , lastUpdate: () => Date.now()
+        CREATE_CONNECTION: { target: 'updating',
+          actions: assign({ lastUpdate: () => Date.now()
           })
         },
-        UPDATE_FABRIC_STATE: {
-         , target: 'syncing',
-          actions: assign({
-           , lastUpdate: () => Date.now()
+        UPDATE_FABRIC_STATE: { target: 'syncing',
+          actions: assign({ lastUpdate: () => Date.now()
           })
         },
-        COLLABORATOR_JOIN: {, actions: assign({, collaborators: ({ event, context }: { event: EvidenceCanvasEvent;, context: EvidenceCanvasContext }) => [
+        COLLABORATOR_JOIN: { actions: assign({ collaborators: ({ event, context }: { event: EvidenceCanvasEvent; context: EvidenceCanvasContext }) => [
               ...context.collaborators,
               event.collaborator,
             ],
@@ -145,9 +131,9 @@ const evidenceCanvasMachine = createMachine({
           })
         },
         SAVE_CANVAS: 'saving'
-      }
+      } }
     },
-    updating: {, invoke: {, src: fromPromise(async ({ input }) => {
+    updating: { invoke: { src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           let result;
           switch (input.type) {
@@ -161,16 +147,15 @@ const evidenceCanvasMachine = createMachine({
               result = await mockServices.createEvidenceConnection(input.canvasId, input.connection);
               break;
             default:
-              result = {, success: true };
-          }
+              result = { success: true };
+          } }
           const duration = performance.now() - startTime;
           return {
             ...result,
-            performanceMetrics: {
-             , responseTime: duration,
+            performanceMetrics: { responseTime: duration,
               protocol: 'HTTP',
               operation: input.type.toLowerCase()
-            }
+            } }
           };
         }),
         input: ({ event, context }) => ({
@@ -181,119 +166,105 @@ const evidenceCanvasMachine = createMachine({
           position: event.type === 'MOVE_EVIDENCE' ? event.position : undefined,
           connection: event.type === 'CREATE_CONNECTION' ? event.connection : undefined
         }),
-        onDone: {
-         , target: 'active',
-          actions: assign({
-           , evidenceItems: ({ event, context }: { event: any;, context: EvidenceCanvasContext }) =>
+        onDone: { target: 'active',
+          actions: assign({ evidenceItems: ({ event, context }: { event: any; context: EvidenceCanvasContext }) =>
               extractOutput<{ evidenceItems?: Array<unknown> }>(event)?.evidenceItems ?? context.evidenceItems,
-            connections: ({ event, context }: { event: any;, context: EvidenceCanvasContext }) =>
+            connections: ({ event, context }: { event: any; context: EvidenceCanvasContext }) =>
               extractOutput<{ connections?: Array<unknown> }>(event)?.connections ?? context.connections,
-            performanceMetrics: ({ event }: {, event: any }) =>
+            performanceMetrics: ({ event }: { event: any }) =>
               extractOutput<{ performanceMetrics?: any }>(event)?.performanceMetrics,
             lastUpdate: () => Date.now()
           })
         },
-        onError: {
-         , target: 'active',
-          actions: assign({
-           , error: ({ event }: {, event: any }) => {
+        onError: { target: 'active',
+          actions: assign({ error: ({ event }: { event: any }) => {
               const err = (event as { error?: any })?.error;
               if (!err) return String(event ?? 'unknown error');
               if (typeof err === 'object' && err !== null && 'message' in (err as Record<string, unknown>)) {
                 const eObj = err as Record<string, unknown>;
                 if (typeof eObj.message === 'string') return eObj.message;
-              }
+              } }
               return String(err);
-            }
+            } }
           })
-        }
-      }
+        } }
+      } }
     },
-    syncing: {, invoke: {, src: fromPromise(async ({ input }) => {
+    syncing: { invoke: { src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           const result = await mockServices.syncCanvasState(input.canvasId, input.fabricState);
           const duration = performance.now() - startTime;
           return {
             ...result,
-            performanceMetrics: {
-             , responseTime: duration,
+            performanceMetrics: { responseTime: duration,
               protocol: 'WebSocket',
               operation: 'real_time_sync'
-            }
+            } }
           };
         }),
         input: ({ event, context }) => ({
           canvasId: context.canvasId,
           fabricState: (event as EvidenceCanvasEvent).fabricState
         }),
-        onDone: {
-         , target: 'active',
-          actions: assign({
-           , fabricState: ({ event }: {, event: any }) =>
+        onDone: { target: 'active',
+          actions: assign({ fabricState: ({ event }: { event: any }) =>
               extractOutput<{ fabricState?: any }>(event)?.fabricState,
-            performanceMetrics: ({ event }: {, event: any }) =>
+            performanceMetrics: ({ event }: { event: any }) =>
               extractOutput<{ performanceMetrics?: any }>(event)?.performanceMetrics,
             lastUpdate: () => Date.now()
           })
         },
-        onError: {
-         , target: 'active',
-          actions: assign({
-           , error: ({ event }: {, event: any }) => {
+        onError: { target: 'active',
+          actions: assign({ error: ({ event }: { event: any }) => {
               const err = (event as { error?: any })?.error;
               if (!err) return String(event ?? 'unknown error');
               if (typeof err === 'object' && err !== null && 'message' in (err as Record<string, unknown>)) {
                 const eObj = err as Record<string, unknown>;
                 if (typeof eObj.message === 'string') return eObj.message;
-              }
+              } }
               return String(err);
-            }
+            } }
           })
-        }
-      }
+        } }
+      } }
     },
-    saving: {, invoke: {, src: fromPromise(async ({ input }) => {
+    saving: { invoke: { src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           const result = await mockServices.saveEvidenceCanvas(input.canvasId);
           const duration = performance.now() - startTime;
           return {
             ...result,
-            performanceMetrics: {
-             , responseTime: duration,
+            performanceMetrics: { responseTime: duration,
               protocol: 'HTTP',
               operation: 'canvas_persistence'
-            }
+            } }
           };
         }),
         input: ({ context }) => ({ canvasId: context.canvasId }),
-        onDone: {
-         , target: 'active',
-          actions: assign({
-           , performanceMetrics: ({ event }: {, event: any }) =>
+        onDone: { target: 'active',
+          actions: assign({ performanceMetrics: ({ event }: { event: any }) =>
               extractOutput<{ performanceMetrics?: any }>(event)?.performanceMetrics,
             lastUpdate: () => Date.now()
           })
         },
-        onError: {
-         , target: 'active',
-          actions: assign({
-           , error: ({ event }: {, event: any }) => {
+        onError: { target: 'active',
+          actions: assign({ error: ({ event }: { event: any }) => {
               const err = (event as { error?: any })?.error;
               if (!err) return String(event ?? 'unknown error');
               if (typeof err === 'object' && err !== null && 'message' in (err as Record<string, unknown>)) {
                 const eObj = err as Record<string, unknown>;
                 if (typeof eObj.message === 'string') return eObj.message;
-              }
+              } }
               return String(err);
-            }
+            } }
           })
-        }
-      }
+        } }
+      } }
     },
-    error: {, on: {, RETRY: 'initializing',
-        RESET: 'idle` }'`
-    }
-  }
+    error: { on: { RETRY: 'initializing',
+        RESET: 'idle` } }`
+    } }
+  } }
 });
 describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
   beforeEach(() => {
@@ -337,20 +308,19 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       // Add evidence item
       canvasActor.send({
         type: 'ADD_EVIDENCE',
-        evidence: {
-         , id: 'evidence-1',
+        evidence: { id: 'evidence-1',
           type: 'document',
           title: 'Crime Scene Photo',
-          position: {, x: 100, y: 150 },
-          metadata: {, relevance: 0.95, category: `physical` }
-        }
+          position: { x: 100, y: 150 },
+          metadata: { relevance: 0.95, category: `physical` } }
+        } }
       });
       await new Promise(resolve => setTimeout(resolve, 100));
       // Move evidence item
       canvasActor.send({
         type: 'MOVE_EVIDENCE',
         itemId: 'evidence-1',
-        position: {, x: 200, y: 250 }
+        position: { x: 200, y: 250 } }
       });
       await new Promise(resolve => setTimeout(resolve, 100));
       // Create connection between evidence items
@@ -361,7 +331,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
           to: 'evidence-2',
           type: 'temporal',
           strength: 0.8,
-          description: `Sequence of events` }
+          description: `Sequence of events` } }
       });
       await new Promise(resolve => setTimeout(resolve, 100));
       const finalSnapshot = canvasActor.getSnapshot() as EvidenceCanvasSnapshot;
@@ -387,16 +357,16 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
         // Simulate rapid real-time updates
         canvasActor.send({
           type: 'UPDATE_FABRIC_STATE',
-          fabricState: {, objects: [{, id: `obj-${i}`, x: i * 50, y: i * 75 }],
+          fabricState: { objects: [{ id: `obj-${i}`, x: i * 50, y: i * 75 } },
             timestamp: Date.now()
-          }
+          } }
         });
         await new Promise(resolve => setTimeout(resolve, 100));
         const duration = performance.now() - startTime;
         measurements.push(duration);
         canvasActor.send({ type: `RESET` });
         await new Promise(resolve => setTimeout(resolve, 50));
-      }
+      } }
       const averageTime = measurements.reduce((a, b) => a + b, 0) / measurements.length;
       console.log(`\n📊 Evidence Canvas Performance (HTTP+WebSocket): ${averageTime.toFixed(2)}ms`);
       console.log(`🎯 Target gRPC Performance: ${(averageTime * 0.4).toFixed(2)}ms (60% improvement)`);
@@ -418,16 +388,16 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       await new Promise(resolve => setTimeout(resolve, 100));
       // Add collaborators
       const collaborators = [
-        { userId: 'attorney-123', role: 'lead_attorney', cursor: {, x: 100, y: 100 } },
-        { userId: 'paralegal-456', role: 'paralegal', cursor: {, x: 200, y: 150 } },
-        { userId: 'expert-789', role: 'expert_witness', cursor: {, x: 300, y: 200 } }
+        { userId: 'attorney-123', role: 'lead_attorney', cursor: { x: 100, y: 100 } }},
+        { userId: 'paralegal-456', role: 'paralegal', cursor: { x: 200, y: 150 } }},
+        { userId: 'expert-789', role: 'expert_witness', cursor: { x: 300, y: 200 } }} }
       ];
       for (const collaborator of collaborators) {
         canvasActor.send({
           type: 'COLLABORATOR_JOIN',
           collaborator
         });
-      }
+      } }
       const snapshot = canvasActor.getSnapshot() as EvidenceCanvasSnapshot;
       expect(snapshot.context.collaborators).toHaveLength(3);
       expect(snapshot.context.collaborators).toEqual(
@@ -451,14 +421,13 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       // Update fabric state (simulating user interaction)
       const fabricState = {
         objects: [
-          {,
-            type: 'rect',
+          { type: 'rect',
             left: 100,
             top: 100,
             width: 200,
             height: 150,
             fill: 'rgba(255, 0, 0, 0.3)',
-            metadata: {, evidenceId: 'evidence-1', type: `highlight` }
+            metadata: { evidenceId: 'evidence-1', type: `highlight` } }
           },
           {
             type: 'line',
@@ -468,7 +437,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
             y2: 250,
             stroke: 'blue',
             strokeWidth: 2,
-            metadata: {, connectionId: 'conn-1', type: `relationship` }
+            metadata: { connectionId: 'conn-1', type: `relationship` } }
           },
         ],
         version: 1,
@@ -513,7 +482,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
             canvasId: snapshot.context.canvasId,
             connections: snapshot.context.connections
           });
-        }
+        } }
       });
       canvasActor.start();
       canvasActor.send({
@@ -523,10 +492,9 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       await new Promise(resolve => setTimeout(resolve, 100));
       canvasActor.send({
         type: 'ADD_EVIDENCE',
-        evidence: {
-         , id: 'evidence-1',
+        evidence: { id: 'evidence-1',
           type: 'document',
-          content: `Legal document requiring analysis` }
+          content: `Legal document requiring analysis` } }
       });
       await new Promise(resolve => setTimeout(resolve, 100));
       expect(documentProcessingHandler).toHaveBeenCalledWith(
@@ -553,7 +521,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       await new Promise(resolve => setTimeout(resolve, 100));
       canvasActor.send({
         type: 'ADD_EVIDENCE',
-        evidence: {, id: 'evidence-1', type: `photo` }
+        evidence: { id: 'evidence-1', type: `photo` } }
       });
       await new Promise(resolve => setTimeout(resolve, 100));
       // Save canvas state
@@ -580,6 +548,6 @@ describe('Phase 5-7 Evidence Canvas Performance Benchmarks', () => {
       console.log(`   Collaborative Updates: <5ms, latency`);
       console.log(`   Concurrent Users: 50+ per canvas`);
       console.log(`   Canvas Objects: 10,000+ evidence items`);
-    }
+    } }
   });
 });

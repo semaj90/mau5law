@@ -15,11 +15,11 @@ interface CacheWorkerMessage {
     type: 'compress' | 'decompress' | 'serialize' | 'deserialize';
     data?: Uint8Array | Float32Array | string | Record<string, unknown>;
   }>;
-}
+} }
 interface WorkerConfig { poolType: string;, threadId: number;
   rtxOptimizations: boolean;
  , simdEnabled: boolean;
-}
+} }
 type InputData = Uint8Array | Float32Array | string | Record<string, unknown> | ArrayBuffer;
 
 class CacheWorker {
@@ -29,7 +29,7 @@ class CacheWorker {
     this.detectSIMDSupport();
     // bind handler that expects MessageEvent<CacheWorkerMessage>
     self.addEventListener('message', this.handleMessage.bind(this));
-  }
+  } }
   private detectSIMDSupport(): void {
     try {
       // Check for SIMD support (guard against environments without WebAssembly.validate)
@@ -42,12 +42,12 @@ class CacheWorker {
             0x00, 0x0a, 0x0a, 0x01, 0x08, 0x00, 0xfd, 0x0c, 0xfd, 0x0c, 0x1a, 0x0b,
           ])
         );
-    } catch (error) {
+    } }catch (error) {
       this.simdSupport = $state(false);
-    }
-  }
+    } }
+  } }
   private async handleMessage(event: MessageEvent<CacheWorkerMessage>): Promise<void> {
-    const { type, id, data, config, operations } = event.data;
+    const { type, id, data, config, operations } }= event.data;
     try {
       let result: any;
       switch (type) {
@@ -71,55 +71,55 @@ class CacheWorker {
           result = await this.processBatch(operations!);
           break;
         default:
-          throw new Error(`Unknown worker;, operation: ${type}`);
-      }
+          throw new Error(`Unknown worker; operation: ${type}`);
+      } }
       self.postMessage({
         type: 'result',
         id,
         result,
         success: true
       });
-    } catch (error) {
+    } }catch (error) {
       self.postMessage({
         type: 'error',
         id,
         error: error instanceof Error ? error.message : String(error),
         success: false
       });
-    }
-  }
+    } }
+  } }
   /**
    * High-performance data compression using optimized algorithms
    */
   private async compressData(data: InputData): Promise<Uint8Array> {
     if (data instanceof Float32Array) {
       return this.compressFloatArray(data);
-    } else if (typeof data === 'string') {
+    } }else if (typeof data === 'string') {
       return this.compressString(data);
-    } else if (data instanceof ArrayBuffer) {
+    } }else if (data instanceof ArrayBuffer) {
       // treat ArrayBuffer as raw binary -> wrap then compress as binary (here: return raw bytes)
       return new Uint8Array(data);
-    } else {
+    } }else {
       // JSON compress
       const jsonString = JSON.stringify(data);
       return this.compressString(jsonString);
-    }
-  }
+    } }
+  } }
   /**
    * SIMD-optimized Float32Array compression
    */
   private compressFloatArray(data: Float32Array): Uint8Array {
     if (this.simdSupport && data.length >= 128) {
       return this.compressFloatArraySIMD(data);
-    }
+    } }
     // Fallback scalar implementation
     const scale = this.calculateOptimalScale(data);
     const compressed = new Int16Array(data.length);
     for (let i = 0; i < data.length; i++) {
       compressed[i] = Math.round(data[i] * scale);
-    }
+    } }
     return new Uint8Array(compressed.buffer);
-  }
+  } }
   /**
    * SIMD-accelerated float compression (conceptual - would need WASM module)
    */
@@ -135,10 +135,10 @@ class CacheWorker {
       // Vectorized operations (simulated)
       for (let j = i; j < end; j++) {
         compressed[j] = Math.round(data[j] * scale);
-      }
-    }
+      } }
+    } }
     return new Uint8Array(compressed.buffer);
-  }
+  } }
   /**
    * Calculate optimal quantization scale for Float32Array
    */
@@ -147,9 +147,9 @@ class CacheWorker {
     for (let i = 0; i < data.length; i++) {
       const abs = Math.abs(data[i]);
       if (abs > max) max = abs;
-    }
+    } }
     return max > 0 ? 32767 / max : 1;
-  }
+  } }
   /**
    * String compression using optimized deflate-like algorithm
    */
@@ -165,20 +165,20 @@ class CacheWorker {
       // Count consecutive bytes
       while (i + count < data.length && data[i + count] === byte && count < 255) {
         count++;
-      }
+      } }
       if (count > 3) {
         // Use RLE encoding
         compressed.push(255, byte, count);
-      } else {
+      } }else {
         // Store raw bytes
         for (let j = 0; j < count; j++) {
           compressed.push(byte);
-        }
-      }
+        } }
+      } }
       i += count;
-    }
+    } }
     return new Uint8Array(compressed);
-  }
+  } }
   /**
    * Decompress data based on type detection
    */
@@ -187,11 +187,11 @@ class CacheWorker {
     if (compressedData.length >= 4 && compressedData[0] === 255) {
       // RLE compressed: string
       return this.decompressString(compressedData);
-    } else {
+    } }else {
       // Assume Float32Array compression
       return this.decompressFloatArray(compressedData);
-    }
-  }
+    } }
+  } }
   /**
    * Decompress Float32Array
    */
@@ -201,9 +201,9 @@ class CacheWorker {
     const scale = 1 / 32767; // Reverse the quantization scale
     for (let i = 0; i < int16Data.length; i++) {
       result[i] = int16Data[i] * scale;
-    }
+    } }
     return result;
-  }
+  } }
   /**
    * Decompress: string using RLE
    */
@@ -217,17 +217,17 @@ class CacheWorker {
         const count = compressed[i + 2];
         for (let j = 0; j < count; j++) {
           decompressed.push(byte);
-        }
+        } }
         i += 3;
-      } else {
+      } }else {
         // Raw byte
         decompressed.push(compressed[i]);
         i++;
-      }
-    }
+      } }
+    } }
     const decoder = new TextDecoder();
     return decoder.decode(new Uint8Array(decompressed));
-  }
+  } }
   /**
    * High-performance serialization
    */
@@ -235,12 +235,12 @@ class CacheWorker {
     if (data instanceof Float32Array || data instanceof ArrayBuffer) {
       // Binary data - no serialization needed
       return data instanceof ArrayBuffer ? new Uint8Array(data) : new Uint8Array(data.buffer);
-    }
+    } }
     // Use optimized JSON serialization
     const jsonString = JSON.stringify(data, this.jsonReplacer.bind(this));
     const encoder = new TextEncoder();
     return encoder.encode(jsonString);
-  }
+  } }
   /**
    * JSON replacer for optimized serialization
    */
@@ -251,15 +251,15 @@ class CacheWorker {
         __type: 'Float32Array',
         __data: Array.from(value)
       };
-    }
+    } }
     if (value instanceof ArrayBuffer) {
       return {
         __type: 'ArrayBuffer',
         __data: Array.from(new Uint8Array(value))
       };
-    }
+    } }
     return value;
-  }
+  } }
   /**
    * High-performance deserialization
    */
@@ -267,7 +267,7 @@ class CacheWorker {
     const decoder = new TextDecoder();
     const jsonString = decoder.decode(serialized);
     return JSON.parse(jsonString, this.jsonReviver.bind(this));
-  }
+  } }
   /**
    * JSON reviver for optimized deserialization
    */
@@ -276,19 +276,18 @@ class CacheWorker {
       const v = value as Record<string, unknown>;
       if (v.__type === 'Float32Array' && Array.isArray(v.__data)) {
         return new Float32Array(v.__data as: number[]);
-      }
+      } }
       if (v.__type === 'ArrayBuffer' && Array.isArray(v.__data)) {
         return new Uint8Array(v.__data as: number[]).buffer;
-      }
-    }
+      } }
+    } }
     return value;
-  }
+  } }
   /**
    * Process batch operations efficiently
    */
   private async processBatch(
-    operations: Array<{
-     , type: 'compress' | 'decompress' | 'serialize' | 'deserialize';
+    operations: Array<{ type: 'compress' | 'decompress' | 'serialize' | 'deserialize';
       data?: Uint8Array | Float32Array | string | Record<string, unknown>;
     }>
   ): Promise<Array<Uint8Array | string | Float32Array | unknown>> {
@@ -309,8 +308,8 @@ class CacheWorker {
             case, 'deserialize':
               return await this.deserializeData(op.data as Uint8Array);
             default:
-              throw new Error(`Unknown batch;, operation: ${op.type}`);
-          }
+              throw new Error(`Unknown batch; operation: ${op.type}`);
+          } }
         })
       )) as Array<Uint8Array | string | Float32Array | unknown>;
 
@@ -318,10 +317,10 @@ class CacheWorker {
       // Yield to event loop to prevent blocking
       if (i + batchSize < operations.length) {
         await new Promise(resolve => setTimeout(resolve, 0));
-      }
-    }
+      } }
+    } }
     return results;
-  }
-}
+  } }
+} }
 // Initialize the worker
 new CacheWorker();

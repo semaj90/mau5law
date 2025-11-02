@@ -1,10 +1,10 @@
 /// <reference, types="vite/client" />
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 
 const logger = {
-  info: (msg: string, data?: any) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data ?? ''),
-  error: (msg: string, err?: any) => console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, err ?? '')
+  info: (msg: string, data?: any) => console.log(`[INFO] ${new Date().toISOString()} }- ${msg}`, data ?? ''),
+  error: (msg: string, err?: any) => console.error(`[ERROR] ${new Date().toISOString()} }- ${msg}`, err ?? '')
 };
 
 type DocumentIngestPayload = {
@@ -21,9 +21,9 @@ function isDocumentIngestPayload(obj: any): obj is DocumentIngestPayload {
       (o.caseId === undefined || typeof o.caseId === 'string') &&
       (o.task === undefined || typeof o.task === 'string')
     );
-  }
+  } }
   return false;
-}
+} }
 
 export const POST: RequestHandler = async ({ request }) => {
   const start = Date.now();
@@ -32,19 +32,19 @@ export const POST: RequestHandler = async ({ request }) => {
     let payload: any = null;
     try {
       payload = await request.json();
-    } catch {
+    } }catch {
       payload = null;
-    }
+    } }
 
     if (!isDocumentIngestPayload(payload)) {
       logger.error('Empty or invalid JSON payload', payload);
       return json(
         { success: false, error: 'Invalid JSON payload', processingTime: Date.now() - start },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
-    const { documentId, caseId, task } = payload;
+    const { documentId, caseId, task } }= payload;
 
     if (!documentId || !caseId) {
       logger.error('Missing documentId or caseId', payload);
@@ -54,9 +54,9 @@ export const POST: RequestHandler = async ({ request }) => {
           error: 'documentId and caseId are required',
           processingTime: Date.now() - start
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // TODO: enqueue the ingest job to your queue (RabbitMQ, Redis, etc.) or call your ingestion service here.
     logger.info('Received document ingest request', { documentId, caseId, task });
@@ -69,10 +69,11 @@ export const POST: RequestHandler = async ({ request }) => {
         task: task ?? 'ingest',
         processingTime: Date.now() - start
       },
-      { status: 200 }
+      { status: 200 } }
     );
-  } catch (err) {
+  } }catch (err) {
     logger.error('Unhandled error in document-ingest handler', err);
     return json({ success: false, error: String(err), processingTime: Date.now() - start }, { status: 500 });
-  }
+  } }
 };
+

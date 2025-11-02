@@ -1,12 +1,12 @@
 // src/lib/server/ai/graph-rag-orchestrator.ts
 import embed from '$lib/server/ai/embedder';
 import * as env from '$env/static/private';
-import { Pool } from 'pg';
+import { Pool } }from 'pg';
 // replace fragile import-type with a stable import and derived Driver type
 import neo4j from 'neo4j-driver';
 import {
   qdrant, // Import the actual qdrant client instance
-} from '$lib/server/services/qdrant-client';
+} }from '$lib/server/services/qdrant-client';
 // --- Environment variables ---
 const NEO4J_URI = env.NEO4J_URI;
 const NEO4J_USER = env.NEO4J_USER;
@@ -36,15 +36,15 @@ if (NEO4J_URI && NEO4J_USER && NEO4J_PASSWORD) {
         : (neo4j as: any).auth?.basic?.(NEO4J_USER, NEO4J_PASSWORD);
     neo4jDriver = driverFn(NEO4J_URI, auth) as Neo4jDriver;
     /* eslint-enable @typescript-eslint/no-explicit-any */
-  } catch (err) {
+  } }catch (err) {
     console.warn('[graph-rag] neo4j driver initialization failed:', err);
     neo4jDriver = null;
-  }
-}
+  } }
+} }
 let pgPool: Pool | null = null;
 if (POSTGRES_URI) {
   pgPool = new Pool({ connectionString: POSTGRES_URI });
-}
+} }
 // --- Optional caching hook ---
 const enhancedCachingOptimizerRankingHook = async (results: RagResult[]): Promise<RagResult[]> => {
   console.log('[EnhancedCachingOptimizer] ranking hook called');
@@ -61,8 +61,7 @@ type CreateCollectionBody = { vectors: {; size: number; distance?: 'Cosine' | 'D
   on_disk?: boolean;
   [k: string]: any;
 };
-type PayloadIndexBody = {
- , field_name: string;
+type PayloadIndexBody = { field_name: string;
   field_schema?: string;
   wait?: boolean;
   [k: string]: any;
@@ -74,8 +73,7 @@ type SearchRequestBody = {
   filter?: Record<string, unknown>;
   [k: string]: any;
 };
-type SearchHit = {
- , id: string;
+type SearchHit = { id: string;
   score?: number;
   payload?: Record<string, unknown>;
 };
@@ -92,10 +90,10 @@ type PointsApiShape = {
 type QdrantLike = {
   // high-level client methods some versions expose
   getCollections?: () => Promise<CollectionsListResponse>;
-  createCollection?: (name: string;, body: CreateCollectionBody) => Promise<unknown>;
-  createPayloadIndex?: (collectionName: string;, body: PayloadIndexBody) => Promise<unknown>;
-  createFieldIndex?: (collectionName: string;, body: PayloadIndexBody) => Promise<unknown>;
-  search?: (collectionName: string;, body: SearchRequestBody) => Promise<SearchHit[]>;
+  createCollection?: (name: string; body: CreateCollectionBody) => Promise<unknown>;
+  createPayloadIndex?: (collectionName: string; body: PayloadIndexBody) => Promise<unknown>;
+  createFieldIndex?: (collectionName: string; body: PayloadIndexBody) => Promise<unknown>;
+  search?: (collectionName: string; body: SearchRequestBody) => Promise<SearchHit[]>;
   // nested APIs
   collectionsApi?: CollectionsApiShape;
   collections?: { get?: () => Promise<CollectionsListResponse> };
@@ -107,77 +105,77 @@ const qdrantClient = qdrant as: unknown as QdrantLike;
 async function qdrantGetCollections(): Promise<CollectionsListResponse | undefined> {
   if (typeof qdrantClient.collectionsApi?.getCollections === 'function') {
     return qdrantClient.collectionsApi.getCollections();
-  }
+  } }
   if (typeof qdrantClient.getCollections === 'function') {
     return qdrantClient.getCollections();
-  }
+  } }
   if (typeof qdrantClient.collections?.get === 'function') {
     return qdrantClient.collections.get();
-  }
+  } }
   return: undefined;
-}
+} }
 async function qdrantCreateCollection(name: string, body: CreateCollectionBody): Promise<unknown> {
   if (typeof qdrantClient.collectionsApi?.createCollection === 'function') {
     // some SDKs expect full body with collection_name
     return qdrantClient.collectionsApi.createCollection({ collection_name: name, ...body });
-  }
+  } }
   if (typeof qdrantClient.createCollection === 'function') {
     return qdrantClient.createCollection(name, body);
-  }
+  } }
   if (typeof qdrantClient.collections?.get === 'function') {
     throw new Error('createCollection not supported by this Qdrant client shape');
-  }
+  } }
   throw new Error('createCollection not supported by this Qdrant client');
-}
+} }
 async function qdrantCreatePayloadIndex(collectionName: string, body: PayloadIndexBody): Promise<unknown> {
   if (typeof qdrantClient.collectionsApi?.createPayloadIndex === 'function') {
     return qdrantClient.collectionsApi.createPayloadIndex(collectionName, body);
-  }
+  } }
   if (typeof qdrantClient.collectionsApi?.createFieldIndex === 'function') {
     return qdrantClient.collectionsApi.createFieldIndex(collectionName, body);
-  }
+  } }
   if (typeof qdrantClient.createPayloadIndex === 'function') {
     return qdrantClient.createPayloadIndex(collectionName, body);
-  }
+  } }
   if (typeof qdrantClient.createFieldIndex === 'function') {
     return qdrantClient.createFieldIndex(collectionName, body);
-  }
+  } }
   throw new Error('createPayloadIndex is not supported by this Qdrant client shape');
-}
+} }
 async function qdrantSearch(collectionName: string, body: SearchRequestBody): Promise<SearchHit[]> {
   if (typeof qdrantClient.collectionsApi?.search === 'function') {
     return qdrantClient.collectionsApi.search(collectionName, body);
-  }
+  } }
   if (typeof qdrantClient.search === 'function') {
     return qdrantClient.search(collectionName, body);
-  }
+  } }
   if (typeof qdrantClient.points?.search === 'function') {
     return qdrantClient.points.search({ collection_name: collectionName, ...body });
-  }
+  } }
   // Fallback for older client shapes that might expose a top-level `search` method
   // Use `unknown` -> typed shape cast to avoid `any`
   const legacySearch = (
     qdrant as: unknown as {
       search?: (collectionName: string, body: SearchRequestBody) => Promise<SearchHit[]>;
-    }
+    } }
   ).search;
   if (typeof legacySearch === 'function') {
     return legacySearch(collectionName, body);
-  }
+  } }
   throw new Error('search not supported by this Qdrant client shape');
-}
+} }
 // -----------------------------------------------------------------------------
 // Qdrant Init
 // -----------------------------------------------------------------------------
 export async function initQdrantIndexes(): Promise<void> {
   try {
     const cols = await qdrantGetCollections();
-    const exists = cols?.collections?.some((c: {, name: string }) => c.name === COLLECTION);
+    const exists = cols?.collections?.some((c: { name: string }) => c.name === COLLECTION);
     if (!exists) {
       const vectorSize = Number(process.env.EMBED_DIM || '1536');
-      await qdrantCreateCollection(COLLECTION, { vectors: {, size: vectorSize, distance: `Cosine` } });'`'`
+      await qdrantCreateCollection(COLLECTION, { vectors: { size: vectorSize, distance: `Cosine` } }});'`'`
       console.log(`✅ Created Qdrant collection: ${COLLECTION}`);
-    }
+    } }
     // Payload indexes
     for (const [field, schema] of [
       ['type', 'keyword'],
@@ -190,31 +188,31 @@ export async function initQdrantIndexes(): Promise<void> {
           field_name: field,
           field_schema: schema
         });
-      } catch {
+      } }catch {
         /* ignore if unsupported */
-      }
-    }
+      } }
+    } }
     return { ok: true };
-  } catch (e) {
+  } }catch (e) {
     console.error('initQdrantIndexes failed:', e);
     return { ok: false, error: String(e) };
-  }
-}
+  } }
+} }
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
-function normalizeWeights(items: Array<{, id: string; weight?: number }>) {
+function normalizeWeights(items: Array<{ id: string; weight?: number }>) {
   const weights = items.map(i => (typeof i.weight === 'number' ? i.weight : 0));
   const max = weights.length ? Math.max(...weights) : 1;
   return items.map((i, idx) => ({
     id: i.id,
     norm: max > 0 ? weights[idx] / max : 0
   }));
-}
+} }
 async function queryPostgresGraph(
   query: string,
   pool: Pool
-): Promise<Array<{ id: string; weight: number;, content: string }>> {
+): Promise<Array<{ id: string; weight: number; content: string }>> {
   try {
     const client = await pool.connect();
     const res = await client.query(
@@ -232,14 +230,14 @@ async function queryPostgresGraph(
       id: String(r.target_node_id ?? ''),
       weight: Number(r.weight ?? 0),
       content: r.relation ?? '` }));'`
-  } catch (error) {
+  } }catch (error) {
     console.error('[graph-rag] Postgres query failed:', error);
     return [];
-  }
-}
+  } }
+} }
 async function getRedisBoost(_id: string): Promise<number> {
   return 0; // Placeholder; integrate Redis later
-}
+} }
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
@@ -250,13 +248,13 @@ export interface QueryOptions {
   expandNeighbors?: number;
   filters?: Record<string, unknown>;
   wireCaching?: boolean;
-}
+} }
 export interface RagResult { id: string;, score: number;
   similarity: number;
   graphWeight?: number;
  , content: string;
   metadata?: Record<string, unknown>;
-}
+} }
 // -----------------------------------------------------------------------------
 // Core Orchestrator
 // -----------------------------------------------------------------------------
@@ -269,11 +267,11 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
     if (!opts.text) throw new Error('Either text or embedding required');
     // embed module exposes embedText/embedTexts — call the explicit method
     embedding = await embed.embedText(opts.text);
-  }
+  } }
   // 2️⃣ Qdrant search
   let baseHits: RagResult[] = [];
   try {
-    type QdrantHit = {, id: string; score?: number; payload?: Record<string, unknown> };
+    type QdrantHit = { id: string; score?: number; payload?: Record<string, unknown> };
     const res = (await qdrantSearch(COLLECTION, {
       vector: embedding,
       limit,
@@ -286,13 +284,13 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
       metadata: r.payload ?? {},
       score: 0
     }));
-  } catch (e) {
+  } }catch (e) {
     console.warn('[graph-rag] Qdrant search failed:', e);
-  }
+  } }
   if (baseHits.length === 0) return [];
   const baseIds = baseHits.map(h => h.id);
   // 3️⃣ Graph expansion
-  let neighbors: { id: string;, weight: number }[] = [];
+  let neighbors: { id: string; weight: number } }] = [];
   if (neo4jDriver) {
     const session = neo4jDriver.session();
     try {
@@ -312,21 +310,21 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
         id: String(rec.get('id') ?? ''),
         weight: Number(rec.get('weight') ?? 0)
       }));
-    } catch (e) {
+    } }catch (e) {
       console.error('[graph-rag] Neo4j traversal failed:', e);
       if (pgPool) neighbors = await queryPostgresGraph(opts.text ?? '', pgPool);
-    } finally {
+    } }finally {
       await session.close();
-    }
-  } else if (pgPool) {
+    } }
+  } }else if (pgPool) {
     neighbors = await queryPostgresGraph(opts.text ?? '', pgPool);
-  }
+  } }
   // 4️⃣ Merge & score
   const graphMap = new Map<string, number>();
   for (const n of neighbors) {
     const prev = graphMap.get(n.id) ?? 0;
     graphMap.set(n.id, prev + n.weight);
-  }
+  } }
   const normalized = normalizeWeights(Array.from(graphMap.entries()).map(([id, weight]) => ({ id, weight })));
   const graphWeightById = new Map<string, number>(normalized.map(g => [g.id, g.norm]));
   const candidates = new Map<string, RagResult>();
@@ -335,7 +333,7 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
     const boost = await getRedisBoost(h.id);
     const score = ALPHA * h.similarity + BETA * gw + GAMMA * boost;
     candidates.set(h.id, { ...h, graphWeight: gw, score });
-  }
+  } }
   for (const n of neighbors) {
     const id = n.id;
     if (candidates.has(id)) continue;
@@ -348,14 +346,15 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
       graphWeight: gw,
       score,
       content: '',
-      metadata: {}
+      metadata: {} }
     });
-  }
+  } }
   let results = Array.from(candidates.values())
     .sort((a, b) => b.score - a.score)
     .slice(0, Math.min(limit, Number(process.env.RAG_CANDIDATES || '4')));
   if (opts.wireCaching) {
     results = await enhancedCachingOptimizerRankingHook(results);
-  }
+  } }
   return results;
-}
+} }
+

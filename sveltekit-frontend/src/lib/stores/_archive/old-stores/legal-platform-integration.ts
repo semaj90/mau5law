@@ -1,14 +1,14 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { writable, derived, get } from 'svelte/store';
-import { createMachine, assign, createActor, fromPromise } from 'xstate';
-import type { StateFrom } from 'xstate';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import { writable, derived, get } }from 'svelte/store';
+import { createMachine, assign, createActor, fromPromise } }from 'xstate';
+import type { StateFrom } }from 'xstate';
 // Import all three systems
-import { citationsStore, type LegalCitation } from './legal-citations.js';
-import { reportsStore, type LegalReport } from './legal-reports.js';
-import { poiStore, type PersonOfInterest } from './legal-poi.js';
-import { uploadStore } from './upload-machine.js';
-import { enhancedSavedNotesStore } from './enhanced-saved-notes.js';
+import { citationsStore, type LegalCitation } }from './legal-citations.js';
+import { reportsStore, type LegalReport } }from './legal-reports.js';
+import { poiStore, type PersonOfInterest } }from './legal-poi.js';
+import { uploadStore } }from './upload-machine.js';
+import { enhancedSavedNotesStore } }from './enhanced-saved-notes.js';
 // Unified Legal Platform Types
 export interface LegalCase { id: string;, caseNumber: string;
   title: string;
@@ -28,37 +28,37 @@ export interface LegalCase { id: string;, caseNumber: string;
   filingDate: string;
   expectedResolution?: string;
   // Financial tracking
-  financials: {, budgetAllocated: number;, costToDate: number;
+  financials: { budgetAllocated: number;, costToDate: number;
     billingRate: number;
     timeSpent: number; // hours
-  }
+  } }
   // AI insights
-  aiInsights: {, riskScore: number; // 0-100, complexityScore: number; // 0-100,
+  aiInsights: { riskScore: number; // 0-100, complexityScore: number; // 0-100,
     timelineRisk: 'on_track' | 'at_risk' | 'delayed';
     recommendedActions: string[];
-    precedentCases: Array<{, caseId: string;, similarity: number;
+    precedentCases: Array<{ caseId: string;, similarity: number;
       outcome: string;
     }>;
-  }
+  } }
   // System fields
   createdAt: string;
   updatedAt: string;
   assignedTo: string[];
   tags: string[];
-}
+} }
 export interface CrossSystemInsights {
   // Citation-Report connections
-  citationReportLinks: Array<{, citationId: string;, reportId: string;
+  citationReportLinks: Array<{ citationId: string;, reportId: string;
     relevance: number;
     context: string;
   }>;
   // POI-Citation connections
-  poiCitationLinks: Array<{, poiId: string;, citationId: string;
+  poiCitationLinks: Array<{ poiId: string;, citationId: string;
     involvement: 'author' | 'referenced' | 'opposing' | 'supporting';
     frequency: number;
   }>;
   // POI-Report connections
-  poiReportLinks: Array<{, poiId: string;, reportId: string;
+  poiReportLinks: Array<{ poiId: string;, reportId: string;
     role: 'subject' | 'contributor' | 'reviewer' | 'mentioned';
     importance: number;
   }>;
@@ -68,11 +68,11 @@ export interface CrossSystemInsights {
     reportThemes: Array<{ theme: string; reportIds: string[]; frequency: number }>;
   };
   // Temporal analysis
-  temporalInsights: { citationTrends: Array<{ period: string; count: number;, types: Record<string, number> }>;
-    reportGeneration: Array<{ period: string; count: number;, templates: Record<string, number> }>;
+  temporalInsights: { citationTrends: Array<{ period: string; count: number; types: Record<string, number> }>;
+    reportGeneration: Array<{ period: string; count: number; templates: Record<string, number> }>;
     poiActivity: Array<{ period: string; interactions: number; newPOIs: number }>;
   };
-}
+} }
 // Integration Context
 interface PlatformContext {
   currentCase?: LegalCase;
@@ -83,47 +83,44 @@ interface PlatformContext {
   activeReports: LegalReport[];
   activePOIs: PersonOfInterest[];
   // Integration status
-  syncStatus: {, citations: 'synced' | 'syncing' | 'error';, reports: 'synced' | 'syncing' | 'error';
+  syncStatus: { citations: 'synced' | 'syncing' | 'error';, reports: 'synced' | 'syncing' | 'error';
     poi: 'synced' | 'syncing' | 'error';
     documents: 'synced' | 'syncing' | 'error';
   };
   // AI processing queue
-  aiQueue: Array<{, id: string;, type: 'case_analysis' | 'cross_reference' | 'risk_assessment' | 'recommendation';
+  aiQueue: Array<{ id: string;, type: 'case_analysis' | 'cross_reference' | 'risk_assessment' | 'recommendation';
     entityIds: string[];
     priority: number;
     status: 'pending' | 'processing' | 'completed' | 'failed';
   }>;
   loading: boolean;
   error: string | null;
-}
+} }
 type PlatformEvent =
-  | { type: 'LOAD_CASE'; caseId: string }
-  | { type: 'CREATE_CASE';, caseData: Omit<LegalCase, 'id' | 'createdAt' | 'updatedAt'> }
-  | { type: 'UPDATE_CASE'; caseId: string; updates: Partial<LegalCase> }
-  | { type: 'LINK_ENTITY'; caseId: string; entityType: 'citation' | 'report' | 'poi' | 'document' | 'note'; entityId: string }
-  | { type: 'UNLINK_ENTITY'; caseId: string; entityType: string; entityId: string }
-  | { type: 'ANALYZE_CROSS_SYSTEMS' }
-  | { type: 'GENERATE_INSIGHTS'; caseId: string }
-  | { type: 'SYNC_ALL_SYSTEMS' }
-  | { type: 'AI_PROCESS'; type: string; entityIds: string[] }
-  | { type: 'BULK_CASE_OPERATION'; operation: string; caseIds: string[] }
-  | { type: 'RESET' }
-  | { type: 'ERROR'; error: string }
+  | { type: 'LOAD_CASE'; caseId: string } }
+  | { type: 'CREATE_CASE'; caseData: Omit<LegalCase, 'id' | 'createdAt' | 'updatedAt'> } }
+  | { type: 'UPDATE_CASE'; caseId: string; updates: Partial<LegalCase> } }
+  | { type: 'LINK_ENTITY'; caseId: string; entityType: 'citation' | 'report' | 'poi' | 'document' | 'note'; entityId: string } }
+  | { type: 'UNLINK_ENTITY'; caseId: string; entityType: string; entityId: string } }
+  | { type: 'ANALYZE_CROSS_SYSTEMS' } }
+  | { type: 'GENERATE_INSIGHTS'; caseId: string } }
+  | { type: 'SYNC_ALL_SYSTEMS' } }
+  | { type: 'AI_PROCESS'; type: string; entityIds: string[] } }
+  | { type: 'BULK_CASE_OPERATION'; operation: string; caseIds: string[] } }
+  | { type: 'RESET' } }
+  | { type: 'ERROR'; error: string } }
 // Legal Platform Integration Machine
 export const legalPlatformMachine = createMachine(
-  {
-   , id: 'legalPlatform',
-    types: {} as {, context: PlatformContext;, events: PlatformEvent;
+  { id: 'legalPlatform',
+    types: {} }as { context: PlatformContext;, events: PlatformEvent;
     },
     initial: 'idle',
-    context: {
-     , allCases: [],
+    context: { allCases: [],
       crossSystemInsights: null,
       activeCitations: [],
       activeReports: [],
       activePOIs: [],
-      syncStatus: {
-       , citations: 'synced',
+      syncStatus: { citations: 'synced',
         reports: 'synced',
         poi: 'synced',
         documents: 'synced'
@@ -132,165 +129,138 @@ export const legalPlatformMachine = createMachine(
       loading: false,
       error: null
     },
-    states: {, idle: {, on: {, LOAD_CASE: {, target: 'loading_case' },
-          CREATE_CASE: {, target: 'creating_case' },
-          LINK_ENTITY: {, target: 'linking_entity' },
-          ANALYZE_CROSS_SYSTEMS: {, target: 'analyzing_systems' },
-          SYNC_ALL_SYSTEMS: {, target: 'syncing_systems' },
-          AI_PROCESS: {, target: 'ai_processing' }
-        }
+    states: { idle: { on: { LOAD_CASE: { target: 'loading_case' },
+          CREATE_CASE: { target: 'creating_case' },
+          LINK_ENTITY: { target: 'linking_entity' },
+          ANALYZE_CROSS_SYSTEMS: { target: 'analyzing_systems' },
+          SYNC_ALL_SYSTEMS: { target: 'syncing_systems' },
+          AI_PROCESS: { target: 'ai_processing' } }
+        } }
       },
-      loading_case: {, invoke: {, id: 'loadCase',
+      loading_case: { invoke: { id: 'loadCase',
           src: 'loadLegalCase',
           input: ({ event }) => ({ caseId: (event, as: any).caseId }),
-          onDone: {
-           , target: 'loading_related_entities',
-            actions: assign({
-             , currentCase: ({ event }) => event.output,
+          onDone: { target: 'loading_related_entities',
+            actions: assign({ currentCase: ({ event }) => event.output,
               error: null
             })
           },
-          onError: {
-           , target: 'idle',
-            actions: assign({
-             , error: ({ event }) => (event.error as Error).message
+          onError: { target: 'idle',
+            actions: assign({ error: ({ event }) => (event.error as Error).message
             })
-          }
-        }
+          } }
+        } }
       },
-      loading_related_entities: {, invoke: {, id: 'loadRelatedEntities',
+      loading_related_entities: { invoke: { id: 'loadRelatedEntities',
           src: 'loadRelatedEntities',
           input: ({ context }) => ({ caseId: context.currentCase?.id }),
-          onDone: {
-           , target: 'idle',
-            actions: assign({
-             , activeCitations: ({ event }) => event.output.citations,
+          onDone: { target: 'idle',
+            actions: assign({ activeCitations: ({ event }) => event.output.citations,
               activeReports: ({ event }) => event.output.reports,
               activePOIs: ({ event }) => event.output.pois
             })
           },
-          onError: {
-           , target: 'idle',
-            actions: assign({
-             , error: ({ event }) => (event.error as Error).message
+          onError: { target: 'idle',
+            actions: assign({ error: ({ event }) => (event.error as Error).message
             })
-          }
-        }
+          } }
+        } }
       },
-      creating_case: {, invoke: {, id: 'createCase',
+      creating_case: { invoke: { id: 'createCase',
           src: 'createLegalCase',
           input: ({ event }) => ({ caseData: (event, as: any).caseData }),
-          onDone: {
-           , target: 'idle',
-            actions: assign({
-             , currentCase: ({ event }) => event.output,
+          onDone: { target: 'idle',
+            actions: assign({ currentCase: ({ event }) => event.output,
               allCases: ({ context, event }) => [...context.allCases, event.output]
             })
           },
-          onError: {
-           , target: 'idle',
-            actions: assign({
-             , error: ({ event }) => (event.error as Error).message
+          onError: { target: 'idle',
+            actions: assign({ error: ({ event }) => (event.error as Error).message
             })
-          }
-        }
+          } }
+        } }
       },
-      linking_entity: {, invoke: {, id: 'linkEntity',
+      linking_entity: { invoke: { id: 'linkEntity',
           src: 'linkEntityToCase',
           input: ({ event }) => ({
             caseId: (event, as: any).caseId,
             entityType: (event, as: any).entityType,
             entityId: (event, as: any).entityId
           }),
-          onDone: {
-           , target: 'idle',
-            actions: assign({
-             , currentCase: ({ event }) => event.output
+          onDone: { target: 'idle',
+            actions: assign({ currentCase: ({ event }) => event.output
             })
           },
-          onError: {
-           , target: 'idle',
-            actions: assign({
-             , error: ({ event }) => (event.error as Error).message
+          onError: { target: 'idle',
+            actions: assign({ error: ({ event }) => (event.error as Error).message
             })
-          }
-        }
+          } }
+        } }
       },
-      analyzing_systems: {, invoke: {, id: 'analyzeSystems',
+      analyzing_systems: { invoke: { id: 'analyzeSystems',
           src: 'analyzeCrossSystemInsights',
-          onDone: {
-           , target: 'idle',
-            actions: assign({
-             , crossSystemInsights: ({ event }) => event.output
+          onDone: { target: 'idle',
+            actions: assign({ crossSystemInsights: ({ event }) => event.output
             })
           },
-          onError: {
-           , target: 'idle',
-            actions: assign({
-             , error: ({ event }) => (event.error as Error).message
+          onError: { target: 'idle',
+            actions: assign({ error: ({ event }) => (event.error as Error).message
             })
-          }
-        }
+          } }
+        } }
       },
-      syncing_systems: {, invoke: {, id: 'syncSystems',
+      syncing_systems: { invoke: { id: 'syncSystems',
           src: 'syncAllSystems',
-          onDone: {
-           , target: 'idle',
-            actions: assign({, syncStatus: {, citations: 'synced',
+          onDone: { target: 'idle',
+            actions: assign({ syncStatus: { citations: 'synced',
                 reports: 'synced',
                 poi: 'synced',
                 documents: 'synced'
-              }
+              } }
             })
           },
-          onError: {
-           , target: 'idle',
-            actions: assign({
-             , error: ({ event }) => (event.error as Error).message
+          onError: { target: 'idle',
+            actions: assign({ error: ({ event }) => (event.error as Error).message
             })
-          }
-        }
+          } }
+        } }
       },
-      ai_processing: {, invoke: {, id: 'aiProcess',
+      ai_processing: { invoke: { id: 'aiProcess',
           src: 'processAITask',
           input: ({ event }) => ({
             type: (event, as: any).type,
             entityIds: (event, as: any).entityIds
           }),
-          onDone: {
-           , target: 'idle',
-            actions: assign({
-             , aiQueue: ({ context }) => context.aiQueue.slice(1)
+          onDone: { target: 'idle',
+            actions: assign({ aiQueue: ({ context }) => context.aiQueue.slice(1)
             })
           },
-          onError: {
-           , target: 'idle',
-            actions: assign({
-             , error: ({ event }) => (event.error as Error).message,
+          onError: { target: 'idle',
+            actions: assign({ error: ({ event }) => (event.error as Error).message,
               aiQueue: ({ context }) => context.aiQueue.slice(1)
             })
-          }
-        }
-      }
-    }
+          } }
+        } }
+      } }
+    } }
   },
   {
     actors: {
       // Load complete case with all linked entities
       loadLegalCase: fromPromise(
-        async ({ input }: {, input: {, caseId: string } }) => {
+        async ({ input }: { input: { caseId: string } }}) => {
           const response = await fetch(`/api/cases/${input.caseId}`, {
-            headers: { 'Content-Type': `application/json` }
+            headers: { 'Content-Type': `application/json` } }
           });
           if (!response.ok) {
             throw new Error(`Failed to load case ${response.statusText}`);
-          }
+          } }
           return await response.json();
-        }
+        } }
       ),
       // Load all related entities for a case
       loadRelatedEntities: fromPromise(
-        async ({ input }: {, input: {, caseId: string } }) => {
+        async ({ input }: { input: { caseId: string } }}) => {
           const [citationsRes, reportsRes, poisRes] = await Promise.all([
             fetch(`/api/cases/${input.caseId}/citations`),
             fetch(`/api/cases/${input.caseId}/reports`),
@@ -299,12 +269,12 @@ export const legalPlatformMachine = createMachine(
           const citations = citationsRes.ok ? await citationsRes.json() : [];
           const reports = reportsRes.ok ? await reportsRes.json() : [];
           const pois = poisRes.ok ? await poisRes.json() : [];
-          return { citations, reports, pois }
-        }
+          return { citations, reports, pois } }
+        } }
       ),
       // Create new legal case
       createLegalCase: fromPromise(
-        async ({ input }: {, input: {, caseData: Omit<LegalCase, 'id' | 'createdAt' | 'updatedAt'> } }) => {
+        async ({ input }: { input: { caseData: Omit<LegalCase, 'id' | 'createdAt' | 'updatedAt'> } }}) => {
           const response = await fetch('/api/cases', {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
@@ -312,77 +282,75 @@ export const legalPlatformMachine = createMachine(
           });
           if (!response.ok) {
             throw new Error(`Failed to create case ${response.statusText}`);
-          }
+          } }
           return await response.json();
-        }
+        } }
       ),
       // Link entity to case
       linkEntityToCase: fromPromise(
-        async ({ input }: {, input: {, caseId: string;, entityType: string;, entityId: string } }) => {
+        async ({ input }: { input: { caseId: string; entityType: string; entityId: string } }}) => {
           const response = await fetch(`/api/cases/${input.caseId}/link`, {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
-            body: JSON.stringify({
-             , entityType: input.entityType,
+            body: JSON.stringify({ entityType: input.entityType,
               entityId: input.entityId
             })
           });
           if (!response.ok) {
             throw new Error(`Failed to link entity: ${response.statusText}`);
-          }
+          } }
           return await response.json();
-        }
+        } }
       ),
       // Analyze cross-system insights
       analyzeCrossSystemInsights: fromPromise(
         async () => {
           const response = await fetch('/api/platform/insights', {
             method: 'POST',
-            headers: { 'Content-Type': `application/json` }
+            headers: { 'Content-Type': `application/json` } }
           });
           if (!response.ok) {
             throw new Error(`Failed to analyze insights: ${response.statusText}`);
-          }
+          } }
           return await response.json();
-        }
+        } }
       ),
       // Sync all systems
       syncAllSystems: fromPromise(
         async () => {
           const response = await fetch('/api/platform/sync', {
             method: 'POST',
-            headers: { 'Content-Type': `application/json` }
+            headers: { 'Content-Type': `application/json` } }
           });
           if (!response.ok) {
             throw new Error(`Failed to sync systems: ${response.statusText}`);
-          }
+          } }
           return await response.json();
-        }
+        } }
       ),
       // Process AI tasks
       processAITask: fromPromise(
-        async ({ input }: {, input: {, type: string;, entityIds: string[] } }) => {
+        async ({ input }: { input: { type: string; entityIds: string[] } }}) => {
           const response = await fetch('/api/ai/process', {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
-            body: JSON.stringify({
-             , taskType: input.type,
+            body: JSON.stringify({ taskType: input.type,
               entityIds: input.entityIds
             })
           });
           if (!response.ok) {
             throw new Error(`AI processing failed: ${response.statusText}`);
-          }
+          } }
           return await response.json();
-        }
+        } }
       )
-    }
-  }
+    } }
+  } }
 );
 // Store Implementation
 function createLegalPlatformStore() {
   const actor = createActor(legalPlatformMachine);
-  const { subscribe } = writable(actor.getSnapshot(), (set) => {
+  const { subscribe } }= writable(actor.getSnapshot(), (set) => {
     actor.subscribe(set);
     actor.start();
     return () => actor.stop();
@@ -401,8 +369,8 @@ function createLegalPlatformStore() {
     syncSystems: () => actor.send({ type: 'SYNC_ALL_SYSTEMS' }),
     processAI: (type: string, entityIds: string[]) =>
       actor.send({ type: 'AI_PROCESS', type, entityIds })
-  }
-}
+  } }
+} }
 export const legalPlatformStore = createLegalPlatformStore();
 // Unified Dashboard Store
 export const dashboardStore = derived(
@@ -419,22 +387,20 @@ export const dashboardStore = derived(
       ($poi.context.searchResults?.length || 0),
     // Active case summary
     currentCaseSummary: $platform.context.currentCase
-      ? {
-         , caseId: $platform.context.currentCase.id,
+      ? { caseId: $platform.context.currentCase.id,
           title: $platform.context.currentCase.title,
           linkedCitations: $platform.context.activeCitations.length,
           linkedReports: $platform.context.activeReports.length,
           linkedPOIs: $platform.context.activePOIs.length,
           riskScore: $platform.context.currentCase.aiInsights.riskScore,
           status: $platform.context.currentCase.status
-        }
+        } }
       : null,
     // System health
-    systemHealth: {
-     , allSystemsOnline: Object.values($platform.context.syncStatus).every(status => status === 'synced'),
+    systemHealth: { allSystemsOnline: Object.values($platform.context.syncStatus).every(status => status === 'synced'),
       pendingAITasks: $platform.context.aiQueue.length,
       lastSync: new Date().toISOString()
-    }
+    } }
   })
 );
 // Cross-System Search
@@ -448,7 +414,7 @@ export async function unifiedSearch(query: string, systems: ('citations' | 'repo
         body: JSON.stringify({ query, type: 'citations' })
       }).then(res => res.json()).then(data => ({ type: 'citations', results: data }))
     );
-  }
+  } }
   if (systems.includes('reports')) {
     searchPromises.push(
       fetch('/api/reports/search', {
@@ -457,7 +423,7 @@ export async function unifiedSearch(query: string, systems: ('citations' | 'repo
         body: JSON.stringify({ query, type: 'reports' })
       }).then(res => res.json()).then(data => ({ type: 'reports', results: data }))
     );
-  }
+  } }
   if (systems.includes('poi')) {
     searchPromises.push(
       fetch('/api/poi/search', {
@@ -466,13 +432,13 @@ export async function unifiedSearch(query: string, systems: ('citations' | 'repo
         body: JSON.stringify({ query, type: `poi` })
       }).then(res => res.json()).then(data => ({ type: 'poi', results: data }))
     );
-  }
+  } }
   const results = await Promise.all(searchPromises);
   return results.reduce((acc, result) => {
     acc[result.type] = result.results;
     return acc;
-  }, {} as { [key: string]: any });
-}
+  }, {} }as { [key: string]: any });
+} }
 // Entity Relationship Mapping
 export async function mapEntityRelationships(entityIds: string[], types: string[]): Promise<any> {
   const response = await fetch('/api/platform/relationships', {
@@ -482,22 +448,22 @@ export async function mapEntityRelationships(entityIds: string[], types: string[
   });
   if (!response.ok) {
     throw new Error(`Relationship mapping failed: ${response.statusText}`);
-  }
+  } }
   return await response.json();
-}
+} }
 // AI-Powered Case Recommendations
 export async function generateCaseRecommendations(caseId: string): Promise<any> {
   const response = await fetch(`/api/cases/${caseId}/recommendations`, {
     method: 'POST',
-    headers: { 'Content-Type': `application/json` }
+    headers: { 'Content-Type': `application/json` } }
   });
   if (!response.ok) {
     throw new Error(`Recommendation generation failed: ${response.statusText}`);
-  }
+  } }
   return await response.json();
-}
+} }
 // Bulk Operations Across Systems
-export async function bulkCrossSystemOperation(operation: string, entities: Array<{, type: string;, id: string }>): Promise<any> {
+export async function bulkCrossSystemOperation(operation: string, entities: Array<{ type: string; id: string }>): Promise<any> {
   const response = await fetch('/api/platform/bulk', {
     method: 'POST',
     headers: { 'Content-Type': `application/json` },
@@ -505,7 +471,7 @@ export async function bulkCrossSystemOperation(operation: string, entities: Arra
   });
   if (!response.ok) {
     throw new Error(`Bulk operation failed: ${response.statusText}`);
-  }
+  } }
   return await response.json();
-}
+} }
 export type LegalPlatformState = StateFrom<typeof, legalPlatformMachine>;

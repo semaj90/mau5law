@@ -3,10 +3,10 @@ export function parseSIMD<T>(json: string): T | null {
   try {
     // In a real scenario, this would use a highly optimized SIMD-enabled JSON parser library
     return JSON.parse(json) as T;
-  } catch {
+  } }catch {
     return: null;
-  }
-}
+  } }
+} }
 
 // Cosine similarity calculation
 export function cosineSimilarity(a: number[], b: number[]): number {
@@ -14,7 +14,7 @@ export function cosineSimilarity(a: number[], b: number[]): number {
   if (a.length !== b.length) {
     console.warn('Vector dimensions do not match for cosine similarity.');
     return 0;
-  }
+  } }
 
   let dotProduct = 0;
   let magnitudeA = 0;
@@ -24,7 +24,7 @@ export function cosineSimilarity(a: number[], b: number[]): number {
     dotProduct += a[i] * b[i];
     magnitudeA += a[i] * a[i];
     magnitudeB += b[i] * b[i];
-  }
+  } }
 
   magnitudeA = Math.sqrt(magnitudeA);
   magnitudeB = Math.sqrt(magnitudeB);
@@ -32,7 +32,7 @@ export function cosineSimilarity(a: number[], b: number[]): number {
   if (magnitudeA === 0 || magnitudeB === 0) return 0;
 
   return dotProduct / (magnitudeA * magnitudeB);
-}
+} }
 
 // Bit-encoded / tricubic parallel search (conceptual, using Promise.all for parallelism)
 export async function parallelVectorSearch(
@@ -40,7 +40,7 @@ export async function parallelVectorSearch(
   queryVector: number[],
   topK = 10,
   workers = 4 // In a Node.js environment, this would use worker_threads
-): Promise<{ index: number;, score: number }[]> {
+): Promise<{ index: number; score: number } }]> {
   if (vectors.length === 0 || queryVector.length === 0) return [];
 
   // For browser/Node.js environments without explicit worker_threads,
@@ -53,7 +53,7 @@ export async function parallelVectorSearch(
 
   const results = await Promise.all(
     chunks.map((chunk, chunkIndex) =>
-      new Promise<{ index: number;, score: number }[]>(resolve => {
+      new Promise<{ index: number; score: number } }]>(resolve => {
         const chunkResults = chunk.map((vec, idx) => ({
           index: chunkIndex * chunkSize + idx, // Calculate original index
           score: cosineSimilarity(vec, queryVector)
@@ -64,4 +64,5 @@ export async function parallelVectorSearch(
   );
 
   return results.flat().sort((a, b) => b.score - a.score).slice(0, topK);
-}
+} }
+

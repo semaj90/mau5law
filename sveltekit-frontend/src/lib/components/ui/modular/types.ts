@@ -1,10 +1,10 @@
 // TypeScript type definitions for modular UI components
-import type { Snippet } from 'svelte';
-import type { HTMLAttributes, HTMLButtonAttributes, HTMLInputAttributes } from 'svelte/elements';
+import type { Snippet } }from 'svelte';
+import type { HTMLAttributes, HTMLButtonAttributes, HTMLInputAttributes } }from 'svelte/elements';
 // Base component props
 export interface BaseProps {
   children?: Snippet;
-}
+} }
 // Button component props
 export interface ButtonProps extends HTMLButtonAttributes, BaseProps {
   variant?:
@@ -23,7 +23,7 @@ export interface ButtonProps extends HTMLButtonAttributes, BaseProps {
   icon?: string;
   href?: string;
   target?: string;
-}
+} }
 // Card component props
 export interface CardProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: 'default' | 'elevated' | 'outlined' | 'filled' | 'yorha' | 'glass';
@@ -33,7 +33,7 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   footer?: Snippet;
   hoverable?: boolean;
   interactive?: boolean;
-}
+} }
 // Dialog component props
 export interface DialogProps extends BaseProps {
   open?: boolean;
@@ -47,7 +47,7 @@ export interface DialogProps extends BaseProps {
   footer?: Snippet;
   closeOnEscape?: boolean;
   closeOnOutsideClick?: boolean;
-}
+} }
 // Input component props
 export interface InputProps extends Omit<HTMLInputAttributes, 'size'>, BaseProps {
   variant?: 'default' | 'outlined' | 'filled' | 'ghost' | 'yorha' | 'legal';
@@ -58,11 +58,11 @@ export interface InputProps extends Omit<HTMLInputAttributes, 'size'>, BaseProps
   errorMessage?: string;
   icon?: string;
   suffix?: string;
-  oninput?: (_event: Event & {, currentTarget: HTMLInputElement }) => void;
-  onchange?: (_event: Event & {, currentTarget: HTMLInputElement }) => void;
-  onfocus?: (_event: FocusEvent & {, currentTarget: HTMLInputElement }) => void;
-  onblur?: (_event: FocusEvent & {, currentTarget: HTMLInputElement }) => void;
-}
+  oninput?: (_event: Event & { currentTarget: HTMLInputElement }) => void;
+  onchange?: (_event: Event & { currentTarget: HTMLInputElement }) => void;
+  onfocus?: (_event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
+  onblur?: (_event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
+} }
 // Form component props
 export interface FormProps extends HTMLAttributes<HTMLFormElement>, BaseProps {
   variant?: 'default' | 'card' | 'inline' | 'modal' | 'yorha' | 'legal';
@@ -76,7 +76,7 @@ export interface FormProps extends HTMLAttributes<HTMLFormElement>, BaseProps {
   target?: string;
   novalidate?: boolean;
   autocomplete?: 'on' | 'off';
-}
+} }
 // Progress component props
 export interface ProgressProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   value?: number;
@@ -86,7 +86,7 @@ export interface ProgressProps extends HTMLAttributes<HTMLDivElement>, BaseProps
   indeterminate?: boolean;
   showPercentage?: boolean;
   label?: string;
-}
+} }
 // Badge component props
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement>, BaseProps {
   variant?:
@@ -105,7 +105,7 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement>, BaseProps {
   icon?: string;
   removable?: boolean;
   onremove?: () => void;
-}
+} }
 // File upload types
 export interface UploadFile { id: string;, file: File;
   name: string;
@@ -115,7 +115,7 @@ export interface UploadFile { id: string;, file: File;
  , status: 'pending' | 'uploading' | 'completed' | 'error';
   error?: string;
   preview?: string;
-}
+} }
 // File upload component props
 export interface FileUploadProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: 'default' | 'compact' | 'card' | 'yorha' | 'legal' | 'evidence';
@@ -132,7 +132,7 @@ export interface FileUploadProps extends HTMLAttributes<HTMLDivElement>, BasePro
   dragDropText?: string;
   browseText?: string;
   supportedFormats?: string[];
-}
+} }
 // Common variant types
 export type ComponentVariant =
   | 'default'
@@ -159,4 +159,5 @@ export interface LayoutProps {
   centered?: boolean;
   fullHeight?: boolean;
   spacing?: 'tight' | 'normal' | 'loose';
-}
+} }
+

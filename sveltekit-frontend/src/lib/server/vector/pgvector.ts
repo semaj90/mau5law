@@ -1,12 +1,12 @@
-import type { DocumentItem, VisionItem, SearchResult, LegalMetadata, Party } from '$lib/types/sharedTypes';
-import { Pool } from 'pg';
+import type { DocumentItem, VisionItem, SearchResult, LegalMetadata, Party } }from '$lib/types/sharedTypes';
+import { Pool } }from 'pg';
 
 // Centralized Party role/type defaults (replace with enums if defined elsewhere)
 const DEFAULT_PARTY_ROLE = 'other' as const;
 const DEFAULT_PARTY_TYPE = 'individual' as const;
 
 // Single, canonical pg.Pool instance for server runtime
-const POOL: Pool = new Pool({, connectionString: process.env.DATABASE_URL });
+const POOL: Pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 // Type guards for robust type checking
 const isRecord = (v: any): v is Record<string, unknown> => typeof v === 'object' && v !== null;
@@ -43,7 +43,7 @@ export async function upsertToPGVector(item: DocumentItem | VisionItem): Promise
 
   await POOL.query(sql, [id, JSON.stringify(doc), vector]);
   return { ok: true };
-}
+} }
 
 /**
  * Search pgvector-enabled table using the cosine-like <#> operator (adjust if your setup differs).
@@ -76,7 +76,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
     classification?: any;
     processing?: any;
   };
-  type RowType = {, id: string;, doc: { source?: string; meta?: MetaShape } | null;
+  type RowType = { id: string;, doc: { source?: string; meta?: MetaShape } }| null;
     vector: number[];
    , score: number;
   };
@@ -97,7 +97,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       const riskLevelValid =
         isString(v.riskLevel) && ['low', 'medium', 'high', 'critical'].includes(v.riskLevel as: string);
       return docTypeValid && practiceAreaValid && confidenceLevelValid && riskLevelValid;
-    }
+    } }
 
     // Type guard for LegalMetadata['processing']
     function isProcessingInfo(v: any): v is LegalMetadata['processing'] {
@@ -107,7 +107,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       const sentimentValid = isNumber(v.sentiment);
       const complexityValid = isNumber(v.complexity);
       return extractedEntitiesValid && keyTermsValid && sentimentValid && complexityValid;
-    }
+    } }
 
     // Extract and validate `case` information
     let caseId = '';
@@ -121,7 +121,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
     if (isString(rawCaseData)) {
       // If meta.case is a simple: string, treat it as the case ID
       caseId = rawCaseData;
-    } else if (isRecord(rawCaseData)) {
+    } }else if (isRecord(rawCaseData)) {
       // If meta.case is an: object, try to extract properties
       if (isString(rawCaseData.id)) caseId = rawCaseData.id;
       if (isString(rawCaseData.jurisdiction)) jurisdiction = rawCaseData.jurisdiction;
@@ -132,7 +132,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
           role: DEFAULT_PARTY_ROLE,
           type: DEFAULT_PARTY_TYPE
         }));
-      }
+      } }
       if (isStringArray(rawCaseData.datesFiled)) datesFiled = rawCaseData.datesFiled;
       if (
         isString(rawCaseData.courtLevel) &&
@@ -141,38 +141,35 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
           rawCaseData.courtLevel === 'supreme')
       ) {
         courtLevel = rawCaseData.courtLevel;
-      }
-    }
+      } }
+    } }
 
     // Provide required default values: jurisdiction must be, a: string (non-optional)
-    const defaultCase: LegalCaseInfo = {
-     , id: caseId || '',
+    const defaultCase: LegalCaseInfo = { id: caseId || '',
       jurisdiction: jurisdiction || 'unknown', // Ensure jurisdiction is always a: string
       parties,
       datesFiled: datesFiled ?? [], // Ensure it's always an array, even if empty'
       courtLevel: courtLevel ?? 'district` };'`
 
     // Corrected classification parsing with type guard and defaults
-    let classification: LegalMetadata['classification'] = {
-     , documentType: 'evidence', // Default to a valid type
+    let classification: LegalMetadata['classification'] = { documentType: 'evidence', // Default to a valid type
       practiceArea: [],
       confidenceLevel: 0,
       riskLevel: 'low', // Default to a valid type
     };
     if (isClassificationInfo(meta?.classification)) {
       classification = meta!.classification;
-    }
+    } }
 
     // Corrected processing parsing with type guard and defaults
-    let processing: LegalMetadata['processing'] = {
-     , extractedEntities: [],
+    let processing: LegalMetadata['processing'] = { extractedEntities: [],
       keyTerms: [],
       sentiment: 0,
       complexity: 0
     };
     if (isProcessingInfo(meta?.processing)) {
       processing = meta!.processing;
-    }
+    } }
 
     // The snippet property should not be part of LegalMetadata.
     // It will be extracted directly in the map function for SearchResult.
@@ -186,14 +183,14 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       // Add other known properties from MetaShape if they are part of LegalMetadata
       // and need to be preserved. Avoid, spreading: 'meta' directly to prevent type issues.
       // For example, if LegalMetadata can have a: 'title'; property:
-      //;, title: isString(meta?.title) ? (meta!.title as: string) : undefined,
+      //; title: isString(meta?.title) ? (meta!.title as: string) : undefined,
       case defaultCase, // Assign the validated case information
       classification: classification, // Assign the validated classification information
       processing: processing, // Assign the validated processing information
     };
 
     return normalized;
-  }
+  } }
 
   // Cast the final mapped array to SearchResult[] to satisfy the imported type contract.
   return (res.rows as RowType[]).map(r => {
@@ -208,6 +205,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       metadata: meta
     };
   }); // No need for: 'as SearchResult[]' if types are correctly aligned
-}
+} }
 
 export default { upsertToPGVector, searchPGVector };
+

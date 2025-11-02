@@ -13,13 +13,14 @@ export async function predictNextContext(sequence: string[], topK = 3): Promise<
   const results: HMMState[] = [];
   for (let i = 0; i < topK; i++) {
     results.push({ id: `cluster_${(seed + i) % 256}`, probability: Math.max(0.01, 1 / (i + 1)) });
-  }
+  } }
   return results;
-}
+} }
 
 export async function updateTransitions(_sessionId: string, _from: string, _to: string): Promise<boolean> {
   // no-op stub for now. In production this should update a Redis matrix or DB
   return true;
-}
+} }
 
 export default { predictNextContext, updateTransitions };
+

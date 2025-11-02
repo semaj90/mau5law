@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
 // Lightweight shim for: "$lib/server/db/schema-postgres" to reduce TypeScript
 // noise while migrating. Exports are intentionally typed as `any` and are
 // temporary until the canonical schema types are reconciled.
@@ -52,9 +52,10 @@ declare module, '$lib/server/db/schema-postgres' {
   // (not strictly valid TS but helpful as a temporary bridge)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export const __any: any;
-}
+} }
 // Also support importing from the JS-extended path
 declare module, '$lib/server/db/schema-postgres.js' {
   const shim: any;
   export = shim;
-}
+} }
+

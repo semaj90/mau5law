@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * JSONB Legal Metadata Schema Optimization
  *
@@ -12,11 +12,11 @@ import type { Document } from '$lib/types';
  * - Optimized query patterns for common operations
  * - Integration with vector embeddings and graph data
  */
-import { sql } from 'drizzle-orm';
-import { pgTable, text, integer, timestamp, jsonb, uuid, boolean, real } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-// import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { z } from 'zod';
+import { sql } }from 'drizzle-orm';
+import { pgTable, text, integer, timestamp, jsonb, uuid, boolean, real } }from 'drizzle-orm/pg-core';
+import { vector } }from 'pgvector/drizzle-orm';
+// import { createInsertSchema, createSelectSchema } }from 'drizzle-zod'
+import { z } }from 'zod';
 // ============================================================================
 // LEGAL METADATA SCHEMA DEFINITIONS
 // ============================================================================
@@ -34,32 +34,27 @@ const LegalMetadataSchema = z.object({
   confidentialityLevel: z.enum(['public', 'confidential', 'privileged', 'classified']).default('public'),
   retentionPeriod: z.number().int().positive().optional(), // Years
   // Legal Entities
-  parties: z.array(z.object({,
-    name: z.string(),
+  parties: z.array(z.object({ name: z.string(),
     role: z.enum(['plaintiff', 'defendant', 'witness', 'counsel', 'judge', 'expert', 'third_party']),
     entityType: z.enum(['individual', 'corporation', 'government', 'organization']).optional()
   })).optional(),
   // Citations and References
-  citations: z.array(z.object({,
-    type: z.enum(['case_law', 'statute', 'regulation', 'treaty', 'secondary_source']),
+  citations: z.array(z.object({ type: z.enum(['case_law', 'statute', 'regulation', 'treaty', 'secondary_source']),
     citation: z.string(),
     relevance: z.number().min(0).max(1).optional(), // Semantic relevance score
     pinpoint: z.string().optional() // Specific page/paragraph reference
   })).optional(),
   // Semantic Analysis Metadata
-  semantics: z.object({,
-    keyTerms: z.array(z.string()).optional(),
+  semantics: z.object({ keyTerms: z.array(z.string()).optional(),
     legalConcepts: z.array(z.string()).optional(),
     precedentStrength: z.number().min(0).max(1).optional(),
-    argumentStructure: z.array(z.object({,
-      type: z.enum(['premise', 'conclusion', 'evidence', 'counterargument']),
+    argumentStructure: z.array(z.object({ type: z.enum(['premise', 'conclusion', 'evidence', 'counterargument']),
       text: z.string(),
       confidence: z.number().min(0).max(1)
     })).optional()
   }).optional(),
   // AI Processing Metadata
-  aiMetadata: z.object({,
-    modelVersion: z.string().optional(),
+  aiMetadata: z.object({ modelVersion: z.string().optional(),
     processingTimestamp: z.string().datetime().optional(),
     confidence: z.number().min(0).max(1).optional(),
     reviewStatus: z.enum(['pending', 'reviewed', 'approved', 'rejected']).default('pending'),
@@ -73,16 +68,13 @@ const CaseMetadataSchema = z.object({
   caseNumber: z.string(),
   filingDate: z.string().datetime().optional(),
   status: z.enum(['active', 'pending', 'closed', 'on_hold', 'appealed']),
-  timeline: z.array(z.object({,
-    date: z.string().datetime(),
+  timeline: z.array(z.object({ date: z.string().datetime(),
     event: z.string(),
     significance: z.enum(['low', 'medium', 'high', 'critical']).default('medium')
   })).optional(),
-  strategy: z.object({,
-    approach: z.string().optional(),
+  strategy: z.object({ approach: z.string().optional(),
     objectives: z.array(z.string()).optional(),
-    risks: z.array(z.object({,
-      description: z.string(),
+    risks: z.array(z.object({ description: z.string(),
       probability: z.number().min(0).max(1),
       impact: z.enum(['low', 'medium', 'high', 'critical'])
     })).optional()
@@ -91,26 +83,22 @@ const CaseMetadataSchema = z.object({
 // Evidence metadata with chain of custody
 const EvidenceMetadataSchema = z.object({
   evidenceType: z.enum(['document', 'physical', 'digital', 'testimony', 'expert_opinion', 'demonstrative']),
-  authenticity: z.object({,
-    verified: z.boolean().default(false),
+  authenticity: z.object({ verified: z.boolean().default(false),
     method: z.string().optional(),
     verifier: z.string().optional(),
     verificationDate: z.string().datetime().optional()
   }).optional(),
-  chainOfCustody: z.array(z.object({,
-    timestamp: z.string().datetime(),
+  chainOfCustody: z.array(z.object({ timestamp: z.string().datetime(),
     custodian: z.string(),
     action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']),
     location: z.string().optional(),
     condition: z.string().optional()
   })).optional(),
-  relevance: z.object({,
-    score: z.number().min(0).max(1),
+  relevance: z.object({ score: z.number().min(0).max(1),
     reasoning: z.string().optional(),
     relatedEvidence: z.array(z.string()).optional() // UUIDs of related evidence
   }).optional(),
-  admissibility: z.object({,
-    status: z.enum(['admissible', 'inadmissible', 'conditional', 'pending']),
+  admissibility: z.object({ status: z.enum(['admissible', 'inadmissible', 'conditional', 'pending']),
     basis: z.string().optional(),
     objections: z.array(z.string()).optional()
   }).optional()
@@ -196,10 +184,10 @@ export class LegalJsonbOperations {
     return sql`
       SELECT id, title, metadata, content_embedding
       FROM legal_documents_jsonb
-      WHERE metadata->>'practiceArea' = ${practiceArea}
-        AND (metadata->'semantics'->>'precedentStrength')::real >= ${minRelevance}
+      WHERE metadata->>'practiceArea' = ${practiceArea} }
+        AND (metadata->'semantics'->>'precedentStrength')::real >= ${minRelevance} }
       ORDER BY (metadata->'aiMetadata'->>'confidence')::real DESC
-    `;` }
+    `;` } }
   /**
    * Complex legal entity search with JSONB path queries
    */
@@ -211,10 +199,10 @@ export class LegalJsonbOperations {
       SELECT DISTINCT d.id, d.title, d.metadata
       FROM legal_documents_jsonb d,
            jsonb_array_elements(d.metadata->'parties') AS party
-      WHERE party->>'name' ILIKE ${`%${partyName}%` }'`'`
-        ${roleFilter}
+      WHERE party->>'name' ILIKE ${`%${partyName}%` } }`'`
+        ${roleFilter} }
       ORDER BY d.updated_at DESC
-    `;` }
+    `;` } }
   /**
    * Citation network analysis with graph-like JSONB queries
    */
@@ -224,14 +212,14 @@ export class LegalJsonbOperations {
         -- Base case start with the given document
         SELECT id, title, metadata->'citations' as citations, 1 as depth
         FROM legal_documents_jsonb
-        WHERE id = ${documentId}
+        WHERE id = ${documentId} }
         UNION
         -- Recursive case find documents that cite or are cited by current level
         SELECT d.id, d.title, d.metadata->'citations' as citations, ct.depth + 1
         FROM legal_documents_jsonb d,
              citation_tree ct,
              jsonb_array_elements(ct.citations) AS cite
-        WHERE ct.depth < ${depth}
+        WHERE ct.depth < ${depth} }
           AND (
             -- Documents citing the current document
             d.metadata->'citations' @> jsonb_build_array(
@@ -244,7 +232,7 @@ export class LegalJsonbOperations {
       )
       SELECT * FROM citation_tree
       ORDER BY depth, title
-    `;` }
+    `;` } }
   /**
    * Advanced evidence chain of custody verification
    */
@@ -271,22 +259,22 @@ export class LegalJsonbOperations {
               FROM jsonb_array_elements(metadata->'chainOfCustody') as custody_step
             ) t
             WHERE previous_step IS NOT NULL
-          ) THEN: 'VALID';, ELSE: 'INVALID'
+          ) THEN: 'VALID'; ELSE: 'INVALID'
         END as chain_validity,
         -- Count custody transfers
         jsonb_array_length(metadata->'chainOfCustody') as custody_count,
         -- Last custodian
         (metadata->'chainOfCustody'->-1->>'custodian') as current_custodian
       FROM evidence_jsonb
-      WHERE id = ${evidenceId}
-    `;` }
+      WHERE id = ${evidenceId} }
+    `;` } }
   /**
    * Semantic case similarity with JSONB metadata scoring
    */
   static findSimilarCases(caseId: string, threshold = 0.8) {
     return sql`
       WITH target_case AS (
-        SELECT metadata FROM cases_jsonb WHERE id = ${caseId}
+        SELECT metadata FROM cases_jsonb WHERE id = ${caseId} }
       ),
       case_similarities AS (
         SELECT
@@ -319,7 +307,7 @@ export class LegalJsonbOperations {
             THEN 0.2 ELSE 0.0
           END as similarity_score
         FROM cases_jsonb c, target_case
-        WHERE c.id != ${caseId}
+        WHERE c.id != ${caseId} }
       )
       SELECT
         id,
@@ -329,13 +317,13 @@ export class LegalJsonbOperations {
         CASE
           WHEN similarity_score >= 0.9 THEN: 'VERY_HIGH'
           WHEN similarity_score >= 0.7 THEN: 'HIGH'
-          WHEN similarity_score >= 0.5 THEN: 'MEDIUM';, ELSE: 'LOW'
+          WHEN similarity_score >= 0.5 THEN: 'MEDIUM'; ELSE: 'LOW'
         END as similarity_level
       FROM case_similarities
-      WHERE similarity_score >= ${threshold}
+      WHERE similarity_score >= ${threshold} }
       ORDER BY similarity_score DESC
       LIMIT, 20
-    `;` }
+    `;` } }
   /**
    * Legal concept extraction and clustering
    */
@@ -368,12 +356,12 @@ export class LegalJsonbOperations {
         CASE
           WHEN frequency >= 5 THEN: 'CORE'
           WHEN frequency >= 3 THEN: 'IMPORTANT'
-          WHEN frequency >= 2 THEN: 'RELEVANT';, ELSE: 'PERIPHERAL'
+          WHEN frequency >= 2 THEN: 'RELEVANT'; ELSE: 'PERIPHERAL'
         END as importance_level
       FROM concept_counts
       ORDER BY frequency DESC, concept
-    `;` }
-}
+    `;` } }
+} }
 // ============================================================================
 // VALIDATION SCHEMAS
 // ============================================================================

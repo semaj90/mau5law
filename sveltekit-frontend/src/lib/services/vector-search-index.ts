@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import { browser } from '$app/environment';
-import type { MinIOFile } from './minio-service.js';
+import type { Document } }from '$lib/types';
+import { browser } }from '$app/environment';
+import type { MinIOFile } }from './minio-service.js';
 
 // Define the expected structure for metadata within MinIOFile
 interface ExpectedMinIOMetadata {
@@ -13,7 +13,7 @@ interface ExpectedMinIOMetadata {
   caseReferences?: string[];
   citationCount?: number;
   [key: string]: any; // Allow for other properties that might exist in MinIOFile's metadata'
-}
+} }
 
 // Extend the imported MinIOFile type to, include: 'originalName', 'uploadedAt',
 // and a more specific: 'metadata' structure for local use.
@@ -21,10 +21,10 @@ interface MinIOFileWithExpectedProps extends Omit<MinIOFile, 'uploadedAt'> {
   originalName?: string;
   uploadedAt?: Date; // Now correctly optional, overriding the base type
   metadata?: ExpectedMinIOMetadata;
-}
+} }
 
 export interface VectorSearchResult { id: string;, score: number;
-  metadata: {, title: string;, documentType: string;
+  metadata: { title: string;, documentType: string;
   extractedText: string;
   legalEntities: string[];
   jurisdiction: string;
@@ -33,36 +33,36 @@ export interface VectorSearchResult { id: string;, score: number;
   caseReferences: string[];
   citationCount: number;
   lastModified: string;
-  }
+  } }
   embedding: Float32Array;
   filePath: string;
-  chunks: {, text: string;, startIndex: number;
+  chunks: { text: string;, startIndex: number;
     endIndex: number;
     relevanceScore: number;
-  }[];
-}
+  } }];
+} }
 export interface SearchQuery {
   text: string;
   filters?: {
     documentType?: string[];
   jurisdiction?: string[];
   riskLevel?: string[];
-  dateRange?: {, start: string;, end: string;
-    }
+  dateRange?: { start: string;, end: string;
+    } }
     minimumConfidence?: number;
-  }
+  } }
   limit?: number;
   threshold?: number;
   includeChunks?: boolean;
   rankingStrategy?: 'similarity' | 'legal_relevance' | 'citation_weighted' | 'risk_prioritized';
-}
-export interface IndexStats {, totalDocuments: number;, totalEmbeddings: number;
+} }
+export interface IndexStats { totalDocuments: number;, totalEmbeddings: number;
   indexSize: number;
   lastUpdated: string;
   averageConfidence: number;
  , documentTypes: Record<string, number>;
   jurisdictions: Record<string, number>;
-}
+} }
 class VectorSearchIndex {
   private embeddings: Map<string, Float32Array> = new Map();
   private metadata: Map<string, VectorSearchResult['metadata']> = new Map();
@@ -78,11 +78,11 @@ class VectorSearchIndex {
       await this.loadFromIndexedDB();
       this.isInitialized = true;
       console.log('✅ Vector search index initialized');
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Failed to initialize vector search index:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   private async openIndexedDB(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.indexedDBName, this.indexedDBVersion);
@@ -93,16 +93,16 @@ class VectorSearchIndex {
         // Create: object stores
         if (!db.objectStoreNames.contains('embeddings')) {
           db.createObjectStore('embeddings', { keyPath: 'id' });
-        }
+        } }
         if (!db.objectStoreNames.contains('metadata')) {
           db.createObjectStore('metadata', { keyPath: 'id' });
-        }
+        } }
         if (!db.objectStoreNames.contains('chunks')) {
           db.createObjectStore('chunks', { keyPath: 'id' });
-        }
-      }
+        } }
+      } }
     });
-  }
+  } }
   private async loadFromIndexedDB(): Promise<void> {
     if (!this.db) return;
     const transaction = this.db.transaction(['embeddings', 'metadata', 'chunks'], 'readonly');
@@ -118,30 +118,29 @@ class VectorSearchIndex {
     return new Promise((resolve, reject) => {
       transaction.oncomplete = () => {
         // Process embeddings
-        embeddingsRequest.result.forEach((item: {, id: string;, embedding: number[] }) => {
+        embeddingsRequest.result.forEach((item: { id: string; embedding: number[] }) => {
           this.embeddings.set(item.id, new Float32Array(item.embedding));
         });
         // Process metadata
-        metadataRequest.result.forEach((item: {, id: string;, metadata: VectorSearchResult['metadata'] }) => {
+        metadataRequest.result.forEach((item: { id: string; metadata: VectorSearchResult['metadata'] }) => {
           this.metadata.set(item.id, item.metadata);
         });
         // Process chunks
-        chunksRequest.result.forEach((item: {, id: string;, chunks: VectorSearchResult['chunks'] }) => {
+        chunksRequest.result.forEach((item: { id: string; chunks: VectorSearchResult['chunks'] }) => {
           this.textChunks.set(item.id, item.chunks);
         });
         resolve();
-      }
+      } }
       transaction.onerror = () => reject(transaction.error);
     });
-  }
+  } }
   async indexDocument(file: MinIOFileWithExpectedProps, embeddings: Float32Array[], textChunks: string[]): Promise<void> {
     if (!this.isInitialized) {
       await this.initialize();
-    }
+    } }
     const documentId = file.id; // Removed: '|| file.path'; as: 'path' does not exist on MinIOFileWithExpectedProps
     // Extract legal metadata from document
-    const metadata: VectorSearchResult['metadata'] = {
-     , title: file.metadata?.title || file.originalName || 'Untitled Document',
+    const metadata: VectorSearchResult['metadata'] = { title: file.metadata?.title || file.originalName || 'Untitled Document',
       documentType: file.metadata?.documentType || 'unknown',
       extractedText: textChunks.join(' '),
       legalEntities: file.metadata?.legalEntities || [],
@@ -178,13 +177,13 @@ class VectorSearchIndex {
         id: documentId,
         chunks
       });
-    }
-    console.log(`📚 Indexed document: ${metadata.title} (${documentId})`);
-  }
+    } }
+    console.log(`📚 Indexed document: ${metadata.title} }(${documentId})`);
+  } }
   async search(query: SearchQuery): Promise<VectorSearchResult[]> {
     if (!this.isInitialized) {
       await this.initialize();
-    }
+    } }
     // Generate query embedding using Gemma
     const queryEmbedding = await this.generateQueryEmbedding(query.text);
     const results: VectorSearchResult[] = [];
@@ -212,11 +211,11 @@ class VectorSearchIndex {
         filePath: id,
         chunks: query.includeChunks ? chunks : []
       });
-    }
+    } }
     // Sort by score and limit
     results.sort((a, b) => b.score - a.score);
     return results.slice(0, query.limit || 20);
-  }
+  } }
   private async generateQueryEmbedding(text: string): Promise<Float32Array> {
     try {
       const response = await fetch('/api/embeddings/gemma?action=generate', {
@@ -226,37 +225,37 @@ class VectorSearchIndex {
       });
       if (!response.ok) {
         throw new Error(`Embedding API error: ${response.status}`);
-      }
+      } }
       const data = await response.json();
       if (data.success && data.embedding) {
         return new Float32Array(data.embedding);
-      } else {
+      } }else {
         throw new Error(data.error || 'No embedding returned');
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('❌ Failed to generate query embedding:', error);
       // Fallback to random embedding for development (512 dimensions)
       return new Float32Array(512).map(() => Math.random());
-    }
-  }
+    } }
+  } }
   private passesFilters(metadata: VectorSearchResult['metadata'], filters?: SearchQuery['filters']): boolean {
     if (!filters) return true;
     // Document type filter
     if (filters.documentType && !filters.documentType.includes(metadata.documentType)) {
       return false;
-    }
+    } }
     // Jurisdiction filter
     if (filters.jurisdiction && !filters.jurisdiction.includes(metadata.jurisdiction)) {
       return false;
-    }
+    } }
     // Risk level filter
     if (filters.riskLevel && !filters.riskLevel.includes(metadata.riskLevel)) {
       return false;
-    }
+    } }
     // Confidence filter
     if (filters.minimumConfidence && metadata.confidenceLevel < filters.minimumConfidence) {
       return false;
-    }
+    } }
     // Date range filter
     if (filters.dateRange) {
       const docDate = new Date(metadata.lastModified);
@@ -264,10 +263,10 @@ class VectorSearchIndex {
       const endDate = new Date(filters.dateRange.end);
       if (docDate < startDate || docDate > endDate) {
         return false;
-      }
-    }
+      } }
+    } }
     return true;
-  }
+  } }
   private cosineSimilarity(a: Float32Array, b: Float32Array): number {
     if (a.length !== b.length) return 0;
     let dotProduct = 0;
@@ -277,9 +276,9 @@ class VectorSearchIndex {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
-    }
+    } }
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-  }
+  } }
   private applyRankingStrategy(
     similarityScore: number,
     metadata: VectorSearchResult['metadata'],
@@ -290,12 +289,12 @@ class VectorSearchIndex {
         // Boost legal entities and case references
         const legalBoost = metadata.legalEntities.length * 0.1 + metadata.caseReferences.length * 0.15;
         return similarityScore * (1 + legalBoost);
-      }
+      } }
       case, 'citation_weighted': {
         // Weight by citation count
         const citationBoost = Math.log(metadata.citationCount + 1) * 0.2;
         return similarityScore * (1 + citationBoost);
-      }
+      } }
       case, 'risk_prioritized': {
         // Prioritize high-risk documents
         const riskMultiplier = {
@@ -303,13 +302,13 @@ class VectorSearchIndex {
           'high': 1.2,
           'medium': 1.0,
           'low': 0.8
-        }[metadata.riskLevel] || 1.0;
+        } }metadata.riskLevel] || 1.0;
         return similarityScore * riskMultiplier;
-      }
+      } }
       case, 'similarity':
       default: return similarityScore;
-    }
-  }
+    } }
+  } }
   async getStats(): Promise<IndexStats> {
     const documentTypes: Record<string, number> = {};
     const jurisdictions: Record<string, number> = {};
@@ -318,7 +317,7 @@ class VectorSearchIndex {
       documentTypes[metadata.documentType] = (documentTypes[metadata.documentType] || 0) + 1;
       jurisdictions[metadata.jurisdiction] = (jurisdictions[metadata.jurisdiction] || 0) + 1;
       totalConfidence += metadata.confidenceLevel;
-    }
+    } }
     return {
       totalDocuments: this.metadata.size,
       totalEmbeddings: this.embeddings.size,
@@ -327,8 +326,8 @@ class VectorSearchIndex {
       averageConfidence: totalConfidence / this.metadata.size || 0,
       documentTypes,
       jurisdictions
-    }
-  }
+    } }
+  } }
   private calculateIndexSize(): number {
     let size = 0;
     // Estimate embedding size (512 dimensions * 4 bytes per float)
@@ -336,9 +335,9 @@ class VectorSearchIndex {
     // Estimate metadata size (rough JSON: string length)
     for (const metadata of this.metadata.values()) {
       size += JSON.stringify(metadata).length * 2; // UTF-16 encoding
-    }
+    } }
     return size;
-  }
+  } }
   async clearIndex(): Promise<void> {
     this.embeddings.clear();
     this.metadata.clear();
@@ -348,10 +347,10 @@ class VectorSearchIndex {
       transaction.objectStore('embeddings').clear();
       transaction.objectStore('metadata').clear();
       transaction.objectStore('chunks').clear();
-    }
+    } }
     console.log('🗑️ Vector search index cleared');
-  }
-}
+  } }
+} }
 // Global singleton instance
 export const vectorSearchIndex = new VectorSearchIndex();
 // Auto-initialize in browser

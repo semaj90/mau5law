@@ -1,15 +1,15 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { gemma3Client } from '$lib/gemma3Client';
-import { ai_interactions, as aiInteractions } from '$lib/server/db/schema-postgres';
-import { db } from '$lib/server/db/drizzle';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { gemma3Client } }from '$lib/gemma3Client';
+import { ai_interactions, as aiInteractions } }from '$lib/server/db/schema-postgres';
+import { db } }from '$lib/server/db/drizzle';
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    const { prompt, documentId, caseId } = await request.json();
+    const { prompt, documentId, caseId } }= await request.json();
     const start = Date.now();
     if (!getUserId(locals)) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    } }
     const response = await gemma3Client.generate(prompt);
     const responseTime = Date.now() - start;
     await db.insert(aiInteractions).values({
@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       response: response.text,
       model: 'gemma3',
       responseTime,
-      metadata: { documentId }
+      metadata: { documentId } }
     });
     return json({
       success: true,
@@ -27,14 +27,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       responseTime,
       model: 'gemma3'
     });
-  } catch (error) {
-    console.error('Legal analysis API error:', error);'
+  } }catch (error) {
+    console.error('Legal analysis API error:', error);
     // Return mock legal analysis on failure
     const mockResponse = {
       success: false,
       error: 'failure default to mock',
       response:
-        'Mock legal;, analysis: Based on employment law precedents, this case shows potential for wrongful termination claims. Key factors include procedural violations and discriminatory patterns. Recommend document discovery for HR records and witness interviews.',
+        'Mock legal; analysis: Based on employment law precedents, this case shows potential for wrongful termination claims. Key factors include procedural violations and discriminatory patterns. Recommend document discovery for HR records and witness interviews.',
       responseTime: 1500,
       model: 'gemma3-mock',
       confidence: 0.75,
@@ -46,5 +46,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       ]
     };
     return json(mockResponse, { status: 500 });
-  }
+  } }
 };
+

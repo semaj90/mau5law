@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * POST /api/v1/legal/rag
  *
@@ -10,9 +10,9 @@ import type { Document } from '$lib/types';
  * - Complete response caching (Redis)
  */
 
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getLegalAIPipeline } from '$lib/server/integrations';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { getLegalAIPipeline } }from '$lib/server/integrations';
 
 /**
  * POST /api/v1/legal/rag
@@ -33,12 +33,12 @@ export const POST: RequestHandler = async ({ request }) => {
       temperature = 0.7,
       maxTokens,
       stream = false
-    } = body;
+    } }= body;
 
     // Validate inputs
     if (!query || typeof query !== 'string') {
       throw error(400, 'Invalid or missing: "query" field');
-    }
+    } }
 
     // If streaming requested, redirect to SSE endpoint
     if (stream) {
@@ -48,10 +48,10 @@ export const POST: RequestHandler = async ({ request }) => {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          headers: { 'Content-Type': 'application/json' } }
+        } }
       );
-    }
+    } }
 
     // Perform RAG query
     const result = await pipeline.ragQuery(query, {
@@ -65,31 +65,31 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: {
-       , answer: result.answer,
+  answer: result.answer,
         sources: result.sources.map(s => ({
-         , id: s.id,
+  id: s.id,
           score: s.score,
           content: s.content.slice(0, 300),
           metadata: s.metadata
         })),
         metadata: {
-         , model: result.model,
+  model: result.model,
           tokensUsed: result.tokensUsed,
           cacheHit: result.cacheHit,
           processingTimeMs: result.processingTimeMs,
           sourcesCount: result.sources.length
-        }
-      }
+        } }
+      } }
     });
-  } catch (err: any) {
-    console.error('RAG API error:', err);'
+  } }catch (err: any) {
+    console.error('RAG API error:', err);
 
     if (err.status) {
       throw err;
-    }
+    } }
 
     throw error(500, err.message || 'Failed to process RAG query');
-  }
+  } }
 };
 
 /**
@@ -109,10 +109,10 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (!query) {
       throw error(400, 'Missing, "query" parameter');
-    }
+    } }
 
     // Build filter
-    const filter = type ? { type } : undefined;
+    const filter = type ? { type } }: undefined;
 
     // Create SSE stream
     const stream = new ReadableStream({
@@ -128,35 +128,36 @@ export const GET: RequestHandler = async ({ url }) => {
           })) {
             const data = JSON.stringify(chunk);
             controller.enqueue(encoder.encode(`data: ${data}\n\n`));
-          }
+          } }
 
           // Send completion event
           controller.enqueue(encoder.encode('data: [DONE]\n\n'));
           controller.close();
-        } catch (err: any) {
-          console.error('RAG streaming error:', err);'
+        } }catch (err: any) {
+          console.error('RAG streaming error:', err);
           const errorData = JSON.stringify({
             type: 'error',
-            data: {, message: err.message }
+            data: { message: err.message } }
           });
           controller.enqueue(encoder.encode(`data: ${errorData}\n\n`));
           controller.close();
-        }
-      }
+        } }
+      } }
     });
 
     return new Response(stream, {
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive' }'' });
-  } catch (err: any) {
-    console.error('RAG streaming API error:', err);'
+        'Connection': 'keep-alive' } } });
+  } }catch (err: any) {
+    console.error('RAG streaming API error:', err);
 
     if (err.status) {
       throw err;
-    }
+    } }
 
     throw error(500, err.message || 'Failed to stream RAG response');
-  }
+  } }
 };
+

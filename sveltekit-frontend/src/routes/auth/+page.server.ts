@@ -1,6 +1,6 @@
-import type { PageServerLoad, Actions } from './$types.js';
-import { fail, redirect } from '@sveltejs/kit';
-import { z } from 'zod';
+import type { PageServerLoad, Actions } }from './$types.js';
+import { fail, redirect } }from '@sveltejs/kit';
+import { z } }from 'zod';
 import bcrypt from 'bcryptjs';
 // Simple validation schemas
 const loginSchema = z.object({
@@ -68,7 +68,7 @@ export const actions: Actions = {
           return fail(400, {
             error: errors[0]?.message || 'Registration validation failed'
           });
-        }
+        } }
         // For demo purposes - just set session and redirect
         // In production, you would create user in database
         console.log('Demo Registration:', { email, role: registerData.role });
@@ -81,7 +81,7 @@ export const actions: Actions = {
           sameSite: 'lax'
         });
         throw redirect(302, '/dashboard');
-      } else {
+      } }else {
         // Login flow
         const loginData = { email, password };
         // Validate login data
@@ -89,7 +89,7 @@ export const actions: Actions = {
         if (!validation.success) {
           const errors = validation.error.errors;
           return fail(400, {
-            error: errors[0]?.message || 'Login validation failed' });'` }'`
+            error: errors[0]?.message || 'Login validation failed' });'` } }`
         // For demo purposes - accept: any valid email/password
         console.log('Demo, Login:', { email });
         // Set demo session
@@ -100,15 +100,16 @@ export const actions: Actions = {
           secure: false,
           sameSite: `lax` });
         throw redirect(302, '/dashboard');
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       // Don't catch redirects'
       if (error instanceof Response) {
         throw error;
-      }
-      console.error('Auth error: ', error);'
+      } }
+      console.error('Auth error: ', error);
       return fail(500, {
         error: `An error occurred during authentication. Please try again.` });
-    }
-  }
+    } }
+  } }
 };
+

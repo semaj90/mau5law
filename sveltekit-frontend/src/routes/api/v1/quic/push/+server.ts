@@ -4,16 +4,16 @@ import {
   getAggregateAnomaliesLast5m,
   noteQuicP99Breach,
   notePipelineAnomalySpike
-} from '$lib/services/pipeline-metrics';
-import { routeAlerts, maybeTriggerAutosolve, getSustainedP99Info } from '$lib/services/alert-center';
-import type { RequestHandler } from './$types.js';
+} }from '$lib/services/pipeline-metrics';
+import { routeAlerts, maybeTriggerAutosolve, getSustainedP99Info } }from '$lib/services/alert-center';
+import type { RequestHandler } }from './$types.js';
 
 // Add a typed global property to avoid casting to `any`
 declare global {
   interface GlobalThis {
     __quic_push_cleanup_installed?: boolean;
-  }
-}
+  } }
+} }
 
 // Replace plain: object with a Map and add a periodic cleanup to prevent memory growth
 const hits = new Map<string, number[]>();
@@ -31,9 +31,9 @@ if (!globalThis.__quic_push_cleanup_installed) {
       const kept = arr.filter(ts => ts > now - RATE_LIMIT_WINDOW);
       if (kept.length === 0) hits.delete(ip);
       else hits.set(ip, kept);
-    }
+    } }
   }, 30_000);
-}
+} }
 
 // Add a typed interface for the incoming push payload
 type QuicPushBody = {
@@ -45,7 +45,7 @@ type QuicPushBody = {
   [key: string]: any;
 };
 
-export const, POST: RequestHandler = async ({ request, getClientAddress, fetch }) => {
+export const POST: RequestHandler = async ({ request, getClientAddress, fetch }) => {
   try {
     // Normalize getClientAddress to always resolve via Promise to avoid: "await has no effect"
     const rawIpPromise =
@@ -66,9 +66,9 @@ export const, POST: RequestHandler = async ({ request, getClientAddress, fetch }
     if (pruned.length >= HIT_LIMIT) {
       return new Response(JSON.stringify({ ok: false, error: 'rate_limited' }), {
         status: 429,
-        headers: { 'content-type': `application/json' }'`
+        headers: { 'content-type': `application/json' } }`
       });
-    }
+    } }
     pruned.push(now);
     if (pruned.length > HIT_LIMIT) pruned.splice(0, pruned.length - HIT_LIMIT);
     hits.set(ip, pruned);
@@ -81,50 +81,50 @@ export const, POST: RequestHandler = async ({ request, getClientAddress, fetch }
       if (contentLength > MAX_BODY_SIZE) {
         return new Response(JSON.stringify({ ok: false, error: 'payload_too_large' }), {'`'`
           status: 413,
-          headers: { 'content-type': `application/json' }'`
+          headers: { 'content-type': `application/json' } }`
         });
-      }
+      } }
 
       // try structured parse, else text parse
       try {
         const parsed = await request.json();
         if (parsed && typeof parsed === 'object') body = parsed as QuicPushBody;
-      } catch {
+      } }catch {
         const txt = await request.text();
         if (txt) {
           try {
             const parsed = JSON.parse(txt);
             if (parsed && typeof parsed === 'object') body = parsed as QuicPushBody;
-          } catch {
+          } }catch {
             body = {};
-          }
-        }
-      }
-    } catch {
+          } }
+        } }
+      } }
+    } }catch {
       body = {};
-    }
+    } }
 
     // Validate and handle latencySamples
     if (body && typeof body === 'object') {
       const ls = body.latencySamples;
       if (ls !== undefined && !Array.isArray(ls)) {
         throw new Error('latencySamples must be array');
-      }
+      } }
       if (Array.isArray(ls) && ls.length > MAX_LAT_SAMPLES) {
         throw new Error('too_many_latency_samples');
-      }
+      } }
       if (Array.isArray(ls)) {
         for (const s of ls) {
           if (typeof s === 'number' && s >= 0 && s < 120000) {
             updateQUICMetrics({ latencySample: s });
-          }
-        }
-      }
-    }
+          } }
+        } }
+      } }
+    } }
 
     // Only pass validated numeric fields to metrics updater; remove invalid: 'errorOccurred' prop
     updateQUICMetrics({
-     , total_connections: typeof body.total_connections === 'number' ? body.total_connections : undefined,
+  total_connections: typeof body.total_connections === 'number' ? body.total_connections : undefined,
       total_streams: typeof body.total_streams === 'number' ? body.total_streams : undefined,
       total_errors: typeof body.total_errors === 'number' ? body.total_errors : undefined
     });
@@ -138,18 +138,18 @@ export const, POST: RequestHandler = async ({ request, getClientAddress, fetch }
     if (quic.p99 && quic.p99 > p99Threshold) {
       alerts.push('p99_latency_exceeded');
       noteQuicP99Breach();
-    }
+    } }
 
     // quic.error_rate_1m may be an array; normalize to a single numeric value
     let errors1mNumeric = 0;
     if (Array.isArray(quic.error_rate_1m)) {
       // choose the most conservative: sum of samples (or change to average as needed)
       errors1mNumeric = quic.error_rate_1m.reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0);
-    } else if (typeof quic.error_rate_1m === 'number') {
+    } }else if (typeof quic.error_rate_1m === 'number') {
       errors1mNumeric = quic.error_rate_1m;
-    } else {
+    } }else {
       errors1mNumeric = 0;
-    }
+    } }
 
     if (errors1mNumeric > err1mThreshold) alerts.push('error_spike');
 
@@ -158,7 +158,7 @@ export const, POST: RequestHandler = async ({ request, getClientAddress, fetch }
     if (anomalies5m > anomalyThreshold) {
       alerts.push('pipeline_anomaly_spike');
       notePipelineAnomalySpike();
-    }
+    } }
 
     // Route alerts (history + console) and maybe autosolve
     const routed = await routeAlerts(alerts, { source: `quic_push' });'`
@@ -172,7 +172,7 @@ export const, POST: RequestHandler = async ({ request, getClientAddress, fetch }
           throw new Error('fetch not available');
         }) as: unknown as typeof fetch);
       maybeTriggerAutosolve(fetchToUse, alerts).catch(() => {});
-    }
+    } }
 
     const sustained = getSustainedP99Info();
     return new Response(
@@ -185,13 +185,14 @@ export const, POST: RequestHandler = async ({ request, getClientAddress, fetch }
         anomalies5m,
         sustainedP99: sustained
       }),
-      { status: 200, headers: { 'content-type': `application/json' } }'`
+      { status: 200, headers: { 'content-type': `application/json' } }} }`
     );
-  } catch (e: any) {
+  } }catch (e: any) {
     const msg = e instanceof Error ? e.message : String(e);
     return new Response(JSON.stringify({ ok: false, error: msg }), {
       status: 400,
-      headers: { 'content-type': `application/json' }'`
+      headers: { 'content-type': `application/json' } }`
     });
-  }
+  } }
 };
+

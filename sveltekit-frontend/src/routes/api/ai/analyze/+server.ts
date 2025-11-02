@@ -3,8 +3,8 @@
  * Routes: /api/ai/analyze → QUIC /legal/analyze → Go GPU /inference
  * NO MOCKS - Full production implementation per apparch913.txt
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
+import { z } }from 'zod';
 // Legal analysis schema per architecture docs
 const LegalAnalysisSchema = z.object({
   content: z.string().min(1),
@@ -14,7 +14,7 @@ const LegalAnalysisSchema = z.object({
   model: z.enum(['gemma3:legal-latest', 'embeddinggemma:latest']).default('gemma3:legal-latest'),
   options: z
     .object({
-     , max_tokens: z.number().default(1024),
+  max_tokens: z.number().default(1024),
       temperature: z.number().min(0).max(1).default(0.1),
       include_precedents: z.boolean().default(true),
       include_citations: z.boolean().default(true)
@@ -22,12 +22,12 @@ const LegalAnalysisSchema = z.object({
     .optional()
 });
 const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433';
-export const, POST: RequestHandler = async ({ request, cookies }) => {
+export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     const sessionId = cookies.get('session_id');
     if (!sessionId) {
       throw error(401, 'Authentication required for legal AI analysis');
-    }
+    } }
     const body = await request.json();
     const validatedData = LegalAnalysisSchema.safeParse(body);
     if (!validatedData.success) {
@@ -38,9 +38,9 @@ export const, POST: RequestHandler = async ({ request, cookies }) => {
           message: 'Invalid analysis request format',
           errors: validatedData.error.errors
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Route to QUIC server legal analysis endpoint (per architecture)
     const response = await fetch(`${QUIC_SERVER_URL}/legal/analyze`, {
       method: 'POST',
@@ -53,14 +53,14 @@ export const, POST: RequestHandler = async ({ request, cookies }) => {
     });
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('QUIC server legal analysis error:', errorData);'
+      console.error('QUIC server legal analysis error:', errorData);
       throw error(response.status, `Legal analysis failed: ${errorData}`);
-    }
+    } }
     const result = await response.json();
     return json({
       success: true,
       data: {
-       , analysis: result.analysis,
+  analysis: result.analysis,
         analysis_type: result.analysis_type,
         confidence: result.confidence,
         processing_time: result.processing_time,
@@ -69,33 +69,33 @@ export const, POST: RequestHandler = async ({ request, cookies }) => {
         precedents: result.precedents,
         recommendations: result.recommendations,
         risk_assessment: result.risk_assessment
-      }
+      } }
     });
-  } catch (err) {
-    console.error('Legal AI analysis error:', err);'
+  } }catch (err) {
+    console.error('Legal AI analysis error:', err);
     if (err instanceof Error && 'status' in err) {
       throw err;
-    }
+    } }
     throw error(500, 'Internal server error during legal analysis');
-  }
+  } }
 };
 export const GET: RequestHandler = async ({ url, cookies }) => {
   try {
     const sessionId = cookies.get('session_id');
     if (!sessionId) {
       throw error(401, 'Authentication required');
-    }
+    } }
     const jobId = url.searchParams.get('job_id');
     if (!jobId) {
       throw error(400, 'job_id parameter required');
-    }
+    } }
     // Get analysis result from QUIC server
     const response = await fetch(`${QUIC_SERVER_URL}/legal/result?job_id=${jobId}`, {
       headers: {
-        'Authorization': 'Bearer ${sessionId}' }'` });'`
+        'Authorization': 'Bearer ${sessionId} } } }` });'`
     if (!response.ok) {
       throw error(response.status, 'Failed to retrieve analysis result');
-    }
+    } }
     const result = await response.json();
     return json({
       success: true,
@@ -104,11 +104,12 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
       result: result.result,
       completed_at: result.completed_at
     });
-  } catch (err) {
-    console.error('Analysis result retrieval error:', err);'
+  } }catch (err) {
+    console.error('Analysis result retrieval error:', err);
     if (err instanceof Error && 'status' in err) {
       throw err;
-    }
+    } }
     throw error(500, 'Failed to retrieve analysis result');
-  }
+  } }
 };
+

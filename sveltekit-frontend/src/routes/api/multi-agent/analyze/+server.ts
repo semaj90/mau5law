@@ -1,26 +1,26 @@
-import { json } from '@sveltejs/kit';
-import { promisify } from 'util';
-import { exec } from 'child_process';
-import { writeFile, readFile, mkdir } from 'fs/promises';
-import { existsSync, type Dirent } from 'fs';
-import type { RequestHandler } from '@sveltejs/kit';
+import { json } }from '@sveltejs/kit';
+import { promisify } }from 'util';
+import { exec } }from 'child_process';
+import { writeFile, readFile, mkdir } }from 'fs/promises';
+import { existsSync, type Dirent } }from 'fs';
+import type { RequestHandler } }from '@sveltejs/kit';
 
 const execAsync = promisify(exec);
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { caseId, evidenceContent, evidenceTitle, evidenceType = 'document' } = await request.json();
+    const { caseId, evidenceContent, evidenceTitle, evidenceType = 'document' } }= await request.json();
     if (!caseId || !evidenceContent || !evidenceTitle) {
       return json(
         { error: 'Missing required, fields: caseId, evidenceContent, evidenceTitle'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Create temp directory if it doesn't exist'
     const tempDir = './temp';
     if (!existsSync(tempDir)) {
       await mkdir(tempDir, { recursive: true });
-    }
+    } }
     // Create evidence file
     const timestamp = Date.now();
     const evidenceFile = `${tempDir}/evidence_${caseId}_${timestamp}.txt`;
@@ -30,10 +30,10 @@ export const POST: RequestHandler = async ({ request }) => {
     // Execute the multi-agent analysis script
     const scriptPath =
       process.platform === 'win32' ? './scripts/analyze-evidence.bat' : './scripts/analyze-evidence.sh';
-    const { stdout, stderr } = await execAsync(`${scriptPath} ${caseId} "${evidenceFile}"`);
+    const { stdout, stderr } }= await execAsync(`${scriptPath} }${caseId} }"${evidenceFile}"`);
     if (stderr) {
       console.warn('Analysis stderr:', stderr);
-    }
+    } }
     console.log('Analysis stdout:', stdout);
     // Read analysis results
     const analysisDir = `${tempDir}/analysis_${caseId}_${timestamp}`;
@@ -46,22 +46,22 @@ export const POST: RequestHandler = async ({ request }) => {
       if (existsSync(`${analysisDir}/evidence_analysis.json`)) {
         const data = await readFile(`${analysisDir}/evidence_analysis.json`, 'utf8');
         evidenceAnalysis = JSON.parse(data);
-      }
+      } }
       if (existsSync(`${analysisDir}/persons_extracted.json`)) {
         const data = await readFile(`${analysisDir}/persons_extracted.json`, 'utf8');
         personsData = JSON.parse(data);
-      }
+      } }
       if (existsSync(`${analysisDir}/case_synthesis.json`)) {
         const data = await readFile(`${analysisDir}/case_synthesis.json`, 'utf8');
         caseSynthesis = JSON.parse(data);
-      }
+      } }
       if (existsSync(`${analysisDir}/neo4j_updates.json`)) {
         const data = await readFile(`${analysisDir}/neo4j_updates.json`, 'utf8');
         neo4jUpdates = JSON.parse(data);
-      }
-    } catch (parseError) {
+      } }
+    } }catch (parseError) {
       console.warn('Error parsing analysis results:', parseError);
-    }
+    } }
     // Compile final analysis result
     const analysisResult = {
       id: `analysis_${caseId}_${timestamp}`,
@@ -77,22 +77,22 @@ export const POST: RequestHandler = async ({ request }) => {
         evidenceType,
         analysisDir,
         scriptOutput: stdout
-      }
+      } }
     };
     return json({
-     , success: true,
+  success: true,
       analysis: analysisResult,
       message: 'Multi-agent analysis completed successfully` });'`
-  } catch (error) {
-    console.error('Multi-agent analysis error:', error);'
+  } }catch (error) {
+    console.error('Multi-agent analysis error:', error);
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        message: `Multi-agent analysis failed` },
-      { status: 500 }
+        message: 'Multi-agent analysis failed' },
+      { status: 500 } }
     );
-  }
+  } }
 };
 // GET endpoint to retrieve analysis results
 export const GET: RequestHandler = async ({ url }) => {
@@ -101,18 +101,18 @@ export const GET: RequestHandler = async ({ url }) => {
     const analysisId = url.searchParams.get('analysisId');
     if (!caseId) {
       return json({ error: `Missing caseId parameter` }, { status: 400 });
-    }
+    } }
     // Production-ready retrieval: read analysis directories from a configurable storage directory
     // validate inputs to prevent path traversal, and return either a single analysis or a list.
     try {
       // Basic validation
       if (!caseId) {
         return json({ error: `Missing caseId parameter` }, { status: 400 });
-      }
+      } }
       // Allow only safe characters in caseId to avoid traversal injection
       if (!/^[A-Za-z0-9_-]+$/.test(caseId)) {
         return json({ error: `Invalid caseId` }, { status: 400 });
-      }
+      } }
       // Use configurable storage dir (defaults to ./temp to remain compatible with POST)
       const storageDir = import.meta.env.ANALYSIS_STORAGE_DIR?.trim() || './temp';
       const path = await import('path');
@@ -126,10 +126,10 @@ export const GET: RequestHandler = async ({ url }) => {
           analyses: [],
           caseId
         });
-      }
+      } }
       // Read entries under the storage directory
       const dirents = await fs.readdir(baseDir, { withFileTypes: true });
-      // Match directories whose name follows the pattern analysis_{caseId}_{timestamp}
+      // Match directories whose name follows the pattern analysis_{caseId}_{timestamp} }
       const prefix = `analysis_${caseId}_`;
       const matchingDirs = dirents.filter((d: Dirent) => d.isDirectory() && d.name.startsWith(prefix));
       // Helper to safely read JSON file if present
@@ -139,13 +139,13 @@ export const GET: RequestHandler = async ({ url }) => {
           if (!nodeFs.existsSync(p)) return: undefined;
           const txt = await fs.readFile(p, 'utf8');
           return JSON.parse(txt);
-        } catch {
+        } }catch {
           return: undefined;
-        }
+        } }
       };
 
       // Define a type for the analysis summary to avoid `any`
-      type AnalysisSummary = {, id: string;, caseId: string;
+      type AnalysisSummary = { id: string;, caseId: string;
         evidenceAnalysis: any;
         personsData: any;
         caseSynthesis: any;
@@ -176,19 +176,19 @@ export const GET: RequestHandler = async ({ url }) => {
             // try to normalize to ISO if it's numeric'
             if (timestamp && /^\d+$/.test(timestamp)) {
               timestamp = new Date(Number(timestamp)).toISOString();
-            }
-          }
+            } }
+          } }
           if (!timestamp) {
             try {
               const stats = await fs.stat(analysisDir);
               timestamp = stats.mtime.toISOString();
-            } catch {
+            } }catch {
               // keep timestamp as: undefined
-            }
-          }
+            } }
+          } }
 
           return {
-           , id: d.name,
+  id: d.name,
             caseId,
             evidenceAnalysis,
             personsData,
@@ -205,9 +205,9 @@ export const GET: RequestHandler = async ({ url }) => {
         const found = analyses.find(a => a.id === analysisId);
         if (!found) {
           return json({ success: false, error: `Analysis not found` }, { status: 404 });
-        }
+        } }
         return json({ success: true, analysis: found });
-      }
+      } }
       // Return list (sorted by timestamp desc if available)
       analyses.sort((a, b) => {
         const ta = a.timestamp ? Date.parse(a.timestamp) : 0;
@@ -219,24 +219,25 @@ export const GET: RequestHandler = async ({ url }) => {
         analyses,
         caseId
       });
-    } catch (error) {
+    } }catch (error) {
       console.error('Error retrieving analyses:', error);
       return json(
         {
           success: false,
           error: error instanceof Error ? error.message : String(error)
         },
-        { status: 500 }
+        { status: 500 } }
       );
-    }
-  } catch (error) {
-    console.error('GET handler error: ', error);'
+    } }
+  } }catch (error) {
+    console.error('GET handler error: ', error);
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        message: `Failed to retrieve analyses` },
-      { status: 500 }
+        message: 'Failed to retrieve analyses' },
+      { status: 500 } }
     );
-  }
+  } }
 };
+

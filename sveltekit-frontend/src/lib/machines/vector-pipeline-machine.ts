@@ -1,17 +1,17 @@
 // XState v5 machine for coordinating vector processing pipeline
 // Orchestrates PostgreSQL → Redis Streams → Go microservice → CUDA worker → Qdrant
-import { setup, assign, createActor, fromPromise } from 'xstate';
-import { writable } from 'svelte/store';
-import { readActorSnapshot, safeStart, safeStop } from '$lib/utils/xstate-compat';
+import { setup, assign, createActor, fromPromise } }from 'xstate';
+import { writable } }from 'svelte/store';
+import { readActorSnapshot, safeStart, safeStop } }from '$lib/utils/xstate-compat';
 // --- Service Imports for real implementations ---
-import { productionServiceClient } from '$lib/api/production-service-client';
-import { db } from '$lib/server/db';
-import { vectorJobs } from '$lib/server/db/schema';
-import { cache } from '$lib/server/cache/redis';
-import { workflowQueue } from '$lib/server/message-queue';
-import { WebGPUManager } from '$lib/server/compute/web-gpu-manager';
-import { qdrantClient } from '$lib/server/db/qdrant';
-import { sql } from 'drizzle-orm';
+import { productionServiceClient } }from '$lib/api/production-service-client';
+import { db } }from '$lib/server/db';
+import { vectorJobs } }from '$lib/server/db/schema';
+import { cache } }from '$lib/server/cache/redis';
+import { workflowQueue } }from '$lib/server/message-queue';
+import { WebGPUManager } }from '$lib/server/compute/web-gpu-manager';
+import { qdrantClient } }from '$lib/server/db/qdrant';
+import { sql } }from 'drizzle-orm';
 // --- Type Definitions ---
 export interface VectorPipelineJob { jobId: string;, ownerType: 'evidence' | 'report' | 'case' | 'document';
   ownerId: string;
@@ -22,15 +22,14 @@ export interface VectorPipelineJob { jobId: string;, ownerType: 'evidence' | 'r
   result?: any;
   createdAt: string;
   estimatedTime?: number;
-}
-export interface VectorPipelineContext {
- , currentJob: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> | null;
-  batch: {, jobs: VectorPipelineJob[];, totalJobs: number;
+} }
+export interface VectorPipelineContext { currentJob: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> | null;
+  batch: { jobs: VectorPipelineJob[];, totalJobs: number;
     completedJobs: number;
     failedJobs: number;
     progress: number;
   };
-  pipeline: {, postgresql: boolean;, redis: boolean;
+  pipeline: { postgresql: boolean;, redis: boolean;
     goMicroservice: boolean;
     cudaWorker: boolean;
     qdrant: boolean;
@@ -39,38 +38,36 @@ export interface VectorPipelineContext {
   errors: string[];
   retryAttempts: number;
   maxRetries: number;
-  metrics: {, averageProcessingTime: number;, totalJobsProcessed: number;
+  metrics: { averageProcessingTime: number;, totalJobsProcessed: number;
     throughputPerMinute: number;
     lastProcessedAt: Date | null;
   };
-}
+} }
 export type VectorPipelineEvent =
-  | { type: 'SUBMIT_JOB';, job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> }
-  | { type: 'SUBMIT_BATCH';, jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>> }
-  | { type: 'JOB_PROGRESS'; jobId: string; progress: number; status: string }
-  | { type: 'JOB_COMPLETED'; jobId: string; result: any }
-  | { type: 'JOB_FAILED'; jobId: string; error: string }
-  | { type: 'RETRY_FAILED_JOBS' }
-  | { type: 'HEALTH_CHECK' }
-  | { type: 'RESET_PIPELINE' }
-  | { type: 'ENABLE_WEBGPU' }
+  | { type: 'SUBMIT_JOB'; job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> } }
+  | { type: 'SUBMIT_BATCH'; jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>> } }
+  | { type: 'JOB_PROGRESS'; jobId: string; progress: number; status: string } }
+  | { type: 'JOB_COMPLETED'; jobId: string; result: any } }
+  | { type: 'JOB_FAILED'; jobId: string; error: string } }
+  | { type: 'RETRY_FAILED_JOBS' } }
+  | { type: 'HEALTH_CHECK' } }
+  | { type: 'RESET_PIPELINE' } }
+  | { type: 'ENABLE_WEBGPU' } }
   | { type: 'DISABLE_WEBGPU' };
-const initialContext: VectorPipelineContext = {
- , currentJob: null,
-  batch: {, jobs: [], totalJobs: 0, completedJobs: 0, failedJobs: 0, progress: 0 },
-  pipeline: {, postgresql: false, redis: false, goMicroservice: false, cudaWorker: false, qdrant: false, webgpu: false },
+const initialContext: VectorPipelineContext = { currentJob: null,
+  batch: { jobs: [], totalJobs: 0, completedJobs: 0, failedJobs: 0, progress: 0 },
+  pipeline: { postgresql: false, redis: false, goMicroservice: false, cudaWorker: false, qdrant: false, webgpu: false },
   errors: [],
   retryAttempts: 0,
   maxRetries: 3,
-  metrics: {, averageProcessingTime: 0, totalJobsProcessed: 0, throughputPerMinute: 0, lastProcessedAt: null }
+  metrics: { averageProcessingTime: 0, totalJobsProcessed: 0, throughputPerMinute: 0, lastProcessedAt: null } }
 };
 // --- Machine Definition ---
-export const vectorPipelineMachine = setup({, types: {, context: {} as VectorPipelineContext,
-    events: {} as VectorPipelineEvent
+export const vectorPipelineMachine = setup({ types: { context: {} }as VectorPipelineContext,
+    events: {} }as VectorPipelineEvent
   },
-  actions: {, setCurrentJob: assign({, currentJob: ({ event }) => (event as: any).job || null }),
-    addJobToBatch: assign({
-     , batch: ({ context, event }) => {
+  actions: { setCurrentJob: assign({ currentJob: ({ event }) => (event as: any).job || null }),
+    addJobToBatch: assign({ batch: ({ context, event }) => {
         const newJobs = (event as: any).jobs || [(event as: any).job];
         const jobsWithIds = newJobs.map((j: any) => ({
           ...j,
@@ -84,13 +81,12 @@ export const vectorPipelineMachine = setup({, types: {, context: {} as VectorPi
           jobs: [...context.batch.jobs, ...jobsWithIds],
           totalJobs: context.batch.totalJobs + newJobs.length
         };
-      }
+      } }
     }),
-    processSubmittedJob: assign({
-     , batch: ({ context, event }) => {
+    processSubmittedJob: assign({ batch: ({ context, event }) => {
         if (!context.currentJob) {
           return context.batch;
-        }
+        } }
         const newJob: VectorPipelineJob = {
           ...context.currentJob,
           jobId: (event, as: any).output.jobId,
@@ -106,21 +102,19 @@ export const vectorPipelineMachine = setup({, types: {, context: {} as VectorPi
       },
       currentJob: () => null
     }),
-    updateJobProgress: assign({
-     , batch: ({ context, event }) => {
-        const { jobId, progress, status } = event as: any;
-        const jobs = context.batch.jobs.map(job => (job.jobId === jobId ? { ...job, progress, status } : job));
+    updateJobProgress: assign({ batch: ({ context, event }) => {
+        const { jobId, progress, status } }= event as: any;
+        const jobs = context.batch.jobs.map(job => (job.jobId === jobId ? { ...job, progress, status } }: job));
         const completedJobs = jobs.filter(item => item.status === 'succeeded').length;
         const failedJobs = jobs.filter(item => item.status === 'failed').length;
         const overallProgress = jobs.length > 0 ? Math.floor(((completedJobs + failedJobs) / jobs.length) * 100) : 0;
         return { ...context.batch, jobs, completedJobs, failedJobs, progress: overallProgress };
-      }
+      } }
     }),
-    completeJob: assign({
-     , batch: ({ context, event }) => {
-        const { jobId, result } = event as: any;
+    completeJob: assign({ batch: ({ context, event }) => {
+        const { jobId, result } }= event as: any;
         const jobs = context.batch.jobs.map(job =>
-          job.jobId === jobId ? { ...job, status: 'succeeded' as const, result } : job
+          job.jobId === jobId ? { ...job, status: 'succeeded' as const, result } }: job
         );
         return { ...context.batch, jobs, completedJobs: context.batch.completedJobs + 1 };
       },
@@ -130,26 +124,24 @@ export const vectorPipelineMachine = setup({, types: {, context: {} as VectorPi
         lastProcessedAt: new Date()
       })
     }),
-    failJob: assign({
-     , batch: ({ context, event }) => {
-        const { jobId, error } = event as: any;
+    failJob: assign({ batch: ({ context, event }) => {
+        const { jobId, error } }= event as: any;
         const jobs = context.batch.jobs.map(job =>
-          job.jobId === jobId ? { ...job, status: 'failed' as const, error } : job
+          job.jobId === jobId ? { ...job, status: 'failed' as const, error } }: job
         );
         return { ...context.batch, jobs, failedJobs: context.batch.failedJobs + 1 };
       },
       errors: ({ context, event }) => [...context.errors, (event as: any).error]
     }),
-    updatePipelineStatus: assign({, pipeline: ({ event }) => (event as: any).output || {} }),
-    enableWebGPU: assign({, pipeline: ({ context }) => ({ ...context.pipeline, webgpu: true }) }),
-    disableWebGPU: assign({, pipeline: ({ context }) => ({ ...context.pipeline, webgpu: false }) }),
-    incrementRetry: assign({, retryAttempts: ({ context }) => context.retryAttempts + 1 }),
-    resetRetries: assign({, retryAttempts: () => 0 }),
-    clearErrors: assign({, errors: () => [] }),
-    resetBatch: assign({, batch: () => ({, jobs: [], totalJobs: 0, completedJobs: 0, failedJobs: 0, progress: 0 }) }),
+    updatePipelineStatus: assign({ pipeline: ({ event }) => (event as: any).output || {} }}),
+    enableWebGPU: assign({ pipeline: ({ context }) => ({ ...context.pipeline, webgpu: true }) }),
+    disableWebGPU: assign({ pipeline: ({ context }) => ({ ...context.pipeline, webgpu: false }) }),
+    incrementRetry: assign({ retryAttempts: ({ context }) => context.retryAttempts + 1 }),
+    resetRetries: assign({ retryAttempts: () => 0 }),
+    clearErrors: assign({ errors: () => [] }),
+    resetBatch: assign({ batch: () => ({ jobs: [], totalJobs: 0, completedJobs: 0, failedJobs: 0, progress: 0 }) }),
     resetPipeline: assign(() => initialContext),
-    updateMetrics: assign({
-     , metrics: ({ context }) => {
+    updateMetrics: assign({ metrics: ({ context }) => {
         const completedJobs = context.batch.jobs.filter(j => j.status === 'succeeded');
         const averageTime =
           completedJobs.length > 0
@@ -162,11 +154,10 @@ export const vectorPipelineMachine = setup({, types: {, context: {} as VectorPi
           return created > oneMinuteAgo;
         });
         return { ...context.metrics, averageProcessingTime: averageTime, throughputPerMinute: recentJobs.length };
-      }
+      } }
     })
   },
-  guards: {
-   , hasFailedJobs: ({ context }) => context.batch.failedJobs > 0,
+  guards: { hasFailedJobs: ({ context }) => context.batch.failedJobs > 0,
     canRetry: ({ context }) => context.retryAttempts < context.maxRetries,
     allJobsCompleted: ({ context }) =>
       context.batch.totalJobs > 0 && context.batch.completedJobs + context.batch.failedJobs >= context.batch.totalJobs,
@@ -176,8 +167,8 @@ export const vectorPipelineMachine = setup({, types: {, context: {} as VectorPi
   },
   actors: {
     submitJob: fromPromise(
-      async ({ input }: {, input: {, job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> } }) => {
-        const { job } = input;
+      async ({ input }: { input: { job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> } }}) => {
+        const { job } }= input;
         const [newJob] = await db
           .insert(vectorJobs)
           .values({
@@ -188,14 +179,14 @@ export const vectorPipelineMachine = setup({, types: {, context: {} as VectorPi
           .returning();
         await workflowQueue.add('vector-processing', { jobId: newJob.id, ...job });
         return { jobId: newJob.id, status: 'enqueued', progress: 0 };
-      }
+      } }
     ),
     submitBatch: fromPromise(
       async ({
         input
-      }: {, input: {, jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>> };
+      }: { input: { jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>> };
       }) => {
-        const { jobs } = input;
+        const { jobs } }= input;
         const results = await db.transaction(async tx => {
           const newJobs = await tx
             .insert(vectorJobs)
@@ -212,20 +203,20 @@ export const vectorPipelineMachine = setup({, types: {, context: {} as VectorPi
               jobId: newJob.id,
               ...jobs.find(j => j.ownerId === newJob.ownerId)
             });
-          }
+          } }
           return newJobs;
         });
         return results.map(job => ({ jobId: job.id, status: 'enqueued', progress: 0 }));
-      }
+      } }
     ),
     healthCheck: fromPromise(async () => {
       const check = async (p: Promise<any>) => {
         try {
           await p;
           return true;
-        } catch {
+        } }catch {
           return false;
-        }
+        } }
       };
       const [pg, rd, go, qd] = await Promise.all([
         check(db.execute(sql`select 1`)),
@@ -242,8 +233,8 @@ export const vectorPipelineMachine = setup({, types: {, context: {} as VectorPi
         webgpu: WebGPUManager.isAvailable()
       };
     }),
-    retryFailedJobs: fromPromise(async ({ input }: {, input: {, failedJobs: VectorPipelineJob[] } }) => {
-      const { failedJobs } = input;
+    retryFailedJobs: fromPromise(async ({ input }: { input: { failedJobs: VectorPipelineJob[] } }}) => {
+      const { failedJobs } }= input;
       const retryResults = await Promise.all(
         failedJobs.map(async job => {
           try {
@@ -258,29 +249,28 @@ export const vectorPipelineMachine = setup({, types: {, context: {} as VectorPi
               .returning();
             await workflowQueue.add('vector-processing', { jobId: newJob.id, ...job });
             return { success: true, result: newJob };
-          } catch (err) {
+          } }catch (err) {
             return { success: false, result: err };
-          }
+          } }
         })
       );
       return retryResults;
     }),
     loadWebGPUModel: fromPromise(async () => await WebGPUManager.initialize())
-  }
+  } }
 }).createMachine({
   id: 'vectorPipeline',
   initial: 'initializing',
   context: initialContext,
-  states: {, initializing: {, invoke: {
-       , src: 'healthCheck',
-        onDone: {, target: 'idle', actions: ['updatePipelineStatus', 'clearErrors'] },
-        onError: {, target: 'error', actions: [assign({, errors: ({ event }) => [String(event.error)] })] }
-      }
+  states: { initializing: { invoke: { src: 'healthCheck',
+        onDone: { target: 'idle', actions: ['updatePipelineStatus', 'clearErrors'] },
+        onError: { target: 'error', actions: [assign({ errors: ({ event }) => [String(event.error)] })] } }
+      } }
     },
-    idle: {, on: {, SUBMIT_JOB: {, target: 'processingJob', actions: ['setCurrentJob'] },
-        SUBMIT_BATCH: {, target: 'processingBatch', actions: ['addJobToBatch'] },
+    idle: { on: { SUBMIT_JOB: { target: 'processingJob', actions: ['setCurrentJob'] },
+        SUBMIT_BATCH: { target: 'processingBatch', actions: ['addJobToBatch'] },
         HEALTH_CHECK: 'healthCheck',
-        ENABLE_WEBGPU: {, target: 'loadingWebGPU', actions: ['enableWebGPU'], guard: 'webgpuAvailable' },
+        ENABLE_WEBGPU: { target: 'loadingWebGPU', actions: ['enableWebGPU'], guard: 'webgpuAvailable' },
         DISABLE_WEBGPU: [
           // If all jobs are completed, disable webgpu and reset metrics/batch
           { target: 'idle', guard: 'allJobsCompleted', actions: ['updateMetrics', 'resetBatch', 'disableWebGPU'] },
@@ -289,38 +279,37 @@ export const vectorPipelineMachine = setup({, types: {, context: {} as VectorPi
           // Fallback: stay in idle, update metrics, reset batch and disable webgpu
           { target: 'idle', actions: ['updateMetrics', 'resetBatch', 'disableWebGPU'] },
         ],
-        JOB_PROGRESS: {, actions: ['updateJobProgress'] },
-        JOB_COMPLETED: {, actions: ['completeJob'] },
-        JOB_FAILED: {, actions: ['failJob'] }
-      }
+        JOB_PROGRESS: { actions: ['updateJobProgress'] },
+        JOB_COMPLETED: { actions: ['completeJob'] },
+        JOB_FAILED: { actions: ['failJob'] } }
+      } }
     },
-    retrying: {, invoke: {, src: 'retryFailedJobs',
+    retrying: { invoke: { src: 'retryFailedJobs',
         input: ({ context }) => ({ failedJobs: context.batch.jobs.filter(j => j.status === 'failed') }),
-        onDone: {, target: 'idle', actions: ['resetRetries', 'clearErrors'] },
-        onError: {, target: 'error', actions: ['incrementRetry'] }
+        onDone: { target: 'idle', actions: ['resetRetries', 'clearErrors'] },
+        onError: { target: 'error', actions: ['incrementRetry'] } }
       },
-      on: {, RETRY_FAILED_JOBS: {, target: 'retrying', reenter: true } }
+      on: { RETRY_FAILED_JOBS: { target: 'retrying', reenter: true } }} }
     },
-    loadingWebGPU: {, invoke: {, src: 'loadWebGPUModel',
-        onDone: {, target: 'idle', actions: ['enableWebGPU'] },
-        onError: {
-         , target: 'idle',
+    loadingWebGPU: { invoke: { src: 'loadWebGPUModel',
+        onDone: { target: 'idle', actions: ['enableWebGPU'] },
+        onError: { target: 'idle',
           actions: ['disableWebGPU', assign({ errors: ({ event }) => [String(event.error)] })]
-        }
-      }
+        } }
+      } }
     },
-    healthCheck: {, invoke: {, src: 'healthCheck',
-        onDone: {, target: 'idle', actions: ['updatePipelineStatus'] },
-        onError: {, target: 'error', actions: [assign({, errors: ({ event }) => [String(event.error)] })] }
-      }
+    healthCheck: { invoke: { src: 'healthCheck',
+        onDone: { target: 'idle', actions: ['updatePipelineStatus'] },
+        onError: { target: 'error', actions: [assign({ errors: ({ event }) => [String(event.error)] })] } }
+      } }
     },
-    error: {, on: {, RETRY_FAILED_JOBS: {, target: 'retrying', guard: 'canRetry' },
+    error: { on: { RETRY_FAILED_JOBS: { target: 'retrying', guard: 'canRetry' },
         HEALTH_CHECK: 'healthCheck',
-        RESET_PIPELINE: {, target: 'initializing', actions: ['resetPipeline'] }
+        RESET_PIPELINE: { target: 'initializing', actions: ['resetPipeline'] } }
       },
-      after: { 5000: {, target: 'healthCheck', actions: ['clearErrors'] } }
-    }
-  }
+      after: { 5000: { target: 'healthCheck', actions: ['clearErrors'] } }} }
+    } }
+  } }
 });
 // --- Actor and Store Export ---
 export const vectorPipelineActor = createActor(vectorPipelineMachine);
@@ -340,3 +329,4 @@ export const vectorPipelineActions = {
   stop: () => safeStop(vectorPipelineActor)
 };
 export default vectorPipelineActor;
+

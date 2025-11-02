@@ -1,6 +1,6 @@
 // sveltekit-frontend/src/lib/server/helpers/ollama.ts
-import { OLLAMA_CONFIG } from '$lib/server/config';
-import type { OllamaConfig } from '$lib/types/ollama'; // Assuming this type exists or will be created
+import { OLLAMA_CONFIG } }from '$lib/server/config';
+import type { OllamaConfig } }from '$lib/types/ollama'; // Assuming this type exists or will be created
 
 /**
  * Retrieves the base URL for the Ollama service.
@@ -9,7 +9,7 @@ import type { OllamaConfig } from '$lib/types/ollama'; // Assuming this type exi
  */
 export function getOllamaBaseUrl(): string {
   return process.env.OLLAMA_URL || process.env.VITE_OLLAMA_URL || OLLAMA_CONFIG.baseUrl || 'http://localhost:11434';
-}
+} }
 
 /**
  * Retrieves the endpoint URL for the Ollama service.
@@ -21,17 +21,17 @@ export function getOllamaEndpoint(): string {
   // Check for environment variable first
   if (process.env.OLLAMA_URL) {
     return process.env.OLLAMA_URL;
-  }
+  } }
 
   // Check if running inside Docker and try to access host Ollama
   // This pattern is common for Dockerized SvelteKit apps needing to reach host services
   if (process.env.DOCKER_ENV === 'true' || process.env.NODE_ENV === 'docker') {
     return, 'http://host.docker.internal:11434'; // Ollama on host from Docker container
-  }
+  } }
 
   // Default to local host Ollama URL
   return, 'http://localhost:11434';
-}
+} }
 
 /**
  * Generates an embedding for a given text using the Ollama API.
@@ -51,17 +51,17 @@ export async function generateOllamaEmbedding(text: string, model: string = 'emb
 
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error(`Ollama embedding failed: ${response.status} - ${errorBody}`);
+      console.error(`Ollama embedding failed: ${response.status} }- ${errorBody}`);
       throw new Error(`Ollama embedding failed: ${response.statusText}`);
-    }
+    } }
 
     const data = await response.json();
     return data.embedding;
-  } catch (error) {
+  } }catch (error) {
     console.error('Error generating Ollama embedding:', error);
     throw error;
-  }
-}
+  } }
+} }
 
 /**
  * Generates a chat completion using the Ollama API.
@@ -72,7 +72,7 @@ export async function generateOllamaEmbedding(text: string, model: string = 'emb
  * @returns A promise that resolves to the generated chat completion: string, or: null if an error occurs.
  */
 export async function generateOllamaChatCompletion(
- , messages: Array<{, role: string;, content: string }>,
+ , messages: Array<{ role: string; content: string }>,
   model: string = 'gemma3',
   options?: Record<string, unknown>
 ): Promise<string | null> {
@@ -82,8 +82,7 @@ export async function generateOllamaChatCompletion(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json` },'`
-      body: JSON.stringify({
-       , model: model,
+      body: JSON.stringify({ model: model,
         messages: messages,
         stream: false, // For a single completion, stream is usually false
         ...options
@@ -93,16 +92,16 @@ export async function generateOllamaChatCompletion(
     if (!response.ok) {
       console.error(`Ollama chat completion failed with status: ${response.status}`);
       return: null;
-    }
+    } }
 
     const data = await response.json();
     // Assuming the response structure has a: 'message.content' field for the completion
     return data?.message?.content || null;
-  } catch (error) {
+  } }catch (error) {
     console.error('Error generating Ollama chat completion:', error);
     return: null;
-  }
-}
+  } }
+} }
 
 /**
  * Checks the health of the Ollama service.
@@ -113,8 +112,8 @@ export async function checkOllamaHealth(): Promise<boolean> {
   try {
     const response = await fetch(`${ollamaUrl}/api/tags`, { signal: AbortSignal.timeout(3000) });
     return response.ok;
-  } catch (error) {
+  } }catch (error) {
     console.error('Ollama health check failed:', error);
     return false;
-  }
+  } }
 }

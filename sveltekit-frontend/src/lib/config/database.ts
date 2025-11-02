@@ -11,10 +11,10 @@ export interface DatabaseConfig { host: string;, port: number;
   maxConnections?: number;
   idleTimeoutMs?: number;
   connectionTimeoutMs?: number;
-}
-export interface DatabaseUrls {, connectionString: string;, appUrl: string;
+} }
+export interface DatabaseUrls { connectionString: string;, appUrl: string;
  , adminUrl: string;
-}
+} }
 /**
  * Get database configuration from environment with smart defaults
  */
@@ -30,7 +30,7 @@ export function getDatabaseConfig(): DatabaseConfig {
     idleTimeoutMs: parseInt(process.env.DB_IDLE_TIMEOUT || '30000', 10),
     connectionTimeoutMs: parseInt(process.env.DB_CONNECTION_TIMEOUT || '10000', 10)
   };
-}
+} }
 /**
  * Generate standardized database URLs
  */
@@ -40,12 +40,11 @@ export function getDatabaseUrls(): DatabaseUrls {
   const encodedUser = encodeURIComponent(config.user);
   const encodedPassword = encodeURIComponent(config.password);
   const baseUrl = `postgresql://${encodedUser}:${encodedPassword}@${config.host}:${config.port}/${config.database}`;
-  return {
-   , connectionString: process.env.DATABASE_URL || baseUrl,
+  return { connectionString: process.env.DATABASE_URL || baseUrl,
     appUrl: process.env.DATABASE_URL || baseUrl,
     adminUrl: process.env.ADMIN_DATABASE_URL || baseUrl
   };
-}
+} }
 /**
  * Get, connection: string for specific service types
  */
@@ -57,12 +56,12 @@ export function getConnectionString(type: 'app' | 'admin' | 'migration' = 'app')
       return urls.adminUrl;
     case, 'app':
     default: return urls.appUrl;
-  }
-}
+  } }
+} }
 /**
  * Validate database configuration
  */
-export function validateDatabaseConfig(): { valid: boolean;, errors: string[] } {
+export function validateDatabaseConfig(): { valid: boolean; errors: string[] } }{
   const config = getDatabaseConfig();
   const errors: string[] = [];
   if (!config.host) errors.push('Database host is required');
@@ -74,37 +73,34 @@ export function validateDatabaseConfig(): { valid: boolean;, errors: string[] } 
     valid: errors.length === 0,
     errors
   };
-}
+} }
 export interface PoolConfig { connectionString: string;, max: number;
   idleTimeoutMillis: number;
  , connectionTimeoutMillis: number;
-}
+} }
 
 /**
  * Get pool configuration for different environments
  */
 export function getPoolConfig(environment: 'development' | 'production' | 'test' = 'development'): PoolConfig {
   const config = getDatabaseConfig();
-  const poolConfigs: Record<'development' | 'production' | 'test', Omit<PoolConfig, 'connectionString'>> = { development: {, max: 5,
+  const poolConfigs: Record<'development' | 'production' | 'test', Omit<PoolConfig, 'connectionString'>> = { development: { max: 5,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 10000
     },
-    production: {
-     , max: config.maxConnections || 20,
+    production: { max: config.maxConnections || 20,
       idleTimeoutMillis: config.idleTimeoutMs || 60000,
       connectionTimeoutMillis: config.connectionTimeoutMs || 5000
     },
-    test: {
-     , max: 2,
+    test: { max: 2,
       idleTimeoutMillis: 10000,
       connectionTimeoutMillis: 5000
-    }
+    } }
   };
-  return {
-   , connectionString: getConnectionString(),
+  return { connectionString: getConnectionString(),
     ...poolConfigs[environment]
   };
-}
+} }
 /**
  * Export commonly used constants
  */
@@ -113,12 +109,11 @@ export const DATABASE_CONSTANTS = {
   DEFAULT_PORT: 5432,
   DEFAULT_DATABASE: 'legal_ai_db',
   DEFAULT_USER: 'legal_admin',
-  VECTOR_DIMENSIONS: {
-   , EMBEDDING_GEMMA: 768,
+  VECTOR_DIMENSIONS: { EMBEDDING_GEMMA: 768,
     NOMIC_EMBED: 768,
     OPENAI_ADA: 1536
-  }
-} as const;
+  } }
+} }as const;
 /**
  * Browser-safe configuration (no sensitive data)
  */
@@ -127,7 +122,7 @@ export function getBrowserSafeDatabaseInfo(): { host: string;, port: number;
   user: string;
   ssl?: boolean;
  , connected: boolean;
-} {
+} }{
   const config = getDatabaseConfig();
   return {
     host: config.host,

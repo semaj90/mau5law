@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
 
 /**
  * Simple test endpoint to verify API routing works
@@ -21,16 +21,17 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Upload endpoint working!',
       receivedFile: file ? {
-       , name: file.name,
+  name: file.name,
         size: file.size,
         type: file.type
-      } : null
+      } }: null
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     return json({
       success: false,
       error: err.message,
       stack: err.stack
     }, { status: 500 });
-  }
+  } }
 };
+

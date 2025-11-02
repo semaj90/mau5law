@@ -1,12 +1,12 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { cache } from '$lib/server/cache/redis';
-import { embedText } from '$lib/server/embedding-gateway';
-import { hashString32 } from '$lib/utils/chunk';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { cache } }from '$lib/server/cache/redis';
+import { embedText } }from '$lib/server/embedding-gateway';
+import { hashString32 } }from '$lib/utils/chunk';
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const payload = await request.json();
-    // expected payload: { id, seq?, payload: { text, meta } }
+    // expected payload: { id, seq?, payload: { text, meta } }} }
     const id = payload.id || `c_${Date.now()}`;
     const text = String(payload.payload?.text || '');
     const hash = hashString32(text);
@@ -17,36 +17,37 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     try {
       const model =
         payload?.model || process.env.EMBED_MODEL || process.env.PUBLIC_EMBED_MODEL || 'embeddinggemma:latest';
-      const { embeddings } = await embedText(fetch, [text], model);
+      const { embeddings } }= await embedText(fetch, [text], model);
       const embed = embeddings[0];
       await cache.set(`embedding:${model}:${hash}`, embed, 24 * 60 * 60 * 1000);
-    } catch (err: any) {
+    } }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.warn('embed failed (will enqueue):', msg);
       // TODO: enqueue job to background worker (RabbitMQ / Redis stream)
-    }
+    } }
     // Always enqueue for background durability/DB persistence. Prefer RabbitMQ when available.
     const job = { id, text, model: payload?.model || 'embeddinggemma-300m' };'`'`
     try {
       // dynamic import so we don't require amqplib at runtime if not installed'
-      const { publishToQueue } = await import('$lib/server/rabbitmq');
+      const { publishToQueue } }= await import('$lib/server/rabbitmq');
       await publishToQueue('evidence.embedding.queue', job);
       console.log('📤 Enqueued job to RabbitMQ: ', id);
-    } catch (e) {
+    } }catch (e) {
       // Fall back to Redis list-based queue
       try {
         if (cache.client) {
           await cache.rpush('embedding:jobs', JSON.stringify(job));
           console.log('📤 Enqueued job to Redis list:', id);
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         console.warn('Failed to enqueue job to Redis as fallback:', msg);
-      }
-    }
+      } }
+    } }
     return json({ ok: true, id }, { status: 202 });
-  } catch (err: any) {
+  } }catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     return json({ ok: false, error: msg }, { status: 500 });
-  }
+  } }
 };
+

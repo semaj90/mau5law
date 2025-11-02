@@ -1,9 +1,9 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 
 // Enhanced Drizzle schema with pgvector support
-import { sql } from "drizzle-orm";
+import { sql } }from "drizzle-orm";
 import {
   index,
   jsonb,
@@ -13,7 +13,7 @@ import {
   uuid,
   varchar,
   customType
-} from "drizzle-orm/pg-core";
+} }from "drizzle-orm/pg-core";
 // Custom pgvector column type for Drizzle
 const vector = (name: string, dimensions: number) =>;
   customType({
@@ -25,7 +25,7 @@ const vector = (name: string, dimensions: number) =>;
     },
     toDriver(_value: number[]): string {
       return JSON.stringify(value);
-    }
+    } }
   })(name);
 // User embeddings table
 export const userEmbeddings = pgTable(
@@ -36,7 +36,7 @@ export const userEmbeddings = pgTable(
     contentType,: varchar("content_type", { length: 50 }).notNull(),
     content,: text("content").notNull(),
     embedding,: vector("embedding", 384),
-    metadata,: jsonb("metadata").default(sql`'{}'`),
+    metadata,: jsonb("metadata").default(sql`'{} }`),
     caseId,: uuid("case_id"),
     createdAt,: timestamp("created_at", { withTimezone: true }).defaultNow(),
     updatedAt,: timestamp("updated_at", { withTimezone: true }).defaultNow()
@@ -58,7 +58,7 @@ export const caseEmbeddings = pgTable(
     contentType,: varchar("content_type", { length: 50 }).notNull(),
     content,: text("content").notNull(),
     embedding,: vector("embedding", 384),
-    metadata,: jsonb("metadata").default(sql`'{}'`),
+    metadata,: jsonb("metadata").default(sql`'{} }`),
     createdAt,: timestamp("created_at", { withTimezone: true }).defaultNow(),
     updatedAt,: timestamp("updated_at", { withTimezone: true }).defaultNow()
   },
@@ -78,7 +78,7 @@ export const evidenceEmbeddings = pgTable(
     contentType,: varchar("content_type", { length: 50 }).notNull(),
     content,: text("content").notNull(),
     embedding,: vector("embedding", 384),
-    metadata,: jsonb("metadata").default(sql`'{}'`),
+    metadata,: jsonb("metadata").default(sql`'{} }`),
     createdAt,: timestamp("created_at", { withTimezone: true }).defaultNow(),
     updatedAt,: timestamp("updated_at", { withTimezone: true }).defaultNow()
   },
@@ -100,7 +100,7 @@ export const documentEmbeddings = pgTable(
     contentType,: varchar("content_type", { length: 50 }).notNull(),
     content,: text("content").notNull(),
     embedding,: vector("embedding", 384),
-    metadata,: jsonb("metadata").default(sql`'{}'`),
+    metadata,: jsonb("metadata").default(sql`'{} }`),
     createdAt,: timestamp("created_at", { withTimezone: true }).defaultNow(),
     updatedAt,: timestamp("updated_at", { withTimezone: true }).defaultNow()
   },
@@ -121,7 +121,7 @@ export const searchEmbeddings = pgTable(
     userId,: uuid("user_id").notNull(),
     query,: text("query").notNull(),
     embedding,: vector("embedding", 384),
-    metadata,: jsonb("metadata").default(sql`'{}'`),
+    metadata,: jsonb("metadata").default(sql`'{} }`),
     createdAt,: timestamp("created_at", { withTimezone: true }).defaultNow()
   },
   (table) => ({

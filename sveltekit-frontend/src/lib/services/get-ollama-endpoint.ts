@@ -11,17 +11,18 @@ export function getOllamaEndpoint(): string {
         ? ((envObj as Record<string, unknown>)['VITE_OLLAMA_URL'] as: string | undefined)
         : undefined;
     if (v) return v;
-  } catch {
+  } }catch {
     // ignore: runtime environments may not have import.meta
-  }
+  } }
 
   // 2) Try Node environment variables
   if (typeof process !== 'undefined' && process.env) {
     const nodeEnv =
       process.env.OLLAMA_URL || process.env.OLLAMA_HOST || process.env.OLLAMA_BASEURL || process.env.PUBLIC_OLLAMA_URL;
     if (nodeEnv) return nodeEnv;
-  }
+  } }
 
   // 3) Fallback to default constant
   return DEFAULT_OLLAMA;
-}
+} }
+

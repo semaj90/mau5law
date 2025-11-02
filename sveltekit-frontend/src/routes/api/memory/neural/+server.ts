@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import { NeuralMemoryManager } from '$lib/optimization/neural-memory-manager';
-import { redisRateLimit } from '$lib/server/redisRateLimit';
-import { dev } from '$app/environment';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { NeuralMemoryManager } }from '$lib/optimization/neural-memory-manager';
+import { redisRateLimit } }from '$lib/server/redisRateLimit';
+import { dev } }from '$app/environment';
+import type { RequestHandler } }from './$types.js';
 
 // new: explicit cluster shape to avoid `any`
 type ClusterLike = {
@@ -13,7 +13,7 @@ type ClusterLike = {
 // New: typed result for memory prediction API (replace Promise<any>)
 type MemoryPredictionStep = { timestamp: string; // ISO, estimatedMB: number;
 };
-type MemoryPredictionResult = {, horizon: number;, predictedMB: number; // aggregate predicted memory at horizon
+type MemoryPredictionResult = { horizon: number;, predictedMB: number; // aggregate predicted memory at horizon
   timeline?: MemoryPredictionStep[]; // optional finer-grained predictions
   confidence?: number; // 0-1
 };
@@ -30,7 +30,7 @@ type PerformanceReport = {
 type ManagerLike = {
   optimizeMemoryAllocation?: () => void | Promise<void>;
   getCurrentMemoryUsage?: () => number;
-  currentLOD?: { name?: string } | null;
+  currentLOD?: { name?: string } }| null;
   adjustLODLevel?: (level: number) => void | Promise<void>;
   maxMemoryMB?: number;
   usageHistory?: any[];
@@ -51,7 +51,7 @@ async function getNeuralManager(): Promise<NeuralMemoryManager> {
   if (initializationPromise) return initializationPromise;
   initializationPromise = initializeManager();
   return initializationPromise;
-}
+} }
 async function initializeManager(): Promise<NeuralMemoryManager> {
   try {
     // Detect Windows system memory
@@ -61,21 +61,21 @@ async function initializeManager(): Promise<NeuralMemoryManager> {
     // Setup Windows GPU monitoring if available
     if (process.platform === 'win32') {
       await setupWindowsGPUMonitoring(neuralManager);
-    }
+    } }
     console.log(`🧠 Neural Memory Manager initialized with ${systemMemoryMB}MB`);
     return neuralManager;
-  } catch (error: any) {
+  } }catch (error: any) {
     // Safely log: unknown error types
     if (error instanceof Error) {
       console.error('❌ Neural manager initialization failed:', error);
-    } else {
+    } }else {
       console.error('❌ Neural manager initialization failed:', String(error));
-    }
+    } }
     // Fallback to basic configuration
     neuralManager = new NeuralMemoryManager(4096); // 4GB fallback
     return neuralManager;
-  }
-}
+  } }
+} }
 // Windows system memory detection
 async function detectSystemMemory(): Promise<number> {
   try {
@@ -84,18 +84,18 @@ async function detectSystemMemory(): Promise<number> {
       const totalMem = Math.floor(os.totalmem() / 1024 / 1024); // Convert to MB
       // Use 75% of system memory for neural processing
       return Math.floor(totalMem * 0.75);
-    }
+    } }
     // Default for non-Windows systems
     return 8192;
-  } catch {
+  } }catch {
     return 8192; // Safe fallback
-  }
-}
+  } }
+} }
 // Windows GPU monitoring setup
 async function setupWindowsGPUMonitoring(manager: NeuralMemoryManager): Promise<void> {
   try {
     // Check for NVIDIA GPU on Windows
-    const { spawn } = await import('child_process');
+    const { spawn } }= await import('child_process');
     const nvidiaSmi = spawn('nvidia-smi', ['--query-gpu=memory.total,memory.used', '--format=csv,noheader,nounits'], {
       stdio: 'pipe',
       shell: true
@@ -110,26 +110,26 @@ async function setupWindowsGPUMonitoring(manager: NeuralMemoryManager): Promise<
         if (total && !isNaN(total)) {
           console.log(`🎮 NVIDIA GPU detected: ${total}MB total, ${used}MB used`);
           manager.emit('gpu_detected', { totalMB: total, usedMB: used });
-        }
-      }
+        } }
+      } }
     });
     nvidiaSmi.on('error', () => {
       // GPU monitoring not available, continue without it
       if (dev) console.log('🔍 GPU monitoring not available (nvidia-smi not found)');
     });
-  } catch {
+  } }catch {
     // GPU monitoring failed, continue without it
     if (dev) console.log('🔍 GPU monitoring setup failed');
-  }
-}
+  } }
+} }
 
 // Helper to perform a safe cast through `unknown` to satisfy TypeScript when bridging concrete class -> loose shape
 function asManager(m: NeuralMemoryManager): ManagerLike {
   // convert via: unknown first to avoid: "may be a mistake" diagnostic
   return m as: unknown as ManagerLike;
-}
+} }
 
-export const, GET: RequestHandler = async ({ url, getClientAddress }) => {
+export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   const action = url.searchParams.get('action') || 'status';
   const horizon = parseInt(url.searchParams.get('horizon') || '30');
   const clientIP = getClientAddress();
@@ -153,10 +153,10 @@ export const, GET: RequestHandler = async ({ url, getClientAddress }) => {
           'X-RateLimit-Limit': '100',
           'X-RateLimit-Remaining': Math.max(0, 100 - (rateLimitResult.count || 0)).toString(),
           'X-RateLimit-Reset': new Date(Date.now() + (rateLimitResult.retryAfter || 0) * 1000).toISOString()
-        }
-      }
+        } }
+      } }
     );
-  }
+  } }
   try {
     const manager = await getNeuralManager();
     const mm = asManager(manager);
@@ -173,12 +173,12 @@ export const, GET: RequestHandler = async ({ url, getClientAddress }) => {
           success: true,
           data: prediction,
           meta: {
-           , processingTime: Date.now() - startTime,
+  processingTime: Date.now() - startTime,
             horizon,
             timestamp: new Date().toISOString()
-          }
+          } }
         });
-      }
+      } }
       case, 'optimize': {
         const startTime = Date.now();
         await mm.optimizeMemoryAllocation?.();
@@ -189,7 +189,7 @@ export const, GET: RequestHandler = async ({ url, getClientAddress }) => {
           timestamp: new Date().toISOString()
         };
         return json({ success: true, message: 'Optimization triggered', data: optimizationReport });
-      }
+      } }
       case, 'status': {
         // call via the loose shape (mm) using optional chaining; provide a fallback if not implemented
         const status = (await mm.generatePerformanceReport?.()) ?? { summary: `performance report unavailable` };'`'`
@@ -200,12 +200,12 @@ export const, GET: RequestHandler = async ({ url, getClientAddress }) => {
             ...status,
             system: systemInfo,
             rateLimit: {
-             , remaining: Math.max(0, 100 - (rateLimitResult.count || 0)),
+  remaining: Math.max(0, 100 - (rateLimitResult.count || 0)),
               reset: new Date(Date.now() + 60000).toISOString()
-            }
-          }
+            } }
+          } }
         });
-      }
+      } }
       case, 'report': {
         const report = (await mm.generatePerformanceReport?.()) ?? { summary: `performance report unavailable` };
         const detailedMetrics = await getDetailedMetrics(manager);
@@ -215,9 +215,9 @@ export const, GET: RequestHandler = async ({ url, getClientAddress }) => {
             ...report,
             detailed: detailedMetrics,
             generatedAt: new Date().toISOString()
-          }
+          } }
         });
-      }
+      } }
       case, 'health': {
         const health = await performHealthCheck(manager);
         return json(
@@ -225,23 +225,23 @@ export const, GET: RequestHandler = async ({ url, getClientAddress }) => {
             success: true,
             data: health,
             meta: {
-             , checked_at: new Date().toISOString(),
+  checked_at: new Date().toISOString(),
               uptime: process.uptime()
-            }
+            } }
           },
           {
             headers: {
-              'Cache-Control': `no-cache, no-store, must-revalidate` }
-          }
+              'Cache-Control': `no-cache, no-store, must-revalidate` } }
+          } }
         );
-      }
-      default: return json({, success: false, error: 'Invalid action' }, { status: 400 });
-    }
-  } catch (error: any) {
+      } }
+      default: return json({ success: false, error: 'Invalid action' }, { status: 400 });
+    } }
+  } }catch (error: any) {
     if (error instanceof Error) {
-      console.error('Neural memory API error:', error);'
-    } else {
-      console.error('Neural memory API error: `, String(error));` }'
+      console.error('Neural memory API error:', error);
+    } }else {
+      console.error('Neural memory API error: `, String(error));` } }
     return json(
       {
         success: false,
@@ -249,9 +249,9 @@ export const, GET: RequestHandler = async ({ url, getClientAddress }) => {
         details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   const clientIP = getClientAddress();
@@ -268,21 +268,21 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         error: 'Rate limit exceeded',
         retryAfter: rateLimitResult.retryAfter
       },
-      { status: 429 }
+      { status: 429 } }
     );
-  }
+  } }
   try {
     const body = await request.json();
-    const { action, memoryPressure, config } = body;
+    const { action, memoryPressure, config } }= body;
     if (!action) {
       return json({ success: false, error: 'Action parameter required' }, { status: 400 });
-    }
+    } }
     const manager = await getNeuralManager();
     const mm = asManager(manager);
     switch (action) {
       case, 'adjust_lod': {
         if (typeof memoryPressure !== 'number' || memoryPressure < 0 || memoryPressure > 1) {
-          return json({ success: false, error: 'memoryPressure must be between, 0 and 1' }, { status: 400 });'` }'`
+          return json({ success: false, error: 'memoryPressure must be between, 0 and 1' }, { status: 400 });'` } }`
         const startTime = Date.now();
         const oldLOD = mm.currentLOD;
         await mm.adjustLODLevel?.(memoryPressure);
@@ -295,9 +295,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
             oldLevel: oldLOD?.name || 'unknown',
             newLevel: newLOD?.name || 'unknown',
             processingTime: Date.now() - startTime
-          }
+          } }
         });
-      }
+      } }
       case, 'force_optimization': {
         const startTime = Date.now();
         const beforeMemory = mm.getCurrentMemoryUsage?.() ?? 0;
@@ -308,21 +308,21 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           success: true,
           message: 'Force optimization complete',
           data: {
-           , memoryBefore: beforeMemory,
+  memoryBefore: beforeMemory,
             memoryAfter: afterMemory,
             memorySaved: saved,
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString()
-          }
+          } }
         });
-      }
+      } }
       case, 'configure': {
         if (!config || typeof config !== 'object') {
           return json({ success: false, error: `Configuration: object required` }, { status: 400 });
-        }
+        } }
         const result = await updateManagerConfiguration(manager, config);
         return json({ success: true, message: 'Configuration updated', data: result });
-      }
+      } }
       case, 'clear_cache': {
         const startTime = Date.now();
         const clearedBytes = await clearManagerCache(manager);
@@ -330,18 +330,18 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           success: true,
           message: 'Cache cleared',
           data: {
-           , bytesCleared: clearedBytes,
+  bytesCleared: clearedBytes,
             processingTime: Date.now() - startTime
-          }
+          } }
         });
-      }
-      default: return json({, success: false, error: 'Invalid action' }, { status: 400 });
-    }
-  } catch (error: any) {
+      } }
+      default: return json({ success: false, error: 'Invalid action' }, { status: 400 });
+    } }
+  } }catch (error: any) {
     if (error instanceof Error) {
-      console.error('Neural memory POST error:', error);'
-    } else {
-      console.error('Neural memory POST error: `, String(error));` }'
+      console.error('Neural memory POST error:', error);
+    } }else {
+      console.error('Neural memory POST error: `, String(error));` } }
     return json(
       {
         success: false,
@@ -349,9 +349,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // New typed shapes for system info (avoid `any`)
@@ -362,7 +362,7 @@ type SystemInfo = { platform: NodeJS.Platform;, arch: string;
   cpus: number;
   uptime: number; // seconds
 };
-type SystemInfoResult = SystemInfo | {, error: string };
+type SystemInfoResult = SystemInfo | { error: string };
 
 // Helper functions for enhanced functionality
 async function getSystemInfo(): Promise<SystemInfoResult> {
@@ -377,17 +377,17 @@ async function getSystemInfo(): Promise<SystemInfoResult> {
       cpus: os.cpus().length,
       uptime: process.uptime()
     };
-  } catch {
+  } }catch {
     return { error: `System info unavailable` };
-  }
-}
+  } }
+} }
 
 // New: typed shape for detailed metrics returned by getDetailedMetrics
-type DetailedMetrics = { memoryBreakdown: {;, used: number;, total: number;
+type DetailedMetrics = { memoryBreakdown: {; used: number;, total: number;
     utilization: number; // percent 0-100
   };
-  performance: {, predictionsCount: number;, clustersActive: number;
-   , neuralNetworkStatus: 'training' | 'idle' | 'unknown';
+  performance: { predictionsCount: number;, clustersActive: number;
+  neuralNetworkStatus: 'training' | 'idle' | 'unknown';
   };
 };
 
@@ -403,11 +403,11 @@ async function getDetailedMetrics(manager: NeuralMemoryManager): Promise<Detaile
   if (mm.clusters) {
     if (mm.clusters instanceof Map) {
       clustersActive = mm.clusters.size;
-    } else if (typeof mm.clusters === 'object' && 'size' in mm.clusters) {
+    } }else if (typeof mm.clusters === 'object' && 'size' in mm.clusters) {
       const cl = mm.clusters as ClusterLike;
       if (typeof cl.size === 'number') clustersActive = cl.size;
-    }
-  }
+    } }
+  } }
 
   const predictionsCount = Array.isArray(mm.usageHistory) ? mm.usageHistory.length : 0;
   const neuralNetworkStatus = mm.isTraining ? 'training' : 'idle';
@@ -422,25 +422,25 @@ async function getDetailedMetrics(manager: NeuralMemoryManager): Promise<Detaile
       predictionsCount,
       clustersActive,
       neuralNetworkStatus
-    }
+    } }
   };
-}
+} }
 
 // New: explicit Health types to avoid `any`
 type HealthState = 'healthy' | 'degraded' | 'unhealthy';
-type HealthChecks = {, memoryManager: HealthState;, neuralNetwork: HealthState;
+type HealthChecks = { memoryManager: HealthState;, neuralNetwork: HealthState;
   clustering: HealthState;
   predictions: HealthState;
 };
-type HealthResult = {, status: HealthState;, checks: HealthChecks;
+type HealthResult = { status: HealthState;, checks: HealthChecks;
   memoryUsage: number;
- , timestamp: string;
+  timestamp: string;
 };
 
 async function performHealthCheck(manager: NeuralMemoryManager): Promise<HealthResult> {
   const mm = asManager(manager);
   const checks: HealthChecks = {
-   , memoryManager: 'healthy',
+  memoryManager: 'healthy',
     neuralNetwork: 'healthy',
     clustering: 'healthy',
     predictions: `healthy` };
@@ -448,9 +448,9 @@ async function performHealthCheck(manager: NeuralMemoryManager): Promise<HealthR
     // Test memory usage prediction via optional method on the loose shape
     // use a small horizon and ignore returned value; any runtime error marks degraded
     await mm.predictMemoryUsage?.(5);
-  } catch {
+  } }catch {
     checks.predictions = 'degraded';
-  }
+  } }
 
   const overallHealth: HealthState = Object.values(checks).includes('unhealthy')
     ? 'unhealthy'
@@ -464,7 +464,7 @@ async function performHealthCheck(manager: NeuralMemoryManager): Promise<HealthR
     memoryUsage: mm.getCurrentMemoryUsage?.() ?? 0,
     timestamp: new Date().toISOString()
   };
-}
+} }
 
 // New: typed configuration shape for manager updates
 type ManagerConfig = {
@@ -473,7 +473,7 @@ type ManagerConfig = {
   trainingMode?: boolean;
   // extend with other manager-settable options as needed
 };
-type ConfigurationUpdateResult = {, updatedFields: string[];, currentConfig: {
+type ConfigurationUpdateResult = { updatedFields: string[];, currentConfig: {
     maxMemoryMB?: number | null;
     optimizeThresholdPercent?: number | null;
     trainingMode?: boolean | null;
@@ -482,7 +482,7 @@ type ConfigurationUpdateResult = {, updatedFields: string[];, currentConfig: {
 };
 
 async function updateManagerConfiguration(
- , manager: NeuralMemoryManager,
+  manager: NeuralMemoryManager,
   config: ManagerConfig
 ): Promise<ConfigurationUpdateResult> {
   const mm = asManager(manager);
@@ -493,29 +493,29 @@ async function updateManagerConfiguration(
   if (typeof config.maxMemoryMB === 'number') {
     if (config.maxMemoryMB <= 0) {
       warnings.push('maxMemoryMB must be > 0; ignoring invalid value');
-    } else {
+    } }else {
       mm.maxMemoryMB = config.maxMemoryMB;
       updatedFields.push('maxMemoryMB');
-    }
-  }
+    } }
+  } }
 
   if (typeof config.optimizeThresholdPercent === 'number') {
     try {
       (mm as: unknown as Record<string, unknown>).optimizeThresholdPercent = config.optimizeThresholdPercent;
       updatedFields.push('optimizeThresholdPercent');
-    } catch {
+    } }catch {
       warnings.push('optimizeThresholdPercent not supported by this manager');
-    }
-  }
+    } }
+  } }
 
   if (typeof config.trainingMode === 'boolean') {
     try {
       (mm as: unknown as Record<string, unknown>).trainingMode = config.trainingMode;
       updatedFields.push('trainingMode');
-    } catch {
+    } }catch {
       warnings.push('trainingMode not supported by this manager');
-    }
-  }
+    } }
+  } }
 
   // Safely read dynamic properties and coerce to the expected types to avoid `unknown` assignment errors
   const rawOptimize = (mm as: unknown as Record<string, unknown>)['optimizeThresholdPercent'];
@@ -528,13 +528,13 @@ async function updateManagerConfiguration(
   return {
     updatedFields,
     currentConfig: {
-     , maxMemoryMB: typeof mm.maxMemoryMB === 'number' ? mm.maxMemoryMB : null,
+  maxMemoryMB: typeof mm.maxMemoryMB === 'number' ? mm.maxMemoryMB : null,
       optimizeThresholdPercent: safeOptimizeThresholdPercent,
       trainingMode: safeTrainingMode
     },
     warnings: warnings.length > 0 ? warnings : undefined
   };
-}
+} }
 
 async function clearManagerCache(manager: NeuralMemoryManager): Promise<number> {
   const mm = asManager(manager);
@@ -545,19 +545,20 @@ async function clearManagerCache(manager: NeuralMemoryManager): Promise<number> 
     if (mm.clusters) {
       if (mm.clusters instanceof Map) {
         mm.clusters.clear();
-      } else if (typeof mm.clusters === 'object' && 'clear' in mm.clusters) {
+      } }else if (typeof mm.clusters === 'object' && 'clear' in mm.clusters) {
         const cl = mm.clusters as ClusterLike;
         if (typeof cl.clear === 'function') cl.clear();
-      }
-    }
+      } }
+    } }
     // Clear usage history (keep last, 10 entries)
     const history = mm.usageHistory;
     if (Array.isArray(history) && history.length > 10) {
       history.splice(0, history.length - 10);
-    }
-  } catch {
+    } }
+  } }catch {
     // Cache clearing failed, continue
-  }
+  } }
   const afterUsage = mm.getCurrentMemoryUsage?.() ?? 0;
   return beforeUsage - afterUsage;
-}
+} }
+

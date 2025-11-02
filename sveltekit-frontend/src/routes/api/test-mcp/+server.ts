@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     // Try to import MCP helpers to test for issues
-    const { generateMCPPrompt, commonMCPQueries } = await import('$lib/utils/mcp-helpers');
+    const { generateMCPPrompt, commonMCPQueries } }= await import('$lib/utils/mcp-helpers');
     // Test basic MCP query generation
     const testQuery = commonMCPQueries.analyzeSvelteKit();
     const testPrompt = generateMCPPrompt(testQuery);
@@ -13,7 +13,7 @@ export const GET: RequestHandler = async () => {
       testPrompt,
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         success: false,
@@ -21,7 +21,8 @@ export const GET: RequestHandler = async () => {
         message: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

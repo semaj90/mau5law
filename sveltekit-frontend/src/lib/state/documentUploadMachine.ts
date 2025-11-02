@@ -1,13 +1,13 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 import crypto from 'crypto';
 /**
  * XState State Machine for Document Upload Workflow
  * Handles file upload, validation, processing, and search indexing
  */
-import { createMachine, assign, fromPromise } from 'xstate';
-// TODO: Fix import - // Orphaned;, content: import { import, type { EvidenceProcessingContext } from './evidenceProcessingMachine.js'
+import { createMachine, assign, fromPromise } }from 'xstate';
+// TODO: Fix import - // Orphaned; content: import { import, type { EvidenceProcessingContext } }from './evidenceProcessingMachine.js'
 // Types for document upload
 export interface DocumentUploadContext {
   // File information
@@ -39,25 +39,25 @@ export interface DocumentUploadContext {
   error?: string;
   retryCount: number;
   maxRetries: number;
-}
+} }
 export type DocumentUploadEvent =
-  | {, type: 'SELECT_FILE';, file: File;
+  | { type: 'SELECT_FILE';, file: File;
       caseId: string;
       userId: string;
       title: string;
       description?: string;
       tags?: string[];
-    }
-  | { type: 'VALIDATE_FILE' }
-  | { type: 'UPLOAD_FILE' }
-  | { type: 'RETRY_UPLOAD' }
-  | { type: 'CANCEL_UPLOAD' }
-  | { type: 'START_PROCESSING' }
-  | { type: 'PROCESSING_UPDATE'; progress: number; stage: string }
-  | { type: 'PROCESSING_COMPLETE' }
-  | { type: 'PROCESSING_FAILED'; error: string }
-  | { type: 'FORCE_COMPLETE' }
-  | {, type: 'RESET' };
+    } }
+  | { type: 'VALIDATE_FILE' } }
+  | { type: 'UPLOAD_FILE' } }
+  | { type: 'RETRY_UPLOAD' } }
+  | { type: 'CANCEL_UPLOAD' } }
+  | { type: 'START_PROCESSING' } }
+  | { type: 'PROCESSING_UPDATE'; progress: number; stage: string } }
+  | { type: 'PROCESSING_COMPLETE' } }
+  | { type: 'PROCESSING_FAILED'; error: string } }
+  | { type: 'FORCE_COMPLETE' } }
+  | { type: 'RESET' };
 // Configuration constants
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ALLOWED_MIME_TYPES = [
@@ -78,31 +78,31 @@ const validateFileService = fromPromise(async ({ input }: { input: DocumentUploa
   if (!input.file) {
     errors.push('No file selected');
     return { valid: false, errors };
-  }
+  } }
   // Check file size
   if (input.file.size > MAX_FILE_SIZE) {
     errors.push(
       `File size (${Math.round(input.file.size / 1024 / 1024)}MB) exceeds maximum allowed size (${MAX_FILE_SIZE / 1024 / 1024}MB)`
     );
-  }
+  } }
   // Check MIME type
   if (!ALLOWED_MIME_TYPES.includes(input.file.type)) {
-    errors.push(`File type: '${input.file.type}' is not supported. Allowed, types: ${ALLOWED_MIME_TYPES.join(', ')}`);
-  }
+    errors.push(`File type: '${input.file.type} } is not supported. Allowed, types: ${ALLOWED_MIME_TYPES.join(', ')}`);
+  } }
   // Check filename
   if (!input.filename || input.filename.trim().length === 0) {
     errors.push('Filename is required');
-  }
+  } }
   // Check case ID and user ID
   if (!input.caseId || !input.userId) {
     errors.push('Case ID and User ID are required');
-  }
+  } }
   // Additional security checks
   const suspiciousExtensions = ['.exe', '.bat', '.cmd', '.scr', '.com', '.pif'];
   const hassuspicious = suspiciousExtensions.some((ext: string) => input.filename.toLowerCase().endsWith(ext));
   if (hassuspicious) {
     errors.push('File type appears to be executable and is not allowed');
-  }
+  } }
   return {
     valid: errors.length === 0,
     errors
@@ -111,7 +111,7 @@ const validateFileService = fromPromise(async ({ input }: { input: DocumentUploa
 const calculateFileHashService = fromPromise(async ({ input }: { input: DocumentUploadContext }) => {
   if (!input.file) {
     throw new Error('No file to hash');
-  }
+  } }
   const buffer = await input.file.arrayBuffer();
 
   // Use SubtleCrypto from browser or Node (crypto.webcrypto.subtle)
@@ -121,7 +121,7 @@ const calculateFileHashService = fromPromise(async ({ input }: { input: Document
 
   if (!subtle) {
     throw new Error('SubtleCrypto is not available in this environment');
-  }
+  } }
 
   const hashBuffer = await subtle.digest('SHA-256', buffer);
   const hashArray = Array.from(new Uint8Array(hashBuffer)); // <-- fixed: added, closing, parenthesis
@@ -131,7 +131,7 @@ const calculateFileHashService = fromPromise(async ({ input }: { input: Document
 const uploadFileService = fromPromise(async ({ input }: { input: DocumentUploadContext }) => {
   if (!input.file) {
     throw new Error('No file to upload');
-  }
+  } }
   // Simulate file upload with progress (replace with actual upload logic)
   const formData = new FormData();
   formData.append('file', input.file);
@@ -156,8 +156,8 @@ const uploadFileService = fromPromise(async ({ input }: { input: DocumentUploadC
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Upload failed: ${response.status} ${errorText}`);
-  }
+    throw new Error(`Upload failed: ${response.status} }${errorText}`);
+  } }
 
   const result = (await response.json()) as UploadResult;
 
@@ -171,30 +171,29 @@ const uploadFileService = fromPromise(async ({ input }: { input: DocumentUploadC
 const extractTextService = fromPromise(async ({ input }: { input: DocumentUploadContext }) => {
   if (!input.file) {
     throw new Error('No file to extract text from');
-  }
+  } }
   // Simple text extraction based on file type
   let extractedText = '';
   if (input.file.type === 'text/plain') {
     extractedText = await input.file.text();
-  } else if (input.file.type === 'application/pdf') {
+  } }else if (input.file.type === 'application/pdf') {
     // For PDF files, you would use a library like pdf-parse
     // For now, we'll simulate this'
-    extractedText = `[Extracted PDF content from ${input.filename}]`;
-  } else if (input.file.type.startsWith('image/')) {
+    extractedText = `[Extracted PDF content from ${input.filename} }`;
+  } }else if (input.file.type.startsWith('image/')) {
     // For images, you would use OCR
-    extractedText = `[OCR extracted text from ${input.filename}]`;
-  } else {
+    extractedText = `[OCR extracted text from ${input.filename} }`;
+  } }else {
     // For other documents, use appropriate parsers
-    extractedText = `[Extracted content from ${input.filename}]`;
-  }
+    extractedText = `[Extracted content from ${input.filename} }`;
+  } }
   return extractedText;
 });
 // Main state machine
 export const documentUploadMachine = createMachine({
   id: 'documentUpload',
   initial: 'idle',
-  context: {
-   , filename: '',
+  context: { filename: '',
     fileSize: 0,
     mimeType: '',
     caseId: '',
@@ -207,9 +206,8 @@ export const documentUploadMachine = createMachine({
     retryCount: 0,
     maxRetries: 3
   },
-  states: {, idle: {, on: {, SELECT_FILE: {, target: 'fileSelected',
-          actions: assign({
-           , file: ({ event }) => event.file,
+  states: { idle: { on: { SELECT_FILE: { target: 'fileSelected',
+          actions: assign({ file: ({ event }) => event.file,
             filename: ({ event }) => event.file.name,
             fileSize: ({ event }) => event.file.size,
             mimeType: ({ event }) => event.file.type,
@@ -223,40 +221,33 @@ export const documentUploadMachine = createMachine({
             validationErrors: [],
             error: undefined
           })
-        }
-      }
+        } }
+      } }
     },
-    fileSelected: {, always: {, target: `validating` }
+    fileSelected: { always: { target: `validating` } }
     },
-    validating: {, invoke: {, src: validateFileService, // <-- fixed: use comma, not, semicolon; input: ({ context }) => context,
+    validating: { invoke: { src: validateFileService, // <-- fixed: use comma, not, semicolon; input: ({ context }) => context,
         onDone: [
-          {,
-            target: 'calculatingHash',
+          { target: 'calculatingHash',
             guard: ({ event }) => event.output.valid,
-            actions: assign({
-             , validationErrors: []
+            actions: assign({ validationErrors: []
             })
           },
           {
             target: 'validationError',
-            actions: assign({
-             , validationErrors: ({ event }) => event.output.errors
+            actions: assign({ validationErrors: ({ event }) => event.output.errors
             })
           },
         ],
-        onError: {
-         , target: 'validationError',
-          actions: assign({
-           , error: ({ event }) => `Validation failed: ${event.error}`,
+        onError: { target: 'validationError',
+          actions: assign({ error: ({ event }) => `Validation failed: ${event.error}`,
             validationErrors: ({ event }) => [`Validation error: ${event.error}`]
           })
-        }
-      }
+        } }
+      } }
     },
-    validationError: {, on: {, SELECT_FILE: {
-         , target: 'fileSelected',
-          actions: assign({
-           , file: ({ event }) => event.file,
+    validationError: { on: { SELECT_FILE: { target: 'fileSelected',
+          actions: assign({ file: ({ event }) => event.file,
             filename: ({ event }) => event.file.name,
             fileSize: ({ event }) => event.file.size,
             mimeType: ({ event }) => event.file.type,
@@ -267,42 +258,32 @@ export const documentUploadMachine = createMachine({
             error: undefined
           })
         },
-        RESET: `idle` }
+        RESET: `idle` } }
     },
-    calculatingHash: {, invoke: {, src: calculateFileHashService, // <-- fixed: comma;, input: ({ context }) => context,
-        onDone: {
-         , target: 'extractingText',
-          actions: assign({
-           , fileHash: ({ event }) => event.output
+    calculatingHash: { invoke: { src: calculateFileHashService, // <-- fixed: comma; input: ({ context }) => context,
+        onDone: { target: 'extractingText',
+          actions: assign({ fileHash: ({ event }) => event.output
           })
         },
-        onError: {
-         , target: 'uploadReady', // Continue without hash
-          actions: assign({
-           , error: ({ event }) => `Hash calculation failed: ${event.error}` })
-        }
-      }
+        onError: { target: 'uploadReady', // Continue without hash
+          actions: assign({ error: ({ event }) => `Hash calculation failed: ${event.error}` })
+        } }
+      } }
     },
-    extractingText: {, invoke: {, src: extractTextService, // <-- fixed: comma;, input: ({ context }) => context,
-        onDone: {
-         , target: 'uploadReady',
-          actions: assign({
-           , extractedText: ({ event }) => event.output
+    extractingText: { invoke: { src: extractTextService, // <-- fixed: comma; input: ({ context }) => context,
+        onDone: { target: 'uploadReady',
+          actions: assign({ extractedText: ({ event }) => event.output
           })
         },
-        onError: {
-         , target: 'uploadReady', // Continue without extracted text
-          actions: assign({
-           , error: ({ event }) => `Text extraction failed: ${event.error}` })
-        }
-      }
+        onError: { target: 'uploadReady', // Continue without extracted text
+          actions: assign({ error: ({ event }) => `Text extraction failed: ${event.error}` })
+        } }
+      } }
     },
-    uploadReady: {, on: {, UPLOAD_FILE: 'uploading',
+    uploadReady: { on: { UPLOAD_FILE: 'uploading',
         CANCEL_UPLOAD: 'cancelled',
-        SELECT_FILE: {
-         , target: 'fileSelected',
-          actions: assign({
-           , file: ({ event }) => event.file,
+        SELECT_FILE: { target: 'fileSelected',
+          actions: assign({ file: ({ event }) => event.file,
             filename: ({ event }) => event.file.name,
             fileSize: ({ event }) => event.file.size,
             mimeType: ({ event }) => event.file.type,
@@ -313,34 +294,27 @@ export const documentUploadMachine = createMachine({
             error: undefined
           })
         },
-        RESET: `idle` }
+        RESET: `idle` } }
     },
-    uploading: {, invoke: {, src: uploadFileService, // <-- fixed: comma;, input: ({ context }) => context,
-        onDone: {
-         , target: 'uploaded',
-          actions: assign({
-           , documentId: ({ event }) => event.output.documentId,
+    uploading: { invoke: { src: uploadFileService, // <-- fixed: comma; input: ({ context }) => context,
+        onDone: { target: 'uploaded',
+          actions: assign({ documentId: ({ event }) => event.output.documentId,
             evidenceId: ({ event }) => event.output.evidenceId,
             extractedText: ({ event, context }) => event.output.extractedText || context.extractedText,
             uploadEndTime: Date.now(),
             uploadProgress: 100
           })
         },
-        onError: {
-         , target: 'uploadError',
-          actions: assign({
-           , error: ({ event }) => `Upload failed: ${event.error}' })'' }'`
+        onError: { target: 'uploadError',
+          actions: assign({ error: ({ event }) => `Upload failed: ${event.error} } })'' } }`
       },
-      on: {
-       , CANCEL_UPLOAD: 'cancelled'
-      }
+      on: { CANCEL_UPLOAD: 'cancelled'
+      } }
     },
-    uploadError: {, on: {, RETRY_UPLOAD: [
-          {,
-            target: 'uploading',
+    uploadError: { on: { RETRY_UPLOAD: [
+          { target: 'uploading',
             guard: ({ context }) => context.retryCount < context.maxRetries,
-            actions: assign({
-             , retryCount: ({ context }) => context.retryCount + 1,
+            actions: assign({ retryCount: ({ context }) => context.retryCount + 1,
               error: undefined
             })
           },
@@ -350,15 +324,14 @@ export const documentUploadMachine = createMachine({
         ],
         CANCEL_UPLOAD: 'cancelled',
         RESET: 'idle'
-      }
+      } }
     },
-    uploaded: {, always: {, target: 'startingProcessing',
-        actions: assign({
-         , processingStartTime: Date.now()
+    uploaded: { always: { target: 'startingProcessing',
+        actions: assign({ processingStartTime: Date.now()
         })
-      }
+      } }
     },
-    startingProcessing: {, always: {, target: 'processing',
+    startingProcessing: { always: { target: 'processing',
         actions: assign({
           // Initialize evidence processing state
          , evidenceProcessingState: ({ context }) => ({
@@ -367,103 +340,84 @@ export const documentUploadMachine = createMachine({
             userId: context.userId,
             filename: context.filename,
             content: context.extractedText || '',
-            metadata: {
-             , title: context.title,
+            metadata: { title: context.title,
               description: context.description,
               tags: context.tags,
               originalFilename: context.filename,
               fileSize: context.fileSize,
               mimeType: context.mimeType,
               fileHash: context.fileHash
-            }
+            } }
           })
         })
-      }
+      } }
     },
     processing: {
       // This state would spawn the evidence processing machine as a child
       // For now, we'll simulate the processing steps'
       initial: 'analyzing',
-      states: {, analyzing: {, after: {
-           , 2000: 'embedding'
+      states: { analyzing: { after: { 2000: 'embedding'
           },
-          entry: assign({
-           , uploadProgress: 25
+          entry: assign({ uploadProgress: 25
           })
         },
         embedding: {
-          after: {
-           , 3000: 'indexing'
+          after: { 3000: 'indexing'
           },
-          entry: assign({
-           , uploadProgress: 50
+          entry: assign({ uploadProgress: 50
           })
         },
         indexing: {
-          after: {
-           , 2000: 'caching'
+          after: { 2000: 'caching'
           },
-          entry: assign({
-           , uploadProgress: 75
+          entry: assign({ uploadProgress: 75
           })
         },
         caching: {
-          after: {
-           , 1000: 'done` },'`
-          entry: assign({
-           , uploadProgress: 90
+          after: { 1000: 'done` },'`
+          entry: assign({ uploadProgress: 90
           })
         },
-        done: {
-         , type: 'final',
-          entry: assign({
-           , uploadProgress: 100,
+        done: { type: 'final',
+          entry: assign({ uploadProgress: 100,
             processingEndTime: Date.now()
           })
-        }
+        } }
       },
       onDone: 'completed',
-      on: {, PROCESSING_UPDATE: {, actions: assign({
-           , uploadProgress: ({ event }) => event.progress
+      on: { PROCESSING_UPDATE: { actions: assign({ uploadProgress: ({ event }) => event.progress
           })
         },
-        PROCESSING_FAILED: {
-         , target: 'processingError',
-          actions: assign({
-           , error: ({ event }) => event.error
+        PROCESSING_FAILED: { target: 'processingError',
+          actions: assign({ error: ({ event }) => event.error
           })
         },
-        CANCEL_UPLOAD: `cancelled` }
+        CANCEL_UPLOAD: `cancelled` } }
     },
-    processingError: {, on: {, RETRY_UPLOAD: {
-         , target: 'processing',
-          actions: assign({
-           , error: undefined, // <-- fixed: add, missing, comma; retryCount: ({ context }) => context.retryCount + 1
+    processingError: { on: { RETRY_UPLOAD: { target: 'processing',
+          actions: assign({ error: undefined, // <-- fixed: add, missing, comma; retryCount: ({ context }) => context.retryCount + 1
           })
         },
         FORCE_COMPLETE: 'completed',
         CANCEL_UPLOAD: 'cancelled',
-        RESET: `idle` }
+        RESET: `idle` } }
     },
-    completed: {
-     , type: 'final',
+    completed: { type: 'final',
       entry: () => {
         console.log('Document upload and processing completed successfully');
-      }
+      } }
     },
-    uploadFailed: {
-     , type: 'final',
+    uploadFailed: { type: 'final',
       entry: ({ context }) => {
-        console.error(`Document upload failed after ${context.retryCount} retries: ${context.error}`);
-      }
+        console.error(`Document upload failed after ${context.retryCount} }retries: ${context.error}`);
+      } }
     },
-    cancelled: {
-     , type: 'final',
+    cancelled: { type: 'final',
       entry: () => {
         console.log('Document upload cancelled by user');
-      }
-    }
-  }
+      } }
+    } }
+  } }
 });
 // Helper functions
 export const createDocumentUploadActor = () => {
@@ -502,3 +456,4 @@ export const getUploadMetrics = (state: any) => {
 // Export types
 export type DocumentUploadMachine = typeof documentUploadMachine;
 export type DocumentUploadState = Parameters<typeof, documentUploadMachine.transition>[0];
+

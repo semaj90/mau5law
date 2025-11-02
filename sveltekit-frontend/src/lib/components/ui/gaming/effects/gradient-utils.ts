@@ -4,18 +4,17 @@
  */
 export interface GradientOptions { variant: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';, direction: 'horizontal' | 'vertical' | 'diagonal' | 'radial';
   colorPalette: RetroColorPalette;
-}
-export interface RetroColorPalette {, primary: string[];, secondary: string[];
+} }
+export interface RetroColorPalette { primary: string[];, secondary: string[];
   success: string[];
   warning: string[];
   error: string[];
   info: string[];
-}
+} }
 /**
  * SNES 16-bit color palette
  */
-export const SNES_PALETTE: RetroColorPalette = {
- , primary: ['#5cb3ff', '#3cbcfc', '#0084ff'],
+export const SNES_PALETTE: RetroColorPalette = { primary: ['#5cb3ff', '#3cbcfc', '#0084ff'],
   secondary: ['#d4d4d4', '#747474', '#000000'],
   success: ['#9cfc38', '#92cc41', '#4a7c23'],
   warning: ['#f7d51d', '#fc9838', '#cc6600'],
@@ -25,8 +24,7 @@ export const SNES_PALETTE: RetroColorPalette = {
 /**
  * NES 8-bit color palette
  */
-export const NES_PALETTE: RetroColorPalette = {
- , primary: ['#0088fc', '#0050bc', '#002c80'],
+export const NES_PALETTE: RetroColorPalette = { primary: ['#0088fc', '#0050bc', '#002c80'],
   secondary: ['#bcbcbc', '#7c7c7c', '#000000'],
   success: ['#00d800', '#00a800', '#006800'],
   warning: ['#fca044', '#fc7800', '#ac5000'],
@@ -37,7 +35,7 @@ export const NES_PALETTE: RetroColorPalette = {
  * Generate CSS gradient: string
  */
 export function generateGradient(options: GradientOptions): string {
-  const { variant, direction, colorPalette } = options;
+  const { variant, direction, colorPalette } }= options;
   const colors = colorPalette[variant];
   const directionMap = {
     horizontal: 'to right',
@@ -50,21 +48,21 @@ export function generateGradient(options: GradientOptions): string {
       ? `radial-gradient(${directionMap[direction]}, `
       : `linear-gradient(${directionMap[direction]}, `;
   return gradientType + colors.join(', ') + ')';
-}
+} }
 /**
  * Get size-based styling
  */
 export interface SizeStyles { padding: string;, fontSize: string;
  , minHeight: string;
-}
+} }
 export function getSizeStyles(size: 'small' | 'medium' | 'large' | 'xl'): SizeStyles {
-  const sizeMap: Record<string, SizeStyles> = { small: {, padding: '10px 16px', fontSize: '11px', minHeight: '36px' },
-    medium: {, padding: '14px 20px', fontSize: '13px', minHeight: `44px` },'`'`
-    large: {, padding: '18px 24px', fontSize: '15px', minHeight: `52px` },
-    xl: {, padding: '22px 28px', fontSize: '17px', minHeight: `60px` }
+  const sizeMap: Record<string, SizeStyles> = { small: { padding: '10px 16px', fontSize: '11px', minHeight: '36px' },
+    medium: { padding: '14px 20px', fontSize: '13px', minHeight: `44px` },'`'`
+    large: { padding: '18px 24px', fontSize: '15px', minHeight: `52px` },
+    xl: { padding: '22px 28px', fontSize: '17px', minHeight: `60px` } }
   };
   return sizeMap[size] || sizeMap.medium;
-}
+} }
 /**
  * Generate Mode, 7 transform (SNES perspective effect)
  */
@@ -73,4 +71,5 @@ export function getMode7Transform(isPressed: boolean, isHovered: boolean, enable
   if (isPressed) return, 'perspective(100px) rotateX(5deg) scale(0.95)';
   if (isHovered) return, 'perspective(200px) rotateX(-2deg) scale(1.02)';
   return, 'none';
-}
+} }
+

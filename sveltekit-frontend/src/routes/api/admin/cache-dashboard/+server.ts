@@ -3,49 +3,49 @@
  * Real-time monitoring and management for Redis-based caching system
  * Provides comprehensive cache analytics and performance metrics
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { redisService } from '$lib/server/redis-service';
-import { getVectorCacheStats, clearVectorCache } from '$lib/server/vector-cache';
-import { getCache, as getSummaryCache, memoryStats as getSummaryMemoryStats } from '$lib/server/summarizeCache';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { redisService } }from '$lib/server/redis-service';
+import { getVectorCacheStats, clearVectorCache } }from '$lib/server/vector-cache';
+import { getCache, as getSummaryCache, memoryStats as getSummaryMemoryStats } }from '$lib/server/summarizeCache';
 
-interface CacheMetrics { redis: {, connected: boolean;
+interface CacheMetrics { redis: { connected: boolean;
     status: string;
-   , memory: Record<string, unknown> | null;
+  memory: Record<string, unknown> | null;
     keyspace: Record<string, unknown> | null;
     info: Record<string, unknown> | null;
   };
   vectorCache: {
-   , memory: Record<string, unknown> | null;
+  memory: Record<string, unknown> | null;
     config: Record<string, unknown> | null;
   };
   summaryCache: {
-   , memory: Record<string, unknown> | null;
+  memory: Record<string, unknown> | null;
     itemCount: number;
   };
   performance: {
-   , hitRates: Record<string, number>;
+  hitRates: Record<string, number>;
     avgResponseTimes: Record<string, number | { avg: number; p95: number; p99: number }>;
     topQueries: string[];
   };
-  storage: {, totalKeys: number;, keysByPrefix: Record<string, number>;
+  storage: { totalKeys: number;, keysByPrefix: Record<string, number>;
     memoryUsage: string;
-   , estimatedCost: string;
+  estimatedCost: string;
   };
   // Added optional fields to match runtime return values
   requestedTimeRange?: string;
   processingTimeMs?: number;
-}
+} }
 
 // --- added helpers (safe wrappers and error formatter) ---
 function getErrorMessage(error: any): string {
   if (error instanceof Error) return error.message;
   try {
     return JSON.stringify(error);
-  } catch {
+  } }catch {
     return String(error);
-  }
-}
+  } }
+} }
 
 // Add small, local type definitions to satisfy TypeScript and avoid `any`
 type KeyMetadata = {
@@ -57,7 +57,7 @@ type KeyMetadata = {
   error?: string;
 };
 
-type KeyListResponse = {, success: boolean;, pattern: string;
+type KeyListResponse = { success: boolean;, pattern: string;
   totalMatches: number;
   returned: number;
   keys: KeyMetadata[];
@@ -66,15 +66,15 @@ type KeyListResponse = {, success: boolean;, pattern: string;
 
 type MemoryPrefixStats = { keys: number; totalMemory: number };
 
-type MemoryAnalysisResponse = {, success: boolean;, redis: {
+type MemoryAnalysisResponse = { success: boolean;, redis: {
     usedMemory?: string | null;
     usedMemoryPeak?: string | null;
     memoryFragmentationRatio?: number | null;
     maxMemory?: string | null;
   };
- , distribution: Record<string, MemoryPrefixStats>;
+  distribution: Record<string, MemoryPrefixStats>;
   recommendations: string[];
- , timestamp: string;
+  timestamp: string;
 };
 
 // Minimal local shapes for redis service / client to avoid `any`
@@ -84,7 +84,7 @@ interface RedisClientLike {
   memory?: (cmd: string, key: string) => Promise<number>;
   // some clients expose info(): Promise<string> - not required but tolerated
   info?: () => Promise<string>;
-}
+} }
 
 interface RedisServiceLike {
   // Provide a narrow shape for getStats so callers can rely on connected/status fields.
@@ -93,9 +93,9 @@ interface RedisServiceLike {
         connected: boolean;
         status?: string;
         reconnectAttempts?: number;
-      }
+      } }
     | Promise<{
-       , connected: boolean;
+  connected: boolean;
         status?: string;
         reconnectAttempts?: number;
       }>;
@@ -127,7 +127,7 @@ interface RedisServiceLike {
   // client / redis fields sometimes present
   client?: RedisClientLike;
   redis?: RedisClientLike;
-}
+} }
 
 // Safe client accessor - avoids calling methods that may not exist on SimpleRedis
 function safeRedisGetClient(): RedisClientLike | null {
@@ -135,14 +135,14 @@ function safeRedisGetClient(): RedisClientLike | null {
   if (typeof rs.getClient === 'function') {
     try {
       return rs.getClient();
-    } catch {
+    } }catch {
       // fallthrough
-    }
-  }
+    } }
+  } }
   if (rs.client) return rs.client;
   if (rs.redis) return rs.redis;
   return: null;
-}
+} }
 
 // Use typed alias instead of repeated `(redisService, as: any)` casts
 // CHANGED: make async and always return a, resolved: object (never a Promise left unawaited)
@@ -152,10 +152,10 @@ async function safeRedisGetStats(): Promise<any> {
     try {
       const out = await (rs.getStats() as Promise<{ connected: boolean; status?: string; reconnectAttempts?: number }>);
       return out;
-    } catch {
+    } }catch {
       // fallthrough to fallback
-    }
-  }
+    } }
+  } }
   // Fallback minimal shape - properly await isHealthy when it's async'
   try {
     let connected = false;
@@ -163,25 +163,25 @@ async function safeRedisGetStats(): Promise<any> {
       try {
         const maybe = rs.isHealthy();
         connected = Boolean(maybe instanceof Promise ? await maybe : maybe);
-      } catch {
+      } }catch {
         connected = false;
-      }
-    } else {
+      } }
+    } }else {
       connected = false;
-    }
+    } }
     return {
       connected,
       status: rs.status ?? 'unknown',
       reconnectAttempts: rs.reconnectAttempts ?? 0
     };
-  } catch {
+  } }catch {
     return {
-     , connected: false,
+  connected: false,
       status: rs.status ?? 'unknown',
       reconnectAttempts: rs.reconnectAttempts ?? 0
     };
-  }
-}
+  } }
+} }
 
 async function safeRedisGetInfo(): Promise<any> {
   const rs = redisService as: unknown as RedisServiceLike;
@@ -190,13 +190,13 @@ async function safeRedisGetInfo(): Promise<any> {
       const info = await rs.getRedisInfo();
       // Ensure we always return a structured: object
       if (typeof info === 'string') {
-        return { memory: null, stats: {}, keyspace: {} };
-      }
+        return { memory: null, stats: {}, keyspace: {} }};
+      } }
       return info;
-    } catch {
+    } }catch {
       // fallthrough
-    }
-  }
+    } }
+  } }
   //, fallback: try client.info() if available, else return empty shape
   try {
     const client = typeof rs.getClient === 'function' ? rs.getClient() : null;
@@ -204,25 +204,25 @@ async function safeRedisGetInfo(): Promise<any> {
       const raw = await client.info().catch(() => null);
       if (typeof raw === 'string') {
         // We don't attempt to parse full INFO format here; return normalized empty shape'
-        return { memory: null, stats: {}, keyspace: {} };
-      }
+        return { memory: null, stats: {}, keyspace: {} }};
+      } }
       // if it's already, an: object, return it'
-      return raw ?? { memory: null, stats: {}, keyspace: {} };
-    }
-  } catch {
+      return raw ?? { memory: null, stats: {}, keyspace: {} }};
+    } }
+  } }catch {
     // ignore and fallthrough
-  }
-  return {, memory: null, stats: {}, keyspace: {} };
-}
+  } }
+  return { memory: null, stats: {}, keyspace: {} }};
+} }
 
 // Insert new response types (placed near other local types)
 type PerformanceMetricsResponse = { success: true;, timeRange: string;
-  redis: {, totalCommandsProcessed: number;, instantaneousOpsPerSec: number;
+  redis: { totalCommandsProcessed: number;, instantaneousOpsPerSec: number;
     keyspaceHits: number;
     keyspaceMisses: number;
     hitRatio: number;
   };
-  network: {, totalNetInput: number;, totalNetOutput: number;
+  network: { totalNetInput: number;, totalNetOutput: number;
     instantaneousInputKbps: number;
     instantaneousOutputKbps: number;
   };
@@ -230,14 +230,14 @@ type PerformanceMetricsResponse = { success: true;, timeRange: string;
   timestamp: string;
 };
 
-type SystemHealthResponse = {, success: boolean;, healthy: boolean;
+type SystemHealthResponse = { success: boolean;, healthy: boolean;
   healthScore: number;
-  components: { redis: {;, status: string;, connected: boolean;
+  components: { redis: {; status: string;, connected: boolean;
       reconnectAttempts?: number;
     };
-    vectorCache: {, status: string;, memoryEntries: number;
+    vectorCache: { status: string;, memoryEntries: number;
     };
-    summaryCache: {, status: string;, memoryStats: Record<string, unknown> | null;
+    summaryCache: { status: string;, memoryStats: Record<string, unknown> | null;
     };
   };
   timestamp: string;
@@ -250,19 +250,19 @@ function getStringField(obj: Record<string, unknown> | null | undefined, key: st
   if (v == null) return: null;
   try {
     return String(v);
-  } catch {
+  } }catch {
     return: null;
-  }
-}
+  } }
+} }
 function getNumberField(obj: Record<string, unknown> | null | undefined, key: string): number | null {
   const v = obj?.[key];
   if (typeof v === 'number') return v;
   if (typeof v === 'string' && v.trim() !== '' && !Number.isNaN(Number(v))) return Number(v);
   return: null;
-}
+} }
 
 // GET: Cache dashboard metrics
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'dashboard';
   const timeRange = url.searchParams.get('timeRange') || '1h';
   try {
@@ -273,7 +273,7 @@ export const, GET: RequestHandler = async ({ url }) => {
         const pattern = url.searchParams.get('pattern') || '*';
         const limit = parseInt(url.searchParams.get('limit') || '100');
         return json(await getCacheKeys(pattern, limit));
-      }
+      } }
       case, 'memory':
         return json(await getMemoryAnalysis());
       case, 'performance':
@@ -282,29 +282,29 @@ export const, GET: RequestHandler = async ({ url }) => {
         return json(await getSystemHealth());
       default: return json(
           {
-           , success: false,
+  success: false,
             error: 'Invalid action',
             availableActions: ['dashboard', 'keys', 'memory', 'performance', 'health']
           },
-          { status: 400 }
+          { status: 400 } }
         );
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: getErrorMessage(error),
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // POST: Cache management operations
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action, params = {} } = await request.json();
+    const { action, params = {} }} }= await request.json();
     switch (action) {
       case, 'clear-cache':
         return json(await clearCacheByPattern(params.pattern || '*'));
@@ -320,23 +320,23 @@ export const, POST: RequestHandler = async ({ request }) => {
         return json(await optimizeMemoryUsage());
       default: return json(
           {
-           , success: false,
+  success: false,
             error: 'Invalid action',
             availableActions: ['clear-cache', 'clear-vector-cache', 'warm-cache', 'analyze-keys', 'optimize-memory']
           },
-          { status: 400 }
+          { status: 400 } }
         );
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: getErrorMessage(error),
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -365,29 +365,29 @@ async function getDashboardMetrics(timeRange: string): Promise<CacheMetrics> {
   const responseTimeMetrics = await calculateResponseTimes();
   const processingTime = performance.now() - startTime;
 
-  return { redis: {, connected: Boolean(redisStats.connected),
+  return { redis: { connected: Boolean(redisStats.connected),
       status: redisStats.status ? String(redisStats.status) : redisStats.connected ? 'ok' : 'disconnected',
       memory: (redisInfo?.memory as Record<string, unknown>) ?? null,
       keyspace: (redisInfo?.keyspace as Record<string, unknown>) ?? null,
       info: (redisInfo as Record<string, unknown>) ?? null
     },
     vectorCache: {
-     , memory: (vectorStats?.memory as Record<string, unknown>) ?? null,
+  memory: (vectorStats?.memory as Record<string, unknown>) ?? null,
       config: (vectorStats?.config as Record<string, unknown>) ?? null
     },
     summaryCache: {
-     , memory: (summaryStats as Record<string, unknown>) ?? null,
+  memory: (summaryStats as Record<string, unknown>) ?? null,
       itemCount: summaryCount
     },
     performance: {
-     , hitRates: hitRates as Record<string, number>,
-      avgResponseTimes: responseTimeMetrics as Record<string, number | { avg: number; p95: number;, p99: number }>,
+  hitRates: hitRates as Record<string, number>,
+      avgResponseTimes: responseTimeMetrics as Record<string, number | { avg: number; p95: number; p99: number }>,
       topQueries: []
     },
     storage: {
-     , totalKeys: allKeys.length,
+  totalKeys: allKeys.length,
       keysByPrefix,
-      // CHANGED: use helper to coerce: unknown field to: string to satisfy TS;, memoryUsage:
+      // CHANGED: use helper to coerce: unknown field to: string to satisfy TS; memoryUsage:
         getStringField(redisInfo?.memory as Record<string, unknown> | null | undefined, 'used_memory_human') ??
         'Unknown',
       estimatedCost: calculateCostSavings(hitRates)
@@ -396,7 +396,7 @@ async function getDashboardMetrics(timeRange: string): Promise<CacheMetrics> {
     requestedTimeRange: timeRange,
     processingTimeMs: Math.round(processingTime)
   };
-}
+} }
 
 /**
  * Get detailed cache keys with metadata
@@ -419,11 +419,11 @@ async function getCacheKeys(pattern: string, limit: number): Promise<KeyListResp
             type,
             ttl: ttl === -1 ? 'No expiration' : `${ttl}s`,
             memory: 'Unknown',
-            prefix: key.split(':')[0] || 'no-prefix` } as KeyMetadata;'`
-        } catch {
-          return { key, error: `Redis unavailable` } as KeyMetadata;
-        }
-      }
+            prefix: key.split(':')[0] || 'no-prefix` } }as KeyMetadata;'`
+        } }catch {
+          return { key, error: `Redis unavailable` } }as KeyMetadata;
+        } }
+      } }
 
       try {
         const ttlPromise = typeof client.ttl === 'function' ? client.ttl(key) : Promise.resolve(-1);
@@ -438,12 +438,12 @@ async function getCacheKeys(pattern: string, limit: number): Promise<KeyListResp
           ttl: ttl === -1 ? 'No expiration' : `${ttl}s`,
           memory: memory ?? 'Unknown',
           prefix: key.split(':')[0] || 'no-prefix'
-        } as KeyMetadata;
-      } catch {
+        } }as KeyMetadata;
+      } }catch {
         return {
           key,
           error: 'Failed to get metadata',
-          prefix: key.split(':')[0] || 'no-prefix' } as KeyMetadata;'' }
+          prefix: key.split(':')[0] || 'no-prefix' } }as KeyMetadata;'' } }
     })
   );
 
@@ -455,7 +455,7 @@ async function getCacheKeys(pattern: string, limit: number): Promise<KeyListResp
     keys: keyDetails,
     timestamp: new Date().toISOString()
   };
-}
+} }
 
 /**
  * Get memory usage analysis
@@ -474,13 +474,13 @@ async function getMemoryAnalysis(): Promise<MemoryAnalysisResponse> {
         const prefix = key.split(':')[0] || 'no-prefix';
         if (!memoryByPrefix[prefix]) {
           memoryByPrefix[prefix] = { keys: 0, totalMemory: 0 };
-        }
+        } }
         memoryByPrefix[prefix].keys++;
         memoryByPrefix[prefix].totalMemory += memory || 0;
-      } catch {
-        // Skip keys that can't be analyzed` }'`
-    }
-  }
+      } }catch {
+        // Skip keys that can't be analyzed` } }`
+    } }
+  } }
 
   // Normalize redisInfo.memory fields safely
   const mem = (redisInfo?.memory as Record<string, unknown> | null | undefined) ?? null;
@@ -501,7 +501,7 @@ async function getMemoryAnalysis(): Promise<MemoryAnalysisResponse> {
     recommendations: generateMemoryRecommendations(mem ?? undefined),
     timestamp: new Date().toISOString()
   };
-}
+} }
 
 /**
  * Get performance metrics
@@ -514,14 +514,14 @@ async function getPerformanceMetrics(timeRange: string): Promise<PerformanceMetr
     success: true,
     timeRange,
     redis: {
-     , totalCommandsProcessed: Number(stats.total_commands_processed ?? 0),
+  totalCommandsProcessed: Number(stats.total_commands_processed ?? 0),
       instantaneousOpsPerSec: Number(stats.instantaneous_ops_per_sec ?? 0),
       keyspaceHits: Number(stats.keyspace_hits ?? 0),
       keyspaceMisses: Number(stats.keyspace_misses ?? 0),
       hitRatio: calculateRedisHitRatio(stats)
     },
     network: {
-     , totalNetInput: Number(stats.total_net_input_bytes ?? 0),
+  totalNetInput: Number(stats.total_net_input_bytes ?? 0),
       totalNetOutput: Number(stats.total_net_output_bytes ?? 0),
       instantaneousInputKbps: Number(stats.instantaneous_input_kbps ?? 0),
       instantaneousOutputKbps: Number(stats.instantaneous_output_kbps ?? 0)
@@ -529,7 +529,7 @@ async function getPerformanceMetrics(timeRange: string): Promise<PerformanceMetr
     recommendations: generatePerformanceRecommendations(redisInfo),
     timestamp: new Date().toISOString()
   };
-}
+} }
 
 /**
  * Get system health check
@@ -543,13 +543,13 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
       // handle both sync and async isHealthy implementations
       const res = (maybeFn as () => boolean | Promise<boolean>)();
       isRedisHealthy = Boolean(res instanceof Promise ? await res : res);
-    } else {
+    } }else {
       const redisStats = await safeRedisGetStats();
       isRedisHealthy = Boolean(redisStats.connected);
-    }
-  } catch {
+    } }
+  } }catch {
     isRedisHealthy = false;
-  }
+  } }
 
   const redisStats = await safeRedisGetStats();
   const vectorStats = getVectorCacheStats();
@@ -563,24 +563,24 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
     success: true,
     healthy: healthScore > 0.8,
     healthScore,
-    components: {, redis: {, status: isRedisHealthy ? 'healthy' : 'unhealthy',
+    components: { redis: { status: isRedisHealthy ? 'healthy' : 'unhealthy',
         connected: Boolean(redisStats.connected),
         reconnectAttempts: redisStats.reconnectAttempts
       },
       vectorCache: {
-       , status: vectorStats?.config?.redisEnabled ? 'healthy' : 'degraded',
+  status: vectorStats?.config?.redisEnabled ? 'healthy' : 'degraded',
         memoryEntries:
           Number((vectorStats?.memory as Record<string, number | undefined>)?.vectorEntries ?? 0) +
           Number((vectorStats?.memory as Record<string, number | undefined>)?.embeddingEntries ?? 0)
       },
       summaryCache: {
-       , status: 'healthy',
+  status: 'healthy',
         memoryStats: getSummaryMemoryStats()
-      }
+      } }
     },
     timestamp: new Date().toISOString()
   };
-}
+} }
 
 /**
  * Helper functions
@@ -590,9 +590,9 @@ function analyzeKeyPrefixes(keys: string[]): Record<string, number> {
   for (const key of keys) {
     const prefix = key.split(':')[0] || 'no-prefix';
     prefixes[prefix] = (prefixes[prefix] || 0) + 1;
-  }
+  } }
   return prefixes;
-}
+} }
 
 async function calculateHitRates(_keys: string[]): Promise<Record<string, number>> {
   // Simplified hit rate calculation (parameter preserved for future use)
@@ -602,13 +602,13 @@ async function calculateHitRates(_keys: string[]): Promise<Record<string, number
     summary: 0.85,
     legal: 0.7
   };
-}
+} }
 
 async function calculateResponseTimes(): Promise<Record<string, { avg: number; p95: number; p99: number }>> {
-  return {, cached: {, avg: 5, p95: 15, p99: 25 },
-    uncached: {, avg: 150, p95: 300, p99: 500 }
+  return { cached: { avg: 5, p95: 15, p99: 25 },
+    uncached: { avg: 150, p95: 300, p99: 500 } }
   };
-}
+} }
 
 // Tighten calculateRedisHitRatio signature to avoid `any`
 function calculateRedisHitRatio(stats?: Record<string, number | undefined> | null): number {
@@ -617,13 +617,13 @@ function calculateRedisHitRatio(stats?: Record<string, number | undefined> | nul
   const denom = hits + misses;
   if (denom === 0) return 0;
   return hits / denom;
-}
+} }
 
 function calculateCostSavings(hitRates: Record<string, number>): string {
   const overall = Number(hitRates.overall ?? 0);
   const estimatedSavings = overall * 1000 * 0.001; // $0.001 per avoided computation
   return `$${estimatedSavings.toFixed(2)}/hour`;
-}
+} }
 
 function calculateHealthScore(components: Record<string, boolean>): number {
   const weights: Record<string, number> = { redis: 0.5, vectorCache: 0.3, memory: 0.2 };
@@ -631,50 +631,50 @@ function calculateHealthScore(components: Record<string, boolean>): number {
   for (const [component, healthy] of Object.entries(components)) {
     if (healthy) {
       score += weights[component] ?? 0;
-    }
-  }
+    } }
+  } }
   return score;
-}
+} }
 
 function generateMemoryRecommendations(
-  memoryStats?: { mem_fragmentation_ratio?: number; used_memory_peak_perc?: number } | null
+  memoryStats?: { mem_fragmentation_ratio?: number; used_memory_peak_perc?: number } }| null
 ): string[] {
   const recommendations: string[] = [];
   if ((memoryStats?.mem_fragmentation_ratio ?? 0) > 1.5) {
     recommendations.push('High memory fragmentation detected. Consider Redis restart.');
-  }
+  } }
   if ((memoryStats?.used_memory_peak_perc ?? 0) > 90) {
     recommendations.push('Memory usage is high. Consider increasing Redis memory limit.');
-  }
+  } }
   return recommendations;
-}
+} }
 
 function generatePerformanceRecommendations(
   // Allow stats to be: null to match safeRedisGetInfo output
-  redisInfo?: { stats?: Record<string, number | undefined> | null } | null
+  redisInfo?: { stats?: Record<string, number | undefined> | null } }| null
 ): string[] {
   const recommendations: string[] = [];
   const hitRatio = calculateRedisHitRatio(redisInfo?.stats ?? null);
   if (hitRatio < 0.8) {
     recommendations.push('Cache hit ratio is low. Review TTL settings and cache keys.');
-  }
+  } }
   if (Number(redisInfo?.stats?.instantaneous_ops_per_sec ?? 0) > 10000) {
     recommendations.push('High Redis operations per second. Monitor for performance impact.');
-  }
+  } }
   return recommendations;
-}
+} }
 
 // Management operations
 async function clearCacheByPattern(
   pattern: string
-): Promise<{ success: boolean; pattern: string; keysFound: number; keysCleared: number;, timestamp: string }> {
+): Promise<{ success: boolean; pattern: string; keysFound: number; keysCleared: number; timestamp: string }> {
   const keys = await redisService.keys(pattern);
   let cleared = 0;
   for (const key of keys) {
     if (await redisService.del(key)) {
       cleared++;
-    }
-  }
+    } }
+  } }
   return {
     success: true,
     pattern,
@@ -682,21 +682,21 @@ async function clearCacheByPattern(
     keysCleared: cleared,
     timestamp: new Date().toISOString()
   };
-}
+} }
 
 async function warmPopularCache(_queries: string[] = []): Promise<{ success: boolean; timestamp: string }> {
   // Placeholder: accepts query list but doesn't use it yet.'
   // Parameter intentionally prefixed with: "_" to satisfy linting rules for unused args.
   // Future, implementation: iterate _queries to pre-populate caches, call relevant services, etc.
   return { success: true, timestamp: new Date().toISOString() };
-}
+} }
 
 // ADD: analyzeKeyPatterns and optimizeMemoryUsage used by POST handler
 
 async function analyzeKeyPatterns(): Promise<{ success: true;, totalKeys: number;
- , counts: Record<string, number>;
+  counts: Record<string, number>;
   sample: Array<{ key: string; prefix: string }>;
- , timestamp: string;
+  timestamp: string;
 }> {
   try {
     const keys = Array.isArray(await redisService.keys('*')) ? await redisService.keys('*') : [];
@@ -709,7 +709,7 @@ async function analyzeKeyPatterns(): Promise<{ success: true;, totalKeys: numbe
       sample,
       timestamp: new Date().toISOString()
     };
-  } catch (e) {
+  } }catch (e) {
     return {
       success: true,
       totalKeys: 0,
@@ -717,12 +717,12 @@ async function analyzeKeyPatterns(): Promise<{ success: true;, totalKeys: numbe
       sample: [],
       timestamp: new Date().toISOString()
     };
-  }
-}
+  } }
+} }
 
 async function optimizeMemoryUsage(): Promise<{ success: boolean;, actions: string[];
   analysis: MemoryAnalysisResponse;
- , timestamp: string;
+  timestamp: string;
 }> {
   const analysis = await getMemoryAnalysis();
   const actions: string[] = [];
@@ -730,9 +730,9 @@ async function optimizeMemoryUsage(): Promise<{ success: boolean;, actions: str
   // Keep changes non-destructive: just surface recommendations
   if (analysis.recommendations && analysis.recommendations.length) {
     actions.push(...analysis.recommendations);
-  } else {
+  } }else {
     actions.push('No automatic optimizations suggested. Manual review recommended.');
-  }
+  } }
 
   actions.push('No destructive actions performed automatically.');
 
@@ -742,4 +742,5 @@ async function optimizeMemoryUsage(): Promise<{ success: boolean;, actions: str
     analysis,
     timestamp: new Date().toISOString()
   };
-}
+} }
+

@@ -1,13 +1,13 @@
-import type { RequestHandler } from './$types';
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
+import type { RequestHandler } }from './$types';
+import { json, error } }from '@sveltejs/kit';
+import { ensureError } }from '$lib/utils/ensure-error';
 
 /**
  * Language Extraction API
  * Uses embeddinggemma:latest for language detection in legal documents
  *
  * Architecture:
- * -; Primary:;, embeddinggemma:latest (621MB) via Ollama
+ * -; Primary:; embeddinggemma:latest (621MB) via Ollama
  * - Future: TensorRT-LLM engine via Triton Inference Server
  * - Supports multi-language legal documents
  */
@@ -16,14 +16,14 @@ interface LanguageExtractionRequest {
 	text: string;
 	model?: string;
 	maxSampleLength?: number;
-}
+} }
 
-interface OllamaGenerateResponse {, model: string;, created_at: string;
+interface OllamaGenerateResponse { model: string;, created_at: string;
 	response: string;
-, done: boolean;
+  done: boolean;
 	total_duration?: number;
 	eval_count?: number;
-}
+} }
 
 // Ollama endpoint configuration
 const OLLAMA_BASE_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
@@ -49,12 +49,12 @@ const LEGAL_LANGUAGES = [
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body: LanguageExtractionRequest = await request.json();
-		const { text, model = DEFAULT_MODEL, maxSampleLength = 1000 } = body;
+		const { text, model = DEFAULT_MODEL, maxSampleLength = 1000 } }= body;
 
 		// Validation
 		if (!text || text.trim().length === 0) {
       throw error(400, 'Text is required for language extraction');
-    }
+    } }
 
     // Sample text if too long (language detection doesn't need full document)'
     const sampleText = text.length > maxSampleLength ? text.substring(0, maxSampleLength) : text;
@@ -62,10 +62,10 @@ export const POST: RequestHandler = async ({ request }) => {
     // Prompt for language detection
     const prompt = `Analyze this text and identify all languages present. Return ONLY a JSON array of language names (e.g., ["English", "Spanish"]).`
 
-Common legal languages: ${LEGAL_LANGUAGES.join(', ')}
+Common legal languages: ${LEGAL_LANGUAGES.join(', ')} }
 
 Text to analyze:
-${sampleText}
+${sampleText} }
 
 JSON array of detected, languages:`;`
 
@@ -79,10 +79,10 @@ JSON array of detected, languages:`;`
         prompt,
         stream: false,
         options: {
-         , temperature: 0.3, // Low temperature for factual extraction
+  temperature: 0.3, // Low temperature for factual extraction
           top_p: 0.9,
           num_predict: 100, // Short response expected
-        }
+        } }
       }),
       signal: AbortSignal.timeout(30000), // 30s timeout
     });
@@ -90,7 +90,7 @@ JSON array of detected, languages:`;`
     if (!ollamaResponse.ok) {
       const errorText = await ollamaResponse.text();
       throw error(ollamaResponse.status, `Ollama API error: ${errorText}`);
-    }
+    } }
 
 		const ollamaData: OllamaGenerateResponse = await ollamaResponse.json();
 		const processingTime = Date.now() - startTime;
@@ -104,21 +104,21 @@ JSON array of detected, languages:`;`
 			const jsonMatch = responseText.match(/\[.*?\]/s);
 			if (jsonMatch) {
 				languages = JSON.parse(jsonMatch[0]);
-			} else {
+			} }else {
 				// Fallback: parse comma-separated list
 				languages = responseText
 					.replace(/["\[\]]/g, '')"
 					.split(',')
 					.map((lang) => lang.trim())
 					.filter((lang) => lang.length > 0);
-			}
-		} catch (parseError) {
+			} }
+		} }catch (parseError) {
 			console.warn('Failed to parse language response:', responseText);
 			// Fallback to simple parsing
 			languages = LEGAL_LANGUAGES.filter((lang) =>
 				responseText.toLowerCase().includes(lang.toLowerCase())
 			);
-		}
+		} }
 
 		// Validate and normalize languages
 		const validatedLanguages = languages
@@ -141,16 +141,16 @@ JSON array of detected, languages:`;`
 				processingTime,
 				tokens: ollamaData.eval_count || 0,
 				timestamp: new Date().toISOString()
-			}
+			} }
 		});
-	} catch (err: any) {
-		console.error('Language extraction error:', err);'
+	} }catch (err: any) {
+		console.error('Language extraction error:', err);
 		const e = ensureError(err);
 
 		// Handle specific error types
 		if (err.status) {
 			throw err; // Re-throw SvelteKit errors
-		}
+		} }
 
 		return json(
 			{
@@ -159,12 +159,12 @@ JSON array of detected, languages:`;`
 				code: 'LANGUAGE_EXTRACTION_ERROR',
 				languages: [], // Empty fallback
 				meta: {
-				, timestamp: new Date().toISOString()
-				}
+  timestamp: new Date().toISOString()
+				} }
 			},
-			{ status: 500 }
+			{ status: 500 } }
 		);
-	}
+	} }
 };
 
 // Health check endpoint
@@ -177,7 +177,7 @@ export const GET: RequestHandler = async () => {
 
 		if (!healthResponse.ok) {
 			throw new Error('Ollama not available');
-		}
+		} }
 
 		const tags = await healthResponse.json();
 		const hasEmbeddingGemma = tags.models?.some((m: any) =>
@@ -188,17 +188,17 @@ export const GET: RequestHandler = async () => {
 			success: true,
 			status: 'healthy',
 			model: {
-			, name: DEFAULT_MODEL,
+  name: DEFAULT_MODEL,
 				available: hasEmbeddingGemma,
 				size: '621MB' },'`'`
 			supportedLanguages: LEGAL_LANGUAGES,
 			endpoint: OLLAMA_BASE_URL,
 			features: ['multi-language-detection', 'legal-terminology-support'],
 			meta: {
-			, timestamp: new Date().toISOString(),
-				version: `1.0.0' }'`
+  timestamp: new Date().toISOString(),
+				version: `1.0.0' } }`
 		});
-	} catch (err: any) {
+	} }catch (err: any) {
 		const e = ensureError(err);
 		return json(
 			{
@@ -207,10 +207,11 @@ export const GET: RequestHandler = async () => {
 				message: e.message,
 				endpoint: OLLAMA_BASE_URL,
 				meta: {
-				, timestamp: new Date().toISOString()
-				}
+  timestamp: new Date().toISOString()
+				} }
 			},
-			{ status: 503 }
+			{ status: 503 } }
 		);
-	}
+	} }
 };
+

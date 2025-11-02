@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * JSONB Legal Service
  *
@@ -14,8 +14,8 @@ import type { Case } from '$lib/types';
  * - Chain of custody verification for evidence
  * - Citation network analysis
  */
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { eq, sql, and, gt, desc, inArray } from 'drizzle-orm';
+import { drizzle } }from 'drizzle-orm/postgres-js';
+import { eq, sql, and, gt, desc, inArray } }from 'drizzle-orm';
 import postgres from 'postgres';
 import {
   legalDocumentsJsonb,
@@ -28,13 +28,13 @@ import {
   type Evidence,
   type NewEvidence,
   type EvidenceMetadata
-} from '$lib/server/db/jsonb-legal-schema.js';
-import { logger } from '$lib/logging/structured-logger.js';
+} }from '$lib/server/db/jsonb-legal-schema.js';
+import { logger } }from '$lib/logging/structured-logger.js';
 
 // Local type definitions
 interface VectorEmbedding { id: string;, vector: number[];
   metadata?: { [key: string]: any };
-}
+} }
 
 // PostgreSQL connection with JSONB optimizations
 const connectionString = import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
@@ -61,7 +61,7 @@ const inArrayOp: (col: any, values: string[]) => any =
     : (col: any, values: string[]) => {
         if (!values || values.length === 0) return sql`true`; // no-op condition
         // Use PostgreSQL ANY with parameterized array - driver will serialize the JS array
-        return sql`${col} = ANY(${values})`;
+        return sql`${col} }= ANY(${values})`;
       };
 
 // ============================================================================
@@ -72,9 +72,9 @@ export class JsonbLegalService {
   static getInstance(): JsonbLegalService {
     if (!JsonbLegalService.instance) {
       JsonbLegalService.instance = new JsonbLegalService();
-    }
+    } }
     return JsonbLegalService.instance;
-  }
+  } }
 
   // ========================================================================
   // LEGAL DOCUMENT OPERATIONS
@@ -84,7 +84,7 @@ export class JsonbLegalService {
    */
   async createLegalDocument(
     data: Omit<NewLegalDocument, 'id' | 'createdAt' | 'updatedAt'>,
-    embeddings?: { title?: VectorEmbedding; content?: VectorEmbedding }
+    embeddings?: { title?: VectorEmbedding; content?: VectorEmbedding } }
   ): Promise<LegalDocument> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
@@ -92,7 +92,7 @@ export class JsonbLegalService {
         ...data,
         titleEmbedding: embeddings?.title ? JSON.stringify(embeddings.title.vector) : null,
         contentEmbedding: embeddings?.content ? JSON.stringify(embeddings.content.vector) : null
-      } as NewLegalDocument;
+      } }as NewLegalDocument;
 
       const inserted = await db.insert(legalDocumentsJsonb).values(documentData).returning();
       const document = Array.isArray(inserted) && inserted.length ? inserted[0] : inserted;
@@ -112,7 +112,7 @@ export class JsonbLegalService {
         .catch(() => {});
 
       return document as LegalDocument;
-    } catch (error: any) {
+    } }catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       await logger
@@ -127,8 +127,8 @@ export class JsonbLegalService {
         })
         .catch(() => {});
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Advanced JSONB metadata queries with legal context
@@ -140,16 +140,16 @@ export class JsonbLegalService {
     confidentialityLevels?: string[];
     minConfidence?: number;
     hasHumanVerification?: boolean;
-    dateRange?: {, start: Date;, end: Date };
+    dateRange?: { start: Date; end: Date };
     keyTerms?: string[];
-    parties?: {, name: string; role?: string }[];
+    parties?: { name: string; role?: string } }];
     limit?: number;
     offset?: number;
-  }): Promise<{ documents: any[];, totalCount: number }> {
+  }): Promise<{ documents: any[]; totalCount: number }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       let query: any = db.select().from(legalDocumentsJsonb as: any);
-      let countQuery: any = db.select({, count: sql<number>`count(*)' }).from(legalDocumentsJsonb as: any);'`
+      let countQuery: any = db.select({ count: sql<number>`count(*)' }).from(legalDocumentsJsonb as: any);'`
       const conditions: any[] = [];
 
       if (criteria.documentTypes?.length)
@@ -167,32 +167,32 @@ export class JsonbLegalService {
       if (criteria.dateRange) {
         // Use a single parameterized SQL fragment for the date range
         conditions.push(
-          sql`${legalDocumentsJsonb.createdAt} > ${criteria.dateRange.start} AND ${legalDocumentsJsonb.createdAt} < ${criteria.dateRange.end}`
+          sql`${legalDocumentsJsonb.createdAt} }> ${criteria.dateRange.start} }AND ${legalDocumentsJsonb.createdAt} }< ${criteria.dateRange.end}`
         );
-      }
+      } }
       if (criteria.keyTerms?.length) {
         for (const term of criteria.keyTerms) conditions.push(sql`metadata->'semantics'->'keyTerms' ? ${term}`);
-      }
+      } }
       if (criteria.parties?.length) {
         for (const party of criteria.parties) {
           const likeTerm = `%${party.name}%`;
           if (party.role) {
             conditions.push(
-              sql`EXISTS (SELECT, 1 FROM jsonb_array_elements(metadata->'parties') AS p WHERE p->>'name' ILIKE ${likeTerm} AND p->>'role' = ${party.role})`
+              sql`EXISTS (SELECT, 1 FROM jsonb_array_elements(metadata->'parties') AS p WHERE p->>'name' ILIKE ${likeTerm} }AND p->>'role' = ${party.role})`
             );
-          } else {
+          } }else {
             conditions.push(
               sql`EXISTS (SELECT, 1 FROM jsonb_array_elements(metadata->'parties') AS p WHERE p->>'name' ILIKE ${likeTerm})`
             );
-          }
-        }
-      }
+          } }
+        } }
+      } }
 
       if (conditions.length > 0) {
         const whereCondition = and(...conditions);
         query = query.where(whereCondition);
         countQuery = countQuery.where(whereCondition);
-      }
+      } }
 
       query = query
         .orderBy(desc(legalDocumentsJsonb.updatedAt))
@@ -205,9 +205,9 @@ export class JsonbLegalService {
       if (Array.isArray(countRows) && countRows.length > 0) {
         const raw = (countRows[0] as: any).count ?? (countRows[0] as: any).COUNT;
         totalCount = typeof raw === 'string' ? parseInt(raw, 10) || 0 : Number(raw) || 0;
-      } else if (typeof (countRows as: any).count === 'number') {
+      } }else if (typeof (countRows as: any).count === 'number') {
         totalCount = (countRows as: any).count;
-      }
+      } }
 
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
@@ -224,7 +224,7 @@ export class JsonbLegalService {
         .catch(() => {});
 
       return { documents: documents, as: any[], totalCount: totalCount ?? 0 };
-    } catch (error: any) {
+    } }catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       await logger
@@ -239,15 +239,15 @@ export class JsonbLegalService {
         })
         .catch(() => {});
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Legal concept extraction and analysis (stub)
    */
   async analyzeLegalConcepts(
     documentIds: string[]
-  ): Promise<{ concepts: any[]; totalDocuments: number;, conceptNetwork: Record<string, string[]> }> {
+  ): Promise<{ concepts: any[]; totalDocuments: number; conceptNetwork: Record<string, string[]> }> {
     const start = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       // Use provided SQL builder helpers where available
@@ -260,17 +260,17 @@ export class JsonbLegalService {
         const docsOp = (LegalJsonbOperations as: any).getDocumentConcepts(documentIds);
         docRows = (await sql_client.unsafe(docsOp.strings[0], ...docsOp.values)) as Array<{ documentId: string;, concepts: string[];
         }>;
-      } else {
+      } }else {
         // Try a simple query: pull metadata->'semantics'->'legalConcepts' as text[]
         const rows = await db
-          .select({, id: legalDocumentsJsonb.id, metadata: legalDocumentsJsonb.metadata })
+          .select({ id: legalDocumentsJsonb.id, metadata: legalDocumentsJsonb.metadata })
           .from(legalDocumentsJsonb)
           .where(inArray(legalDocumentsJsonb.id, documentIds));
         docRows = (rows || []).map((r: any) => ({
           documentId: r.id,
           concepts: (r.metadata, as: any)?.semantics?.legalConcepts || []
         }));
-      }
+      } }
 
       // build co-occurrence network
       const conceptNetwork: Record<string, string[]> = {};
@@ -284,42 +284,40 @@ export class JsonbLegalService {
             if (!conceptNetwork[b]) conceptNetwork[b] = [];
             if (!conceptNetwork[a].includes(b)) conceptNetwork[a].push(b);
             if (!conceptNetwork[b].includes(a)) conceptNetwork[b].push(a);
-          }
-        }
-      }
+          } }
+        } }
+      } }
 
       const duration = (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - start;
       await logger
         .logEvent?.({
           type: 'ai_interaction',
           message: 'legal_concept_analysis',
-          metadata: {
-           , operation: 'legal_concept_analysis',
+          metadata: { operation: 'legal_concept_analysis',
             inputSize: documentIds.length,
             outputSize: (conceptResults || []).length,
             processingTime: duration,
             success: true
-          }
+          } }
         })
         .catch(() => {});
       return { concepts: (conceptResults, as: any[]) || [], totalDocuments: documentIds.length, conceptNetwork };
-    } catch (err) {
+    } }catch (err) {
       const duration = (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - start;
       await logger
         .logEvent?.({
           type: 'ai_interaction',
           message: 'legal_concept_analysis_failed',
-          metadata: {
-           , inputSize: documentIds.length,
+          metadata: { inputSize: documentIds.length,
             processingTime: duration,
             success: false,
             error: err instanceof Error ? err.message : String(err)
-          }
+          } }
         })
         .catch(() => {});
-      return { concepts: [], totalDocuments: documentIds.length, conceptNetwork: {} };
-    }
-  }
+      return { concepts: [], totalDocuments: documentIds.length, conceptNetwork: {} }};
+    } }
+  } }
 
   // ========================================================================
   // CASE MANAGEMENT OPERATIONS (stubs)
@@ -341,7 +339,7 @@ export class JsonbLegalService {
         })
         .catch(() => {});
       return caseRecord as Case;
-    } catch (err) {
+    } }catch (err) {
       const duration = (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - start;
       await logger
         .logDocumentProcessing?.({
@@ -354,23 +352,23 @@ export class JsonbLegalService {
         })
         .catch(() => {});
       throw err;
-    }
-  }
+    } }
+  } }
 
   async findSimilarCases(caseId: string, threshold = 0.8): Promise<any[]> {
     try {
       const op = LegalJsonbOperations.findSimilarCases(caseId, threshold);
       const res = (await sql_client.unsafe(op.strings[0], ...op.values)) as: any[];
       return res || [];
-    } catch (err) {
+    } }catch (err) {
       console.warn('findSimilarCases failed:', err);
       return [];
-    }
-  }
+    } }
+  } }
 
   async addCaseTimelineEvent(
     caseId: string,
-    event: { date: string; event: string;, significance: 'low' | 'medium' | 'high' | 'critical' }'`'`
+    event: { date: string; event: string; significance: 'low' | 'medium' | 'high' | 'critical' } }`'`
   ): Promise<Case> {
     const start = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
@@ -400,7 +398,7 @@ export class JsonbLegalService {
         })
         .catch(() => {});
       return updatedCase as Case;
-    } catch (err) {
+    } }catch (err) {
       const duration = (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - start;
       await logger
         .logDocumentProcessing?.({
@@ -414,8 +412,8 @@ export class JsonbLegalService {
         })
         .catch(() => {});
       throw err;
-    }
-  }
+    } }
+  } }
 
   // ========================================================================
   // EVIDENCE OPERATIONS WITH CHAIN OF CUSTODY
@@ -429,7 +427,7 @@ export class JsonbLegalService {
       const evidenceData: NewEvidence = {
         ..._data,
         embedding: embedding ? JSON.stringify(embedding.vector) : null
-      } as NewEvidence;
+      } }as NewEvidence;
 
       const inserted = await db.insert(evidenceJsonb).values(evidenceData).returning();
       const evidence = Array.isArray(inserted) && inserted.length ? inserted[0] : inserted;
@@ -449,7 +447,7 @@ export class JsonbLegalService {
         .catch(() => {});
 
       return evidence as Evidence;
-    } catch (error: any) {
+    } }catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       await logger
@@ -464,19 +462,19 @@ export class JsonbLegalService {
         })
         .catch(() => {});
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Add custody transfer to evidence chain
    */
   async addCustodyTransfer(
     evidenceId: string,
-    transfer: {, timestamp: string;, custodian: string;
+    transfer: { timestamp: string;, custodian: string;
      , action: 'collected' | 'transferred' | 'analyzed' | 'stored' | 'retrieved';
       location?: string;
       condition?: string;
-    }
+    } }
   ): Promise<Evidence> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
@@ -487,7 +485,7 @@ export class JsonbLegalService {
           metadata: sql`
             jsonb_set(
               metadata,
-              '{chainOfCustody}',
+              '{chainOfCustody} },
               COALESCE(metadata->'chainOfCustody', '[]'::jsonb) || ${transferJson}::jsonb
             )
           `,`
@@ -507,14 +505,14 @@ export class JsonbLegalService {
           resourceType: 'evidence',
           action: 'update_custody_chain',
           actor: transfer.custodian,
-          metadata: {, action: transfer.action, location: transfer.location },
+          metadata: { action: transfer.action, location: transfer.location },
           success: true,
           processingTime: duration
         })
         .catch(() => {});
 
       return updatedEvidence as Evidence;
-    } catch (error: any) {
+    } }catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       await logger
@@ -524,33 +522,33 @@ export class JsonbLegalService {
           resourceType: 'evidence',
           action: 'update_custody_chain',
           actor: transfer.custodian,
-          metadata: {, action: transfer.action },
+          metadata: { action: transfer.action },
           success: false,
           error: error instanceof Error ? error.message : String(error),
           processingTime: duration
         })
         .catch(() => {});
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Verify evidence chain of custody integrity
    */
   async verifyEvidenceChain(
     evidenceId: string
-  ): Promise<{ isValid: boolean; evidence: Evidence | null;, chainValidation: any }> {
+  ): Promise<{ isValid: boolean; evidence: Evidence | null; chainValidation: any }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       const q = LegalJsonbOperations.verifyEvidenceChain(evidenceId);
       const verificationResult = await sql_client.unsafe(q.strings[0], ...q.values);
       if (!verificationResult || !verificationResult.length) {
         throw new Error(`Evidence not found: ${evidenceId}`);
-      }
+      } }
       const result = verificationResult[0] as: any;
       const evidence = result as Evidence;
       const chain = (evidence.metadata as EvidenceMetadata)?.chainOfCustody || [];
-      const gaps: Array<{ from string; to: string;, durationHours: number }> = [];
+      const gaps: Array<{ from string; to: string; durationHours: number }> = [];
 
       for (let i = 1; i < chain.length; i++) {
         const prevTime = new Date(chain[i - 1].timestamp);
@@ -562,8 +560,8 @@ export class JsonbLegalService {
             to: chain[i].custodian,
             durationHours: Math.round(durationMs / (60 * 60 * 1000))
           });
-        }
-      }
+        } }
+      } }
 
       const chainValidation = {
         chronologicallyValid: result.chain_validity === 'VALID',
@@ -593,7 +591,7 @@ export class JsonbLegalService {
         .catch(() => {});
 
       return { isValid, evidence, chainValidation };
-    } catch (error: any) {
+    } }catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       await logger
@@ -608,8 +606,8 @@ export class JsonbLegalService {
         })
         .catch(() => {});
       throw error;
-    }
-  }
+    } }
+  } }
 
   // ========================================================================
   // CITATION NETWORK ANALYSIS
@@ -617,7 +615,7 @@ export class JsonbLegalService {
   /**
    * Build citation network using JSONB recursive queries
    */
-  async buildCitationNetwork(documentId: string, depth = 2): Promise<{ nodes: any[];, edges: any[] }> {
+  async buildCitationNetwork(documentId: string, depth = 2): Promise<{ nodes: any[]; edges: any[] }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       const q = LegalJsonbOperations.findCitationNetwork(documentId, depth);
@@ -647,10 +645,10 @@ export class JsonbLegalService {
                 type: citation.type || 'citation',
                 relevance: citation.relevance
               });
-            }
-          }
-        }
-      }
+            } }
+          } }
+        } }
+      } }
 
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
@@ -667,7 +665,7 @@ export class JsonbLegalService {
         .catch(() => {});
 
       return { nodes, edges };
-    } catch (error: any) {
+    } }catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       await logger
@@ -683,8 +681,8 @@ export class JsonbLegalService {
         })
         .catch(() => {});
       throw error;
-    }
-  }
+    } }
+  } }
 
   // ========================================================================
   // PERFORMANCE ANALYTICS
@@ -693,7 +691,7 @@ export class JsonbLegalService {
    * Get JSONB performance metrics
    */
   async getPerformanceMetrics(): Promise<{ indexUsage: any[];, storageEfficiency: any[];
-    queryPerformance: {, averageQueryTime: number;, slowQueries: number;
+    queryPerformance: { averageQueryTime: number;, slowQueries: number;
      , indexHitRatio: number;
     };
   }> {
@@ -712,7 +710,7 @@ export class JsonbLegalService {
         storageEfficiency: (storageEfficiency, as: any[]) || [],
         queryPerformance
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       await logger
         .logError?.({
           error: error instanceof Error ? error.message : String(error),
@@ -721,8 +719,8 @@ export class JsonbLegalService {
           category: 'database' })'`'`
         .catch(() => {});
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Get legal analytics dashboard data
@@ -741,7 +739,7 @@ export class JsonbLegalService {
         caseAnalytics: (caseAnalytics, as: any[]) || [],
         evidenceIntegrity: (evidenceIntegrity, as: any[]) || []
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       await logger
         .logError?.({
           error: error instanceof Error ? error.message : String(error),
@@ -750,8 +748,8 @@ export class JsonbLegalService {
           category: `analytics' })'`
         .catch(() => {});
       throw error;
-    }
-  }
+    } }
+  } }
 
   // ========================================================================
   // CLEANUP AND MAINTENANCE
@@ -769,7 +767,7 @@ export class JsonbLegalService {
           success: true
         })
         .catch(() => {});
-    } catch (error: any) {
+    } }catch (error: any) {
       await logger
         .logSystemEvent?.({
           eventType: 'maintenance',
@@ -779,16 +777,17 @@ export class JsonbLegalService {
         })
         .catch(() => {});
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Close database connections
    */
   async close(): Promise<void> {
     await sql_client.end();
-  }
-}
+  } }
+} }
 
 // Singleton export
 export const jsonbLegalService = JsonbLegalService.getInstance();
+

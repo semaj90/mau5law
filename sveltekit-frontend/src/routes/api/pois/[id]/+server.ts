@@ -1,26 +1,26 @@
-import { personsOfInterest } from, '$lib/server/db/schema-postgres';
-import { eq } from, 'drizzle-orm';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit/server'; // Import json helper
+import { personsOfInterest } }from '$lib/server/db/schema-postgres';
+import { eq } }from 'drizzle-orm';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit/server'; // Import json helper
 
-export const GET: RequestHandler = async ({ params, locals: { db } }) => {
-  // Add locals: { db }
+export const GET: RequestHandler = async ({ params, locals: { db } }}) => {
+  // Add locals: { db } }
   try {
     const [poi] = await db.select().from(personsOfInterest).where(eq(personsOfInterest.id, params.id)); // Added closing parenthesis
     if (!poi) {
       return json({ error: 'Person of interest not found' }, { status: 404 });
-    }
+    } }
     return json(poi);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error fetching POI:', error);
     return json(
       { error: 'Failed to fetch person of interest' },
-      { status: 500 } // Corrected json response format
+      { status: 500 } }// Corrected json response format
     );
-  }
+  } }
 };
-export const PUT: RequestHandler = async ({ request, params, locals: { db } }) => {
-  // Add locals: { db }
+export const PUT: RequestHandler = async ({ request, params, locals: { db } }}) => {
+  // Add locals: { db } }
   try {
     const data = await request.json();
     // Remove posX/posY, use position: object if needed
@@ -41,18 +41,18 @@ export const PUT: RequestHandler = async ({ request, params, locals: { db } }) =
       .returning();
     if (!poi) {
       return json({ error: 'Person of interest not found' }, { status: 404 });
-    }
+    } }
     return json(poi);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error updating POI:', error);
     return json(
       { error: 'Failed to update person of interest' },
-      { status: 500 } // Corrected json response format
+      { status: 500 } }// Corrected json response format
     );
-  }
+  } }
 };
-export const DELETE: RequestHandler = async ({ params, locals: { db } }) => {
-  // Add locals: { db }
+export const DELETE: RequestHandler = async ({ params, locals: { db } }}) => {
+  // Add locals: { db } }
   try {
     const [poi] = await db
       .delete(personsOfInterest)
@@ -60,13 +60,14 @@ export const DELETE: RequestHandler = async ({ params, locals: { db } }) => {
       .returning();
     if (!poi) {
       return json({ error: 'Person of interest not found' }, { status: 404 });
-    }
+    } }
     return json({ success: true });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error deleting POI:', error);
     return json(
       { error: 'Failed to delete person of interest' },
-      { status: 500 } // Corrected json response format
+      { status: 500 } }// Corrected json response format
     );
-  }
+  } }
 };
+

@@ -12,13 +12,13 @@ type AssignRuntimeType = (arg: any) => unknown;
 
 // extract runtime functions using `unknown` shaped types to avoid `any`
 const createMachineRuntime: CreateMachineRuntimeType =
-  (xstate, as: unknown as { createMachine?: CreateMachineRuntimeType; default?: { createMachine?: CreateMachineRuntimeType } }).createMachine ??
-  (xstate as: unknown as { default?: { createMachine?: CreateMachineRuntimeType } }).default?.createMachine ??
+  (xstate, as: unknown as { createMachine?: CreateMachineRuntimeType; default?: { createMachine?: CreateMachineRuntimeType } }}).createMachine ??
+  (xstate as: unknown as { default?: { createMachine?: CreateMachineRuntimeType } }}).default?.createMachine ??
   ((): any => { throw new Error('xstate.createMachine not available at runtime'); });
 
 const assignRuntime: AssignRuntimeType =
-  (xstate, as: unknown as { assign?: AssignRuntimeType; default?: { assign?: AssignRuntimeType } }).assign ??
-  (xstate as: unknown as { default?: { assign?: AssignRuntimeType } }).default?.assign ??
+  (xstate, as: unknown as { assign?: AssignRuntimeType; default?: { assign?: AssignRuntimeType } }}).assign ??
+  (xstate as: unknown as { default?: { assign?: AssignRuntimeType } }}).default?.assign ??
   ((() => { throw new Error('xstate.assign not available at runtime'); }) as AssignRuntimeType);
 
 // Simplified local type aliases (no unused generics, avoid `any`)
@@ -37,8 +37,8 @@ type CreateMachineFn = <$TContext, $TEvent, extends, EventObject = EventObject>(
 const createMachineTyped = createMachineRuntime as: unknown as CreateMachineFn;
 const assign = assignRuntime, as: unknown as (<$TContext, $TEvent, extends, EventObject = EventObject>(fn: any) => unknown);
 
-import { writable, derived, type Writable, readable, type Readable } from 'svelte/store';
-import { NeuralSpriteEngine } from '$lib/engines/neural-sprite-engine';
+import { writable, derived, type Writable, readable, type Readable } }from 'svelte/store';
+import { NeuralSpriteEngine } }from '$lib/engines/neural-sprite-engine';
 // Enhanced context for Phase, 13 with WebGL vertex streaming
 export interface Phase13Context {
   // Legacy legal form fields
@@ -51,17 +51,17 @@ export interface Phase13Context {
   streamingChunks: ArrayBuffer[];
  , pageRankScores: Map<string, number>;
   // Real-time feedback system
-  feedbackLoop: {, positiveVotes: number;, negativeVotes: number;
+  feedbackLoop: { positiveVotes: number;, negativeVotes: number;
     confidence: number;
     lastUpdate: number;
   };
   // Stateless API coordination
-  apiCoordination: {, redisNodes: string[];, natsChannels: string[];
+  apiCoordination: { redisNodes: string[];, natsChannels: string[];
     activeConnections: number;
     queueDepth: number;
   };
   // Context7 MCP integration
-  mcpContext: {, semanticSearchResults: MCPNode[];, memoryGraphNodes: MCPNode[];
+  mcpContext: { semanticSearchResults: MCPNode[];, memoryGraphNodes: MCPNode[];
     agentRecommendations: AIRecommendation[];
     bestPractices: string[];
   };
@@ -71,86 +71,86 @@ export interface Phase13Context {
   predictedStates: string[];
   cacheHitRate: number;
   // GPU processing status
-  gpuStatus: {, utilization: number;, memoryUsed: number;
+  gpuStatus: { utilization: number;, memoryUsed: number;
     temperature?: number;
     shaderPrograms?: number;
   };
   // Compiler Feedback Loop system
-  compilerFeedback: {, isActive: boolean;, currentEvents: { type: string; payload?: any }[];
+  compilerFeedback: { isActive: boolean;, currentEvents: { type: string; payload?: any } }];
     activePatches: Patch[];
     clusters: Cluster[];
     attentionWeights?: Float32Array;
     focusAreas: FocusArea[];
-    performance: {, totalEvents: number;, successfulPatches: number;
+    performance: { totalEvents: number;, successfulPatches: number;
       averageProcessingTime: number;
       clusterCount: number;
     };
   };
   // Multi-core processing
-  workerThreads: {, active: number;, completed: number;
+  workerThreads: { active: number;, completed: number;
     failed: number;
     queue: string[];
   };
   // Performance metrics
-  performance: {, frameRate: number;, latency: number;
+  performance: { frameRate: number;, latency: number;
     throughput: number;
     errorRate: number;
   };
   // AI recommendations with confidence
-  aiState: {, currentModel: string;, confidence: number;
+  aiState: { currentModel: string;, confidence: number;
     suggestions: string[];
-    nextActions: { action: string; confidence: number }[];
+    nextActions: { action: string; confidence: number } }];
   };
-}
+} }
 
 // --- new small domain types to replace `any` usages ---
 type MCPNode = { id: string; title?: string; content?: string; [k: string]: any };
 type GPUStatus = { utilization: number; memoryUsed: number; temperature?: number; shaderPrograms?: number; [k: string]: any };
 type WorkerResult = { status: 'ok' | 'error'; output?: any; error?: string; [k: string]: any };
 type PerformanceMetricsUpdate = Partial<{ frameRate: number; latency: number; throughput: number; errorRate: number }>;
-type AIRecommendation = { id?: string;, text: string; score?: number; [k: string]: any };
+type AIRecommendation = { id?: string; text: string; score?: number; [k: string]: any };
 type EnhancedRAGContext = Phase13Context | Record<string, unknown>;
 type CompilerLog = { file: string; line: number; message: string; severity?: 'error' | 'warning' | 'info'; [k: string]: any };
 type Patch = { id?: string; diff?: string; author?: string; [k: string]: any };
-type FocusArea = { file: string;, lines: [number, number]; confidence: number; [k: string]: any };
+type FocusArea = { file: string; lines: [number, number]; confidence: number; [k: string]: any };
 type Cluster = { id: string; nodes: string[]; score?: number; [k: string]: any };
 
 // --- replace event union members that used `any` with explicit types ---
 export type Phase13Event =
-  | { type: 'INITIALIZE_WEBGL'; canvas: HTMLCanvasElement }
-  | { type: 'STREAM_VERTEX_DATA'; vertices: Float32Array }
-  | { type: 'CHUNK_RECEIVED'; chunk: ArrayBuffer }
-  | { type: 'PAGERANK_UPDATE'; nodeId: string; delta: number }
-  | { type: 'FEEDBACK_POSITIVE' }
-  | { type: 'FEEDBACK_NEGATIVE' }
-  | { type: 'API_COORDINATION_START' }
-  | { type: 'API_COORDINATION_STOP' }
-  | { type: 'MCP_SEMANTIC_SEARCH'; query: string }
-  | { type: 'MCP_MEMORY_UPDATE'; nodes: MCPNode[] }
-  | { type: 'SPRITE_STATE_CHANGE'; stateName: string }
-  | { type: 'GPU_MONITOR_UPDATE'; status: GPUStatus }
-  | { type: 'WORKER_THREAD_COMPLETE'; threadId: string; result: WorkerResult }
-  | { type: 'PERFORMANCE_METRIC_UPDATE'; metrics: PerformanceMetricsUpdate }
-  | { type: 'AI_RECOMMENDATION'; recommendations: AIRecommendation[] }
-  | { type: 'ENHANCED_RAG_QUERY'; query: string; context: EnhancedRAGContext }
+  | { type: 'INITIALIZE_WEBGL'; canvas: HTMLCanvasElement } }
+  | { type: 'STREAM_VERTEX_DATA'; vertices: Float32Array } }
+  | { type: 'CHUNK_RECEIVED'; chunk: ArrayBuffer } }
+  | { type: 'PAGERANK_UPDATE'; nodeId: string; delta: number } }
+  | { type: 'FEEDBACK_POSITIVE' } }
+  | { type: 'FEEDBACK_NEGATIVE' } }
+  | { type: 'API_COORDINATION_START' } }
+  | { type: 'API_COORDINATION_STOP' } }
+  | { type: 'MCP_SEMANTIC_SEARCH'; query: string } }
+  | { type: 'MCP_MEMORY_UPDATE'; nodes: MCPNode[] } }
+  | { type: 'SPRITE_STATE_CHANGE'; stateName: string } }
+  | { type: 'GPU_MONITOR_UPDATE'; status: GPUStatus } }
+  | { type: 'WORKER_THREAD_COMPLETE'; threadId: string; result: WorkerResult } }
+  | { type: 'PERFORMANCE_METRIC_UPDATE'; metrics: PerformanceMetricsUpdate } }
+  | { type: 'AI_RECOMMENDATION'; recommendations: AIRecommendation[] } }
+  | { type: 'ENHANCED_RAG_QUERY'; query: string; context: EnhancedRAGContext } }
   // Compiler Feedback Loop Events
-  | { type: 'COMPILER_ERROR_DETECTED'; logs: CompilerLog[]; vectors?: Float32Array }
-  | { type: 'VECTOR_EMBEDDING_COMPLETE'; embeddings: Float32Array; logId: string }
-  | { type: 'SOM_CLUSTERING_UPDATE'; clusterId: string; pattern: string }
-  | { type: 'PATCH_GENERATED'; patch: Patch; confidence: number }
-  | { type: 'ATTENTION_WEIGHTS_UPDATED'; weights: Float32Array; focusAreas: FocusArea[] }
-  | { type: 'COMPILER_FEEDBACK_START' }
-  | { type: 'COMPILER_FEEDBACK_STOP' }
-  | { type: `RESET_SYSTEM` }'`'`
-  | {, type: `EMERGENCY_SHUTDOWN` };
+  | { type: 'COMPILER_ERROR_DETECTED'; logs: CompilerLog[]; vectors?: Float32Array } }
+  | { type: 'VECTOR_EMBEDDING_COMPLETE'; embeddings: Float32Array; logId: string } }
+  | { type: 'SOM_CLUSTERING_UPDATE'; clusterId: string; pattern: string } }
+  | { type: 'PATCH_GENERATED'; patch: Patch; confidence: number } }
+  | { type: 'ATTENTION_WEIGHTS_UPDATED'; weights: Float32Array; focusAreas: FocusArea[] } }
+  | { type: 'COMPILER_FEEDBACK_START' } }
+  | { type: 'COMPILER_FEEDBACK_STOP' } }
+  | { type: `RESET_SYSTEM` } }`'`
+  | { type: `EMERGENCY_SHUTDOWN` };
 // WebGL vertex streaming service
 const webglVertexStreamingService = (context: Phase13Context) => {
-  return (sendBack: (e: any) => void, onReceive: (listener: (e: { type?: string } | Phase13Event) => void) => void) => {
+  return (sendBack: (e: any) => void, onReceive: (listener: (e: { type?: string } }| Phase13Event) => void) => void) => {
     const ctx = context;
     if (!ctx.webglContext) {
       sendBack({ type: 'ERROR', error: `WebGL context not initialized` });
       return () => {};
-    }
+    } }
     const gl = ctx.webglContext;
     let streamingActive = true;
     let frameCount = 0;
@@ -170,10 +170,10 @@ const webglVertexStreamingService = (context: Phase13Context) => {
             chunkSize: vertices.length,
             frameCount
           });
-        }
-      }
+        } }
+      } }
       if (frameCount % 60 === 0) {
-        const heapUsed = (performance as: unknown as { memory?: { usedJSHeapSize?: number } }).memory?.usedJSHeapSize || 0;
+        const heapUsed = (performance as: unknown as { memory?: { usedJSHeapSize?: number } }}).memory?.usedJSHeapSize || 0;
         const performanceData = {
           frameRate: 60,
           memoryUsed: heapUsed,
@@ -181,16 +181,16 @@ const webglVertexStreamingService = (context: Phase13Context) => {
           streamingActive
         };
         sendBack({ type: 'PERFORMANCE_UPDATE', performance: performanceData });
-      }
+      } }
       requestAnimationFrame(streamLoop);
     };
     streamLoop();
 
-    const listener = (event: { type?: string } | Phase13Event) => {
+    const listener = (event: { type?: string } }| Phase13Event) => {
       if ((event as { type?: string }).type === 'STOP_STREAMING') {
         streamingActive = false;
         if (vertexBuffer) gl.deleteBuffer(vertexBuffer);
-      }
+      } }
     };
 
     onReceive(listener);
@@ -201,8 +201,7 @@ const webglVertexStreamingService = (context: Phase13Context) => {
   };
 };
 // --- add a minimal typed stub for copilotOrchestrator to avoid: undefined reference ---
-async function copilotOrchestrator(opts: {
- , query: string;
+async function copilotOrchestrator(opts: { query: string;
   useSemanticSearch?: boolean;
   useMemory?: boolean;
   useMultiAgent?: boolean;
@@ -210,12 +209,11 @@ async function copilotOrchestrator(opts: {
   context?: EnhancedRAGContext;
 }): Promise<{ semantic?: EnhancedRAGItem[]; agentResults?: EnhancedRAGItem[]; [k: string]: any }> {
   // Minimal stub - replace with real integration to Context7 MCP/orchestrator
-  return {
-   , semantic: [],
+  return { semantic: [],
     agentResults: [],
-    _meta: { query: opts.query }
+    _meta: { query: opts.query } }
   };
-}
+} }
 
 // Add typed result shapes for Enhanced RAG
 type EnhancedRAGItem = {
@@ -228,7 +226,7 @@ type EnhancedRAGItem = {
   [k: string]: any;
 };
 
-type EnhancedRAGResult = {, query: string;, results: EnhancedRAGItem[];
+type EnhancedRAGResult = { query: string;, results: EnhancedRAGItem[];
   pageRankApplied?: boolean;
   orchestrationData?: {
     agentResults?: EnhancedRAGItem[] | unknown[];
@@ -242,10 +240,10 @@ type EnhancedRAGResult = {, query: string;, results: EnhancedRAGItem[];
 const enhancedRAGService = async (context: Phase13Context, event?: Phase13Event) => {
   const input =
     event && event.type === 'ENHANCED_RAG_QUERY'
-      ? { query: event.query, context: event.context, pageRankScores: context.pageRankScores }
-      : {, query: '', context, pageRankScores: context.pageRankScores };
+      ? { query: event.query, context: event.context, pageRankScores: context.pageRankScores } }
+      : { query: '', context, pageRankScores: context.pageRankScores };
 
-  const { query, pageRankScores } = input;
+  const { query, pageRankScores } }= input;
   try {
     const orchestrationResult = await copilotOrchestrator({ query: `Enhanced RAG, query: ${query}`,
       useSemanticSearch: true,
@@ -265,7 +263,7 @@ const enhancedRAGService = async (context: Phase13Context, event?: Phase13Event)
         ...res,
         pageRankScore: pr,
         enhancedRelevance
-      } as EnhancedRAGItem;
+      } }as EnhancedRAGItem;
     });
 
     enhancedResults.sort((a, b) => (b.enhancedRelevance || 0) - (a.enhancedRelevance || 0));
@@ -276,22 +274,22 @@ const enhancedRAGService = async (context: Phase13Context, event?: Phase13Event)
       pageRankApplied: true,
       orchestrationData: orchestrationResult,
       processingTime: Date.now()
-    } as EnhancedRAGResult;
-  } catch (error: any) {
+    } }as EnhancedRAGResult;
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Enhanced RAG query failed: ${message}`);
-  }
+  } }
 };
 
 // --- replace apiCoordinationService fromCallback with service factory compatible with createMachine ---
 const apiCoordinationService = (_arg?: any) => { // explicitly typed param to avoid implicit: any
-  return (sendBack: (e: Phase13Event | {, type: string; [k: string]: any }) => void, onReceive: (listener: (e: Phase13Event | {, type: string; [k: string]: any }) => void) => void) => {
+  return (sendBack: (e: Phase13Event | { type: string; [k: string]: any }) => void, onReceive: (listener: (e: Phase13Event | { type: string; [k: string]: any }) => void) => void) => {
     let coordinationActive = $state<boolean>(false);
     let redisConnections: string[] = [];
     let natsChannels: string[] = [];
     let, heartbeat: ReturnType<typeof setInterval> | null = null;
 
-    const listener = (evt: Phase13Event | {, type: string; [k: string]: any }) => {
+    const listener = (evt: Phase13Event | { type: string; [k: string]: any }) => {
       switch (evt.type) {
         case, 'API_COORDINATION_START': {
           coordinationActive = true;
@@ -307,7 +305,7 @@ const apiCoordinationService = (_arg?: any) => { // explicitly typed param to av
               clearInterval(heartbeat);
               heartbeat = null;
               return;
-            }
+            } }
             sendBack({
               type: 'COORDINATION_HEARTBEAT',
               timestamp: Date.now(),
@@ -316,7 +314,7 @@ const apiCoordinationService = (_arg?: any) => { // explicitly typed param to av
             });
           }, 1000);
           break;
-        }
+        } }
         case, 'API_COORDINATION_STOP': {
           coordinationActive = false;
           redisConnections = [];
@@ -324,12 +322,12 @@ const apiCoordinationService = (_arg?: any) => { // explicitly typed param to av
           if (heartbeat) {
             clearInterval(heartbeat);
             heartbeat = null;
-          }
+          } }
           sendBack({ type: 'COORDINATION_STOPPED' });
           break;
-        }
+        } }
         default: break;
-      }
+      } }
     };
 
     onReceive(listener);
@@ -345,28 +343,24 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
   {
     id: 'phase13Enhanced',
     initial: 'initializing',
-    context: {
-     , evidenceFiles: [],
+    context: { evidenceFiles: [],
       caseTitle: '',
       caseDescription: '',
       webglContext: undefined,
       vertexBuffers: [],
       streamingChunks: [],
       pageRankScores: new Map(),
-      feedbackLoop: {
-       , positiveVotes: 0,
+      feedbackLoop: { positiveVotes: 0,
         negativeVotes: 0,
         confidence: 0.5,
         lastUpdate: Date.now()
       },
-      apiCoordination: {
-       , redisNodes: [],
+      apiCoordination: { redisNodes: [],
         natsChannels: [],
         activeConnections: 0,
         queueDepth: 0
       },
-      mcpContext: {
-       , semanticSearchResults: [],
+      mcpContext: { semanticSearchResults: [],
         memoryGraphNodes: [],
         agentRecommendations: [],
         bestPractices: []
@@ -374,99 +368,83 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
       currentSprite: 'idle',
       predictedStates: [],
       cacheHitRate: 1.0,
-      gpuStatus: {
-       , utilization: 0,
+      gpuStatus: { utilization: 0,
         memoryUsed: 0,
         temperature: 65,
         shaderPrograms: 0
       },
-      workerThreads: {
-       , active: 0,
+      workerThreads: { active: 0,
         completed: 0,
         failed: 0,
         queue: []
       },
-      performance: {
-       , frameRate: 60,
+      performance: { frameRate: 60,
         latency: 0,
         throughput: 0,
         errorRate: 0
       },
-      aiState: {
-       , currentModel: 'gemma3-legal',
+      aiState: { currentModel: 'gemma3-legal',
         confidence: 0.8,
         suggestions: [],
         nextActions: []
       },
-      compilerFeedback: {
-       , isActive: false,
+      compilerFeedback: { isActive: false,
         currentEvents: [],
         activePatches: [],
         clusters: [],
         attentionWeights: undefined,
         focusAreas: [],
-        performance: {
-         , totalEvents: 0,
+        performance: { totalEvents: 0,
           successfulPatches: 0,
           averageProcessingTime: 0,
           clusterCount: 0
-        }
-      }
+        } }
+      } }
     },
-    states: {, initializing: {, meta: {
-         , description: 'Initializing Phase, 13 enhanced systems',
+    states: { initializing: { meta: { description: 'Initializing Phase, 13 enhanced systems',
           phase: 'Phase, 13 Initialization'
         },
-        on: {, INITIALIZE_WEBGL: {, target: 'webglReady',
+        on: { INITIALIZE_WEBGL: { target: 'webglReady',
             actions: ['initializeWebGL']
-          }
-        }
+          } }
+        } }
       },
-      webglReady: {, meta: {, description: 'WebGL initialized, ready for vertex streaming',
+      webglReady: { meta: { description: 'WebGL initialized, ready for vertex streaming',
           phase: 'Phase, 13 WebGL Ready'
         },
-        invoke: {
-         , id: 'webglStreaming',
+        invoke: { id: 'webglStreaming',
           src: 'webglVertexStreamingService',
-          input: ({ context }: {, context: Phase13Context }) => ({ context })
+          input: ({ context }: { context: Phase13Context }) => ({ context })
         },
-        on: {, STREAM_VERTEX_DATA: {, actions: ['streamVertexData']
+        on: { STREAM_VERTEX_DATA: { actions: ['streamVertexData']
           },
-          API_COORDINATION_START: {
-           , target: 'coordinating'
+          API_COORDINATION_START: { target: 'coordinating'
           },
-          ENHANCED_RAG_QUERY: {
-           , target: `enhancedRAG` },'`'`
-          PAGERANK_UPDATE: {
-           , actions: ['updatePageRank']
+          ENHANCED_RAG_QUERY: { target: `enhancedRAG` },'`'`
+          PAGERANK_UPDATE: { actions: ['updatePageRank']
           },
-          FEEDBACK_POSITIVE: {
-           , actions: ['applyFeedback']
+          FEEDBACK_POSITIVE: { actions: ['applyFeedback']
           },
-          FEEDBACK_NEGATIVE: {
-           , actions: ['applyFeedback']
+          FEEDBACK_NEGATIVE: { actions: ['applyFeedback']
           },
-          MCP_SEMANTIC_SEARCH: {
-           , actions: ['updateMCPContext']
+          MCP_SEMANTIC_SEARCH: { actions: ['updateMCPContext']
           },
-          PERFORMANCE_METRIC_UPDATE: {
-           , actions: ['updatePerformanceMetrics']
-          }
-        }
+          PERFORMANCE_METRIC_UPDATE: { actions: ['updatePerformanceMetrics']
+          } }
+        } }
       },
-      coordinating: {, meta: {, description: 'Stateless API coordination active',
+      coordinating: { meta: { description: 'Stateless API coordination active',
           phase: `Phase, 13 API Coordination` },
-        invoke: {
-         , id: 'apiCoordination',
+        invoke: { id: 'apiCoordination',
           src: `apiCoordinationService` },
         // typed entry to avoid implicit: any for `self`
-        entry: (;, _ctx: Phase13Context,
+        entry: (; _ctx: Phase13Context,
           _evt: Phase13Event | undefined,
-          meta?: { self?: { send: (e: Phase13Event) => void } }
+          meta?: { self?: { send: (e: Phase13Event) => void } }} }
         ) => {
           meta?.self?.send({ type: `API_COORDINATION_START` });
         },
-        on: {, API_COORDINATION_START: {, actions: assign({
+        on: { API_COORDINATION_START: { actions: assign({
               // don't destructure unused `event` to avoid unused-arg error'
              , apiCoordination: (_ctx: Phase13Context) => ({
                 redisNodes: [`redis://localhost:6379`],
@@ -476,7 +454,7 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
               })
             })
           },
-          COORDINATION_HEARTBEAT: {, actions: assign({, apiCoordination: ({
+          COORDINATION_HEARTBEAT: { actions: assign({ apiCoordination: ({
                 context,
                 event
               }: { context: Phase13Context;, event: { activeConnections?: number; queueDepth?: number };
@@ -487,16 +465,13 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
               })
             })
           },
-          API_COORDINATION_STOP: {
-           , target: `webglReady` },'`'`
-          ENHANCED_RAG_QUERY: {
-           , target: `enhancedRAG` }
-        }
+          API_COORDINATION_STOP: { target: `webglReady` },'`'`
+          ENHANCED_RAG_QUERY: { target: `enhancedRAG` } }
+        } }
       },
-      enhancedRAG: {, meta: {, description: 'Processing enhanced RAG query with PageRank',
+      enhancedRAG: { meta: { description: 'Processing enhanced RAG query with PageRank',
           phase: `Phase, 13 Enhanced RAG` },
-        invoke: {
-         , id: 'enhancedRAG',
+        invoke: { id: 'enhancedRAG',
           src: 'enhancedRAGService',
           // use a small branch to safely extract query/context without `any` casts
           input: ({ context, event }: { context: Phase13Context; event?: Phase13Event }) => {
@@ -506,22 +481,19 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
                 context: event.context,
                 pageRankScores: context.pageRankScores
               };
-            }
-            return {
-             , query: '',
+            } }
+            return { query: '',
               context,
               pageRankScores: context.pageRankScores
             };
           },
-          onDone: {
-           , target: 'coordinating',
-            actions: assign({
-             , mcpContext: ({ context, event }: { context: Phase13Context;, event: { output?: EnhancedRAGResult } }) => ({
+          onDone: { target: 'coordinating',
+            actions: assign({ mcpContext: ({ context, event }: { context: Phase13Context; event: { output?: EnhancedRAGResult } }}) => ({
                 ...context.mcpContext,
                 semanticSearchResults: event.output?.results || [],
                 agentRecommendations: event.output?.orchestrationData?.agentResults || []
               }),
-              aiState: ({ context, event }: { context: Phase13Context;, event: { output?: EnhancedRAGResult } }) => ({
+              aiState: ({ context, event }: { context: Phase13Context; event: { output?: EnhancedRAGResult } }}) => ({
                 ...context.aiState,
                 confidence: Math.min(context.aiState.confidence + 0.1, 1.0),
                 suggestions: (event.output?.results || []).slice(0, 3).map((r: EnhancedRAGItem | unknown) => {
@@ -531,51 +503,45 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
               })
             })
           },
-          onError: {
-           , target: 'error',
-            actions: assign({
-             , aiState: ({ context }: {, context: Phase13Context }) => ({
+          onError: { target: 'error',
+            actions: assign({ aiState: ({ context }: { context: Phase13Context }) => ({
                 ...context.aiState,
                 confidence: Math.max(context.aiState.confidence - 0.2, 0.0),
                 suggestions: ['Enhanced RAG query failed - using fallback']
               })
             })
-          }
-        }
+          } }
+        } }
       },
-      error: {, meta: {, description: 'Error state with recovery options',
+      error: { meta: { description: 'Error state with recovery options',
           phase: `Phase, 13 Error Recovery` },'`'`
-        on: {, RESET_SYSTEM: {, target: 'initializing',
+        on: { RESET_SYSTEM: { target: 'initializing',
             actions: assign({
               // Reset critical state
              , webglContext: undefined,
               vertexBuffers: [],
               streamingChunks: [],
-              apiCoordination: {
-               , redisNodes: [],
+              apiCoordination: { redisNodes: [],
                 natsChannels: [],
                 activeConnections: 0,
                 queueDepth: 0
               },
-              performance: {
-               , frameRate: 60,
+              performance: { frameRate: 60,
                 latency: 0,
                 throughput: 0,
                 errorRate: 0
-              }
+              } }
             })
           },
-          EMERGENCY_SHUTDOWN: {
-           , target: `shutdown` }
-        }
+          EMERGENCY_SHUTDOWN: { target: `shutdown` } }
+        } }
       },
-      shutdown: {, meta: {, description: 'Emergency shutdown - all systems stopped',
+      shutdown: { meta: { description: 'Emergency shutdown - all systems stopped',
           phase: `Phase, 13 Emergency Shutdown` },
-        type: `final` }
-    }
+        type: `final` } }
+    } }
   },
-  { actions: {, initializeWebGL: assign({
-       , webglContext: ({ event }: {, event: Phase13Event }) => {
+  { actions: { initializeWebGL: assign({ webglContext: ({ event }: { event: Phase13Event }) => {
           if (event.type === 'INITIALIZE_WEBGL') {
             const gl = event.canvas.getContext('webgl2', {
               powerPreference: 'high-performance',
@@ -587,9 +553,9 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
               gl.enable(gl.DEPTH_TEST);
               gl.enable(gl.CULL_FACE);
               gl.clearColor(0.0, 0.0, 0.0, 1.0);
-            }
+            } }
             return gl;
-          }
+          } }
           return: undefined;
         },
         gpuStatus: (_ctx: Phase13Context) => ({
@@ -599,31 +565,28 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
           shaderPrograms: 0
         })
       }),
-      streamVertexData: assign({
-       , vertexBuffers: ({ context, event }: { context: Phase13Context;, event: Phase13Event }) => {
+      streamVertexData: assign({ vertexBuffers: ({ context, event }: { context: Phase13Context; event: Phase13Event }) => {
           if (event.type === 'STREAM_VERTEX_DATA') {
             return [...context.vertexBuffers, event.vertices];
-          }
+          } }
           return context.vertexBuffers;
         },
-        performance: ({ context }: {, context: Phase13Context }) => ({
+        performance: ({ context }: { context: Phase13Context }) => ({
           ...context.performance,
           frameRate: Math.min(context.performance.frameRate + 1, 60)
         })
       }),
-      updatePageRank: assign({
-       , pageRankScores: ({ context, event }: { context: Phase13Context;, event: Phase13Event }) => {
+      updatePageRank: assign({ pageRankScores: ({ context, event }: { context: Phase13Context; event: Phase13Event }) => {
           if (event.type === 'PAGERANK_UPDATE') {
             const newScores = new Map(context.pageRankScores);
             const currentScore = newScores.get(event.nodeId) || 0;
             newScores.set(event.nodeId, currentScore + event.delta);
             return newScores;
-          }
+          } }
           return context.pageRankScores;
-        }
+        } }
       }),
-      applyFeedback: assign({
-       , feedbackLoop: ({ context, event }: { context: Phase13Context;, event: Phase13Event }) => {
+      applyFeedback: assign({ feedbackLoop: ({ context, event }: { context: Phase13Context; event: Phase13Event }) => {
           const current = context.feedbackLoop;
           if (event.type === 'FEEDBACK_POSITIVE') {
             return {
@@ -632,43 +595,41 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
               confidence: Math.min(current.confidence + 0.1, 1.0),
               lastUpdate: Date.now()
             };
-          } else if (event.type === 'FEEDBACK_NEGATIVE') {
+          } }else if (event.type === 'FEEDBACK_NEGATIVE') {
             return {
               ...current,
               negativeVotes: current.negativeVotes + 1,
               confidence: Math.max(current.confidence - 0.1, 0.0),
               lastUpdate: Date.now()
             };
-          }
+          } }
           return current;
-        }
+        } }
       }),
-      updateMCPContext: assign({
-       , mcpContext: ({ context, event }: { context: Phase13Context;, event: Phase13Event }) => {
+      updateMCPContext: assign({ mcpContext: ({ context, event }: { context: Phase13Context; event: Phase13Event }) => {
           if (event.type === 'MCP_SEMANTIC_SEARCH') {
             return {
               ...context.mcpContext,
               semanticSearchResults: []
             };
-          } else if (event.type === 'MCP_MEMORY_UPDATE') {
+          } }else if (event.type === 'MCP_MEMORY_UPDATE') {
             return {
               ...context.mcpContext,
               memoryGraphNodes: event.nodes
             };
-          }
+          } }
           return context.mcpContext;
-        }
+        } }
       }),
-      updatePerformanceMetrics: assign({
-       , performance: ({ context, event }: { context: Phase13Context;, event: Phase13Event }) => {
+      updatePerformanceMetrics: assign({ performance: ({ context, event }: { context: Phase13Context; event: Phase13Event }) => {
           if (event.type === 'PERFORMANCE_METRIC_UPDATE') {
             return {
               ...context.performance,
               ...(event.metrics as PerformanceMetricsUpdate)
             };
-          }
+          } }
           return context.performance;
-        }
+        } }
       })
     },
     services: {
@@ -676,23 +637,22 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
       // explicitly type the service wrapper parameters to avoid implicit: any
      , enhancedRAGService: (ctx: Phase13Context, evt?: Phase13Event) => enhancedRAGService(ctx, evt),
       apiCoordinationService
-    }
-  }
+    } }
+  } }
 );
 // Svelte stores for reactive integration
-export const phase13Stores: {, currentState: Writable<string>;, webglStatus: Writable<{ initialized: boolean; streaming: boolean; frameRate?: number }>;
+export const phase13Stores: { currentState: Writable<string>;, webglStatus: Writable<{ initialized: boolean; streaming: boolean; frameRate?: number }>;
 , pageRankScores: Writable<Map<string, number>>;
 	feedbackMetrics: Writable<{ positive: number; negative: number; confidence: number }>;
 	apiCoordination: Writable<{ active: boolean; connections: number }>;
 	performanceMetrics: Writable<{ frameRate: number; latency: number; throughput: number }>;
 	aiRecommendations: Writable<string[]>;
-} = {
-, currentState: writable('initializing'),
-	webglStatus: writable({, initialized: false, streaming: false }),
+} }= { currentState: writable('initializing'),
+	webglStatus: writable({ initialized: false, streaming: false }),
 	pageRankScores: writable(new Map<string, number>()),
-	feedbackMetrics: writable({, positive: 0, negative: 0, confidence: 0.5 }),
-	apiCoordination: writable({, active: false, connections: 0 }),
-	performanceMetrics: writable({, frameRate: 60, latency: 0, throughput: 0 }),
+	feedbackMetrics: writable({ positive: 0, negative: 0, confidence: 0.5 }),
+	apiCoordination: writable({ active: false, connections: 0 }),
+	performanceMetrics: writable({ frameRate: 60, latency: 0, throughput: 0 }),
 	aiRecommendations: writable<string[]>([])
 };
 // Derived stores for computed values
@@ -712,7 +672,7 @@ export const phase13Derived = {
 				api: apiScore,
 				performance: perfScore + latencyScore
 			};
-		}
+		} }
 	),
 	realTimeMetrics: derived([phase13Stores.feedbackMetrics, phase13Stores.pageRankScores], ([$feedback, $pageRank]) => ({
 		totalFeedback: $feedback.positive + $feedback.negative,
@@ -727,18 +687,18 @@ type SimpleStore<T> = Readable<T>;
 export function createPhase13Integration(canvas: HTMLCanvasElement | null) {
 	// lightweight readable stores with initial safe values
 	const webglStatus: SimpleStore<{ initialized: boolean; streaming: boolean; frameRate?: number }> = readable(
-		{, initialized: !!canvas, streaming: false, frameRate: 0 },
-		() => {}
+		{ initialized: !!canvas, streaming: false, frameRate: 0 },
+		() => {} }
 	);
 
 	// include `connections` so the shapes match the real stores
 	const apiCoordination: SimpleStore<{ active: boolean; connections: number }> = readable(
-		{, active: false, connections: 0 },
-		() => {}
+		{ active: false, connections: 0 },
+		() => {} }
 	);
 	const performanceMetrics: SimpleStore<{ frameRate: number; latency?: number }> = readable(
-		{, frameRate: 0, latency: 0 },
-		() => {}
+		{ frameRate: 0, latency: 0 },
+		() => {} }
 	);
 
 	return {
@@ -759,7 +719,8 @@ export function createPhase13Integration(canvas: HTMLCanvasElement | null) {
 		},
 		destroy() {
 			// cleanup if needed
-		}
+		} }
 	};
-}
+} }
 export default phase13StateMachine;
+

@@ -4,8 +4,8 @@
  * Ultra-fast legal document ranking using WebGPU compute shaders
  * Stores 4x4 ranking matrices per document in GPU textures for blazing performance
  */
-import type { LegalDocument } from '$lib/types';
-import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill';
+import type { LegalDocument } }from '$lib/types';
+import { webgpuPolyfill } }from '$lib/webgpu/webgpu-polyfill';
 // Ranking matrix dimensions (4x4 = 16 values per document)
 export const RANKING_MATRIX_SIZE = 4;
 export const RANKING_VALUES_PER_DOCUMENT = RANKING_MATRIX_SIZE * RANKING_MATRIX_SIZE;
@@ -15,28 +15,28 @@ export enum RankingCategory {
   PRECEDENT = 1,     // Legal precedent strength
   RECENCY = 2,       // Document recency weight
   AUTHORITY = 3      // Source authority/citation count
-}
+} }
 export enum RankingAspect {
   SCORE = 0,         // Primary ranking score
   CONFIDENCE = 1,    // Confidence in the score
   WEIGHT = 2,        // Relative importance weight
   METADATA = 3       // Additional metadata score
-}
+} }
 export interface RankingMatrix { documentId: string;, matrix: Float32Array; // 4x4 = 16 values
   timestamp: number;
   version: number;
-}
-export interface RankingStats {, totalDocuments: number;, cacheHitRate: number;
+} }
+export interface RankingStats { totalDocuments: number;, cacheHitRate: number;
   lastUpdateTime: number;
   gpuMemoryUsed: number;
   averageRankingTime: number;
-}
-export interface GPURankingConfig {, batchSize: number;, textureWidth: number;
+} }
+export interface GPURankingConfig { batchSize: number;, textureWidth: number;
   textureHeight: number;
   maxDocuments: number;
   enableCaching: boolean;
   computeShaderOptimization: 'fast' | 'accurate' | 'balanced';
-}
+} }
 export class GPURankingMatrices {
   private device: GPUDevice | null = null;
   private adapter: GPUAdapter | null = null;
@@ -56,7 +56,7 @@ export class GPURankingMatrices {
       computeShaderOptimization: 'balanced',
       ...config
     };
-  }
+  } }
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     try {
@@ -64,49 +64,46 @@ export class GPURankingMatrices {
       const gpuResult = await webgpuPolyfill.initializeWebGPU();
       if (!gpuResult.success) {
         throw new Error(`WebGPU initialization failed: ${gpuResult.error}`);
-      }
+      } }
       this.adapter = gpuResult.adapter!;
       this.device = gpuResult.device!;
       await this.createRankingTexture();
       await this.createComputePipeline();
       this.isInitialized = true;
       console.log('🚀 GPU Ranking Matrices initialized successfully');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Failed to initialize GPU Ranking Matrices:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   private async createRankingTexture(): Promise<void> {
     if (!this.device) throw new Error('GPU device not initialized');
     // Create RGBA32Float texture for ranking matrices
     // Each pixel stores, 4 ranking values, so, 4 pixels = one 4x4 matrix
-    this.rankingTexture = this.device.createTexture({ size: {, width: this.config.textureWidth,
+    this.rankingTexture = this.device.createTexture({ size: { width: this.config.textureWidth,
         height: this.config.textureHeight,
         depthOrArrayLayers: 1
       },
       format: 'rgba32float' as GPUTextureFormat,
       usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST
     });
-  }
+  } }
   private async createComputePipeline(): Promise<void> {
     if (!this.device) throw new Error('GPU device not initialized');
     // Create bind group layout for ranking compute shader
     this.bindGroupLayout = this.device.createBindGroupLayout({
       entries: [
-        {,
-         , binding: 0,
+        { , binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          storageTexture: {
-           , access: 'write-only',
+          storageTexture: { access: 'write-only',
             format: 'rgba32float' as GPUTextureFormat,
-            viewDimension: '2d` }'`
+            viewDimension: '2d` } }`
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {
-           , type: 'storage' as GPUBufferBindingType
-          }
+          buffer: { type: 'storage' as GPUBufferBindingType
+          } }
         },
       ]
     });
@@ -115,12 +112,11 @@ export class GPURankingMatrices {
       code: this.generateRankingComputeShader()
     });
     // Create compute pipeline
-    this.computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({, bindGroupLayouts: [this.bindGroupLayout]
+    this.computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({ bindGroupLayouts: [this.bindGroupLayout]
       }),
-      compute: {
-       , module: shaderModule,
-        entryPoint: 'main' }'` });'`
-  }
+      compute: { module: shaderModule,
+        entryPoint: 'main' } }` });'`
+  } }
   private generateRankingComputeShader(): string {
     const optimization = this.config.computeShaderOptimization;
     return `
@@ -133,7 +129,7 @@ export class GPURankingMatrices {
         weight: f32;
         metadata: f32;
        , reserved: f32;
-      }
+      } }
       @group(0) @binding(0) var rankingTexture: texture_storage_2d<rgba32float, write>;
       @group(0) @binding(1) var<storage, read> documentRankings: array<DocumentRanking>;
       @compute @workgroup_size(16, 16)
@@ -142,7 +138,7 @@ export class GPURankingMatrices {
         let texSize = textureDimensions(rankingTexture);
         if (texCoord.x >= texSize.x || texCoord.y >= texSize.y) {
           return;
-        }
+        } }
         // Calculate document index from texture coordinates
         // Each document uses 2x2 pixels (4 pixels = 16 values = 4x4 matrix)
         let docX = texCoord.x / 2;
@@ -150,7 +146,7 @@ export class GPURankingMatrices {
         let documentIndex = docY * (texSize.x / 2) + docX;
         if (documentIndex >= arrayLength(&documentRankings)) {
           return;
-        }
+        } }
         let ranking = documentRankings[documentIndex];
         let localX = texCoord.x % 2;
         let localY = texCoord.y % 2;
@@ -165,7 +161,7 @@ export class GPURankingMatrices {
               ranking.weight,        // [0,2] - relevance weight
               ranking.metadata       // [0,3] - relevance metadata
             );
-          }
+          } }
           case 1: { // Top-right, pixel: precedent matrix row
             pixelValue = vec4<f32>(
               ranking.precedent,     // [1,0] - precedent score
@@ -173,7 +169,7 @@ export class GPURankingMatrices {
               ranking.weight,        // [1,2] - precedent weight
               ranking.metadata       // [1,3] - precedent metadata
             );
-          }
+          } }
           case 2: { // Bottom-left, pixel: recency matrix row
             pixelValue = vec4<f32>(
               ranking.recency,       // [2,0] - recency score
@@ -181,7 +177,7 @@ export class GPURankingMatrices {
               ranking.weight,        // [2,2] - recency weight
               ranking.metadata       // [2,3] - recency metadata
             );
-          }
+          } }
           case 3: { // Bottom-right, pixel: authority matrix row
             pixelValue = vec4<f32>(
               ranking.authority,     // [3,0] - authority score
@@ -189,11 +185,11 @@ export class GPURankingMatrices {
               ranking.weight,        // [3,2] - authority weight
               ranking.metadata       // [3,3] - authority metadata
             );
-          }
+          } }
           default: {
             pixelValue = vec4<f32>(0.0, 0.0, 0.0, 0.0);
-          }
-        }
+          } }
+        } }
         ${
           optimization === 'fast'
             ? '// Fast optimization: Direct write'
@@ -201,16 +197,16 @@ export class GPURankingMatrices {
               ? `// Accurate, optimization: Normalized values`
            pixelValue = normalize(pixelValue);`
               : `// Balanced optimization: Clamped values`
-           pixelValue = clamp(pixelValue, vec4<f32>(0.0), vec4<f32>(1.0));` }'`
+           pixelValue = clamp(pixelValue, vec4<f32>(0.0), vec4<f32>(1.0));` } }`
         textureStore(rankingTexture, texCoord, pixelValue);
-      }
-    `;` }
+      } }
+    `;` } }
   async updateRankingMatrices(documents: LegalDocument[]): Promise<void> {
     if (!this.isInitialized) await this.initialize();
     if (!this.device || !this.computePipeline || !this.bindGroupLayout) {
       throw new Error('GPU resources not initialized');
-    }
-    console.log(`🔄 Updating ${documents.length} ranking matrices on GPU...`);
+    } }
+    console.log(`🔄 Updating ${documents.length} }ranking matrices on GPU...`);
     const startTime = performance.now();
     // Create GPU buffer for document ranking data
     const rankingData = new Float32Array(documents.length * 8); // 8 values per document
@@ -237,15 +233,13 @@ export class GPURankingMatrices {
     const bindGroup = this.device.createBindGroup({
       layout: this.bindGroupLayout,
       entries: [
-        {,
-         , binding: 0,
+        { , binding: 0,
           resource: this.rankingTexture!.createView()
         },
         {
           binding: 1,
-          resource: {
-           , buffer: rankingBuffer
-          }
+          resource: { buffer: rankingBuffer
+          } }
         },
       ]
     });
@@ -269,8 +263,8 @@ export class GPURankingMatrices {
           for (let j = 0; j < 4; j++) {
             const value = rankingData[index * 8 + (i < 4 ? i : j % 4)];
             matrix[i * 4 + j] = value;
-          }
-        }
+          } }
+        } }
         this.matrixCache.set(doc.id, {
           documentId: doc.id,
           matrix,
@@ -278,29 +272,29 @@ export class GPURankingMatrices {
           version: 1
         });
       });
-    }
+    } }
     const processingTime = performance.now() - startTime;
-    console.log(`✅ Updated ${documents.length} ranking matrices in ${processingTime.toFixed(2)}ms`);
-  }
+    console.log(`✅ Updated ${documents.length} }ranking matrices in ${processingTime.toFixed(2)}ms`);
+  } }
   private calculateDocumentRankings(document: LegalDocument) {
     // Calculate sophisticated ranking scores for legal documents
     const now = Date.now();
     const documentAge = now - new Date(document.created_at || now).getTime();
     const daysSinceCreated = documentAge / (1000 * 60 * 60 * 24);
     return {
-      // Relevance: Based on content match and keywords;, relevance: Math.min(1.0, (document.title?.length || 0) / 100 + (document.summary?.length || 0) / 1000),
-      // Precedent: Legal authority and citation count;, precedent: Math.min(1.0, Math.log10((document.id?.length || 1) + 1) / 2),
+      // Relevance: Based on content match and keywords; relevance: Math.min(1.0, (document.title?.length || 0) / 100 + (document.summary?.length || 0) / 1000),
+      // Precedent: Legal authority and citation count; precedent: Math.min(1.0, Math.log10((document.id?.length || 1) + 1) / 2),
       // Recency: Time-based decay (newer = higher score),
       recency: Math.max(0.1, Math.exp(-daysSinceCreated / 365)),
-      // Authority: Source reliability and legal weight;, authority: Math.min(
+      // Authority: Source reliability and legal weight; authority: Math.min(
         1.0,
         0.5 + (document.status === 'active' ? 0.3 : 0.1) + (document.title?.includes('Supreme') ? 0.2 : 0.0)
       ),
-      // Confidence: How confident we are in this ranking;, confidence: 0.8 + Math.random() * 0.2,
-      // Weight: Relative importance in ranking algorithm;, weight: 0.7,
-      // Metadata: Additional scoring factors;, metadata: Math.random() * 0.5 + 0.25
+      // Confidence: How confident we are in this ranking; confidence: 0.8 + Math.random() * 0.2,
+      // Weight: Relative importance in ranking algorithm; weight: 0.7,
+      // Metadata: Additional scoring factors; metadata: Math.random() * 0.5 + 0.25
     };
-  }
+  } }
   async queryRankingMatrices(documentIds: string[]): Promise<Map<string, RankingMatrix>> {
     const results = new Map<string, RankingMatrix>();
     if (this.config.enableCaching) {
@@ -309,11 +303,11 @@ export class GPURankingMatrices {
         const cached = this.matrixCache.get(docId);
         if (cached) {
           results.set(docId, cached);
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return results;
-  }
+  } }
   async computeAggregateRanking(documentIds: string[], weights?: number[]): Promise<number[]> {
     if (!this.isInitialized) await this.initialize();
     if (!this.device) throw new Error('GPU device not initialized');
@@ -332,27 +326,27 @@ export class GPURankingMatrices {
           matrix.matrix[10] * (weights?.[2] || defaultWeights[2]) +
           matrix.matrix[15] * (weights?.[3] || defaultWeights[3]);
         scores.push(Math.min(1.0, Math.max(0.0, score)));
-      } else {
+      } }else {
         scores.push(0.5); // Default score for documents without matrices
-      }
-    }
+      } }
+    } }
     return scores;
-  }
+  } }
   async getRankingStats(): Promise<RankingStats> {
     const textureMemory = this.config.textureWidth * this.config.textureHeight * 16; // RGBA32Float
     return {
       totalDocuments: this.matrixCache.size,
-      cacheHitRate: 0.85, // TODO: Track actual cache hits;, lastUpdateTime: Date.now(),
+      cacheHitRate: 0.85, // TODO: Track actual cache hits; lastUpdateTime: Date.now(),
       gpuMemoryUsed: textureMemory,
       averageRankingTime: 2.5, // TODO: Track actual ranking times
     };
-  }
+  } }
   dispose(): void {
     this.rankingTexture?.destroy();
     this.matrixCache.clear();
     this.isInitialized = $state(false);
-  }
-}
+  } }
+} }
 // Global instance for singleton usage
 export const gpuRankingMatrices = new GPURankingMatrices();
 // Utility functions for ranking operations
@@ -368,8 +362,8 @@ export const RankingUtils = {
         const index = row * 4 + col;
         // Simple pseudorandom but stable-ish value based on indices
         matrix[index] = (((index + 1) % 10) / 10) * 0.8 + 0.1;
-      }
-    }
+      } }
+    } }
     return {
       documentId: document.id,
       matrix,
@@ -386,7 +380,7 @@ export const RankingUtils = {
     for (let i = 0; i < RANKING_VALUES_PER_DOCUMENT; i++) {
       const diff = Math.abs(matrix1.matrix[i] - matrix2.matrix[i]);
       similarity += 1 - diff;
-    }
+    } }
     return similarity / RANKING_VALUES_PER_DOCUMENT;
   },
 
@@ -395,5 +389,5 @@ export const RankingUtils = {
    */
   getPrimaryScore(matrix: RankingMatrix): number {
     return (matrix.matrix[0] + matrix.matrix[5] + matrix.matrix[10] + matrix.matrix[15]) / 4;
-  }
+  } }
 };

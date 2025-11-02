@@ -1,13 +1,13 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { mcpGPUOrchestrator } }from '$lib/services/mcp-gpu-orchestrator.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Handle various GPU orchestration actions
     // Handle various GPU orchestration actions:
-    // Supported;, actions: 'legal_analysis', 'document_processing', 'autosolve', 'gpu_task', 'cluster_status'
-    const { action, data, config } = await request.json();
+    // Supported; actions: 'legal_analysis', 'document_processing', 'autosolve', 'gpu_task', 'cluster_status'
+    const { action, data, config } }= await request.json();
     switch (action) {
       case, 'legal_analysis':
         return await handleLegalAnalysis(data, config);
@@ -19,9 +19,9 @@ export const POST: RequestHandler = async ({ request }) => {
         return await handleGPUTask(data, config);
       case, 'cluster_status':
         return await handleClusterStatus();
-      default: return json({, error: 'Invalid action' }, { status: 400 });
-    }
-  } catch (error: any) {
+      default: return json({ error: 'Invalid action' }, { status: 400 });
+    } }
+  } }catch (error: any) {
     const errMsg =
       error instanceof Error
         ? error.message
@@ -30,26 +30,26 @@ export const POST: RequestHandler = async ({ request }) => {
           : (() => {
               try {
                 return JSON.stringify(error ?? {});
-              } catch {
+              } }catch {
                 return, 'Unknown error';
-              }
+              } }
             })();
-    console.error('GPU orchestration error:', errMsg);'
+    console.error('GPU orchestration error:', errMsg);
     return json(
       {
         error: 'GPU orchestration failed',
         details: errMsg
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 async function handleLegalAnalysis(
   data: LegalAnalysisPayload | unknown,
-  config: GPUConfig = {}
+  config: GPUConfig = {} }
 ): Promise<ReturnType<typeof, json>> {
-  const { document, context, options } = (data as LegalAnalysisPayload) || {};
+  const { document, context, options } }= (data as LegalAnalysisPayload) || {};
   // Build allowed options to pass to orchestrator (avoid: unknown props)
   const orchestratorOptions = {
     caseId: context?.caseId,
@@ -59,9 +59,9 @@ async function handleLegalAnalysis(
     generateSummary: options?.generateSummary,
     // include incoming config so it's actually used (merged with defaults by orchestrator)'
     config: {
-     , useGPU: true,
+  useGPU: true,
       ...config
-    }
+    } }
   };
   // Ensure we pass a value of type `string | File` to the orchestrator.
   // If `document` is: undefined, coerce to empty: string.
@@ -75,13 +75,13 @@ async function handleLegalAnalysis(
   if (result?.success && options?.extractEntities) {
     result.result = result.result || {};
     (result.result as Record<string, unknown>).entities = extractLegalEntities(document || '');
-  }
+  } }
   if (result?.success && options?.riskAssessment) {
     result.result = result.result || {};
     (result.result as Record<string, unknown>).riskAssessment = await performRiskAssessment(
       result.result as AnalysisResult
     );
-  }
+  } }
   return json({
     success: Boolean(result?.success),
     analysis: result?.result ?? null,
@@ -89,13 +89,13 @@ async function handleLegalAnalysis(
     recommendations: result?.recommendations ?? null,
     timestamp: new Date().toISOString()
   });
-}
+} }
 
 async function handleDocumentProcessing(
   data: DocumentProcessingPayload | unknown,
-  config: GPUConfig = {}
+  config: GPUConfig = {} }
 ): Promise<ReturnType<typeof, json>> {
-  const { files, context, options } = (data as DocumentProcessingPayload) || {};
+  const { files, context, options } }= (data as DocumentProcessingPayload) || {};
   const results: OrchestratorResponse[] = [];
   for (const file of files ?? []) {
     const result = (await mcpGPUOrchestrator.dispatchGPUTask({
@@ -104,19 +104,19 @@ async function handleDocumentProcessing(
       priority: 'high',
       data: { file },
       context: {
-       , userId: context?.userId,
+  userId: context?.userId,
         caseId: context?.caseId,
         documentId: context?.documentId
       },
       config: {
-       , useGPU: true,
+  useGPU: true,
         useRAG: options?.enableRAG !== false,
         protocol: 'http',
         ...config
-      }
+      } }
     })) as OrchestratorResponse;
     results.push(result);
-  }
+  } }
   return json({
     success: true,
     results,
@@ -124,7 +124,7 @@ async function handleDocumentProcessing(
     failed: results.filter(r => !r?.success).length,
     timestamp: new Date().toISOString()
   });
-}
+} }
 
 // --- Added types to avoid `any` ------------------------------------------------
 // New: explicit allowed task types and priority values
@@ -189,10 +189,10 @@ type OrchestratorResponse = {
 // -------------------------------------------------------------------------------
 
 async function handleAutosolve(
- , data: AutosolvePayload | unknown,
-  config: GPUConfig = {}
+  data: AutosolvePayload | unknown,
+  config: GPUConfig = {} }
 ): Promise<ReturnType<typeof, json>> {
-  const { threshold, forceRun, includeClusterMetrics } = (data as AutosolvePayload) || {};
+  const { threshold, forceRun, includeClusterMetrics } }= (data as AutosolvePayload) || {};
   const result = await mcpGPUOrchestrator.triggerAutosolve({
     threshold: threshold ?? 5,
     includeClusterMetrics: includeClusterMetrics !== false,
@@ -203,17 +203,17 @@ async function handleAutosolve(
   return json({
     success: Boolean(result?.success),
     autosolve: {
-     , result: result?.result ?? null,
+  result: result?.result ?? null,
       metrics: result?.metrics ?? null,
       recommendations: result?.recommendations ?? null
     },
     cluster: clusterStatus,
     timestamp: new Date().toISOString()
   });
-}
+} }
 
 async function handleGPUTask(data: GPUTaskPayload | unknown, config: GPUConfig = {}): Promise<ReturnType<typeof json>> {
-  const { taskType, taskData, priority, context } = (data as GPUTaskPayload) || {};
+  const { taskType, taskData, priority, context } }= (data as GPUTaskPayload) || {};
 
   // Validate and coerce taskType into allowed TaskType union (default to document_processing)
   const allowedTaskTypes: TaskType[] = [
@@ -245,9 +245,9 @@ async function handleGPUTask(data: GPUTaskPayload | unknown, config: GPUConfig =
     data: taskData,
     context,
     config: {
-     , useGPU: true,
+  useGPU: true,
       ...config
-    }
+    } }
   });
   return json({
     success: Boolean(result?.success),
@@ -258,7 +258,7 @@ async function handleGPUTask(data: GPUTaskPayload | unknown, config: GPUConfig =
     recommendations: result?.recommendations ?? null,
     timestamp: new Date().toISOString()
   });
-}
+} }
 
 async function handleClusterStatus(): Promise<ReturnType<typeof, json>> {
   const clusterStatus = await mcpGPUOrchestrator.getClusterStatus();
@@ -266,7 +266,7 @@ async function handleClusterStatus(): Promise<ReturnType<typeof, json>> {
     cluster: clusterStatus,
     timestamp: new Date().toISOString()
   });
-}
+} }
 
 function extractLegalEntities(doc: string) {
   const entities = {
@@ -296,25 +296,25 @@ function extractLegalEntities(doc: string) {
     for (const pattern of categoryPatterns) {
       const matches = doc.match(pattern) || [];
       (entities[category] as: string[]).push(...matches);
-    }
-  }
+    } }
+  } }
   return entities;
-}
+} }
 
 // Types for risk assessment
 type AnalysisResult = { text?: string; summary?: string; [key: string]: any };
-type RiskScores = {, financial: number;, legal: number;
+type RiskScores = { financial: number;, legal: number;
   operational: number;
   reputational: number;
   overall: number;
 };
-type RiskAssessment = {, scores: RiskScores;, level: 'low' | 'medium' | 'high';
- , recommendations: string[];
+type RiskAssessment = { scores: RiskScores;, level: 'low' | 'medium' | 'high';
+  recommendations: string[];
 };
 
 async function performRiskAssessment(analysisResult: AnalysisResult): Promise<RiskAssessment> {
   const risks: RiskScores = {
-   , financial: 0,
+  financial: 0,
     legal: 0,
     operational: 0,
     reputational: 0,
@@ -335,7 +335,7 @@ async function performRiskAssessment(analysisResult: AnalysisResult): Promise<Ri
       return sum + matches;
     }, 0);
     risks[category as keyof Omit<RiskScores, 'overall'>] = Math.min(10, score);
-  }
+  } }
 
   // Compute overall as average of four categories and round
   risks.overall = Math.round((risks.financial + risks.legal + risks.operational + risks.reputational) / 4);
@@ -345,32 +345,32 @@ async function performRiskAssessment(analysisResult: AnalysisResult): Promise<Ri
     level: risks.overall >= 7 ? 'high' : risks.overall >= 4 ? 'medium' : 'low',
     recommendations: generateRiskRecommendations(risks)
   };
-}
+} }
 
 function generateRiskRecommendations(risks: RiskScores): string[] {
   const recommendations: string[] = [];
   if (risks.financial >= 7) {
     recommendations.push('Obtain financial insurance or bonding');
     recommendations.push('Establish escrow or security deposits');
-  }
+  } }
   if (risks.legal >= 7) {
     recommendations.push('Consult specialized legal counsel');
     recommendations.push('Review compliance requirements');
-  }
+  } }
   if (risks.operational >= 7) {
     recommendations.push('Develop contingency plans');
     recommendations.push('Implement monitoring systems');
-  }
+  } }
   if (risks.reputational >= 7) {
     recommendations.push('Prepare crisis communication plan');
     recommendations.push('Implement stakeholder engagement strategy');
-  }
+  } }
   if (risks.overall >= 7) {
     recommendations.push('Consider risk transfer mechanisms');
     recommendations.push('Establish risk monitoring dashboard');
-  }
+  } }
   return recommendations;
-}
+} }
 
 // Health check endpoint
 export const GET: RequestHandler = async () => {
@@ -382,7 +382,7 @@ export const GET: RequestHandler = async () => {
       cluster: clusterStatus,
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const errMsg =
       error instanceof Error
         ? error.message
@@ -391,9 +391,9 @@ export const GET: RequestHandler = async () => {
           : (() => {
               try {
                 return JSON.stringify(error ?? {});
-              } catch {
+              } }catch {
                 return, 'Unknown error';
-              }
+              } }
             })();
     return json(
       {
@@ -401,7 +401,8 @@ export const GET: RequestHandler = async () => {
         error: errMsg,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

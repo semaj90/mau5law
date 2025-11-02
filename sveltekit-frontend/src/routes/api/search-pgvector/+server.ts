@@ -1,18 +1,18 @@
 /// <reference, types="vite/client" />
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { z } from 'zod';
-import { db } from '$lib/server/db';
-import { getOllamaEndpoint } from '$lib/server/ollama-utils'; // Import the new utility
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { z } }from 'zod';
+import { db } }from '$lib/server/db';
+import { getOllamaEndpoint } }from '$lib/server/ollama-utils'; // Import the new utility
 // Use concrete type exports from the search types file
-import type { VectorSearchQueryResult, SearchResult } from '$lib/types/search';
+import type { VectorSearchQueryResult, SearchResult } }from '$lib/types/search';
 
 // Local endpoint-only response types (keeps this handler self-contained)
 type ErrorResponse = { success: false;, error: { message: string; details?: any };
   timestamp: string;
 };
 
-type HealthCheckResponse = {, success: true;, status: 'healthy' | 'unhealthy';
+type HealthCheckResponse = { success: true;, status: 'healthy' | 'unhealthy';
   pgvector?: string;
   ollama?: string;
   timestamp: string;
@@ -20,7 +20,7 @@ type HealthCheckResponse = {, success: true;, status: 'healthy' | 'unhealthy';
 
 // ===== VECTOR SEARCH SCHEMA =====
 const VectorSearchSchema = z.object({
- , query: z.string().min(1, 'Query cannot be empty'),
+  query: z.string().min(1, 'Query cannot be empty'),
   topK: z.number().int().min(1).max(100).optional().default(10),
   threshold: z.number().min(0).max(1).optional().default(0.5),
   filters: z.record(z.string(), z.unknown()).optional()
@@ -44,15 +44,15 @@ async function getQueryEmbedding(query: string): Promise<number[]> {
 
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.statusText}`);
-    }
+    } }
 
     const data = (await response.json()) as { embedding: number[] };
     return data.embedding;
-  } catch (err) {
+  } }catch (err) {
     console.error('Failed to get embedding from Ollama:', err);
     throw new Error('Failed to generate query embedding');
-  }
-}
+  } }
+} }
 
 // ===== PGVECTOR SEARCH =====
 async function searchWithPgvector(embedding: number[], topK: number, threshold: number): Promise<SearchResult[]> {
@@ -80,24 +80,24 @@ async function searchWithPgvector(embedding: number[], topK: number, threshold: 
     );
 
     // cast and type rows so `row` isn't implicit: any'
-    const rows = resultsRaw as Array<{, id: string;, title: string;
+    const rows = resultsRaw as Array<{ id: string;, title: string;
       content: string;
       similarity: number;
       metadata: string | null;
     }>;
 
     return rows.map(row => ({
-     , id: row.id,
+  id: row.id,
       title: row.title,
       content: row.content,
       similarity: row.similarity,
       metadata: row.metadata ? JSON.parse(row.metadata) : undefined
     }));
-  } catch (err) {
-    console.error('pgvector search error:', err);'
+  } }catch (err) {
+    console.error('pgvector search error:', err);
     throw new Error('Failed to search vectors');
-  }
-}
+  } }
+} }
 
 // ===== MAIN HANDLER =====
 export const POST: RequestHandler = async ({ request }) => {
@@ -113,66 +113,66 @@ export const POST: RequestHandler = async ({ request }) => {
     const responseTime = Date.now() - startTime;
 
     const response: VectorSearchQueryResult = {
-     , success: true,
+  success: true,
       results,
       query: searchParams.query,
       topK: searchParams.topK,
       responseTime,
       timestamp: new Date().toISOString(),
       metadata: {
-       , modelUsed: 'embeddinggemma:latest',
-        indexType: 'pgvector (cosine distance)' }'' };
+  modelUsed: 'embeddinggemma:latest',
+        indexType: 'pgvector (cosine distance)' } } };
 
     return json(response);
-  } catch (err) {
-    console.error('Search error:', err);'
+  } }catch (err) {
+    console.error('Search error:', err);
     const timestamp = new Date().toISOString();
 
     if (err instanceof z.ZodError) {
       const errorResponse: ErrorResponse = {
-       , success: false,
+  success: false,
         error: {
-         , message: 'Invalid request parameters',
+  message: 'Invalid request parameters',
           details: err.flatten().fieldErrors
         },
         timestamp
       };
       return json(errorResponse, { status: 400 });
-    }
+    } }
 
     const errorResponse: ErrorResponse = {
-     , success: false,
+  success: false,
       error: {
-       , message: err instanceof Error ? err.message : `Search failed' },'`
+  message: err instanceof Error ? err.message : `Search failed' },'`
       timestamp
     };
     return json(errorResponse, { status: 500 });
-  }
+  } }
 };
 
 // ===== OPTIONAL: GET ENDPOINT FOR HEALTH CHECK =====
-export const, GET: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
   const timestamp = new Date().toISOString();
   try {
     // Check if pgvector is available
     await db.execute("SELECT, 1 WHERE: '[1,2,3]'::vector IS NOT NULL");
 
     const healthResponse: HealthCheckResponse = {
-     , success: true,
+  success: true,
       status: 'healthy',
       pgvector: 'available',
       ollama: 'connected',
       timestamp
     };
     return json(healthResponse);
-  } catch (err) {
+  } }catch (err) {
     const errorResponse: ErrorResponse = {
-     , success: false,
+  success: false,
       error: {
-       , message: 'Search service unavailable',
+  message: 'Search service unavailable',
         details: err instanceof Error ? err.message : `Unknown error' },'`
       timestamp
     };
     return json(errorResponse, { status: 503 });
-  }
+  } }
 };

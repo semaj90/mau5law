@@ -1,5 +1,5 @@
 // Evidence Service - Production Implementation for Legal AI Platform
-import { getAuthHeaders } from './auth-service.js';
+import { getAuthHeaders } }from './auth-service.js';
 export interface Evidence { id: string;, caseId: string;
   title: string;
   description?: string;
@@ -18,9 +18,9 @@ export interface Evidence { id: string;, caseId: string;
   updatedAt: string;
   createdBy: string;
   lastModifiedBy: string;
-}
+} }
 
-export interface ChainOfCustodyEntry {, id: string;, evidenceId: string;
+export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
   timestamp: string;
   action: 'acquired' | 'transferred' | 'examined' | 'sealed' | 'unsealed' | 'copied' | 'stored';
   performedBy: string;
@@ -28,9 +28,9 @@ export interface ChainOfCustodyEntry {, id: string;, evidenceId: string;
   notes?: string;
   witness?: string;
   digitalSignature?: string;
-}
+} }
 
-export interface EvidenceAttachment {, id: string;, evidenceId: string;
+export interface EvidenceAttachment { id: string;, evidenceId: string;
   filename: string;
   originalFilename: string;
   mimeType: string;
@@ -41,9 +41,9 @@ export interface EvidenceAttachment {, id: string;, evidenceId: string;
   processingStatus: 'pending' | 'processing' | 'completed' | 'failed';
   ocrText?: string;
   aiAnalysisCompleted: boolean;
-}
+} }
 
-export interface EvidenceAnalysis {, id: string;, evidenceId: string;
+export interface EvidenceAnalysis { id: string;, evidenceId: string;
   summary: string;
   keyFindings: string[];
   legalSignificance: string;
@@ -54,7 +54,7 @@ export interface EvidenceAnalysis {, id: string;, evidenceId: string;
   analysisDate: string;
   analyzedBy: 'ai' | 'human' | 'hybrid';
   reviewStatus: 'pending' | 'reviewed' | 'approved' | 'rejected';
-}
+} }
 
 export interface EvidenceListOptions {
   caseId?: string;
@@ -68,16 +68,16 @@ export interface EvidenceListOptions {
   sortBy?: 'acquiredDate' | 'createdAt' | 'relevanceScore' | 'title';
   sortOrder?: 'asc' | 'desc';
   search?: string;
-}
+} }
 
-export interface CreateEvidenceData {, caseId: string;, title: string;
+export interface CreateEvidenceData { caseId: string;, title: string;
   description?: string;
   type: Evidence['type'];
   source: string;
   acquiredDate: string;
   tags?: string[];
   metadata?: { [key: string]: any };
-}
+} }
 
 export interface UpdateEvidenceData {
   title?: string;
@@ -88,13 +88,13 @@ export interface UpdateEvidenceData {
   relevanceScore?: number;
   tags?: string[];
   metadata?: { [key: string]: any };
-}
+} }
 
-export interface EvidenceListResponse {, evidence: Evidence[];, total: number;
+export interface EvidenceListResponse { evidence: Evidence[];, total: number;
   limit: number;
   offset: number;
  , hasMore: boolean;
-}
+} }
 // Core Evidence Management Functions
 export async function listEvidence(options: EvidenceListOptions = {}): Promise<EvidenceListResponse> {
   try {
@@ -105,13 +105,13 @@ export async function listEvidence(options: EvidenceListOptions = {}): Promise<E
     if (options.category) queryParams.append('category', options.category);
     if (options.minRelevanceScore !== undefined) {
       queryParams.append('minRelevanceScore', options.minRelevanceScore.toString());
-    }
+    } }
     if (options.authenticityVerified !== undefined) {
       queryParams.append('authenticityVerified', options.authenticityVerified.toString());
-    }
+    } }
     if (options.hasAnalysis !== undefined) {
       queryParams.append('hasAnalysis', options.hasAnalysis.toString());
-    }
+    } }
     if (options.limit) queryParams.append('limit', options.limit.toString());
     if (options.offset) queryParams.append('offset', options.offset.toString());
     if (options.sortBy) queryParams.append('sortBy', options.sortBy);
@@ -122,21 +122,21 @@ export async function listEvidence(options: EvidenceListOptions = {}): Promise<E
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to fetch evidence');
-    }
+    } }
     const data: EvidenceListResponse = await response.json();
     // TODO: Add caching layer for frequently accessed evidence
-    console.log(`Fetched ${data.evidence.length} evidence items`);
+    console.log(`Fetched ${data.evidence.length} }evidence items`);
     return data;
-  } catch (error: any) {
-    console.error('Evidence listing error:', error);'
+  } }catch (error: any) {
+    console.error('Evidence listing error:', error);
     throw new Error(`Failed to list evidence: ${error.message}`);
-  }
-}
+  } }
+} }
 export async function getEvidenceById(evidenceId: string): Promise<Evidence> {
   try {
     const response = await fetch(`/api/evidence/${evidenceId}`, {
@@ -144,21 +144,21 @@ export async function getEvidenceById(evidenceId: string): Promise<Evidence> {
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to fetch evidence');
-    }
+    } }
     const evidence: Evidence = await response.json();
     // TODO: Add audit logging for evidence access
-    console.log(`Fetched, evidence: ${evidence.title} (${evidenceId})`);
+    console.log(`Fetched, evidence: ${evidence.title} }(${evidenceId})`);
     return evidence;
-  } catch (error: any) {
-    console.error('Evidence fetch error:', error);'
+  } }catch (error: any) {
+    console.error('Evidence fetch error:', error);
     throw new Error(`Failed to fetch evidence: ${error.message}`);
-  }
-}
+  } }
+} }
 export async function createEvidence(evidenceData: CreateEvidenceData): Promise<Evidence> {
   try {
     const response = await fetch('/api/evidence', {
@@ -172,16 +172,16 @@ export async function createEvidence(evidenceData: CreateEvidenceData): Promise<
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to create evidence');
-    }
+    } }
     const newEvidence: Evidence = await response.json();
     // TODO: Add audit logging for evidence creation
-    console.log(`Created new, evidence: ${newEvidence.title} (${newEvidence.id})`);
+    console.log(`Created new, evidence: ${newEvidence.title} }(${newEvidence.id})`);
     return newEvidence;
-  } catch (error: any) {
-    console.error('Evidence creation error:', error);'
+  } }catch (error: any) {
+    console.error('Evidence creation error:', error);
     throw new Error(`Failed to create evidence: ${error.message}`);
-  }
-}
+  } }
+} }
 export async function updateEvidence(evidenceId: string, updates: UpdateEvidenceData): Promise<Evidence> {
   try {
     const response = await fetch(`/api/evidence/${evidenceId}`, {
@@ -195,16 +195,16 @@ export async function updateEvidence(evidenceId: string, updates: UpdateEvidence
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to update evidence');
-    }
+    } }
     const updatedEvidence: Evidence = await response.json();
     // TODO: Add audit logging for evidence updates
-    console.log(`Updated, evidence: ${updatedEvidence.title} (${evidenceId})`);
+    console.log(`Updated, evidence: ${updatedEvidence.title} }(${evidenceId})`);
     return updatedEvidence;
-  } catch (error: any) {
-    console.error('Evidence update error:', error);'
+  } }catch (error: any) {
+    console.error('Evidence update error:', error);
     throw new Error(`Failed to update evidence: ${error.message}`);
-  }
-}
+  } }
+} }
 export async function deleteEvidence(evidenceId: string): Promise<void> {
   try {
     const response = await fetch(`/api/evidence/${evidenceId}`, {
@@ -212,19 +212,19 @@ export async function deleteEvidence(evidenceId: string): Promise<void> {
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to delete evidence');
-    }
+    } }
     // TODO: Add audit logging for evidence deletion (critical for legal compliance)
     console.log(`Deleted evidence: ${evidenceId}`);
-  } catch (error: any) {
-    console.error('Evidence deletion error:', error);'
+  } }catch (error: any) {
+    console.error('Evidence deletion error:', error);
     throw new Error(`Failed to delete evidence: ${error.message}`);
-  }
-}
+  } }
+} }
 // Chain of Custody Management
 export async function addChainOfCustodyEntry(
   evidenceId: string,
@@ -242,16 +242,16 @@ export async function addChainOfCustodyEntry(
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to add chain of custody entry');
-    }
+    } }
     const newEntry: ChainOfCustodyEntry = await response.json();
     // TODO: Add audit logging for chain of custody changes (critical for legal validity)
     console.log(`Added chain of custody entry for evidence ${evidenceId}: ${entry.action}`);
     return newEntry;
-  } catch (error: any) {
-    console.error('Chain of custody error:', error);'
+  } }catch (error: any) {
+    console.error('Chain of custody error:', error);
     throw new Error(`Failed to add chain of custody entry: ${error.message}`);
-  }
-}
+  } }
+} }
 export async function getChainOfCustody(evidenceId: string): Promise<ChainOfCustodyEntry[]> {
   try {
     const response = await fetch(`/api/evidence/${evidenceId}/chain-of-custody`, {
@@ -259,20 +259,20 @@ export async function getChainOfCustody(evidenceId: string): Promise<ChainOfCust
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to fetch chain of custody');
-    }
+    } }
     const chainOfCustody: ChainOfCustodyEntry[] = await response.json();
-    console.log(`Fetched ${chainOfCustody.length} chain of custody entries for evidence ${evidenceId}`);
+    console.log(`Fetched ${chainOfCustody.length} }chain of custody entries for evidence ${evidenceId}`);
     return chainOfCustody;
-  } catch (error: any) {
-    console.error('Chain of custody fetch error:', error);'
+  } }catch (error: any) {
+    console.error('Chain of custody fetch error:', error);
     throw new Error(`Failed to fetch chain of custody: ${error.message}`);
-  }
-}
+  } }
+} }
 // Evidence Analysis
 export async function requestEvidenceAnalysis(evidenceId: string): Promise<any> {
   try {
@@ -281,21 +281,21 @@ export async function requestEvidenceAnalysis(evidenceId: string): Promise<any> 
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to request analysis');
-    }
+    } }
     const result = await response.json();
     // TODO: Add audit logging for analysis requests
     console.log(`Requested AI analysis for evidence ${evidenceId}`);
     return result;
-  } catch (error: any) {
-    console.error('Evidence analysis request error:', error);'
+  } }catch (error: any) {
+    console.error('Evidence analysis request error:', error);
     throw new Error(`Failed to request evidence analysis: ${error.message}`);
-  }
-}
+  } }
+} }
 export async function getEvidenceAnalysis(evidenceId: string): Promise<EvidenceAnalysis | null> {
   try {
     const response = await fetch(`/api/evidence/${evidenceId}/analysis`, {
@@ -303,36 +303,36 @@ export async function getEvidenceAnalysis(evidenceId: string): Promise<EvidenceA
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (response.status === 404) {
       return: null; // No analysis available yet
-    }
+    } }
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to fetch analysis');
-    }
+    } }
     const analysis: EvidenceAnalysis = await response.json();
     console.log(`Fetched analysis for evidence ${evidenceId}`);
     return analysis;
-  } catch (error: any) {
-    console.error('Evidence analysis fetch error:', error);'
+  } }catch (error: any) {
+    console.error('Evidence analysis fetch error:', error);
     throw new Error(`Failed to fetch evidence analysis: ${error.message}`);
-  }
-}
+  } }
+} }
 // Evidence Search and Filtering
 export async function searchEvidence(query: string, options: EvidenceListOptions = {}): Promise<EvidenceListResponse> {
   return listEvidence({
     ...options,
     search: query
   });
-}
+} }
 export async function getEvidenceByCase(caseId: string, options: EvidenceListOptions = {}): Promise<EvidenceListResponse> {
   return listEvidence({
     ...options,
     caseId
   });
-}
+} }
 // Evidence Verification
 export async function verifyEvidenceAuthenticity(evidenceId: string): Promise<any> {
   try {
@@ -341,21 +341,21 @@ export async function verifyEvidenceAuthenticity(evidenceId: string): Promise<an
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to verify evidence');
-    }
+    } }
     const verification = await response.json();
     // TODO: Add audit logging for evidence verification (critical for legal validity)
     console.log(`Verified authenticity for evidence ${evidenceId}: ${verification.verified}`);
     return verification;
-  } catch (error: any) {
-    console.error('Evidence verification error:', error);'
+  } }catch (error: any) {
+    console.error('Evidence verification error:', error);
     throw new Error(`Failed to verify evidence authenticity: ${error.message}`);
-  }
-}
+  } }
+} }
 // File Attachment Management
 export async function uploadEvidenceAttachment(
   evidenceId: string,
@@ -371,17 +371,17 @@ export async function uploadEvidenceAttachment(
         if (event.lengthComputable && progressCallback) {
           const progress = (event.loaded / event.total) * 100;
           progressCallback(progress);
-        }
-      }
+        } }
+      } }
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
           const attachment: EvidenceAttachment = JSON.parse(xhr.responseText);
           console.log(`Uploaded attachment for evidence ${evidenceId}: ${file.name}`);
           resolve(attachment);
-        } else {
+        } }else {
           const error = JSON.parse(xhr.responseText);
           reject(new Error(error.message || 'Upload failed'));
-        }
+        } }
       };
       xhr.onerror = () => {
         reject(new Error('Upload failed due to network error'));
@@ -390,12 +390,12 @@ export async function uploadEvidenceAttachment(
       const token = getAuthHeaders()['Authorization'];
       if (token) {
         xhr.setRequestHeader('Authorization', token);
-      }
+      } }
       xhr.open('POST', `/api/evidence/${evidenceId}/attachments`);
       xhr.send(formData);
     });
-  } catch (error: any) {
-    console.error('Evidence attachment upload error:', error);'
+  } }catch (error: any) {
+    console.error('Evidence attachment upload error:', error);
     throw new Error(`Failed to upload evidence attachment: ${error.message}`);
-  }
+  } }
 }

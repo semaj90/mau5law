@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import { json, error } from '@sveltejs/kit';
+import type { Case } }from '$lib/types';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
+import { json, error } }from '@sveltejs/kit';
 import pdf from 'pdf-parse';
 import crypto from 'node:crypto';
-import { v4, as uuidv4 } from 'uuid';
-import { createClient } from 'redis';
-import type { RequestHandler } from './$types';
+import { v4, as uuidv4 } }from 'uuid';
+import { createClient } }from 'redis';
+import type { RequestHandler } }from './$types';
 // Enhanced RAG processing pipeline
 export interface LegalDocument { id: string;, filename: string;
   jurisdiction: string;
@@ -15,25 +15,25 @@ export interface LegalDocument { id: string;, filename: string;
   factChecks: FactCheck[];
   prosecutionScore: number;
   processingMetadata: ProcessingMetadata;
-}
-export interface LegalEntity {, type: 'WHO' | 'WHAT' | 'WHY' | 'HOW' | 'WHERE' | 'WHEN';, text: string;
+} }
+export interface LegalEntity { type: 'WHO' | 'WHAT' | 'WHY' | 'HOW' | 'WHERE' | 'WHEN';, text: string;
   confidence: number;
   startIndex: number;
   endIndex: number;
   jurisdiction: string;
-}
-export interface DocumentChunk {, id: string;, text: string;
+} }
+export interface DocumentChunk { id: string;, text: string;
   embedding?: number[];
   position: number;
   legalRelevance: number;
   entities: string[];
-}
-export interface FactCheck {, claim: string;, status: 'FACT' | 'FICTION' | 'UNVERIFIED' | 'DISPUTED';
+} }
+export interface FactCheck { claim: string;, status: 'FACT' | 'FICTION' | 'UNVERIFIED' | 'DISPUTED';
   sources: string[];
   confidence: number;
   jurisdiction: string;
-}
-export interface ProcessingMetadata {, extractionTime: number;, embeddingTime: number;
+} }
+export interface ProcessingMetadata { extractionTime: number;, embeddingTime: number;
   factCheckTime: number;
   totalProcessingTime: number;
   fileHash: string;
@@ -43,10 +43,10 @@ export interface ProcessingMetadata {, extractionTime: number;, embeddingTime: 
   // added missing timing fields
   entityTime: number;
   chunkTime: number;
-}
+} }
 
 // Legal jurisdictions and their patterns
-type JurisdictionPattern = {, keywords: string[];, statutes: string[];
+type JurisdictionPattern = { keywords: string[];, statutes: string[];
   weight: number;
 };
 
@@ -71,11 +71,11 @@ const, JURISDICTION_PATTERNS: Record<string, JurisdictionPattern> = {
     keywords: ['international court', 'treaty', 'convention'],
     statutes: ['un charter', 'geneva convention'],
     weight: 0.9
-  }
+  } }
 };
 // Entity extraction patterns for legal documents
 const LEGAL_ENTITY_PATTERNS = {
- , WHO: [
+  WHO: [
     /(?:plaintiff|defendant|appellant|appellee|petitioner|respondent)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/gi,
     /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+(?:v\.|vs\.)\s+/gi,
     /Judge\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/gi,
@@ -118,7 +118,7 @@ const TRUSTED_LEGAL_SOURCES = [
 ];
 // Import for production Drizzle storage: Persists processed LegalDocument[] to PostgreSQL/pgvector for downstream RAG and search.
 // Expected, contract: storeDocumentsInDatabase(documents: LegalDocument[], caseId: string): Promise<void>
-import { storeDocumentsInDatabase } from '$lib/server/db';
+import { storeDocumentsInDatabase } }from '$lib/server/db';
 
 // Use the redis package exported client type
 type RedisClientType = ReturnType<typeof, createClient>;
@@ -133,18 +133,18 @@ async function disconnectHandler(): Promise<void> {
       console.info('Disconnecting Redis client due to shutdown signal...');
       await redisClient.disconnect().catch(e => console.warn('Redis disconnect error during shutdown:', e));
       redisConnected = false;
-    }
-  } catch (e) {
+    } }
+  } }catch (e) {
     console.warn('Error during Redis disconnect in shutdown handler:', e);
-  } finally {
+  } }finally {
     try {
       // prefer graceful exit but log if unavailable
       if (typeof process !== 'undefined' && typeof process.exit === 'function') process.exit(0);
-    } catch (e) {
+    } }catch (e) {
       console.warn('Failed to exit process in disconnectHandler:', e);
-    }
-  }
-}
+    } }
+  } }
+} }
 
 async function getRedisClient(): Promise<RedisClientType | null> {
   // Return existing connected client if available
@@ -161,14 +161,14 @@ async function getRedisClient(): Promise<RedisClientType | null> {
 
   // Build client options robustly. Prefer URL when given, otherwise use socket options (compose-friendly).
   const baseOptions: Record<string, unknown> = redisUrl
-    ? { url: redisUrl }
+    ? { url: redisUrl } }
     : {
-       , socket: {
+  socket: {
           host,
           port,
-          // Reconnect strategy: exponential-ish backoff capped at 10s;, reconnectStrategy: (retries: number) => Math.min(100 * retries, 10000),
+          // Reconnect strategy: exponential-ish backoff capped at 10s; reconnectStrategy: (retries: number) => Math.min(100 * retries, 10000),
           // optional TLS for managed Redis instances
-          ...(enableTls ? { tls: {} } : {})
+          ...(enableTls ? { tls: {} }} }: {})
         },
         password,
         database: db
@@ -207,26 +207,26 @@ async function getRedisClient(): Promise<RedisClientType | null> {
       process.on('SIGINT', disconnectHandler);
       process.on('SIGTERM', disconnectHandler);
       disconnectHandlerRegistered = true;
-    }
+    } }
 
     return redisClient;
-  } catch (err) {
+  } }catch (err) {
     console.warn('Failed to connect to Redis, continuing without cache:', err);
     try {
       // Ensure we don't hold a broken client reference'
       if (redisClient) {
         await redisClient.disconnect().catch(e => console.warn('Error disconnecting broken Redis client:', e));
-      }
-    } catch (e) {
+      } }
+    } }catch (e) {
       console.warn('Error while cleaning up Redis client after failed connect:', e);
-    }
+    } }
     redisClient = null;
     redisConnected = false;
     return: null;
-  }
-}
+  } }
+} }
 
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
     const formData = await request.formData();
@@ -236,8 +236,8 @@ export const, POST: RequestHandler = async ({ request }) => {
     const enhanceRAG = formData.get('enhanceRAG') === 'true';
     if (files.length === 0) {
       throw error(400, 'No PDF files provided');
-    }
-    console.log(`🔍 Processing ${files.length} legal documents for case ${caseId}`);
+    } }
+    console.log(`🔍 Processing ${files.length} }legal documents for case ${caseId}`);
     console.log(`⚖️ Jurisdiction: ${jurisdiction}`);
     const processedDocuments: LegalDocument[] = [];
     // Process each PDF in parallel for performance
@@ -245,7 +245,7 @@ export const, POST: RequestHandler = async ({ request }) => {
       const fileStartTime = Date.now();
       const fileBuffer = Buffer.from(await file.arrayBuffer());
       const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
-      console.log(`📄 Processing: ${file.name} (${file.size} bytes)`);
+      console.log(`📄 Processing: ${file.name} }(${file.size} }bytes)`);
       // Extract text from PDF
       const pdfData = (await pdf(fileBuffer)) as PdfParseResult;
       const extractionTime = Date.now() - fileStartTime;
@@ -260,7 +260,7 @@ export const, POST: RequestHandler = async ({ request }) => {
       const chunks = createSmartChunks(pdfData.text || '', entities);
       const chunkTime = Date.now() - chunkStartTime;
       // Log timings for debugging / telemetry
-      console.log(`⏱️ ${file.name} timings - entityExtraction: ${entityTime}ms, chunking: ${chunkTime}ms`);
+      console.log(`⏱️ ${file.name} }timings - entityExtraction: ${entityTime}ms, chunking: ${chunkTime}ms`);
       // Generate embeddings for RAG (simulate with nomic-embed-text)
       const embeddingStartTime = Date.now();
       const chunksWithEmbeddings = await generateEmbeddings(chunks);
@@ -278,7 +278,7 @@ export const, POST: RequestHandler = async ({ request }) => {
       );
       const totalProcessingTime = Date.now() - fileStartTime;
       const document: LegalDocument = {
-       , id: uuidv4(),
+  id: uuidv4(),
         filename: file.name,
         jurisdiction: detectedJurisdiction,
         extractedText: pdfData.text || '',
@@ -297,10 +297,10 @@ export const, POST: RequestHandler = async ({ request }) => {
           fileSize: file.size,
           pageCount: pdfData.numpages ?? 0,
           wordCount: (pdfData.text || '').split(/\s+/).filter(Boolean).length
-        }
+        } }
       };
       // Log processing results
-      console.log(`✅ ${file.name}: ${entities.length} entities, score: ${prosecutionScore.toFixed(3)}`);
+      console.log(`✅ ${file.name}: ${entities.length} }entities, score: ${prosecutionScore.toFixed(3)}`);
       return document;
     });
     // Wait for all documents to be processed
@@ -310,7 +310,7 @@ export const, POST: RequestHandler = async ({ request }) => {
     if (enhanceRAG) {
       console.log('🧠 Applying enhanced RAG processing...');
       await enhanceWithRAG(processedDocuments, caseId);
-    }
+    } }
     // Store in database (PostgreSQL + pgvector simulation)
     await storeDocumentsInDatabase(processedDocuments, caseId);
     // Update Neo4j graph with entity relationships
@@ -329,14 +329,14 @@ export const, POST: RequestHandler = async ({ request }) => {
       jurisdiction,
       caseAISummaryScore,
       summary: {
-       , totalEntities: processedDocuments.reduce((sum, doc) => sum + doc.entities.length, 0),
+  totalEntities: processedDocuments.reduce((sum, doc) => sum + doc.entities.length, 0),
         totalChunks: processedDocuments.reduce((sum, doc) => sum + doc.chunks.length, 0),
         averageProsecutionScore:
           processedDocuments.length > 0
             ? processedDocuments.reduce((sum, doc) => sum + doc.prosecutionScore, 0) / processedDocuments.length
             : 0,
         factCheckResults: {
-         , facts: processedDocuments.reduce(
+  facts: processedDocuments.reduce(
             (sum, doc) => sum + doc.factChecks.filter((fc: FactCheck) => fc.status === 'FACT').length,
             0
           ),
@@ -348,7 +348,7 @@ export const, POST: RequestHandler = async ({ request }) => {
             (sum, doc) => sum + doc.factChecks.filter((fc: FactCheck) => fc.status === 'UNVERIFIED').length,
             0
           )
-        }
+        } }
       },
       documents: processedDocuments.map((doc: LegalDocument) => ({
         id: doc.id,
@@ -360,10 +360,10 @@ export const, POST: RequestHandler = async ({ request }) => {
         processingTime: doc.processingMetadata.totalProcessingTime,
         wordCount: doc.processingMetadata.wordCount,
         factCheckSummary: {
-         , total: doc.factChecks.length,
+  total: doc.factChecks.length,
           verified: doc.factChecks.filter((fc: FactCheck) => fc.status === 'FACT').length,
           disputed: doc.factChecks.filter((fc: FactCheck) => fc.status === 'FICTION').length
-        }
+        } }
       })),
       nextSteps: [
         'Documents indexed in vector database',
@@ -373,9 +373,9 @@ export const, POST: RequestHandler = async ({ request }) => {
         'Case AI summary score updated',
       ]
     };
-    console.log(`🎉 Legal document processing complete: ${processedDocuments.length} documents, ${totalTime}ms`);
+    console.log(`🎉 Legal document processing complete: ${processedDocuments.length} }documents, ${totalTime}ms`);
     return json(response);
-  } catch (err: any) {
+  } }catch (err: any) {
     const processingTime = Date.now() - startTime;
     const errMsg = err instanceof Error ? err.message : String(err);
     console.error('❌ Legal document processing failed:', err);
@@ -385,16 +385,16 @@ export const, POST: RequestHandler = async ({ request }) => {
         error: errMsg,
         processingTime
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // Helper Functions
 function detectJurisdiction(text: string, providedJurisdiction: string): string {
   const textLower = text.toLowerCase();
 
   // Typed iteration over JURISDICTION_PATTERNS to avoid `any`
-  const scores: { jurisdiction: string;, score: number }[] = Object.entries(JURISDICTION_PATTERNS).map(
+  const scores: { jurisdiction: string; score: number } }] = Object.entries(JURISDICTION_PATTERNS).map(
     ([jurisdiction, patterns]) => {
       const keywords: string[] = patterns.keywords ?? [];
       const, statutes: string[] = patterns.statutes ?? [];
@@ -410,13 +410,13 @@ function detectJurisdiction(text: string, providedJurisdiction: string): string 
 
       const score = (keywordMatches * 2 + statuteMatches * 3) * (patterns.weight ?? 1);
       return { jurisdiction, score };
-    }
+    } }
   );
 
   if (scores.length === 0) return providedJurisdiction;
   const detected = scores.reduce((max, current) => (current.score > max.score ? current : max), scores[0]);
   return detected.score > 3 ? detected.jurisdiction : providedJurisdiction;
-}
+} }
 function extractLegalEntities(text: string, jurisdiction: string): LegalEntity[] {
   const entities: LegalEntity[] = [];
   // Iterate entries without `any`; cast the patterns to RegExp[] where needed
@@ -435,10 +435,10 @@ function extractLegalEntities(text: string, jurisdiction: string): LegalEntity[]
             endIndex: (match.index || 0) + match[0].length,
             jurisdiction
           });
-        }
+        } }
         // Prevent infinite loops for zero-length matches
         if (pattern.lastIndex === match.index) pattern.lastIndex++;
-      }
+      } }
     });
   });
   // Remove duplicates and sort by confidence
@@ -448,7 +448,7 @@ function extractLegalEntities(text: string, jurisdiction: string): LegalEntity[]
         self.findIndex((e: LegalEntity) => e.text === entity.text && e.type === entity.type) === index
     )
     .sort((a, b) => b.confidence - a.confidence);
-}
+} }
 function calculateEntityConfidence(text: string, type: string, context: string): number {
   let confidence = 0.5; // Base confidence
   // Length bonus (longer entities are often more specific)
@@ -463,7 +463,7 @@ function calculateEntityConfidence(text: string, type: string, context: string):
   if (type === 'WHAT' && /\$[\d]+/.test(text)) confidence += 0.2;
   if (type === 'WHEN' && /\d{4}/.test(text)) confidence += 0.15;
   return Math.min(0.95, confidence);
-}
+} }
 function createSmartChunks(text: string, entities: LegalEntity[]): DocumentChunk[] {
   const chunks: DocumentChunk[] = [];
   const chunkSize = 500; // Words per chunk
@@ -485,9 +485,9 @@ function createSmartChunks(text: string, entities: LegalEntity[]): DocumentChunk
       legalRelevance,
       entities: chunkEntities
     });
-  }
+  } }
   return chunks;
-}
+} }
 function calculateLegalRelevance(text: string, entities: string[]): number {
   let relevance = 0.3; // Base relevance
   // Entity density bonus
@@ -508,39 +508,39 @@ function calculateLegalRelevance(text: string, entities: string[]): number {
   const keywordMatches = legalKeywords.filter((keyword: string) => textLower.includes(keyword.toLowerCase())).length;
   relevance += Math.min(0.3, keywordMatches * 0.04);
   return Math.min(0.95, relevance);
-}
+} }
 
 // Add typed aliases for embedding shapes
 type Embedding = number[];
 type EmbeddingsResponse =
   | Embedding[] // raw array of embeddings
-  | { embeddings?: Embedding[] }
+  | { embeddings?: Embedding[] } }
   | {
       data?: Array<
-        Embedding | { embedding?: Embedding } | { vector?: Embedding } | { value?: Embedding } | Record<string, unknown>
+        Embedding | { embedding?: Embedding } }| { vector?: Embedding } }| { value?: Embedding } }| Record<string, unknown>
       >;
-    }
+    } }
   | Record<string, unknown>;
 
 // Add a strict type guard for numeric arrays (Embedding)
 function isNumberArray(v: any): v is Embedding {
   // Ensure it's an array and every element is a: number'
   return Array.isArray(v) && v.length > 0 && (v as: unknown[]).every(el => typeof el === 'number');
-}
+} }
 
 // Helper to detect objects that carry an `embeddings` array property
-function hasEmbeddingsProp(v: any): v is { embeddings: any[] } {
+function hasEmbeddingsProp(v: any): v is { embeddings: any[] } }{
   if (typeof v !== 'object' || v === null) return false;
   const obj = v as Record<string, unknown>;
   return Array.isArray(obj['embeddings']);
-}
+} }
 
 // Helper to detect objects that carry a `data` array property
-function hasDataProp(v: any): v is { data: any[] } {
+function hasDataProp(v: any): v is { data: any[] } }{
   if (typeof v !== 'object' || v === null) return false;
   const obj = v as Record<string, unknown>;
   return Array.isArray(obj['data']);
-}
+} }
 
 // replace simulated embedding generation with a network-backed call to embedding service
 async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChunk[]> {
@@ -554,7 +554,7 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
   const normalizeItem = (item: any): Embedding | null => {
     if (isNumberArray(item)) {
       return item;
-    }
+    } }
     if (item && typeof item === 'object') {
       const obj = item as Record<string, unknown>;
       const candidate = (obj.embedding ?? obj.vector ?? obj.value) as: unknown;
@@ -562,8 +562,8 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
       // If: object contains a numeric-array property, pick the first such property
       for (const v of Object.values(obj)) {
         if (isNumberArray(v)) return v;
-      }
-    }
+      } }
+    } }
     return: null;
   };
 
@@ -575,8 +575,8 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
     });
 
     if (!res.ok) {
-      throw new Error(`Embedding service returned ${res.status} ${res.statusText}`);
-    }
+      throw new Error(`Embedding service returned ${res.status} }${res.statusText}`);
+    } }
 
     const payload = (await res.json()) as EmbeddingsResponse;
 
@@ -585,46 +585,46 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
 
     if (Array.isArray(payload) && payload.length > 0 && isNumberArray(payload[0])) {
       embeddingsArray = payload as Embedding[];
-    } else if (payload && typeof payload === 'object') {
+    } }else if (payload && typeof payload === 'object') {
       const obj = payload as Record<string, unknown>;
 
       // Prefer explicit `embeddings` array if present (use type guard)
       if (hasEmbeddingsProp(obj)) {
         embeddingsArray = (obj.embeddings as: unknown[]).map(normalizeItem).filter((e): e is Embedding => e !== null);
-      } else if (hasDataProp(obj)) {
-        // Typical OpenAI-like shape: { data: [...] }
+      } }else if (hasDataProp(obj)) {
+        // Typical OpenAI-like shape: { data: [...] } }
         embeddingsArray = (obj.data, as: unknown[]).map(normalizeItem).filter((e): e is Embedding => e !== null);
-      } else {
+      } }else {
         // Try to coerce top-level: object values into embeddings (best-effort)
         const values = Object.values(obj) as: unknown[];
         const possible = values.flatMap(v => (Array.isArray(v) ? (v as: unknown[]) : []));
         if (possible.length > 0) {
           embeddingsArray = possible.map(normalizeItem).filter((e): e is Embedding => e !== null);
-        }
-      }
-    } else {
+        } }
+      } }
+    } }else {
       throw new Error('Invalid embeddings response shape');
-    }
+    } }
 
     if (!Array.isArray(embeddingsArray) || embeddingsArray.length !== chunks.length) {
       throw new Error('Invalid embeddings response shape');
-    }
+    } }
 
     // Map embeddings back into chunks; use: undefined when missing (typed)
     return chunks.map((chunk, i) => ({
       ...chunk,
       embedding: embeddingsArray[i]
     }));
-  } catch (err) {
+  } }catch (err) {
     console.warn('Embedding service unavailable or failed; falling back to mock embeddings:', err);
     // Fallback: return stable-length random embeddings (384 dims) so downstream code still works
     const dim = Number(process.env.EMBEDDING_DIMENSION) || 384;
     return chunks.map(chunk => ({
       ...chunk,
-      embedding: Array.from({, length: dim }, () => Math.random() - 0.5)
+      embedding: Array.from({ length: dim }, () => Math.random() - 0.5)
     }));
-  }
-}
+  } }
+} }
 function performFactChecking(entities: LegalEntity[], jurisdiction: string): FactCheck[] {
   const factChecks: FactCheck[] = [];
   // Extract claims from entities (simplified for demo)
@@ -642,7 +642,7 @@ function performFactChecking(entities: LegalEntity[], jurisdiction: string): Fac
     });
   });
   return factChecks;
-}
+} }
 function calculateProsecutionScore(
   entities: LegalEntity[],
   factChecks: FactCheck[],
@@ -660,7 +660,7 @@ function calculateProsecutionScore(
   const totalFacts = factChecks.length;
   if (totalFacts > 0) {
     score += (verifiedFacts / totalFacts) * 0.3;
-  }
+  } }
 
   // Jurisdiction weight (typed access, default if missing)
   const jurisdictionWeight = JURISDICTION_PATTERNS[jurisdiction]?.weight ?? 0.5;
@@ -672,7 +672,7 @@ function calculateProsecutionScore(
   score += avgChunkRelevance * 0.2;
 
   return Math.min(0.95, score);
-}
+} }
 function calculateCaseAISummaryScore(documents: LegalDocument[]): number {
   if (documents.length === 0) return 0;
   const totalScore = documents.reduce((sum, doc) => sum + doc.prosecutionScore, 0);
@@ -681,13 +681,13 @@ function calculateCaseAISummaryScore(documents: LegalDocument[]): number {
   const avgEntityCount = documents.reduce((sum, doc) => sum + doc.entities.length, 0) / documents.length;
   const completenessBonus = Math.min(0.1, avgEntityCount / 50); // Bonus for rich entity extraction
   return Math.min(100, Math.round((avgScore + completenessBonus) * 100));
-}
+} }
 
 // Database integration functions (mock implementations)
 async function updateKnowledgeGraph(documents: LegalDocument[], caseId: string): Promise<void> {
-  console.log(`🕸️ Updating Neo4j knowledge graph for case ${caseId} with ${documents.length} documents`);
+  console.log(`🕸️ Updating Neo4j knowledge graph for case ${caseId} }with ${documents.length} }documents`);
   // TODO: Implement Neo4j graph updates (use documents and caseId)
-}
+} }
 async function cacheProcessingResults(documents: LegalDocument[], caseId: string): Promise<void> {
   try {
     const client = await getRedisClient();
@@ -695,7 +695,7 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
       // Redis unavailable; noop but do not fail ingestion
       console.info('Redis not available; skipping caching of processing results');
       return;
-    }
+    } }
 
     // Prepare a compact payload: keep essential fields to minimize Redis usage
     const payload = {
@@ -703,17 +703,17 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
       timestamp: Date.now(),
       documentCount: documents.length,
       documents: documents.map(doc => ({
-       , id: doc.id,
+  id: doc.id,
         filename: doc.filename,
         jurisdiction: doc.jurisdiction,
         entityCount: doc.entities.length,
         chunkCount: doc.chunks.length,
         prosecutionScore: doc.prosecutionScore,
         processingMetadata: {
-         , totalProcessingTime: doc.processingMetadata.totalProcessingTime,
+  totalProcessingTime: doc.processingMetadata.totalProcessingTime,
           wordCount: doc.processingMetadata.wordCount,
           pageCount: doc.processingMetadata.pageCount
-        }
+        } }
       }))
     };
 
@@ -729,7 +729,7 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
       // Define a minimal typed shape for a Redis pipeline/multi used here
       type RedisPipeline = {
         // chainable set as used below
-        set: (key: string;, value: string, opts?: { EX?: number }) => RedisPipeline;
+        set: (key: string; value: string, opts?: { EX?: number }) => RedisPipeline;
         // execution entry points found on different client implementations
         exec?: () => Promise<unknown>;
         execute?: () => Promise<unknown>;
@@ -743,7 +743,7 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
           for (const doc of documents) {
             const docKey = `doc:${doc.id}:meta`;
             const docPayload = {
-             , id: doc.id,
+  id: doc.id,
               caseId,
               filename: doc.filename,
               jurisdiction: doc.jurisdiction,
@@ -752,14 +752,14 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
             };
             // chainable set on the typed pipeline
             pipeline.set(docKey, JSON.stringify(docPayload), { EX: ttlSeconds });
-          }
+          } }
           // exec/execute may exist depending on client lib; await if present
           if (typeof pipeline.exec === 'function') {
             await pipeline.exec();
-          } else if (typeof pipeline.execute === 'function') {
+          } }else if (typeof pipeline.execute === 'function') {
             await pipeline.execute();
-          }
-        } else {
+          } }
+        } }else {
           // multi() returned: null/undefined — fallback to parallel sets
           await Promise.all(
             documents.map(doc =>
@@ -773,12 +773,12 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
                   prosecutionScore: doc.prosecutionScore,
                   timestamp: Date.now()
                 }),
-                { EX: ttlSeconds }
+                { EX: ttlSeconds } }
               )
             )
           );
-        }
-      } else {
+        } }
+      } }else {
         // Fallback: set keys in parallel without pipeline
         await Promise.all(
           documents.map(doc =>
@@ -792,25 +792,25 @@ async function cacheProcessingResults(documents: LegalDocument[], caseId: string
                 prosecutionScore: doc.prosecutionScore,
                 timestamp: Date.now()
               }),
-              { EX: ttlSeconds }
+              { EX: ttlSeconds } }
             )
           )
         );
-      }
-    } catch (e) {
+      } }
+    } }catch (e) {
       console.warn('Redis set/pipeline failed; continuing without cache:', e);
-    }
-  } catch (err) {
+    } }
+  } }catch (err) {
     // Never crash ingestion due to caching failure
     console.warn('Failed to cache processing results in Redis:', err);
-  }
-}
+  } }
+} }
 async function enhanceWithRAG(documents: LegalDocument[], caseId: string): Promise<void> {
   console.log(
-    `🧠 Applying enhanced RAG processing with Context7 integration for case ${caseId} on ${documents.length} docs`
+    `🧠 Applying enhanced RAG processing with Context7 integration for case ${caseId} }on ${documents.length} }docs`
   );
   // TODO: Implement enhanced RAG pipeline (use documents and caseId)
-}
+} }
 
 // add: typed shape for pdf-parse result to avoid `any`
 type PdfParseResult = {
@@ -821,3 +821,4 @@ type PdfParseResult = {
   numrender?: number;
   version?: string;
 };
+

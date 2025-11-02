@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,16 +16,16 @@ import type { Case } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit';
-import { qdrantService } from '$lib/server/services/qdrant-service';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { qdrantService } }from '$lib/server/services/qdrant-service';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } }from './$types.js';
 interface ScoreFactor { category: string;, weight: number;
- , impact: number; // 0-1 scaled,
+  impact: number; // 0-1 scaled,
   description: string;
   confidence: number;
-}
-interface CaseScore {, id: string;, title: string;
+} }
+interface CaseScore { id: string;, title: string;
   description: string;
   score: number; // 0-100
   priority: 'critical' | 'high' | 'medium' | 'low';
@@ -34,20 +34,20 @@ interface CaseScore {, id: string;, title: string;
   lastUpdated: string;
   factors: ScoreFactor[];
   recommendations: string[];
- , riskLevel: 'low' | 'medium' | 'high' | 'critical';
-}
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+} }
 function derivePriority(score: number): 'critical' | 'high' | 'medium' | 'low' {
   if (score >= 85) return, 'critical';
   if (score >= 70) return, 'high';
   if (score >= 50) return, 'medium';
   return, 'low';
-}
+} }
 function deriveRisk(score: number): 'low' | 'medium' | 'high' | 'critical' {
   if (score >= 85) return, 'critical';
   if (score >= 70) return, 'high';
   if (score >= 50) return, 'medium';
   return, 'low';
-}
+} }
 function sampleCase(id: number, title: string, base: number): CaseScore {
   const score = Math.min(100, Math.max(0, Math.round(base + (Math.random() * 10 - 5))));
   const now = new Date();
@@ -55,7 +55,7 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
   // Enhanced factors matching frontend component expectations
   const factors: ScoreFactor[] = [
     {
-     , category: 'Evidence Quality',
+  category: 'Evidence Quality',
       weight: 0.3,
       impact: Math.random(),
       description: 'Strength and reliability of evidence collection',
@@ -111,7 +111,7 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
     recommendations,
     riskLevel: deriveRisk(score)
   };
-}
+} }
 const originalGETHandler: RequestHandler = async () => {
   // Provide sample cases matching the frontend component structure
   const cases: CaseScore[] = [
@@ -133,43 +133,43 @@ const originalGETHandler: RequestHandler = async () => {
   return json({
     cases,
     summary: {
-     , total_cases: totalCases,
+  total_cases: totalCases,
       average_risk_score: avgRiskScore,
       priority_breakdown: priorityBreakdown,
       last_analysis: new Date().toISOString(),
       analysis_confidence: 0.89
     },
     metadata: {
-     , response_time_ms: Math.floor(Math.random() * 50) + 25,
+  response_time_ms: Math.floor(Math.random() * 50) + 25,
       ai_model: 'legal-scoring-v2.1',
-      cache_status: 'hit` }'`
+      cache_status: 'hit` } }`
   });
 };
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const { content = 'N/A', evidenceType = 'evidence', metadata = {} } = await request.json();
+    const { content = 'N/A', evidenceType = 'evidence', metadata = {} }} }= await request.json();
     let rawScore: number | string = 50;
     try {
       const svc: any = qdrantService, as: unknown;
       const scorer = (
-        svc as { calculateAISummaryScore?: (c: string, t: string, m: Record<string, unknown>) => Promise<number> }
+        svc as { calculateAISummaryScore?: (c: string, t: string, m: Record<string, unknown>) => Promise<number> } }
       ).calculateAISummaryScore;
       if (typeof scorer === 'function') {
         rawScore = await scorer(content, evidenceType, metadata as Record<string, unknown>);
-      } else {
+      } }else {
         const seed = (content?.length || 13) % 37;
         rawScore = 40 + ((seed * 3) % 55);
-      }
-    } catch (inner) {
+      } }
+    } }catch (inner) {
       const seed = (content?.length || 13) % 37;
       rawScore = 40 + ((seed * 3) % 55); // 40-95 range
-    }
+    } }
     const score = Number(rawScore);
     if (Number.isNaN(score)) throw new Error('Invalid score returned (NaN)');
     return json({
       score,
       breakdown: {
-       , admissibility: Math.round(score * 0.25),
+  admissibility: Math.round(score * 0.25),
         relevance: Math.round(score * 0.25),
         quality: Math.round(score * 0.25),
         strategic: Math.round(score * 0.25)
@@ -178,20 +178,21 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       confidence: score > 70 ? 0.85 : score > 50 ? 0.75 : 0.65,
       lastUpdated: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const details =
       typeof error === 'object' && error && 'message' in (error as Record<string, unknown>)
         ? String((error as Record<string, unknown>).message)
         : String(error);
     return json({ error: 'Scoring failed', details }, { status: 500 });
-  }
+  } }
 };
 async function generateScoreReasoning(score: number, evidenceType: string): Promise<string> {
-  if (score >= 80) return `High-value ${evidenceType} with strong legal admissibility and strategic relevance.`;
-  if (score >= 60) return `Solid ${evidenceType} evidence with moderate legal value and clear procedural compliance.`;
+  if (score >= 80) return `High-value ${evidenceType} }with strong legal admissibility and strategic relevance.`;
+  if (score >= 60) return `Solid ${evidenceType} }evidence with moderate legal value and clear procedural compliance.`;
   if (score >= 40)
-    return `Basic ${evidenceType} evidence requiring additional corroboration for optimal case strength.`;
-  return `Limited ${evidenceType} evidence with significant admissibility concerns requiring review.`;
-}
+    return `Basic ${evidenceType} }evidence requiring additional corroboration for optimal case strength.`;
+  return `Limited ${evidenceType} }evidence with significant admissibility concerns requiring review.`;
+} }
 export const GET = redisOptimized.caseScoring(originalGETHandler);
 export const POST = redisOptimized.caseScoring(originalPOSTHandler);
+

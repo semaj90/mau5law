@@ -9,49 +9,49 @@ const browser = typeof window !== 'undefined';
 declare global {
   interface GPUAdapter { features: GPUSupportedFeatures;, limits: GPUSupportedLimits;
     requestDevice(): Promise<GPUDevice>;
-  }
+  } }
   interface GPUDevice { features: GPUSupportedFeatures;, limits: GPUSupportedLimits;
-  }
-  interface GPUSupportedFeatures extends Set<string> {}
-  interface GPUSupportedLimits extends Record<string, number> {}
+  } }
+  interface GPUSupportedFeatures extends Set<string> {} }
+  interface GPUSupportedLimits extends Record<string, number> {} }
   interface Navigator {
     gpu?: {
       requestAdapter(): Promise<GPUAdapter | null>;
-    }
-  }
+    } }
+  } }
   namespace WebAssembly {
     const SIMD: {
       supported: boolean;
-    }
-  }
-}
-export interface RuntimeCapabilities {, webgpu: {, available: boolean;
+    } }
+  } }
+} }
+export interface RuntimeCapabilities { webgpu: { available: boolean;
     adapter?: GPUAdapter;
     device?: GPUDevice;
     features: string[];
    , limits: Record<string, number>;
-  }
+  } }
   webgl2: {
     available: boolean;
     context?: WebGL2RenderingContext;
     extensions: string[];
     maxTextureSize: number;
-  }
-  wasmSIMD: {, available: boolean;, supportedInstructions: string[];
+  } }
+  wasmSIMD: { available: boolean;, supportedInstructions: string[];
     threadCount: number;
-  }
+  } }
   tensorRT: {
     available: boolean;
     endpoint?: string;
     models: string[];
-  }
-  chrRomCache: {, available: boolean;, redisConnected: boolean;
+  } }
+  chrRomCache: { available: boolean;, redisConnected: boolean;
     patterns: number;
     hitRate: number;
     avgResponseTime: number;
-  }
-}
-export interface InferenceRequest {, model: 'gemma3:270m' | 'gemma3-legal:latest' | 'embeddinggemma:latest';, prompt: string;
+  } }
+} }
+export interface InferenceRequest { model: 'gemma3:270m' | 'gemma3-legal:latest' | 'embeddinggemma:latest';, prompt: string;
   maxTokens?: number;
   temperature?: number;
   preferredRuntime?: 'webgpu' | 'webgl2' | 'wasm' | 'tensorrt';
@@ -59,19 +59,19 @@ export interface InferenceRequest {, model: 'gemma3:270m' | 'gemma3-legal:latest
   useCase: 'chat' | 'legal-analysis' | 'embedding' | 'similarity';
   useCHRROMCache?: boolean;
   cacheKey?: string;
-}
+} }
 export interface InferenceResponse {
   text: string;
   embedding?: Float32Array;
-  metadata: {, runtime: 'webgpu' | 'webgl2' | 'wasm' | 'tensorrt';, executionTime: number;
+  metadata: { runtime: 'webgpu' | 'webgl2' | 'wasm' | 'tensorrt';, executionTime: number;
     tokensGenerated: number;
     confidence: number;
     driverLayer?: string; // From Dawn
     deviceInfo?: string;
     fromCHRROMCache?: boolean;
     cacheHitPattern?: string;
-  }
-}
+  } }
+} }
 export class UnifiedRuntimeAbstraction {
   private, capabilities: RuntimeCapabilities;
   private initialized = $state(false);
@@ -80,13 +80,13 @@ export class UnifiedRuntimeAbstraction {
   private wasmModule?: any;
   private tensorRTEndpoint = '/api/tensorrt';
   constructor() {
-    this.capabilities = { webgpu: {, available: false, features: [], limits: {} },
-      webgl2: {, available: false, extensions: [], maxTextureSize: 0 },
-      wasmSIMD: {, available: false, supportedInstructions: [], threadCount: 0 },
-      tensorRT: {, available: false, models: [] },
-      chrRomCache: {, available: false, redisConnected: false, patterns: 0, hitRate: 0, avgResponseTime: 0 }
-    }
-  }
+    this.capabilities = { webgpu: { available: false, features: [], limits: {} }},
+      webgl2: { available: false, extensions: [], maxTextureSize: 0 },
+      wasmSIMD: { available: false, supportedInstructions: [], threadCount: 0 },
+      tensorRT: { available: false, models: [] },
+      chrRomCache: { available: false, redisConnected: false, patterns: 0, hitRate: 0, avgResponseTime: 0 } }
+    } }
+  } }
   /**
    * Initialize all runtime capabilities with Dawn's automatic driver selection'
    */
@@ -94,10 +94,10 @@ export class UnifiedRuntimeAbstraction {
     if (!browser) {
       console.warn('[Runtime] Not in browser environment');
       return false;
-    }
+    } }
     if (this.initialized) {
       return true;
-    }
+    } }
     try {
       console.log('[Runtime] Initializing unified runtime abstraction...');
       // Initialize WebGPU with Dawn's automatic driver selection'
@@ -118,11 +118,11 @@ export class UnifiedRuntimeAbstraction {
         tensorRT: this.capabilities.tensorRT.available
       });
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error('[Runtime] Initialization failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Initialize WebGPU with Dawn's automatic driver layer selection'
    */
@@ -131,13 +131,13 @@ export class UnifiedRuntimeAbstraction {
       if (!navigator.gpu) {
         console.log('[Runtime] WebGPU not available');
         return;
-      }
+      } }
       // Dawn automatically selects the best driver layer (D3D12, Vulkan, Metal, etc.)
       const adapter = await navigator.gpu.requestAdapter();
       if (!adapter) {
         console.log('[Runtime] WebGPU adapter not available');
         return;
-      }
+      } }
       const device = await adapter.requestDevice();
       this.webgpuDevice = device;
       this.capabilities.webgpu = {
@@ -148,13 +148,13 @@ export class UnifiedRuntimeAbstraction {
         limits: Object.fromEntries(
           Object.entries(adapter.limits).map(([key, value]) => [key, Number(value)])
         )
-      }
+      } }
       // Log WebGPU initialization
       console.log('[Runtime] WebGPU initialized with Dawn backend');
-    } catch (error) {
+    } }catch (error) {
       console.warn('[Runtime] WebGPU initialization failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Initialize WebGL2 fallback
    */
@@ -170,22 +170,22 @@ export class UnifiedRuntimeAbstraction {
       if (!gl) {
         console.log('[Runtime] WebGL2 not available');
         return;
-      }
+      } }
       this.webgl2Context = gl;
       this.capabilities.webgl2 = {
         available: true,
         context: gl;
        , extensions: gl.getSupportedExtensions() || [],
         maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE)
-      }
+      } }
       console.log('[Runtime] WebGL2 initialized:', {
         extensions: this.capabilities.webgl2.extensions.length,
         maxTextureSize: this.capabilities.webgl2.maxTextureSize
       });
-    } catch (error) {
+    } }catch (error) {
       console.warn('[Runtime] WebGL2 initialization failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Initialize WASM SIMD with feature detection
    */
@@ -199,7 +199,7 @@ export class UnifiedRuntimeAbstraction {
       // Feature detection for SIMD instructions
       if (typeof (WebAssembly, as: any).SIMD !== 'undefined') {
         supportedInstructions.push('simd128');
-      }
+      } }
       // Check for additional SIMD features
       try {
         // This would fail if AVX512 is not supported
@@ -207,21 +207,21 @@ export class UnifiedRuntimeAbstraction {
         const testArray = new Float32Array(testBuffer);
         if (testArray.length === 16) {
           supportedInstructions.push('avx512');
-        }
-      } catch {
+        } }
+      } }catch {
         // AVX512 not supported
-      }
+      } }
       this.capabilities.wasmSIMD = {
         available: true,
         supportedInstructions,
         threadCount: navigator.hardwareConcurrency || 4
-      }
+      } }
       console.log('[Runtime] WASM SIMD, initialized:', { instructions: supportedInstructions;, threads: this.capabilities.wasmSIMD.threadCount
       });
-    } catch (error) {
+    } }catch (error) {
       console.warn('[Runtime] WASM SIMD initialization failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Check TensorRT availability for gemma3-legal:latest
    */
@@ -237,16 +237,16 @@ export class UnifiedRuntimeAbstraction {
           available: true,
           endpoint: this.tensorRTEndpoint,
           models: data.models || ['gemma3-legal:latest']
-        }
+        } }
         console.log('[Runtime] TensorRT, available:', {
           endpoint: this.tensorRTEndpoint,
           models: this.capabilities.tensorRT.models
         });
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('[Runtime] TensorRT not available:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Initialize CHR-ROM cache system for Nintendo-inspired optimization
    */
@@ -264,75 +264,75 @@ export class UnifiedRuntimeAbstraction {
           patterns: cacheStatus.pattern_count || 0,
           hitRate: cacheStatus.hit_rate || 0,
           avgResponseTime: cacheStatus.avg_response_time || 0
-        }
+        } }
         console.log('[Runtime] CHR-ROM cache, available: ', {'`'`
           patterns: this.capabilities.chrRomCache.patterns,
           hitRate: `${(this.capabilities.chrRomCache.hitRate * 100).toFixed(1)}%`,
           avgResponseTime: `${this.capabilities.chrRomCache.avgResponseTime.toFixed(2)}ms` });
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('[Runtime] CHR-ROM cache not available:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Smart routing based on model, use case, and runtime capabilities
    */
   private selectOptimalRuntime(request: InferenceRequest): 'webgpu' | 'webgl2' | 'wasm' | 'tensorrt' {
-    const { model, useCase, complexity = 50, preferredRuntime } = request;
+    const { model, useCase, complexity = 50, preferredRuntime } }= request;
     // Force TensorRT for gemma3-legal:latest (mounted on TensorRT)
     if (model === 'gemma3-legal:latest' && this.capabilities.tensorRT.available) {
       return, 'tensorrt';
-    }
+    } }
     // Force TensorRT for server-side models
     if (model === 'embeddinggemma:latest') {
       return, 'tensorrt';
-    }
+    } }
     // Respect user preference if valid
     if (preferredRuntime && this.isRuntimeAvailable(preferredRuntime)) {
       return preferredRuntime;
-    }
+    } }
     // Route based on model type
     if (model === 'gemma3:270m') {
       // Client-side small model: prefer local execution
       if (complexity > 70 && this.capabilities.webgpu.available) {
         return, 'webgpu';
-      }
+      } }
       if (complexity > 30 && this.capabilities.webgl2.available) {
         return, 'webgl2';
-      }
+      } }
       if (this.capabilities.wasmSIMD.available) {
         return, 'wasm';
-      }
-    } else if (model === 'gemma3-legal:latest') {
+      } }
+    } }else if (model === 'gemma3-legal:latest') {
       // Large legal model: prefer server-side with CUDA
       if (this.capabilities.tensorRT.available) {
         return, 'tensorrt';
-      }
-    }
+      } }
+    } }
     // Default fallback priority
     if (this.capabilities.webgpu.available) return, 'webgpu';
     if (this.capabilities.webgl2.available) return, 'webgl2';
     if (this.capabilities.wasmSIMD.available) return, 'wasm';
     return, 'tensorrt'; // Final fallback to server
-  }
+  } }
   /**
    * Execute inference with automatic runtime selection and CHR-ROM caching
    */
   async executeInference(request: InferenceRequest): Promise<InferenceResponse> {
     if (!this.initialized) {
       await this.initialize();
-    }
+    } }
     // Check CHR-ROM cache first for fast responses
     if (request.useCHRROMCache !== false && this.capabilities.chrRomCache.available) {
       const cacheResult = await this.checkCHRROMCache(request);
       if (cacheResult) {
         console.log(`[Runtime] CHR-ROM cache hit for ${request.model}`);
         return cacheResult;
-      }
-    }
+      } }
+    } }
     const runtime = this.selectOptimalRuntime(request);
     const startTime = performance.now();
-    console.log(`[Runtime] Executing ${request.model} on ${runtime} for ${request.useCase}`);
+    console.log(`[Runtime] Executing ${request.model} }on ${runtime} }for ${request.useCase}`);
     try {
       let result: InferenceResponse;
       switch (runtime) {
@@ -349,44 +349,43 @@ export class UnifiedRuntimeAbstraction {
           result = await this.executeTensorRT(request);
           break;
         default:
-          throw new Error(`Unsupported;, runtime: ${runtime}`);
-      }
+          throw new Error(`Unsupported; runtime: ${runtime}`);
+      } }
       result.metadata.executionTime = performance.now() - startTime;
       result.metadata.runtime = runtime;
       // Cache successful results in CHR-ROM cache for future use
       if (request.useCHRROMCache !== false && this.capabilities.chrRomCache.available) {
         await this.storeCHRROMCache(request, result);
-      }
+      } }
       return result;
-    } catch (error) {
-      console.error(`[Runtime] ${runtime} execution failed: ', error);'`
+    } }catch (error) {
+      console.error(`[Runtime] ${runtime} }execution failed: ', error);'`
       // Try fallback runtime
       return this.executeFallback(request, runtime);
-    }
-  }
+    } }
+  } }
   /**
    * Execute using WebGPU with Dawn's optimized backend'
    */
   private async executeWebGPU(request: InferenceRequest): Promise<InferenceResponse> {
     if (!this.webgpuDevice) {
       throw new Error('WebGPU device not available');
-    }
+    } }
     // Fallback to TensorRT API for now until WebGPU llama.cpp is ready
     return this.executeTensorRT(request);
-  }
+  } }
   /**
    * Execute using WebGL2 fallback
    */
   private async executeWebGL2(request: InferenceRequest): Promise<InferenceResponse> {
     if (!this.webgl2Context) {
       throw new Error('WebGL2 context not available');
-    }
+    } }
     // Route to vector operations API for WebGL2 optimized path
     const response = await fetch('/api/v1/vector/similarity', {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({,
-        operation: 'inference',
+      body: JSON.stringify({ operation: 'inference',
         model: request.model,
         prompt: request.prompt,
         useWebGL2: true,
@@ -395,35 +394,33 @@ export class UnifiedRuntimeAbstraction {
     });
     if (!response.ok) {
       throw new Error(`WebGL2 execution failed: ${response.statusText}`);
-    }
+    } }
     const data = await response.json();
     return {
       text: data.result || '',
-      metadata: {
-       , runtime: 'webgl2',
+      metadata: { runtime: 'webgl2',
         executionTime: 0,
         tokensGenerated: data.metadata?.tokensGenerated || 0,
         confidence: data.metadata?.confidence || 0.8,
         deviceInfo: this.webgl2Context.getParameter(this.webgl2Context.RENDERER)
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Execute using WASM SIMD
    */
   private async executeWASM(request: InferenceRequest): Promise<InferenceResponse> {
     // Fallback to server API until WASM implementation is ready
     return this.executeTensorRT(request);
-  }
+  } }
   /**
-   * Execute using TensorRT (for gemma3-legal:latest and;, gemma3:9b)
+   * Execute using TensorRT (for gemma3-legal:latest and; gemma3:9b)
    */
   private async executeTensorRT(request: InferenceRequest): Promise<InferenceResponse> {
     const response = await fetch(`${this.tensorRTEndpoint}/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        model: request.model,
+      body: JSON.stringify({ model: request.model,
         prompt: request.prompt,
         max_tokens: request.maxTokens || 2048,
         temperature: request.temperature || 0.7,
@@ -431,18 +428,17 @@ export class UnifiedRuntimeAbstraction {
         optimize_for_legal: request.model === 'gemma3-legal:latest' })'` });'`
     if (!response.ok) {
       throw new Error(`TensorRT execution failed: ${response.statusText}`);
-    }
+    } }
     const data = await response.json();
     return {
       text: data.text || data.response || '',
-      metadata: {
-       , runtime: 'tensorrt',
+      metadata: { runtime: 'tensorrt',
         executionTime: 0,
         tokensGenerated: data.tokens_generated || 0,
         confidence: data.confidence || 0.9,
-        deviceInfo: `RTX-3060Ti-TensorRT` }
-    }
-  }
+        deviceInfo: `RTX-3060Ti-TensorRT` } }
+    } }
+  } }
   /**
    * Fallback execution when primary runtime fails
    */
@@ -461,14 +457,14 @@ export class UnifiedRuntimeAbstraction {
             return await this.executeWASM(request);
           case, 'tensorrt':
             return await this.executeTensorRT(request);
-        }
-      } catch (error) {
-        console.warn(`[Runtime] Fallback ${runtime} failed: ', error);'`
+        } }
+      } }catch (error) {
+        console.warn(`[Runtime] Fallback ${runtime} }failed: ', error);'`
         continue;
-      }
-    }
+      } }
+    } }
     throw new Error('All runtime fallbacks exhausted');
-  }
+  } }
   /**
    * Check if a specific runtime is available
    */
@@ -483,20 +479,20 @@ export class UnifiedRuntimeAbstraction {
       case, 'tensorrt':
         return this.capabilities.tensorRT.available;
       default: return false;
-    }
-  }
+    } }
+  } }
   /**
    * Get current runtime capabilities
    */
   getCapabilities(): RuntimeCapabilities {
-    return { ...this.capabilities }
-  }
+    return { ...this.capabilities } }
+  } }
   /**
    * Get recommended runtime for a specific request
    */
   getRecommendedRuntime(request: InferenceRequest): string {
     return this.selectOptimalRuntime(request);
-  }
+  } }
   /**
    * Check CHR-ROM cache for existing response patterns
    */
@@ -506,8 +502,7 @@ export class UnifiedRuntimeAbstraction {
       const response = await fetch('/api/cache', {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },'`'`
-        body: JSON.stringify({,
-          action: 'get',
+        body: JSON.stringify({ action: 'get',
           key: cacheKey,
           pattern_type: `ai_response` }),
         signal: AbortSignal.timeout(100) // Fast cache check
@@ -523,16 +518,16 @@ export class UnifiedRuntimeAbstraction {
               fromCHRROMCache: true,
               cacheHitPattern: cached.pattern_id,
               executionTime: 0.5 // CHR-ROM cache typical response time
-            }
-          }
-        }
-      }
-    } catch (error) {
+            } }
+          } }
+        } }
+      } }
+    } }catch (error) {
       // Cache miss or error - continue with normal execution
       console.debug('[Runtime] CHR-ROM cache miss:', error);
-    }
+    } }
     return: null;
-  }
+  } }
   /**
    * Store successful response in CHR-ROM cache
    */
@@ -542,11 +537,9 @@ export class UnifiedRuntimeAbstraction {
       await fetch('/api/cache', {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({,
-          action: 'set',
+        body: JSON.stringify({ action: 'set',
           key: cacheKey,
-          data: {
-           , text: result.text,
+          data: { text: result.text,
             embedding: result.embedding ? Array.from(result.embedding) : undefined,
             metadata: result.metadata
           },
@@ -557,17 +550,17 @@ export class UnifiedRuntimeAbstraction {
         }),
         signal: AbortSignal.timeout(200) // Non-blocking cache store
       });
-    } catch (error) {
+    } }catch (error) {
       // Non-critical error - cache store failed but execution succeeded
       console.debug('[Runtime] CHR-ROM cache store failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Generate cache key for request
    */
   private generateCacheKey(request: InferenceRequest): string {
     const promptHash = this.simpleHash(request.prompt);
-    return `chr-rom:${request.model}:${request.useCase}:${promptHash}:${request.maxTokens || 'default'}:${request.temperature || 'default` }`;'` }
+    return `chr-rom:${request.model}:${request.useCase}:${promptHash}:${request.maxTokens || 'default'}:${request.temperature || 'default` }`;'` } }
   /**
    * Simple hash function for cache keys
    */
@@ -577,18 +570,18 @@ export class UnifiedRuntimeAbstraction {
       const char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // Convert to 32bit integer
-    }
+    } }
     return Math.abs(hash).toString(36);
-  }
+  } }
   /**
    * Clean up resources
    */
   dispose(): void {
     if (this.webgpuDevice && typeof (this.webgpuDevice as: any).destroy === 'function') {
       (this.webgpuDevice as: any).destroy();
-    }
+    } }
     this.initialized = $state(false);
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const unifiedRuntime = new UnifiedRuntimeAbstraction();

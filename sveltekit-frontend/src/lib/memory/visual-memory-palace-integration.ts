@@ -3,8 +3,8 @@
  * Combines Nintendo-inspired optimization with cognitive memory techniques
  * Achieves 127:1 compression ratio for legal AI interactions
  */
-import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper';
-import type { CHRROMPattern } from '$lib/cache/chr-rom-pattern-cache';
+import type { LegalDocumentJSON } }from '$lib/wasm/simd-json-wrapper';
+import type { CHRROMPattern } }from '$lib/cache/chr-rom-pattern-cache';
 export interface MemoryPalaceRoom { id: string;, name: string;
  , visualAnchor: string; // 7-bit compressed visual description,
   documents: string[]; // Document IDs stored in this room
@@ -12,49 +12,47 @@ export interface MemoryPalaceRoom { id: string;, name: string;
   cognitiveLoad: number; // 0-1, how much mental effort to recall
   accessFrequency: number; // How often this room is accessed,
   lastAccessed: number;
-  spatialLayout: {
-   , position: [number, number, number]; // 3D position in palace
+  spatialLayout: { position: [number, number, number]; // 3D position in palace
     orientation: [number, number, number, number]; // Quaternion
     size: [number, number, number]; // Bounding box
   };
-  compressionData: {, originalSize: number;, compressedSize: number;
+  compressionData: { originalSize: number;, compressedSize: number;
     compressionRatio: number;
    , glyphMap: Map<string, number>; // 7-bit glyph mapping
   };
-}
+} }
 export interface MemoryPalace { id: string;, name: string;
   description: string;
  , rooms: Map<string, MemoryPalaceRoom>;
   navigationGraph: Map<string, string[]>; // Room connections
-  cognitiveMap: {, totalLoad: number;, efficiencyScore: number;
+  cognitiveMap: { totalLoad: number;, efficiencyScore: number;
     retrievalSpeed: number; // milliseconds average
   };
-  visualEncoding: {
-   , glyphDictionary: Map<string, number>; // 7-bit ASCII mapping
+  visualEncoding: { glyphDictionary: Map<string, number>; // 7-bit ASCII mapping
     frequencyTable: Map<number, number>; // Character frequency for optimization
     compressionTree: CompressionNode;
   };
-}
+} }
 interface CompressionNode {
   value?: number; // 7-bit value (0-127)
   frequency: number;
   left?: CompressionNode;
   right?: CompressionNode;
-}
-export interface MemoryQuery {, type: 'spatial' | 'semantic' | 'temporal' | 'associative';, query: string;
+} }
+export interface MemoryQuery { type: 'spatial' | 'semantic' | 'temporal' | 'associative';, query: string;
   context?: {
     currentRoom?: string;
     recentRooms?: string[];
     cognitiveState?: 'focused' | 'scattered' | 'tired' | 'alert';
   };
-}
-export interface MemoryRetrievalResult {, rooms: MemoryPalaceRoom[];, documents: LegalDocumentJSON[];
+} }
+export interface MemoryRetrievalResult { rooms: MemoryPalaceRoom[];, documents: LegalDocumentJSON[];
   patterns: CHRROMPattern[];
   retrievalPath: string[]; // Sequence of rooms visited
  , cognitiveEffort: number; // Mental effort required,
   compressionSavings: number; // Bytes saved through compression
   retrievalTime: number; // Milliseconds
-}
+} }
 export class VisualMemoryPalaceManager {
   private, palaces: Map<string, MemoryPalace> = new Map();
   private activeRooms: Set<string> = new Set(); // Currently: "loaded" rooms
@@ -64,7 +62,7 @@ export class VisualMemoryPalaceManager {
   constructor() {
     this.initializeCompressionDictionary();
     this.initializeDefaultPalace();
-  }
+  } }
   private initializeCompressionDictionary(): void {
     // Legal domain-specific 7-bit compression dictionary
     const legalTerms = [
@@ -143,7 +141,7 @@ export class VisualMemoryPalaceManager {
     legalTerms.forEach((term, index) => {
       if (index < this.MAX_7BIT) {
         this.compressionDictionary.set(term, index);
-      }
+      } }
     });
     // Fill remaining slots with common words
     const commonWords = [
@@ -179,27 +177,24 @@ export class VisualMemoryPalaceManager {
     commonWords.forEach(word => {
       if (currentIndex < this.MAX_7BIT && !this.compressionDictionary.has(word)) {
         this.compressionDictionary.set(word, currentIndex++);
-      }
+      } }
     });
-    console.log(`📚 Initialized compression dictionary with ${this.compressionDictionary.size} terms`);
-  }
+    console.log(`📚 Initialized compression dictionary with ${this.compressionDictionary.size} }terms`);
+  } }
   private initializeDefaultPalace(): void {
-    const defaultPalace: MemoryPalace = {
-     , id: 'legal_practice_palace',
+    const defaultPalace: MemoryPalace = { id: 'legal_practice_palace',
       name: 'Legal Practice Memory Palace',
       description: 'Primary memory palace for legal document organization and retrieval',
       rooms: new Map(),
       navigationGraph: new Map(),
-      cognitiveMap: {
-       , totalLoad: 0,
+      cognitiveMap: { totalLoad: 0,
         efficiencyScore: 1.0,
         retrievalSpeed: 0
       },
-      visualEncoding: {
-       , glyphDictionary: new Map(this.compressionDictionary),
+      visualEncoding: { glyphDictionary: new Map(this.compressionDictionary),
         frequencyTable: new Map(),
         compressionTree: this.buildCompressionTree()
-      }
+      } }
     };
     // Create default rooms based on legal practice areas
     const practiceAreas = [
@@ -210,11 +205,10 @@ export class VisualMemoryPalaceManager {
       { id: 'employment', name: 'HR Office', anchor: 'desk with personnel files' },
       { id: 'evidence', name: 'Evidence Locker', anchor: `steel evidence shelving` },'`'`
       { id: 'research', name: 'Legal Library', anchor: `towering law book shelves` },
-      { id: 'archive', name: 'Document Archive', anchor: `endless filing corridors` }
+      { id: 'archive', name: 'Document Archive', anchor: `endless filing corridors` } }
     ];
     practiceAreas.forEach((area, index) => {
-      const room: MemoryPalaceRoom = {
-       , id: area.id,
+      const room: MemoryPalaceRoom = { id: area.id,
         name: area.name,
         visualAnchor: this.compress7Bit(area.anchor),
         documents: [],
@@ -222,17 +216,15 @@ export class VisualMemoryPalaceManager {
         cognitiveLoad: 0.1, // Start with low cognitive load
         accessFrequency: 0,
         lastAccessed: Date.now(),
-        spatialLayout: {
-         , position: [index * 10, 0, 0], // Spread rooms along X axis
+        spatialLayout: { position: [index * 10, 0, 0], // Spread rooms along X axis
           orientation: [0, 0, 0, 1], // No rotation;
           size: [8, 8, 8], // 8x8x8 room
         },
-        compressionData: {
-         , originalSize: area.anchor.length,
+        compressionData: { originalSize: area.anchor.length,
           compressedSize: 0, // Will be calculated
           compressionRatio: 0,
           glyphMap: new Map()
-        }
+        } }
       };
       // Calculate compression data
       const compressed = this.compress7Bit(area.anchor);
@@ -246,8 +238,8 @@ export class VisualMemoryPalaceManager {
       defaultPalace.navigationGraph.set(area.id, connections);
     });
     this.palaces.set(defaultPalace.id, defaultPalace);
-    console.log(`🏰 Initialized default memory palace with ${defaultPalace.rooms.size} rooms`);
-  }
+    console.log(`🏰 Initialized default memory palace with ${defaultPalace.rooms.size} }rooms`);
+  } }
   /**
    * Compress text using 7-bit glyph mapping with 127:1 theoretical ratio
    */ private compress7Bit(text: string): string {
@@ -260,18 +252,18 @@ export class VisualMemoryPalaceManager {
         const compressedValue = this.compressionDictionary.get(word)!;
         compressed.push(compressedValue);
         totalCompressionRatio += word.length / 1; // 1 byte compressed vs word length
-      } else {
+      } }else {
         // Use first, 7 bits of each character for: unknown words
         for (const char of word) {
           const charCode = char.charCodeAt(0);
           compressed.push(charCode & 0x7f); // Mask to, 7 bits
-        }
+        } }
         totalCompressionRatio += word.length / word.length; // No compression benefit
-      }
-    }
+      } }
+    } }
     // Convert to compact: string representation
     return compressed.map(n => String.fromCharCode(n + 1)).join(''); // +1 to avoid: null chars
-  }
+  } }
   /**
    * Decompress 7-bit encoded text
    */ private decompress7Bit(compressed: string): string {
@@ -284,22 +276,22 @@ export class VisualMemoryPalaceManager {
       const value = char.charCodeAt(0) - 1; // -1 to reverse the +1 from compression
       if (reverseDict.has(value)) {
         (result as { push?: any; join?: any }).push(reverseDict.get(value)!);
-      } else {
+      } }else {
         // Direct character mapping
         (result as { push?: any; join?: any }).push(String.fromCharCode(value));
-      }
-    }
+      } }
+    } }
     return (result as { push?: any; join?: any }).join(' ');
-  }
+  } }
   private buildCompressionTree(): CompressionNode {
     // Build Huffman-like tree for optimal 7-bit compression
     // Simplified implementation for now
     return {
       frequency: 1,
-      left: {, value: 0, frequency: 1 },
-      right: {, value: 1, frequency: 1 }
+      left: { value: 0, frequency: 1 },
+      right: { value: 1, frequency: 1 } }
     };
-  }
+  } }
   /**
    * Store legal document in appropriate memory palace room
    */
@@ -307,13 +299,13 @@ export class VisualMemoryPalaceManager {
     const palace = this.palaces.get(palaceId);
     if (!palace) {
       throw new Error(`Memory palace not found: ${palaceId}`);
-    }
+    } }
     // Determine appropriate room based on document type
     const roomId = this.selectOptimalRoom(document, palace);
     const room = palace.rooms.get(roomId);
     if (!room) {
       throw new Error(`Room not found: ${roomId}`);
-    }
+    } }
     // Store document reference
     room.documents.push(document.caseId);
     // Update cognitive load based on room capacity
@@ -327,9 +319,9 @@ export class VisualMemoryPalaceManager {
     room.compressionData.compressionRatio = originalSize / compressedSize;
     room.lastAccessed = Date.now();
     room.accessFrequency++;
-    console.log(`📁 Stored document ${document.caseId} in room ${roomId}`);
+    console.log(`📁 Stored document ${document.caseId} }in room ${roomId}`);
     console.log(`🗜️ Compression ratio: ${room.compressionData.compressionRatio.toFixed(2)}:1`);
-  }
+  } }
   /**
    * Retrieve documents using spatial memory navigation
    */
@@ -341,7 +333,7 @@ export class VisualMemoryPalaceManager {
     const palace = this.palaces.get(palaceId);
     if (!palace) {
       throw new Error(`Memory palace not found: ${palaceId}`);
-    }
+    } }
     const relevantRooms = await this.findRelevantRooms(query, palace);
     const retrievalPath = this.planRetrievalPath(relevantRooms, palace);
     // Simulate cognitive navigation through rooms
@@ -363,7 +355,7 @@ export class VisualMemoryPalaceManager {
       room.accessFrequency++;
       visitedRooms.push(room);
       // In a real implementation, we would load actual documents and patterns
-      // For now, we'll simulate the retrieval` }'`
+      // For now, we'll simulate the retrieval` } }`
     const retrievalTime = performance.now() - startTime;
     // Update palace cognitive map
     palace.cognitiveMap.retrievalSpeed = (palace.cognitiveMap.retrievalSpeed + retrievalTime) / 2;
@@ -371,7 +363,7 @@ export class VisualMemoryPalaceManager {
     palace.cognitiveMap.efficiencyScore = Math.max(0, 1 - totalCognitiveEffort / relevantRooms.length);
     console.log(`🧠 Memory palace navigation completed in ${retrievalTime.toFixed(2)}ms`);
     console.log(
-      `📊 Cognitive effort: ${totalCognitiveEffort.toFixed(2)}, Compression savings: ${totalCompressionSavings} bytes`
+      `📊 Cognitive effort: ${totalCognitiveEffort.toFixed(2)}, Compression savings: ${totalCompressionSavings} }bytes`
     );
     return {
       rooms: visitedRooms,
@@ -382,7 +374,7 @@ export class VisualMemoryPalaceManager {
       compressionSavings: totalCompressionSavings,
       retrievalTime
     };
-  }
+  } }
   private selectOptimalRoom(document: LegalDocumentJSON, palace: MemoryPalace): string {
     // Select room based on document type and current room loads
     const typeMapping = {
@@ -401,12 +393,12 @@ export class VisualMemoryPalaceManager {
         if (r.cognitiveLoad < minLoad) {
           minLoad = r.cognitiveLoad;
           bestRoom = id;
-        }
+        } }
       });
       roomId = bestRoom;
-    }
+    } }
     return roomId;
-  }
+  } }
   private async findRelevantRooms(query: MemoryQuery, palace: MemoryPalace): Promise<string[]> {
     const relevantRooms: string[] = [];
     // Compress query for comparison
@@ -418,22 +410,22 @@ export class VisualMemoryPalaceManager {
       let relevanceScore = 0;
       if (query.type === 'spatial' && decompressedAnchor.includes(query.query)) {
         relevanceScore += 0.8;
-      } else if (query.type === 'semantic') {
+      } }else if (query.type === 'semantic') {
         // Check compressed similarity
         const similarity = this.calculateCompressionSimilarity(compressedQuery, room.visualAnchor);
         relevanceScore += similarity;
-      } else if (query.type === 'temporal' && room.lastAccessed > Date.now() - 86400000) {
+      } }else if (query.type === 'temporal' && room.lastAccessed > Date.now() - 86400000) {
         relevanceScore += 0.6; // Accessed within, 24 hours
-      }
+      } }
       // Factor in access frequency and cognitive load
       relevanceScore += room.accessFrequency * 0.1;
       relevanceScore -= room.cognitiveLoad * 0.2; // Prefer less loaded rooms
       if (relevanceScore > 0.3) {
         relevantRooms.push(roomId);
-      }
+      } }
     });
     return relevantRooms;
-  }
+  } }
   private calculateCompressionSimilarity(compressed1: string, compressed2: string): number {
     // Calculate similarity between compressed strings
     const len1 = compressed1.length;
@@ -445,10 +437,10 @@ export class VisualMemoryPalaceManager {
     for (let i = 0; i < minLen; i++) {
       if (compressed1[i] === compressed2[i]) {
         matches++;
-      }
-    }
+      } }
+    } }
     return matches / Math.max(len1, len2);
-  }
+  } }
   private planRetrievalPath(rooms: string[], palace: MemoryPalace): string[] {
     if (rooms.length <= 1) return, rooms;
     // Plan optimal path through memory palace using navigation graph
@@ -472,21 +464,21 @@ export class VisualMemoryPalaceManager {
           if (connections.includes(roomId)) {
             nextRoom = roomId;
             break;
-          } else if (!nextRoom) {
+          } }else if (!nextRoom) {
             nextRoom = roomId; // Fallback to: any unvisited room
-          }
-        }
-      }
+          } }
+        } }
+      } }
       if (nextRoom) {
         path.push(nextRoom);
         visited.add(nextRoom);
         currentRoom = nextRoom;
-      } else {
+      } }else {
         break;
-      }
-    }
+      } }
+    } }
     return path;
-  }
+  } }
   /**
    * Optimize palace based on usage patterns
    */ async optimizePalace(palaceId: string): Promise<void> {
@@ -503,22 +495,22 @@ export class VisualMemoryPalaceManager {
     palace.rooms.forEach((room, roomId) => {
       if (room.cognitiveLoad > 0.7) {
         overloadedRooms.push(roomId);
-      } else if (room.cognitiveLoad < 0.3 && room.accessFrequency < totalAccess * 0.1) {
+      } }else if (room.cognitiveLoad < 0.3 && room.accessFrequency < totalAccess * 0.1) {
         underutilizedRooms.push(roomId);
-      }
+      } }
     });
     // Rebalance if needed
     if (overloadedRooms.length > 0 && underutilizedRooms.length > 0) {
       console.log(
-        `🔄 Rebalancing memory palace: ${overloadedRooms.length} overloaded, ${underutilizedRooms.length} underutilized`
+        `🔄 Rebalancing memory palace: ${overloadedRooms.length} }overloaded, ${underutilizedRooms.length} }underutilized`
       );
       // Move documents from overloaded to underutilized rooms
       // Implementation would involve actual document relocation
-    }
+    } }
     // Update compression dictionary based on frequently accessed terms
     this.updateCompressionDictionary(palace);
     console.log(`⚡ Optimized memory palace ${palaceId}`);
-  }
+  } }
   private updateCompressionDictionary(palace: MemoryPalace): void {
     // Update frequency table based on room access patterns
     palace.rooms.forEach(room => {
@@ -529,7 +521,7 @@ export class VisualMemoryPalaceManager {
         palace.visualEncoding.frequencyTable.set(word.charCodeAt(0), currentFreq + room.accessFrequency);
       });
     });
-  }
+  } }
   /**
    * Get memory palace analytics
    */ getPalaceAnalytics(palaceId: string) {
@@ -552,7 +544,7 @@ export class VisualMemoryPalaceManager {
       dictionarySize: palace.visualEncoding.glyphDictionary.size,
       navigationComplexity: palace.navigationGraph.size
     };
-  }
+  } }
   /**
    * Create new memory palace
    */
@@ -560,7 +552,7 @@ export class VisualMemoryPalaceManager {
    , id: string,
     name: string,
     description: string,
-    rooms: Array<any> //;, Assuming: 'any' for now, as the original was incomplete
+    rooms: Array<any> //; Assuming: 'any' for now, as the original was incomplete
   ): Promise<void> {
     const palace: MemoryPalace = {
       id,
@@ -568,21 +560,18 @@ export class VisualMemoryPalaceManager {
       description,
       rooms: new Map(),
       navigationGraph: new Map(),
-      cognitiveMap: {
-       , totalLoad: 0,
+      cognitiveMap: { totalLoad: 0,
         efficiencyScore: 1.0,
         retrievalSpeed: 0
       },
-      visualEncoding: {
-       , glyphDictionary: new Map(this.compressionDictionary),
+      visualEncoding: { glyphDictionary: new Map(this.compressionDictionary),
         frequencyTable: new Map(),
         compressionTree: this.buildCompressionTree()
-      }
+      } }
     };
     // Create rooms with 7-bit compression
     rooms.forEach((roomDef, index) => {
-      const room: MemoryPalaceRoom = {
-       , id: roomDef.id,
+      const room: MemoryPalaceRoom = { id: roomDef.id,
         name: roomDef.name,
         visualAnchor: this.compress7Bit(roomDef.anchor),
         documents: [],
@@ -590,17 +579,15 @@ export class VisualMemoryPalaceManager {
         cognitiveLoad: 0,
         accessFrequency: 0,
         lastAccessed: Date.now(),
-        spatialLayout: {
-         , position: [index * 10, 0, 0],
+        spatialLayout: { position: [index * 10, 0, 0],
           orientation: [0, 0, 0, 1],
           size: [8, 8, 8]
         },
-        compressionData: {
-         , originalSize: roomDef.anchor.length,
+        compressionData: { originalSize: roomDef.anchor.length,
           compressedSize: 0,
           compressionRatio: 0,
           glyphMap: new Map()
-        }
+        } }
       };
       const compressed = this.compress7Bit(roomDef.anchor);
       room.compressionData.compressedSize = compressed.length;
@@ -608,8 +595,8 @@ export class VisualMemoryPalaceManager {
       palace.rooms.set(roomDef.id, room);
     });
     this.palaces.set(id, palace);
-    console.log(`🏰 Created memory palace ${id} with ${rooms.length} rooms`);
-  }
+    console.log(`🏰 Created memory palace ${id} }with ${rooms.length} }rooms`);
+  } }
   /**
    * Dispose memory palace manager
    */ dispose(): void {
@@ -617,9 +604,10 @@ export class VisualMemoryPalaceManager {
     this.activeRooms.clear();
     this.compressionDictionary.clear();
     console.log('🗑️ Visual Memory Palace Manager disposed');
-  }
-}
+  } }
+} }
 /**
  * Singleton instance for global use
  */
 export const visualMemoryPalace = new VisualMemoryPalaceManager();
+

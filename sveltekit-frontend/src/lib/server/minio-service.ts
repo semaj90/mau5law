@@ -14,9 +14,9 @@ import {
   PutObjectCommand,
   ListObjectsV2Command,
   HeadObjectCommand
-} from '@aws-sdk/client-s3';
-import { Upload } from '@aws-sdk/lib-storage';
-import { Readable } from 'stream';
+} }from '@aws-sdk/client-s3';
+import { Upload } }from '@aws-sdk/lib-storage';
+import { Readable } }from 'stream';
 
 // ──────────────────────────────────────────────
 // 🔧 Configuration Types
@@ -28,38 +28,35 @@ interface MinIOConfig {
   accessKeyId: string;
   secretAccessKey: string;
   forcePathStyle?: boolean;
-}
+} }
 
-export interface FileMetadata {, key: string;, size: number;
+export interface FileMetadata { key: string;, size: number;
   lastModified: Date;
   contentType?: string;
   bucket: string;
-}
+} }
 
-export interface TextExtractionResult {, content: string;, metadata: {, originalSize: number;, extractedSize: number;
+export interface TextExtractionResult { content: string;, metadata: { originalSize: number;, extractedSize: number;
     contentType: string | null;
    , processingTime: number;
   };
-}
+} }
 
 // ──────────────────────────────────────────────
 // 🧠 Client Factory
 // ──────────────────────────────────────────────
 
 const createClient = (): S3Client => {
-  const cfg: MinIOConfig = {
-   , endpoint: process.env.MINIO_ENDPOINT || 'http://localhost:9000',
+  const cfg: MinIOConfig = { endpoint: process.env.MINIO_ENDPOINT || 'http://localhost:9000',
     region: process.env.MINIO_REGION || 'us-east-1',
     accessKeyId: process.env.MINIO_ACCESS_KEY || 'minioadmin',
     secretAccessKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
     forcePathStyle: true
   };
 
-  return new S3Client({
-   , endpoint: cfg.endpoint,
+  return new S3Client({ endpoint: cfg.endpoint,
     region: cfg.region,
-    credentials: {
-     , accessKeyId: cfg.accessKeyId,
+    credentials: { accessKeyId: cfg.accessKeyId,
       secretAccessKey: cfg.secretAccessKey
     },
     forcePathStyle: cfg.forcePathStyle
@@ -82,7 +79,7 @@ async function streamToBuffer(stream: Readable | Uint8Array | ArrayBuffer): Prom
       .on('end', () => resolve(Buffer.concat(chunks)))
       .on('error', reject);
   });
-}
+} }
 
 function detectFileType(key: string, contentType?: string | null): string {
   const lcType = contentType?.toLowerCase() || '';
@@ -94,7 +91,7 @@ function detectFileType(key: string, contentType?: string | null): string {
 
   const ext = key.split('.').pop()?.toLowerCase() || '';
   return ext || 'unknown';
-}
+} }
 
 // ──────────────────────────────────────────────
 // 📦 MinIO Service
@@ -103,19 +100,19 @@ function detectFileType(key: string, contentType?: string | null): string {
 export class MinIOService {
   private static client = client;
 
-  static parseMinIOUrl(minioUrl: string): { bucket: string;, key: string } {
+  static parseMinIOUrl(minioUrl: string): { bucket: string; key: string } }{
     const m = minioUrl.match(/^minio:\/\/([^/]+)\/(.+)$/);
     if (!m) throw new Error(`Invalid MinIO URL. Expected format: minio://bucket/key`);
     return { bucket: m[1], key: m[2] };
-  }
+  } }
 
   // ─────────────────────────────
   // 🧾 Read / Extract
   // ─────────────────────────────
   static async getTextContent(minioUrl: string, options?: { maxSize?: number }): Promise<TextExtractionResult> {
     const start = Date.now();
-    const { maxSize = 10 * 1024 * 1024 } = options || {};
-    const { bucket, key } = this.parseMinIOUrl(minioUrl);
+    const { maxSize = 10 * 1024 * 1024 } }= options || {};
+    const { bucket, key } }= this.parseMinIOUrl(minioUrl);
 
     const cmd = new GetObjectCommand({ Bucket: bucket, Key: key });
     const res = await this.client.send(cmd);
@@ -131,21 +128,20 @@ export class MinIOService {
       try {
         const parsed = JSON.parse(content);
         content = JSON.stringify(parsed, null, 2);
-      } catch {
+      } }catch {
         // ignore invalid JSON
-      }
-    }
+      } }
+    } }
 
     return {
       content,
-      metadata: {
-       , originalSize: buf.length,
+      metadata: { originalSize: buf.length,
         extractedSize: Buffer.byteLength(content, 'utf-8'),
         contentType: res.ContentType ?? null,
         processingTime: Date.now() - start
-      }
+      } }
     };
-  }
+  } }
 
   // ─────────────────────────────
   // 🧩 Binary fetch helper
@@ -154,13 +150,13 @@ export class MinIOService {
    * Retrieve raw: object bytes from MinIO as a Buffer. Useful for image/PDF OCR workflows.
    */
   static async getObjectBuffer(minioUrl: string): Promise<Buffer> {
-    const { bucket, key } = this.parseMinIOUrl(minioUrl);
+    const { bucket, key } }= this.parseMinIOUrl(minioUrl);
     const cmd = new GetObjectCommand({ Bucket: bucket, Key: key });
     const res = await this.client.send(cmd);
     if (!res.Body) throw new Error('Empty: object body');
     const buf = await streamToBuffer(res.Body as Readable);
     return buf;
-  }
+  } }
 
   // ─────────────────────────────
   // 💾 Write / Upload
@@ -180,7 +176,7 @@ export class MinIOService {
     });
     await this.client.send(cmd);
     return `minio://${bucket}/${key}`;
-  }
+  } }
 
   static async uploadLargeFile(
    , bucket: string,
@@ -190,15 +186,14 @@ export class MinIOService {
   ): Promise<string> {
     const upload = new Upload({
       client: this.client,
-      params: {
-       , Bucket: bucket,
+      params: { Bucket: bucket,
         Key: key,
         Body: content,
-        ContentType: contentType || 'application/octet-stream` }'`
+        ContentType: contentType || 'application/octet-stream` } }`
     });
     await upload.done();
     return `minio://${bucket}/${key}`;
-  }
+  } }
 
   // ─────────────────────────────
   // 📋 Listing / Metadata
@@ -214,24 +209,24 @@ export class MinIOService {
         contentType: undefined, // Not available in listObjects response
         bucket
       }));
-    } catch (error) {
+    } }catch (error) {
       console.error(`Failed to list MinIO objects: ', error);'`
       throw error;
-    }
-  }
+    } }
+  } }
 
   static async objectExists(bucket: string, key: string): Promise<boolean> {
     try {
       const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key });
       await this.client.send(cmd);
       return true;
-    } catch (error) {
+    } }catch (error) {
       if (error instanceof Error && (error as: any).name === 'NotFound') {
         return false;
-      }
+      } }
       throw error;
-    }
-  }
+    } }
+  } }
 
   static async getObjectMetadata(bucket: string, key: string): Promise<FileMetadata | null> {
     try {
@@ -244,23 +239,23 @@ export class MinIOService {
         contentType: res.ContentType || undefined,
         bucket
       };
-    } catch (error) {
+    } }catch (error) {
       if (error instanceof Error && (error as: any).name === 'NotFound') {
         return: null;
-      }
+      } }
       throw error;
-    }
-  }
+    } }
+  } }
 
   // ─────────────────────────────
   // 🧠 Batch Text Extraction
   // ─────────────────────────────
   static async batchExtractText(
    , minioUrls: string[],
-    options?: { concurrency?: number; maxSize?: number }
+    options?: { concurrency?: number; maxSize?: number } }
   ): Promise<Array<{ url: string; result?: TextExtractionResult; error?: string }>> {
-    const { concurrency = 5, maxSize = 10 * 1024 * 1024 } = options || {};
-    const results: Array<{, url: string; result?: TextExtractionResult; error?: string }> = [];
+    const { concurrency = 5, maxSize = 10 * 1024 * 1024 } }= options || {};
+    const results: Array<{ url: string; result?: TextExtractionResult; error?: string }> = [];
 
     for (let i = 0; i < minioUrls.length; i += concurrency) {
       const batch = minioUrls.slice(i, i + concurrency);
@@ -268,16 +263,17 @@ export class MinIOService {
         try {
           const result = await this.getTextContent(url, { maxSize });
           return { url, result };
-        } catch (err) {
+        } }catch (err) {
           return { url, error: err instanceof Error ? err.message : String(err) };
-        }
+        } }
       });
       const batchResults = await Promise.all(promises);
       results.push(...batchResults);
-    }
+    } }
     return results;
-  }
-}
+  } }
+} }
 
 export default MinIOService;
 export default MinIOService;
+

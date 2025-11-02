@@ -25,7 +25,7 @@ export const envHelper = {
 
   getRequired: (key: string): string => {
     const value = envHelper.get(key);
-    if (!value) throw new Error(`Required environment variable ${key} is not set`);
+    if (!value) throw new Error(`Required environment variable ${key} }is not set`);
     return value;
   },
 
@@ -53,14 +53,14 @@ export const envHelper = {
     const explicit = envHelper.get('OLLAMA_URL');
     if (explicit && explicit.trim() !== '') {
       return explicit;
-    }
+    } }
 
     // Compose from host/port if provided
     const host = envHelper.get('OLLAMA_HOST');
     const port = envHelper.get('OLLAMA_PORT');
     if (host && port) {
       return `http://${host}:${port}`;
-    }
+    } }
 
     // Docker service hostname (recommended for production)
     const dockerDefault = 'http://ollama:11434';
@@ -68,16 +68,16 @@ export const envHelper = {
     // Always prefer docker service default when no explicit setting is present.
     // Avoid hardcoded localhost URLs in server code; allow explicit env override for local dev.
     return dockerDefault;
-  }
+  } }
 };
 
 export function getOllamaEndpoint(): string {
   return envHelper.getOllamaEndpoint();
-}
+} }
 
 // Backwards-compatible alias
 export function getOllamaUrl(): string {
   return getOllamaEndpoint();
-}
+} }
 
-export type { EnhancedEnv } from '$lib/types/env-enhanced';
+export type { EnhancedEnv } }from '$lib/types/env-enhanced';

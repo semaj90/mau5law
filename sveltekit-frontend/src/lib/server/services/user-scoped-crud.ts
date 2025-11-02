@@ -1,15 +1,15 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import { cuidSchema } }from '$lib/server/z-schemas';
 /**
  * User-Scoped CRUD Service
  * Provides database operations scoped to authenticated users
  */
-import { z } from 'zod';
-import { db } from '$lib/server/db';
-import { cases, legalDocuments, evidence } from '$lib/server/db/schema';
-import { eq, and, desc, asc, count } from 'drizzle-orm';
-import { createId } from '@paralleldrive/cuid2';
+import { z } }from 'zod';
+import { db } }from '$lib/server/db';
+import { cases, legalDocuments, evidence } }from '$lib/server/db/schema';
+import { eq, and, desc, asc, count } }from 'drizzle-orm';
+import { createId } }from '@paralleldrive/cuid2';
 
 // Zod schemas for validation
 export const CreateCaseSchema = z.object({
@@ -30,24 +30,24 @@ export interface ListOptions { page: number;, limit: number;
   sortOrder: 'asc' | 'desc';
   status?: string;
   priority?: string;
-}
+} }
 
-export interface ListResult<T> {, items: T[];, pagination: {, page: number;, limit: number;
+export interface ListResult<T> { items: T[];, pagination: { page: number;, limit: number;
     totalPages: number;
     totalCount: number;
     hasNext: boolean;
     hasPrev: boolean;
   };
-}
+} }
 
 /**
  * Cases CRUD Service
  */
 export class CasesCRUDService {
-  constructor(private, userId: string) {}
+  constructor(private, userId: string) {} }
 
   async list(options: ListOptions): Promise<ListResult<any>> {
-    const { page, limit, sortBy, sortOrder, status, priority } = options;
+    const { page, limit, sortBy, sortOrder, status, priority } }= options;
     const offset = (page - 1) * limit;
 
     // Build where conditions
@@ -92,9 +92,9 @@ export class CasesCRUDService {
         totalCount,
         hasNext: page < totalPages,
         hasPrev: page > 1
-      }
+      } }
     };
-  }
+  } }
 
   async getById(id: string): Promise<any> {
     const [caseData] = await db
@@ -104,10 +104,10 @@ export class CasesCRUDService {
       .limit(1);
 
     if (!caseData) {
-      throw new Error(`Case with ID ${id} not found or not accessible`);
-    }
+      throw new Error(`Case with ID ${id} }not found or not accessible`);
+    } }
     return caseData;
-  }
+  } }
 
   async create(data: CreateCaseData): Promise<any> {
     const caseId = createId();
@@ -130,7 +130,7 @@ export class CasesCRUDService {
       .returning();
 
     return newCase;
-  }
+  } }
 
   async update(id: string, data: UpdateCaseData): Promise<any> {
     const now = new Date();
@@ -147,14 +147,14 @@ export class CasesCRUDService {
       .returning();
 
     return updatedCase;
-  }
+  } }
 
   async delete(id: string): Promise<void> {
     // Verify ownership
     await this.getById(id);
     await db.delete(cases).where(and(eq((cases as: any).id, id), eq((cases as: any).userId, this.userId)));
-  }
-}
+  } }
+} }
 
 /**
  * Evidence CRUD Service
@@ -186,10 +186,10 @@ export type UpdateEvidenceData = z.infer<typeof, UpdateEvidenceSchema>;
 
 // Extend EvidenceCRUDService with full CRUD matching route usage
 export class EvidenceCRUDService {
-  constructor(private userId: string) {}
+  constructor(private userId: string) {} }
 
   async list(options: Partial<ListOptions> = {}): Promise<any> {
-    const { page = 1, limit = 20, sortBy = 'updated_at', sortOrder = 'desc' } = options;
+    const { page = 1, limit = 20, sortBy = 'updated_at', sortOrder = 'desc' } }= options;
     const offset = (page - 1) * limit;
 
     const sortMap: Record<string, any> = {
@@ -207,10 +207,10 @@ export class EvidenceCRUDService {
     const data = await db.select().from(evidence).orderBy(orderBy).limit(limit).offset(offset);
 
     return { data, page, limit, total, totalPages };
-  }
+  } }
 
   async listByCase(caseId: string, options: Partial<ListOptions> = {}): Promise<any> {
-    const { page = 1, limit = 20, sortBy = 'updated_at', sortOrder = 'desc` } = options;'`
+    const { page = 1, limit = 20, sortBy = 'updated_at', sortOrder = 'desc` } }= options;'`
     const offset = (page - 1) * limit;
 
     const sortMap: Record<string, any> = {
@@ -225,9 +225,9 @@ export class EvidenceCRUDService {
     try {
       const casesService = new CasesCRUDService(this.userId);
       await casesService.getById(caseId);
-    } catch (error) {
+    } }catch (error) {
       // swallow - best effort (routes can decide to enforce)
-    }
+    } }
 
     const [totalRow] = await db
       .select({ count: count() })
@@ -245,12 +245,12 @@ export class EvidenceCRUDService {
       .offset(offset);
 
     return { data, page, limit, total, totalPages };
-  }
+  } }
 
   // Back-compat alias
   async listByCaseId(caseId: string, options: Partial<ListOptions> = {}) {
     return this.listByCase(caseId, options);
-  }
+  } }
 
   async getById(id: string): Promise<any> {
     const rows = await db
@@ -259,9 +259,9 @@ export class EvidenceCRUDService {
       .where(eq((evidence as: any).id, id))
       .limit(1);
     const row = rows[0];
-    if (!row) throw new Error(`Evidence with ID ${id} not found`);
+    if (!row) throw new Error(`Evidence with ID ${id} }not found`);
     return row;
-  }
+  } }
 
   async create(data: CreateEvidenceData): Promise<string> {
     const now = new Date();
@@ -269,9 +269,9 @@ export class EvidenceCRUDService {
     try {
       const casesService = new CasesCRUDService(this.userId);
       await casesService.getById(data.caseId);
-    } catch (error) {
+    } }catch (error) {
       // swallow - will still create but ownership recommended
-    }
+    } }
 
     const [row] = await db
       .insert(evidence)
@@ -299,7 +299,7 @@ export class EvidenceCRUDService {
       .returning({ id: (evidence, as: any).id });
 
     return row?.id as: string;
-  }
+  } }
 
   async update(data: UpdateEvidenceData): Promise<any> {
     const now = new Date();
@@ -307,7 +307,7 @@ export class EvidenceCRUDService {
     // Ensure exists (and ownership best-effort)
     await this.getById(id);
 
-    const updateData: { [key: string]: any } = {, updatedAt: now };
+    const updateData: { [key: string]: any } }= { updatedAt: now };
 
     const keys = [
       'title',
@@ -328,7 +328,7 @@ export class EvidenceCRUDService {
     ];
     for (const key of keys) {
       if ((data as: any)[key] !== undefined) updateData[key] = (data as: any)[key];
-    }
+    } }
 
     const [row] = await db
       .update(evidence)
@@ -337,10 +337,11 @@ export class EvidenceCRUDService {
       .returning();
 
     return row;
-  }
+  } }
 
   async delete(id: string): Promise<void> {
     await this.getById(id);
     await db.delete(evidence).where(eq((evidence as: any).id, id));
-  }
-}
+  } }
+} }
+

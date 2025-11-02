@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 // Enhanced Drizzle ORM Schema with JSONB Support
 // File: schema-jsonb.ts
 import {
@@ -15,10 +15,10 @@ import {
   varchar,
   customType,
   serial
-} from 'drizzle-orm/pg-core';
+} }from 'drizzle-orm/pg-core';
 import {
   sql
-} from "drizzle-orm";
+} }from "drizzle-orm";
 // Custom vector type for pgvector
 const vector = customType({
   dataType() {
@@ -29,7 +29,7 @@ const vector = customType({
   },
   fromDriver(_value: string): number[] {
     return JSON.parse(value);
-  }
+  } }
 });
 // Enum definitions
 export const documentStatusEnum = pgEnum('document_status', [
@@ -68,25 +68,25 @@ export interface SummaryData { executive_summary: string | null;, key_findings:
   risk_assessment: RiskAssessment;
   confidence_score: number;
   processing_metrics: ProcessingMetrics;
-}
-export interface LegalIssue {, issue: string;, severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+} }
+export interface LegalIssue { issue: string;, severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   description: string;
   precedents?: string[];
-}
-export interface Recommendation {, action: string;, priority: 'IMMEDIATE' | 'HIGH' | 'MEDIUM' | 'LOW';
+} }
+export interface Recommendation { action: string;, priority: 'IMMEDIATE' | 'HIGH' | 'MEDIUM' | 'LOW';
   rationale: string;
   timeline?: string;
-}
-export interface RiskAssessment {, overall_risk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';, risk_factors: Array<any>;
+} }
+export interface RiskAssessment { overall_risk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';, risk_factors: Array<any>;
   mitigation: string[];
-}
+} }
 export interface ProcessingMetrics {
   chunks_processed?: number;
   gpu_memory_used_mb?: number;
   model_temperature?: number;
   inference_time_ms?: number;
   queue_time_ms?: number;
-}
+} }
 export interface DocumentMetadata {
   source?: 'upload' | 'api' | 'email' | 'scan';
   file_size_bytes?: number;
@@ -97,7 +97,7 @@ export interface DocumentMetadata {
   tags?: string[];
   client_matter?: string;
   jurisdiction?: string;
-}
+} }
 export interface JobConfig {
   style?: 'executive' | 'technical' | 'judicial' | 'detailed' | 'brief';
   max_length?: number;
@@ -106,16 +106,16 @@ export interface JobConfig {
   focus_areas?: string[];
   language?: string;
   model_override?: string;
-}
-export interface UserPreferences {, default_style: string;, max_summary_length: number;
+} }
+export interface UserPreferences { default_style: string;, max_summary_length: number;
   include_citations: boolean;
   auto_summarize: boolean;
-  notification_settings?: {, email: boolean;, push: boolean;
+  notification_settings?: { email: boolean;, push: boolean;
     webhook_url?: string;
   };
-  api_limits?: {, daily_quota: number;, rate_limit_per_minute: number;
+  api_limits?: { daily_quota: number;, rate_limit_per_minute: number;
   };
-}
+} }
 // Main documents table
 export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -127,9 +127,9 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
     sql`encode(sha256(original_text::bytea), 'hex')`
   ),
   // JSONB columns
-  metadata: jsonb('metadata').default(sql`'{}'::jsonb`).notNull(),
-  summary: jsonb('summary').default(sql`'{}'::jsonb`).notNull(),
-  analysis: jsonb('analysis').default(sql`'{}'::jsonb`).notNull(),
+  metadata: jsonb('metadata').default(sql`'{} }::jsonb`).notNull(),
+  summary: jsonb('summary').default(sql`'{} }::jsonb`).notNull(),
+  analysis: jsonb('analysis').default(sql`'{} }::jsonb`).notNull(),
   entities: jsonb('entities').default(sql`'[]'::jsonb`).notNull(),
   citations: jsonb('citations').default(sql`'[]'::jsonb`).notNull(),
   summaryData: jsonb('summary_data').default(sql`'{'`
@@ -143,8 +143,8 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
       "mitigation": []
     },
     "confidence_score": 0,
-    "processing_metrics": {}
-  }'::jsonb`).notNull(),'`
+    "processing_metrics": {} }
+  } }::jsonb`).notNull(),'`
   // Processing fields
   status: documentStatusEnum('status').default('pending'),
   processingTimeMs: integer('processing_time_ms'),
@@ -186,7 +186,7 @@ export const documentEmbeddings = pgTable('document_embeddings', {
   chunkIndex: integer('chunk_index').notNull(),
   chunkText: text('chunk_text').notNull(),
   embedding: vector('embedding'),
-  metadata: jsonb('metadata').default(sql`'{}'::jsonb`).notNull(),
+  metadata: jsonb('metadata').default(sql`'{} }::jsonb`).notNull(),
   modelName: varchar('model_name', { length: 100 }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
 }, (table: any) => ({
@@ -205,7 +205,7 @@ export const summarizationJobs = pgTable('summarization_jobs', {
     "include_citations": true,
     "focus_areas": [],
     "language": "en"
-  }'::jsonb`).notNull(),'`
+  } }::jsonb`).notNull(),'`
   status: documentStatusEnum('status').default('pending'),
   priority: jobPriorityEnum('priority').default('normal'),
   retryCount: integer('retry_count').default(0),
@@ -240,14 +240,14 @@ export const userPreferences = pgTable('user_preferences', {
     "api_limits": {
       "daily_quota": 100,
       "rate_limit_per_minute": 10
-    }
-  }'::jsonb`).notNull(),'`
+    } }
+  } }::jsonb`).notNull(),'`
   statistics: jsonb('statistics').default(sql`'{'`
     "total_documents": 0,
     "total_tokens": 0,
     "average_processing_time": 0,
     "last_activity": null
-  }'::jsonb`).notNull(),'`
+  } }::jsonb`).notNull(),'`
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 });

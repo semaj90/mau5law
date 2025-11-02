@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 /*
  * MCP Integration Status API Endpoint
  * Provides status information about the enhanced MCP integration
@@ -13,16 +13,16 @@ export const GET: RequestHandler = async ({ url, request }) => {
         method: 'GET',
         headers: {
           'Accept': 'application/json'
-        }
+        } }
       });
       if (mcpResponse.ok) {
         mcpServerStatus = 'online';
         const healthData = await mcpResponse.json();
         mcpMetrics = healthData.metrics;
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       console.log('MCP server not available:', error.message);
-    }
+    } }
     // Check Ollama Status
     let ollamaStatus = 'offline';
     let ollamaModels: any[] = [];
@@ -32,10 +32,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
         ollamaStatus = 'online';
         const data = await ollamaResponse.json();
         ollamaModels = data.models || [];
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       console.log('Ollama not available:', error.message);
-    }
+    } }
     // Check cluster performance data
     let clusterStatus = 'unknown';
     let clusterMetrics = null;
@@ -52,9 +52,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
         workerCount: 2,
         lastTestTime: new Date().toISOString()
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.log('Cluster metrics not available:', error.message);
-    }
+    } }
     // Integration readiness assessment
     const integrationReadiness = {
       mcpServerRunning: mcpServerStatus === 'online',
@@ -67,8 +67,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       Object.values(integrationReadiness).filter(item => item.length) >= 3 ? 'operational' : 'partial';
     // Enhanced MCP Tools Status
     const mcpToolsStatus = [
-      {,
-        id: 'enhanced_rag_query',
+      { id: 'enhanced_rag_query',
         name: 'Enhanced RAG Query',
         status: mcpServerStatus === 'online' ? 'available' : 'offline'
       },
@@ -118,23 +117,23 @@ export const GET: RequestHandler = async ({ url, request }) => {
       timestamp: new Date().toISOString(),
       overallStatus,
       integrationReadiness,
-      services: {, mcpServer: {, status: mcpServerStatus,
+      services: { mcpServer: { status: mcpServerStatus,
           metrics: mcpMetrics,
           url: 'http:,//localhost:40000'
         },
         ollama: {
-         , status: ollamaStatus,
+  status: ollamaStatus,
           models: ollamaModels,
           url: 'http:,//localhost:11434'
         },
         cluster: {
-         , status: clusterStatus,
+  status: clusterStatus,
           metrics: clusterMetrics
-        }
+        } }
       },
       mcpTools: mcpToolsStatus,
       capabilities: {
-       , enhancedRAG: mcpServerStatus === 'online',
+  enhancedRAG: mcpServerStatus === 'online',
         memoryGraph: mcpServerStatus === 'online',
         context7Documentation: mcpServerStatus === 'online',
         multiAgentOrchestration: mcpServerStatus === 'online',
@@ -145,7 +144,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       },
       recommendations: generateRecommendations(integrationReadiness, mcpServerStatus, ollamaStatus, clusterStatus)
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('MCP status check failed:', error);
     return json(
       {
@@ -154,9 +153,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
         timestamp: new Date().toISOString(),
         overallStatus: 'error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 function generateRecommendations(
   readiness: any,
@@ -167,19 +166,20 @@ function generateRecommendations(
   const recommendations = [];
   if (mcpStatus === 'offline') {
     recommendations.push('Start the Context7 MCP server: node context7-mcp-server.js');
-  }
+  } }
   if (ollamaStatus === 'offline') {
     recommendations.push('Start Ollama service and pull required models: ollama pull nomic-embed-text');
-  }
+  } }
   if (clusterStatus === 'unknown') {
     recommendations.push('Run cluster performance test: node test-cluster-simple.js');
-  }
+  } }
   if (readiness.contextualAnalysisReady) {
     recommendations.push('✅ System ready for enhanced MCP operations');
     recommendations.push('Try enhanced RAG queries and memory graph operations');
-  }
+  } }
   if (!readiness.vsCodeExtensionActive) {
     recommendations.push('Install VS Code Context7 MCP Assistant extension for full integration');
-  }
+  } }
   return recommendations;
-}
+} }
+

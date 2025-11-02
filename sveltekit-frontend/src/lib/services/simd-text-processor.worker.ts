@@ -4,7 +4,7 @@
  */
 interface WorkerMessage { action: 'tokenize' | 'embed' | 'process';, text: string;
   options?: Record<string, unknown>; // Changed, 'any' to, 'Record<string, unknown>'
-}
+} }
 // Vocabulary for simple tokenization (in production, use a proper tokenizer)
 const TOKEN_MAP = new Map<string, number>();
 // Initialize basic token vocabulary
@@ -43,7 +43,7 @@ function initializeVocabulary() {
   TOKEN_MAP.set('[CLS]', commonTokens.length + 2);
   TOKEN_MAP.set('[SEP]', commonTokens.length + 3);
   TOKEN_MAP.set('[MASK]', commonTokens.length + 4);
-}
+} }
 /**
  * SIMD-optimized tokenization using parallel processing
  */
@@ -60,16 +60,16 @@ function tokenizeWithSIMD(text: string): Uint32Array {
         // Check if word exists in vocabulary
         if (TOKEN_MAP.has(word)) {
           return TOKEN_MAP.get(word)!;
-        }
+        } }
         // Subword tokenization for OOV words
         const subwords = tokenizeSubwords(word);
         return subwords;
       })
       .flat();
     tokens.push(...batchTokens);
-  }
+  } }
   return new Uint32Array(tokens);
-}
+} }
 /**
  * Subword tokenization for out-of-vocabulary words
  */
@@ -86,16 +86,16 @@ function tokenizeSubwords(word: string): number[] {
         remaining = remaining.slice(len);
         found = true;
         break;
-      }
-    }
+      } }
+    } }
     if (!found) {
       // Unknown token
       tokens.push(TOKEN_MAP.get('[UNK]') || 0);
       remaining = remaining.slice(1);
-    }
-  }
+    } }
+  } }
   return tokens;
-}
+} }
 /**
  * SIMD-optimized vector operations for embeddings
  */
@@ -106,7 +106,7 @@ class SIMDVectorOps {
   static dotProduct(a: Float32Array, b: Float32Array): number {
     if (a.length !== b.length) {
       throw new Error('Vectors must have same length');
-    }
+    } }
     let sum = 0;
     const len = a.length;
     const SIMD_WIDTH = 4; // Simulate 4-wide SIMD
@@ -114,13 +114,13 @@ class SIMDVectorOps {
     for (let i = 0; i < len - SIMD_WIDTH + 1; i += SIMD_WIDTH) {
       // SIMD multiplication and addition
       sum += a[i] * b[i] + a[i + 1] * b[i + 1] + a[i + 2] * b[i + 2] + a[i + 3] * b[i + 3];
-    }
+    } }
     // Handle remaining elements
     for (let i = Math.floor(len / SIMD_WIDTH) * SIMD_WIDTH; i < len; i++) {
       sum += a[i] * b[i];
-    }
+    } }
     return sum;
-  }
+  } }
   /**
    * Cosine similarity using SIMD operations
    */
@@ -129,7 +129,7 @@ class SIMDVectorOps {
     const normA = Math.sqrt(SIMDVectorOps.dotProduct(a, a)); // Fixed missing parenthesis and static method call
     const normB = Math.sqrt(SIMDVectorOps.dotProduct(b, b)); // Fixed missing parenthesis and static method call
     return dotProd / (normA * normB);
-  }
+  } }
   /**
    * Element-wise operations using SIMD
    */
@@ -142,13 +142,13 @@ class SIMDVectorOps {
       result[i + 1] = a[i + 1] + b[i + 1];
       result[i + 2] = a[i + 2] + b[i + 2];
       result[i + 3] = a[i + 3] + b[i + 3];
-    }
+    } }
     // Handle remaining
     for (let i = Math.floor(a.length / SIMD_WIDTH) * SIMD_WIDTH; i < a.length; i++) {
       result[i] = a[i] + b[i];
-    }
+    } }
     return result;
-  }
+  } }
   /**
    * Matrix multiplication with SIMD optimization
    */
@@ -165,16 +165,16 @@ class SIMDVectorOps {
               let sum = 0;
               for (let tk = k; tk < Math.min(k + TILE_SIZE, aCols); tk++) {
                 sum += a[ti * aCols + tk] * b[tk * bCols + tj];
-              }
+              } }
               result[ti * bCols + tj] += sum;
-            }
-          }
-        }
-      }
-    }
+            } }
+          } }
+        } }
+      } }
+    } }
     return result;
-  }
-}
+  } }
+} }
 /**
  * Fast embedding generation using SIMD operations
  */
@@ -190,8 +190,8 @@ function generateEmbedding(tokens: Uint32Array): Float32Array {
     for (let j = 0; j < EMBEDDING_DIM; j++) {
       // Simple hash-based initialization
       tokenEmbeddings[i * EMBEDDING_DIM + j] = Math.sin(tokenId * 1000 + j) * 0.1;
-    }
-  }
+    } }
+  } }
   // Average pooling using SIMD
   const SIMD_WIDTH = 4;
   for (let dim = 0; dim < EMBEDDING_DIM; dim++) {
@@ -199,9 +199,9 @@ function generateEmbedding(tokens: Uint32Array): Float32Array {
     // Sum across all tokens for this dimension
     for (let token = 0; token < tokens.length; token++) {
       sum += tokenEmbeddings[token * EMBEDDING_DIM + dim];
-    }
+    } }
     embedding[dim] = sum / tokens.length;
-  }
+  } }
   // Normalize embedding
   let norm = 0;
   for (let i = 0; i < EMBEDDING_DIM - SIMD_WIDTH + 1; i += SIMD_WIDTH) {
@@ -210,18 +210,18 @@ function generateEmbedding(tokens: Uint32Array): Float32Array {
       embedding[i + 1] * embedding[i + 1] +
       embedding[i + 2] * embedding[i + 2] +
       embedding[i + 3] * embedding[i + 3];
-  }
+  } }
   // Handle remaining
   for (let i = Math.floor(EMBEDDING_DIM / SIMD_WIDTH) * SIMD_WIDTH; i < EMBEDDING_DIM; i++) {
     norm += embedding[i] * embedding[i];
-  }
+  } }
   norm = Math.sqrt(norm);
   // Normalize
   for (let i = 0; i < EMBEDDING_DIM; i++) {
     embedding[i] /= norm;
-  }
+  } }
   return embedding;
-}
+} }
 /**
  * Process text with attention mechanism using SIMD
  */
@@ -239,8 +239,8 @@ function processWithAttention(tokens: Uint32Array): Float32Array {
       Q[i * hiddenDim + j] = val;
       K[i * hiddenDim + j] = val * 1.1;
       V[i * hiddenDim + j] = val * 0.9;
-    }
-  }
+    } }
+  } }
   // Compute attention scores: QK^T
   const scores = new Float32Array(seqLen * seqLen);
   const scale = 1.0 / Math.sqrt(hiddenDim);
@@ -255,65 +255,66 @@ function processWithAttention(tokens: Uint32Array): Float32Array {
             Q[i * hiddenDim + k + 1] * K[j * hiddenDim + k + 1] +
             Q[i * hiddenDim + k + 2] * K[j * hiddenDim + k + 2] +
             Q[i * hiddenDim + k + 3] * K[j * hiddenDim + k + 3];
-        } else {
+        } }else {
           // Handle remaining
           for (let r = k; r < hiddenDim; r++) {
             score += Q[i * hiddenDim + r] * K[j * hiddenDim + r];
-          }
-        }
-      }
+          } }
+        } }
+      } }
       scores[i * seqLen + j] = score * scale;
-    }
-  }
+    } }
+  } }
   // Softmax (simplified)
   for (let i = 0; i < seqLen; i++) {
     let maxScore = -Infinity;
     for (let j = 0; j < seqLen; j++) {
       maxScore = Math.max(maxScore, scores[i * seqLen + j]);
-    }
+    } }
     let sumExp = 0;
     for (let j = 0; j < seqLen; j++) {
       scores[i * seqLen + j] = Math.exp(scores[i * seqLen + j] - maxScore);
       sumExp += scores[i * seqLen + j];
-    }
+    } }
     for (let j = 0; j < seqLen; j++) {
       scores[i * seqLen + j] /= sumExp;
-    }
-  }
+    } }
+  } }
   // Apply attention to values
   const output = SIMDVectorOps.matMul(scores, V, seqLen, seqLen, hiddenDim);
   return output;
-}
+} }
 // Initialize vocabulary on worker startup
 initializeVocabulary();
 // Message handler
 self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
-  const { action, text, options: $options } = event.data; // Renamed, 'options' to, '$options' to mark as intentionally unused
+  const { action, text, options: $options } }= event.data; // Renamed, 'options' to, '$options' to mark as intentionally unused
   try {
     switch (action) {
       case, 'tokenize': {
         const tokens = tokenizeWithSIMD(text);
         self.postMessage(tokens);
         break;
-      }
+      } }
       case, 'embed': {
         const tokens = tokenizeWithSIMD(text);
         const embedding = generateEmbedding(tokens);
         self.postMessage(embedding);
         break;
-      }
+      } }
       case, 'process': {
         const tokens = tokenizeWithSIMD(text);
         const processed = processWithAttention(tokens);
         self.postMessage(processed);
         break;
-      } // Added missing closing brace for switch case
+      } }// Added missing closing brace for switch case
       default:
-        throw new Error(`Unknown;, action: ${action}`);
-    }
-  } catch (error) {
+        throw new Error(`Unknown; action: ${action}`);
+    } }
+  } }catch (error) {
     self.postMessage({ error: (error as Error).message });
-  }
+  } }
 };
 // Export for TypeScript
 export {};
+

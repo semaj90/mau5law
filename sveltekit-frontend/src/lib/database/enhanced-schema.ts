@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /* Enhanced PostgreSQL + pgvector Schema for Drizzle ORM v0.44
  * ------------------------------------------------------------
  * - Compatible with drizzle-orm@0.44.x
@@ -19,9 +19,9 @@ import {
   real,
   index,
   vector
-} from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
-import { relations } from 'drizzle-orm/relations';
+} }from 'drizzle-orm/pg-core';
+import { sql } }from 'drizzle-orm';
+import { relations } }from 'drizzle-orm/relations';
 // ------------------------------------------------------------------
 // 🧩 Core Tables
 // ------------------------------------------------------------------
@@ -482,3 +482,4 @@ export type EvidenceBoardItem = typeof evidenceBoardItems.$inferSelect;
 export type NewEvidenceBoardItem = typeof evidenceBoardItems.$inferInsert;
 export type EvidenceBoardConnection = typeof evidenceBoardConnections.$inferSelect;
 export type NewEvidenceBoardConnection = typeof evidenceBoardConnections.$inferInsert;
+

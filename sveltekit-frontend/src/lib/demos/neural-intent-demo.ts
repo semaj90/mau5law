@@ -4,7 +4,7 @@
  * Demonstrates the enhanced CUDA cache optimizer with autoencoder compression
  * and Self-Organizing Map clustering for legal AI intent recognition.
  */
-import { cudaCacheOptimizer } from '../ai/cuda-cache-memory-optimizer';
+import { cudaCacheOptimizer } }from '../ai/cuda-cache-memory-optimizer';
 // Demo queries representing different legal AI use cases
 const testQueries = [
   'Review this contract for potential liability issues',
@@ -25,7 +25,7 @@ export async function demonstrateIntentAnalysis(): Promise<void> {
   if (!cudaCacheOptimizer) {
     console.log('🚫 CUDA Cache Optimizer not available (not in browser environment)');
     return;
-  }
+  } }
   console.log('🧠 Neural Network Intent Analysis Demo');
   console.log('=====================================\n');
   // Wait for initialization
@@ -55,32 +55,32 @@ export async function demonstrateIntentAnalysis(): Promise<void> {
       const recommendedModel = cudaCacheOptimizer.recommendOptimalModel(nnIntent);
       console.log(`\n🎯 Recommended Model: ${recommendedModel}`);
       console.log('\n' + '='.repeat(80) + '\n');
-    } catch (error) {
+    } }catch (error) {
       console.error(`❌ Error analyzing query: ${error}`);
-    }
-  }
+    } }
+  } }
   // Show optimizer statistics
   try {
     const stats = await cudaCacheOptimizer.getOptimizerStats();
     console.log('📊 Optimizer Statistics: ');'`'`
     console.log(`   Memory Usage: ${(stats.memoryUsageRatio * 100).toFixed(1)}%`);
     console.log(`   Model Count: ${stats.modelCount}`);
-    console.log(`   Intent History: ${stats.intentHistory} queries`);
+    console.log(`   Intent History: ${stats.intentHistory} }queries`);
     console.log(`   SOM Activations: ${stats.somActivations}`);
     console.log(`   Average Confidence: ${(stats.avgConfidence * 100).toFixed(1)}%`);
     console.log(`   Most Active Neuron: ${stats.mostActiveNeuron}`);
     console.log(`   Recent Categories: ${stats.recentIntentCategories.slice(-5).join(', ')}`);
     const memoryState = cudaCacheOptimizer.getMemoryState();
     console.log('\n💾 GPU Memory State: ');'`'`
-    console.log(`   Total: ${memoryState.totalMemoryMB} MB`);
-    console.log(`   Used: ${memoryState.usedMemoryMB} MB`);
-    console.log(`   Available: ${memoryState.availableMemoryMB} MB`);
+    console.log(`   Total: ${memoryState.totalMemoryMB} }MB`);
+    console.log(`   Used: ${memoryState.usedMemoryMB} }MB`);
+    console.log(`   Available: ${memoryState.availableMemoryMB} }MB`);
     console.log(`   Utilization: ${memoryState.utilizationPercent.toFixed(1)}%`);
     console.log(`   Temperature: ${memoryState.temperatureC}°C`);
-  } catch (error) {
+  } }catch (error) {
     console.error(`❌ Error getting statistics: ${error}`);
-  }
-}
+  } }
+} }
 /**
  * Demonstrates SOM neuron mapping and clustering behavior
  */
@@ -88,7 +88,7 @@ export async function demonstrateSOMClustering(): Promise<void> {
   if (!cudaCacheOptimizer) {
     console.log('🚫 CUDA Cache Optimizer not available');
     return;
-  }
+  } }
   console.log('\n🗺️  SOM Clustering Analysis');
   console.log('=============================\n');
   const legalQueries = [
@@ -101,15 +101,15 @@ export async function demonstrateSOMClustering(): Promise<void> {
   console.log('📋 Testing Legal Queries: ');'`'`
   for (const query of legalQueries) {
     const intent = await cudaCacheOptimizer.analyzeIntentWithNN(query);
-    console.log(`   "${query}" → ${intent.intentCategory} (${(intent.confidence * 100).toFixed(1)}%)`);
-  }
+    console.log(`   "${query}" → ${intent.intentCategory} }(${(intent.confidence * 100).toFixed(1)}%)`);
+  } }
   console.log('\n💬 Testing Chat Queries: ');'`'`
   for (const query of chatQueries) {
     const intent = await cudaCacheOptimizer.analyzeIntentWithNN(query);
-    console.log(`   "${query}" → ${intent.intentCategory} (${(intent.confidence * 100).toFixed(1)}%)`);
-  }
+    console.log(`   "${query}" → ${intent.intentCategory} }(${(intent.confidence * 100).toFixed(1)}%)`);
+  } }
   console.log('\n✨ Neural network successfully clusters similar intents!');
-}
+} }
 // Auto-run demo if in browser environment
 if (typeof window !== 'undefined') {
   // Wait for page load
@@ -117,5 +117,6 @@ if (typeof window !== 'undefined') {
     await demonstrateIntentAnalysis();
     await demonstrateSOMClustering();
   });
-}
+} }
 export { demonstrateIntentAnalysis, demonstrateSOMClustering };
+

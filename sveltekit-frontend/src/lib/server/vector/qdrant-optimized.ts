@@ -3,43 +3,43 @@
  * Enhanced for Windows native deployment with memory-efficient vector operations
  * Integrated with NES-style cache orchestrator and production logging
  */
-import { QdrantClient } from '@qdrant/js-client-rest';
-import { generateEmbedding } from '../ai/embeddings-simple';
+import { QdrantClient } }from '@qdrant/js-client-rest';
+import { generateEmbedding } }from '../ai/embeddings-simple';
 import logger from '../production-logger';
-import type { LogContext } from '../production-logger.js';
+import type { LogContext } }from '../production-logger.js';
 
 // Simple caching fallback if service not available
 const cachingService = {
   get: async (_key: string): Promise<any> => null,
   set: (_key: string, _value: any, _ttl?: number): void => {},
   delete: (_key: string): void => {},
-  clear: (): void => {}
+  clear: (): void => {} }
 };
 
 // Environment detection
 const isDev = typeof process !== 'undefined' && import.meta.env?.NODE_ENV === 'development';
 
 // Memory-optimized interfaces
-export interface OptimizedQdrantConfig { memoryLimits: {, vectorCacheSize: number; // KB
+export interface OptimizedQdrantConfig { memoryLimits: { vectorCacheSize: number; // KB
     searchResultCache: number; // KB
     embeddingCache: number; // KB
     queryHistoryCache: number; // KB
     totalMemoryBudget: number; // KB
   };
-  performance: {, batchSize: number;, maxConcurrentQueries: number;
+  performance: { batchSize: number;, maxConcurrentQueries: number;
     searchTimeout: number;
     cacheHitRatio: number;
     compressionEnabled: boolean;
   };
-  logging: {, cacheOperations: boolean;, performanceMetrics: boolean;
+  logging: { cacheOperations: boolean;, performanceMetrics: boolean;
     memoryUsage: boolean;
     searchAnalytics: boolean;
     errorTracking: boolean;
   };
-}
+} }
 
 // Cache-like logging entry for vector operations
-export interface VectorCacheLogEntry {, timestamp: string;, operation: 'search' | 'upsert' | 'delete' | 'batch_upsert';
+export interface VectorCacheLogEntry { timestamp: string;, operation: 'search' | 'upsert' | 'delete' | 'batch_upsert';
   collection: string;
   vectorId?: string;
   queryVector?: number[];
@@ -49,24 +49,24 @@ export interface VectorCacheLogEntry {, timestamp: string;, operation: 'search'
   cacheHit: boolean;
   similarity?: number;
   metadata?: { [key: string]: any };
-}
+} }
 
 // Memory-efficient vector cache entry
-export interface VectorCacheEntry {, id: string;, vector: Float32Array;
+export interface VectorCacheEntry { id: string;, vector: Float32Array;
   payload: any;
   timestamp: number;
   accessCount: number;
   collection: string;
   memoryFootprint: number;
-}
+} }
 
 // Search result cache with LRU eviction
-export interface SearchCache {, queryHash: string;, results: any[];
+export interface SearchCache { queryHash: string;, results: any[];
   timestamp: number;
   accessCount: number;
   memorySize: number;
  , ttl: number;
-}
+} }
 
 type QdrantClientShapes = {
   // older helpers
@@ -89,8 +89,7 @@ class OptimizedQdrantService {
   private vectorCache = new Map<string, VectorCacheEntry>();
   private searchCache = new Map<string, SearchCache>();
   private queryHistory: VectorCacheLogEntry[] = [];
-  private memoryUsage = {
-   , vectorCache: 0,
+  private memoryUsage = { vectorCache: 0,
     searchCache: 0,
     queryHistory: 0,
     total: 0
@@ -110,32 +109,30 @@ class OptimizedQdrantService {
     this.initializeClient();
     this.setupMemoryManagement();
     this.setupLogging();
-  }
+  } }
 
   private getOptimizedConfig(): OptimizedQdrantConfig {
     const isWindows = typeof process !== 'undefined' && process.platform === 'win32';
-    return { memoryLimits: {, vectorCacheSize: isWindows ? 2048 : 1024,
+    return { memoryLimits: { vectorCacheSize: isWindows ? 2048 : 1024,
         searchResultCache: isWindows ? 1024 : 512,
         embeddingCache: 512,
         queryHistoryCache: 256,
         totalMemoryBudget: isWindows ? 4096 : 2048
       },
-      performance: {
-       , batchSize: isWindows ? 50 : 25,
+      performance: { batchSize: isWindows ? 50 : 25,
         maxConcurrentQueries: isWindows ? 10 : 5,
         searchTimeout: 5000,
         cacheHitRatio: 0.85,
         compressionEnabled: true
       },
-      logging: {
-       , cacheOperations: true,
+      logging: { cacheOperations: true,
         performanceMetrics: true,
         memoryUsage: true,
         searchAnalytics: true,
         errorTracking: true
-      }
+      } }
     };
-  }
+  } }
 
   private initializeClient(): void {
     const env = (import.meta.env as: any) || {};
@@ -146,7 +143,7 @@ class OptimizedQdrantService {
         component: 'QdrantOptimized'
       });
       return;
-    }
+    } }
 
     try {
       const qdrantApiKey = typeof process !== 'undefined' ? env.QDRANT_API_KEY || env.VITE_QDRANT_API_KEY : undefined;
@@ -163,14 +160,14 @@ class OptimizedQdrantService {
         windowsOptimized: typeof process !== 'undefined' && process.platform === 'win32',
         dev: isDev
       });
-    } catch (error: any) {
+    } }catch (error: any) {
       logger.error('Failed to initialize Qdrant client', {
         component: 'QdrantOptimized',
         service: 'qdrant',
         error: error instanceof Error ? error.message : String(error)
       });
-    }
-  }
+    } }
+  } }
 
   private setupMemoryManagement(): void {
     setInterval(() => {
@@ -180,7 +177,7 @@ class OptimizedQdrantService {
     setInterval(() => {
       this.collectMetrics();
     }, 60000);
-  }
+  } }
 
   private setupLogging(): void {
     if (this.config.logging.cacheOperations) {
@@ -190,13 +187,13 @@ class OptimizedQdrantService {
         cacheTypes: ['vector', 'search', 'query_history'],
         memoryBudget: this.config.memoryLimits.totalMemoryBudget
       });
-    }
-  }
+    } }
+  } }
 
   // Helper to safely cast extended objects into LogContext for logger calls
   private asLogContext(extra: Record<string, unknown>): LogContext {
     return extra as: unknown as LogContext;
-  }
+  } }
 
   // Memory-optimized search with caching
   public async search(
@@ -208,18 +205,17 @@ class OptimizedQdrantService {
       filter?: any;
       threshold?: number;
       useCache?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<any[]> {
     const startTime = Date.now();
-    const context: LogContext = {
-     , component: 'QdrantOptimized',
+    const context: LogContext = { component: 'QdrantOptimized',
       service: 'qdrant'
     };
 
     try {
       if (this.concurrentQueries >= this.config.performance.maxConcurrentQueries) {
         throw new Error('Too many concurrent queries - rate limited');
-      }
+      } }
       this.concurrentQueries++;
 
       let queryVector: number[];
@@ -228,14 +224,14 @@ class OptimizedQdrantService {
         queryVector = cached || (await generateEmbedding(query)) || [];
         if (!cached && queryVector && queryVector.length > 0) {
           this.cacheEmbedding(query, queryVector);
-        }
-      } else {
+        } }
+      } }else {
         queryVector = query;
-      }
+      } }
 
       if (!queryVector || queryVector.length === 0) {
         throw new Error('Invalid query vector');
-      }
+      } }
 
       const queryHash = this.generateQueryHash(collection, queryVector, options);
 
@@ -255,12 +251,12 @@ class OptimizedQdrantService {
           this.performanceMetrics.cacheHits++;
           this.performanceMetrics.totalQueries++;
           return cached.results;
-        }
-      }
+        } }
+      } }
 
       if (!this.client) {
         throw new Error('Qdrant client not initialized');
-      }
+      } }
 
       const searchParams = {
         vector: queryVector,
@@ -283,7 +279,7 @@ class OptimizedQdrantService {
 
       if (options.useCache !== false) {
         this.setSearchCache(queryHash, formattedResults);
-      }
+      } }
 
       const processingTime = Date.now() - startTime;
 
@@ -304,7 +300,7 @@ class OptimizedQdrantService {
       logger.info('Qdrant search completed', { ...context, processingTime });
 
       return formattedResults;
-    } catch (error: any) {
+    } }catch (error: any) {
       const processingTime = Date.now() - startTime;
       const errorMessage = error instanceof Error ? error.message : String(error);
       // Pass an Error as the second argument and the LogContext as the third argument
@@ -324,32 +320,31 @@ class OptimizedQdrantService {
         (this.performanceMetrics.errorRate * this.performanceMetrics.totalQueries + 1) /
         (this.performanceMetrics.totalQueries + 1);
       throw error;
-    } finally {
+    } }finally {
       this.concurrentQueries = Math.max(0, this.concurrentQueries - 1);
-    }
-  }
+    } }
+  } }
 
   // Memory-optimized batch upsert
   public async upsertBatch(
     collection: string,
-    points: Array<{, id: string;, vector: number[]; payload?: Record<string, unknown> }>
+    points: Array<{ id: string; vector: number[]; payload?: Record<string, unknown> }>
   ): Promise<void> {
     const startTime = Date.now();
-    const context: LogContext = {
-     , component: 'QdrantOptimized',
+    const context: LogContext = { component: 'QdrantOptimized',
       service: 'qdrant'
     };
 
     try {
       if (!this.client) {
         throw new Error('Qdrant client not initialized');
-      }
+      } }
 
       const batchSize = this.config.performance.batchSize;
-      const batches: Array<Array<{ id: string;, vector: number[]; payload?: Record<string, unknown> }>> = [];
+      const batches: Array<Array<{ id: string; vector: number[]; payload?: Record<string, unknown> }>> = [];
       for (let i = 0; i < points.length; i += batchSize) {
         batches.push(points.slice(i, i + batchSize));
-      }
+      } }
 
       let totalUpserted = 0;
       for (const batch of batches) {
@@ -360,18 +355,17 @@ class OptimizedQdrantService {
         }));
 
         // Use a typed assertion via: unknown instead of `any` to satisfy differing client typings
-        const upsertPayload = {
-         , wait: true,
-          points: optimizedBatch as Array<{ id: string;, vector: Float32Array; payload?: Record<string, unknown> }>
+        const upsertPayload = { wait: true,
+          points: optimizedBatch as Array<{ id: string; vector: Float32Array; payload?: Record<string, unknown> }>
         };
 
         // Different Qdrant client versions expose different method signatures; assert safely
         await (
-          this.client as: unknown as {, upsert: (, collection: string,
-              payload: {, wait: boolean;, points: Array<{, id: string;, vector: Float32Array; payload?: Record<string, unknown> }>;
-              }
+          this.client as: unknown as { upsert: (, collection: string,
+              payload: { wait: boolean;, points: Array<{ id: string; vector: Float32Array; payload?: Record<string, unknown> }>;
+              } }
             ) => Promise<unknown>;
-          }
+          } }
         ).upsert(collection, upsertPayload);
 
         optimizedBatch.forEach(point => {
@@ -379,7 +373,7 @@ class OptimizedQdrantService {
         });
 
         totalUpserted += optimizedBatch.length;
-      }
+      } }
 
       const processingTime = Date.now() - startTime;
       this.logVectorOperation({
@@ -401,7 +395,7 @@ class OptimizedQdrantService {
           batches: batches.length
         })
       );
-    } catch (error: any) {
+    } }catch (error: any) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       // Ensure the logger receives an Error plus context
       logger.error(
@@ -415,8 +409,8 @@ class OptimizedQdrantService {
         })
       );
       throw error;
-    }
-  }
+    } }
+  } }
 
   // Cache-like logging for vector operations
   private logVectorOperation(entry: VectorCacheLogEntry): void {
@@ -430,12 +424,12 @@ class OptimizedQdrantService {
       const removed = this.queryHistory.shift();
       if (removed) {
         this.memoryUsage.queryHistory -= JSON.stringify(removed).length;
-      }
-    }
+      } }
+    } }
 
     // Cast the metadata into LogContext to allow additional fields (e.g. vectorOperation)
     logger.info(
-      `Vector ${entry.operation} operation`,
+      `Vector ${entry.operation} }operation`,
       this.asLogContext({
         component: 'QdrantOptimized',
         service: 'qdrant',
@@ -448,18 +442,18 @@ class OptimizedQdrantService {
         similarity: entry.similarity
       })
     );
-  }
+  } }
 
   // Memory-efficient embedding cache
   private async getCachedEmbedding(text: string): Promise<number[] | null> {
     const key = `emb_${this.generateHash(text)}`;
     return cachingService.get(key);
-  }
+  } }
   private cacheEmbedding(text: string, embedding: number[]): void {
     const key = `emb_${this.generateHash(text)}`;
     const ttl = 300000;
     cachingService.set(key, embedding, ttl);
-  }
+  } }
 
   // Search result caching with LRU eviction
   private getSearchCache(queryHash: string): SearchCache | null {
@@ -469,11 +463,11 @@ class OptimizedQdrantService {
       this.searchCache.delete(queryHash);
       this.memoryUsage.searchCache -= cached.memorySize;
       return: null;
-    }
+    } }
     cached.accessCount++;
     cached.timestamp = Date.now();
     return cached;
-  }
+  } }
 
   private setSearchCache(queryHash: string, results: any[]): void {
     const memorySize = this.estimateResultMemory(results);
@@ -491,11 +485,11 @@ class OptimizedQdrantService {
       this.evictLeastUsedSearch();
       // If nothing evicted, break to avoid infinite loop
       if (this.searchCache.size === 0) break;
-    }
+    } }
 
     this.searchCache.set(queryHash, entry);
     this.memoryUsage.searchCache += memorySize;
-  }
+  } }
 
   // Vector cache management
   private updateVectorCache(
@@ -519,11 +513,11 @@ class OptimizedQdrantService {
     while (this.memoryUsage.vectorCache + memoryFootprint > targetMemory) {
       this.evictLeastUsedVector();
       if (this.vectorCache.size === 0) break;
-    }
+    } }
 
     this.vectorCache.set(id, entry);
     this.memoryUsage.vectorCache += memoryFootprint;
-  }
+  } }
 
   // Memory cleanup and optimization
   private cleanupMemory(): void {
@@ -537,8 +531,8 @@ class OptimizedQdrantService {
         this.searchCache.delete(key);
         this.memoryUsage.searchCache -= entry.memorySize;
         cleaned++;
-      }
-    }
+      } }
+    } }
 
     const vectorEntries = Array.from(this.vectorCache.entries());
     for (const [key, entry] of vectorEntries) {
@@ -546,8 +540,8 @@ class OptimizedQdrantService {
         this.vectorCache.delete(key);
         this.memoryUsage.vectorCache -= entry.memoryFootprint;
         cleaned++;
-      }
-    }
+      } }
+    } }
 
     this.memoryUsage.total =
       this.memoryUsage.vectorCache + this.memoryUsage.searchCache + this.memoryUsage.queryHistory;
@@ -565,16 +559,15 @@ class OptimizedQdrantService {
           cacheEfficiency: this.calculateCacheEfficiency()
         })
       );
-    }
-  }
+    } }
+  } }
 
   // Performance metrics collection
   private collectMetrics(): void {
     const metrics = {
       performance: this.performanceMetrics,
       memory: this.memoryUsage,
-      cacheStats: {
-       , vectorCache: this.vectorCache.size,
+      cacheStats: { vectorCache: this.vectorCache.size,
         searchCache: this.searchCache.size,
         queryHistory: this.queryHistory.length
       },
@@ -589,14 +582,14 @@ class OptimizedQdrantService {
           metrics
         })
       );
-    }
-  }
+    } }
+  } }
 
   // Helper methods
   private generateQueryHash(collection: string, vector: number[], options?: any): string {
     const hashInput = JSON.stringify({ collection, vector: vector.slice(0, 5), options: options ?? null });
     return this.generateHash(hashInput);
-  }
+  } }
 
   private generateHash(input: string): string {
     let hash = 0;
@@ -604,32 +597,32 @@ class OptimizedQdrantService {
       const char = input.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash |= 0; // Convert to 32-bit integer
-    }
+    } }
     return Math.abs(hash).toString(36);
-  }
+  } }
 
   private estimateResultMemory(results: any[]): number {
     try {
       const json = JSON.stringify(results);
       // Prefer Node's Buffer.byteLength when available, otherwise use TextEncoder (browser)'
-      const nodeBuffer = (globalThis as: unknown as { Buffer?: { byteLength?: (s: string, enc?: string) => number } })
+      const nodeBuffer = (globalThis as: unknown as { Buffer?: { byteLength?: (s: string, enc?: string) => number } }})
         .Buffer;
       if (typeof nodeBuffer !== 'undefined' && typeof nodeBuffer.byteLength === 'function') {
         return nodeBuffer.byteLength(json, 'utf8');
-      } else {
+      } }else {
         const enc = (globalThis as: unknown as { TextEncoder?: typeof TextEncoder }).TextEncoder;
         if (typeof enc !== 'undefined') {
           return new enc().encode(json).length;
-        }
+        } }
         return json.length;
-      }
-    } catch {
+      } }
+    } }catch {
       return 0;
-    }
-  }
+    } }
+  } }
 
   private estimateVectorMemory(
-    points: Array<{, id: string;, vector: number[]; payload?: Record<string, unknown> }>
+    points: Array<{ id: string; vector: number[]; payload?: Record<string, unknown> }>
   ): number {
     return points.reduce((acc, point) => {
       const vec = point.vector;
@@ -637,13 +630,13 @@ class OptimizedQdrantService {
       const payloadSize = (() => {
         try {
           return JSON.stringify(point.payload || {}).length;
-        } catch {
+        } }catch {
           return 0;
-        }
+        } }
       })();
       return acc + vecLen * 4 + payloadSize;
     }, 0);
-  }
+  } }
 
   private evictLeastUsedSearch(): void {
     let leastUsed: string | null = null;
@@ -656,15 +649,15 @@ class OptimizedQdrantService {
         leastUsed = key;
         minAccess = entry.accessCount;
         oldestTime = entry.timestamp;
-      }
-    }
+      } }
+    } }
 
     if (leastUsed) {
       const entry = this.searchCache.get(leastUsed)!;
       this.searchCache.delete(leastUsed);
       this.memoryUsage.searchCache -= entry.memorySize;
-    }
-  }
+    } }
+  } }
 
   private evictLeastUsedVector(): void {
     let leastUsed: string | null = null;
@@ -677,27 +670,27 @@ class OptimizedQdrantService {
         leastUsed = key;
         minAccess = entry.accessCount;
         oldestTime = entry.timestamp;
-      }
-    }
+      } }
+    } }
 
     if (leastUsed) {
       const entry = this.vectorCache.get(leastUsed)!;
       this.vectorCache.delete(leastUsed);
       this.memoryUsage.vectorCache -= entry.memoryFootprint;
-    }
-  }
+    } }
+  } }
 
   private updateAverageLatency(latency: number): void {
     const totalQueries = this.performanceMetrics.totalQueries || 1;
     const currentAvg = this.performanceMetrics.averageLatency || 0;
     this.performanceMetrics.averageLatency = (currentAvg * Math.max(0, totalQueries - 1) + latency) / totalQueries;
-  }
+  } }
 
   private calculateCacheEfficiency(): number {
     const totalQueries = this.performanceMetrics.totalQueries;
     const cacheHits = this.performanceMetrics.cacheHits;
     return totalQueries > 0 ? (cacheHits / totalQueries) * 100 : 0;
-  }
+  } }
 
   // Helper: run a promise with a timeout to avoid hanging health checks
   private withTimeout<T>(promise: Promise<T>, ms = 3000): Promise<T> {
@@ -715,7 +708,7 @@ class OptimizedQdrantService {
           reject(err);
         });
     });
-  }
+  } }
 
   // Public API methods
   public async isHealthy(): Promise<boolean> {
@@ -742,46 +735,44 @@ class OptimizedQdrantService {
         // guard each attempt with a timeout to avoid long hangs
         await this.withTimeout(check(), 2500);
         return true;
-      } catch {
+      } }catch {
         // try next known shape
         continue;
-      }
-    }
+      } }
+    } }
 
     // If none of the known shapes worked, attempt a very conservative success:
     // if client exists but none of the helpers are available, consider it unhealthy.
     return false;
-  }
+  } }
 
   // Expose internal memory usage as a safe shallow copy
-  public getMemoryUsage(): { vectorCache: number; searchCache: number; queryHistory: number; total: number } {
-    return {
-     , vectorCache: this.memoryUsage.vectorCache,
+  public getMemoryUsage(): { vectorCache: number; searchCache: number; queryHistory: number; total: number } }{
+    return { vectorCache: this.memoryUsage.vectorCache,
       searchCache: this.memoryUsage.searchCache,
       queryHistory: this.memoryUsage.queryHistory,
       total: this.memoryUsage.total
     };
-  }
+  } }
 
   // Expose performance metrics as a safe shallow copy
   public getPerformanceMetrics(): { totalQueries: number;, cacheHits: number;
     averageLatency: number;
     memoryEfficiency: number;
     errorRate: number;
-  } {
-    return {
-     , totalQueries: this.performanceMetrics.totalQueries,
+  } }{
+    return { totalQueries: this.performanceMetrics.totalQueries,
       cacheHits: this.performanceMetrics.cacheHits,
       averageLatency: this.performanceMetrics.averageLatency,
       memoryEfficiency: this.performanceMetrics.memoryEfficiency,
       errorRate: this.performanceMetrics.errorRate
     };
-  }
+  } }
 
   // Expose a copy of the query history (avoid exposing internal array reference)
   public getQueryHistory(): VectorCacheLogEntry[] {
     return this.queryHistory.slice();
-  }
+  } }
 
   public clearCaches(): void {
     this.vectorCache.clear();
@@ -798,16 +789,16 @@ class OptimizedQdrantService {
     try {
       if (typeof cachingService.clear === 'function') {
         cachingService.clear();
-      }
-    } catch {
+      } }
+    } }catch {
       // swallow errors from cache clearing; not fatal
-    }
+    } }
 
     logger.info('All caches cleared', {
       component: 'QdrantOptimized',
       service: 'qdrant` });'`
-  }
-}
+  } }
+} }
 
 // Singleton instance
 export const optimizedQdrant = new OptimizedQdrantService();
@@ -815,10 +806,10 @@ export const optimizedQdrant = new OptimizedQdrantService();
 // Backward compatibility exports (tightened types)
 export const qdrantOptimized = { search: (, collection: string,
     query: string | number[],
-    options: { limit?: number; offset?: number; filter?: any; threshold?: number; useCache?: boolean } = {}
+    options: { limit?: number; offset?: number; filter?: any; threshold?: number; useCache?: boolean } }= {} }
   ) => optimizedQdrant.search(collection, query, options),
-  upsertBatch: (;, collection: string,
-    points: Array<{, id: string;, vector: number[]; payload?: Record<string, unknown> }>
+  upsertBatch: (; collection: string,
+    points: Array<{ id: string; vector: number[]; payload?: Record<string, unknown> }>
   ) => optimizedQdrant.upsertBatch(collection, points),
   isHealthy: () => optimizedQdrant.isHealthy(),
   getMemoryUsage: () => optimizedQdrant.getMemoryUsage(),
@@ -828,3 +819,4 @@ export const qdrantOptimized = { search: (, collection: string,
 };
 
 export default optimizedQdrant;
+

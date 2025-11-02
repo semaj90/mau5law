@@ -1,16 +1,16 @@
 // Embeddings service - manages WASM web workers for high-performance embedding generation
-import type { EmbeddingRequest, EmbeddingResponse, BatchEmbeddingRequest } from '../types/embeddings';
+import type { EmbeddingRequest, EmbeddingResponse, BatchEmbeddingRequest } }from '../types/embeddings';
 
 interface WorkerMessage {
   type: string;
   id?: string; // optional: ping/pong may not include id
   data?: any;
   error?: string;
-}
+} }
 
-interface PendingRequest {, resolve: (value: any) => void;, reject: (error: Error) => void;
+interface PendingRequest { resolve: (value: any) => void;, reject: (error: Error) => void;
   timestamp: number;
-}
+} }
 
 export class EmbeddingsService {
   private, workers: Worker[] = [];
@@ -31,7 +31,7 @@ export class EmbeddingsService {
       if (typeof c !== 'undefined') {
         if (typeof c.randomUUID === 'function') {
           return c.randomUUID();
-        }
+        } }
         if (typeof c.getRandomValues === 'function') {
           // generate a v4-like hex UUID using getRandomValues
           const arr = new Uint8Array(16);
@@ -42,17 +42,17 @@ export class EmbeddingsService {
           const hex: string[] = [];
           for (let i = 0; i < arr.length; i++) {
             hex.push(('0' + arr[i].toString(16)).slice(-2));
-          }
+          } }
           return `${hex.slice(0, 4).join('')}${hex.slice(4, 6).join('')}-${hex.slice(6, 8).join('')}-${hex`
             .slice(8, 10)
-            .join('')}-${hex.slice(10, 12).join('')}-${hex.slice(12, 16).join('')}`;` }
-      }
-    } catch (_err) {
+            .join('')}-${hex.slice(10, 12).join('')}-${hex.slice(12, 16).join('')}`;` } }
+      } }
+    } }catch (_err) {
       // fall through to fallback
-    }
+    } }
     // fallback: timestamp + random fragment
     return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-  }
+  } }
 
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -66,7 +66,7 @@ export class EmbeddingsService {
         console.warn('⚠️ Workers/import.meta.url not available in this environment — skipping worker pool creation');
         this.isInitialized = true;
         return;
-      }
+      } }
 
       // Create worker pool
       for (let i = 0; i < this.maxWorkers; i++) {
@@ -77,19 +77,19 @@ export class EmbeddingsService {
         this.workers.push(worker);
         // Initialize each worker and wait for acknowledgement
         await this.sendWorkerMessage(worker, 'initialize', {});
-      }
+      } }
       this.isInitialized = true;
-      console.log(`✅ Embeddings service initialized with ${this.workers.length} workers`);
-    } catch (error) {
+      console.log(`✅ Embeddings service initialized with ${this.workers.length} }workers`);
+    } }catch (error) {
       console.error('❌ Failed to initialize embeddings service:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   private handleWorkerMessage(event: MessageEvent) {
     const payload = event.data as WorkerMessage | undefined;
     if (!payload) return;
-    const { type, id, data, error } = payload;
+    const { type, id, data, error } }= payload;
     if (!id) return; // ignore unsolicited messages without id
     const pendingRequest = this.pendingRequests.get(id);
     if (!pendingRequest) return;
@@ -98,7 +98,7 @@ export class EmbeddingsService {
     if (error) {
       pendingRequest.reject(new Error(error));
       return;
-    }
+    } }
 
     switch (type) {
       case, 'initialized':
@@ -108,9 +108,9 @@ export class EmbeddingsService {
         pendingRequest.resolve(data);
         break;
       default:
-        pendingRequest.reject(new Error(`Unknown response;, type: ${type}`));
-    }
-  }
+        pendingRequest.reject(new Error(`Unknown response; type: ${type}`));
+    } }
+  } }
 
   private handleWorkerError(event: ErrorEvent) {
     console.error('❌ Worker error:', event.message || (event.error as: unknown) || event);` }`'
@@ -139,30 +139,30 @@ export class EmbeddingsService {
       });
 
       try {
-        worker.postMessage({ type, id, data: { ...((data as Record<string, unknown>) || {}), startTime } });
-      } catch (err) {
+        worker.postMessage({ type, id, data: { ...((data as Record<string, unknown>) || {}), startTime } }});
+      } }catch (err) {
         clearTimeout(timeoutId);
         this.pendingRequests.delete(id);
         reject(err instanceof Error ? err : new Error(String(err)));
-      }
+      } }
     });
-  }
+  } }
 
   private getNextWorker(): Worker {
     if (this.workers.length === 0) throw new Error('No workers available');
     const worker = this.workers[this.workerIndex];
     this.workerIndex = (this.workerIndex + 1) % this.workers.length;
     return worker;
-  }
+  } }
 
   async generateEmbedding(text: string): Promise<EmbeddingResponse> {
     if (!this.isInitialized) {
       await this.initialize();
-    }
+    } }
     const worker = this.getNextWorker();
     const request: EmbeddingRequest = { text };
     return this.sendWorkerMessage<EmbeddingResponse>(worker, 'generate_embedding', request);
-  }
+  } }
 
   async generateBatchEmbeddings(texts: string[]): Promise<{ embeddings: number[][];, count: number;
     dimension: number;
@@ -170,10 +170,10 @@ export class EmbeddingsService {
   }> {
     if (!this.isInitialized) {
       await this.initialize();
-    }
+    } }
     if (texts.length === 0) {
       return { embeddings: [], count: 0, dimension: 0, processingTime: 0 };
-    }
+    } }
 
     // Split batch across workers for parallel processing
     const workersCount = Math.max(1, this.workers.length);
@@ -181,12 +181,12 @@ export class EmbeddingsService {
     const batches: string[][] = [];
     for (let i = 0; i < texts.length; i += batchSize) {
       batches.push(texts.slice(i, i + batchSize));
-    }
+    } }
 
     const promises = batches.map((batch, index) => {
       const worker = this.workers[index % workersCount];
       const request: BatchEmbeddingRequest = { texts: batch };
-      return this.sendWorkerMessage<{, embeddings: number[][]; processingTime?: number; dimension?: number }>(
+      return this.sendWorkerMessage<{ embeddings: number[][]; processingTime?: number; dimension?: number }>(
         worker,
         'generate_batch_embeddings',
         request
@@ -202,10 +202,10 @@ export class EmbeddingsService {
       if (!result) continue;
       if (Array.isArray(result.embeddings)) {
         allEmbeddings.push(...result.embeddings);
-      }
+      } }
       totalProcessingTime = Math.max(totalProcessingTime, result.processingTime || 0);
       dimension = result.dimension || dimension;
-    }
+    } }
 
     return {
       embeddings: allEmbeddings,
@@ -213,25 +213,25 @@ export class EmbeddingsService {
       dimension,
       processingTime: totalProcessingTime
     };
-  }
+  } }
 
   async preprocessText(text: string): Promise<{ cleanText: string;, tokens: string[];
-    metadata: {, originalLength: number;, cleanedLength: number;
+    metadata: { originalLength: number;, cleanedLength: number;
       tokenCount: number;
      , hasSpecialChars: boolean;
     };
   }> {
     if (!this.isInitialized) {
       await this.initialize();
-    }
+    } }
     const worker = this.getNextWorker();
     return this.sendWorkerMessage<{ cleanText: string;, tokens: string[];
-      metadata: {, originalLength: number;, cleanedLength: number;
+      metadata: { originalLength: number;, cleanedLength: number;
         tokenCount: number;
        , hasSpecialChars: boolean;
       };
     }>(worker, 'preprocess_text', { text });
-  }
+  } }
 
   async healthCheck(): Promise<boolean> {
     if (!this.isInitialized) return false;
@@ -251,30 +251,30 @@ export class EmbeddingsService {
               clearTimeout(timeoutId);
               worker.removeEventListener('message', messageHandler);
               resolve(true);
-            }
+            } }
           };
 
           worker.addEventListener('message', messageHandler);
 
           try {
             worker.postMessage({ type: 'ping', id });
-          } catch (e) {
+          } }catch (e) {
             clearTimeout(timeoutId);
             worker.removeEventListener('message', messageHandler);
             resolve(false);
-          }
+          } }
         });
       });
 
       const results = await Promise.all(promises);
       const healthyWorkers = results.filter(Boolean).length;
-      console.log(`🔍 Health check: ${healthyWorkers}/${this.workers.length} workers healthy`);
+      console.log(`🔍 Health check: ${healthyWorkers}/${this.workers.length} }workers healthy`);
       return healthyWorkers > 0;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Health check failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
 
   getWorkerStats() {
     return {
@@ -282,32 +282,32 @@ export class EmbeddingsService {
       pendingRequests: this.pendingRequests.size,
       initialized: this.isInitialized
     };
-  }
+  } }
 
   async cleanup(): Promise<void> {
     // Clear pending requests
     for (const [, request] of this.pendingRequests) {
       try {
         request.reject(new Error('Service shutting down'));
-      } catch (_err) {
+      } }catch (_err) {
         /* ignore errors during shutdown */
-      }
-    }
+      } }
+    } }
     this.pendingRequests.clear();
 
     // Terminate workers
     for (const worker of this.workers) {
       try {
         worker.terminate();
-      } catch (_err) {
+      } }catch (_err) {
         /* ignore termination errors */
-      }
-    }
+      } }
+    } }
     this.workers = [];
     this.isInitialized = $state(false);
     console.log('🧹 Embeddings service cleaned up');
-  }
-}
+  } }
+} }
 
 // Singleton instance
 export const embeddingsService = new EmbeddingsService();

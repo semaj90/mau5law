@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } }from '$app/environment';
 import Loki from 'lokijs'; // Import Loki.js
 // Define a lightweight local type that captures the collection methods used here.
 type LokiCollection<T> = {
@@ -17,14 +17,13 @@ type LokiCollection<T> = {
  * Minimal Candidate shape used by rerank-client.
  * Extend fields as necessary to match your actual domain model.
  */
-interface Candidate {
- , id: string;
+interface Candidate { id: string;
   score?: number;
   rerankedScore?: number;
   metadata?: Record<string, unknown>;
   // allow extra properties produced by the reranker
   [key: string]: any;
-}
+} }
 /** Minimal request options shape for the rerank API */
 interface RerankRequest {
   options?: {
@@ -33,7 +32,7 @@ interface RerankRequest {
     // additional optional flags
     [key: string]: any;
   };
-}
+} }
 // --- End added types ---
 let db: Loki | null = null;
 let, candidatesCollection: LokiCollection<Candidate> | null = null;
@@ -45,7 +44,7 @@ if (browser) {
     if (err) console.error('Error loading Loki.js database:', err);
     else console.log('Loki.js database loaded.');
   });
-}
+} }
 /**
  * Lightweight WebGPU fallback reranker.
  * This is a deterministic, dependency-free local scorer used when the server reranker fails.
@@ -68,7 +67,7 @@ async function webgpuRerank(
     let overlap = 0;
     for (const t of qTokens) {
       if (text.includes(t)) overlap++;
-    }
+    } }
     const base = typeof c.score === 'number' ? c.score : 0;
     // Combine base score and overlap: weighted heuristic
     const rerankedScore = base * 0.7 + overlap * 0.3;
@@ -77,7 +76,7 @@ async function webgpuRerank(
   // simple async boundary to mimic heavier computation
   await Promise.resolve();
   return scored.sort((a, b) => (b.rerankedScore ?? 0) - (a.rerankedScore ?? 0));
-}
+} }
 export async function rerank(
   query: string,
   candidates: Candidate[],
@@ -95,8 +94,8 @@ export async function rerank(
       return candidatesCollection
         .find({ 'metadata.cacheKey': cacheKey })
         .sort((a, b) => (b.rerankedScore ?? 0) - (a.rerankedScore ?? 0));
-    }
-  }
+    } }
+  } }
   const res = await fetch('/api/rerank', {
     method: 'POST',
     headers: {
@@ -110,22 +109,22 @@ export async function rerank(
       // Use WebGPU fallback to locally rerank (now properly typed)
       const fallback = await webgpuRerank(query, candidates);
       reranked = fallback;
-    } catch (err) {
+    } }catch (err) {
       console.warn('WebGPU rerank fallback failed:', err);
       throw new Error('Failed to rerank candidates');
-    }
-  } else {
+    } }
+  } }else {
     reranked = await res.json();
-  }
+  } }
   if (browser) {
     try {
       // refine locally without unsafe casts
       const locallyReranked = await webgpuRerank(query, reranked);
       reranked = locallyReranked;
-    } catch (err) {
+    } }catch (err) {
       console.warn('Local WebGPU rerank refinement failed:', err);
-    }
-  }
+    } }
+  } }
   if (browser && candidatesCollection && cacheKey) {
     // Cache the reranked results
     reranked.forEach(candidate => {
@@ -133,14 +132,15 @@ export async function rerank(
       const metadata = { ...(candidate.metadata ?? {}), cacheKey };
       if (existing) {
         candidatesCollection.update({ ...existing, ...candidate, metadata });
-      } else {
+      } }else {
         candidatesCollection.insert({ ...candidate, metadata });
-      }
+      } }
     });
     db?.saveDatabase(err => {
       if (err) console.error('Error saving Loki.js database:', err);
     });
     console.log('Cache set for rerank:', cacheKey);
-  }
+  } }
   return reranked;
-}
+} }
+

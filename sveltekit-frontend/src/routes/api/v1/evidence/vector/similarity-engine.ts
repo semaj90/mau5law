@@ -7,25 +7,25 @@ export interface PerformSimilaritySearchArgs { query: string;, evidenceIds: str
   algorithms: string[];
   clustering?: boolean;
   threshold?: number; // 0..1
-}
-interface ClusterResult {, evidenceIds: string[];, coherenceScore: number; // 0..1
+} }
+interface ClusterResult { evidenceIds: string[];, coherenceScore: number; // 0..1
   themes: string[];
-}
+} }
 interface SimilaritySearchResult {
   clusters?: ClusterResult[];
   algorithms: string[];
   totalEvidence: number;
-  timings: {, totalMs: number };
-}
+  timings: { totalMs: number };
+} }
 export class AdvancedSimilarityEngine {
   static async performSimilaritySearch(args: PerformSimilaritySearchArgs): Promise<SimilaritySearchResult> {
     const start = Date.now();
-    const { evidenceIds, algorithms, clustering, threshold = 0.7 } = args;
+    const { evidenceIds, algorithms, clustering, threshold = 0.7 } }= args;
     // Very small deterministic pseudo-random for repeatability in dev
     function pseudoRandom(seed: number) {
       const x = Math.sin(seed) * 10000; // deterministic
       return x - Math.floor(x);
-    }
+    } }
     let clusters: ClusterResult[] | undefined;
     if (clustering) {
       // Group evidence IDs into naive clusters of size 2-4
@@ -45,18 +45,19 @@ export class AdvancedSimilarityEngine {
           coherenceScore: coherence,
           themes: deriveThemes(slice)
         });
-      }
-    }
+      } }
+    } }
     return {
       clusters,
       algorithms,
       totalEvidence: evidenceIds.length,
-      timings: {, totalMs: Date.now() - start }
+      timings: { totalMs: Date.now() - start } }
     };
-  }
-}
+  } }
+} }
 function deriveThemes(ids: string[]): string[] {
   const baseThemes = ['contract', 'damages', 'timeline', 'entities', 'financial', 'communications'];
   // Pick up to, 2 themes deterministically
   return baseThemes.filter((_, idx) => idx < 2 && idx < ids.length);
-}
+} }
+

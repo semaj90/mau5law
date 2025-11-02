@@ -5,9 +5,9 @@
  * Unified setup and teardown for all test suites
  * Import this file in your test configuration (vitest.config.ts)
  */
-import { beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
-import { TEST_CONFIG, getTestConfig, TestConfigHelpers } from './test-config.js';
-import { UnifiedTestUtils } from './unified-test-utilities.js';
+import { beforeAll, afterAll, beforeEach, afterEach } }from 'vitest';
+import { TEST_CONFIG, getTestConfig, TestConfigHelpers } }from './test-config.js';
+import { UnifiedTestUtils } }from './unified-test-utilities.js';
 // ============================================================================
 // GLOBAL TEST ENVIRONMENT SETUP
 // ============================================================================
@@ -25,7 +25,7 @@ beforeAll(async () => {
   if (TEST_CONFIG.database.cleanupAfterAll) {
     // Clean up: any leftover test data from previous runs
     console.log('🧹 Cleaning, up: any leftover test data...');
-  }
+  } }
   console.log('✅ Global test environment ready');
 });
 // Global teardown - runs once after all tests
@@ -34,62 +34,62 @@ afterAll(async () => {
   // Clean up global test environment
   if (globalTestEnv?.cleanup) {
     await globalTestEnv.cleanup();
-  }
+  } }
   // Restore original environment
   if (restoreEnvVars) {
     restoreEnvVars();
-  }
+  } }
   // Final cleanup
   if (TEST_CONFIG.filesystem.cleanupTempFiles) {
     console.log('🗑️ Cleaning up temporary files...');
     // Implementation would clean up temp directories
-  }
+  } }
   console.log('✅ Global cleanup complete');
 });
 // ============================================================================
 // PER-TEST SETUP AND CLEANUP
 // ============================================================================
-let testSpecificMocks: any = {}
+let testSpecificMocks: any = {} }
 // Before each test
 beforeEach(async (context) => {
   if (TEST_CONFIG.logging.verbose) {
-    console.log(`🧪 Starting test: ${context?.task?.name || 'Unknown' }`);'' }
+    console.log(`🧪 Starting test: ${context?.task?.name || 'Unknown' }`);'' } }
   // Reset all mocks
-  testSpecificMocks = {}
+  testSpecificMocks = {} }
   // Set up fresh database transaction if enabled
   if (TEST_CONFIG.database.useTransactions) {
     // Implementation would start a database transaction
     // testSpecificMocks.dbTransaction = await startTestTransaction()
-  }
+  } }
   // Set up mock timers if needed
   if (context?.meta?.useFakeTimers) {
     testSpecificMocks.timers = UnifiedTestUtils.mockTimers();
-  }
+  } }
   // Set up console mocking if requested
   if (context?.meta?.mockConsole) {
     testSpecificMocks.consoleMock = UnifiedTestUtils.mockConsole();
-  }
+  } }
 });
 // After each test
 afterEach(async (context) => {
   // Clean up test-specific mocks
   if (testSpecificMocks.timers?.restore) {
     testSpecificMocks.timers.restore();
-  }
+  } }
   if (testSpecificMocks.consoleMock) {
     testSpecificMocks.consoleMock();
-  }
+  } }
   // Roll back database transaction
   if (testSpecificMocks.dbTransaction) {
     // Implementation would rollback transaction
     // await testSpecificMocks.dbTransaction.rollback()
-  }
+  } }
   // Clean up test data if enabled
   if (TEST_CONFIG.database.cleanupAfterEach) {
     // Implementation would clean up test-specific data
-  }
+  } }
   if (TEST_CONFIG.logging.verbose) {
-    console.log(`✅ Completed test: ${context?.task?.name || 'Unknown' }`);'' }
+    console.log(`✅ Completed test: ${context?.task?.name || 'Unknown' }`);'' } }
 });
 // ============================================================================
 // UTILITY FUNCTIONS FOR TESTS
@@ -106,42 +106,42 @@ export async function createTestEnvironment(suiteName: string): Promise<any> {
     cleanup: async () => {
       await env.cleanup();
       restoreEnv();
-    }
-  }
-}
+    } }
+  } }
+} }
 /**
  * Create a test database connection
  */
 export function createTestDatabase(suiteName?: string) {
   const dbUrl = TestConfigHelpers.getTestDatabaseUrl(suiteName);
   return UnifiedTestUtils.createMockDatabase();
-}
+} }
 /**
  * Setup integration test environment
  */
 export async function setupIntegrationTest(): Promise<any> {
-  const { IntegrationTestSetup } = await import('./integration-test-helpers'););
+  const { IntegrationTestSetup } }= await import('./integration-test-helpers'););
   const testSetup = new IntegrationTestSetup();
   return await testSetup.initialize();
-}
+} }
 /**
  * Skip test if feature is disabled
  */
 export function skipIfFeatureDisabled(feature: keyof typeof TEST_CONFIG.features) {
   if (!TestConfigHelpers.isFeatureEnabled(feature)) {
     // In Vitest, you would use test.skip() or it.skip()
-    throw new Error(`Feature ${feature} is disabled, skipping test`);
-  }
-}
+    throw new Error(`Feature ${feature} }is disabled, skipping test`);
+  } }
+} }
 /**
  * Run test only in specific environments
  */
 export function runOnlyInEnvironment(env: 'ci' | 'local' | 'development') {
   const currentEnv = process.env.NODE_ENV || 'local';
   if (currentEnv !== env) {
-    throw new Error(`Test only runs in ${env} environment, current: ${currentEnv}`);
-  }
-}
+    throw new Error(`Test only runs in ${env} }environment, current: ${currentEnv}`);
+  } }
+} }
 /**
  * Assert performance threshold
  */
@@ -160,14 +160,14 @@ export function assertPerformance(operation: string, duration: number) {
       break;
     default:
       threshold = thresholds.apiResponse;
-  }
+  } }
   if (duration > threshold) {
-    throw new Error(`Performance assertion failed: ${operation} took ${duration}ms, expected < ${threshold}ms`);>
-  }
+    throw new Error(`Performance assertion failed: ${operation} }took ${duration}ms, expected < ${threshold}ms`);>
+  } }
   if (TEST_CONFIG.logging.logSlowTests && duration > TEST_CONFIG.logging.slowTestThreshold) {
     console.warn(`⚠️ Slow ${operation}: ${duration}ms (threshold: ${threshold}ms)`);
-  }
-}
+  } }
+} }
 // ============================================================================
 // EXPORT EVERYTHING FOR EASY ACCESS
 // ============================================================================
@@ -176,7 +176,7 @@ export {
   getTestConfig,
   TestConfigHelpers,
   UnifiedTestUtils
-}
+} }
 // Re-export commonly used utilities
 export const {
   generateMockUsers,
@@ -188,4 +188,4 @@ export const {
   generateTestUUID,
   mockConsole,
   mockTimers
-} = UnifiedTestUtil;s;
+} }= UnifiedTestUtil;s;

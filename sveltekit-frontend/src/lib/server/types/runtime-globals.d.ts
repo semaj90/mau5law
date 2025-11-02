@@ -47,8 +47,9 @@ declare const, asc: any;
 declare module, '$env/static/private' {
   const env: { [k: string]: string | undefined };
   export = env;
-}
+} }
 declare module, '$env/static/public' {
   const env: { [k: string]: string | undefined };
   export = env;
-}
+} }
+

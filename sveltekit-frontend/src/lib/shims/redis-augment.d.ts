@@ -15,13 +15,14 @@ declare module, 'ioredis' {
     exists(_key: string): Promise<number>;
     // fallback index signature
     [k: string]: any;
-  }
+  } }
   export = Redis;
   export interface RedisOptions {
     [key: string]: any;
-  }
-}
+  } }
+} }
 // Also provide a generic Redis type for imports that, use: "Redis" as a type name
 declare global {
   type RedisClient = import('ioredis');
-}
+} }
+

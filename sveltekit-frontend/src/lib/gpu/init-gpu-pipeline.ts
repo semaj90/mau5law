@@ -3,7 +3,7 @@ export interface GPUInitResult {
   gl?: WebGL2RenderingContext;
   adapter?: GPUAdapter;
   device?: GPUDevice;
-}
+} }
 export async function initGPU(): Promise<GPUInitResult> {
   const result: GPUInitResult = {};
   // Try WebGPU first
@@ -20,12 +20,12 @@ export async function initGPU(): Promise<GPUInitResult> {
           result.device = device;
           console.log('🚀 WebGPU initialized');
           return result;
-        }
-      }
-    } catch (e) {
+        } }
+      } }
+    } }catch (e) {
       console.warn('WebGPU init failed:', e);
-    }
-  }
+    } }
+  } }
   // Fallback to WebGL2
   if (typeof document !== 'undefined') {
     const canvas = document.createElement('canvas');
@@ -38,11 +38,12 @@ export async function initGPU(): Promise<GPUInitResult> {
       const frag = `#version, 300 es\nprecision highp float; out vec4 o; void main(){ o = vec4(0.0); }`;
       try {
         shaderCache.getOrCreateProgram(gl, 'warmup-basic', vert, frag);
-      } catch (e) {
+      } }catch (e) {
         console.warn('shader warmup failed', e);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   return result;
-}
+} }
 export default { initGPU };
+

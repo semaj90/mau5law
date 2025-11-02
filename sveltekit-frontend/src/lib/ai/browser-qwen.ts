@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Browser-based Qwen 0.5B LLM using Transformer.js v3
  *
  * CLOSEST EQUIVALENT TO OLLAMA gemma3:270m (but in browser!)
  *
  * This is the smallest viable LLM for browser use:
- * -;, Model: Qwen 2.5 0.5B Instruct (quantized to q4)
- * - Size: ~300MB (vs;, gemma3:270m @ 270MB)
+ * -; Model: Qwen 2.5 0.5B Instruct (quantized to q4)
+ * - Size: ~300MB (vs; gemma3:270m @ 270MB)
  * - Speed: 10-20 tokens/sec on WebGPU
  * - Privacy: ✅ 100% browser-based
  *
@@ -21,7 +21,7 @@ import type { Document } from '$lib/types';
  *   await qwen.initialize();
  *   const response = await qwen.generate('Summarize this contract...');
  */
-import { pipeline, env } from '@huggingface/transformers';
+import { pipeline, env } }from '@huggingface/transformers';
 // Configure Transformers.js for browser
 env.allowLocalModels = true;
 env.useBrowserCache = true;
@@ -33,7 +33,7 @@ export interface GenerateOptions {
   topK?: number;
   repetitionPenalty?: number;
   systemPrompt?: string;
-}
+} }
 export class BrowserQwen {
   private generator: any = null;
   private isInitialized = $state(false);
@@ -45,14 +45,14 @@ export class BrowserQwen {
   ) {
     this.modelName = modelName;
     this.device = device;
-  }
+  } }
   /**
    * Initialize Qwen 0.5B model (downloads ~300MB on first run)
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     try {
-      console.log(`🧠 [Qwen Browser] Loading ${this.modelName} (${this.device})...`);
+      console.log(`🧠 [Qwen Browser] Loading ${this.modelName} }(${this.device})...`);
       console.log('⏳ First load: ~1-2 minutes (~300MB download)');
       try {
         this.generator = await pipeline(
@@ -65,41 +65,41 @@ export class BrowserQwen {
               if (progress.status === 'downloading') {
                 const pct = ((progress.loaded / progress.total) * 100).toFixed(1);
                 console.log(`📥 Downloading: ${pct}%`);
-              } else if (progress.status === 'ready') {
+              } }else if (progress.status === 'ready') {
                 console.log('✅ Model ready!');
-              }
-            }
-          }
+              } }
+            } }
+          } }
         );
-      } catch (gpuError) {
+      } }catch (gpuError) {
         console.warn('⚠️ WebGPU unavailable, falling back to WASM', gpuError);
         this.device = 'wasm';
         this.generator = await pipeline('text-generation', this.modelName, {
-          device: 'wasm' });'' }
+          device: 'wasm' });'' } }
       this.isInitialized = true;
       console.log(`✅ [Qwen Browser] Model loaded (${this.device})`);
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ [Qwen Browser] Failed to load:', error);
       throw new Error(`Qwen initialization failed: ${error}`);
-    }
-  }
+    } }
+  } }
   /**
    * Generate text response
    */
   async generate(
     prompt: string,
-    options: GenerateOptions = {}
+    options: GenerateOptions = {} }
   ): Promise<string> {
     if (!this.isInitialized) {
       await this.initialize();
-    }
+    } }
     const {
       maxTokens = 256,
       temperature = 0.7,
       topP = 0.9,
       topK = 50,
       repetitionPenalty = 1.1,
-      systemPrompt = 'You are a helpful legal AI assistant.' } = options;'`'`
+      systemPrompt = 'You are a helpful legal AI assistant.' } }= options;'`'`
     try {
       const startTime = performance.now();
       // Qwen prompt format
@@ -116,32 +116,32 @@ export class BrowserQwen {
       const endTime = performance.now();
       const generatedText = output[0].generated_text.trim();
       const tokensPerSec = (maxTokens / (endTime - startTime)) * 1000;
-      console.log(`⚡ [Qwen] Generated in ${(endTime - startTime).toFixed(0)}ms (~${tokensPerSec.toFixed(1)} tok/sec)`);
+      console.log(`⚡ [Qwen] Generated in ${(endTime - startTime).toFixed(0)}ms (~${tokensPerSec.toFixed(1)} }tok/sec)`);
       return generatedText;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ [Qwen] Generation failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Chat with conversation history
    */
   async chat(
-    messages: Array<{, role: 'user' | 'assistant' | 'system';, content: string }>,
-    options: GenerateOptions = {}
+    messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>,
+    options: GenerateOptions = {} }
   ): Promise<string> {
     let prompt = '';
     for (const msg of messages) {
       if (msg.role === 'system') {
         prompt += `<|im_start|>system\n${msg.content}<|im_end|>\n`;
-      } else if (msg.role === 'user') {
+      } }else if (msg.role === 'user') {
         prompt += `<|im_start|>user\n${msg.content}<|im_end|>\n`;
-      } else if (msg.role === 'assistant') {
+      } }else if (msg.role === 'assistant') {
         prompt += `<|im_start|>assistant\n${msg.content}<|im_end|>\n`;
-      }
-    }
+      } }
+    } }
     prompt += '<|im_start|>assistant\n';
-    const { maxTokens = 256, temperature = 0.7, topP = 0.9, topK = 50, repetitionPenalty = 1.1 } = options;
+    const { maxTokens = 256, temperature = 0.7, topP = 0.9, topK = 50, repetitionPenalty = 1.1 } }= options;
     try {
       const output = await this.generator(prompt, {
         max_new_tokens: maxTokens,
@@ -153,11 +153,11 @@ export class BrowserQwen {
         return_full_text: false
       });
       return output[0].generated_text.trim();
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ [Qwen] Chat failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Legal-specific helpers
    */
@@ -167,32 +167,32 @@ export class BrowserQwen {
       {
         maxTokens,
         temperature: 0.3,
-        systemPrompt: 'You are a legal AI assistant. Provide accurate, professional summaries.' }'`'`
+        systemPrompt: 'You are a legal AI assistant. Provide accurate, professional summaries.' } }`'`
     );
-  }
+  } }
   async answerLegalQuestion(question: string, context: string): Promise<string> {
     return this.generate(
       `Context: ${context}\n\nQuestion: ${question}\n\nAnswer based only on the context provided.`,
       {
         maxTokens: 300,
         temperature: 0.5,
-        systemPrompt: 'You are a legal AI assistant. Answer questions accurately based on provided context.' }'`'`
+        systemPrompt: 'You are a legal AI assistant. Answer questions accurately based on provided context.' } }`'`
     );
-  }
+  } }
   getDevice(): string {
     return this.device;
-  }
+  } }
   dispose(): void {
     this.generator = null;
     this.isInitialized = $state(false);
-  }
-}
+  } }
+} }
 /**
  * Singleton instance
  */
 export const browserQwen = new BrowserQwen();
 /**
- * COMPARISON: Qwen 0.5B vs Ollama;, gemma3:270m
+ * COMPARISON: Qwen 0.5B vs Ollama; gemma3:270m
  *
  * | Metric           | Qwen 0.5B (Browser) | gemma3:270m (Ollama) |
  * |------------------|---------------------|----------------------|
@@ -204,5 +204,6 @@ export const browserQwen = new BrowserQwen();
  * | First Load       | 1-2 min download    | Instant (preloaded)  |
  * | Memory           | ~500MB RAM          | Server RAM           |
  *
- * VERDICT: Qwen 0.5B is the closest browser equivalent to;, gemma3:270m!
+ * VERDICT: Qwen 0.5B is the closest browser equivalent to; gemma3:270m!
  */
+

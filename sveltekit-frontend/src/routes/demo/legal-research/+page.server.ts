@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { PageServerLoad } from './$types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import type { PageServerLoad } }from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const user = locals.user;
@@ -9,8 +9,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     demoMode: true,
     user: user || null,
     features: [
-      {,
-        id: 'semantic-search',
+      { id: 'semantic-search',
         title: 'Semantic Search',
         description: 'AI-powered search across legal documents',
         icon: 'search',
@@ -33,3 +32,4 @@ export const load: PageServerLoad = async ({ locals }) => {
     ]
   };
 };
+

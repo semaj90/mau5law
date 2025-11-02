@@ -1,9 +1,9 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } }from './$types.js';
 // routes/api/ai-synthesizer/stream/[streamId]/+server.ts
 // Server-Sent Events endpoint for streaming AI synthesis updates
-import { streamingService } from, '$lib/server/ai/streaming-service';
-import { error } from, '@sveltejs/kit';
-import { logger } from, '$lib/server/logger';
+import { streamingService } }from '$lib/server/ai/streaming-service';
+import { error } }from '@sveltejs/kit';
+import { logger } }from '$lib/server/logger';
 
 // Define types for stream updates, consistent with src/routes/api/ai-synthesizer/+server.ts
 type SynthResult = {
@@ -18,11 +18,11 @@ type StreamComplete = { type: 'complete'; result: SynthResult };
 type StreamError = { type: 'error'; error: string; detail?: string };
 type StreamUpdate = StreamStage | StreamChunk | StreamComplete | StreamError;
 
-export const, GET: RequestHandler = async ({ params, request }) => {
-  const { streamId } = params;
+export const GET: RequestHandler = async ({ params, request }) => {
+  const { streamId } }= params;
   if (!streamId) {
     throw error(400, 'Stream ID is required');
-  }
+  } }
   logger.info(`[AI-Synthesizer] Opening stream connection: ${streamId}`);
   // Create SSE response
   const encoder = new TextEncoder();
@@ -64,13 +64,13 @@ export const, GET: RequestHandler = async ({ params, request }) => {
               case, 'error':
                 payload = { error: evt.error, detail: evt.detail };
                 break;
-            }
-          } else {
+            } }
+          } }else {
             //, Fallback: handle `{ type, data }` shaped events that some services emit
             const maybe = evt as Record<string, unknown> | null;
             eventType = maybe && typeof maybe.type === 'string' ? (maybe.type as: string) : 'message';
             payload = maybe && 'data' in maybe ? (maybe.data as: unknown) : evt;
-          }
+          } }
 
           const dataStr = `event: ${eventType}\ndata: ${JSON.stringify(payload)}\n\n`;
           controller.enqueue(encoder.encode(dataStr));
@@ -80,37 +80,37 @@ export const, GET: RequestHandler = async ({ params, request }) => {
             setTimeout(() => {
               try {
                 controller.close();
-              } finally {
+              } }finally {
                 unsubscribe();
-              }
+              } }
             }, 100);
-          }
-        } catch (err: any) {
+          } }
+        } }catch (err: any) {
           // If serialization/enqueue fails, ensure we unsubscribe and close the controller
           try {
             unsubscribe();
-          } catch (e) {
+          } }catch (e) {
             logger.debug(`[AI-Synthesizer] Error during unsubscribe in error handler: ${String(e)}`);
-          }
+          } }
           try {
             controller.close();
-          } catch (e) {
+          } }catch (e) {
             logger.debug(`[AI-Synthesizer] Error during controller close in error handler: ${String(e)}`);
-          } finally {
+          } }finally {
             logger.error('[AI-Synthesizer] Error handling stream event', String(err));
-          }
-        }
+          } }
+        } }
       });
 
       // Send heartbeat every, 30 seconds
       const heartbeatInterval = setInterval(() => {
-        const heartbeat = `event: heartbeat\ndata: ${JSON.stringify({, timestamp: Date.now() })}\n\n`;
+        const heartbeat = `event: heartbeat\ndata: ${JSON.stringify({ timestamp: Date.now() })}\n\n`;
         try {
           controller.enqueue(encoder.encode(heartbeat));
-        } catch (err: any) {
+        } }catch (err: any) {
           clearInterval(heartbeatInterval);
           logger.debug(`[AI-Synthesizer] Error sending heartbeat for stream ${streamId}: ${String(err)}`);
-        }
+        } }
       }, 30000);
 
       // Cleanup on client disconnect
@@ -118,17 +118,17 @@ export const, GET: RequestHandler = async ({ params, request }) => {
         clearInterval(heartbeatInterval);
         try {
           unsubscribe();
-        } catch (e) {
+        } }catch (e) {
           logger.debug(`[AI-Synthesizer] Error during unsubscribe on abort for stream ${streamId}: ${String(e)}`);
-        }
+        } }
         try {
           controller.close();
-        } catch (e) {
+        } }catch (e) {
           logger.debug(`[AI-Synthesizer] Error during controller close on abort for stream ${streamId}: ${String(e)}`);
-        }
-        logger.info(`[AI-Synthesizer] Stream ${streamId} closed by client`);
+        } }
+        logger.info(`[AI-Synthesizer] Stream ${streamId} }closed by client`);
       });
-    }
+    } }
   });
 
   return new Response(stream, {
@@ -139,3 +139,4 @@ export const, GET: RequestHandler = async ({ params, request }) => {
       'X-Accel-Buffering': 'no` })'`
   });
 };
+

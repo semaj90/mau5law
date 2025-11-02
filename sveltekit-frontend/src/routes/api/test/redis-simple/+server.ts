@@ -2,9 +2,9 @@
  * Simple Redis Connection Test
  * Direct test of Redis connectivity without complex caching logic
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { getRedisService } from '$lib/server/redis/redis-service';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { getRedisService } }from '$lib/server/redis/redis-service';
 
 export const GET: RequestHandler = async () => {
   try {
@@ -26,19 +26,19 @@ export const GET: RequestHandler = async () => {
     try {
       if (typeof redisService.deleteCache === 'function') {
         deleteResult = await redisService.deleteCache(testKey);
-      } else {
+      } }else {
         deleteResult = null;
-      }
-    } catch (e: any) {
+      } }
+    } }catch (e: any) {
       const msg = e instanceof Error ? e.message : String(e);
-      console.log('Delete method error:', msg);'
+      console.log('Delete method error:', msg);
       deleteResult = { error: msg };
-    }
+    } }
     const end = performance.now();
     return json({
       success: true,
       redis: {
-       , healthy: isHealthy,
+  healthy: isHealthy,
         connected: stats.connected,
         status: stats.status
       },
@@ -49,10 +49,10 @@ export const GET: RequestHandler = async () => {
         valueMatches: getValue === testValue
       },
       timing: {
-       , totalTime: `${(end - start).toFixed(2)}ms' },'`
+  totalTime: `${(end - start).toFixed(2)}ms' },'`
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     const errStack = error instanceof Error ? error.stack : undefined;
     return json(
@@ -62,7 +62,7 @@ export const GET: RequestHandler = async () => {
         stack: errStack,
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };

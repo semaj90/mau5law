@@ -15,9 +15,9 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import { json } from '@sveltejs/kit'; // Added import for json
-import type { RequestHandler } from '@sveltejs/kit'; // Changed import to @sveltejs/kit
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import { json } }from '@sveltejs/kit'; // Added import for json
+import type { RequestHandler } }from '@sveltejs/kit'; // Changed import to @sveltejs/kit
 
 // Define the original POST handler
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
@@ -32,17 +32,18 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       data: body,
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
-    console.error('Legal AI analysis error:', error);'
+  } }catch (error) {
+    console.error('Legal AI analysis error:', error);
     return json(
       {
         success: false,
         error: 'Failed to perform AI analysis'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // Export the POST handler, wrapped with redisOptimized.aiAnalysis
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+

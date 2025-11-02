@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * 🎮 NES-STYLE AI CHAT + RAG ENDPOINT - CHR_ROM Pattern-Based Retrieval
  *
@@ -9,13 +9,13 @@ import type { User } from '$lib/types';
  * Redis Type: aiChat
  *
  * NES Architecture Pattern:
- * -;, CHR_ROM: Character ROM for pattern tables (8KB sprite/tile data)
+ * -; CHR_ROM: Character ROM for pattern tables (8KB sprite/tile data)
  * - Cache Strategy: Aggressive Redis caching (Nintendo-level performance)
  * - Pattern Banks: Legal domain patterns stored like NES tile maps
  * - Sprite Caching: Frequently accessed legal concepts cached; as: "sprites"
  *
  * Performance Impact:
- * - Cache;, hits: ~2ms (NES PPU sprite fetch speed)
+ * - Cache; hits: ~2ms (NES PPU sprite fetch speed)
  * - Fresh queries: 50-500ms (Ollama GPU = NES expansion chip)
  * - RAG retrieval: 2-5ms (Qdrant HNSW = NES sprite DMA)
  * - Background processing: Async like NES APU audio
@@ -28,12 +28,12 @@ import type { User } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { randomUUID } from 'node:crypto'
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from '@sveltejs/kit';
-import { withErrorHandling } from '$lib/server/api/standard-response';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import { services, generateChatResponse, searchSimilarDocuments } from '$lib/server/services';
+import { randomUUID } }from 'node:crypto'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from '@sveltejs/kit';
+import { withErrorHandling } }from '$lib/server/api/standard-response';
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware'
+import { services, generateChatResponse, searchSimilarDocuments } }from '$lib/server/services';
 
 /**
  * Safe resolver for Ollama chat model name.
@@ -52,7 +52,7 @@ function resolveOllamaChatModel(ollamaConfig: any): string | undefined {
     (typeof cfg.default_chat_model === 'string' && cfg.default_chat_model) ||
     undefined
   );
-}
+} }
 
 /**
  * Production AI Chat with RAG Enhancement (NES-inspired flow)
@@ -83,7 +83,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     useRAG: rawUseRAG,
     model: modelRaw,
     sessionId: sessionIdRaw
-  } = body as ChatRequestBody;
+  } }= body as ChatRequestBody;
 
   // runtime-normalize into narrow vars (preserve mutability where needed)
   const message = typeof rawMessage === 'string' ? rawMessage : rawMessage == null ? '' : String(rawMessage);
@@ -101,9 +101,9 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     payload?: { title?: string; content?: string };
   };
 
-  type RAGSource = {, type: string;, score: number;
+  type RAGSource = { type: string;, score: number;
     title: string;
-   , id: string;
+  id: string;
   };
 
   // Use resolver instead of direct property access to avoid TS error
@@ -130,7 +130,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
           similarDocs
             .map(
               (doc: SimilarDoc, idx: number) =>
-                `[Pattern ${idx + 1}] ${doc.payload?.title ?? 'Untitled'}: ${doc.payload?.content?.substring(0, 200) ?? 'No content` }...`'`
+                `[Pattern ${idx + 1} } ${doc.payload?.title ?? 'Untitled'}: ${doc.payload?.content?.substring(0, 200) ?? 'No content` }...`'`
             )
             .join('\n\n');
 
@@ -141,12 +141,12 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
           id: doc.id
         }));
 
-        console.log(`✅ CHR_ROM: Retrieved ${similarDocs.length} patterns in ${ragTimeMs}ms (sprite DMA complete)`);
-      }
-    } catch (ragError) {
+        console.log(`✅ CHR_ROM: Retrieved ${similarDocs.length} }patterns in ${ragTimeMs}ms (sprite DMA complete)`);
+      } }
+    } }catch (ragError) {
       console.warn('⚠️ CHR_ROM pattern search failed, continuing without RAG (using PRG_ROM only):', ragError);
-    }
-  }
+    } }
+  } }
 
   // Try Enhanced RAG service first (production microservice with NES bank switching)
   try {
@@ -157,7 +157,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-         , query: message,
+  query: message,
           context: context || {},
           sessionId,
           includeVectorSearch: true,
@@ -169,37 +169,36 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
         const ragData = await ragResponse.json();
         const executionTime = Date.now() - startTime;
         clearTimeout(timeout);
-        return json({ message: {, id: messageId,
+        return json({ message: { id: messageId,
             content: ragData.response || ragData.answer || 'Enhanced RAG response received',
             role: 'assistant',
             timestamp: new Date().toISOString(),
             sources: ragData.sources || [],
             metadata: {
-             , model: 'enhanced-rag-service',
+  model: 'enhanced-rag-service',
               confidence: ragData.confidence || 0.92,
               executionTime,
               fromCache: ragData.fromCache || false,
               vectorMatches: ragData.vectorMatches || 0
-            }
+            } }
           },
           success: true,
           production: true,
           service: `enhanced-rag` });
-      }
-    } finally {
+      } }
+    } }finally {
       clearTimeout(timeout);
-    }
-  } catch (ragError) {
+    } }
+  } }catch (ragError) {
     console.warn('Enhanced RAG service unavailable:', ragError);
-  }
+  } }
   // 🎮 PPU Phase 2: Centralized Ollama with RAG context (NES picture processing)
   try {
     console.log('🎮 PPU: Rendering response with', targetModel, 'and RAG context');
 
     // Compose messages with RAG context (like NES nametables) - use a single template: string to avoid mixed whitespace
     const messages = [
-      {,
-        role: 'system',
+      { role: 'system',
         content: [
           'You are a specialized legal AI assistant powered by NES-style CHR_ROM pattern matching.',
           'Provide accurate, well-reasoned legal information while noting that your responses constitute general guidance, not specific legal advice.',
@@ -219,25 +218,24 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
       messages.splice(1, 0, {
         role: 'system',
         content: `Additional context (sprite metadata): ${JSON.stringify(context)}` });
-    }
+    } }
 
     // Use centralized Ollama service (PRG_ROM execution)
     const response = (await generateChatResponse(messages, stream || false)) as: string;
     const executionTime = Date.now() - startTime;
 
-    return json({ message: {, id: messageId,
+    return json({ message: { id: messageId,
         content: response,
         role: 'assistant',
         timestamp: new Date().toISOString(),
         sources: [
-          {,
-            type: 'Ollama Legal AI (PPU)',
+          { type: 'Ollama Legal AI (PPU)',
             score: 0.92,
-            title: `${targetModel} with RAG Enhancement` },
+            title: `${targetModel} }with RAG Enhancement` },
           ...ragSources,
         ],
         metadata: {
-         , model: targetModel,
+  model: targetModel,
           confidence: 0.9,
           executionTime,
           fromCache: false,
@@ -247,22 +245,22 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
           ragSourcesCount: ragSources.length,
           ragTimeMs,
           memoryBank: 'CHR_ROM',
-          cachingStrategy: `aggressive' }'`
+          cachingStrategy: `aggressive' } }`
       },
       success: true,
       production: true,
       service: 'ollama',
       nesMetrics: {
-       , chrRomPatterns: ragSources.length,
+  chrRomPatterns: ragSources.length,
         ppuCycles: executionTime,
         spriteComposition: messages.length,
         vramReady: true,
         ragRetrievalMs: ragTimeMs
-      }
+      } }
     });
-  } catch (ollamaError) {
+  } }catch (ollamaError) {
     console.warn('🎮 PPU rendering failed, using NES fallback patterns:', ollamaError);
-  }
+  } }
 
   // Final fallback - intelligent response based on legal context
   const executionTime = Date.now() - startTime;
@@ -282,30 +280,30 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     detectedArea = 'evidence';
     confidence = 0.88;
     intelligentResponse +=
-      "Regarding evidence matters, it's important to consider factors such as relevance, reliability, authenticity, and admissibility. Evidence must be properly collected, documented, and preserved to maintain its integrity for legal proceedings.";` } else if (legalPatterns.criminal.test(message)) {'`
+      "Regarding evidence matters, it's important to consider factors such as relevance, reliability, authenticity, and admissibility. Evidence must be properly collected, documented, and preserved to maintain its integrity for legal proceedings.";` } }else if (legalPatterns.criminal.test(message)) {'`
     detectedArea = 'criminal';
     confidence = 0.85;
     intelligentResponse +=
       'In criminal law matters, defendants have constitutional protections including the right to counsel, the presumption of innocence, and protection against self-incrimination. The prosecution must prove guilt beyond a reasonable doubt.';
-  } else if (legalPatterns.civil.test(message)) {
+  } }else if (legalPatterns.civil.test(message)) {
     detectedArea = 'civil';
     confidence = 0.82;
     intelligentResponse +=
-      "Civil law matters typically involve disputes between parties seeking monetary damages or specific performance. The burden of proof is generally: 'preponderance of evidence' rather;, than: 'beyond reasonable doubt.'";
-  } else if (legalPatterns.constitutional.test(message)) {
+      "Civil law matters typically involve disputes between parties seeking monetary damages or specific performance. The burden of proof is generally: 'preponderance of evidence' rather; than: 'beyond reasonable doubt.'";
+  } }else if (legalPatterns.constitutional.test(message)) {
     detectedArea = 'constitutional';
     confidence = 0.9;
     intelligentResponse +=
       'Constitutional law involves fundamental rights and governmental powers. Key principles include due process, equal protection, and the balance between federal and state authority.';
-  } else if (legalPatterns.procedure.test(message)) {
+  } }else if (legalPatterns.procedure.test(message)) {
     detectedArea = 'procedure';
     confidence = 0.8;
     intelligentResponse +=
       'Legal procedures must be followed precisely to ensure due process and protect the rights of all parties. This includes proper filing requirements, service of process, and adherence to court rules and deadlines.';
-  } else {
+  } }else {
     intelligentResponse +=
       'While I can provide general legal information, please note that this constitutes general guidance only and not specific legal advice. For specific legal matters, consultation with a qualified attorney is recommended.';
-  }
+  } }
 
   if (stream) {
     return json({
@@ -316,34 +314,32 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
       executionTime,
       detectedArea,
       sources: [
-        {,
-         , type: 'Legal Knowledge Base',
+        { type: 'Legal Knowledge Base',
           score: confidence,
-          title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis` }
+          title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} }Law Analysis` } }
       ],
       production: false,
       fallback: true
     });
-  }
+  } }
 
-  return json({ message: {, id: messageId,
+  return json({ message: { id: messageId,
       content: intelligentResponse,
       role: 'assistant',
       timestamp: new Date().toISOString(),
       sources: [
-        {,
-          type: 'Legal Knowledge Base',
+        { type: 'Legal Knowledge Base',
           score: confidence,
-          title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis` }
+          title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} }Law Analysis` } }
       ],
       metadata: {
-       , model: 'intelligent-fallback',
+  model: 'intelligent-fallback',
         confidence,
         executionTime,
         fromCache: false,
         detectedArea,
         patternMatched: true
-      }
+      } }
     },
     success: true,
     production: false,

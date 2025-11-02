@@ -1,13 +1,13 @@
 // Bits UI + Enhanced-Bits Integration Layer
 // Combines bits-ui headless components with enhanced-bits custom styling
 // Provides unified component API with custom design system support
-import type { ComponentType } from 'svelte';
+import type { ComponentType } }from 'svelte';
 import {
   createCustomTheme,
   applyCustomDesign,
   type CustomDesignTokens,
   type ComponentBarrelConfig
-} from '$lib/components/ui/enhanced-bits.svelte';
+} }from '$lib/components/ui/enhanced-bits.svelte';
 // Bits UI re-exports with enhanced styling
 export {
   Dialog,
@@ -23,20 +23,20 @@ export {
   Combobox,
   Toolbar,
   Resizable
-} from 'bits-ui';
+} }from 'bits-ui';
 // Enhanced-bits styling utilities
 export {
   createCustomTheme,
   applyCustomDesign,
   NESDesignSystem,
   MinimalDesignSystem
-} from '$lib/components/ui/enhanced-bits.svelte';
+} }from '$lib/components/ui/enhanced-bits.svelte';
 // Integration helpers
 export interface BitsUIEnhancedConfig { theme: CustomDesignTokens;, component: ComponentType;
   variant?: 'nes' | 'minimal' | 'custom';
   accessibility?: boolean;
   animations?: boolean;
-}
+} }
 export function createEnhancedComponent(config: BitsUIEnhancedConfig) {
   return {
     ...config.component,
@@ -44,7 +44,7 @@ export function createEnhancedComponent(config: BitsUIEnhancedConfig) {
     variant: config.variant || 'nes',
     enhanced: true
   };
-}
+} }
 // Compound component helpers for shadcn-style usage
 export function createCompoundComponent<T>(
  , RootComponent: ComponentType,
@@ -54,7 +54,7 @@ export function createCompoundComponent<T>(
     Root: RootComponent,
     ...subComponents
   }) as T & Record<string, ComponentType>;
-}
+} }
 // Theme-aware component wrapper
 export function withEnhancedStyling(
   Component: ComponentType,
@@ -67,7 +67,7 @@ export function withEnhancedStyling(
     variant,
     apply: (element: HTMLElement) => applyCustomDesign(element, theme)
   };
-}
+} }
 // Legacy melt-ui migration helpers (for smooth transition)
 export const legacyMeltSupport = {
   melt: (..._args: any[]) => ({}),
@@ -87,3 +87,4 @@ export default {
   createCompoundComponent,
   withEnhancedStyling
 };
+

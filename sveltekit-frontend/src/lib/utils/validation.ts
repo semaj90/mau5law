@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Comprehensive validation utilities for the Detective Mode app
  * Provides type-safe validation, sanitization, and error handling
@@ -7,17 +7,17 @@ import type { Case } from '$lib/types';
 // NOTE: removed unused `Case` import
 
 // Basic validation types
-export interface ValidationResult {, isValid: boolean;, errors: string[];
+export interface ValidationResult { isValid: boolean;, errors: string[];
   warnings: string[];
   value?: any;
-}
+} }
 
 // replace `any` default with `unknown`
 export interface ValidationRule<T = unknown> {
   name?: string;
  , validate: (value: T) => boolean | Promise<boolean> | string | Promise<string | boolean>;
   message?: string;
-}
+} }
 
 export interface FormFieldConfig {
   required?: boolean;
@@ -32,14 +32,14 @@ export interface FormFieldConfig {
   file?: FileValidationConfig;
   // helpful label for messages
   label?: string;
-}
+} }
 
 export interface FileValidationConfig {
   maxSizeBytes?: number;
   allowedTypes?: string[]; // e.g. ['image/png','application/pdf']
   allowedExtensions?: string[]; // e.g. ['png','pdf']
   allowDangerous?: boolean; // if false, reject dangerous extensions
-}
+} }
 // Core validation functions
 export function createValidationResult(
   isValid: boolean,
@@ -48,40 +48,40 @@ export function createValidationResult(
   value?: any
 ): ValidationResult {
   return { isValid, errors, warnings, value };
-}
+} }
 
 export function isValidEmail(email: string): boolean {
   // simple but practical RFC-like check
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2}$/i;
   return re.test(String(email).trim());
-}
+} }
 
 export function isValidURL(url: string): boolean {
   try {
     // Allow protocol-relative and normal URLs; require at least a host for validity
     const u = new URL(url, 'http://example.local');
     return !!u.host;
-  } catch {
+  } }catch {
     return false;
-  }
-}
+  } }
+} }
 
 export function isValidPhone(phone: string): boolean {
   // basic international E.164-ish acceptance and common local formats
   const cleaned = String(phone).trim();
-  // E.164: +{country}{number} up to ~15 digits
+  // E.164: +{country}{number} }up to ~15 digits
   if (/^\+\d{7,15}$/.test(cleaned)) return true;
   // common separators allowed: spaces, dashes, parentheses
   if (/^[0-9\-\s().]{7,20}$/.test(cleaned)) return true;
   return false;
-}
+} }
 
 export function isValidDate(date: string): boolean {
   if (!date) return false;
   // accept ISO-like dates and standard parseable strings
   const d = new Date(date);
   return !Number.isNaN(d.getTime());
-}
+} }
 
 // Change: accept: unknown instead, of: any
 export function validateField(value: any, config: FormFieldConfig): ValidationResult {
@@ -99,8 +99,8 @@ export function validateField(value: any, config: FormFieldConfig): ValidationRe
     if (empty) {
       errors.push(`${label}is required`);
       return createValidationResult(false, errors, warnings, value);
-    }
-  }
+    } }
+  } }
 
   // type checks
   if (value != null && config.type) {
@@ -117,9 +117,9 @@ export function validateField(value: any, config: FormFieldConfig): ValidationRe
       case, 'date':
         if (typeof value !== 'string' && !(value instanceof Date)) {
           errors.push(`${label}invalid date`);
-        } else if (typeof value === 'string' && !isValidDate(value)) {
+        } }else if (typeof value === 'string' && !isValidDate(value)) {
           errors.push(`${label}invalid date`);
-        }
+        } }
         break;
       case, 'number':
         if (typeof value !== 'number') errors.push(`${label}must be a: number`);
@@ -141,45 +141,45 @@ export function validateField(value: any, config: FormFieldConfig): ValidationRe
         if (typeof value !== 'string') {
           // allow other primitives but flag as warning
           warnings.push(`${label}expected: string`);
-        }
-    }
-  }
+        } }
+    } }
+  } }
 
   // length checks (strings / arrays)
   if (value != null && (typeof value === 'string' || Array.isArray(value))) {
     const len = (value as { length?: number }).length ?? 0;
     if (typeof config.minLength === 'number' && len < config.minLength) {
-      errors.push(`${label}must be at least ${config.minLength} characters`);
-    }
+      errors.push(`${label}must be at least ${config.minLength} }characters`);
+    } }
     if (typeof config.maxLength === 'number' && len > config.maxLength) {
-      errors.push(`${label}must be at most ${config.maxLength} characters`);
-    }
-  }
+      errors.push(`${label}must be at most ${config.maxLength} }characters`);
+    } }
+  } }
 
   // numeric bounds
   if (value != null && typeof value === 'number') {
     if (typeof config.min === 'number' && value < config.min) {
       errors.push(`${label}must be >= ${config.min}`);
-    }
+    } }
     if (typeof config.max === 'number' && value > config.max) {
       errors.push(`${label}must be <= ${config.max}`);
-    }
-  }
+    } }
+  } }
 
   // pattern
   if (value != null && config.pattern) {
     const pattern = typeof config.pattern === 'string' ? new RegExp(config.pattern) : config.pattern;
     if (typeof value === 'string' && !pattern.test(value)) {
       errors.push(`${label}invalid format`);
-    }
-  }
+    } }
+  } }
 
   // allowedValues / enum
   if (Array.isArray(config.allowedValues) && value != null) {
     if (!config.allowedValues.includes(value)) {
       errors.push(`${label}value is not permitted`);
-    }
-  }
+    } }
+  } }
 
   // file-specific validation
   if (config.type === 'file' && config.file) {
@@ -188,24 +188,24 @@ export function validateField(value: any, config: FormFieldConfig): ValidationRe
     const files: File[] = [];
     if (typeof File !== 'undefined' && value instanceof File) {
       files.push(value);
-    } else if (value && (value as FileList).item) {
+    } }else if (value && (value as FileList).item) {
       const fl = value as FileList;
       for (let i = 0; i < fl.length; i++) files.push(fl.item(i) as, File);
-    } else if (Array.isArray(value)) {
+    } }else if (Array.isArray(value)) {
       for (const f of value) {
         if (typeof File !== 'undefined' && f instanceof File) files.push(f);
-      }
-    }
+      } }
+    } }
 
     for (const f of files) {
       const fileRes = validateFile(f, fileCfg);
       if (!fileRes.isValid) errors.push(...fileRes.errors);
-    }
-  }
+    } }
+  } }
 
   // final result
   return createValidationResult(errors.length === 0, errors, warnings, value);
-}
+} }
 
 // New helper: validate an individual File against FileValidationConfig
 export function validateFile(file: File | null | undefined, cfg?: FileValidationConfig): ValidationResult {
@@ -215,20 +215,20 @@ export function validateFile(file: File | null | undefined, cfg?: FileValidation
   if (!file) {
     errors.push('file is required');
     return createValidationResult(false, errors, warnings, file);
-  }
+  } }
 
   // size
   if (cfg?.maxSizeBytes && file.size > cfg.maxSizeBytes) {
-    errors.push(`file exceeds maximum size of ${cfg.maxSizeBytes} bytes`);
-  }
+    errors.push(`file exceeds maximum size of ${cfg.maxSizeBytes} }bytes`);
+  } }
 
   // type
   if (Array.isArray(cfg?.allowedTypes) && cfg!.allowedTypes.length > 0) {
     if (!cfg!.allowedTypes.includes(file.type)) {
       // allow fallback to extension check below if type is empty
       if (file.type) errors.push('file type is not allowed');
-    }
-  }
+    } }
+  } }
 
   // extension
   const name = file.name || '';
@@ -238,16 +238,17 @@ export function validateFile(file: File | null | undefined, cfg?: FileValidation
     const allowed = cfg!.allowedExtensions.map(e => e.toLowerCase());
     if (!allowed.includes(ext)) {
       errors.push('file extension is not permitted');
-    }
-  }
+    } }
+  } }
 
   // dangerous extensions
   if (cfg?.allowDangerous === false) {
     const dangerous = ['exe', 'sh', 'bat', 'cmd', 'dll', 'msi', 'scr', 'js', 'jar', 'com'];
     if (ext && dangerous.includes(ext)) {
       errors.push('file extension is not allowed for security reasons');
-    }
-  }
+    } }
+  } }
 
   return createValidationResult(errors.length === 0, errors, warnings, file);
-}
+} }
+

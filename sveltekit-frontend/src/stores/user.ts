@@ -1,5 +1,5 @@
-import { writable } from 'svelte/store';
-import type { User } from '$lib/server/auth/lucia'; // Adjust import path as per your Lucia setup
+import { writable } }from 'svelte/store';
+import type { User } }from '$lib/server/auth/lucia'; // Adjust import path as per your Lucia setup
 
 export const user = writable<User | null>(null);
 export const sessionLoading = writable(true);
@@ -10,13 +10,14 @@ export async function loadSession(): Promise<any> {
     if (res.ok) {
       const data = await res.json();
       user.set(data.user || null);
-    } else {
+    } }else {
       user.set(null);
-    }
-  } catch (err) {
+    } }
+  } }catch (err) {
     user.set(null);
     console.error('Failed to load session:', err);
-  } finally {
+  } }finally {
     sessionLoading.set(false);
-  }
-}
+  } }
+} }
+

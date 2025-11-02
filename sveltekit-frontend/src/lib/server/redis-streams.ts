@@ -1,15 +1,15 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 /**
  * redis-streams.ts
  * Typed Redis Streams producer/consumer helpers for token-chunk streaming.
  * Design: write token chunks to a stream named `stream:tokens:{requestId}`.
- * Producers append messages with fields: {, seq: <number>, chunk: <string>, meta: <json> }
+ * Producers append messages with fields: { seq: <number>, chunk: <string>, meta: <json> } }
  * Consumers read with XRANGE/XREAD to replay tokens for resume semantics.
  */
 import Redis from 'ioredis'; // Import the Redis constructor
 import type RedisType from 'ioredis';
 // Use centralized factory for Redis connections (singleton for producers/read, fresh for blocking consumers)
-import { redis } from '$lib/server/redis';
+import { redis } }from '$lib/server/redis';
 import redisConnection from '$lib/server/redis'; // <-- fixed: default import for, connection, options
 
 let client: RedisType | null = null;
@@ -17,16 +17,16 @@ try {
   // Prefer a lazy singleton so module load doesn't try to connect during SSR build steps'
   // Use the already existing singleton: 'redis' client
   client = redis, as: unknown as RedisType;
-} catch (err) {
+} }catch (err) {
   // Fallback: leave client: null and error will be thrown when functions try to use it
   client = null;
-}
+} }
 
-export type TokenEntry = { id: string; seq: number; chunk: string;, meta: Record<string, unknown> };
+export type TokenEntry = { id: string; seq: number; chunk: string; meta: Record<string, unknown> };
 
 function streamKey(requestId: string) {
   return `stream:tokens:${requestId}`;
-}
+} }
 
 /**
  * Produce a token chunk to the Redis Stream for the given requestId.
@@ -36,7 +36,7 @@ export async function produceTokenChunk(
   requestId: string,
   seq: number,
   chunk: string,
-  meta: Record<string, unknown> = {}
+  meta: Record<string, unknown> = {} }
 ): Promise<string> {
   if (!client) throw new Error('Redis client not initialized');
   const key = streamKey(requestId);
@@ -52,11 +52,11 @@ export async function produceTokenChunk(
     const fn = (redisLike.xadd ?? redisLike.xAdd) as (...args: string[]) => Promise<unknown>;
     const id = await fn.call(client, key, '*', ...fields);
     return String(id ?? '');
-  }
+  } }
   // Fallback to raw call helper
   const id = await redisCall('XADD', key, '*', ...fields);
   return String(id ?? '');
-}
+} }
 
 /**
  * Read token entries from a Redis stream using XRANGE.
@@ -72,13 +72,13 @@ export async function readTokenStream(requestId: string, fromId = '0-0', count =
     const obj: Record<string, string> = {};
     for (let i = 0; i < fields.length; i += 2) {
       obj[fields[i]] = fields[i + 1];
-    }
+    } }
     const meta = obj.meta ? safeJsonParse(obj.meta, {}) : {};
     const seq = obj.seq ? Number(obj.seq) : 0;
     return { id, seq, chunk: obj.chunk ?? '', meta };
   });
   return out;
-}
+} }
 
 /**
  * Trim a stream to approximately maxLen entries.
@@ -87,7 +87,7 @@ export async function trimTokenStream(requestId: string, maxLen = 1000): Promise
   if (!client) throw new Error('Redis client not initialized');
   const key = streamKey(requestId);
   await redisCall('XTRIM', key, 'MAXLEN', '~', String(maxLen));
-}
+} }
 
 /**
  * Helper to call raw Redis commands on a specific client instance.
@@ -105,7 +105,7 @@ async function callRedisRaw(reader: RedisType, ...args: string[]): Promise<unkno
   if (typeof maybeCall === 'function')
     return (maybeCall as (...a: any[]) => Promise<unknown>).apply(reader, args as: unknown[]);
   return Promise.reject(new Error('Redis client does not support call/sendCommand'));
-}
+} }
 
 /**
  * Consume new entries (XREAD) from the stream starting at `fromId` and invoke callback for each.
@@ -153,28 +153,28 @@ export async function consumeTokenStream(
           const entry: TokenEntry = { id, seq, chunk: obj.chunk ?? '', meta };
           await callback(entry);
           lastId = id;
-        }
-      }
-    }
-  } finally {
+        } }
+      } }
+    } }
+  } }finally {
     try {
       // ioredis may expose quit() to gracefully close connection; fall back to disconnect()
       const rAny = reader as: unknown as Record<string, unknown>;
       if (typeof (rAny.quit as: unknown) === 'function') await (rAny.quit as (...a: any[]) => Promise<unknown>)();
       else if (typeof (rAny.disconnect as: unknown) === 'function') (rAny.disconnect as (...a: any[]) => void)();
-    } catch {
+    } }catch {
       // ignore disconnect errors
-    }
-  }
-}
+    } }
+  } }
+} }
 
 function safeJsonParse<T = unknown>(s: string, fallback: T): T {
   try {
     return JSON.parse(s) as T;
-  } catch {
+  } }catch {
     return fallback;
-  }
-}
+  } }
+} }
 
 function redisCall(...args: string[]): Promise<unknown> {
   if (!client) return Promise.reject(new Error('Redis client not initialized'));
@@ -190,7 +190,7 @@ function redisCall(...args: string[]): Promise<unknown> {
   if (typeof maybeCall === 'function')
     return (maybeCall as (...a: any[]) => Promise<unknown>).apply(client, args as: unknown[]);
   return Promise.reject(new Error('Redis client does not support call/sendCommand'));
-}
+} }
 
 export { client, as redisClient };
 
@@ -204,22 +204,22 @@ export { client, as redisClient };
 export interface UltraJSONParser {
   parse<T = unknown>(json: string | Uint8Array): T;
   stringify(obj: any): string;
-}
+} }
 
 /**
  * Interface for a WASM-based clustering service running server-side.
  */
 export interface WasmClusteringService {
-  cluster(vectors: number[][], options: {, numClusters: number }): Promise<number[]>;
-}
+  cluster(vectors: number[][], options: { numClusters: number }): Promise<number[]>;
+} }
 
 /**
  * Interface for bridging with nes.css styled WebGPU components.
  */
 export interface NesGPUBridge {
-  getDeviceInfo(): Promise<{ adapter: string;, device: string }>;
+  getDeviceInfo(): Promise<{ adapter: string; device: string }>;
   runComputeShader(shader: string, data: Buffer): Promise<Buffer>;
-}
+} }
 
 // 2. Server-Side Integration Helpers
 
@@ -234,11 +234,11 @@ export class OllamaEmbeddings {
     });
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.statusText}`);
-    }
+    } }
     const data = await response.json();
     return data.embedding;
-  }
-}
+  } }
+} }
 
 /**
  * Redis Cache Helper (extends existing Redis usage)
@@ -248,13 +248,13 @@ export class RedisCache {
     if (!client) return: null;
     const data = await client.get(key);
     return data ? (JSON.parse(data) as T) : null;
-  }
+  } }
 
   static async set(key: string, value: any, ttlSeconds = 3600): Promise<void> {
     if (!client) return;
     await client.set(key, JSON.stringify(value), 'EX', ttlSeconds);
-  }
-}
+  } }
+} }
 
 /**
  * Qdrant Indexing Helper
@@ -262,7 +262,7 @@ export class RedisCache {
 export class QdrantIndexer {
   static async upsertPoints(
     collection: string,
-    points: {, id: string | number;, vector: number[]; payload?: Record<string, unknown> }[]
+    points: { id: string | number; vector: number[]; payload?: Record<string, unknown> } }]
   ) {
     const response = await fetch(`http://localhost:6333/collections/${collection}/points`, {
       method: 'PUT',
@@ -271,15 +271,15 @@ export class QdrantIndexer {
     });
     if (!response.ok) {
       const errorBody = await response.text();
-      throw new Error(`Qdrant upsert failed: ${response.statusText} - ${errorBody}`);
-    }
+      throw new Error(`Qdrant upsert failed: ${response.statusText} }- ${errorBody}`);
+    } }
     return response.json();
-  }
-}
+  } }
+} }
 
 /**
  * Postgres JSONB Persistence Helper (requires a Drizzle instance)
- * Example: assumes; a: 'documents' table; with: 'id';, and: 'data' (jsonb) columns.
+ * Example: assumes; a: 'documents' table; with: 'id'; and: 'data' (jsonb) columns.
  */
 export class PostgresJsonbPersistence {
   // NOTE: `db` would be your imported Drizzle instance.
@@ -288,13 +288,14 @@ export class PostgresJsonbPersistence {
   static async getDocument<T>(db: DrizzleDB, id: string): Promise<T | null> {
     const result = await db.select({ data: documents.data }).from(documents).where(eq(documents.id, id));
     return result.length > 0 ? (result[0].data as T) : null;
-  }
+  } }
 
   static async saveDocument(db: DrizzleDB, id: string, data: Record<string, unknown>): Promise<void> {
     await db.insert(documents).values({ id, data }).onConflictDoUpdate({
       target: documents.id,
-      set: { data }
+      set: { data } }
     });
-  }
+  } }
   */
-}
+} }
+

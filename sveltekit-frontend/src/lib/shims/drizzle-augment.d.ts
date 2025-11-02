@@ -3,7 +3,7 @@
 declare module, 'drizzle-orm' {
   const _any: any;
   export = _any;
-}
+} }
 // Fallback for local db modules
 declare module, '$lib/server/db/*' {
   const anyExport: any;
@@ -17,4 +17,5 @@ declare module, '$lib/server/db/*' {
   export const cases: any;
   export const criminals: any;
   export const, aiAnalyses: any;
-}
+} }
+

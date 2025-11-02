@@ -3,26 +3,26 @@
  * Fetches initial state from database for server-side rendering
  * Integrates with our decoupled architecture
  */
-import type { PageServerLoad } from './$types.js';
-import { db } from '$lib/server/db/index.js';
-import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
-import { desc, eq } from 'drizzle-orm';
-import { langExtractService } from '$lib/services/langextract-ollama-service.js';
+import type { PageServerLoad } }from './$types.js';
+import { db } }from '$lib/server/db/index.js';
+import { legalDocuments, ragSessions } }from '$lib/server/db/schema-postgres.js';
+import { desc, eq } }from 'drizzle-orm';
+import { langExtractService } }from '$lib/services/langextract-ollama-service.js';
 // Types for page data
-export interface LegalAIPageData { initialState: {, langchainService: {, isAvailable: boolean;, models: string[];
+export interface LegalAIPageData { initialState: { langchainService: { isAvailable: boolean;, models: string[];
       error: string | null;
     };
     recentSessions: Array<any>;
     recentDocuments: Array<any>;
-    serviceStatus: {, postgresql: boolean;, ollama: boolean;
+    serviceStatus: { postgresql: boolean;, ollama: boolean;
       redis: boolean;
       lastChecked: string;
     };
   };
-  meta: {, totalDocuments: number;, totalSessions: number;
+  meta: { totalDocuments: number;, totalSessions: number;
     serverRenderTime: number;
   };
-}
+} }
 export const, load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageData> => {
   const startTime = Date.now();
   try {
@@ -64,7 +64,7 @@ export const, load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPage
     // Count documents per session
     const sessionsWithCounts = await Promise.all(
       recentSessions.map(async session => {
-        const [{ count }] = await db
+        const [{ count } } = await db
           .select({ count: legalDocuments.id })
           .from(legalDocuments)
           .where(eq(legalDocuments.sessionId, session.id));
@@ -89,69 +89,64 @@ export const, load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPage
     let postgresqlAvailable = true;
     try {
       await db.select({ count: legalDocuments.id }).from(legalDocuments).limit(1);
-    } catch (error) {
+    } }catch (error) {
       console.error('PostgreSQL connectivity test failed:', error);
       postgresqlAvailable = false;
-    }
+    } }
     // Test Redis connectivity (if available)
     let redisAvailable = true;
     try {
       // This would be a simple Redis ping if Redis client was available
       // For now, assume available if no error in other services
       redisAvailable = postgresqlAvailable;
-    } catch (error) {
+    } }catch (error) {
       console.error('Redis connectivity test failed:', error);
       redisAvailable = false;
-    }
+    } }
     const serverRenderTime = Date.now() - startTime;
-    const pageData: LegalAIPageData = {, initialState: {, langchainService: {
-         , isAvailable: isOllamaAvailable,
+    const pageData: LegalAIPageData = { initialState: { langchainService: { isAvailable: isOllamaAvailable,
           models: availableModels,
           error: isOllamaAvailable ? null : `Ollama service not available` },'`'`
         recentSessions: sessionsWithCounts,
-        recentDocuments: recentDocuments.map(doc => ({
-         , id: doc.id,
+        recentDocuments: recentDocuments.map(doc => ({ id: doc.id,
           title: doc.title || 'Untitled Document',
           summary: doc.summary || 'No summary available',
           documentType: doc.documentType || 'unknown',
           createdAt: doc.createdAt?.toISOString() || new Date().toISOString(),
           keyTerms: doc.keyTerms || []
         })),
-        serviceStatus: {
-         , postgresql: postgresqlAvailable,
+        serviceStatus: { postgresql: postgresqlAvailable,
           ollama: isOllamaAvailable,
           redis: redisAvailable,
           lastChecked: new Date().toISOString()
-        }
+        } }
       },
       meta: {
         totalDocuments,
         totalSessions,
         serverRenderTime
-      }
+      } }
     };
     return pageData;
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to load legal AI page data: ', error);'`'`
     // Return fallback data if loading fails
-    return { initialState: {, langchainService: {
-         , isAvailable: false,
+    return { initialState: { langchainService: { isAvailable: false,
           models: [],
           error: 'Failed to load service data` },'`
         recentSessions: [],
         recentDocuments: [],
-        serviceStatus: {
-         , postgresql: false,
+        serviceStatus: { postgresql: false,
           ollama: false,
           redis: false,
           lastChecked: new Date().toISOString()
-        }
+        } }
       },
-      meta: {
-       , totalDocuments: 0,
+      meta: { totalDocuments: 0,
         totalSessions: 0,
         serverRenderTime: Date.now() - startTime
-      }
+      } }
     };
-  }
+  } }
 };
+

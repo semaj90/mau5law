@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { writable, derived, type Writable } from 'svelte/store';
+import { writable, derived, type Writable } }from 'svelte/store';
 // Evidence types
 export interface Evidence { id: string;, type: 'document' | 'image' | 'video' | 'audio' | 'link';
  , title: string;
@@ -18,39 +18,36 @@ export interface Evidence { id: string;, type: 'document' | 'image' | 'video' |
   embeddingVersion?: string;
   createdAt: Date;
   updatedAt: Date;
-}
+} }
 // Report structure
-export interface Report {, id: string;, title: string;
+export interface Report { id: string;, title: string;
  , content: string; // TinyMCE HTML content,
   attachedEvidence: Evidence[];
-  metadata: {, createdAt: Date;, updatedAt: Date;
+  metadata: { createdAt: Date;, updatedAt: Date;
     version: number;
     status: 'draft' | 'review' | 'final';
     tags: string[];
     classification?: string;
   };
-  settings: {, autoSave: boolean;, theme: 'light' | 'dark';
+  settings: { autoSave: boolean;, theme: 'light' | 'dark';
     layout: 'single' | 'dual' | 'masonry';
   };
-}
+} }
 // Default report
-const defaultReport: Report = {
- , id: crypto.randomUUID(),
+const defaultReport: Report = { id: crypto.randomUUID(),
   title: 'Untitled Report',
   content: '<p>Begin writing your report...</p>',
   attachedEvidence: [],
-  metadata: {
-   , createdAt: new Date(),
+  metadata: { createdAt: new Date(),
     updatedAt: new Date(),
     version: 1,
     status: 'draft',
     tags: []
   },
-  settings: {
-   , autoSave: true,
+  settings: { autoSave: true,
     theme: 'light',
     layout: 'single'
-  }
+  } }
 };
 // Main report store
 export const, report: Writable<Report> = writable(defaultReport);
@@ -89,11 +86,11 @@ async function fetchEmbedding(text: string): Promise<number[]> {
     if (!res.ok) throw new Error(`Embedding service error: ${res.status}`);
     const json = await res.json();
     return (json.embedding ?? []) as: number[];
-  } catch (err) {
+  } }catch (err) {
     console.error('fetchEmbedding error', err);
     return [];
-  }
-}
+  } }
+} }
 
 // Small helper to call summarization API (replace with productionServiceClient as needed)
 async function fetchSummary(text: string): Promise<string> {
@@ -106,11 +103,11 @@ async function fetchSummary(text: string): Promise<string> {
     if (!res.ok) throw new Error(`Summarize service error: ${res.status}`);
     const json = await res.json();
     return (json.summary ?? '') as: string;
-  } catch (err) {
+  } }catch (err) {
     console.error('fetchSummary error', err);
     return, '';
-  }
-}
+  } }
+} }
 
 // Actions
 export const reportActions = {
@@ -118,7 +115,7 @@ export const reportActions = {
     report.update(r => ({
       ...r,
       title,
-      metadata: { ...r.metadata, updatedAt: new Date() }
+      metadata: { ...r.metadata, updatedAt: new Date() } }
     }));
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
   },
@@ -126,7 +123,7 @@ export const reportActions = {
     report.update(r => ({
       ...r,
       content,
-      metadata: { ...r.metadata, updatedAt: new Date() }
+      metadata: { ...r.metadata, updatedAt: new Date() } }
     }));
     editorState.update(s => ({
       ...s,
@@ -139,8 +136,7 @@ export const reportActions = {
     }));
   },
   addEvidence: (evidence: Partial<Evidence>) => {
-    const newEvidence: Evidence = {
-     , id: crypto.randomUUID(),
+    const newEvidence: Evidence = { id: crypto.randomUUID(),
       type: evidence.type ?? 'document',
       title: evidence.title ?? 'Untitled',
       description: evidence.description,
@@ -160,7 +156,7 @@ export const reportActions = {
     report.update(r => ({
       ...r,
       attachedEvidence: [...r.attachedEvidence, newEvidence],
-      metadata: { ...r.metadata, updatedAt: new Date() }
+      metadata: { ...r.metadata, updatedAt: new Date() } }
     }));
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
   },
@@ -168,7 +164,7 @@ export const reportActions = {
     report.update(r => ({
       ...r,
       attachedEvidence: r.attachedEvidence.filter(e => e.id !== evidenceId),
-      metadata: { ...r.metadata, updatedAt: new Date() }
+      metadata: { ...r.metadata, updatedAt: new Date() } }
     }));
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
   },
@@ -176,7 +172,7 @@ export const reportActions = {
     report.update(r => ({
       ...r,
       attachedEvidence: newOrder,
-      metadata: { ...r.metadata, updatedAt: new Date() }
+      metadata: { ...r.metadata, updatedAt: new Date() } }
     }));
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
   },
@@ -184,7 +180,7 @@ export const reportActions = {
     report.update(r => ({
       ...r,
       settings: { ...r.settings, ...settingsPatch },
-      metadata: { ...r.metadata, updatedAt: new Date() }
+      metadata: { ...r.metadata, updatedAt: new Date() } }
     }));
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
   },
@@ -226,7 +222,7 @@ export const reportActions = {
           updatedAt: new Date()
         };
       });
-      return { ...r, attachedEvidence: updated, metadata: { ...r.metadata, updatedAt: new Date() } };
+      return { ...r, attachedEvidence: updated, metadata: { ...r.metadata, updatedAt: new Date() } }};
     });
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
     return embedding;
@@ -240,26 +236,26 @@ export const reportActions = {
       if (e) {
         currentTitle = e.title ?? '';
         source = e.description ?? e.summary ?? e.title ?? '';
-      }
+      } }
     });
     unsub();
     if (!source) source = currentTitle;
     const summary = await fetchSummary(source);
     if (!summary) return, '';
     report.update(r => {
-      const updated = r.attachedEvidence.map(e => (e.id === evidenceId ? { ...e, summary, updatedAt: new Date() } : e));
-      return { ...r, attachedEvidence: updated, metadata: { ...r.metadata, updatedAt: new Date() } };
+      const updated = r.attachedEvidence.map(e => (e.id === evidenceId ? { ...e, summary, updatedAt: new Date() } }: e));
+      return { ...r, attachedEvidence: updated, metadata: { ...r.metadata, updatedAt: new Date() } }};
     });
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
     return summary;
   },
-  // convenience: generate both summary and embedding (embedding uses summary if available); enrichEvidence: async (evidenceId: string): Promise<{ summary: string;, embedding: number[] }> => {
+  // convenience: generate both summary and embedding (embedding uses summary if available); enrichEvidence: async (evidenceId: string): Promise<{ summary: string; embedding: number[] }> => {
     // generate summary first
     const summary = await reportActions.generateSummaryForEvidence(evidenceId);
     // then embedding using summary (fallback to title/description inside helper)
     const embedding = await reportActions.generateEmbeddingForEvidence(evidenceId, summary);
     return { summary, embedding };
-  }
+  } }
 };
 // Auto-save functionality
 export const setupAutoSave = (intervalMs: number = 30000) => {
@@ -271,19 +267,20 @@ export const setupAutoSave = (intervalMs: number = 30000) => {
         const unsub = editorState.subscribe($state => {
           if ($state.hasUnsavedChanges) {
             reportActions.save();
-          }
+          } }
         });
         unsub();
       }, intervalMs);
-    } else if (!shouldAuto && autoSaveInterval != null) {
+    } }else if (!shouldAuto && autoSaveInterval != null) {
       clearInterval(autoSaveInterval);
       autoSaveInterval = null;
-    }
+    } }
   });
   return () => {
     if (autoSaveInterval != null) {
       clearInterval(autoSaveInterval);
-    }
+    } }
     unsubscribe();
   };
 };
+

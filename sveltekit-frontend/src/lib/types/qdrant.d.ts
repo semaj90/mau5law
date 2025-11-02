@@ -1,4 +1,4 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } }from '$lib/types';
 // sveltekit-frontend/src/lib/types/qdrant.d.ts
 
 /**
@@ -16,7 +16,7 @@ export type Payload = Record<string, any>;
  */
 export interface PointStruct { id: string | number;, vector: Vector;
   payload?: Payload;
-}
+} }
 
 /**
  * Represents the request body for upserting points into Qdrant.
@@ -24,20 +24,20 @@ export interface PointStruct { id: string | number;, vector: Vector;
 export interface UpsertPoints {
   points: PointStruct[];
   wait?: boolean;
-  batch?: {, ids: (string | number)[];, vectors: Vector[];
+  batch?: { ids: (string | number)[];, vectors: Vector[];
     payloads?: Payload[];
   };
-}
+} }
 
 /**
  * Represents the response from a Qdrant upsert operation.
  */
-export interface UpsertResponse {, result: {, operation_id: number;
+export interface UpsertResponse { result: { operation_id: number;
     status: 'completed' | 'acknowledged';
   };
   status: 'ok';
   time: number;
-}
+} }
 
 /**
  * Represents a filter for Qdrant search queries.
@@ -47,7 +47,7 @@ export interface Filter {
   must?: Condition[];
   should?: Condition[];
   must_not?: Condition[];
-}
+} }
 
 export interface Condition {
   key: string;
@@ -63,7 +63,7 @@ export interface Condition {
     lte?: number;
   };
   // Add other condition types as needed
-}
+} }
 
 /**
  * Represents the request body for searching points in Qdrant.
@@ -76,20 +76,20 @@ export interface SearchRequest {
   with_payload?: boolean | string[];
   with_vectors?: boolean;
   score_threshold?: number;
-}
+} }
 
 /**
  * Represents a single search result from Qdrant.
  */
-export interface SearchResult {, id: string | number;, version: number;
+export interface SearchResult { id: string | number;, version: number;
   score: number;
   payload?: Payload;
   vector?: Vector;
-}
+} }
 
 /**
  * Represents the response from a Qdrant search operation.
  */
-export interface SearchResponse {, result: SearchResult[];, status: 'ok';
+export interface SearchResponse { result: SearchResult[];, status: 'ok';
  , time: number;
 }

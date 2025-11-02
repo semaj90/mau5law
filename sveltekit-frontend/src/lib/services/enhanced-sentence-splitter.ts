@@ -9,10 +9,10 @@ export interface SplitterOptions {
   mergeThreshold?: number;
   streamBufferSize?: number;
   headingPatterns?: RegExp[]; // custom heading patterns to merge with following sentence
-}
+} }
 
 export interface StreamingContext { buffer: string;, processedSentences: string[];
-}
+} }
 
 export class EnhancedSentenceSplitter {
   private minLength: number;
@@ -21,7 +21,7 @@ export class EnhancedSentenceSplitter {
   private mergeThreshold: number;
   private streamBufferSize: number;
   private customAbbreviations: Set<string>;
-  private abbreviationRegexes: { abbr: string; regex: RegExp }[];
+  private abbreviationRegexes: { abbr: string; regex: RegExp } }];
   private headingPatterns: RegExp[];
 
   // Common legal and business abbreviations
@@ -55,21 +55,21 @@ export class EnhancedSentenceSplitter {
     this.headingPatterns = options.headingPatterns ?? [
       /^(Section|Chapter|Article|Exhibit|Annex|Appendix|Schedule)\s+(?:[0-9]+|[IVXLC]+|[A-Z])\.$/i
     ];
-  }
+  } }
 
   /**
    * Add custom abbreviations to avoid splitting on
    */
   addAbbreviations(abbreviations: string[]): void {
     abbreviations.forEach(abbr => this.customAbbreviations.add(abbr));
-  }
+  } }
 
   /**
    * Main method to split sentences (for compatibility with tests)
    */
   splitSentences(text: string): string[] {
     return this.split(text);
-  }
+  } }
 
   /**
    * Split text into sentences with legal abbreviation handling
@@ -77,7 +77,7 @@ export class EnhancedSentenceSplitter {
   split(text: string): string[] {
     if (!text || !text.trim()) {
       return [];
-    }
+    } }
 
     // Combine default and custom abbreviations
     const allAbbreviations = new Set<string>([...this.defaultAbbreviations, ...this.customAbbreviations]);
@@ -92,7 +92,7 @@ export class EnhancedSentenceSplitter {
       const placeholder = `__ABBR_${replacementIndex++}__`;
       replacements.set(placeholder, 'No.');
       protectedText = protectedText.replace(/No\.(?=\s+\d)/g, placeholder);
-    }
+    } }
 
     // Then handle precompiled regexes
     this.abbreviationRegexes.forEach(({ abbr, regex }) => {
@@ -121,12 +121,12 @@ export class EnhancedSentenceSplitter {
         processedSentences[i + 1] = processedSentences[i] + ' ' + processedSentences[i + 1];
         processedSentences.splice(i, 1);
         i--;
-      }
-    }
+      } }
+    } }
 
     // Filter and merge fragments
     return this.mergeFragments(processedSentences);
-  }
+  } }
 
   /**
    * Merge short fragments with neighboring sentences
@@ -144,7 +144,7 @@ export class EnhancedSentenceSplitter {
         result.push(current);
         i++;
         continue;
-      }
+      } }
 
       // Collect run of consecutive short fragments (ending with: '.')
       const runStart = i;
@@ -153,7 +153,7 @@ export class EnhancedSentenceSplitter {
              sentences[runEnd + 1].length < this.minFragmentLength &&
              /\.$/.test(sentences[runEnd + 1].trim())) {
         runEnd++;
-      }
+      } }
 
       const runLength = runEnd - runStart + 1;
       const nextSentence = sentences[runEnd + 1];
@@ -164,26 +164,26 @@ export class EnhancedSentenceSplitter {
         sentences[runEnd + 1] = sentences[runStart] + ' ' + nextSentence;
         i = runEnd + 1; // Skip to merged long sentence next iteration to be processed
         continue;
-      }
+      } }
 
       if (runLength > 1 && hasFollowingLong) {
         // Drop all short fragments before long sentence
         i = runEnd + 1; // advance to the long sentence; do not add fragments
         continue;
-      }
+      } }
 
       // No following long sentence to merge with; keep fragments that satisfy minLength
       for (let j = runStart; j <= runEnd; j++) {
         if (sentences[j].length >= this.minLength) {
           result.push(sentences[j]);
-        }
-      }
+        } }
+      } }
       i = runEnd + 1;
-    }
+    } }
 
     // Filter out overly long sentences and enforce maxLength
     return result.filter(s => s.length > 0 && s.length <= this.maxLength);
-  }
+  } }
 
   /**
    * Split text into chunks of approximately equal size
@@ -196,15 +196,15 @@ export class EnhancedSentenceSplitter {
       if ((currentChunk + sentence).length > chunkSize && currentChunk) {
         chunks.push(currentChunk.trim());
         currentChunk = sentence;
-      } else {
+      } }else {
         currentChunk += (currentChunk ? ' ' : '') + sentence;
-      }
-    }
+      } }
+    } }
     if (currentChunk) {
       chunks.push(currentChunk.trim());
-    }
+    } }
     return chunks;
-  }
+  } }
 
   /**
    * Process streaming chunk of text
@@ -233,14 +233,14 @@ export class EnhancedSentenceSplitter {
           sentences.push(frag);
           context.processedSentences.push(frag);
           context.buffer = '';
-        }
-      }
-    }
+        } }
+      } }
+    } }
 
     // Store processed sentences
     context.processedSentences.push(...sentences);
     return sentences;
-  }
+  } }
 
   /**
    * Finalize streaming by processing remaining buffer
@@ -252,14 +252,14 @@ export class EnhancedSentenceSplitter {
       // If no sentences were detected, treat as single sentence fragment
       if (sentences.length === 0 && remaining.length >= this.minLength) {
         sentences = [remaining];
-      }
+      } }
       context.processedSentences.push(...sentences);
       context.buffer = '';
       return sentences;
-    }
+    } }
     return [];
-  }
-}
+  } }
+} }
 
 export default EnhancedSentenceSplitter;
 
@@ -269,13 +269,13 @@ export default EnhancedSentenceSplitter;
 export function splitSentencesEnhanced(text: string): string[] {
   const splitter = new EnhancedSentenceSplitter();
   return splitter.split(text);
-}
+} }
 
 /**
  * Create a streaming splitter with context
  */
 export function createStreamingSplitter(_options: SplitterOptions = {}): { splitter: EnhancedSentenceSplitter;, context: StreamingContext;
-} {
+} }{
   const splitter = new EnhancedSentenceSplitter(_options);
   const context: StreamingContext = {
     buffer: '',

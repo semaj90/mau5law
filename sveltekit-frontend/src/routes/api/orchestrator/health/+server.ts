@@ -1,19 +1,19 @@
 // Legal AI Orchestrator Health Check API
 // Nintendo-Style Service Health Monitoring
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
 interface ServiceHealth { service: string, status: 'healthy' | 'degraded' | 'down'
   response_time_ms?: number
   details?: string
-}
+} }
 interface HealthResponse {
- , overall_status: 'healthy' | 'degraded' | 'critical',
+  overall_status: 'healthy' | 'degraded' | 'critical',
   services: ServiceHealth[]; nintendo_memory_banks: { L1_GPU_VRAM: { used_mb: number; total_mb: number; utilization: number };
     L2_SYSTEM_RAM: { used_mb: number; total_mb: number; utilization: number };
-    L3_REDIS_CACHE: { used_mb: number; total_mb: number; utilization: number }
-  }
- , timestamp: string
-}
+    L3_REDIS_CACHE: { used_mb: number; total_mb: number; utilization: number } }
+  } }
+  timestamp: string
+} }
 async function checkServiceHealth(url: string, timeout = 5000): Promise<any> {
   const startTime = Date.now()
   try {
@@ -28,14 +28,14 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<any> {
     return {
       healthy: response.ok,
       responseTime
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     return {
       healthy: false,
       responseTime: Date.now() - startTime
-    }
-  }
-}
+    } }
+  } }
+} }
 async function checkRedisHealth(): Promise<ServiceHealth> {
   try {
     // Try to connect to Redis using a simple ping
@@ -49,38 +49,37 @@ async function checkRedisHealth(): Promise<ServiceHealth> {
       status: response?.ok ? 'healthy' : 'down',
       response_time_ms: response ? 50 : undefined,
       details: response?.ok ? 'Nintendo L3 memory bank operational' : 'Redis connection failed'
-    }
-  } catch {
+    } }
+  } }catch {
     return {
-     , service: 'Redis Cache (L3)',
+  service: 'Redis Cache (L3)',
       status: 'down',
       details: 'Redis service not available'
-    }
-  }
-}
+    } }
+  } }
+} }
 async function getMemoryBankStatus(): Promise<any> {
   // Simulate memory bank readings - in production, you'd get actual metrics'
-  return { L1_GPU_VRAM: {, used_mb: Math.floor(Math.random() * 6000 + 2000), // 2-8GB used
+  return { L1_GPU_VRAM: { used_mb: Math.floor(Math.random() * 6000 + 2000), // 2-8GB used
       total_mb: 8192, // 8GB RTX, 3060
       utilization: 0
     },
     L2_SYSTEM_RAM: {
-     , used_mb: Math.floor(Math.random() * 4000 + 8000), // 8-12GB used
+  used_mb: Math.floor(Math.random() * 4000 + 8000), // 8-12GB used
       total_mb: 32768, // 32GB system RAM
       utilization: 0
     },
     L3_REDIS_CACHE: {
-     , used_mb: Math.floor(Math.random() * 500 + 200), // 200-700MB used
+  used_mb: Math.floor(Math.random() * 500 + 200), // 200-700MB used
       total_mb: 1024, // 1GB Nintendo budget
       utilization: 0
-    }
-  }
-}
-export const, GET: RequestHandler = async ({ url }) => {
+    } }
+  } }
+} }
+export const GET: RequestHandler = async ({ url }) => {
   try {
     const services = [
-      {,
-        name: 'Legal Expert (vLLM)',
+      { name: 'Legal Expert (vLLM)',
         url: 'http://localhost:8000/health',
         key: 'legal_expert'
       },
@@ -98,17 +97,17 @@ export const, GET: RequestHandler = async ({ url }) => {
         name: 'PostgreSQL',
         url: 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
         key: 'postgres'
-      }
+      } }
     ]
     // Check all HTTP services in parallel
     const serviceChecks = await Promise.all(services.slice(0, 3).map(async (service) => {
-        const { healthy, responseTime } = await checkServiceHealth(service.url)
+        const { healthy, responseTime } }= await checkServiceHealth(service.url)
         return {
           service: service.name,
           status: healthy ? 'healthy' : 'down',
           response_time_ms: responseTime,
           details: healthy ? 'Service operational' : 'Service unreachable'
-        } as ServiceHealth
+        } }as ServiceHealth
       })
     )
     // Check Redis separately
@@ -133,30 +132,30 @@ export const, GET: RequestHandler = async ({ url }) => {
     let overallStatus: 'healthy' | 'degraded' | 'critical'
     if (healthyServices === totalServices) {
       overallStatus = 'healthy'
-    } else if (healthyServices >= totalServices * 0.6) {
+    } }else if (healthyServices >= totalServices * 0.6) {
       overallStatus = 'degraded'
-    } else {
+    } }else {
       overallStatus = 'critical'
-    }
+    } }
     const healthResponse: HealthResponse = {
-     , overall_status: overallStatus,
+  overall_status: overallStatus,
       services: serviceChecks,
       nintendo_memory_banks: memoryBanks,
       timestamp: new Date().toISOString()
-    }
+    } }
     return json(healthResponse, {
       status: overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503
     })
-  } catch (error) {
+  } }catch (error) {
     return json({
       overall_status: 'critical',
       services: [],
-      nintendo_memory_banks: {, L1_GPU_VRAM: {, used_mb: 0, total_mb: 0, utilization: 0 },
-        L2_SYSTEM_RAM: {, used_mb: 0, total_mb: 0, utilization: 0 },
-        L3_REDIS_CACHE: {, used_mb: 0, total_mb: 0, utilization: 0 }
+      nintendo_memory_banks: { L1_GPU_VRAM: { used_mb: 0, total_mb: 0, utilization: 0 },
+        L2_SYSTEM_RAM: { used_mb: 0, total_mb: 0, utilization: 0 },
+        L3_REDIS_CACHE: { used_mb: 0, total_mb: 0, utilization: 0 } }
       },
       timestamp: new Date().toISOString(),
       error: 'Health check system failure'
     }, { status: 500 })
-  }
+  } }
 }

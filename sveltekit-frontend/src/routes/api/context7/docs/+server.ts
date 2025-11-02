@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
 // Context7 Documentation RAG API endpoint
 // Integrates with Go RAG pipeline and Gemma embeddings
 const CONTEXT7_MCP_ENDPOINT = 'http://localhost:4000'
@@ -12,16 +12,16 @@ interface DocFetchRequest {
   query?: string
   limit?: number
   useEnhancedRAG?: boolean
-}
+} }
 interface SearchRequest {
   query: string
   library?: string
   topic?: string
   limit?: number
   threshold?: number
-}
+} }
 // GET /api/context7/docs - List available documentation
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'list'
     if (action === 'libraries') {
@@ -29,14 +29,14 @@ export const, GET: RequestHandler = async ({ url }) => {
       const response = await fetch(`${GO_RAG_QUERY_SERVER}/api/rag/libraries`)
       if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
         throw new Error('Failed to fetch libraries')
-      }
+      } }
       const libraries = await (response as { ok?: any; json?: any; statusText?: any }).json()
       return json({
         success: true,
         libraries,
         timestamp: new Date().toISOString()
       })
-    }
+    } }
     if (action === 'topics') {
       const library = url.searchParams.get('library')
       // Get topics for a specific library
@@ -46,7 +46,7 @@ export const, GET: RequestHandler = async ({ url }) => {
       const response = await fetch(topicsUrl)
       if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
         throw new Error('Failed to fetch topics')
-      }
+      } }
       const topics = await (response as { ok?: any; json?: any; statusText?: any }).json()
       return json({
         success: true,
@@ -54,7 +54,7 @@ export const, GET: RequestHandler = async ({ url }) => {
         library,
         timestamp: new Date().toISOString()
       })
-    }
+    } }
     // Default: Get health status
     const healthResponse = await fetch(`${GO_RAG_QUERY_SERVER}/health`)
     const health = await healthResponse.json()
@@ -63,23 +63,23 @@ export const, GET: RequestHandler = async ({ url }) => {
       service: 'Context7 Documentation RAG',
       health,
       endpoints: {
-       , fetch: 'POST /api/context7/docs - Fetch documentation from Context7',
+  fetch: 'POST /api/context7/docs - Fetch documentation from Context7',
         search: 'POST /api/context7/docs?action=search - Search documentation',
         libraries: 'GET /api/context7/docs?action=libraries - List libraries',
         topics: 'GET /api/context7/docs?action=topics - List topics' },
       timestamp: new Date().toISOString()
     })
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: error?.message ?? String(error),
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
-}
+  } }
+} }
 // POST /api/context7/docs - Fetch or search documentation
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -93,22 +93,22 @@ export const POST: RequestHandler = async ({ request }) => {
         return await listDocumentation()
       default: return json(
           {
-           , success: false,
-            error: 'Unknown;, action: ${req.action}' },
-          { status: 400 }
+  success: false,
+            error: 'Unknown; action: ${req.action} } },
+          { status: 400 } }
         );
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: error?.message ?? String(error),
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
-}
+  } }
+} }
 // Fetch documentation from Context7 MCP server
 async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
   try {
@@ -116,13 +116,13 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
       { id: 'typescript', name: 'TypeScript' },
       { id: 'webgpu', name: `WebGPU` },'`'`
       { id: 'postgresql', name: `PostgreSQL 17` },
-      { id: `drizzle-orm`, name: `Drizzle ORM` }
+      { id: `drizzle-orm`, name: `Drizzle ORM` } }
     ]
     const results = []
     for (const library of libraries) {
       if (req.library && library.id !== req.library) {
         continue
-      }
+      } }
       // Fetch from Context7 MCP server
       const response = await fetch(`${CONTEXT7_MCP_ENDPOINT}/tools/call`, {
         method: 'POST',
@@ -130,12 +130,12 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
           'Content-Type': 'application/json',
           'Accept': `application/json` },'`'`
         body: JSON.stringify({
-         , name: 'get_library_docs',
+  name: 'get_library_docs',
           arguments: {
-           , context7CompatibleLibraryID: library.id,
+  context7CompatibleLibraryID: library.id,
             topic: req.topic,
             tokens: 15000,
-            format: `markdown` }
+            format: `markdown` } }
         })
       })
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -149,9 +149,9 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
             metadata: (result as { success?: any; result?: any }).result.metadata,
             snippets: (result as { success?: any; result?: any }).result.snippets
           })
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return json({
       success: true,
       action: 'fetch',
@@ -159,10 +159,10 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
       count: results.length,
       timestamp: new Date().toISOString()
     })
-  } catch (error: any) {
+  } }catch (error: any) {
     throw error
-  }
-}
+  } }
+} }
 // Search documentation using Go RAG server with Gemma embeddings
 async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
   try {
@@ -171,20 +171,20 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
         {
           success: false,
           error: `Query parameter is required for search` },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     let searchEndpoint = `${GO_RAG_QUERY_SERVER}/api/rag/search`
     // Use Enhanced RAG service if requested
     if (req.useEnhancedRAG) {
-      searchEndpoint = `${ENHANCED_RAG_SERVICE}/api/rag/query` }
+      searchEndpoint = `${ENHANCED_RAG_SERVICE}/api/rag/query` } }
     const searchRequest: SearchRequest = {
-     , query: req.query,
+  query: req.query,
       library: req.library,
       topic: req.topic,
       limit: req.limit || 10,
       threshold: 0.7
-    }
+    } }
     const response = await fetch(searchEndpoint, {
       method: 'POST',
       headers: {
@@ -194,7 +194,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
     })
     if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
       throw new Error(`Search failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`)
-    }
+    } }
     const searchResults = await (response as { ok?: any; json?: any; statusText?: any }).json()
     // If using Enhanced RAG, also get memory context
     let memoryContext = null
@@ -203,15 +203,15 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
         const memoryResponse = await fetch(`${ENHANCED_RAG_SERVICE}/api/rag/memory/default`, {
           method: 'GET',
           headers: {
-            'Accept': `application/json` }
+            'Accept': `application/json` } }
         })
         if (memoryResponse.ok) {
           memoryContext = await memoryResponse.json()
-        }
-      } catch (memError) {
+        } }
+      } }catch (memError) {
         console.error('Failed to fetch memory context:', memError)
-      }
-    }
+      } }
+    } }
     return json({
       success: true,
       action: 'search',
@@ -222,10 +222,10 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
       service: req.useEnhancedRAG ? 'enhanced-rag' : 'go-rag',
       timestamp: new Date().toISOString()
     })
-  } catch (error: any) {
+  } }catch (error: any) {
     throw error
-  }
-}
+  } }
+} }
 // List all available documentation
 async function listDocumentation(): Promise<Response> {
   try {
@@ -237,16 +237,16 @@ async function listDocumentation(): Promise<Response> {
     const topics = topicsResponse.ok ? await topicsResponse.json() : []
     // Get health status
     const healthResponse = await fetch(`${GO_RAG_QUERY_SERVER}/health`)
-    const health = healthResponse.ok ? await healthResponse.json() : { status: `unknown` }
+    const health = healthResponse.ok ? await healthResponse.json() : { status: `unknown` } }
     return json({
-     , success: true,
+  success: true,
       action: 'list',
       libraries,
       topics,
       health,
       timestamp: new Date().toISOString()
     })
-  } catch (error: any) {
+  } }catch (error: any) {
     throw error
-  }
+  } }
 }

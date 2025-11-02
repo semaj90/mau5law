@@ -1,4 +1,4 @@
-import { uploadWithXhr } from './xhr';
+import { uploadWithXhr } }from './xhr';
 export type SubmitResult = { status: number; responseText?: string };
 /**
  * Submit data with progress. For FormData (file uploads) it uses XHR to provide upload progress.
@@ -12,7 +12,7 @@ export async function submitWithProgress(
 ): Promise<SubmitResult> {
   if (data instanceof FormData) {
     return uploadWithXhr(url, data, onProgress, signal) as Promise<SubmitResult>;
-  }
+  } }
   // JSON path - no upload progress available, but respect signal
   const res = await fetch(url, {
     method: 'POST',
@@ -22,4 +22,5 @@ export async function submitWithProgress(
   });
   const text = await res.text();
   return { status: res.status, responseText: text };
-}
+} }
+

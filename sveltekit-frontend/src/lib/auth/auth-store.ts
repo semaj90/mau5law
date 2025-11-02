@@ -1,10 +1,10 @@
 // Enhanced Authentication Store with Role-Based Access Control
 // Manages user authentication state, permissions, and session management
-import { writable, derived, get } from 'svelte/store';
-import { browser } from '$app/environment';
+import { writable, derived, get } }from 'svelte/store';
+import { browser } }from '$app/environment';
 /* Replace static import (may not exist at build time) with dynamic public env */
-import { env, as PUBLIC_ENV } from '$env/dynamic/public';
-import type { UserRole, Permission } from './roles.js';
+import { env, as PUBLIC_ENV } }from '$env/dynamic/public';
+import type { UserRole, Permission } }from './roles.js';
 
 // Add a minimal ServerUser shape to satisfy Partial<ServerUser>
 interface ServerUser { id: string;, email: string;
@@ -13,9 +13,9 @@ interface ServerUser { id: string;, email: string;
   name?: string;
   firstName?: string;
   lastName?: string;
-}
+} }
 
-export interface AuthUser extends Partial<ServerUser> {, id: string;, email: string;
+export interface AuthUser extends Partial<ServerUser> { id: string;, email: string;
   role: UserRole;
   name?: string;
   firstName?: string;
@@ -23,18 +23,18 @@ export interface AuthUser extends Partial<ServerUser> {, id: string;, email: st
   isActive: boolean;
   avatarUrl?: string;
   emailVerified?: boolean;
-}
-export interface AuthSession {, id: string;, userId: string;
+} }
+export interface AuthSession { id: string;, userId: string;
   // expiresAt may come from the server as an ISO: string; accept: string or Date and normalize when used
   expiresAt: string | Date;
-}
-export interface AuthState {, user: AuthUser | null;, session: AuthSession | null;
+} }
+export interface AuthState { user: AuthUser | null;, session: AuthSession | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   permissions: Permission[];
   lastActivity: Date | null;
   csrfToken?: string;
-}
+} }
 
 // Add a type for API responses to reduce repetition and improve readability
 type ApiResponse = {
@@ -47,8 +47,7 @@ type ApiResponse = {
 };
 
 // Initial auth state
-const initialState: AuthState = {
- , user: null,
+const initialState: AuthState = { user: null,
   session: null,
   isLoading: true,
   isAuthenticated: false,
@@ -83,7 +82,7 @@ const API_BASE = PUBLIC_API_BASE || 'http://localhost:5173';
 export function buildApiUrl(path: string) {
   if (!path.startsWith('/')) path = `/${path}`;
   return `${API_BASE}${path}`;
-}
+} }
 
 /*
   Local AccessControl helper
@@ -120,7 +119,7 @@ const AccessControl = {
     if (resourceOwnerId && userId && resourceOwnerId === userId) return true;
     // explicit permission match
     return perms.includes(permission);
-  }
+  } }
 };
 
 export class AuthStore {
@@ -136,10 +135,10 @@ export class AuthStore {
     try {
       const raw = (await response.json()) as: unknown;
       return raw as ApiResponse;
-    } catch (err: any) {
+    } }catch (err: any) {
       return {};
-    }
-  }
+    } }
+  } }
   /**
    * Initialize the auth store and start session management
    */
@@ -153,14 +152,14 @@ export class AuthStore {
       this.startSessionMonitoring();
       // Setup activity tracking
       this.setupActivityTracking();
-    } catch (error: any) {
+    } }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Auth initialization failed:', message);
       this.clearAuth();
-    } finally {
+    } }finally {
       authState.update(state => ({ ...state, isLoading: false }));
-    }
-  }
+    } }
+  } }
   /**
    * Login with email and password
    */
@@ -184,25 +183,24 @@ export class AuthStore {
         // Track login activity
         this.trackActivity('login');
         return { success: true };
-      } else {
-        return {
-         , success: false,
+      } }else {
+        return { success: false,
           error: result.error || 'Login failed',
           requiresMFA: result.requiresMFA
         };
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Login error:', msg);'
+      console.error('Login error:', msg);
       return { success: false, error: 'Network error during login' };
-    } finally {
+    } }finally {
       authState.update(state => ({ ...state, isLoading: false }));
-    }
-  }
+    } }
+  } }
   /**
    * Register a new user account
    */
-  static async register(userData: {, email: string;, password: string;
+  static async register(userData: { email: string;, password: string;
     firstName?: string;
     lastName?: string;
     role?: UserRole;
@@ -220,19 +218,19 @@ export class AuthStore {
         // If auto-login after registration
         if (result.user && result.session) {
           await this.updateAuthState(result.user, result.session);
-        }
+        } }
         return { success: true, requiresVerification: result.requiresVerification };
-      } else {
-        return {, success: false, error: result.error || 'Registration failed' };
-      }
-    } catch (error: any) {
+      } }else {
+        return { success: false, error: result.error || 'Registration failed' };
+      } }
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Registration error:', msg);'
+      console.error('Registration error:', msg);
       return { success: false, error: 'Network error during registration' };
-    } finally {
+    } }finally {
       authState.update(state => ({ ...state, isLoading: false }));
-    }
-  }
+    } }
+  } }
   /**
    * Logout and clear session
    */
@@ -240,18 +238,18 @@ export class AuthStore {
     authState.update(state => ({ ...state, isLoading: true }));
     try {
       await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Logout error:', msg);'
-    } finally {
+      console.error('Logout error:', msg);
+    } }finally {
       this.clearAuth();
       this.stopSessionMonitoring();
       // Redirect to login page
       if (browser) {
         window.location.href = '/login';
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Check current session validity
    */
@@ -263,17 +261,17 @@ export class AuthStore {
       if (response.ok && result.user && result.session) {
         await this.updateAuthState(result.user, result.session);
         return true;
-      } else {
+      } }else {
         this.clearAuth();
         return false;
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Session check error:', msg);'
+      console.error('Session check error:', msg);
       this.clearAuth();
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Update user profile
    */
@@ -281,7 +279,7 @@ export class AuthStore {
     const currentState = get(authState);
     if (!currentState.isAuthenticated || !currentState.user) {
       return { success: false, error: 'Not authenticated' };
-    }
+    } }
     try {
       const response = await fetch('/api/user/profile', {
         method: 'PUT',
@@ -295,18 +293,18 @@ export class AuthStore {
         // Update local user data
         authState.update(state => ({
           ...state,
-          user: state.user ? { ...state.user, ...(result.user as AuthUser) } : null
+          user: state.user ? { ...state.user, ...(result.user as AuthUser) } }: null
         }));
         return { success: true };
-      } else {
-        return {, success: false, error: result.error || 'Profile update failed' };
-      }
-    } catch (error: any) {
+      } }else {
+        return { success: false, error: result.error || 'Profile update failed' };
+      } }
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Profile update error:', msg);'
+      console.error('Profile update error:', msg);
       return { success: false, error: 'Network error during profile update' };
-    }
-  }
+    } }
+  } }
   /**
    * Change user password
    */
@@ -325,12 +323,12 @@ export class AuthStore {
         success: response.ok && !!result.success,
         error: result.error
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Password change error: ', msg);'
+      console.error('Password change error: ', msg);
       return { success: false, error: `Network error during password change` };
-    }
-  }
+    } }
+  } }
   /**
    *, Private: Update auth state with user and session data
    */
@@ -352,7 +350,7 @@ export class AuthStore {
       lastActivity: new Date(),
       isLoading: false
     }));
-  }
+  } }
   /**
    * Private: Clear authentication state
    */
@@ -361,7 +359,7 @@ export class AuthStore {
       ...initialState,
       isLoading: false
     });
-  }
+  } }
 
   /**
    * Private: Start session monitoring
@@ -369,7 +367,7 @@ export class AuthStore {
   private static startSessionMonitoring(): void {
     if (this.sessionCheckInterval) {
       clearInterval(this.sessionCheckInterval);
-    }
+    } }
     // use defined constant interval
     this.sessionCheckInterval = setInterval(async () => {
       const state = get(authState);
@@ -377,11 +375,11 @@ export class AuthStore {
       if (!state.isAuthenticated || !state.session) {
         try {
           await this.checkSession();
-        } catch (err) {
+        } }catch (err) {
           // ignore - checkSession already handles clearing state on error
-        }
+        } }
         return;
-      }
+      } }
 
       // Ensure session.expiresAt is a timestamp
       const expiresAt = state.session && state.session.expiresAt ? new Date(state.session.expiresAt).getTime() : 0;
@@ -394,27 +392,27 @@ export class AuthStore {
         this.stopSessionMonitoring();
         if (browser) {
           window.location.href = '/login';
-        }
+        } }
         return;
-      }
+      } }
 
       // Warn if session is close to expiring
       if (timeLeft < SESSION_WARNING_TIME) {
         // Simple client-side warning (replace with UI notification)
         console.warn('Session will expire soon');
-      }
+      } }
 
       // If user has been inactive for too long, destroy session
       const lastActivity = state.lastActivity ? state.lastActivity.getTime() : 0;
       if (lastActivity && now - lastActivity > ACTIVITY_TIMEOUT) {
         // Force logout due to inactivity
         await this.logout();
-      }
+      } }
 
       // Optionally refresh session close to expiry (not implemented server-side here)
       // ...existing code...
     }, SESSION_CHECK_INTERVAL);
-  }
+  } }
 
   /**
    * Stop session monitoring and activity tracking
@@ -423,11 +421,11 @@ export class AuthStore {
     if (this.sessionCheckInterval) {
       clearInterval(this.sessionCheckInterval);
       this.sessionCheckInterval = null;
-    }
+    } }
     if (this.activityTimeout) {
       clearTimeout(this.activityTimeout);
       this.activityTimeout = null;
-    }
+    } }
     if (!browser) return;
     if (this.listenersRegistered) {
       if (this.activityHandler) {
@@ -435,15 +433,15 @@ export class AuthStore {
         window.removeEventListener('keydown', this.activityHandler);
         window.removeEventListener('click', this.activityHandler);
         window.removeEventListener('touchstart', this.activityHandler);
-      }
+      } }
       if (this.visibilityHandler) {
         document.removeEventListener('visibilitychange', this.visibilityHandler);
-      }
+      } }
       this.activityHandler = null;
       this.visibilityHandler = null;
       this.listenersRegistered = $state(false);
-    }
-  }
+    } }
+  } }
 
   /**
    * Setup activity tracking for user interactions to reset inactivity timer
@@ -458,7 +456,7 @@ export class AuthStore {
       if (document.visibilityState === 'visible') {
         // On resume, do a quick session check
         this.checkSession().catch(() => {});
-      }
+      } }
     };
 
     window.addEventListener('mousemove', this.activityHandler);
@@ -471,12 +469,12 @@ export class AuthStore {
     // initialize inactivity timeout
     if (this.activityTimeout) {
       clearTimeout(this.activityTimeout);
-    }
+    } }
     this.activityTimeout = setTimeout(() => {
       // Force logout after inactivity timeout
       this.logout().catch(() => {});
     }, ACTIVITY_TIMEOUT);
-  }
+  } }
 
   /**
    * Track activity locally and optionally notify server
@@ -503,6 +501,6 @@ export class AuthStore {
       }).catch(() => {
         // ignore network errors for activity pings
       });
-    }
-  }
+    } }
+  } }
 }

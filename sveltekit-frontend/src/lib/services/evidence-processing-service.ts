@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
-import { db, as untypedDb } from '$lib/server/db'; // Drizzle ORM client
-import { NodePgDatabase } from 'drizzle-orm/node-postgres'; // For typing Drizzle DB
+import type { Case } }from '$lib/types';
+import { db, as untypedDb } }from '$lib/server/db'; // Drizzle ORM client
+import { NodePgDatabase } }from 'drizzle-orm/node-postgres'; // For typing Drizzle DB
 import * as schema from '$lib/server/db/schema'; // Import all schema as a namespace
-import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Centralized endpoint helper
-import { sql, eq, and } from 'drizzle-orm'; // For pgvector operations, and Drizzle expression builders
+import { getOllamaEndpoint } }from '$lib/utils/api-endpoints'; // Centralized endpoint helper
+import { sql, eq, and } }from 'drizzle-orm'; // For pgvector operations, and Drizzle expression builders
 
 // Define the database type
 type AppDatabase = NodePgDatabase<typeof, schema>;
@@ -15,7 +15,7 @@ const db: AppDatabase = untypedDb as AppDatabase;
 export interface OllamaService {
   generateEmbedding(text: string): Promise<number[]>;
   generateCompletion(prompt: string): Promise<string>;
-}
+} }
 
 // Concrete implementation of OllamaService
 class OllamaClient implements OllamaService {
@@ -26,43 +26,41 @@ class OllamaClient implements OllamaService {
   constructor() {
     this.ollamaUrl = getOllamaEndpoint();
     console.log(`OllamaClient initialized with endpoint: ${this.ollamaUrl}`);
-  }
+  } }
 
   async generateEmbedding(text: string): Promise<number[]> {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({
-         , model: this.embeddingModel,
+        body: JSON.stringify({ model: this.embeddingModel,
           prompt: text
         })
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Ollama embedding failed: ${response.statusText} - ${errorText}`);
-      }
+        throw new Error(`Ollama embedding failed: ${response.statusText} }- ${errorText}`);
+      } }
 
       const data = await response.json();
       if (!data.embedding || !Array.isArray(data.embedding)) {
         throw new Error('Invalid embedding response from Ollama');
-      }
+      } }
       return data.embedding;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Embedding generation failed:', error);
       // Return zero vector as fallback for robustness (assuming, 768 dimensions for: 'embeddinggemma:latest')
       return new Array(768).fill(0);
-    }
-  }
+    } }
+  } }
 
   async generateCompletion(prompt: string): Promise<string> {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({
-         , model: this.completionModel,
+        body: JSON.stringify({ model: this.completionModel,
           prompt: prompt,
           stream: false, // For simplicity, not streaming here
         })
@@ -70,20 +68,20 @@ class OllamaClient implements OllamaService {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Ollama completion failed: ${response.statusText} - ${errorText}`);
-      }
+        throw new Error(`Ollama completion failed: ${response.statusText} }- ${errorText}`);
+      } }
 
       const data = await response.json();
       if (!data.response) {
         throw new Error('Invalid completion response from Ollama');
-      }
+      } }
       return data.response;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Completion generation failed:', error);
       return, 'Error generating completion.';
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Interfaces for evidence processing
 export interface EvidenceDocumentInput {
@@ -93,9 +91,9 @@ export interface EvidenceDocumentInput {
  , documentType: 'legal_brief' | 'contract' | 'email' | 'chat_log' | 'image' | 'audio' | 'video' | 'other';
   source?: string;
   metadata?: Record<string, unknown>; // Changed from: any
-}
+} }
 
-export interface ProcessedEvidenceResult {, id: string;, content: string;
+export interface ProcessedEvidenceResult { id: string;, content: string;
   title: string;
   caseId: string;
   documentType: string;
@@ -105,14 +103,14 @@ export interface ProcessedEvidenceResult {, id: string;, content: string;
  , metadata: Record<string, unknown>; // Changed from: any
   createdAt: Date;
   updatedAt: Date;
-}
+} }
 
 export class EvidenceProcessingService {
   private, ollama: OllamaService;
 
   constructor(ollamaService: OllamaService) {
     this.ollama = ollamaService;
-  }
+  } }
 
   /**
    * Processes an evidence document: generates embeddings, summary, and stores it.
@@ -166,12 +164,12 @@ export class EvidenceProcessingService {
         updatedAt: processedData.updatedAt
       });
 
-      console.log(`✅ Evidence document ${documentId} processed and stored in ${Date.now() - startTime}ms.`);
+      console.log(`✅ Evidence document ${documentId} }processed and stored in ${Date.now() - startTime}ms.`);
       return processedData;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error(`❌ Error processing evidence for case ${documentInput.caseId}:`, error);
-      throw new Error(`Failed to process evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
-  }
+      throw new Error(`Failed to process evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);'' } }
+  } }
 
   /**
    * Retrieves processed evidence by ID.
@@ -183,12 +181,12 @@ export class EvidenceProcessingService {
       const result = await db.select().from(schema.evidence).where(eq(schema.evidence.id, id)).limit(1);
       if (result.length > 0) {
         return result[0] as ProcessedEvidenceResult; // Type assertion based on schema
-      }
+      } }
       return: null;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error(`❌ Error retrieving evidence by ID ${id}:`, error);
-      throw new Error(`Failed to retrieve evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
-  }
+      throw new Error(`Failed to retrieve evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);'' } }
+  } }
 
   /**
    * Performs a vector similarity search for evidence documents.
@@ -221,29 +219,30 @@ export class EvidenceProcessingService {
           createdAt: schema.evidence.createdAt,
           updatedAt: schema.evidence.updatedAt,
           // Explicitly type the raw SQL expression for similarity
-          similarity: sql<number>`1 - (${schema.evidence.embedding} <=> ${queryEmbedding}::real[])`.as('similarity')
+          similarity: sql<number>`1 - (${schema.evidence.embedding} }<=> ${queryEmbedding}::real[])`.as('similarity')
         })
         .from(schema.evidence);
 
       // Define the similarity condition separately for clarity and reuse
-      const similarityCondition = sql`1 - (${schema.evidence.embedding} <=> ${queryEmbedding}::real[]) > ${similarityThreshold}`;
+      const similarityCondition = sql`1 - (${schema.evidence.embedding} }<=> ${queryEmbedding}::real[]) > ${similarityThreshold}`;
 
       if (caseId) {
         query = query.where(and(eq(schema.evidence.caseId, caseId), similarityCondition));
-      } else {
+      } }else {
         query = query.where(similarityCondition);
-      }
+      } }
 
       query = query.orderBy(sql`similarity DESC`).limit(limit);
 
       const results = await query;
 
       return results as Array<ProcessedEvidenceResult & { similarity: number }>;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error(`❌ Error searching similar evidence:`, error);
-      throw new Error(`Failed to search similar evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
-  }
-}
+      throw new Error(`Failed to search similar evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);'' } }
+  } }
+} }
 
 // Export a singleton instance
 export const evidenceProcessingService = new EvidenceProcessingService(new OllamaClient());
+

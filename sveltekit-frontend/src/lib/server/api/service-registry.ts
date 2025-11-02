@@ -1,10 +1,10 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Document } }from '$lib/types';
 // API Service Registry and Route Mapper
 // Maps all your existing API routes and provides service discovery
-import { existsSync, readdirSync, statSync } from 'fs';
-import { join } from 'path';
-import { Socket } from 'net';
+import { existsSync, readdirSync, statSync } }from 'fs';
+import { join } }from 'path';
+import { Socket } }from 'net';
 // Add explicit types to avoid `any`
 type HealthStatus = 'healthy' | 'unhealthy' | 'error' | 'unknown';
 export interface ServiceConfig { name: string;, port: number;
@@ -15,19 +15,19 @@ export interface ServiceConfig { name: string;, port: number;
  , healthCheck: () => Promise<boolean>;
   // allow extra properties used elsewhere
   [key: string]: any;
-}
-export interface RouteConfig {, endpoints: string[];, description: string;
+} }
+export interface RouteConfig { endpoints: string[];, description: string;
   dependencies?: string[];
   required?: boolean;
   [key: string]: any;
-}
+} }
 export interface HealthCheckRecord {
   status?: HealthStatus;
   lastCheck?: string;
   error?: string;
   [key: string]: any;
-}
-type ServiceCheckResult = ServiceConfig & {, status: HealthStatus;, lastCheck: string;
+} }
+type ServiceCheckResult = ServiceConfig & { status: HealthStatus;, lastCheck: string;
   error?: string;
 };
 export class ApiServiceRegistry {
@@ -40,77 +40,65 @@ export class ApiServiceRegistry {
     this.services = new Map();
     this.healthChecks = new Map();
     this.initialize();
-  }
+  } }
   initialize() {
     // Core API routes from your sveltekit-frontend structure
     const apiRoutes = {
       // Authentication & User Management
-      auth: {
-       , endpoints: ['/api/auth/login', '/api/auth/logout', '/api/auth/register'],
+      auth: { endpoints: ['/api/auth/login', '/api/auth/logout', '/api/auth/register'],
         description: 'User authentication and session management',
         required: true
       },
-      users: {
-       , endpoints: ['/api/users', '/api/user/profile'],
+      users: { endpoints: ['/api/users', '/api/user/profile'],
         description: 'User account management',
         required: true
       },
       // Core Legal AI Features
-      cases: {
-       , endpoints: ['/api/cases', '/api/cases/[id]', '/api/cases/search'],
+      cases: { endpoints: ['/api/cases', '/api/cases/[id]', '/api/cases/search'],
         description: 'Legal case management',
         required: true
       },
-      evidence: {
-       , endpoints: ['/api/evidence', '/api/evidence/[id]', '/api/evidence/upload'],
+      evidence: { endpoints: ['/api/evidence', '/api/evidence/[id]', '/api/evidence/upload'],
         description: 'Evidence handling and processing',
         required: true
       },
-      citations: {
-       , endpoints: ['/api/citations', '/api/citations/generate'],
+      citations: { endpoints: ['/api/citations', '/api/citations/generate'],
         description: 'Legal citation management',
         required: true
       },
-      reports: {
-       , endpoints: ['/api/reports', '/api/reports/generate'],
+      reports: { endpoints: ['/api/reports', '/api/reports/generate'],
         description: 'Report generation',
         required: true
       },
       // AI Services
-      chat: {
-       , endpoints: ['/api/chat', '/api/chat/stream'],
-        description: 'AI chat with;, Gemma3:legal',
+      chat: { endpoints: ['/api/chat', '/api/chat/stream'],
+        description: 'AI chat with; Gemma3:legal',
         dependencies: ['ollama'],
         required: true
       },
-      ai: {
-       , endpoints: ['/api/ai/analyze', '/api/ai/summarize', '/api/ai/suggest'],
+      ai: { endpoints: ['/api/ai/analyze', '/api/ai/summarize', '/api/ai/suggest'],
         description: 'AI analysis and suggestions',
         dependencies: ['ollama'],
         required: true
       },
-      embeddings: {
-       , endpoints: ['/api/embed', '/api/embeddings/generate'],
+      embeddings: { endpoints: ['/api/embed', '/api/embeddings/generate'],
         description: 'Text embeddings with nomic-embed-text',
         dependencies: ['ollama'],
         required: true
       },
       // Search & Vector Operations
-      search: {
-       , endpoints: ['/api/search', '/api/search/vector', '/api/search/similarity'],
+      search: { endpoints: ['/api/search', '/api/search/vector', '/api/search/similarity'],
         description: 'Vector and semantic search',
         dependencies: ['postgresql', 'qdrant'],
         required: true
       },
-      vector: {
-       , endpoints: ['/api/vector', '/api/vectors/index'],
+      vector: { endpoints: ['/api/vector', '/api/vectors/index'],
         description: 'Vector database operations',
         dependencies: ['qdrant', 'postgresql'],
         required: false
       },
       // Enhanced RAG System
-      rag: {
-       , endpoints: ['/api/rag/query', '/api/rag/index', '/api/rag/status'],
+      rag: { endpoints: ['/api/rag/query', '/api/rag/index', '/api/rag/status'],
         description: 'Enhanced RAG system',
         dependencies: ['enhanced_rag'],
         required: false
@@ -122,65 +110,54 @@ export class ApiServiceRegistry {
         required: false
       },
       // File & Document Management
-      upload: {
-       , endpoints: ['/api/upload', '/api/upload/evidence', '/api/upload/status'],
+      upload: { endpoints: ['/api/upload', '/api/upload/evidence', '/api/upload/status'],
         description: 'File upload and processing',
         dependencies: ['minio'],
         required: true
       },
-      documents: {
-       , endpoints: ['/api/documents', '/api/documents/[id]', '/api/documents/process'],
+      documents: { endpoints: ['/api/documents', '/api/documents/[id]', '/api/documents/process'],
         description: 'Document management and processing',
         required: true
       },
       // System & Administration
-      health: {
-       , endpoints: ['/api/health', '/api/health-check'],
+      health: { endpoints: ['/api/health', '/api/health-check'],
         description: 'System health monitoring',
         required: true
       },
-      system: {
-       , endpoints: ['/api/system/status', '/api/system/info'],
+      system: { endpoints: ['/api/system/status', '/api/system/info'],
         description: 'System information',
         required: true
       },
-      metrics: {
-       , endpoints: ['/api/metrics'],
+      metrics: { endpoints: ['/api/metrics'],
         description: 'Performance metrics',
         required: false
       },
       // GPU & Processing
-      gpu: {
-       , endpoints: ['/api/gpu/status', '/api/gpu-orchestration'],
+      gpu: { endpoints: ['/api/gpu/status', '/api/gpu-orchestration'],
         description: 'GPU processing orchestration',
         dependencies: ['gpu_orchestrator'],
         required: false
       },
-      process: {
-       , endpoints: ['/api/process', '/api/process-legal-document'],
+      process: { endpoints: ['/api/process', '/api/process-legal-document'],
         description: 'Document processing pipeline',
         required: true
       },
       // Legal Specific
-      legal: {
-       , endpoints: ['/api/legal', '/api/legal-ai', '/api/legal-ai-integration'],
+      legal: { endpoints: ['/api/legal', '/api/legal-ai', '/api/legal-ai-integration'],
         description: 'Legal AI analysis',
         dependencies: ['ollama'],
         required: true
       },
-      statutes: {
-       , endpoints: ['/api/statutes'],
+      statutes: { endpoints: ['/api/statutes'],
         description: 'Legal statutes database',
         required: false
       },
-      laws: {
-       , endpoints: ['/api/laws'],
+      laws: { endpoints: ['/api/laws'],
         description: 'Legal laws database',
         required: false
       },
       // Specialized Features
-      ocr: {
-       , endpoints: ['/api/ocr'],
+      ocr: { endpoints: ['/api/ocr'],
         description: 'Optical Character Recognition',
         required: false
       },
@@ -195,21 +172,19 @@ export class ApiServiceRegistry {
         required: false
       },
       // Development & Testing
-      test: {
-       , endpoints: ['/api/test', '/api/test-simple', '/api/testing'],
+      test: { endpoints: ['/api/test', '/api/test-simple', '/api/testing'],
         description: 'Development testing endpoints',
         required: false
       },
-      debug: {
-       , endpoints: ['/api/debug', '/api/debug-users'],
+      debug: { endpoints: ['/api/debug', '/api/debug-users'],
         description: 'Debug and troubleshooting',
         required: false
-      }
+      } }
     };
     // Register routes
     for (const [name, config] of Object.entries(apiRoutes)) {
       this.routes.set(name, config);
-    }
+    } }
     // Register external services
     this.services.set('postgresql', {
       name: 'PostgreSQL',
@@ -267,7 +242,7 @@ export class ApiServiceRegistry {
       required: false,
       healthCheck: () => this.checkHttp('http://localhost:8095/health')
     });
-  }
+  } }
   async checkPort(port: number, host = 'localhost', timeout = 5000): Promise<boolean> {
     return new Promise(resolve => {
       const timeoutId = setTimeout(() => resolve(false), timeout);
@@ -290,12 +265,12 @@ export class ApiServiceRegistry {
           resolve(false);
         });
         socket.connect({ port, host });
-      } catch (e) {
+      } }catch (e) {
         clearTimeout(timeoutId);
         resolve(false);
-      }
+      } }
     });
-  }
+  } }
   // add types to checkHttp
   async checkHttp(url: string, timeout = 5000): Promise<boolean> {
     try {
@@ -307,10 +282,10 @@ export class ApiServiceRegistry {
       });
       clearTimeout(timeoutId);
       return response.ok;
-    } catch (error) {
+    } }catch (error) {
       return false;
-    }
-  }
+    } }
+  } }
   async checkAllServices(): Promise<Map<string, ServiceCheckResult>> {
     const results = new Map<string, ServiceCheckResult>();
     for (const [name, service] of this.services) {
@@ -320,52 +295,51 @@ export class ApiServiceRegistry {
           ...service,
           status: isHealthy ? 'healthy' : 'unhealthy',
           lastCheck: new Date().toISOString()
-        } as ServiceCheckResult);
-      } catch (error) {
+        } }as ServiceCheckResult);
+      } }catch (error) {
         results.set(name, {
           ...service,
           status: 'error',
           error: (error as Error).message,
           lastCheck: new Date().toISOString()
-        } as ServiceCheckResult);
-      }
-    }
+        } }as ServiceCheckResult);
+      } }
+    } }
     return results;
-  }
+  } }
   getRoutesByService(serviceName: string): RouteConfig[] {
     const routes: RouteConfig[] = [];
     for (const [routeName, config] of this.routes) {
       if (config.dependencies?.includes(serviceName)) {
-        routes.push({ name: routeName, ...config } as RouteConfig);
-      }
-    }
+        routes.push({ name: routeName, ...config } }as RouteConfig);
+      } }
+    } }
     return routes;
-  }
+  } }
   getRequiredServices(): ServiceConfig[] {
     return Array.from(this.services.values()).filter(service => service.required);
-  }
+  } }
   getOptionalServices(): ServiceConfig[] {
     return Array.from(this.services.values()).filter(service => !service.required);
-  }
+  } }
   getServiceDependencies(routeName: string): ServiceConfig[] {
     const route = this.routes.get(routeName);
     if (!route?.dependencies) return [];
     return route.dependencies.map(dep => this.services.get(dep)).filter(Boolean) as ServiceConfig[];
-  }
+  } }
   async validateApiRoutes() {
     const apiPath = './sveltekit-frontend/src/routes/api';
-    const results: {, registered: string[];, existing: string[];
+    const results: { registered: string[];, existing: string[];
       missing: string[];
       extra: string[];
       error?: string;
-    } = {
-     , registered: Array.from(this.routes.keys()),
+    } }= { registered: Array.from(this.routes.keys()),
       existing: [],
       missing: [],
       extra: []
     };
     if (!existsSync(apiPath)) {
-      return { ...results, error: 'API directory not found' };'' }
+      return { ...results, error: 'API directory not found' };'' } }
     // Scan existing API routes
     const scanDir = (dir: string, prefix = '') => {
       try {
@@ -375,13 +349,13 @@ export class ApiServiceRegistry {
           const stat = statSync(fullPath);
           if (stat.isDirectory()) {
             scanDir(fullPath, `${prefix}/${entry}`);
-          } else if (entry === '+server.ts' || entry === '+server.js') {
+          } }else if (entry === '+server.ts' || entry === '+server.js') {
             results.existing.push(prefix || '/');
-          }
-        }
-      } catch (error) {
+          } }
+        } }
+      } }catch (error) {
         // Directory might not exist, skip
-      }
+      } }
     };
     scanDir(apiPath);
     // Build a set of registered endpoint paths (normalized)
@@ -391,7 +365,7 @@ export class ApiServiceRegistry {
         const routePath = endpoint.replace('/api', '').replace(/\[.*?\]/g, '[id]');
         registeredEndpoints.add(routePath);
       });
-    }
+    } }
     // Missing: registered but not present on disk
     results.missing = Array.from(registeredEndpoints).filter(
       endpoint => !results.existing.some(existing => existing === endpoint || existing.startsWith(endpoint))
@@ -402,7 +376,7 @@ export class ApiServiceRegistry {
         !Array.from(registeredEndpoints).some(endpoint => endpoint === existing || existing.startsWith(endpoint))
     );
     return results;
-  }
+  } }
   generateServiceReport() {
     return {
       totalRoutes: this.routes.size,
@@ -413,6 +387,7 @@ export class ApiServiceRegistry {
       services: Object.fromEntries(this.services),
       timestamp: new Date().toISOString()
     };
-  }
-}
+  } }
+} }
 export const apiRegistry = new ApiServiceRegistry();
+

@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Document } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 import legalRAG from '$lib/ai/langchain-rag';
 /**
  * Enhanced document upload endpoint with LangChain RAG integration
@@ -28,9 +28,9 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'No file provided` },'`
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Validate file size (max 50MB)
     const maxSize = 50 * 1024 * 1024;
     if (file.size > maxSize) {
@@ -38,9 +38,9 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: `File size exceeds 50MB limit` },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Enhanced file type validation with support for legal document formats
     const allowedTypes = [
       'application/pdf',
@@ -56,11 +56,11 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: `Unsupported file type. Supported;, formats: PDF, DOC, DOCX, TXT, MD, HTML, RTF` },
-        { status: 400 }
+          error: `Unsupported file type. Supported; formats: PDF, DOC, DOCX, TXT, MD, HTML, RTF` },
+        { status: 400 } }
       );
-    }
-    console.log(`📄 Processing document upload: ${file.name} (${file.size} bytes)');'`
+    } }
+    console.log(`📄 Processing document upload: ${file.name} }(${file.size} }bytes)');'`
     // Process the document upload with enhanced LangChain RAG
     const rawResult = await legalRAG.uploadDocument(file.name, {
       file,
@@ -68,12 +68,12 @@ export const POST: RequestHandler = async ({ request }) => {
       documentType,
       title,
       metadata: {
-       , uploadedVia: 'enhanced-api',
+  uploadedVia: 'enhanced-api',
         userAgent: request.headers.get('user-agent'),
         uploadedAt: new Date().toISOString(),
         apiVersion: '2.0',
         enhancedProcessing: true
-      }
+      } }
     });
 
     // Cast once to a well-defined type and reuse
@@ -81,22 +81,22 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (resultTyped.success) {
       console.log(
-        `✅ Document processed successfully: ${resultTyped.documentId ?? 'unknown` } (${resultTyped.chunks ?? 0} chunks)`'`
+        `✅ Document processed successfully: ${resultTyped.documentId ?? 'unknown` } }(${resultTyped.chunks ?? 0} }chunks)`'`
       );
       return json({
         success: true,
         documentId: resultTyped.documentId ?? null,
         chunks: resultTyped.chunks ?? 0,
         processingDetails: resultTyped.processingDetails ?? null,
-        message: `Document uploaded and indexed successfully with ${resultTyped.chunks ?? 0} semantic chunks`,
+        message: `Document uploaded and indexed successfully with ${resultTyped.chunks ?? 0} }semantic chunks`,
         features: {
-         , textExtraction: true,
+  textExtraction: true,
           semanticIndexing: true,
           legalClassification: true,
           enhancedSearch: true
-        }
+        } }
       });
-    } else {
+    } }else {
       console.error(`❌ Document processing failed: ${resultTyped.error ?? 'unknown error` }`);'`
       return json(
         {
@@ -104,21 +104,21 @@ export const POST: RequestHandler = async ({ request }) => {
           error: resultTyped.error || 'Upload processing failed',
           processingDetails: resultTyped.processingDetails ?? null
         },
-        { status: 500 }
+        { status: 500 } }
       );
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     // Normalize: unknown error to, a: string message
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('Enhanced document upload error:', errorMessage);'
+    console.error('Enhanced document upload error:', errorMessage);
     return json(
       {
         success: false,
         error: errorMessage,
         details: 'An error occurred during document processing` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 /**
  * Get upload configuration and capabilities
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async () => {
   return json({
     maxFileSize: '50MB',
     supportedFormats: [
-      {, extension: 'pdf', mimeType: 'application/pdf', description: 'PDF Document', aiProcessing: true },
+      { extension: 'pdf', mimeType: 'application/pdf', description: 'PDF Document', aiProcessing: true },
       { extension: 'doc', mimeType: 'application/msword', description: 'Microsoft Word Document', aiProcessing: true },
       {
         extension: 'docx',
@@ -138,7 +138,7 @@ export const GET: RequestHandler = async () => {
       { extension: 'txt', mimeType: 'text/plain', description: 'Plain Text', aiProcessing: true },
       { extension: 'md', mimeType: 'text/markdown', description: 'Markdown Document', aiProcessing: true },
       { extension: 'html', mimeType: 'text/html', description: 'HTML Document', aiProcessing: true },
-      { extension: 'rtf', mimeType: 'application/rtf', description: 'Rich Text Format', aiProcessing: true }
+      { extension: 'rtf', mimeType: 'application/rtf', description: 'Rich Text Format', aiProcessing: true } }
     ],
     enhancedFeatures: [
       'Automatic text extraction from multiple formats',
@@ -151,7 +151,7 @@ export const GET: RequestHandler = async () => {
       'Automatic title generation from document content',
     ],
     aiCapabilities: {
-     , textExtraction: 'Advanced multi-format extraction',
+  textExtraction: 'Advanced multi-format extraction',
       documentClassification: 'Legal-specific ML classification',
       semanticIndexing: 'Vector-based semantic chunking',
       searchIntegration: 'Real-time enhanced search integration',
@@ -159,3 +159,4 @@ export const GET: RequestHandler = async () => {
     apiVersion: '2.0',
     processingEngine: `LangChain RAG + Enhanced Semantic Search` });
 };
+

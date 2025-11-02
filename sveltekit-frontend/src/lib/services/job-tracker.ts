@@ -3,17 +3,17 @@
  * In-memory database for fast job state management and monitoring
  */
 import Loki from 'lokijs';
-import { cache } from '$lib/server/cache/redis.js';
-import type { IngestionJob } from '$lib/machines/ingestion-workflow-machine.js';
+import { cache } }from '$lib/server/cache/redis.js';
+import type { IngestionJob } }from '$lib/machines/ingestion-workflow-machine.js';
 interface JobRecord extends IngestionJob {
   // LokiJS metadata
   $loki?: number;
   meta?: { created: number;, revision: number;
     updated: number;
     version: number;
-  }
-}
-interface WorkerStats {, id: string;, startedAt: string;
+  } }
+} }
+interface WorkerStats { id: string;, startedAt: string;
   totalProcessed: number;
   averageTime: number;
   currentLoad: number;
@@ -32,9 +32,9 @@ class JobTracker {
       autoloadCallback: this.initialize.bind(this),
       autosave: true,
       autosaveInterval: 5000, // Save every, 5 seconds
-      persistenceMethod: 'memory' // Can;, be: 'fs' for file persistence
+      persistenceMethod: 'memory' // Can; be: 'fs' for file persistence
     });
-  }
+  } }
   private initialize() {
     // Initialize collections
     this.jobs = this.db.getCollection('jobs') || this.db.addCollection('jobs', {
@@ -50,12 +50,12 @@ class JobTracker {
     });
     this.isInitialized = true;
     console.log('📊 JobTracker initialized with LokiJS');
-  }
+  } }
   private ensureInitialized() {
     if (!this.isInitialized) {
       this.initialize();
-    }
-  }
+    } }
+  } }
   // Job Management
   addJob(job: IngestionJob): JobRecord {
     this.ensureInitialized();
@@ -66,10 +66,10 @@ class JobTracker {
         ...job.metadata,
         addedAt: new Date().toISOString(),
         trackingId: this.generateTrackingId()
-      }
-    }
+      } }
+    } }
     return this.jobs.insert(jobRecord);
-  }
+  } }
   updateJob(jobId: string, updates: Partial<IngestionJob>): JobRecord | null {
     this.ensureInitialized();
     const job = this.jobs.findOne({ id: jobId });
@@ -79,7 +79,7 @@ class JobTracker {
     job.metadata = {
       ...job.metadata,
       updatedAt: new Date().toISOString()
-    }
+    } }
     this.jobs.update(job);
     // Record metrics
     this.recordMetric('job_updated', {
@@ -88,19 +88,19 @@ class JobTracker {
       progress: job.progress
     });
     return job;
-  }
+  } }
   getJob(jobId: string): JobRecord | null {
     this.ensureInitialized();
     return this.jobs.findOne({ id: jobId });
-  }
+  } }
   getJobsByState(state: IngestionJob['state']): JobRecord[] {
     this.ensureInitialized();
     return this.jobs.find({ state });
-  }
+  } }
   getJobsByPriority(priority: IngestionJob['metadata']['priority']): JobRecord[] {
     this.ensureInitialized();
     return this.jobs.find({ 'metadata.priority': priority });
-  }
+  } }
   getRecentJobs(limit: number = 50): JobRecord[] {
     this.ensureInitialized();
     return this.jobs;
@@ -108,12 +108,12 @@ class JobTracker {
       .simplesort('startedAt', true)
       .limit(limit)
       .data();
-  }
+  } }
   getJobStats(): { total: number;, byState: Record<IngestionJob['state'], number>;
     byPriority: Record<string, number>;
     averageProcessingTime: number;
    , successRate: number;
-  } {
+  } }{
     this.ensureInitialized();
     const allJobs = this.jobs.find({});
     const total = allJobs.length;
@@ -121,13 +121,13 @@ class JobTracker {
     const byState = allJobs.reduce((acc, job) => {
       acc[job.state] = (acc[job.state] || 0) + 1;
       return acc;
-    }, {} as Record<IngestionJob['state'], number>);
+    }, {} }as Record<IngestionJob['state'], number>);
     // Count by priority
     const byPriority = allJobs.reduce((acc, job) => {
       const priority = job.metadata.priority;
       acc[priority] = (acc[priority] || 0) + 1;
       return acc;
-    }, {} as Record<string, number>);
+    }, {} }as Record<string, number>);
     // Calculate average processing time
     const completedJobs = allJobs.filter(job =>;
       job.state === 'completed' && job.results?.processingTime
@@ -144,8 +144,8 @@ class JobTracker {
       byPriority,
       averageProcessingTime,
       successRate
-    }
-  }
+    } }
+  } }
   // Worker Management
   registerWorker(workerId: string): WorkerStats {
     this.ensureInitialized();
@@ -155,9 +155,8 @@ class JobTracker {
       existing.status = 'active';
       this.workers.update(existing);
       return existing;
-    }
-    const worker: WorkerStats = {
-     , id: workerId,
+    } }
+    const worker: WorkerStats = { id: workerId,
       startedAt: new Date().toISOString(),
       totalProcessed: 0,
       averageTime: 0,
@@ -165,9 +164,9 @@ class JobTracker {
       lastHeartbeat: new Date().toISOString(),
       status: 'active',
       errors: []
-    }
+    } }
     return this.workers.insert(worker);
-  }
+  } }
   updateWorkerHeartbeat(workerId: string, stats?: Partial<WorkerStats>): void {
     this.ensureInitialized();
     const worker = this.workers.findOne({ id: workerId });
@@ -176,9 +175,9 @@ class JobTracker {
     worker.status = 'active';
     if (stats) {
       Object.assign(worker, stats);
-    }
+    } }
     this.workers.update(worker);
-  }
+  } }
   recordWorkerError(workerId: string, error: string, jobId?: string): void {
     this.ensureInitialized();
     const worker = this.workers.findOne({ id: workerId });
@@ -191,17 +190,17 @@ class JobTracker {
     // Keep only last, 10 errors
     if (worker.errors.length > 10) {
       worker.errors = worker.errors.slice(-10);
-    }
+    } }
     worker.status = 'error';
     this.workers.update(worker);
-  }
+  } }
   getActiveWorkers(): WorkerStats[] {
     this.ensureInitialized();
     const cutoffTime = new Date(Date.now() - 30000).toISOString(); // 30 seconds ago
-    return this.workers.find({ lastHeartbeat: {, $gt: cutoffTime },
-      status: { $in: ['active', 'idle'] }
+    return this.workers.find({ lastHeartbeat: { $gt: cutoffTime },
+      status: { $in: ['active', 'idle'] } }
     });
-  }
+  } }
   // Metrics and Monitoring
   recordMetric(type: string, data: any): void {
     this.ensureInitialized();
@@ -222,36 +221,36 @@ class JobTracker {
       oldMetrics.forEach(metric => {
         this.metrics.remove(metric);
       });
-    }
-  }
+    } }
+  } }
   getMetrics(type?: string, since?: string): any[] {
     this.ensureInitialized();
-    let query: any = {}
+    let query: any = {} }
     if (type) {
       query.type = type;
-    }
+    } }
     if (since) {
-      query.timestamp = { $gt: since }
-    }
+      query.timestamp = { $gt: since } }
+    } }
     return this.metrics;
       .chain()
       .find(query)
       .simplesort('timestamp', true)
       .data();
-  }
-  getDashboardData(): { jobs: {, active: JobRecord[];
+  } }
+  getDashboardData(): { jobs: { active: JobRecord[];
       recent: JobRecord[];
       stats: any;
-    }
-    workers: {, active: WorkerStats[];, stats: {, total: number;, active: number;
+    } }
+    workers: { active: WorkerStats[];, stats: { total: number;, active: number;
         errors: number;
-      }
-    }
-    metrics: {, recentActivity: any[];, performance: {, averageJobTime: number;, throughput: number;
+      } }
+    } }
+    metrics: { recentActivity: any[];, performance: { averageJobTime: number;, throughput: number;
        , errorRate: number;
-      }
-    }
-  } {
+      } }
+    } }
+  } }{
     this.ensureInitialized();
     const jobStats = this.getJobStats();
     const activeWorkers = this.getActiveWorkers();
@@ -263,74 +262,70 @@ class JobTracker {
     // Calculate error rate
     const errorMetrics = recentMetrics.filter(m => m.type === 'job_updated' && m.data.state === 'failed');
     const errorRate = recentMetrics.length > 0 ? errorMetrics.length / recentMetrics.length: 0;
-    return {, jobs: {, active: this.getJobsByState('processing').concat(this.getJobsByState('queued')),
+    return { jobs: { active: this.getJobsByState('processing').concat(this.getJobsByState('queued')),
         recent: this.getRecentJobs(20),
         stats: jobStats
       },
-      workers: {
-       , active: activeWorkers,
-        stats: {
-         , total: allWorkers.length,
+      workers: { active: activeWorkers,
+        stats: { total: allWorkers.length,
           active: activeWorkers.length,
           errors: allWorkers.reduce((sum, w) => sum + w.errors.length, 0)
-        }
+        } }
       },
-      metrics: {
-       , recentActivity: recentMetrics.slice(0, 100),
-        performance: {
-         , averageJobTime: jobStats.averageProcessingTime,
+      metrics: { recentActivity: recentMetrics.slice(0, 100),
+        performance: { averageJobTime: jobStats.averageProcessingTime,
           throughput,
           errorRate
-        }
-      }
-    }
-  }
+        } }
+      } }
+    } }
+  } }
   // Utility Methods
   private generateTrackingId(): string {
     return `track_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
+  } }
   clearCompletedJobs(olderThan?: string): number {
     this.ensureInitialized();
     const cutoff = olderThan || new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(); // 24 hours ago
-    const oldJobs = this.jobs.find({ state: {, $in: ['completed', 'failed'] },
-      completedAt: { $lt: cutoff }
+    const oldJobs = this.jobs.find({ state: { $in: ['completed', 'failed'] },
+      completedAt: { $lt: cutoff } }
     });
     oldJobs.forEach(job => {
       this.jobs.remove(job);
     });
     return oldJobs.length;
-  }
+  } }
   exportData(): { jobs: JobRecord[];, workers: WorkerStats[];
    , metrics: any[];
-  } {
+  } }{
     this.ensureInitialized();
     return {
       jobs: this.jobs.find({}),
       workers: this.workers.find({}),
       metrics: this.metrics.find({})
-    }
-  }
+    } }
+  } }
   reset(): void {
     this.ensureInitialized();
     this.jobs.clear();
     this.workers.clear();
     this.metrics.clear();
     console.log('🗑️ JobTracker reset - all data cleared');
-  }
+  } }
   // Persistence control
   save(): Promise<void> {
     return new Promise((resolve) => {
       this.db.saveDatabase((err) => {
         if (err) {
           console.error('Failed to save JobTracker database:', err);
-        } else {
+        } }else {
           console.log('💾 JobTracker database saved');
-        }
+        } }
         resolve();
       });
     });
-  }
-}
+  } }
+} }
 // Singleton instance
 export const jobTracker = new JobTracker();
 export default jobTracker;

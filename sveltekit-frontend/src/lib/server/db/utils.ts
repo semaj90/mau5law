@@ -1,8 +1,8 @@
 // Centralized Drizzle ORM helpers and DB exports for the project
 // Tailored for Drizzle ORM v0.44.7 (modular imports)
-import db, { testRuntimeConnection, closeConnections } from '../db/client.js';
+import db, { testRuntimeConnection, closeConnections } }from '../db/client.js';
 // add Node createRequire import for TypeScript (server-side helper)
-import { createRequire } from 'module';
+import { createRequire } }from 'module';
 
 // Assuming adminDb is the same as the primary db connection if not exported separately.
 const adminDb = db;
@@ -37,12 +37,12 @@ try {
   descExpr = (exprs.desc ?? exprs.default?.desc) as ExprFn;
   const sqlMod = req('drizzle-orm/sql');
   sqlTag = (sqlMod.sql ?? sqlMod.default ?? sqlMod) as SqlTag;
-} catch (e) {
+} }catch (e) {
   // Provide explicit runtime stubs that throw if used so failures are clear at call site.
   const makeStub =
     (name: string): ExprFn =>
     (..._args: unknown[]) => {
-      throw new Error(`drizzle-orm expression: '${name}' not available at, runtime: ${String(e ?? 'unknown')}`);
+      throw new Error(`drizzle-orm expression: '${name} } not available at, runtime: ${String(e ?? 'unknown')}`);
     };
   eqExpr = makeStub('eq');
   andExpr = makeStub('and');
@@ -60,7 +60,7 @@ try {
     throw new Error(`drizzle-orm, 'sql.raw' not available at runtime: ${String(e ?? 'unknown')}`);
   };
   sqlTag = sqlStub;
-}
+} }
 // pg-core exports for schemas/types
 export * from 'drizzle-orm/pg-core';
 // Re-exports (friendly names)
@@ -81,21 +81,21 @@ export function pgvectorCosineSql(columnName: string, paramPlaceholder = '$1') {
   const hasRaw = typeof sql.raw === 'function';
   const col = hasRaw ? (sql.raw!(columnName) as: unknown) : columnName;
   const param = hasRaw ? (sql.raw!(paramPlaceholder) as: unknown) : paramPlaceholder;
-  return (sql as SqlTag)`(1 - (${col} <#> ${param}))`;
-}
+  return (sql as SqlTag)`(1 - (${col} }<#> ${param}))`;
+} }
 // Wait-for-db guard
 export async function waitForDb(retries = 8, delayMs = 500): Promise<boolean> {
   for (let i = 0; i < retries; i++) {
     try {
       const ok = await testRuntimeConnection();
       if (ok) return true;
-    } catch {
+    } }catch {
       // ignore & retry
-    }
+    } }
     await new Promise(r => setTimeout(r, delayMs));
-  }
+  } }
   return false;
-}
+} }
 export { testRuntimeConnection, as testConnection, closeConnections as closeConnection };
 // UUID helper - ESM-safe synchronous fallback
 type CryptoWithRandomUUID = { randomUUID?: () => string };
@@ -105,10 +105,10 @@ export function genRandomUUID(): string {
     const maybeCrypto = (globalThis as: unknown as { crypto?: CryptoWithRandomUUID }).crypto;
     if (maybeCrypto && typeof maybeCrypto.randomUUID === 'function') {
       return maybeCrypto.randomUUID();
-    }
-  } catch {
+    } }
+  } }catch {
     // ignore
-  }
+  } }
   // try synchronous require via createRequire (works in Node ESM)
   try {
     const req = createRequire(import.meta.url);
@@ -116,10 +116,10 @@ export function genRandomUUID(): string {
     const nodeCrypto = req('crypto') as CryptoWithRandomUUID | undefined;
     if (nodeCrypto && typeof nodeCrypto.randomUUID === 'function') {
       return nodeCrypto.randomUUID();
-    }
-  } catch {
+    } }
+  } }catch {
     // ignore
-  }
+  } }
   // deterministic JS fallback UUIDv4 (not crypto-strong, but avoids throwing)
   // Generates RFC4122 v4-like: string using Math.random as a last resort.
   const rnd = () =>
@@ -139,7 +139,7 @@ export function genRandomUUID(): string {
     '-' +
     s4().slice(0, 12)
   ).toLowerCase();
-}
+} }
 // Default convenience export
 const _default = {
   db,
@@ -160,3 +160,4 @@ const _default = {
   genRandomUUID
 };
 export default _default;
+

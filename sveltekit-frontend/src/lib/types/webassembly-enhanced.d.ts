@@ -10,7 +10,7 @@ export interface EnhancedImportValue extends WebAssembly.ImportValue {
   gl?: WebGLRenderingContext | WebGL2RenderingContext;
   // Memory sharing for GPU operations
   memory?: WebAssembly.Memory;
-}
+} }
 // GPU device to ImportValue conversion utilities
 export const webAssemblyGPUUtils = {
   // Safe conversion of GPUDevice to ImportValue
@@ -20,7 +20,7 @@ export const webAssemblyGPUUtils = {
   },
   // Create WebAssembly import: object with GPU support
  , createImportsWithGPU: (device: GPUDevice, additionalImports: any = {}): WebAssembly.Imports => {
-    return { env: {, memory: new WebAssembly.Memory({, initial: 10, maximum: 100 }),
+    return { env: { memory: new WebAssembly.Memory({ initial: 10, maximum: 100 }),
         getGPUDevice: () => device,
         ...additionalImports
       },
@@ -45,7 +45,7 @@ export const webAssemblyGPUUtils = {
         method: (analysis, as: any).method || 'unknown',
         ...analysis
       };
-    }
+    } }
     return {
       summary: 'Analysis failed',
       keyTerms: [],
@@ -56,21 +56,21 @@ export const webAssemblyGPUUtils = {
       processingTime: 0,
       method: 'error'
     };
-  }
+  } }
 };
 // Module declaration for WebAssembly enhancements
 declare module, 'webassembly' {
   interface ImportValue {
     gpu?: GPUDevice;
-  }
-}
+  } }
+} }
 // Global type augmentations for WebAssembly
 declare global {
   namespace WebAssembly {
     interface ImportValue {
       // Allow GPU devices as import values through function wrapper
       (): GPUDevice;
-    }
+    } }
     interface Imports {
       env?: {
         memory?: WebAssembly.Memory;
@@ -82,8 +82,8 @@ declare global {
         [key: string]: any;
       };
       [key: string]: any;
-    }
-  }
+    } }
+  } }
   // Enhanced GPU device interface
   interface GPUDevice {
     // Ensure destroy method is available
@@ -92,6 +92,7 @@ declare global {
     addEventListener(type: string, listener: (_event: any) => void): void;
     removeEventListener(type: string, listener: (_event: any) => void): void;
     dispatchEvent(_event: any): boolean;
-  }
-}
+  } }
+} }
 export { webAssemblyGPUUtils };
+

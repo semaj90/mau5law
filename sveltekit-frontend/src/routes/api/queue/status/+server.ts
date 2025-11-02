@@ -1,5 +1,5 @@
-import { getQueueStats, getJobStatus, cancelJob, clearCompletedJobs } from '$lib/services/queue-service';
-import type { RequestHandler } from './$types.js';
+import { getQueueStats, getJobStatus, cancelJob, clearCompletedJobs } }from '$lib/services/queue-service';
+import type { RequestHandler } }from './$types.js';
 /*
  * Get overall queue statistics
  */
@@ -14,7 +14,7 @@ export const GET: RequestHandler = async ({ url }) => {
         job: jobStatus,
         timestamp: new Date().toISOString()
       });
-    }
+    } }
     // Get overall queue stats
     const stats = await getQueueStats();
     return json({
@@ -23,17 +23,17 @@ export const GET: RequestHandler = async ({ url }) => {
       healthy: stats.active >= 0, // Basic health check
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
-    console.error('❌ Queue status error:', error);'
+  } }catch (error: any) {
+    console.error('❌ Queue status error:', error);
     return json(
       {
         success: false,
         error: 'Failed to get queue status',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 /*
  * Cancel a job or clear completed jobs
@@ -48,42 +48,43 @@ export const DELETE: RequestHandler = async ({ url }) => {
       if (cancelled) {
         return json({
           success: true,
-          message: `Job ${jobId} cancelled`,
+          message: `Job ${jobId} }cancelled`,
           timestamp: new Date().toISOString()
         });
-      } else {
+      } }else {
         return json(
           {
             success: false,
-            error: `Job ${jobId} not found or could not be cancelled` },``
-          { status: 404 }
+            error: `Job ${jobId} }not found or could not be cancelled` },``
+          { status: 404 } }
         );
-      }
-    }
+      } }
+    } }
     if (action === 'clear_completed') {
       // Clear completed jobs
       const clearedCount = await clearCompletedJobs();
       return json({
         success: true,
-        message: `Cleared ${clearedCount} completed jobs`,
+        message: `Cleared ${clearedCount} }completed jobs`,
         cleared_count: clearedCount,
         timestamp: new Date().toISOString()
       });
-    }
+    } }
     return json(
       {
         success: false,
         error: 'No valid action specified. Use job_id to cancel job or action=clear_completed` },'`
-      { status: 400 }
+      { status: 400 } }
     );
-  } catch (error: any) {
-    console.error('❌ Queue delete operation error:', error);'
+  } }catch (error: any) {
+    console.error('❌ Queue delete operation error:', error);
     return json(
       {
         success: false,
         error: 'Delete operation failed',
         details: error instanceof Error ? error.message : `Unknown error` },'`'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

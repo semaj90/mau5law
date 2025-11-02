@@ -2,12 +2,12 @@
  * WebGPU QLoRA Topology Prediction API
  * SvelteKit, 2 API endpoint for legal AI topology optimization
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { qloraTopologyPredictor } from '$lib/ai/qlora-topology-predictor';
-import { webgpuRAGService } from '$lib/webgpu/webgpu-rag-service';
-import type { LegalDocument } from '$lib/memory/nes-memory-architecture';
-import type { UserBehaviorPattern } from '$lib/ai/qlora-topology-predictor';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { qloraTopologyPredictor } }from '$lib/ai/qlora-topology-predictor';
+import { webgpuRAGService } }from '$lib/webgpu/webgpu-rag-service';
+import type { LegalDocument } }from '$lib/memory/nes-memory-architecture';
+import type { UserBehaviorPattern } }from '$lib/ai/qlora-topology-predictor';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // parse JSON safely and avoid `any`
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Create mock legal document
     const document: LegalDocument = {
-     , id: `doc_${Date.now()}`,
+  id: `doc_${Date.now()}`,
       type: documentType,
       priority: Math.max(0, Math.min(255, Math.floor((complexity || 0.5) * 255))),
       size: 1024 * 1024, // default 1MB
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
       lastAccessed: Date.now(),
       compressed: true,
       metadata:
-        typeof b['metadata'] === 'object' && b['metadata'] !== null ? (b['metadata'] as Record<string, unknown>) : {}
+        typeof b['metadata'] === 'object' && b['metadata'] !== null ? (b['metadata'] as Record<string, unknown>) : {} }
     };
 
     // Parse optional inputs from request body with safe defaults
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
       interactionVelocity: userPattern.interactionVelocity ?? 0.5,
       qualityExpectation: userPattern.qualityExpectation ?? 0.8,
       timeConstraints: userPattern.timeConstraints ?? 0.6
-    } satisfies UserBehaviorPattern;
+    } }satisfies UserBehaviorPattern;
 
     // Performance requirements
     // Coerce performance requirements into typed numeric values with safe defaults
@@ -110,24 +110,24 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       prediction: topologyPrediction,
       webgpu: {
-       , initialized: webgpuInit,
+  initialized: webgpuInit,
         result: webgpuResult
       },
       hmm: {
-       , accuracy: hmmMetrics.overallAccuracy,
+  accuracy: hmmMetrics.overallAccuracy,
         confidence: hmmMetrics.modelConfidence,
         totalPredictions: hmmMetrics.totalPredictions,
         cacheHitRate: hmmMetrics.cacheHitRate
       },
       userAnalytics,
       document: {
-       , id: document.id,
+  id: document.id,
         type: document.type,
         complexity: document.confidenceLevel
       },
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ WebGPU Topology Prediction Error:', error);
     return json(
       {
@@ -135,9 +135,9 @@ export const POST: RequestHandler = async ({ request }) => {
         error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const GET: RequestHandler = async () => {
   try {
@@ -147,11 +147,11 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'operational',
       services: {
-       , qloraTopology: 'ready',
+  qloraTopology: 'ready',
         hmmPredictor: 'ready',
         webgpuRag: webgpuInit.adapter ? 'ready' : 'fallback` },'`
       metrics: {
-       , hmmAccuracy: hmmMetrics.overallAccuracy,
+  hmmAccuracy: hmmMetrics.overallAccuracy,
         hmmConfidence: hmmMetrics.modelConfidence,
         totalPredictions: hmmMetrics.totalPredictions,
         cacheHitRate: hmmMetrics.cacheHitRate
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async () => {
       webgpu: webgpuInit,
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ WebGPU Topology Health Check Error:', error);
     return json(
       {
@@ -167,7 +167,8 @@ export const GET: RequestHandler = async () => {
         error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

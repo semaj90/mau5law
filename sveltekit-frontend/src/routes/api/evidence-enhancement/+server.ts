@@ -1,37 +1,37 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /// <reference, types="vite/client" />
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
-import { ollamaConfig } from '$lib/services/ollama-config-service.js';
-import { ENV_CONFIG } from '$lib/config/environment.js';
+import type { RequestHandler } }from './$types.js';
+import { json, error } }from '@sveltejs/kit';
+import { ollamaConfig } }from '$lib/services/ollama-config-service.js';
+import { ENV_CONFIG } }from '$lib/config/environment.js';
 /*
  * Evidence Enhancement API
  * Analyzes uploaded evidence and suggests relevant labels and classifications
  */
 import postgres from 'postgres';
-import { z } from 'zod';
+import { z } }from 'zod';
 // Configuration
-const CONFIG = { database: {, connectionString: 'postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test' }' },
+const CONFIG = { database: { connectionString: 'postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test' } } },
   redis: {
-   , url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
+  url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
   },
   ollama: {
-   , url: ENV_CONFIG.OLLAMA_URL,
+  url: ENV_CONFIG.OLLAMA_URL,
     model: import.meta.env.LLM_MODEL || 'gemma3-legal:latest',
     embeddingModel: 'nomic-embed-text' },
   enhancement: {
-   , minConfidence: 0.6,
+  minConfidence: 0.6,
     maxSuggestions: 10,
     similarityThreshold: 0.7
-  }
+  } }
 };
 // Validation schemas
 const EvidenceEnhancementRequestSchema = z.object({
- , evidence_text: z.string().min(10).max(50000),
+  evidence_text: z.string().min(10).max(50000),
   evidence_type: z.enum(['document', 'testimony', 'physical', 'digital', 'audio', 'video']),
   case_context: z
     .object({
-     , case_id: z.string().optional(),
+  case_id: z.string().optional(),
       jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
       case_type: z.enum(['criminal', 'civil', 'administrative', 'constitutional']).optional(),
       charges: z.array(z.string()).optional(),
@@ -40,7 +40,7 @@ const EvidenceEnhancementRequestSchema = z.object({
     .optional(),
   enhancement_options: z
     .object({
-     , suggest_labels: z.boolean().optional(),
+  suggest_labels: z.boolean().optional(),
       extract_entities: z.boolean().optional(),
       find_similar: z.boolean().optional(),
       prosecution_analysis: z.boolean().optional(),
@@ -48,14 +48,14 @@ const EvidenceEnhancementRequestSchema = z.object({
     })
     .optional()
 });
-const EvidenceEnhancementResponseSchema = z.object({ analysis: z.object({, evidence_type: z.string(),
+const EvidenceEnhancementResponseSchema = z.object({ analysis: z.object({ evidence_type: z.string(),
     confidence_score: z.number(),
     prosecution_strength: z.number(),
     legal_relevance: z.number()
   }),
   suggested_labels: z.array(
     z.object({
-     , label: z.string(),
+  label: z.string(),
       confidence: z.number(),
       category: z.string(),
       justification: z.string()
@@ -63,7 +63,7 @@ const EvidenceEnhancementResponseSchema = z.object({ analysis: z.object({, evid
   ),
   extracted_entities: z.array(
     z.object({
-     , entity: z.string(),
+  entity: z.string(),
       type: z.string(),
       confidence: z.number(),
       context: z.string()
@@ -71,20 +71,20 @@ const EvidenceEnhancementResponseSchema = z.object({ analysis: z.object({, evid
   ),
   similar_evidence: z.array(
     z.object({
-     , document_id: z.string(),
+  document_id: z.string(),
       similarity_score: z.number(),
       relevant_phrases: z.array(z.string()),
       prosecution_outcome: z.string()
     })
   ),
   prosecution_insights: z.object({
-   , strengths: z.array(z.string()),
+  strengths: z.array(z.string()),
     weaknesses: z.array(z.string()),
     recommendations: z.array(z.string()),
     precedent_support: z.number()
   }),
   metadata: z.object({
-   , processing_time_ms: z.number(),
+  processing_time_ms: z.number(),
     enhancement_version: z.string(),
     data_sources: z.array(z.string())
   })
@@ -106,29 +106,29 @@ type AnalysisResult = { evidence_type: string;, confidence_score: number;
   legal_relevance: number;
 };
 
-type SuggestedLabel = {, label: string;, confidence: number;
+type SuggestedLabel = { label: string;, confidence: number;
   category: string;
   justification: string;
 };
 
-type Entity = {, entity: string;, type: string;
+type Entity = { entity: string;, type: string;
   confidence: number;
   context: string;
 };
 
-type SimilarEvidenceItem = {, document_id: string;, similarity_score: number;
+type SimilarEvidenceItem = { document_id: string;, similarity_score: number;
   relevant_phrases: string[];
   prosecution_outcome: string;
 };
 
-type ProsecutionInsights = {, strengths: string[];, weaknesses: string[];
+type ProsecutionInsights = { strengths: string[];, weaknesses: string[];
   recommendations: string[];
   precedent_support: number;
 };
 
 // Add a minimal Redis-like client type to avoid `any` while remaining flexible
 type RedisLike = {
-  setex?: (key: string;, seconds: number;, value: string) => Promise<unknown> | unknown;
+  setex?: (key: string; seconds: number; value: string) => Promise<unknown> | unknown;
   set?: (...args: any[]) => Promise<unknown> | unknown;
   // allow index signature for other methods used elsewhere if needed
   [key: string]: any;
@@ -142,7 +142,7 @@ let, redis: RedisLike | null = null;
 function getDB() {
   if (!sqlInstance) {
     sqlInstance = postgres(CONFIG.database.connectionString, { max: 10 });
-  }
+  } }
   // Return a lightweight wrapper that provides .query(sqlText, params)
   // so existing code that expects db.query(...) continues to work.
   return {
@@ -156,32 +156,32 @@ function getDB() {
       if (typeof raw === 'object' && raw !== null && 'rows' in (raw as Record<string, unknown>)) {
         const possibleRows = (raw as { rows?: any }).rows;
         return { rows: Array.isArray(possibleRows) ? (possibleRows as: unknown[]) : ([] as: unknown[]) };
-      }
+      } }
 
       // Otherwise, if it returned an array of rows, wrap it.
       if (Array.isArray(raw)) return { rows: raw as: unknown[] };
 
       // Fallback: single row: object
       return { rows: [raw], as: unknown[] };
-    }
-  } as const;
-}
+    } }
+  } }as const;
+} }
 async function getRedis(): Promise<RedisLike> {
   if (!redis) {
     try {
-      const { createRedisInstance } = await import('$lib/server/redis');
+      const { createRedisInstance } }= await import('$lib/server/redis');
       // createRedisInstance should return a Redis-like client
       // Cast via `unknown` first to avoid direct incompatible-conversion errors.
       redis = createRedisInstance() as: unknown as RedisLike;
-    } catch {
+    } }catch {
       const RedisCtor = (await import('ioredis')).default;
       // Cast via `unknown` first to avoid TypeScript complaining about incompatible index signatures.
       redis = new RedisCtor(CONFIG.redis.url) as: unknown as RedisLike;
-    }
-  }
+    } }
+  } }
   return redis;
-}
-export const, POST: RequestHandler = async ({ request }) => {
+} }
+export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
     const requestData = await request.json();
@@ -223,7 +223,7 @@ export const, POST: RequestHandler = async ({ request }) => {
         analysisResult.status === 'fulfilled'
           ? analysisResult.value
           : {
-             , evidence_type: validatedRequest.evidence_type,
+  evidence_type: validatedRequest.evidence_type,
               confidence_score: 0.5,
               prosecution_strength: 50,
               legal_relevance: 0.5
@@ -235,56 +235,56 @@ export const, POST: RequestHandler = async ({ request }) => {
         prosecutionInsights.status === 'fulfilled'
           ? prosecutionInsights.value
           : {
-             , strengths: [],
+  strengths: [],
               weaknesses: [],
               recommendations: [],
               precedent_support: 0
             },
       metadata: {
-       , processing_time_ms: Date.now() - startTime,
+  processing_time_ms: Date.now() - startTime,
         enhancement_version: '2.0.0',
         data_sources: ['legal_documents_processed', 'semantic_phrases_ranking']
-      }
+      } }
     };
     // Validate response
     const validatedResponse = EvidenceEnhancementResponseSchema.parse(response);
     // Cache results for future reference
     await cacheEnhancementResults(validatedRequest.evidence_text, validatedResponse);
     return json(validatedResponse);
-  } catch (err: any) {
-    console.error('❌ Evidence enhancement error:', err);'
+  } }catch (err: any) {
+    console.error('❌ Evidence enhancement error:', err);
     if (err instanceof z.ZodError) {
       return json(
         {
           message: 'Invalid request format',
           errors: err.errors
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     const message = err instanceof Error ? err.message : String(err);
     return json(
       {
         message: 'Evidence enhancement service temporarily unavailable',
         details: message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 async function analyzeEvidence(evidenceText: string, evidenceType: string): Promise<AnalysisResult> {
   try {
     // Use LLM to analyze the evidence
-    const analysisPrompt = `You are a legal evidence analyst. Analyze the following ${evidenceType} evidence and provide a structured assessment.`
+    const analysisPrompt = `You are a legal evidence analyst. Analyze the following ${evidenceType} }evidence and provide a structured assessment.`
 Evidence Text:
-${evidenceText}
+${evidenceText} }
 Analyze and respond with ONLY a JSON: object in this, format:
 {
   "evidence_type": "${evidenceType}",
   "confidence_score": 0.0-1.0,
   "prosecution_strength": 0-100,
   "legal_relevance": 0.0-1.0
-}
+} }
 Consider:
 - How clear and compelling is this evidence?
 - What is its potential value for prosecution?
@@ -294,13 +294,13 @@ Consider:
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , model: CONFIG.ollama?.model || 'unknown',
+  model: CONFIG.ollama?.model || 'unknown',
         prompt: analysisPrompt,
         stream: false,
         options: {
-         , temperature: 0.2,
+  temperature: 0.2,
           top_p: 0.8
-        }
+        } }
       })
     });
     if (response.ok) {
@@ -309,11 +309,11 @@ Consider:
       const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]) as AnalysisResult;
-      }
-    }
-  } catch (error: any) {
+      } }
+    } }
+  } }catch (error: any) {
     console.warn('LLM analysis failed, using fallback:', error);
-  }
+  } }
   // Fallback analysis
   return {
     evidence_type: evidenceType,
@@ -321,7 +321,7 @@ Consider:
     prosecution_strength: 65,
     legal_relevance: 0.6
   };
-}
+} }
 async function suggestLabels(evidenceText: string, caseContext?: CaseContext): Promise<SuggestedLabel[]> {
   const db = getDB();
   try {
@@ -375,37 +375,36 @@ async function suggestLabels(evidenceText: string, caseContext?: CaseContext): P
           label: phraseText,
           confidence,
           category: categorizeLegalPhrase(phraseText),
-          justification: 'High prosecution correlation (${avgScore}%) based on ${freq} similar cases' });
-      }
-    }
+          justification: 'High prosecution correlation (${avgScore}%) based on ${freq} }similar cases' });
+      } }
+    } }
     // --- end changes ---
 
     // Add contextual labels based on case information
     if (caseContext?.charges) {
       for (const charge of caseContext.charges) {
         labels.push({
-          label: 'Supports, '${charge}' charge`,'`
+          label: 'Supports, '${charge} } charge`,'`
           confidence: 0.8,
           category: 'charge_support',
           justification: 'Evidence directly relates to stated charges' });
-      }
-    }
+      } }
+    } }
     return labels.slice(0, CONFIG.enhancement.maxSuggestions);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Label suggestion failed:', error);
     return [];
-  }
-}
+  } }
+} }
 async function extractEntities(evidenceText: string): Promise<Entity[]> {
   try {
     const entityPrompt = `Extract legal entities from this text. Respond with ONLY a JSON array in this format:`
 [
-  {,
-    "entity": "entity name",
+  { "entity": "entity name",
     "type": "PERSON|ORGANIZATION|LOCATION|DATE|STATUTE|CASE_NUMBER|AMOUNT",
     "confidence": 0.0-1.0,
     "context": "surrounding context"
-  }
+  } }
 ]
 Text to analyze:
 ${evidenceText}`;`
@@ -413,13 +412,13 @@ ${evidenceText}`;`
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , model: CONFIG.ollama?.model || 'unknown',
+  model: CONFIG.ollama?.model || 'unknown',
         prompt: entityPrompt,
         stream: false,
         options: {
-         , temperature: 0.1,
+  temperature: 0.1,
           top_p: 0.7
-        }
+        } }
       })
     });
     if (response.ok) {
@@ -429,14 +428,14 @@ ${evidenceText}`;`
       if (jsonMatch) {
         const entities = JSON.parse(jsonMatch[0]) as Entity[];
         return entities.filter(e => (e.confidence ?? 0) >= 0.5);
-      }
-    }
-  } catch (error: any) {
+      } }
+    } }
+  } }catch (error: any) {
     console.warn('Entity extraction failed:', error);
-  }
+  } }
   // Fallback entity extraction using regex patterns
   return extractEntitiesWithRegex(evidenceText);
-}
+} }
 function extractEntitiesWithRegex(text: string): Entity[] {
   const entities: Entity[] = [];
   // Common legal entity patterns
@@ -457,17 +456,17 @@ function extractEntitiesWithRegex(text: string): Entity[] {
           confidence: 0.7,
           context: getContext(text, match)
         });
-      }
-    }
-  }
+      } }
+    } }
+  } }
   return entities.slice(0, 15); // Limit results
-}
+} }
 function getContext(text: string, entity: string): string {
   const index = text.indexOf(entity);
   const start = Math.max(0, index - 50);
   const end = Math.min(text.length, index + entity.length + 50);
   return text.substring(start, end).trim();
-}
+} }
 async function findSimilarEvidence(evidenceText: string, caseContext?: CaseContext): Promise<SimilarEvidenceItem[]> {
   const db = getDB();
   try {
@@ -476,10 +475,10 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: CaseConte
       const emb = await generateEmbedding(evidenceText);
       console.debug('generateEmbedding produced vector length:', Array.isArray(emb) ? emb.length : 'invalid');
       // embedding is currently only used for prewarming/logging; future improvements can use it for vector search
-    } catch (e) {
+    } }catch (e) {
       // non-fatal if embedding fails
       console.debug('Embedding prefetch failed:', e);
-    }
+    } }
     // --- end change ---
 
     // Find similar documents using vector similarity
@@ -527,18 +526,18 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: CaseConte
         const rawPhrases = doc.semantic_phrases ?? '[]';
         if (Array.isArray(rawPhrases)) {
           phrases = rawPhrases;
-        } else if (typeof rawPhrases === 'string') {
+        } }else if (typeof rawPhrases === 'string') {
           try {
             const parsed = JSON.parse(rawPhrases);
             phrases = Array.isArray(parsed) ? parsed : [];
-          } catch {
+          } }catch {
             // fallback: attempt simple split by comma if it's a, plain: string'
             phrases = rawPhrases
               .split(',')
               .map(p => p.trim())
               .filter(Boolean);
-          }
-        }
+          } }
+        } }
 
         similarEvidence.push({
           document_id: String(doc.document_id ?? 'unknown'),
@@ -546,26 +545,26 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: CaseConte
           relevant_phrases: Array.isArray(phrases) ? (phrases as: string[]).slice(0, 5) : [],
           prosecution_outcome: String(doc.judgement_outcome ?? 'Unknown')
         });
-      }
-    }
+      } }
+    } }
     return similarEvidence.sort((a, b) => b.similarity_score - a.similarity_score).slice(0, 5);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Similar evidence search failed: ', error);'`'`
     return [];
-  }
-}
+  } }
+} }
 async function analyzeProsecutionValue(evidenceText: string, caseContext?: CaseContext): Promise<ProsecutionInsights> {
   try {
     const analysisPrompt = `As a prosecution strategist, analyze this evidence for its prosecution value:; Evidence:`
-${evidenceText}
-${caseContext ? `Case, Context: ${JSON.stringify(caseContext)}` : '' }
+${evidenceText} }
+${caseContext ? `Case, Context: ${JSON.stringify(caseContext)}` : '' } }
 Respond with ONLY a JSON: object:
 {
   "strengths": ["strength1", "strength2"],
   "weaknesses": ["weakness1", "weakness2"],
   "recommendations": ["recommendation1", "recommendation2"],
   "precedent_support": 0.0-1.0
-}
+} }
 Focus on:
 - What makes this evidence strong for prosecution?
 - What potential weaknesses should be addressed?
@@ -575,13 +574,13 @@ Focus on:
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , model: CONFIG.ollama?.model || 'unknown',
+  model: CONFIG.ollama?.model || 'unknown',
         prompt: analysisPrompt,
         stream: false,
         options: {
-         , temperature: 0.3,
+  temperature: 0.3,
           top_p: 0.9
-        }
+        } }
       })
     });
     if (response.ok) {
@@ -590,11 +589,11 @@ Focus on:
       const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]) as ProsecutionInsights;
-      }
-    }
-  } catch (error: any) {
+      } }
+    } }
+  } }catch (error: any) {
     console.warn('Prosecution analysis failed:', error);
-  }
+  } }
   // Fallback analysis
   return {
     strengths: ['Documentary evidence', 'Clear factual content'],
@@ -602,27 +601,27 @@ Focus on:
     recommendations: ['Verify authenticity', 'Gather supporting evidence'],
     precedent_support: 0.6
   };
-}
+} }
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , model: CONFIG.ollama.embeddingModel,
+  model: CONFIG.ollama.embeddingModel,
         prompt: text
       })
     });
     if (response.ok) {
       const data = await response.json();
       return data.embedding;
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     console.warn('Embedding generation failed:', error);
-  }
+  } }
   // Return random embedding as fallback
   return Array.from({ length: 384 }, () => Math.random() - 0.5);
-}
+} }
 function calculateTextSimilarity(text1: string, text2: string): number {
   // Simple word-based similarity (Jaccard index)
   const words1 = new Set(text1.toLowerCase().split(/\s+/));
@@ -631,23 +630,23 @@ function calculateTextSimilarity(text1: string, text2: string): number {
   const union = new Set([...words1, ...words2]);
   if (union.size === 0) return 0;
   return intersection.size / union.size;
-}
+} }
 function categorizeLegalPhrase(phrase: string): string {
   const lowerPhrase = phrase.toLowerCase();
   if (lowerPhrase.includes('evidence') || lowerPhrase.includes('proof')) {
     return, 'evidence';
-  } else if (lowerPhrase.includes('testimony') || lowerPhrase.includes('witness')) {
+  } }else if (lowerPhrase.includes('testimony') || lowerPhrase.includes('witness')) {
     return, 'witness_testimony';
-  } else if (lowerPhrase.includes('guilty') || lowerPhrase.includes('conviction')) {
+  } }else if (lowerPhrase.includes('guilty') || lowerPhrase.includes('conviction')) {
     return, 'guilt_indicators';
-  } else if (lowerPhrase.includes('precedent') || lowerPhrase.includes('case law')) {
+  } }else if (lowerPhrase.includes('precedent') || lowerPhrase.includes('case law')) {
     return, 'legal_precedent';
-  } else if (lowerPhrase.includes('motion') || lowerPhrase.includes('procedure')) {
+  } }else if (lowerPhrase.includes('motion') || lowerPhrase.includes('procedure')) {
     return, 'procedural';
-  } else {
+  } }else {
     return, 'general_legal';
-  }
-}
+  } }
+} }
 async function cacheEnhancementResults(evidenceText: string, results: any): Promise<void> {
   try {
     // Await the Redis instance (previous code returned a Promise)
@@ -663,28 +662,28 @@ async function cacheEnhancementResults(evidenceText: string, results: any): Prom
     if (typeof setexFn === 'function') {
       // Accept either sync or async implementations
       await Promise.resolve(setexFn(cacheKey, 3600, payload));
-    } else {
+    } }else {
       const setFn = client.set;
       if (typeof setFn === 'function') {
         // ioredis and many clients support: set(key, value, 'EX', seconds)
         try {
           await Promise.resolve(setFn(cacheKey, payload, 'EX', 3600));
-        } catch {
+        } }catch {
           // Some clients accept an options: object instead
           try {
             await Promise.resolve(setFn(cacheKey, payload, { EX: 3600 }));
-          } catch {
+          } }catch {
             console.warn('Redis set failed for both signatures; skipping cache');
-          }
-        }
-      } else {
+          } }
+        } }
+      } }else {
         console.warn('Redis client does not support setex or set; skipping cache');
-      }
-    }
-  } catch (error: any) {
+      } }
+    } }
+  } }catch (error: any) {
     console.warn('Failed to cache enhancement results:', error);
-  }
-}
+  } }
+} }
 // GET endpoint for enhancement statistics
 export const GET: RequestHandler = async () => {
   try {
@@ -736,13 +735,13 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'operational',
       dataset_stats: {
-       , total_documents: totalDocuments,
+  total_documents: totalDocuments,
         average_prosecution_score: averageProsecutionScore,
         jurisdictions_covered: jurisdictionsCovered,
         case_types_covered: caseTypesCovered
       },
       phrase_stats: {
-       , total_phrases: totalPhrases,
+  total_phrases: totalPhrases,
         high_value_phrases: highValuePhrases,
         average_frequency: averageFrequency
       },
@@ -754,13 +753,14 @@ export const GET: RequestHandler = async () => {
         'fact_checking',
       ]
     });
-  } catch (err: any) {
-    console.error('Enhancement stats error:', err);'
+  } }catch (err: any) {
+    console.error('Enhancement stats error:', err);
     throw error(500, 'Unable to fetch enhancement statistics');
-  }
+  } }
 };
 // Add this local type so the code can cast the postgres instance safely.
 // It models the minimal unsafe() contract we rely on.
 type PostgresUnsafe = {
-  unsafe<T = unknown>(sqlText: string, params?: any[]): Promise<T | T[] | { rows: T[] } | null>;
+  unsafe<T = unknown>(sqlText: string, params?: any[]): Promise<T | T[] | { rows: T[] } }| null>;
 };
+

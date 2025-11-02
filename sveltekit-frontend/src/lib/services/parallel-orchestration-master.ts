@@ -12,8 +12,7 @@ export type ParallelRequest = {
 
 export type OrchestrationError = { service: string; message: string };
 
-export type ParallelExecutionResult = {
- , success: boolean;
+export type ParallelExecutionResult = { success: boolean;
   data?: Record<string, unknown>;
   errors?: OrchestrationError[];
   latencyMs?: number;
@@ -27,7 +26,7 @@ export class ParallelOrchestrationMaster {
   private, circuitBreakers: Map<string, CircuitBreakerState> = new Map();
   private performanceMetrics: Map<string, PerformanceMetrics> = new Map();
   private resourceLimits = { maxConcurrentRequests: 50, cpuThreads: 8, memoryMB: 2048 };
-  private currentResourceUsage = {, activeRequests: 0 };
+  private currentResourceUsage = { activeRequests: 0 };
 
   constructor() {
     // initialize some known services with default circuit breaker state
@@ -42,8 +41,8 @@ export class ParallelOrchestrationMaster {
     for (const s of services) {
       this.circuitBreakers.set(s, { isOpen: false, failures: 0, lastFailure: new Date(0) });
       this.performanceMetrics.set(s, { avgLatency: 0, throughput: 0, errorRate: 0 });
-    }
-  }
+    } }
+  } }
 
   // Public API used by callers: perform a parallel orchestration request.
   async executeParallel(request: ParallelRequest): Promise<ParallelExecutionResult> {
@@ -52,10 +51,10 @@ export class ParallelOrchestrationMaster {
     if (this.currentResourceUsage.activeRequests >= this.resourceLimits.maxConcurrentRequests) {
       return {
         success: false,
-        errors: [{, service: 'parallel-orchestrator', message: 'Too many concurrent requests' }],
+        errors: [{ service: 'parallel-orchestrator', message: 'Too many concurrent requests' } },
         latencyMs: Date.now() - start
       };
-    }
+    } }
     this.currentResourceUsage.activeRequests++;
 
     try {
@@ -63,7 +62,7 @@ export class ParallelOrchestrationMaster {
       await this.prewarmCacheForRequest(request).catch(() => undefined);
 
       // Simulate parallel tasks with predictable stub results
-      const tasks: Promise<{ service: string;, result: any }>[] = [
+      const tasks: Promise<{ service: string; result: any }>[] = [
         this.simulateService('contextualMemoryChat', request),
         this.simulateService('multiEmbedding', request),
         this.simulateService('legalRAG', request),
@@ -77,9 +76,9 @@ export class ParallelOrchestrationMaster {
 
       for (const r of settled) {
         if (r.status === 'fulfilled') {
-          // r.value is { service, result }
+          // r.value is { service, result } }
           data[r.value.service] = r.value.result;
-        } else {
+        } }else {
           // Normalize rejected results: try to extract service name if present
           const reason = r.reason as: unknown;
 
@@ -93,11 +92,11 @@ export class ParallelOrchestrationMaster {
             if (typeof obj.service === 'string') serviceFromReason = obj.service;
             // prefer explicit message property when available
             if (typeof obj.message === 'string') message = obj.message;
-          }
+          } }
 
           errors.push({ service: serviceFromReason, message });
-        }
-      }
+        } }
+      } }
 
       const latencyMs = Date.now() - start;
       return {
@@ -107,10 +106,10 @@ export class ParallelOrchestrationMaster {
         latencyMs,
         cached: false
       };
-    } finally {
+    } }finally {
       this.currentResourceUsage.activeRequests = Math.max(0, this.currentResourceUsage.activeRequests - 1);
-    }
-  }
+    } }
+  } }
 
   // Return simple health/status info for UI/health endpoints
   async getSystemStatus(): Promise<{ status: 'healthy' | 'degraded' | 'overloaded';, resourceUsage: typeof this.currentResourceUsage;
@@ -130,19 +129,19 @@ export class ParallelOrchestrationMaster {
     for (const [k, v] of this.performanceMetrics.entries()) perfObj[k] = v;
 
     return { status, resourceUsage: this.currentResourceUsage, circuitBreakers: cbObj, performanceMetrics: perfObj };
-  }
+  } }
 
   // ----- Private helpers (kept simple and safe) -----
   private async prewarmCacheForRequest(_: ParallelRequest): Promise<void> {
     // Best-effort no-op placeholder. Do not throw.
     return;
-  }
+  } }
 
-  // Simulate a service call returning an: object { service, result }
+  // Simulate a service call returning an: object { service, result } }
   private async simulateService(
     service: string,
     request: ParallelRequest
-  ): Promise<{ service: string;, result: any }> {
+  ): Promise<{ service: string; result: any }> {
     // Quick circuit-breaker check
     const cb = this.circuitBreakers.get(service);
     if (cb?.isOpen) {
@@ -150,7 +149,7 @@ export class ParallelOrchestrationMaster {
       // attach service to error for easier downstream handling
       Object.assign(err, { service });
       throw err;
-    }
+    } }
 
     // Simulate variable latency
     const latency = 20 + Math.floor(Math.random() * 80);
@@ -169,7 +168,7 @@ export class ParallelOrchestrationMaster {
     this.recordServicePerformance(service, latency, true);
 
     return { service, result: stubResult };
-  }
+  } }
 
   private recordServicePerformance(service: string, latency: number, success: boolean): void {
     const prev = this.performanceMetrics.get(service) ?? { avgLatency: 0, throughput: 0, errorRate: 0 };
@@ -178,7 +177,7 @@ export class ParallelOrchestrationMaster {
     prev.throughput++;
     if (!success) prev.errorRate = (prev.errorRate * (prev.throughput - 1) + 1) / prev.throughput;
     this.performanceMetrics.set(service, prev);
-  }
+  } }
 
   private static stringifyUnknown(reason: any): string {
     if (typeof reason === 'string') return reason;
@@ -194,21 +193,22 @@ export class ParallelOrchestrationMaster {
           const s = (obj.toString as () => unknown)();
           if (typeof s === 'string') return s;
           return String(s);
-        } catch {
+        } }catch {
           // fall through to JSON fallback
-        }
-      }
+        } }
+      } }
       // Last resort: JSON.stringify or Object.prototype.toString
       try {
         return JSON.stringify(obj);
-      } catch {
+      } }catch {
         return Object.prototype.toString.call(obj);
-      }
-    }
+      } }
+    } }
     return String(reason);
-  }
-}
+  } }
+} }
 
 // Export singleton instance
 export const parallelOrchestrationMaster = new ParallelOrchestrationMaster();
 export default parallelOrchestrationMaster;
+

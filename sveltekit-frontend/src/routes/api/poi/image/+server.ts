@@ -4,12 +4,12 @@
  *, Supports: JPEG/PNG only, max 5MB per image
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
-import { db } from '$lib/server/db';
-import { pois } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
-import { Client, as MinioClient } from 'minio';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { auth } }from '$lib/server/auth';
+import { db } }from '$lib/server/db';
+import { pois } }from '$lib/server/db/schema';
+import { eq } }from 'drizzle-orm';
+import { Client, as MinioClient } }from 'minio';
 
 const minioClient = new MinioClient({
   endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000',
@@ -31,29 +31,29 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-           , message: 'Not authenticated',
+  message: 'Not authenticated',
             code: 'NO_SESSION',
             status: 401
-          }
+          } }
         },
-        { status: 401 }
+        { status: 401 } }
       );
-    }
+    } }
 
-    const { session, user } = await auth.validateSession(sessionId);
+    const { session, user } }= await auth.validateSession(sessionId);
     if (!session || !user) {
       return json(
         {
           success: false,
           error: {
-           , message: 'Invalid session',
+  message: 'Invalid session',
             code: 'INVALID_SESSION',
             status: 401
-          }
+          } }
         },
-        { status: 401 }
+        { status: 401 } }
       );
-    }
+    } }
 
     // Parse form data
     const formData = await event.request.formData();
@@ -65,28 +65,28 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-           , message: 'No file provided',
+  message: 'No file provided',
             code: 'NO_FILE',
             status: 400
-          }
+          } }
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     if (!poiId) {
       return json(
         {
           success: false,
           error: {
-           , message: 'POI ID required',
+  message: 'POI ID required',
             code: 'NO_POI_ID',
             status: 400
-          }
+          } }
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
@@ -94,14 +94,14 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-           , message: 'Invalid file type. Only JPEG and PNG allowed.',
+  message: 'Invalid file type. Only JPEG and PNG allowed.',
             code: 'INVALID_TYPE',
             status: 400
-          }
+          } }
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
@@ -109,14 +109,14 @@ export const POST: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-           , message: 'File too large. Maximum 5MB allowed.',
+  message: 'File too large. Maximum 5MB allowed.',
             code: 'FILE_TOO_LARGE',
             status: 400
-          }
+          } }
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Verify POI exists (optional - add if POI table exists)
     // const existingPoi = await db.select().from(pois).where(eq(pois.id, poiId));
@@ -130,9 +130,9 @@ export const POST: RequestHandler = async (event) => {
     //         status: 404,
     //       },
     //     },
-    //     { status: 404 }
+    //     { status: 404 } }
     //   );
-    // }
+    // } }
 
     // Generate unique filename
     const ext = file.type === 'image/jpeg' ? 'jpg' : 'png';
@@ -147,7 +147,7 @@ export const POST: RequestHandler = async (event) => {
     const bucketExists = await minioClient.bucketExists(POI_BUCKET);
     if (!bucketExists) {
       await minioClient.makeBucket(POI_BUCKET, 'us-east-1');
-    }
+    } }
 
     // Upload to MinIO
     await minioClient.putObject(POI_BUCKET, objectPath, bufferData, bufferData.length, {
@@ -174,20 +174,20 @@ export const POST: RequestHandler = async (event) => {
       filename,
       poiId
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error uploading POI image:', error);
     return json(
       {
         success: false,
         error: {
-         , message: 'Failed to upload image',
+  message: 'Failed to upload image',
           code: 'UPLOAD_ERROR',
           status: 500
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -202,14 +202,14 @@ export const GET: RequestHandler = async (event) => {
         {
           success: false,
           error: {
-           , message: 'POI ID required',
+  message: 'POI ID required',
             code: 'NO_POI_ID',
             status: 400
-          }
+          } }
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // List objects for POI
     const objectsList = await minioClient.listObjects(POI_BUCKET, `${poiId}/`, true);
@@ -218,11 +218,11 @@ export const GET: RequestHandler = async (event) => {
     const objects: any[] = [];
     for await (const obj of objectsList) {
       objects.push(obj);
-    }
+    } }
 
     if (objects.length === 0) {
       return new Response('Image not found', { status: 404 });
-    }
+    } }
 
     // Sort by last modified, get most recent
     objects.sort((a, b) => (b.lastModified?.getTime() ?? 0) - (a.lastModified?.getTime() ?? 0));
@@ -234,10 +234,11 @@ export const GET: RequestHandler = async (event) => {
     return new Response(dataStream as: any, {
       headers: {
         'Content-Type': latestImage.name.endsWith('.jpg') ? 'image/jpeg' : 'image/png',
-        'Cache-Control': 'public, max-age=2592000` }'`
+        'Cache-Control': 'public, max-age=2592000` } }`
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error retrieving POI image:', error);
     return new Response('Error retrieving image', { status: 500 });
-  }
+  } }
 };
+

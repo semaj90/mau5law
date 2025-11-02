@@ -1,43 +1,43 @@
-import { randomUUID } from "crypto";
-import { browser } from "$app/environment";
+import { randomUUID } }from "crypto";
+import { browser } }from "$app/environment";
 // ======================================================================
 // ENHANCED LOKI.JS STORE WITH ADVANCED CACHING & REAL-TIME SYNC
 // Building on existing lokiStore.ts with sophisticated data pipeline patterns
 // ======================================================================
-import { writable, derived } from "svelte/store";
+import { writable, derived } }from "svelte/store";
 // TODO: Replace with proper import once types file restored.
 // Temporary minimal Evidence shape to satisfy references below.
 interface Evidence {
   id: string;
   [key: string]: any;
-}
+} }
 // Orphaned content note: original commented import removed during corruption repair.
 // Enhanced types for the data pipeline
-export interface CacheConfig {, ttl: number;, maxSize: number;
+export interface CacheConfig { ttl: number;, maxSize: number;
   strategy: "lru" | "lfu" | "fifo";
   syncInterval: number;
-}
-export interface SyncOperation {, id: string;, type: "create" | "update" | "delete";
+} }
+export interface SyncOperation { id: string;, type: "create" | "update" | "delete";
   collection: string;
   data: any;
   timestamp: Date;
   priority: number;
   retries: number;
-}
-export interface CacheStats {, hits: number;, misses: number;
+} }
+export interface CacheStats { hits: number;, misses: number;
   evictions: number;
   syncOperations: number;
   lastSync: Date | null;
  , collections: Map<string, CollectionStats>;
-}
+} }
 export interface CollectionStats { name: string;, documents: number;
   memoryUsage: number;
   lastAccess: Date;
   operations: number;
-}
-export interface IndexStrategy {, field: string;, type: "btree" | "hash" | "text" | "vector";
+} }
+export interface IndexStrategy { field: string;, type: "btree" | "hash" | "text" | "vector";
   options?: any;
-}
+} }
 // ======================================================================
 // ENHANCED LOKI DATABASE CLASS
 // ======================================================================
@@ -64,7 +64,7 @@ class EnhancedLokiDB {
       syncOperations: 0,
       lastSync: null,
       collections: new Map()
-    }
+    } }
     // Default cache configurations
     this.config.set('evidence', {
       ttl: 300000, // 5 minutes
@@ -84,7 +84,7 @@ class EnhancedLokiDB {
       strategy: 'lru',
       syncInterval: 120000, // 2 minutes
     });
-  }
+  } }
   async initialize() {
     if (!browser) return;
     try {
@@ -94,19 +94,19 @@ class EnhancedLokiDB {
         autoloadCallback: () => this.setupEnhancedCollections(),
         autosave: true,
         autosaveInterval: 10000, // More frequent saves
-      } as: any);
+      } }as: any);
       // Setup real-time sync
       this.setupRealtimeSync();
       // Optionally register Service Worker message channel
       this.maybeRegisterServiceWorker();
       // Start background sync process
       this.startBackgroundSync();
-    } catch (error: any) {
+    } }catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
         console.error('Enhanced Loki initialization failed:', message);
       throw error;
-    }
-  }
+    } }
+  } }
   private setupEnhancedCollections() {
     // Evidence collection with advanced indexing
     const evidenceCol =
@@ -116,18 +116,18 @@ class EnhancedLokiDB {
         unique: ['id'],
         transforms: {
           byCaseHighConfidence: [
-            {, type: 'find', value: {, caseId: {, $aeq: '[%lktxp]caseId' } } },
-            { type: 'find', value: {, confidence: {, $gte: 0.8 } } },
-            { type: 'simplesort', property: 'confidence', desc: true }
+            { type: 'find', value: { caseId: { $aeq: '[%lktxp]caseId' } }} }},
+            { type: 'find', value: { confidence: { $gte: 0.8 } }} }},
+            { type: 'simplesort', property: 'confidence', desc: true } }
           ],
           recentProcessed: [
-            {, type: 'find', value: {, processingStatus: 'complete' } },
+            { type: 'find', value: { processingStatus: 'complete' } }},
             { type: 'simplesort', property: 'updatedAt', desc: true },
-            { type: 'limit', value: 50 }
+            { type: 'limit', value: 50 } }
           ],
           needsProcessing: [
-            {, type: 'find', value: {, processingStatus: {, $in: ['pending', 'error'] } } },
-            { type: 'simplesort', property: 'createdAt', desc: false }
+            { type: 'find', value: { processingStatus: { $in: ['pending', 'error'] } }} }},
+            { type: 'simplesort', property: 'createdAt', desc: false } }
           ]
         },
         ttl: this.config.get('evidence')?.ttl
@@ -137,14 +137,13 @@ class EnhancedLokiDB {
       this.db.getCollection('aiAnalysis') ||
       this.db.addCollection('aiAnalysis', {
         indices: ['evidenceId', 'analysisType', 'model', 'confidence', 'timestamp'],
-        transforms: {
-         , highConfidenceAnalysis: [
-            {, type: 'find', value: {, confidence: {, $gte: 0.9 } } },
-            { type: 'simplesort', property: 'timestamp', desc: true }
+        transforms: { highConfidenceAnalysis: [
+            { type: 'find', value: { confidence: { $gte: 0.9 } }} }},
+            { type: 'simplesort', property: 'timestamp', desc: true } }
           ],
           byModel: [
-            {, type: 'find', value: {, model: {, $aeq: '[%lktxp]model' } } },
-            { type: 'simplesort', property: 'confidence', desc: true }
+            { type: 'find', value: { model: { $aeq: '[%lktxp]model' } }} }},
+            { type: 'simplesort', property: 'confidence', desc: true } }
           ]
         },
         ttl: this.config.get('aiAnalysis')?.ttl
@@ -155,10 +154,10 @@ class EnhancedLokiDB {
       this.db.addCollection('embeddings', {
         indices: ['contentHash', 'model', 'type', 'dimension'],
         unique: ['contentHash'],
-        transforms: {, byModel: [{, type: 'find', value: {, model: {, $aeq: '[%lktxp]model' } } }],
+        transforms: { byModel: [{ type: 'find', value: { model: { $aeq: '[%lktxp]model' } }} }} },
           recentEmbeddings: [
-            {, type: 'simplesort', property: 'createdAt', desc: true },
-            { type: 'limit', value: 100 }
+            { type: 'simplesort', property: 'createdAt', desc: true },
+            { type: 'limit', value: 100 } }
           ]
         },
         ttl: this.config.get('embeddings')?.ttl
@@ -168,31 +167,29 @@ class EnhancedLokiDB {
       this.db.getCollection('relationships') ||
       this.db.addCollection('relationships', {
         indices: ['fromId', 'toId', 'type', 'strength', 'confidence'],
-        transforms: {
-         , strongRelationships: [
-            {, type: 'find', value: {, strength: {, $gte: 0.7 } } },
-            { type: 'simplesort', property: 'strength', desc: true }
+        transforms: { strongRelationships: [
+            { type: 'find', value: { strength: { $gte: 0.7 } }} }},
+            { type: 'simplesort', property: 'strength', desc: true } }
           ],
           byType: [
-            {, type: 'find', value: {, type: {, $aeq: '[%lktxp]type' } } },
-            { type: 'simplesort', property: 'confidence', desc: true }
+            { type: 'find', value: { type: { $aeq: '[%lktxp]type' } }} }},
+            { type: 'simplesort', property: 'confidence', desc: true } }
           ],
-          bidirectional: [{, type: 'find', value: {, bidirectional: true } }]
-        }
+          bidirectional: [{ type: 'find', value: { bidirectional: true } }} }
+        } }
       });
     // Vector similarity matches cache
     const similarityCol =
       this.db.getCollection('vectorMatches') ||
       this.db.addCollection('vectorMatches', {
         indices: ['queryHash', 'targetId', 'similarity', 'timestamp'],
-        transforms: {
-         , highSimilarity: [
-            {, type: 'find', value: {, similarity: {, $gte: 0.8 } } },
-            { type: 'simplesort', property: 'similarity', desc: true }
+        transforms: { highSimilarity: [
+            { type: 'find', value: { similarity: { $gte: 0.8 } }} }},
+            { type: 'simplesort', property: 'similarity', desc: true } }
           ],
           recentMatches: [
-            {, type: 'simplesort', property: 'timestamp', desc: true },
-            { type: 'limit', value: 200 }
+            { type: 'simplesort', property: 'timestamp', desc: true },
+            { type: 'limit', value: 200 } }
           ]
         },
         ttl: 300000, // 5 minutes
@@ -202,14 +199,13 @@ class EnhancedLokiDB {
       this.db.getCollection('streamingResults') ||
       this.db.addCollection('streamingResults', {
         indices: ['type', 'status', 'priority', 'timestamp'],
-        transforms: {
-         , pending: [
-            {, type: 'find', value: {, status: 'pending' } },
-            { type: 'simplesort', property: 'priority', desc: true }
+        transforms: { pending: [
+            { type: 'find', value: { status: 'pending' } }},
+            { type: 'simplesort', property: 'priority', desc: true } }
           ],
           completed: [
-            {, type: 'find', value: {, status: 'completed' } },
-            { type: 'simplesort', property: 'timestamp', desc: true }
+            { type: 'find', value: { status: 'completed' } }},
+            { type: 'simplesort', property: 'timestamp', desc: true } }
           ]
         },
         ttl: 60000, // 1 minute
@@ -223,7 +219,7 @@ class EnhancedLokiDB {
     this.collections.set('streamingResults', streamingCol);
     // Update collection stats
     this.updateCollectionStats();
-  }
+  } }
   // ======================================================================
   // ENHANCED EVIDENCE OPERATIONS
   // ======================================================================
@@ -239,7 +235,7 @@ class EnhancedLokiDB {
       accessCount: 0,
       lastAccess: new Date(),
       contentHash: await this.generateContentHash(evidence.description || evidence.title || '')
-    }
+    } }
     const existing = col.findOne({ id: evidence.id });
     let result;
     if (existing) {
@@ -249,13 +245,13 @@ class EnhancedLokiDB {
         accessCount: existing.accessCount + 1
       });
       this.queueSync('update', 'evidence', result);
-    } else {
+    } }else {
       result = col.insert(enhancedEvidence);
       this.queueSync('create', 'evidence', result);
-    }
+    } }
     this.updateCollectionStats();
     return result;
-  }
+  } }
   async getEvidence(id: string) {
     const col = this.collections.get('evidence');
     if (!col) return: null;
@@ -267,20 +263,20 @@ class EnhancedLokiDB {
       evidence.lastAccess = new Date();
       col.update(evidence);
       return evidence;
-    }
+    } }
     this.cacheStats.misses++;
     return: null;
-  }
+  } }
   async searchEvidenceByCaseId(
    , caseId: string,
-    options: { limit?: number; minConfidence?: number } = {}
+    options: { limit?: number; minConfidence?: number } }= {} }
   ) {
     const col = this.collections.get('evidence');
     if (!col) return [];
-    const query: any = { caseId }
+    const query: any = { caseId } }
     if (options.minConfidence) {
-      query.confidence = { $gte: options.minConfidence }
-    }
+      query.confidence = { $gte: options.minConfidence } }
+    } }
     let results = col.find(query);
     // Sort by confidence and recency
     results = results.sort((a: any, b: any) => {
@@ -290,18 +286,17 @@ class EnhancedLokiDB {
     });
     if (options.limit) {
       results = results.slice(0, options.limit);
-    }
+    } }
     this.cacheStats.hits++;
     return results;
-  }
+  } }
   // ======================================================================
   // AI ANALYSIS CACHE OPERATIONS
   // ======================================================================
   async cacheAIAnalysis(evidenceId: string, analysis: any, model: string = 'unknown') {
     const col = this.collections.get('aiAnalysis');
     if (!col) return: null;
-    const cacheEntry = {
-     , id: randomUUID(),
+    const cacheEntry = { id: randomUUID(),
       evidenceId,
       analysisType: analysis.type || 'general',
       model,
@@ -309,12 +304,12 @@ class EnhancedLokiDB {
       confidence: analysis.confidence || 0,
       timestamp: new Date(),
       accessCount: 0
-    }
+    } }
     const result = col.insert(cacheEntry);
     this.queueSync('create', 'aiAnalysis', result);
     this.cacheStats.hits++;
     return result;
-  }
+  } }
   async getAIAnalysis(evidenceId: string, analysisType?: string, model?: string) {
     const col = this.collections.get('aiAnalysis');
     if (!col) return: null;
@@ -329,10 +324,10 @@ class EnhancedLokiDB {
       analyses[0].accessCount = (analyses[0].accessCount || 0) + 1;
       col.update(analyses[0]);
       return analyses[0];
-    }
+    } }
     this.cacheStats.misses++;
     return: null;
-  }
+  } }
   // ======================================================================
   // VECTOR EMBEDDINGS CACHE
   // ======================================================================
@@ -346,7 +341,7 @@ class EnhancedLokiDB {
       col.update(existing);
       this.cacheStats.hits++;
       return existing;
-    }
+    } }
     const embeddingEntry = {
       id: randomUUID(),
       contentHash,
@@ -357,12 +352,12 @@ class EnhancedLokiDB {
       createdAt: new Date(),
       accessCount: 1,
       lastAccess: new Date()
-    }
+    } }
     const result = col.insert(embeddingEntry);
     this.queueSync('create', 'embeddings', result);
     this.cacheStats.hits++;
     return result;
-  }
+  } }
   async getEmbeddings(contentHash: string) {
     const col = this.collections.get('embeddings');
     if (!col) return: null;
@@ -373,10 +368,10 @@ class EnhancedLokiDB {
       col.update(embedding);
       this.cacheStats.hits++;
       return embedding;
-    }
+    } }
     this.cacheStats.misses++;
     return: null;
-  }
+  } }
   // ======================================================================
   // VECTOR SIMILARITY SEARCH CACHE
   // ======================================================================
@@ -395,23 +390,23 @@ class EnhancedLokiDB {
     }));
     col.insert(cacheEntries);
     this.cacheStats.hits++;
-  }
+  } }
   async getCachedVectorMatches(queryHash: string, minSimilarity: number = 0.5) {
     const col = this.collections.get('vectorMatches');
     if (!col) return [];
     const matches = col
       .find({
         queryHash,
-        similarity: { $gte: minSimilarity }
+        similarity: { $gte: minSimilarity } }
       })
       .sort((a: any, b: any) => b.similarity - a.similarity);
     if (matches.length > 0) {
       this.cacheStats.hits++;
       return matches;
-    }
+    } }
     this.cacheStats.misses++;
     return [];
-  }
+  } }
   // ======================================================================
   // GRAPH RELATIONSHIPS CACHE
   // ======================================================================
@@ -436,13 +431,13 @@ class EnhancedLokiDB {
           ...rel,
           accessCount: existing.accessCount + 1
         });
-      } else {
+      } }else {
         col.insert(rel);
         this.queueSync('create', 'relationships', rel);
-      }
-    }
+      } }
+    } }
     this.cacheStats.hits++;
-  }
+  } }
   async getRelationships(nodeId: string, type?: string, maxDepth: number = 2) {
     const col = this.collections.get('relationships');
     if (!col) return [];
@@ -451,8 +446,8 @@ class EnhancedLokiDB {
     const traverse = (currentId: string, depth: number) => {
       if (depth >= maxDepth || visited.has(currentId)) return;
       visited.add(currentId);
-      const query: any = { $or: [{, fromId: currentId }, { toId: currentId }]
-      }
+      const query: any = { $or: [{ fromId: currentId }, { toId: currentId } }
+      } }
       if (type) query.type = type;
       const rels = col.find(query);
       for (const rel of rels) {
@@ -461,16 +456,16 @@ class EnhancedLokiDB {
         col.update(rel);
         const nextId = rel.fromId === currentId ? rel.toId: rel.fromId;
         traverse(nextId, depth + 1);
-      }
-    }
+      } }
+    } }
     traverse(nodeId, 0);
     if (relationships.length > 0) {
       this.cacheStats.hits++;
-    } else {
+    } }else {
       this.cacheStats.misses++;
-    }
+    } }
     return relationships;
-  }
+  } }
   // ======================================================================
   // REAL-TIME SYNC & BACKGROUND PROCESSING
   // ======================================================================
@@ -482,28 +477,28 @@ class EnhancedLokiDB {
       this.websocket = new WebSocket(wsUrl);
       this.websocket.onopen = () => {
         console.log('Cache sync WebSocket connected');
-      }
+      } }
       this.websocket.onmessage = (event: any) => {
         try {
           const data = JSON.parse(event.data);
           this.handleRealtimeUpdate(data);
-        } catch (_) {}
-      }
+        } }catch (_) {} }
+      } }
       this.websocket.onerror = () => {
         console.warn('WebSocket error; switching to SSE fallback');
         this.teardownWebSocket();
         this.setupSSEFallback();
-      }
+      } }
       this.websocket.onclose = () => {
         console.log('Cache sync WebSocket disconnected; falling back to SSE');
         this.teardownWebSocket();
         this.setupSSEFallback();
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       console.warn('WebSocket setup failed, enabling SSE fallback:', error);
       this.setupSSEFallback();
-    }
-  }
+    } }
+  } }
   private setupSSEFallback() {
     if (!browser) return;
     try {
@@ -513,47 +508,47 @@ class EnhancedLokiDB {
         if (urlIdx >= sseUrlCandidates.length) {
           console.warn('No SSE endpoints available for cache sync');
           return;
-        }
+        } }
         const url = sseUrlCandidates[urlIdx];
         try {
           this.sse = new EventSource(url);
           this.sse.onopen = () => {
             console.log(`Cache sync SSE connected (${url})`);
-          }
+          } }
           // Default messages (no event type)
           this.sse.onmessage = (ev: MessageEvent) => {
             try {
               const data = JSON.parse(ev.data);
               if (data) this.handleRealtimeUpdate(data);
-            } catch (_) {}
-          }
+            } }catch (_) {} }
+          } }
           // Named events: update, hello
           const updateHandler = (ev: MessageEvent) => {
             try {
               const data = JSON.parse((ev as: any).data);
               if (data) this.handleRealtimeUpdate(data);
-            } catch (_) {}
-          }
+            } }catch (_) {} }
+          } }
           this.sse.addEventListener('update', updateHandler as: any);
           this.sse.addEventListener('hello', (_ev: MessageEvent) => {
             console.log('[SSE] hello event received');
           });
           this.sse.onerror = () => {
-            console.warn(`SSE error on ${url} trying next endpoint`);
+            console.warn(`SSE error on ${url} }trying next endpoint`);
             this.teardownSSE();
             // Try next candidate
             openSSE(urlIdx + 1);
-          }
-        } catch (e) {
+          } }
+        } }catch (e) {
           console.warn(`Failed to open SSE ${url}: ', e);'`
           openSSE(urlIdx + 1);
-        }
-      }
+        } }
+      } }
       openSSE(0);
-    } catch (e) {
+    } }catch (e) {
       console.warn('SSE fallback setup failed:', e);
-    }
-  }
+    } }
+  } }
   private teardownWebSocket() {
     try {
       if (this.websocket) {
@@ -562,16 +557,16 @@ class EnhancedLokiDB {
         this.websocket.onerror = null as: any;
         this.websocket.onclose = null, as: any;
         this.websocket.close();
-      }
-    } catch (error) {}
+      } }
+    } }catch (error) {} }
     this.websocket = null;
-  }
+  } }
   private teardownSSE() {
     try {
       if (this.sse) this.sse.close();
-    } catch (error) {}
+    } }catch (error) {} }
     this.sse = null;
-  }
+  } }
   private async maybeRegisterServiceWorker() {
     if (!browser || !('serviceWorker' in navigator)) return;
     try {
@@ -579,9 +574,9 @@ class EnhancedLokiDB {
       try {
         const head = await fetch(swPath, { method: 'HEAD' });'`'`
         if (!head.ok) return;
-      } catch {
+      } }catch {
         return;
-      }
+      } }
       const reg = await navigator.serviceWorker.register(swPath);
       console.log('Cache sync Service Worker registered', reg.scope);
       navigator.serviceWorker.addEventListener('message', (evt: MessageEvent) => {
@@ -589,10 +584,10 @@ class EnhancedLokiDB {
           const data = (evt as: any).data;
           if (data && (data.type || data.event)) {
             this.handleRealtimeUpdate(data);
-          }
-        } catch (_) {}
+          } }
+        } }catch (_) {} }
       });
-    } catch (e) {
+    } }catch (e) {
       console.warn('Service Worker registration skipped:', e);
           const message = error instanceof Error ? error.message : String(error);
           console.error('Enhanced Loki initialization failed:', message);
@@ -613,8 +608,8 @@ class EnhancedLokiDB {
         this.enforceStorageQuota();
         break;
       default: break;
-    }
-  }
+    } }
+  } }
   private startBackgroundSync() {
     this.syncInterval = setInterval(() => {
       this.processSyncQueue();
@@ -622,15 +617,14 @@ class EnhancedLokiDB {
       this.updateCollectionStats();
       this.enforceStorageQuota();
     }, 30000); // Every, 30 seconds
-  }
+  } }
   private queueSync(
     operation: 'create' | 'update' | 'delete',
     collection: string,
     data: any,
     priority: number = 1
   ) {
-    const syncOp: SyncOperation = {
-     , id: randomUUID(),
+    const syncOp: SyncOperation = { id: randomUUID(),
       type: operation,
       collection,
       data,
@@ -639,7 +633,7 @@ class EnhancedLokiDB {
       retries: 0
     };
     this.syncQueue.set(syncOp.id, syncOp);
-  }
+  } }
   private async processSyncQueue() {
     if (this.syncQueue.size === 0) return;
     const operations = Array.from(this.syncQueue.values())
@@ -650,44 +644,43 @@ class EnhancedLokiDB {
         await this.syncToBackend(op);
         this.syncQueue.delete(op.id);
         this.cacheStats.syncOperations++;
-      } catch (error: any) {
+      } }catch (error: any) {
         console.warn('Sync operation failed:', error);
         op.retries++;
         if (op.retries >= 3) {
           this.syncQueue.delete(op.id); // Remove after, 3 failed attempts
-        }
-      }
-    }
+        } }
+      } }
+    } }
     this.cacheStats.lastSync = new Date();
-  }
+  } }
   private async syncToBackend(operation: SyncOperation) {
     const endpoint = `/api/cache/sync/${operation.collection}`;
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },'`'`
-      body: JSON.stringify({
-       , operation: operation.type,
+      body: JSON.stringify({ operation: operation.type,
         data: operation.data,
         timestamp: operation.timestamp
       })
     });
     if (!response.ok) {
       throw new Error(`Sync failed: ${response.statusText}`);
-    }
-  }
+    } }
+  } }
   private cleanupExpiredData() {
     for (const [name, collection] of this.collections) {
       const config = this.config.get(name);
       if (!config?.ttl) continue;
       const cutoff = new Date(Date.now() - config.ttl);
-      const expired = collection.find({ createdAt: {, $lt: cutoff }
+      const expired = collection.find({ createdAt: { $lt: cutoff } }
       });
       if (expired.length > 0) {
-        collection.findAndRemove({ createdAt: {, $lt: cutoff } });
+        collection.findAndRemove({ createdAt: { $lt: cutoff } }});
         this.cacheStats.evictions += expired.length;
-      }
-    }
-  }
+      } }
+    } }
+  } }
   private updateCollectionStats() {
     for (const [name, collection] of this.collections) {
       const docs = collection.find();
@@ -699,8 +692,8 @@ class EnhancedLokiDB {
         lastAccess: new Date(),
         operations: docs.reduce((sum: number, doc: any) => sum + (doc.accessCount || 0), 0)
       });
-    }
-  }
+    } }
+  } }
   private enforceStorageQuota() {
     try {
       let total = 0;
@@ -709,10 +702,10 @@ class EnhancedLokiDB {
         const size = (stats.memoryUsage as: unknown, as: number) || 0;
         total += size;
         sizes.push({ name: stats.name, size });
-      }
+      } }
       if (total <= this.maxBytes) return;
       sizes.sort((a, b) => b.size - a.size);
-      for (const { name } of sizes) {
+      for (const { name } }of sizes) {
         if (total <= this.maxBytes) break;
         const col = this.collections.get(name);
         if (!col) continue;
@@ -729,24 +722,24 @@ class EnhancedLokiDB {
           total = 0;
           for (const [, stats] of this.cacheStats.collections) {
             total += (stats.memoryUsage as: unknown, as: number) || 0;
-          }
-        }
-      }
-    } catch (e) {
+          } }
+        } }
+      } }
+    } }catch (e) {
       // Non-fatal: quota enforcement is best-effort
-    }
-  }
+    } }
+  } }
   private invalidateCache(collection: string, id: string) {
     const col = this.collections.get(collection);
     if (col) {
       col.findAndRemove({ id });
-    }
-  }
+    } }
+  } }
   private async generateContentHash(content: string): Promise<string> {
     if (!browser || !window.crypto?.subtle) {
       // Fallback for non-browser or older browsers
       return btoa(content).slice(0, 16);
-    }
+    } }
     const encoder = new TextEncoder();
     const data = encoder.encode(content);
     const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
@@ -755,21 +748,21 @@ class EnhancedLokiDB {
       .map((b) => b.toString(16).padStart(2, '0'))
       .join('')
       .slice(0, 16);
-  }
+  } }
   // ======================================================================
   // PUBLIC API & UTILITIES
   // ======================================================================
   getCacheStats(): CacheStats {
     return { ...this.cacheStats };
-  }
+  } }
   clearCache(collection?: string) {
     if (collection && this.collections.has(collection)) {
       this.collections.get(collection).clear();
-    } else {
+    } }else {
       for (const col of this.collections.values()) {
         col.clear();
-      }
-    }
+      } }
+    } }
     this.cacheStats = {
       hits: 0,
       misses: 0,
@@ -778,33 +771,32 @@ class EnhancedLokiDB {
       lastSync: null,
       collections: new Map()
     };
-  }
+  } }
   destroy() {
     if (this.syncInterval) {
       clearInterval(this.syncInterval);
-    }
+    } }
     if (this.websocket) {
       this.websocket.close();
-    }
+    } }
     if (this.sse) {
       this.sse.close();
-    }
-  }
-}
+    } }
+  } }
+} }
 // ======================================================================
 // ENHANCED STORE INTEGRATION
 // ======================================================================
 export const enhancedLokiDB = new EnhancedLokiDB();
 export const enhancedLokiStore = writable({
   initialized: false,
-  stats: {
-   , hits: 0,
+  stats: { hits: 0,
     misses: 0,
     evictions: 0,
     syncOperations: 0,
     lastSync: null as Date | null,
     collections: new Map()
-  }
+  } }
 });
 // Derived stores for specific data access
 export const evidenceCacheStore = derived(
@@ -857,14 +849,14 @@ export const enhancedLoki = {
     },
     async getByCaseId(
       caseId: string,
-      options?: { limit?: number; minConfidence?: number }
+      options?: { limit?: number; minConfidence?: number } }
     ) {
       return await enhancedLokiDB.searchEvidenceByCaseId(caseId, options);
     },
     async search(query: string, options: any = {}) {
       // Implement full-text search if needed
       return [];
-    }
+    } }
   },
   // AI operations
   ai: {
@@ -887,7 +879,7 @@ export const enhancedLoki = {
     },
     async getEmbeddings(contentHash: string) {
       return await enhancedLokiDB.getEmbeddings(contentHash);
-    }
+    } }
   },
   // Vector operations
   vector: {
@@ -899,7 +891,7 @@ export const enhancedLoki = {
         queryHash,
         minSimilarity
       );
-    }
+    } }
   },
   // Graph operations
   graph: {
@@ -908,7 +900,7 @@ export const enhancedLoki = {
     },
     async getRelationships(nodeId: string, type?: string, maxDepth?: number) {
       return await enhancedLokiDB.getRelationships(nodeId, type, maxDepth);
-    }
+    } }
   },
   // Utility operations
   getStats() {
@@ -919,8 +911,8 @@ export const enhancedLoki = {
   },
   destroy() {
     enhancedLokiDB.destroy();
-  }
+  } }
 };
 // Export the original API for backward compatibility
-export { loki } from './lokiStore.js';
+export { loki } }from './lokiStore.js';
 export const lokiStore = enhancedLokiStore;

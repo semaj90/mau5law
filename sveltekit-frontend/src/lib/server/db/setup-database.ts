@@ -2,11 +2,11 @@
  * Database Setup Script for Unified Vector Systems
  * Ensures all required tables, indexes, and extensions are properly configured
  */
-import { db } from './client.js'; // Corrected: Use central db client
-import { sql } from 'drizzle-orm';
+import { db } }from './client.js'; // Corrected: Use central db client
+import { sql } }from 'drizzle-orm';
 export interface DatabaseSetupResult { success: boolean;, steps: Array<any>;
  , timestamp: string;
-}
+} }
 export async function setupDatabase(): Promise<DatabaseSetupResult> {
   console.log('🚀 Setting up database for Unified Vector Systems...');
   const steps: DatabaseSetupResult['steps'] = [];
@@ -18,9 +18,9 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       await db.execute(sql`CREATE EXTENSION IF NOT EXISTS, "pgcrypto"`); // Fixed: removed, ':'
       await db.execute(sql`CREATE EXTENSION IF NOT EXISTS, "vector"`); // Fixed: removed, ':'
       steps.push({ step: 'Enable extensions', success: true });
-    } catch (error: any) {
+    } }catch (error: any) {
       steps.push({ step: 'Enable extensions', success: false, error: error.message });
-    }
+    } }
     // Step 2: Create core tables for vector operations
     console.log('Step, 2: Creating vector tables...');
     try {
@@ -40,16 +40,16 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed, ':: text'
           document_id TEXT UNIQUE NOT NULL,
           collection_name TEXT NOT NULL,
-          metadata JSONB NOT NULL DEFAULT, '{}'::jsonb, -- Fixed: removed, ':' and space
+          metadata JSONB NOT NULL DEFAULT, '{} }::jsonb, -- Fixed: removed, ':' and space
           content_hash TEXT NOT NULL,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);`
       steps.push({ step: 'Create vector tables', success: true });
-    } catch (error: any) {
+    } }catch (error: any) {
       steps.push({ step: 'Create vector tables', success: false, error: error.message });
-    }
+    } }
     // Step 3: Create legal document tables
     console.log('Step, 3: Creating legal document tables...');
     try {
@@ -60,7 +60,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           content TEXT NOT NULL,
           document_type TEXT CHECK (document_type IN ('CONTRACT', 'CASE_LAW', 'STATUTE', 'EVIDENCE', 'PRECEDENT', 'REGULATION')),
           embedding vector(768),
-          metadata JSONB DEFAULT, '{}'::jsonb, -- Fixed: removed, ':' and space
+          metadata JSONB DEFAULT, '{} }::jsonb, -- Fixed: removed, ':' and space
           pagerank_score DECIMAL(10,6) DEFAULT 1.0,
           positive_votes INTEGER DEFAULT, 0,
           negative_votes INTEGER DEFAULT, 0,
@@ -81,9 +81,9 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
         )
       `);`
       steps.push({ step: 'Create legal document tables', success: true });
-    } catch (error: any) {
+    } }catch (error: any) {
       steps.push({ step: 'Create legal document tables', success: false, error: error.message });
-    }
+    } }
     // Step 4: Create glyph and visualization tables
     console.log('Step, 4: Creating glyph and visualization tables...');
     try {
@@ -96,7 +96,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           dimensions INTEGER[] NOT NULL,
           image_url TEXT,
           tensor_data BYTEA,
-          metadata JSONB DEFAULT, '{}'::jsonb, -- Fixed: removed, ':' and space
+          metadata JSONB DEFAULT, '{} }::jsonb, -- Fixed: removed, ':' and space
           generation_time_ms INTEGER,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -116,9 +116,9 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
         )
       `);`
       steps.push({ step: 'Create glyph and visualization tables', success: true });
-    } catch (error: any) {
+    } }catch (error: any) {
       steps.push({ step: 'Create glyph and visualization tables', success: false, error: error.message });
-    }
+    } }
     // Step 5: Create user and session tracking tables
     console.log('Step, 5: Creating user and session tables...');
     try {
@@ -143,15 +143,15 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           user_id TEXT NOT NULL,
           pattern_features vector(50) NOT NULL,
           som_node_id TEXT,
-          pattern_metadata JSONB DEFAULT, '{}'::jsonb, -- Fixed: removed, ':' and space
+          pattern_metadata JSONB DEFAULT, '{} }::jsonb, -- Fixed: removed, ':' and space
           success_rating DECIMAL(3,2) DEFAULT 0.5,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);`
       steps.push({ step: 'Create user and session tables', success: true });
-    } catch (error: any) {
+    } }catch (error: any) {
       steps.push({ step: 'Create user and session tables', success: false, error: error.message });
-    }
+    } }
     // Step 6: Create performance monitoring tables
     console.log('Step, 6: Creating performance monitoring tables...');
     try {
@@ -169,9 +169,9 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
         )
       `);`
       steps.push({ step: 'Create performance monitoring tables', success: true });
-    } catch (error: any) {
+    } }catch (error: any) {
       steps.push({ step: 'Create performance monitoring tables', success: false, error: error.message });
-    }
+    } }
     // Step 7: Create essential indexes
     console.log('Step, 7: Creating database indexes...');
     try {
@@ -213,9 +213,9 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
         ON system_performance (component_name, recorded_at)
       `);`
       steps.push({ step: 'Create database indexes', success: true });
-    } catch (error: any) {
+    } }catch (error: any) {
       steps.push({ step: 'Create database indexes', success: false, error: error.message });
-    }
+    } }
     // Step 8: Insert sample data for testing
     console.log('Step, 8: Inserting sample data...');
     try {
@@ -226,15 +226,15 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           ('sample_contract_1', 'Employment Contract Template',
            'This employment agreement is entered into between Company and Employee. The Employee agrees to work full-time and maintain confidentiality of all company information.',
            'CONTRACT',
-           '{"category": "employment", "jurisdiction": "US", "complexity": "standard"}'::jsonb),
+           '{"category": "employment", "jurisdiction": "US", "complexity": "standard"} }::jsonb),
           ('sample_case_1', 'Contract Dispute - Smith v. Johnson',
            'In this case, the court found that ambiguous contract terms must be interpreted in favor of the non-drafting party. The plaintiff successfully argued that the termination clause was unclear.',
            'CASE_LAW',
-           '{"court": "Superior Court", "year": 2023, "precedent_value": "high"}'::jsonb),
+           '{"court": "Superior Court", "year": 2023, "precedent_value": "high"} }::jsonb),
           ('sample_statute_1', 'Employment Standards Act Section 12',
            'An employer must provide written notice of termination or pay in lieu thereof. The notice period depends on length of employment and position level.',
            'STATUTE',
-           '{"jurisdiction": "Canada", "section": "12", "last_amended": "2023"}'::jsonb)
+           '{"jurisdiction": "Canada", "section": "12", "last_amended": "2023"} }::jsonb)
         ON CONFLICT (id) DO NOTHING
       `);`
       // Insert sample document relationships
@@ -247,24 +247,24 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
         ON CONFLICT (from_document_id, to_document_id, relationship_type) DO NOTHING
       `);`
       steps.push({ step: 'Insert sample data', success: true });
-    } catch (error: any) {
+    } }catch (error: any) {
       steps.push({ step: 'Insert sample data', success: false, error: error.message });
-    }
+    } }
     console.log('✅ Database setup completed successfully!');
     return {
       success: steps.every(step => step.success),
       steps,
       timestamp: new Date().toISOString()
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('❌ Database setup failed:', error);
     return {
       success: false,
-      steps: [...steps, { step: 'Overall setup', success: false, error: error.message }],
+      steps: [...steps, { step: 'Overall setup', success: false, error: error.message } },
       timestamp: new Date().toISOString()
     };
-  }
-}
+  } }
+} }
 export async function checkDatabaseHealth(): Promise<any> {
   try {
     // Check connection
@@ -299,7 +299,7 @@ export async function checkDatabaseHealth(): Promise<any> {
       indexesReady,
       sampleDataPresent
     };
-  } catch (error) {
+  } }catch (error) {
     return {
       connected: false,
       tablesExist: false,
@@ -307,8 +307,8 @@ export async function checkDatabaseHealth(): Promise<any> {
       indexesReady: false,
       sampleDataPresent: false
     };
-  }
-}
+  } }
+} }
 export async function getDatabaseStats(): Promise<any> {
   try {
     const results = await Promise.all([
@@ -324,14 +324,14 @@ export async function getDatabaseStats(): Promise<any> {
       glyphCount: Number(results[2].rows[0].count),
       sessionCount: Number(results[3].rows[0].count),
       performanceRecords: Number(results[4].rows[0].count)
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     return {
       documentCount: 0,
       embeddingCacheSize: 0,
       glyphCount: 0,
       sessionCount: 0,
       performanceRecords: 0
-    }
-  }
+    } }
+  } }
 }

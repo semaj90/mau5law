@@ -5,13 +5,13 @@
 // - See qdrant-service.ts for vector DB integration
 export interface DocumentChunk { id: string;, text: string;
   metadata?: { [key: string]: any };
-}
+} }
 export interface EmbeddingResult { embedding: number[];, model: string;
   metadata?: {
     timestamp: string;
     [key: string]: any;
   };
-}
+} }
 export class NomicEmbeddingsService {
   /**
    * Embed text using Nomic embeddings
@@ -27,9 +27,9 @@ export class NomicEmbeddingsService {
         model: 'nomic-embed-text-v1',
         metadata: {
           timestamp: new Date().toISOString()
-        }
+        } }
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       // Fallback to mock embedding if real API fails
       console.warn('Falling back to mock embedding:', error);
       return {
@@ -37,24 +37,24 @@ export class NomicEmbeddingsService {
         model: 'nomic-embed-text-v1',
         metadata: {
           timestamp: new Date().toISOString()
-        }
+        } }
       };
-    }
-  }
+    } }
+  } }
   private generateMockEmbedding(text: string): number[] {
     // Generate deterministic embedding based on text content
     const embedding = new Array(768);
     let hash = 0;
     for (let i = 0; i < text.length; i++) {
       hash = ((hash << 5) - hash + text.charCodeAt(i)) & 0xffffffff;
-    }
+    } }
     for (let i = 0; i < 768; i++) {
       // Create pseudo-random values based on text hash and position
       hash = (hash * 9301 + 49297) % 233280;
       embedding[i] = (hash / 233280) * 2 - 1; // Normalize to [-1, 1]
-    }
+    } }
     return embedding;
-  }
+  } }
   /**
    * Embed and upsert a document to Qdrant for audit/agent pipeline
    * Usage: await nomicEmbeddings.embedAndUpsert(doc)
@@ -63,13 +63,11 @@ export class NomicEmbeddingsService {
     const embeddingResult = await this.embed(document.text);
     try {
       // Upsert to Qdrant for semantic search
-      const { qdrantService } = await import('./qdrant-service');
+      const { qdrantService } }= await import('./qdrant-service');
       await qdrantService.upsertPoints([
-        {,
-          id: document.id,
+        { id: document.id,
           vector: embeddingResult.embedding,
-          payload: {
-           , documentId: document.metadata?.documentId || `doc_${Date.now()}`,
+          payload: { documentId: document.metadata?.documentId || `doc_${Date.now()}`,
             filename: document.metadata?.filename || 'unknown',
             documentType: document.metadata?.documentType || 'text',
             uploadedBy: document.metadata?.uploadedBy || 'system',
@@ -84,17 +82,18 @@ export class NomicEmbeddingsService {
               pageCount: document.metadata?.pageCount,
               wordCount: document.metadata?.wordCount,
               language: document.metadata?.language
-            }
-          }
+            } }
+          } }
         },
       ]);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.warn('Failed to upsert to Qdrant:', error);
-    }
+    } }
     // TODO: Log upsert to phase10-todo.log or DB
     // TODO: Optionally trigger agent action after upsert
     return embeddingResult;
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const nomicEmbeddings = new NomicEmbeddingsService();
+

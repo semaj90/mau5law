@@ -1,28 +1,28 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 // Standardized API Response Handlers for SvelteKit, 2
 // Production-ready response patterns with comprehensive error handling
-import { json, type RequestEvent } from '@sveltejs/kit';
-import { z } from 'zod';
-import type { ApiError } from '../../types/api.js';
-import type { APIResponse as UnifiedAPIResponse } from '$lib/types';
+import { json, type RequestEvent } }from '@sveltejs/kit';
+import { z } }from 'zod';
+import type { ApiError } }from '../../types/api.js';
+import type { APIResponse as UnifiedAPIResponse } }from '$lib/types';
 // Standard response interface
 export interface StandardApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: ApiError;
-  meta?: {, timestamp: string;, requestId: string;
+  meta?: { timestamp: string;, requestId: string;
     processingTime: number;
     version: string;
-    pagination?: {, page: number;, limit: number;
+    pagination?: { page: number;, limit: number;
       total: number;
       hasNext: boolean;
       hasPrev: boolean;
     };
     mockData?: boolean;
   };
-}
+} }
 // Enhanced error class for API errors
 export class ApiErrorClass extends Error {
   public readonly code: string;
@@ -41,8 +41,8 @@ export class ApiErrorClass extends Error {
     this.statusCode = statusCode;
     this.details = details;
     this.timestamp = new Date();
-  }
-}
+  } }
+} }
 // Success response builder
 export function apiSuccess<T>(
   data: T,
@@ -50,19 +50,17 @@ export function apiSuccess<T>(
   processingTime: number = 0,
   pagination?: StandardApiResponse<T>['meta']['pagination']
 ): Response {
-  const response: StandardApiResponse<T> = {
-   , success: true,
+  const response: StandardApiResponse<T> = { success: true,
     data,
-    meta: {
-     , timestamp: new Date().toISOString(),
+    meta: { timestamp: new Date().toISOString(),
       requestId,
       processingTime,
       version: '2.0',
       ...(pagination && { pagination })
-    }
+    } }
   };
   return json(response);
-}
+} }
 // Error response builder
 export function apiError(
   error: ApiErrorClass | Error | string,
@@ -79,37 +77,35 @@ export function apiError(
       timestamp: error.timestamp
     };
     statusCode = error.statusCode;
-  } else if (error instanceof Error) {
+  } }else if (error instanceof Error) {
     apiErrorData = {
       code: 'INTERNAL_ERROR',
       message: error.message,
       timestamp: new Date()
     };
-  } else {
+  } }else {
     apiErrorData = {
       code: 'UNKNOWN_ERROR',
       message: typeof error === 'string' ? error : 'Unknown error occurred',
       timestamp: new Date()
     };
-  }
+  } }
   // Add fallback data for legal API endpoints
-  const response: StandardApiResponse<unknown> = {
-   , success: false,
+  const response: StandardApiResponse<unknown> = { success: false,
     error: {
       ...apiErrorData,
       message: 'failure default to mock'
     },
     data: generateMockFallbackData(apiErrorData.code),
-    meta: {
-     , timestamp: new Date().toISOString(),
+    meta: { timestamp: new Date().toISOString(),
       requestId,
       processingTime,
       version: '2.0',
       mockData: true
-    }
+    } }
   };
   return json(response, { status: statusCode });
-}
+} }
 // Validation error response
 export function validationError(
   validationResult: z.ZodError,
@@ -122,48 +118,48 @@ export function validationError(
       acc[path] = err.message;
       return acc;
     },
-    {} as Record<string, string>
+    {} }as Record<string, string>
   );
   const apiErr = new ApiErrorClass('Validation failed', 'VALIDATION_ERROR', 400, {
     fields: details
   });
   return apiError(apiErr, requestId, processingTime);
-}
+} }
 // --- Unified Builders (Lightweight wrappers aligned with new shared types) ---
 export function buildSuccessResponse<T>(
   data: T,
-  metadata: {, processingTimeMs: number;, requestId: string }
+  metadata: { processingTimeMs: number; requestId: string } }
 ): UnifiedAPIResponse {
   return {
     success: true,
     data,
-    metadata: { ...metadata, timestamp: new Date().toISOString() }
+    metadata: { ...metadata, timestamp: new Date().toISOString() } }
   };
-}
+} }
 export function buildErrorResponse(
   code: string,
   message: string,
-  metadata: {, processingTimeMs: number;, requestId: string }
+  metadata: { processingTimeMs: number; requestId: string } }
 ): UnifiedAPIResponse {
   return {
     success: false,
     error: { code, message },
-    metadata: { ...metadata, timestamp: new Date().toISOString() }
-  } as UnifiedAPIResponse;
-}
+    metadata: { ...metadata, timestamp: new Date().toISOString() } }
+  } }as UnifiedAPIResponse;
+} }
 export function buildFormSubmissionResult(
   result: any,
-  metadata: {, processingTimeMs: number;, requestId: string }
+  metadata: { processingTimeMs: number; requestId: string } }
 ): any {
   return {
     ...(result as Record<string, unknown>),
-    metadata: { ...metadata, timestamp: new Date().toISOString() }
+    metadata: { ...metadata, timestamp: new Date().toISOString() } }
   };
-}
+} }
 // Request ID generator
 function generateRequestId(): string {
   return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-}
+} }
 // Generate mock fallback data based on error context
 function generateMockFallbackData(errorCode: string): any {
   const baseData = {
@@ -178,8 +174,7 @@ function generateMockFallbackData(errorCode: string): any {
       return {
         ...baseData,
         cases: [
-          {,
-            id: 'mock-case-1',
+          { id: 'mock-case-1',
             caseNumber: 'MOCK-2024-001',
             title: 'Mock Legal Case - Service Fallback',
             description: 'This is mock case data provided during service unavailability',
@@ -191,8 +186,7 @@ function generateMockFallbackData(errorCode: string): any {
           },
         ],
         evidence: [
-          {,
-            id: 'mock-evidence-1',
+          { id: 'mock-evidence-1',
             title: 'Mock Evidence Document',
             description: 'Mock evidence provided during service fallback',
             evidenceType: 'document',
@@ -200,20 +194,18 @@ function generateMockFallbackData(errorCode: string): any {
             dateCreated: new Date().toISOString()
           },
         ],
-        pagination: {
-         , page: 1,
+        pagination: { page: 1,
           limit: 50,
           total: 1,
           hasNext: false,
           hasPrev: false
-        }
+        } }
       };
     case, 'NOT_FOUND':
       return {
         ...baseData,
         suggested: [
-          {,
-            id: 'mock-suggestion-1',
+          { id: 'mock-suggestion-1',
             title: 'Similar Legal Case',
             description: 'Mock suggestion for similar case',
             relevance: 0.75
@@ -229,8 +221,8 @@ function generateMockFallbackData(errorCode: string): any {
         restrictedFeatures: ['case-creation', 'evidence-upload', 'ai-analysis']
       };
     default: return baseData;
-  }
-}
+  } }
+} }
 // API wrapper function for consistent error handling
 export async function withApiHandler<T>(
  , handler: (event: RequestEvent) => Promise<T>,
@@ -261,23 +253,23 @@ export async function withApiHandler<T>(
         expires: new Date(Date.now() + 3600 * 1000)
       };
       console.warn('[DEV_BYPASS_AUTH] Injected development demo user into event.locals');
-    }
-  } catch (e) {
+    } }
+  } }catch (e) {
     // Non-fatal: proceed without bypass if env access fails
-  }
+  } }
   try {
     const result = await handler(event);
     const processingTime = Date.now() - startTime;
     // If the handler returned a Response, return it as-is
     if (result instanceof Response) {
       return result;
-    }
+    } }
     // Otherwise wrap the result in a standard success response
     return apiSuccess(result, requestId, processingTime);
-  } catch (error) {
+  } }catch (error) {
     const processingTime = Date.now() - startTime;
     // Log error for monitoring
-    console.error(`API Error [${requestId}]:`, {
+    console.error(`API Error [${requestId} }:`, {
       error: error instanceof Error ? error.message : error,
       stack: error instanceof Error ? error.stack : undefined,
       url: event.url.pathname,
@@ -285,18 +277,18 @@ export async function withApiHandler<T>(
       processingTime
     });
     return apiError(error as Error, requestId, processingTime);
-  }
-}
+  } }
+} }
 // Common API errors
 export const CommonErrors = {
-  NotFound: (resource: string) => new ApiErrorClass(`${resource} not found`, 'NOT_FOUND', 404),
+  NotFound: (resource: string) => new ApiErrorClass(`${resource} }not found`, 'NOT_FOUND', 404),
   Unauthorized: (message = 'Unauthorized access') => new ApiErrorClass(message, 'UNAUTHORIZED', 401),
   Forbidden: (message = 'Access forbidden') => new ApiErrorClass(message, 'FORBIDDEN', 403),
   BadRequest: (message: string, details?: Record<string, unknown>) =>
     new ApiErrorClass(message, 'BAD_REQUEST', 400, details),
   InternalError: (message = 'Internal server error') => new ApiErrorClass(message, 'INTERNAL_ERROR', 500),
   ServiceUnavailable: (service: string) =>
-    new ApiErrorClass(`${service} is currently unavailable`, 'SERVICE_UNAVAILABLE', 503),
+    new ApiErrorClass(`${service} }is currently unavailable`, 'SERVICE_UNAVAILABLE', 503),
   RateLimited: (message = 'Rate limit exceeded') => new ApiErrorClass(message, 'RATE_LIMITED', 429),
   DatabaseError: (operation: string, details?: any) =>
     new ApiErrorClass(
@@ -306,20 +298,20 @@ export const CommonErrors = {
       details as Record<string, unknown>
     ),
   ValidationFailed: (field: string, reason: string) =>
-    new ApiErrorClass(`Validation failed for field: '${field}': ${reason}`, 'VALIDATION_ERROR', 400, { field, reason })
-} as const;
+    new ApiErrorClass(`Validation failed for field: '${field} }: ${reason}`, 'VALIDATION_ERROR', 400, { field, reason })
+} }as const;
 // Type-safe request body parser with validation
 export async function parseRequestBody<T>(request: Request, schema: z.ZodSchema<T>): Promise<T> {
   try {
     const body = await request.json();
     return schema.parse(body);
-  } catch (error) {
+  } }catch (error) {
     if (error instanceof z.ZodError) {
       throw error; // Let the caller handle validation errors
-    }
+    } }
     throw new ApiErrorClass('Invalid JSON in request body', 'INVALID_JSON', 400);
-  }
-}
+  } }
+} }
 // Pagination helper
 export function createPagination(page: number, limit: number, total: number) {
   const offset = (page - 1) * limit;
@@ -333,4 +325,5 @@ export function createPagination(page: number, limit: number, total: number) {
     hasPrev,
     offset
   };
-}
+} }
+

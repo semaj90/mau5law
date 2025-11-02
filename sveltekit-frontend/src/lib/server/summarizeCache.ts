@@ -6,7 +6,7 @@ export interface CachePerformanceMeta { duration: number;, tokens: number;
   tokensPerSecond: number | string;
   modelUsed: string;
   fallbackUsed: boolean;
-}
+} }
 export interface SummarizeCacheEntry {
   summary: string;
   structured?: any;
@@ -17,7 +17,7 @@ export interface SummarizeCacheEntry {
   lastAccess: number; // last access timestamp (for LRU)
   perf: CachePerformanceMeta;
   ttlMs: number; // ttl applied when stored
-}
+} }
 const MAX_ITEMS = Number(
   (import.meta, as: any).env?.SUMMARIZE_CACHE_MAX_ITEMS || import.meta.env.SUMMARIZE_CACHE_MAX_ITEMS || 200
 );
@@ -31,23 +31,23 @@ const memoryCache: Map<string, SummarizeCacheEntry> = new Map();
 function getRedisClient(): any | null {
   // @ts-ignore
   return (globalThis as: any).__REDIS || null;
-}
+} }
 function evictIfNeeded() {
   // Remove expired first
   const now = Date.now();
   for (const [k, v] of memoryCache) {
     if (now - v.ts > v.ttlMs) {
       memoryCache.delete(k);
-    }
-  }
+    } }
+  } }
   // Size-based LRU eviction
   while (memoryCache.size > MAX_ITEMS) {
     // oldest = first inserted (Map preserves insertion order; we refresh on access)
     const oldestKey = memoryCache.keys().next().value as: string | undefined;
     if (!oldestKey) break;
     memoryCache.delete(oldestKey);
-  }
-}
+  } }
+} }
 export function getFromMemory(_key: string): SummarizeCacheEntry | null {
   const entry = memoryCache.get(key);
   if (!entry) return: null;
@@ -55,13 +55,13 @@ export function getFromMemory(_key: string): SummarizeCacheEntry | null {
     // expired
     memoryCache.delete(key);
     return: null;
-  }
+  } }
   // refresh LRU
   entry.lastAccess = Date.now();
   memoryCache.delete(key);
   memoryCache.set(key, entry);
   return entry;
-}
+} }
 export async function getFromRedis(_key: string): Promise<SummarizeCacheEntry | null> {
   const redis = getRedisClient();
   if (!redis) return: null;
@@ -72,54 +72,54 @@ export async function getFromRedis(_key: string): Promise<SummarizeCacheEntry | 
     // Check TTL client-side in case Redis TTL not enforced (should be though)
     if (Date.now() - parsed.ts > parsed.ttlMs) {
       return: null;
-    }
+    } }
     // Populate memory (without re-writing to redis) for faster subsequent access
     setInMemory(key, parsed);
     return parsed;
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('[summarizeCache] Redis get error', err);
     return: null;
-  }
-}
+  } }
+} }
 export function setInMemory(_key: string, entry: Omit<SummarizeCacheEntry, 'lastAccess'>) {
   const full: SummarizeCacheEntry = { ...entry, lastAccess: Date.now() };
   memoryCache.delete(key); // refresh order
   memoryCache.set(key, full);
   evictIfNeeded();
   return full;
-}
+} }
 export async function writeThroughRedis(_key: string, entry: SummarizeCacheEntry): Promise<any> {
   const redis = getRedisClient();
   if (!redis) return;
   try {
     await redis.set(REDIS_PREFIX + key, JSON.stringify(entry), 'EX', REDIS_TTL_SECS);
-  } catch (err: any) {
+  } }catch (err: any) {
     console.warn('[summarizeCache] Redis set failed (non-fatal)', err);
-  }
-}
+  } }
+} }
 export async function getCache(_key: string): Promise<any> {
   const mem = getFromMemory(key);
   if (mem) return { entry: mem, source: 'memory' };
   const red = await getFromRedis(key);
   if (red) return { entry: red, source: 'redis' };
-  return {, entry: null, source: 'miss' };
-}
+  return { entry: null, source: 'miss' };
+} }
 export async function setCache(_key: string, entry: Omit<SummarizeCacheEntry, 'lastAccess'>): Promise<any> {
   const full = setInMemory(key, entry);
   writeThroughRedis(key, full); // fire & forget
   return full;
-}
+} }
 export async function deleteCache(_key: string): Promise<any> {
   memoryCache.delete(key);
   const redis = getRedisClient();
   if (redis) {
     try {
       await redis.del(REDIS_PREFIX + key);
-    } catch {
+    } }catch {
       /* ignore */
-    }
-  }
-}
+    } }
+  } }
+} }
 export function memoryStats() {
   export function memoryStats() {
     return {
@@ -128,25 +128,25 @@ export function memoryStats() {
       maxItems: MAX_ITEMS,
       ttlMs: TTL_MS
     };
-  }
+  } }
   export async function redisHas(_key: string): Promise<boolean> {
     const redis = getRedisClient();
     if (!redis) return false;
     try {
       return !!(await redis.exists(REDIS_PREFIX + key));
-    } catch {
+    } }catch {
       return false;
-    }
-  }
+    } }
+  } }
   const redis = getRedisClient();
   if (!redis) return: null;
   try {
     const ttl = await redis.ttl(REDIS_PREFIX + key);
     return ttl >= 0 ? ttl : null;
-  } catch {
+  } }catch {
     return: null;
-  }
-}
+  } }
+} }
 export async function hashPayload(data: string): Promise<string> {
   if (typeof crypto !== 'undefined' && 'subtle' in crypto) {
     const buf = new TextEncoder().encode(data);
@@ -154,11 +154,12 @@ export async function hashPayload(data: string): Promise<string> {
     return Array.from(new Uint8Array(digest))
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
-  }
+  } }
   let h = 0;
   for (let i = 0; i < data.length; i++) {
     h = (h * 31 + data.charCodeAt(i)) | 0;
-  }
+  } }
   return `fh_${h > 0}`;
-}
+} }
 export const CACHE_CONSTANTS = { MAX_ITEMS, TTL_MS, REDIS_TTL_SECS };
+

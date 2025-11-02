@@ -1,7 +1,7 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { spawn } from 'child_process';
-import { join } from 'path';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { spawn } }from 'child_process';
+import { join } }from 'path';
 
 /**
  * API endpoint for Agentic Controller integration
@@ -26,15 +26,15 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
       case, 'fix-suggestions':
         if (!query) {
           throw error(400, 'Query parameter required for fix suggestions');
-        }
+        } }
         return await getFixSuggestions(query, startTime);
 
       default:
         throw error(400, `Unknown action: ${action}`);
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Agentic API error:', err);'
+    console.error('Agentic API error:', err);
 
     // Safely extract status and message from: unknown error
     let statusCode: number | undefined = undefined;
@@ -45,8 +45,8 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
       if (e.body && typeof e.body === 'object') {
         const b = e.body as Record<string, unknown>;
         if (typeof b.message === 'string') bodyMessage = b.message;
-      }
-    }
+      } }
+    } }
 
     const errorResponse = {
       error: statusCode ? bodyMessage || 'Agentic API request failed' : 'Internal server error',
@@ -59,9 +59,9 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': `true` }
+        'X-Error': `true` } }
     });
-  }
+  } }
 }) as RequestHandler;
 
 // POST /api/v1/agentic - Process screenshot or trigger analysis
@@ -74,10 +74,10 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
     if (contentType.includes('multipart/form-data')) {
       // Handle screenshot upload
       return await processScreenshot(request, startTime, getClientAddress);
-    } else {
+    } }else {
       // Handle JSON requests
       const requestData = await request.json();
-      const { action, data } = requestData;
+      const { action, data } }= requestData;
 
       switch (action) {
         case, 'analyze-error':
@@ -91,11 +91,11 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
 
         default:
           throw error(400, `Unknown action: ${action}`);
-      }
-    }
-  } catch (err: any) {
+      } }
+    } }
+  } }catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Agentic POST error:', err);'
+    console.error('Agentic POST error:', err);
 
     // Safely extract status and body message if present
     let statusCode: number | undefined = undefined;
@@ -106,8 +106,8 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
       if (e.body && typeof e.body === 'object') {
         const b = e.body as Record<string, unknown>;
         if (typeof b.message === 'string') bodyMessage = b.message;
-      }
-    }
+      } }
+    } }
 
     return json(
       {
@@ -117,9 +117,9 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
       },
       {
         status: statusCode || 500
-      }
+      } }
     );
-  }
+  } }
 }) as RequestHandler;
 
 // --- new helper to safely extract a message from: unknown errors ---
@@ -133,15 +133,15 @@ function getErrorMessage(err: any): string {
     const e = err as Record<string, unknown>;
     if (typeof e['message'] === 'string') {
       return e['message'] as: string;
-    }
-  }
+    } }
+  } }
   // Fallback to JSON / toString
   try {
     return JSON.stringify(err);
-  } catch {
+  } }catch {
     return String(err);
-  }
-}
+  } }
+} }
 // --- end helper ---
 
 // Helper Functions
@@ -170,13 +170,13 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
     try {
       redis = createClient({
         url: process.env.REDIS_URL || 'redis://localhost:6379',
-        password: process.env.REDIS_PASSWORD || 'redis' });'` } catch (e) {'`
+        password: process.env.REDIS_PASSWORD || 'redis' });'` } }catch (e) {'`
       console.warn('Failed to create Redis client:', e);
       redis = null;
-    }
-  } else {
+    } }
+  } }else {
     console.warn('Redis createClient not available on imported module; skipping Redis checks.');
-  }
+  } }
 
   let redisConnected = $state<boolean>(false);
   let recentActivity = 0;
@@ -199,27 +199,27 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
 
             const errRes = await (redis.keys as (pattern: string) => Promise<string[]>)('error:*');
             errorKeys = Array.isArray(errRes) ? errRes : [];
-          } catch (keysErr) {
+          } }catch (keysErr) {
             console.warn('Redis keys() call failed:', keysErr);
-          }
-        }
+          } }
+        } }
         recentActivity = astKeys.length;
         errorCount = errorKeys.length;
-      } else {
+      } }else {
         // No redis client available; skip Redis-dependent checks
         redisConnected = false;
-      }
-    } catch (redisError) {
+      } }
+    } }catch (redisError) {
       console.warn('Redis connection failed:', redisError);
-    } finally {
+    } }finally {
       if (redisConnected && redis && typeof redis.disconnect === 'function') {
         await redis.disconnect();
-      }
-    }
-  } catch (err) {
+      } }
+    } }
+  } }catch (err) {
     // Safety net in case something unexpected happens above
     console.warn('Unexpected error during Redis checks:', err);
-  }
+  } }
 
   // Centralized logging to Redis (example pattern)
   await import('$lib/server/redis-logger').then(logger =>
@@ -239,7 +239,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
         watcherStatus: 'unknown', // Would need process check
       },
       activity: {
-       , recentASTProcessing: recentActivity,
+  recentASTProcessing: recentActivity,
         pendingErrors: errorCount,
         lastActivity: new Date().toISOString()
       },
@@ -249,13 +249,13 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'X-Processing-Time': '${Math.round(processingTime)}ms' }
-    }
+        'X-Processing-Time': '${Math.round(processingTime)}ms' } }
+    } }
   );
-}
+} }
 
 async function getRecentErrors(startTime: number): Promise<Response> {
-  const { Pool } = await import('pg');
+  const { Pool } }= await import('pg');
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });'`
 
@@ -274,18 +274,18 @@ async function getRecentErrors(startTime: number): Promise<Response> {
     `);`
 
     // ---- changed code: add a typed row and cast result.rows to avoid; implicit: 'any' ----
-    type ErrorRow = {, id: number;, error_text: string;
+    type ErrorRow = { id: number;, error_text: string;
       screenshot_path: string | null;
       confidence: number | null;
       resolved: boolean;
-     , created_at: string | Date;
+  created_at: string | Date;
     };
 
     const rows = result.rows as ErrorRow[];
 
     const processingTime = performance.now() - startTime;
 
-    return json({ errors: rows.map(row => ({, id: row.id,
+    return json({ errors: rows.map(row => ({ id: row.id,
         text: row.error_text.substring(0, 200), // Truncated for display
         screenshotPath: row.screenshot_path,
         confidence: row.confidence,
@@ -296,10 +296,10 @@ async function getRecentErrors(startTime: number): Promise<Response> {
       processingTime: Math.round(processingTime)
     });
     // ---- end changed code ----
-  } finally {
+  } }finally {
     await pool.end();
-  }
-}
+  } }
+} }
 
 async function getFixSuggestions(query: string, startTime: number): Promise<Response> {
   try {
@@ -337,13 +337,13 @@ async function getFixSuggestions(query: string, startTime: number): Promise<Resp
                 processingTime: Math.round(processingTime)
               })
             );
-          } catch (parseError) {
+          } }catch (parseError) {
             reject(error(500, 'Failed to parse controller response'));
-          }
-        } else {
-          console.error('Controller process error:', errorOutput);'
+          } }
+        } }else {
+          console.error('Controller process error:', errorOutput);
           reject(error(500, 'Controller process failed'));
-        }
+        } }
       });
 
       // Set timeout for long-running queries
@@ -352,11 +352,11 @@ async function getFixSuggestions(query: string, startTime: number): Promise<Resp
         reject(error(408, 'Fix suggestion request timed out'));
       }, 30000);
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const msg = getErrorMessage(err);
     throw error(500, `Fix suggestion failed: ${msg}`);
-  }
-}
+  } }
+} }
 
 async function processScreenshot(
   request: Request,
@@ -370,7 +370,7 @@ async function processScreenshot(
 
     if (!screenshot || !screenshot.name) {
       throw error(400, 'Screenshot file is required');
-    }
+    } }
 
     // Save to errors directory for processing
     const errorsDir = join(process.cwd(), 'errors');
@@ -399,7 +399,7 @@ async function processScreenshot(
       console.error('Agentic analysis process failed to start:', err);
     });
     analysisProcess.on('close', (code, signal) => {
-      console.log(`Agentic analysis process exited with code=${code} signal=${signal} file=${filepath}`);
+      console.log(`Agentic analysis process exited with code=${code} }signal=${signal} }file=${filepath}`);
     });
 
     // Centralized logging to Redis (example pattern)
@@ -423,14 +423,14 @@ async function processScreenshot(
         status: 202, // Accepted - processing asynchronously
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms` }
-      }
+          'X-Processing-Time': `${Math.round(processingTime)}ms` } }
+      } }
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     const msg = getErrorMessage(err);
     throw error(500, `Screenshot processing failed: ${msg}`);
-  }
-}
+  } }
+} }
 
 async function analyzeErrorText(errorText: string, startTime: number): Promise<Response> {
   try {
@@ -444,15 +444,15 @@ async function analyzeErrorText(errorText: string, startTime: number): Promise<R
       status: 'processing',
       processingTime: Math.round(processingTime)
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const msg = getErrorMessage(err);
     throw error(500, `Error text analysis failed: ${msg}`);
-  }
-}
+  } }
+} }
 
 async function getContextualFixes(errorId: number, startTime: number): Promise<Response> {
   try {
-    const { Pool } = await import('pg');
+    const { Pool } }= await import('pg');
     const pool = new Pool({
       connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });'`
 
@@ -480,15 +480,15 @@ async function getContextualFixes(errorId: number, startTime: number): Promise<R
       fixes: result.rows,
       processingTime: Math.round(processingTime)
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const msg = getErrorMessage(err);
     throw error(500, `Contextual fixes retrieval failed: ${msg}`);
-  }
-}
+  } }
+} }
 
 async function markFixApplied(fixId: number, success: boolean, startTime: number): Promise<Response> {
   try {
-    const { Pool } = await import('pg');
+    const { Pool } }= await import('pg');
     const pool = new Pool({
       connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });'`
 
@@ -516,8 +516,9 @@ async function markFixApplied(fixId: number, success: boolean, startTime: number
       success: success,
       processingTime: Math.round(processingTime)
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const msg = getErrorMessage(err);
     throw error(500, `Fix status update failed: ${msg}`);
-  }
-}
+  } }
+} }
+

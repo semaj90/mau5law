@@ -7,4 +7,5 @@ export function getOllamaEndpoint(): string {
   // Respect process.env.OLLAMA_URL first (e.g., 'http://ollama:11434' in Docker Compose)
   // Fallback to localhost for development outside of Docker.
   return process.env.OLLAMA_URL || 'http://localhost:11434';
-}
+} }
+

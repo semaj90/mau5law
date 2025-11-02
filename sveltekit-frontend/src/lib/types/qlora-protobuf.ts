@@ -12,41 +12,41 @@ export interface QLoRAProtobufTopologyRequest {
   trainingMode: boolean;
   binaryResponse: boolean;
   timestamp: number;
-}
-export interface QLoRAProtobufMetrics {, hmmPredictionScore: number;, somClusterAccuracy: number;
+} }
+export interface QLoRAProtobufMetrics { hmmPredictionScore: number;, somClusterAccuracy: number;
   webgpuOptimizationGain: number;
   cacheEfficiency: number;
   tensorOperations?: number;
   memoryUsage?: number;
   gpuUtilization?: number;
-}
-export interface QLoRAProtobufLearningData {, dataFlywheelSamples: number;, modelUpdateApplied: boolean;
+} }
+export interface QLoRAProtobufLearningData { dataFlywheelSamples: number;, modelUpdateApplied: boolean;
   accuracyImprovement: number;
   trainingIterations?: number;
   lossReduction?: number;
   convergenceScore?: number;
-}
-export interface QLoRAProtobufTopologyResponse {, prediction: {, type: string;
+} }
+export interface QLoRAProtobufTopologyResponse { prediction: { type: string;
     confidence: number;
     vectors: Float32Array; // 1536-dimension vectors
     clusters: number[];
-    topology: {, nodes: number;, edges: number;
+    topology: { nodes: number;, edges: number;
       connectivity: number;
     };
   };
   accuracy: number;
-  topology: {, structure: string;, complexity: number;
+  topology: { structure: string;, complexity: number;
     patternMatch: number;
   };
   cacheHit: boolean;
   processingTime: number;
   metrics: QLoRAProtobufMetrics;
   learningData?: QLoRAProtobufLearningData;
-  binaryMetadata: {, compressionRatio: number;, originalSize: number;
+  binaryMetadata: { compressionRatio: number;, originalSize: number;
     compressedSize: number;
    , encoding: 'gzip' | 'brotli' | 'lz4';
   };
-}
+} }
 /**
  * Binary serialization utilities for protobuf-like encoding
  */
@@ -63,13 +63,13 @@ export class QLoRABinaryCodec {
           __type: 'Float32Array',
           data: Array.from(value)
         };
-      }
+      } }
       return value;
     });
     // Use gzip compression for optimal size/speed balance
     // pako.gzip returns Uint8Array in browsers and Node builds
     return pako.gzip(jsonString);
-  }
+  } }
   /**
    * Decode binary data back to QLoRA response
    */
@@ -79,10 +79,10 @@ export class QLoRABinaryCodec {
       // Restore Float32Array
       if (value && value.__type === 'Float32Array') {
         return new Float32Array(value.data);
-      }
+      } }
       return value;
     });
-  }
+  } }
   /**
    * Calculate compression statistics
    */
@@ -91,7 +91,7 @@ export class QLoRABinaryCodec {
     compressed: Uint8Array
   ): { originalSize: number;, compressedSize: number;
    , compressionRatio: number;
-  } {
+  } }{
     const originalString = typeof original === 'string' ? original : JSON.stringify(original);
     // measure bytes rather than JS: string length
     const originalSize = new TextEncoder().encode(originalString).length;
@@ -101,8 +101,8 @@ export class QLoRABinaryCodec {
       compressedSize,
       compressionRatio: Math.round((originalSize / compressedSize) * 100) / 100
     };
-  }
-}
+  } }
+} }
 /**
  * Cache key generation for neural asset caching
  */
@@ -128,12 +128,12 @@ export class QLoRANetworkCacheKey {
       const hashBuffer = await g.crypto.subtle.digest('SHA-256', data);
       const hashArray = Array.from(new Uint8Array(hashBuffer));
       return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
+    } }
 
     // Fallback: dynamic import Node's crypto (server-side)'
     const nodeCrypto = await import('crypto');
     return nodeCrypto.createHash('sha256').update(input).digest('hex');
-  }
+  } }
 
   /**
    * Generate deterministic cache key from request parameters
@@ -149,15 +149,15 @@ export class QLoRANetworkCacheKey {
     };
     const hex = await this.sha256Hex(JSON.stringify(cacheableParams));
     return `qlora:neural:${hex.substring(0, 16)}`;
-  }
+  } }
   /**
    * Generate asset-specific cache key for binary assets
    */
   static async generateAssetKey(assetType: string, parameters: Record<string, unknown>): Promise<string> {
     const hex = await this.sha256Hex(`${assetType}:${JSON.stringify(parameters)}`);
     return `asset:${assetType}:${hex.substring(0, 12)}`;
-  }
-}
+  } }
+} }
 /**
  * Performance monitoring for binary transport
  */
@@ -171,7 +171,7 @@ export interface QLoRABinaryPerformanceMetrics { requestSize: number;, response
   deserializationTime?: number;
   // timestamp used for internal bookkeeping (optional so external callers aren't forced to provide it)'
   timestamp?: number;
-}
+} }
 export class QLoRAPerformanceMonitor {
   private static metrics: QLoRABinaryPerformanceMetrics[] = [];
   static recordMetrics(metrics: QLoRABinaryPerformanceMetrics): void {
@@ -183,8 +183,8 @@ export class QLoRAPerformanceMonitor {
     // Keep only last, 100 entries for memory efficiency
     if (this.metrics.length > 100) {
       this.metrics = this.metrics.slice(-100);
-    }
-  }
+    } }
+  } }
   static getAverageMetrics(): Partial<QLoRABinaryPerformanceMetrics> {
     if (this.metrics.length === 0) return {};
     type Accumulator = { requestSize: number;, responseSize: number;
@@ -207,7 +207,7 @@ export class QLoRAPerformanceMonitor {
         compressionRatio: 0,
         processingTime: 0,
         cacheHitCount: 0
-      } as Accumulator
+      } }as Accumulator
     );
     const count = this.metrics.length;
     return {
@@ -217,5 +217,6 @@ export class QLoRAPerformanceMonitor {
       processingTime: Math.round(totals.processingTime / count),
       cacheHit: totals.cacheHitCount / count > 0.5
     };
-  }
-}
+  } }
+} }
+

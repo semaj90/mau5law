@@ -2,10 +2,10 @@
 // CANONICAL CACHE API ENDPOINT - SvelteKit Integration
 // Provides HTTP/REST interface for the canonical result cache system
 // ======================================================================
-import { json, error } from '@sveltejs/kit';
+import { json, error } }from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import type { RequestHandler } from './$types.js';
-import { canonicalResultCache, type CanonicalResult, type RankingSet } from '$lib/services/canonical-result-cache.js';
+import type { RequestHandler } }from './$types.js';
+import { canonicalResultCache, type CanonicalResult, type RankingSet } }from '$lib/services/canonical-result-cache.js';
 // Add a precise type for incoming results to avoid `any`
 type RawCanonicalResult = { docId: string | number;, score: number;
   flags?: number;
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           code: 'INVALID_SLOT_KEY'
         })
       );
-    }
+    } }
     // Check if client prefers binary response
     const acceptHeader = request.headers.get('accept') || '';
     const preferBinary = acceptHeader.includes('application/octet-stream');
@@ -48,12 +48,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
           latencyMs: latency
         })
       );
-    }
+    } }
     // Apply result limit if specified
     let results = rankingSet.results;
     if (limit && limit > 0 && limit < results.length) {
       results = results.slice(0, limit);
-    }
+    } }
     // Prepare response
     const responseData = {
       ...rankingSet,
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             resultCount: results.length,
             totalResultCount: rankingSet.results.length,
             truncated: limit ? results.length < rankingSet.results.length : false
-          }
+          } }
         : undefined
     };
     // Return binary response if requested
@@ -84,9 +84,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
           'X-Cache-Status': 'hit',
           'X-Latency-Ms': latency.toString(),
           'X-Result-Count': results.length.toString(),
-          'Cache-Control': 'max-age=30, public` }'`
+          'Cache-Control': 'max-age=30, public` } }`
       });
-    }
+    } }
     // Return JSON response
     return json(responseData, {
       status: 200,
@@ -94,14 +94,14 @@ export const GET: RequestHandler = async ({ url, request }) => {
         'X-Cache-Status': 'hit',
         'X-Latency-Ms': latency.toString(),
         'X-Result-Count': results.length.toString(),
-        'Cache-Control': `max-age=30, public` }
+        'Cache-Control': `max-age=30, public` } }
     });
-  } catch (err) {
+  } }catch (err) {
     const latency = performance.now() - startTime;
     if (err && typeof err === 'object' && 'status' in err) {
       // SvelteKit error - re-throw
       throw err;
-    }
+    } }
     // Unexpected error
     console.error('Cache ranking retrieval failed:', err);
     throw error(
@@ -112,7 +112,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         latencyMs: latency
       })
     );
-  }
+  } }
 };
 // POST /api/v1/cache/ranking - Store new ranking set
 export const POST: RequestHandler = async ({ request }) => {
@@ -124,9 +124,9 @@ export const POST: RequestHandler = async ({ request }) => {
       throw error(
         400,
         makeHttpErrorPayload({ message: 'Missing required, fields: query and results array',
-          code: `INVALID_REQUEST_BODY` })
+          code: 'INVALID_REQUEST_BODY' })
       );
-    }
+    } }
     // Validate results format
     const results: CanonicalResult[] = body.results.map((result: any, index: number) => {
       const r = result as Partial<RawCanonicalResult>;
@@ -136,9 +136,9 @@ export const POST: RequestHandler = async ({ request }) => {
           400,
           makeHttpErrorPayload({
             message: `Invalid result at index ${index}: missing docId or score`,
-            code: `INVALID_RESULT_FORMAT` })
+            code: 'INVALID_RESULT_FORMAT' })
         );
-      }
+      } }
       // Construct CanonicalResult with safe defaults and clamped score
       const score = Math.max(0, Math.min(1, r.score as: number));
       return {
@@ -167,11 +167,11 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       slotKey,
       metadata: {
-       , resultCount: results.length,
+  resultCount: results.length,
         latencyMs: latency,
         cacheUtilization: canonicalResultCache.getSlotTableStatus().utilization,
         expiresAt: Date.now() + 30 * 1000, // 30 seconds TTL
-      }
+      } }
     };
 
     return json(payload, {
@@ -180,13 +180,13 @@ export const POST: RequestHandler = async ({ request }) => {
         'X-Slot-Key': slotKey,
         'X-Latency-Ms': latency.toString(),
         'X-Result-Count': results.length.toString()
-      }
+      } }
     });
-  } catch (err) {
+  } }catch (err) {
     const latency = performance.now() - startTime;
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;
-    }
+    } }
     console.error('Cache ranking storage failed:', err);
     throw error(
       500,
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request }) => {
         latencyMs: latency
       })
     );
-  }
+  } }
 };
 // DELETE /api/v1/cache/ranking - Clear cache
 export const DELETE: RequestHandler = async ({ url }) => {
@@ -209,9 +209,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
         501,
         makeHttpErrorPayload({
           message: 'Single slot clearing not yet implemented',
-          code: `NOT_IMPLEMENTED` })
+          code: 'NOT_IMPLEMENTED' })
       );
-    } else {
+    } }else {
       // Clear entire cache
       await canonicalResultCache.clear();
       const latency = performance.now() - startTime;
@@ -220,12 +220,12 @@ export const DELETE: RequestHandler = async ({ url }) => {
         message: 'Cache cleared successfully',
         latencyMs: latency
       });
-    }
-  } catch (err) {
+    } }
+  } }catch (err) {
     const latency = performance.now() - startTime;
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;
-    }
+    } }
     console.error('Cache clear failed:', err);
     throw error(
       500,
@@ -235,7 +235,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
         latencyMs: latency
       })
     );
-  }
+  } }
 };
 // Utility function to pack ranking set to binary format
 async function packRankingSetToBinary(rankingSet: RankingSet): Promise<Uint8Array> {
@@ -248,4 +248,5 @@ async function packRankingSetToBinary(rankingSet: RankingSet): Promise<Uint8Arra
   const compressionRatio = 0.6; // Assume 40% compression
   const mockCompressedSize = Math.floor(jsonBytes.length * compressionRatio);
   return jsonBytes.slice(0, mockCompressedSize);
-}
+} }
+

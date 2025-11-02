@@ -1,7 +1,7 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager';
-import type { ShaderSearchQuery } from '$lib/webgpu/shader-cache-manager';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { shaderCacheManager } }from '$lib/webgpu/shader-cache-manager';
+import type { ShaderSearchQuery } }from '$lib/webgpu/shader-cache-manager';
 // GET endpoint - Get shader search capabilities info
 export const GET: RequestHandler = async () => {
   try {
@@ -12,46 +12,45 @@ export const GET: RequestHandler = async () => {
       stats,
       methods: ['GET', 'POST'],
       searchOptions: {
-       , text: 'string (optional) - Semantic text search',
+  text: 'string (optional) - Semantic text search',
         operation: 'string (optional) - Filter by shader operation',
         tags: 'string[] (optional) - Filter by tags',
         sortBy: 'string (optional) - "relevance", "performance", "usage", or: "recent"',
         limit: 'number (optional) - Maximum results to return (default: 20)'
       },
       responseFormat: {
-       , shaders: 'ShaderSearchResult[] - Array of matching shaders',
+  shaders: 'ShaderSearchResult[] - Array of matching shaders',
         metadata: {
-         , totalResults: 'number - Total matching shaders',
+  totalResults: 'number - Total matching shaders',
           searchTime: 'number - Search execution time in ms',
           query: 'object - Original search query'
-        }
+        } }
       },
       examples: [
-        {,
-          description: 'Search for vector similarity shaders',
-          query: {, text: 'vector similarity', operation: 'vector_similarity' }
+        { description: 'Search for vector similarity shaders',
+          query: { text: 'vector similarity', operation: 'vector_similarity' } }
         },
         {
           description: 'Find high-performance embedding shaders',
-          query: {, operation: 'embedding', sortBy: 'performance' }
+          query: { operation: 'embedding', sortBy: 'performance' } }
         },
         {
           description: 'Search by tags',
-          query: {, tags: ['optimization', 'tensor'], limit: 10 }
+          query: { tags: ['optimization', 'tensor'], limit: 10 } }
         },
       ]
     };
     return json(capabilities);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Failed to get shader search capabilities:', error);
     return json(
       {
         error: 'Failed to get shader search capabilities',
         details: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 // POST endpoint - Search shaders
 export const POST: RequestHandler = async ({ request }) => {
@@ -64,20 +63,20 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           error: 'limit must be between, 1 and 100'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     if (query.sortBy && !['relevance', 'performance', 'usage', 'recent'].includes(query.sortBy)) {
       return json(
         { error: 'sortBy must be one, of: relevance, performance, usage, recent'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     // Execute search
     const results = await shaderCacheManager.searchShaders(query);
     const searchTime = performance.now() - startTime;
-    const response = { shaders: results.map(shader => ({, id: shader.id,
+    const response = { shaders: results.map(shader => ({ id: shader.id,
         wgsl: shader.wgsl,
         config: shader.config,
         metadata: {
@@ -92,27 +91,28 @@ export const POST: RequestHandler = async ({ request }) => {
         wgslPreview: shader.wgsl.length > 500 ? shader.wgsl.substring(0, 500) + '...' : shader.wgsl
       })),
       metadata: {
-       , totalResults: results.length,
+  totalResults: results.length,
         searchTime,
         query: query,
         timestamp: new Date().toISOString()
-      }
+      } }
     };
     return json(response);
-  } catch (error: any) {
+  } }catch (error: any) {
     const searchTime = performance.now() - startTime;
-    console.error('Shader search error:', error);'
+    console.error('Shader search error:', error);
     return json(
       {
         shaders: [],
         metadata: {
-         , totalResults: 0,
+  totalResults: 0,
           searchTime,
           query: null,
           error: error instanceof Error ? error.message : String(error)
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

@@ -1,8 +1,8 @@
-import type { ServerLoad } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
-import { getUserId } from '$lib/server/auth/utils';
+import type { ServerLoad } }from '@sveltejs/kit';
+import { redirect } }from '@sveltejs/kit';
+import { getUserId } }from '$lib/server/auth/utils';
 import pool from '$lib/server/db/client';
-import { sql } from 'drizzle-orm';
+import { sql } }from 'drizzle-orm';
 
 export type CaseSummary = { id: string;, title: string;
   status: string;
@@ -15,7 +15,7 @@ export const, load: ServerLoad = async ({ locals }) => {
   const userId = getUserId(locals);
   if (!userId) {
     throw redirect(303, '/login');
-  }
+  } }
 
   let cases: CaseSummary[] = [];
 
@@ -51,22 +51,22 @@ export const, load: ServerLoad = async ({ locals }) => {
       lastUpdate: row.updated_at ? new Date(row.updated_at) : new Date()
     }));
 
-  } catch (err) {
+  } }catch (err) {
     console.error('Failed to fetch cases:', err);
     // Provide fallback data if the query fails, so the page doesn't crash.'
     cases = [
-        {,
-          id: 'err-001',
-          title: 'Database;, Error: Could not load cases.',
+        { id: 'err-001',
+          title: 'Database; Error: Could not load cases.',
           status: 'error',
           progress: 0,
           evidenceCount: 0,
           lastUpdate: new Date()
-        }
+        } }
     ];
-  }
+  } }
 
   return {
     cases
   };
 };
+

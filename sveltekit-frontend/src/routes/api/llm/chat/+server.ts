@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { message, context } = await request.json();
+    const { message, context } }= await request.json();
     // Basic chat response - in production this would call an LLM
     const responses = [
       'I understand your query about: ' + message.substring(0, 20) + '...',
@@ -16,8 +16,9 @@ export const POST: RequestHandler = async ({ request }) => {
       context: context || {},
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
-    console.error('LLM chat error:', error);'
+  } }catch (error: any) {
+    console.error('LLM chat error:', error);
     return json({ error: 'Failed to process chat message' }, { status: 500 });
-  }
+  } }
 };
+

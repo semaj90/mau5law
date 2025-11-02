@@ -1,10 +1,10 @@
-import type { SearchResult } from '$lib/types';
-import { QdrantClient } from '@qdrant/js-client-rest';
-import type { Schemas } from '@qdrant/js-client-rest';
-import { QDRANT_HOST, QDRANT_PORT, QDRANT_API_KEY } from '$env/static/private';
+import type { SearchResult } }from '$lib/types';
+import { QdrantClient } }from '@qdrant/js-client-rest';
+import type { Schemas } }from '@qdrant/js-client-rest';
+import { QDRANT_HOST, QDRANT_PORT, QDRANT_API_KEY } }from '$env/static/private';
 // Production Qdrant Service - Fixed vector dimensions and stub implementations
 export interface QdrantPoint { id: string;, vector: number[];
-  payload: {, content: string;, type: 'evidence' | 'case' | 'chat' | 'precedent';
+  payload: { content: string;, type: 'evidence' | 'case' | 'chat' | 'precedent';
     caseId?: string;
     evidenceId?: string;
     tags: string[];
@@ -13,10 +13,10 @@ export interface QdrantPoint { id: string;, vector: number[];
     updatedAt: string;
     aiSummaryScore?: number; // 0-100 case AI scoring
   };
-}
-export interface SearchResult {, id: string;, score: number;
+} }
+export interface SearchResult { id: string;, score: number;
   payload: QdrantPoint['payload'];
-}
+} }
 class QdrantService {
   private, client: QdrantClient;
   private collectionName = 'legal_vectors';
@@ -27,35 +27,35 @@ class QdrantService {
       port: parseInt(QDRANT_PORT || '6333'),
       apiKey: QDRANT_API_KEY
     });
-  }
+  } }
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     try {
       const collectionsResponse = await this.client.getCollections();
       const collectionExists = collectionsResponse.collections.some(col => col.name === this.collectionName);
       if (!collectionExists) {
-        await this.client.createCollection(this.collectionName, { vectors: {, size: 384, // Fixed: nomic-embed-text dimension;
+        await this.client.createCollection(this.collectionName, { vectors: { size: 384, // Fixed: nomic-embed-text dimension;
            , distance: 'Cosine'
-          }
+          } }
         });
-      }
+      } }
       this.isInitialized = true;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Qdrant initialization failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   async healthCheck(): Promise<boolean> {
     try {
       // The client doesn't have a direct health check method in this version,'
       // so we'll infer health by trying to get collections.'
       const response = await this.client.getCollections();
       return !!response;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Qdrant health check failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
   async storeEvidence(
     evidenceId: string,
     content: string,
@@ -64,13 +64,12 @@ class QdrantService {
      , type: string;
       tags?: string[];
       [key: string]: any;
-    }
+    } }
   ): Promise<string> {
     await this.initialize();
     // Mock embedding for now - replace with actual VectorService
     const embedding = new Array(384).fill(0).map(() => Math.random());
-    const point: Schemas['PointStruct'] = {
-     , id: evidenceId,
+    const point: Schemas['PointStruct'] = { id: evidenceId,
       vector: embedding,
       payload: {
         content,
@@ -82,21 +81,21 @@ class QdrantService {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         aiSummaryScore: 75, // Mock score
-      }
+      } }
     };
     await this.client.upsertPoints(this.collectionName, {
       wait: true,
       points: [point]
     });
     return evidenceId;
-  }
+  } }
   async upsertPoints(points: Schemas['PointStruct'][]): Promise<void> {
     await this.initialize();
     await this.client.upsertPoints(this.collectionName, {
       wait: true,
       points
     });
-  }
+  } }
   async searchSimilar(embedding: number[], limit: number): Promise<Schemas['ScoredPoint'][]> {
     await this.initialize();
     const results = await this.client.search(this.collectionName, {
@@ -105,7 +104,7 @@ class QdrantService {
       with_payload: true
     });
     return results;
-  }
+  } }
   async searchSimilarEvidence(
     query: string,
     options: {
@@ -115,14 +114,14 @@ class QdrantService {
       evidenceTypes?: string[];
       tags?: string[];
       minAIScore?: number;
-    } = {}
+    } }= {} }
   ): Promise<SearchResult[]> {
     await this.initialize();
-    const { limit = 10, threshold = 0.7 } = options;
+    const { limit = 10, threshold = 0.7 } }= options;
     try {
       // Mock embedding for now
       const queryEmbedding = new Array(384).fill(0).map(() => Math.random());
-      const filter: Schemas['Filter'] = {, must: [{, key: 'type', match: {, value: 'evidence' } }]
+      const filter: Schemas['Filter'] = { must: [{ key: 'type', match: { value: 'evidence' } }} }
       };
       const searchResult = await this.client.search(this.collectionName, {
         vector: queryEmbedding,
@@ -138,18 +137,19 @@ class QdrantService {
           payload: result.payload as QdrantPoint['payload']
         })
       );
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Similarity search failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
   async deletePoints(evidenceIds: string[]): Promise<void> {
     await this.initialize();
     await this.client.deletePoints(this.collectionName, {
       points: evidenceIds
     });
-  }
-}
+  } }
+} }
 export const qdrantService = new QdrantService();
 export { QdrantService };
 export default QdrantService;
+

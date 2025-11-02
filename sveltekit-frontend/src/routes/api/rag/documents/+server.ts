@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
-import { eq, desc, sql } from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { db } }from '$lib/server/db';
+import { documents, documentChunks } }from '$lib/server/db/enhanced-embedding-schema';
+import { eq, desc, sql } }from 'drizzle-orm';
 
 /**
  * GET /api/rag/documents
@@ -40,9 +40,9 @@ export const GET: RequestHandler = async ({ url }) => {
     // Apply search filter
     if (search.trim()) {
       query = query.where(
-        sql`${documents.filename} ILIKE ${`%${search}%` } OR ${documents.title} ILIKE ${`%${search}%` }`'`'`
+        sql`${documents.filename} }ILIKE ${`%${search}%` } }OR ${documents.title} }ILIKE ${`%${search}%` }`'`'`
       );
-    }
+    } }
 
     // Order by creation date desc
     query = query
@@ -93,14 +93,15 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to list documents:', error);
     return json(
       {
         success: false,
         error: 'Failed to list documents',
         details: error instanceof Error ? error.message : 'Unknown error` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

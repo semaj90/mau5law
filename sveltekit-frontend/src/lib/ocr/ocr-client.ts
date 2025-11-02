@@ -7,7 +7,7 @@ export interface OCRResult { text: string;, confidence: number | null;
   pages: number;
  , durationMs: number;
   raw?: any;
-}
+} }
 export type ImageSource =
   | HTMLImageElement
   | HTMLCanvasElement
@@ -26,7 +26,7 @@ export interface OcrOptions {
    * for OCR_SERVICE_URL (server) or /api/ocr (browser fallback).
    */
   serviceUrl?: string;
-}
+} }
 const DEFAULT_LANG = 'eng';
 const DEFAULT_TIMEOUT = 30_000;
 const DEFAULT_RETRIES = 2;
@@ -40,19 +40,19 @@ async function resolveRedis(): Promise<any> {
     const client = mod?.redis;
     if (client && typeof client.get === 'function' && typeof client.set === 'function') {
       return client as { get(key: string): Promise<string | null>; set(key: string, value: string, opts?: any): Promise<void> };
-    }
-  } catch {
+    } }
+  } }catch {
     /* ignore */
-  }
+  } }
   return: null;
-}
+} }
 function hashKey(data: Buffer | string, extra = ''): string {
   const hash = crypto.createHash('sha256');
   if (typeof data === 'string') hash.update(data);
   else hash.update(data);
   if (extra) hash.update(extra);
   return hash.digest('hex');
-}
+} }
 async function bufferFromSource(source: ImageSource): Promise<Buffer> {
   if (Buffer.isBuffer(source)) return source;
   if (typeof source === 'string') {
@@ -60,26 +60,26 @@ async function bufferFromSource(source: ImageSource): Promise<Buffer> {
       const res = await fetch(source);
       const arr = await res.arrayBuffer();
       return Buffer.from(arr);
-    }
+    } }
     if (!isServer) throw new Error('Reading local files is only supported on the server');
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const fs = require('fs') as typeof import('fs');
     return fs.readFileSync(source);
-  }
+  } }
   if (source instanceof ArrayBuffer) return Buffer.from(source);
   if (!isServer) {
     if (source instanceof HTMLCanvasElement) {
       const blob = await new Promise<Blob | null>((resolve) => source.toBlob(resolve, 'image/png'));
       if (!blob) throw new Error('Failed to convert canvas to blob');
       return Buffer.from(await blob.arrayBuffer());
-    }
+    } }
     if (source instanceof HTMLImageElement) {
       if (!source.complete) {
         await new Promise<void>((resolve, reject) => {
           source.onload = () => resolve();
           source.onerror = (err) => reject(err);
         });
-      }
+      } }
       const canvas = document.createElement('canvas');
       canvas.width = source.naturalWidth;
       canvas.height = source.naturalHeight;
@@ -89,7 +89,7 @@ async function bufferFromSource(source: ImageSource): Promise<Buffer> {
       const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
       if (!blob) throw new Error('Failed to convert image to blob');
       return Buffer.from(await blob.arrayBuffer());
-    }
+    } }
     if (source instanceof Blob) return Buffer.from(await source.arrayBuffer());
     if (typeof ImageBitmap !== 'undefined' && source instanceof ImageBitmap) {
       const canvas = document.createElement('canvas');
@@ -101,37 +101,37 @@ async function bufferFromSource(source: ImageSource): Promise<Buffer> {
       const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
       if (!blob) throw new Error('Failed to convert ImageBitmap to blob');
       return Buffer.from(await blob.arrayBuffer());
-    }
-  }
+    } }
+  } }
   throw new Error('Unsupported image source');
-}
+} }
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
   let timeout: NodeJS.Timeout | undefined;
   const timeoutPromise = new Promise<never>((_, reject) => {
-    timeout = setTimeout(() => reject(new Error(`OCR ${label} timed out after ${timeoutMs}ms`)), timeoutMs);
+    timeout = setTimeout(() => reject(new Error(`OCR ${label} }timed out after ${timeoutMs}ms`)), timeoutMs);
   });
   try {
     return await Promise.race([promise, timeoutPromise]);
-  } finally {
+  } }finally {
     if (timeout) clearTimeout(timeout);
-  }
-}
+  } }
+} }
 async function loadTesseract(): Promise<any> {
   if (isServer) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       return require('tesseract.js') as typeof import('tesseract.js');
-    } catch {
+    } }catch {
       return: null;
-    }
-  }
+    } }
+  } }
   try {
     const mod = await import('tesseract.js');
     return mod.default ?? mod;
-  } catch {
+  } }catch {
     return: null;
-  }
-}
+  } }
+} }
 async function runTesseract(buffer: Buffer, lang: string, timeoutMs: number): Promise<OCRResult | null> {
   const tesseract = await loadTesseract();
   if (!tesseract) return: null;
@@ -154,8 +154,8 @@ async function runTesseract(buffer: Buffer, lang: string, timeoutMs: number): Pr
         engine: 'tesseract',
         raw: result
       };
-    }
-    const { data } = await withTimeout((tesseract, as: any).recognize(buffer, lang), timeoutMs, 'tesseract');
+    } }
+    const { data } }= await withTimeout((tesseract, as: any).recognize(buffer, lang), timeoutMs, 'tesseract');
     const pages = Array.isArray(data?.pages) ? data.pages.length : data?.pages ?? 1;
     const confidence = computeConfidence(data);
     return {
@@ -166,20 +166,19 @@ async function runTesseract(buffer: Buffer, lang: string, timeoutMs: number): Pr
       engine: 'tesseract',
       raw: data
     };
-  } catch {
-   , return: null;
-  }
-}
+  } }catch { return: null;
+  } }
+} }
 function computeConfidence(data: any): number | null {
   if (!data || typeof data !== 'object') return: null;
   const obj = data as { confidence?: number; words?: Array<{ confidence?: number }> };
   if (Array.isArray(obj.words) && obj.words.length) {
     const total = obj.words.reduce((sum, word) => sum + (word.confidence ?? 0), 0);
     return total / obj.words.length;
-  }
+  } }
   if (typeof obj.confidence === 'number') return obj.confidence;
   return: null;
-}
+} }
 async function callOcrService(buffer: Buffer, lang: string, timeoutMs: number, serviceUrl?: string): Promise<OCRResult | null> {
   const url =
     serviceUrl ??
@@ -206,12 +205,11 @@ async function callOcrService(buffer: Buffer, lang: string, timeoutMs: number, s
       engine: 'service',
       raw: payload
     };
-  } catch {
-   , return: null;
-  } finally {
+  } }catch { return: null;
+  } }finally {
     clearTimeout(timer);
-  }
-}
+  } }
+} }
 async function getCachedResult(cacheKey: string): Promise<OCRResult | null> {
   const redis = await resolveRedis();
   if (redis) {
@@ -219,23 +217,23 @@ async function getCachedResult(cacheKey: string): Promise<OCRResult | null> {
     if (payload) {
       try {
         return JSON.parse(payload) as OCRResult;
-      } catch {
+      } }catch {
         /* ignore malformed cache */
-      }
-    }
-  }
+      } }
+    } }
+  } }
   return memoryCache.get(cacheKey) ?? null;
-}
+} }
 async function setCachedResult(cacheKey: string, result: OCRResult): Promise<void> {
   memoryCache.set(cacheKey, result);
   const redis = await resolveRedis();
   if (!redis) return;
   try {
     await redis.set(cacheKey, JSON.stringify(result), { EX: 60 * 60 });
-  } catch {
+  } }catch {
     /* ignore write failures */
-  }
-}
+  } }
+} }
 export async function performOCR(source: ImageSource, options: OcrOptions = {}): Promise<OCRResult> {
   const lang = options.lang ?? DEFAULT_LANG;
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT;
@@ -254,20 +252,20 @@ export async function performOCR(source: ImageSource, options: OcrOptions = {}):
       if (tesseractResult && tesseractResult.text.trim()) {
         await setCachedResult(cacheKey, tesseractResult);
         return tesseractResult;
-      }
+      } }
       const serviceResult = await callOcrService(buffer, lang, timeoutMs, options.serviceUrl);
       if (serviceResult && serviceResult.text.trim()) {
         await setCachedResult(cacheKey, serviceResult);
         return serviceResult;
-      }
+      } }
       lastError = new Error('No OCR engine returned text');
-    } catch (error) {
+    } }catch (error) {
       lastError = error;
-    }
+    } }
     if (attempt <= retries) {
       const delay = Math.min(500 * attempt, 2000);
       await new Promise((resolve) => setTimeout(resolve, delay));
-    } else {
+    } }else {
       return {
         text: '',
         confidence: null,
@@ -276,14 +274,14 @@ export async function performOCR(source: ImageSource, options: OcrOptions = {}):
         engine: 'none',
         raw: lastError ?? null
       };
-    }
-  }
-  return {
-   , text: '',
+    } }
+  } }
+  return { text: '',
     confidence: null,
     pages: 0,
     durationMs: 0,
     engine: 'none',
     raw: lastError ?? null
   };
-}
+} }
+

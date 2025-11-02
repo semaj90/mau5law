@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 
 export const GET: RequestHandler = async () => {
   try {
@@ -12,27 +12,27 @@ export const GET: RequestHandler = async () => {
         service: 'gpu',
         message: 'GPU acceleration available',
         details: {
-         , cudaVisible: process.env.CUDA_VISIBLE_DEVICES || 'all',
+  cudaVisible: process.env.CUDA_VISIBLE_DEVICES || 'all',
           enabled: true
         },
         timestamp: new Date().toISOString()
       });
-    } else {
+    } }else {
       return json(
         {
           status: 'unavailable',
           service: 'gpu',
           message: 'GPU acceleration not configured',
           details: {
-           , enabled: false,
+  enabled: false,
             fallback: 'CPU processing'
           },
           timestamp: new Date().toISOString()
         },
-        { status: 503 }
+        { status: 503 } }
       );
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     return json(
       {
         status: 'error',
@@ -40,7 +40,8 @@ export const GET: RequestHandler = async () => {
         error: error.message || 'Health check failed',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

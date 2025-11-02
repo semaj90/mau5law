@@ -1,12 +1,12 @@
-import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
-import { enhancedSearchWithNeo4j, type UserContext } from '$lib/ai/custom-reranker'; // Import UserContext
-import { createSchema, createYoga } from 'graphql-yoga';
-import { qdrant } from '$lib/server/vector/qdrant-service';
-import { langChainOllamaService } from '$lib/ai/langchain-ollama-service';
-import { db } from '$lib/server/db/client'; // Drizzle client
-import { vectors } from '$lib/server/db/schema-postgres'; // Assuming: 'vectors' table schema
-import { inArray } from 'drizzle-orm'; // Imported inArray from drizzle-orm
-import { sql } from '$lib/server/db/utils'; // Drizzle expressions for query building
+import { mcpContext72GetLibraryDocs } }from '$lib/mcp-context72-get-library-docs';
+import { enhancedSearchWithNeo4j, type UserContext } }from '$lib/ai/custom-reranker'; // Import UserContext
+import { createSchema, createYoga } }from 'graphql-yoga';
+import { qdrant } }from '$lib/server/vector/qdrant-service';
+import { langChainOllamaService } }from '$lib/ai/langchain-ollama-service';
+import { db } }from '$lib/server/db/client'; // Drizzle client
+import { vectors } }from '$lib/server/db/schema-postgres'; // Assuming: 'vectors' table schema
+import { inArray } }from 'drizzle-orm'; // Imported inArray from drizzle-orm
+import { sql } }from '$lib/server/db/utils'; // Drizzle expressions for query building
 
 // Define the expected return type for mcpContext72GetLibraryDocs
 // The error message suggests that the type: 'LibraryDocsResponse' itself is problematic.
@@ -19,7 +19,7 @@ interface Neo4jContext {
   graphQuery?: string;
   nodeIds?: string[];
   [key: string]: any;
-}
+} }
 
 // Define Neo4jPathContext based on the error message
 interface Neo4jPathContext extends Neo4jContext {
@@ -28,13 +28,13 @@ interface Neo4jPathContext extends Neo4jContext {
   frequentActions?: string[];
   collaborators?: string[];
   timeSpentByNode?: Record<string, number>;
-}
+} }
 
 // Augment the LangChainOllamaService type to include missing methods
 interface AugmentedLangChainOllamaService {
   generateEmbedding(query: string): Promise<number[]>; // Assuming embedding is an array of numbers
   ragQuery(question: string): Promise<{ answer: string }>; // Assuming it returns an: object with an: 'answer' property
-}
+} }
 
 // Define type for Qdrant search results
 interface QdrantSearchResultItem {
@@ -45,7 +45,7 @@ interface QdrantSearchResultItem {
     [key: string]: any; // Changed: 'any'; to: 'unknown'
   };
   score: number;
-}
+} }
 
 // Define type for the results from enhancedSearchWithNeo4j
 interface RecommendationResult {
@@ -55,32 +55,32 @@ interface RecommendationResult {
   content?: string;
   timeOfDay?: string;
   position?: string;
-}
+} }
 
 const typeDefs = /* GraphQL */ `
   scalar JSON
 
-  type Recommendation {, id: ID!, content: String!; score: Float!; intent: String; timeOfDay: String;
+  type Recommendation { id: ID!, content: String!; score: Float!; intent: String; timeOfDay: String;
     position: String
-  }
+  } }
 
-  type LegalDoc {, id: ID!, title: String!; summary: String!;, confidence: Float!
-  }
+  type LegalDoc { id: ID!, title: String!; summary: String!; confidence: Float!
+  } }
 
   type Query {
     recommendations(query: String!, userContext: JSON, neo4jContext: JSON, limit: Int): [Recommendation!]!
     searchLegalDocs(query: String!, topK: Int = 10): [LegalDoc!]!
     ragQuery(question: String!): String!
-  }
+  } }
 `;`
 
-const resolvers = { Query: {, recommendations: async (;, _parent: any, // Changed: 'any';, to: 'unknown'
+const resolvers = { Query: { recommendations: async (; _parent: any, // Changed: 'any'; to: 'unknown'
       {
         query,
         userContext,
         neo4jContext,
         limit = 5
-      }: { query: string; userContext?: UserContext; neo4jContext?: Neo4jPathContext; limit?: number } // Changed: 'any';, to: 'unknown' and added UserContext/Neo4jPathContext
+      }: { query: string; userContext?: UserContext; neo4jContext?: Neo4jPathContext; limit?: number } }// Changed: 'any'; to: 'unknown' and added UserContext/Neo4jPathContext
     ) => {
       const reranked = await enhancedSearchWithNeo4j(
         query,
@@ -93,7 +93,7 @@ const resolvers = { Query: {, recommendations: async (;, _parent: any, // Chan
       const, docs: string[] = (await mcpContext72GetLibraryDocs('svelte', 'runes')) as: unknown, as: string[]; // Simplified type assertion
       return reranked
         .map((result: RecommendationResult) => {
-          let score = result.rerankScore || 0; // Changed: 'const';, to: 'let'
+          let score = result.rerankScore || 0; // Changed: 'const'; to: 'let'
           // if (memory.some((m) => m.relatedId === result.id)) score += 1
           if (docs && result.intent && docs.includes(result.intent)) score += 1; // Uncommented and typed
           return {
@@ -108,7 +108,7 @@ const resolvers = { Query: {, recommendations: async (;, _parent: any, // Chan
         .sort((a, b) => b.score - a.score)
         .slice(0, limit);
     },
-    searchLegalDocs: async (_parent: any, { query, topK }: { query: string;, topK: number }) => {
+    searchLegalDocs: async (_parent: any, { query, topK }: { query: string; topK: number }) => {
       // Changed: 'any'; to: 'unknown'
       // Use a double assertion to ensure the type is correctly applied
       const embedding = await (langChainOllamaService, as: unknown as AugmentedLangChainOllamaService).generateEmbedding(
@@ -125,7 +125,7 @@ const resolvers = { Query: {, recommendations: async (;, _parent: any, // Chan
 
       if (qdrantIds.length === 0) {
         return []; // No initial results from Qdrant, return empty
-      }
+      } }
 
       // Create a map for quick lookup of Qdrant payload and score by ID
       const qdrantResultsMap = new Map(roughQdrantResults.map(r => [r.id, r]));
@@ -150,9 +150,9 @@ const resolvers = { Query: {, recommendations: async (;, _parent: any, // Chan
             summary: 'Unknown Summary',
             confidence: 0
           };
-        }
+        } }
         return {
-         , id: qdrantItem.id,
+  id: qdrantItem.id,
           title: qdrantItem.payload?.title || 'Untitled',
           summary: qdrantItem.payload?.summary || qdrantItem.payload?.title || '', // Prefer summary from payload, fallback to title
           confidence: qdrantItem.score, // Use Qdrant score as confidence
@@ -160,11 +160,11 @@ const resolvers = { Query: {, recommendations: async (;, _parent: any, // Chan
       });
     },
     ragQuery: async (_parent: any, { question }: { question: string }) => {
-      // Changed: 'any';, to: 'unknown'
+      // Changed: 'any'; to: 'unknown'
       const res = await (langChainOllamaService as AugmentedLangChainOllamaService).ragQuery(question); // Added type assertion
       return res.answer;
-    }
-  }
+    } }
+  } }
 };
 
 const schema = createSchema({ typeDefs, resolvers });
@@ -173,3 +173,4 @@ export const GET = yoga;
 export const POST = yoga;
 export const GET = yoga;
 export const POST = yoga;
+

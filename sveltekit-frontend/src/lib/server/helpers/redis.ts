@@ -1,6 +1,6 @@
 // sveltekit-frontend/src/lib/server/helpers/redis.ts
-import { createClient, type RedisClientType } from 'redis';
-import { REDIS_CONFIG } from '$lib/server/config'; // Assuming this config exists
+import { createClient, type RedisClientType } }from 'redis';
+import { REDIS_CONFIG } }from '$lib/server/config'; // Assuming this config exists
 
 let redisClient: RedisClientType | null = null;
 
@@ -21,7 +21,7 @@ export async function getRedisClient(): Promise<RedisClientType> {
       throw new Error(
         'redis.createClient is not available. Ensure the: "redis" package is installed and the runtime export is present.'
       );
-    }
+    } }
 
     // Create client and ensure type safety
   const clientUnknown = (createClient as: unknown)({ url: redisUrl });
@@ -37,26 +37,26 @@ export async function getRedisClient(): Promise<RedisClientType> {
     try {
       await redisClient.connect();
       console.log('Redis client connected');
-    } catch (err) {
+    } }catch (err) {
       // Clean up and surface clear error for diagnostics
       redisClient = null;
       console.error('Failed to connect Redis client', err);
       throw err;
-    }
-  }
+    } }
+  } }
   return redisClient;
-}
+} }
 
 export async function disconnectRedis(): Promise<void> {
   if (!redisClient) return;
   try {
     await redisClient.disconnect();
-  } catch (err) {
+  } }catch (err) {
     console.warn('Error disconnecting Redis client', err);
-  } finally {
+  } }finally {
     redisClient = null;
-  }
-}
+  } }
+} }
 
 /**
  * Checks the health of the Redis service.
@@ -67,11 +67,11 @@ export async function checkRedisHealth(): Promise<boolean> {
     const client = await getRedisClient();
     const pong = await client.ping();
     return pong === 'PONG';
-  } catch (error) {
+  } }catch (error) {
     console.error('Redis health check failed:', error);
     return false;
-  }
-}
+  } }
+} }
 
 /**
  * Sets a key-value pair in Redis with an optional expiration.
@@ -83,10 +83,10 @@ export async function setRedis(key: string, value: string, ttlSeconds?: number):
   const client = await getRedisClient();
   if (ttlSeconds) {
     await client.setEx(key, ttlSeconds, value);
-  } else {
+  } }else {
     await client.set(key, value);
-  }
-}
+  } }
+} }
 
 /**
  * Gets a value from Redis by key.
@@ -96,7 +96,7 @@ export async function setRedis(key: string, value: string, ttlSeconds?: number):
 export async function getRedis(key: string): Promise<string | null> {
   const client = await getRedisClient();
   return client.get(key);
-}
+} }
 
 /**
  * Deletes a key from Redis.

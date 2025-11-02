@@ -1,15 +1,15 @@
-import { evidence } from '$lib/server/db/schema-postgres';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import type { RequestHandler } from './$types';
-import { eq } from 'drizzle-orm';
+import { evidence } }from '$lib/server/db/schema-postgres';
+import { json } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db/index';
+import type { RequestHandler } }from './$types';
+import { eq } }from 'drizzle-orm';
 
 // Add small type definitions to remove implicit anys and tighten parsing
 type Validation = {
   evidenceId: string;
   eventId?: string | null;
   userId: string;
- , valid: boolean;
+  valid: boolean;
   feedback?: string | null;
   corrections?: Record<string, unknown> | null;
   timestamp: string;
@@ -19,7 +19,7 @@ type Corrections = {
   summary?: string;
   tags?: string[];
   evidenceType?: string;
-} | null;
+} }| null;
 
 type AIAnalysis = {
   validations?: Validation[];
@@ -30,11 +30,11 @@ type AIAnalysis = {
   [key: string]: any;
 };
 
-export const, POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   const user = locals.user;
   if (!user) {
     return json({ error: 'Not authenticated' }, { status: 401 });
-  }
+  } }
   try {
     const body = (await request.json()) as {
       evidenceId?: string;
@@ -43,28 +43,28 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
       feedback?: string;
       corrections?: Corrections;
     };
-    const { evidenceId, eventId, valid = false, feedback, corrections } = body;
+    const { evidenceId, eventId, valid = false, feedback, corrections } }= body;
     if (!evidenceId) {
       return json({ error: 'Evidence ID is required' }, { status: 400 });
-    }
+    } }
 
     // Get the current evidence record
     const evidenceRecords = await db.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
 
     if (evidenceRecords.length === 0) {
       return json({ error: 'Evidence not found' }, { status: 404 });
-    }
+    } }
     const evidenceRecord = evidenceRecords[0];
 
     // Parse existing AI analysis safely
     let aiAnalysis: AIAnalysis = {};
     try {
-      const raw = (evidenceRecord.aiAnalysis, as: string) ?? '{}';
+      const raw = (evidenceRecord.aiAnalysis, as: string) ?? '{} };
       aiAnalysis = JSON.parse(raw) as AIAnalysis;
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('Failed to parse AI analysis JSON', err);
       aiAnalysis = {};
-    }
+    } }
 
     const validation: Validation = {
       evidenceId,
@@ -82,14 +82,14 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
     if (corrections && typeof corrections === 'object') {
       if (typeof corrections.summary === 'string') {
         aiAnalysis.summary = corrections.summary;
-      }
+      } }
       if (Array.isArray(corrections.tags)) {
         aiAnalysis.tags = corrections.tags;
-      }
+      } }
       if (typeof corrections.evidenceType === 'string') {
         aiAnalysis.evidenceType = corrections.evidenceType;
-      }
-    }
+      } }
+    } }
 
     const validationsArr = aiAnalysis.validations ?? [];
     const validValidations = validationsArr.filter((v: Validation) => Boolean(v.valid)).length;
@@ -103,13 +103,13 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
 
     if (corrections?.summary) {
       updateData.aiSummary = corrections.summary;
-    }
+    } }
     if (corrections?.tags) {
       updateData.aiTags = JSON.stringify(corrections.tags);
-    }
+    } }
     if (corrections?.evidenceType) {
       updateData.evidenceType = corrections.evidenceType;
-    }
+    } }
 
     await db.update(evidence).set(updateData).where(eq(evidence.id, evidenceId));
 
@@ -120,47 +120,47 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
       updatedAnalysis: aiAnalysis,
       message: valid ? 'Validation recorded successfully' : 'Correction recorded successfully'
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error('Validation error:', message);'
+    console.error('Validation error:', message);
     return json(
       {
         success: false,
         error: 'Failed to record validation',
         details: message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   const user = locals.user;
   if (!user) {
     return json({ error: 'Not authenticated' }, { status: 401 });
-  }
+  } }
   try {
     const evidenceId = url.searchParams.get('evidenceId');
     if (!evidenceId) {
       return json({ error: 'Evidence ID is required' }, { status: 400 });
-    }
+    } }
 
     // Get validation history for this evidence
     const evidenceRecords = await db.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
 
     if (evidenceRecords.length === 0) {
       return json({ error: 'Evidence not found' }, { status: 404 });
-    }
+    } }
     const evidenceRecord = evidenceRecords[0];
 
     let aiAnalysis: AIAnalysis = {};
     try {
-      const raw = (evidenceRecord.aiAnalysis, as: string) ?? '{}';
+      const raw = (evidenceRecord.aiAnalysis, as: string) ?? '{} };
       aiAnalysis = JSON.parse(raw) as AIAnalysis;
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('Failed to parse AI analysis JSON', err);
       aiAnalysis = {};
-    }
+    } }
 
     const validations = aiAnalysis.validations ?? [];
     const validValidations = validations.filter((v: Validation) => Boolean(v.valid)).length;
@@ -172,16 +172,17 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       totalValidations: validations.length,
       validValidations
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error('Get validations error:', message);'
+    console.error('Get validations error:', message);
     return json(
       {
         success: false,
         error: 'Failed to retrieve validations',
         details: message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

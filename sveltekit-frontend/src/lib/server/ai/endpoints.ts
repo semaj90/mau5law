@@ -10,4 +10,5 @@ export function getOllamaEndpoint(): string {
 		process.env.LOCAL_EMBEDDER_URL ||
 		'http://ollama:11434' // docker service name fallback (preferred in compose)
 	);
-}
+} }
+

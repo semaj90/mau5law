@@ -1,14 +1,14 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types';
 /*
  * Cluster API Endpoint - Service Orchestration & Health
  * Routes to: cluster-http.exe: 8213, modular-cluster-service-production.exe:8215
  */
-import { productionServiceClient } from '$lib/services/productionServiceClient';
-import { json, error } from '@sveltejs/kit';
+import { productionServiceClient } }from '$lib/services/productionServiceClient';
+import { json, error } }from '@sveltejs/kit';
 
 // Add a minimal local interface for the methods we call and cast the imported client.
-// This fixes the: "property does not exist on;, type: 'ProductionServiceClient'" errors.
+// This fixes the: "property does not exist on; type: 'ProductionServiceClient'" errors.
 type MinimalProductionClient = {
   checkAllServicesHealth(): Promise<Record<string, boolean>>;
   getPerformanceMetrics(): Promise<Array<{ avgLatency?: number; successRate?: number }>>;
@@ -30,11 +30,11 @@ export const GET: RequestHandler = async ({ url }) => {
       case, 'metrics':
         return await handleMetrics();
       default: return await handleClusterOverview();
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     console.error('Cluster API Error: ', err);'`'`
     throw error(500, `Cluster service unavailable: ${err instanceof Error ? err.message : `Unknown error` }`);
-  }
+  } }
 };
 // POST handler processes cluster management actions
 export const POST: RequestHandler = async ({ request }) => {
@@ -50,11 +50,11 @@ export const POST: RequestHandler = async ({ request }) => {
         return await handleServiceDeployment(data.serviceConfig);
       default:
         throw error(400, 'Invalid cluster action');
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     console.error('Cluster Action Error: ', err);'`'`
     throw error(500, `Cluster action failed: ${err instanceof Error ? err.message : `Unknown error` }`);
-  }
+  } }
 };
 async function handleHealthCheck(): Promise<Response> {
   const health = await prodClient.checkAllServicesHealth();
@@ -64,7 +64,7 @@ async function handleHealthCheck(): Promise<Response> {
   const healthyServicesCount = Object.values(health).filter(Boolean).length;
   const healthPercentage = totalServices > 0 ? (healthyServicesCount / totalServices) * 100 : 0;
 
-  return json({ cluster: {, status: healthPercentage > 80 ? 'healthy' : healthPercentage > 50 ? 'degraded' : 'critical',
+  return json({ cluster: { status: healthPercentage > 80 ? 'healthy' : healthPercentage > 50 ? 'degraded' : 'critical',
       health_percentage: Math.round(healthPercentage),
       total_services: totalServices,
       healthy_services: healthyServicesCount,
@@ -74,13 +74,13 @@ async function handleHealthCheck(): Promise<Response> {
     performance: metrics,
     timestamp: new Date().toISOString()
   });
-}
+} }
 async function handleServicesStatus(): Promise<Response> {
   const health = await prodClient.checkAllServicesHealth();
   const serviceDetails = {
     tier1_core: {
       'enhanced-rag': {
-       , status: health['enhanced-rag'] ? 'running' : 'down',
+  status: health['enhanced-rag'] ? 'running' : 'down',
         port: 8094,
         description: 'Primary AI Engine'
       },
@@ -88,11 +88,11 @@ async function handleServicesStatus(): Promise<Response> {
         status: health['upload-service'] ? 'running' : 'down',
         port: 8093,
         description: 'File Processing'
-      }
+      } }
     },
     tier2_enhanced: {
       'ai-summary': {
-       , status: health['ai-summary'] ? 'running' : 'down',
+  status: health['ai-summary'] ? 'running' : 'down',
         port: 8096,
         description: 'AI Summary Service'
       },
@@ -100,26 +100,26 @@ async function handleServicesStatus(): Promise<Response> {
         status: health['cluster-manager'] ? 'running' : 'down',
         port: 8213,
         description: 'Cluster Coordination'
-      }
+      } }
     },
     tier3_specialized: {
-      'legal-ai': {, status: health['legal-ai'] ? 'running' : 'down', port: 8202, description: 'Legal Document AI` },'`
+      'legal-ai': { status: health['legal-ai'] ? 'running' : 'down', port: 8202, description: 'Legal Document AI` },'`
       'xstate-manager': {
         status: health['xstate-manager'] ? 'running' : 'down',
         port: 8212,
-        description: `State Management` }
-    }
+        description: `State Management` } }
+    } }
   };
   return json({
-   , services: serviceDetails,
+  services: serviceDetails,
     summary: {
-     , total: Object.keys(health).length,
+  total: Object.keys(health).length,
       running: Object.values(health).filter(Boolean).length,
       down: Object.values(health).filter(h => !h).length
     },
     timestamp: new Date().toISOString()
   });
-}
+} }
 async function handleMetrics(): Promise<Response> {
   const performance = await prodClient.getPerformanceMetrics();
   const health = await prodClient.checkAllServicesHealth();
@@ -135,60 +135,60 @@ async function handleMetrics(): Promise<Response> {
   const servicesTotal = Object.keys(health).length;
   const servicesUpCount = Object.values(health).filter(Boolean).length;
 
-  return json({ performance: {, tiers: performance,
+  return json({ performance: { tiers: performance,
       overall: {
-       , avg_latency: avgLatency,
+  avg_latency: avgLatency,
         avg_success_rate: avgSuccess,
         total_endpoints: perfCount
-      }
+      } }
     },
     availability: {
-     , uptime_percentage: servicesTotal > 0 ? (servicesUpCount / servicesTotal) * 100 : 0,
+  uptime_percentage: servicesTotal > 0 ? (servicesUpCount / servicesTotal) * 100 : 0,
       services_up: servicesUpCount,
       services_total: servicesTotal
     },
-    protocols: {, quic: {, avg_latency: 5, success_rate: 0.99 },
-      grpc: {, avg_latency: 15, success_rate: 0.98 },
-      http: {, avg_latency: 45, success_rate: 0.97 },
-      websocket: {, avg_latency: 1, success_rate: 0.95 }
+    protocols: { quic: { avg_latency: 5, success_rate: 0.99 },
+      grpc: { avg_latency: 15, success_rate: 0.98 },
+      http: { avg_latency: 45, success_rate: 0.97 },
+      websocket: { avg_latency: 1, success_rate: 0.95 } }
     },
     timestamp: new Date().toISOString()
   });
-}
+} }
 async function handleClusterOverview(): Promise<Response> {
   const health = await prodClient.checkAllServicesHealth();
-  return json({ cluster: {, name: 'Legal AI Production Cluster',
+  return json({ cluster: { name: 'Legal AI Production Cluster',
       version: '1.0.0',
       status: 'operational',
       node_count: 1,
       service_count: Object.keys(health).length
     },
     architecture: {
-     , protocols: ['HTTP/JSON', 'gRPC', 'QUIC', 'WebSocket'],
+  protocols: ['HTTP/JSON', 'gRPC', 'QUIC', 'WebSocket'],
       tiers: ['Core Services', 'Enhanced Services', 'Specialized Services', 'Infrastructure'],
       load_balancing: 'Round Robin',
       failover: `Automatic` },
     endpoints: {
-     , health: '/api/v1/cluster/health',
+  health: '/api/v1/cluster/health',
       services: '/api/v1/cluster/services',
       metrics: `/api/v1/cluster/metrics` },
     timestamp: new Date().toISOString()
   });
-}
+} }
 async function handleServiceRestart(serviceName: string): Promise<Response> {
   return json({
     success: true,
-    message: `Service ${serviceName} restart initiated`,
+    message: `Service ${serviceName} }restart initiated`,
     timestamp: new Date().toISOString()
   });
-}
+} }
 async function handleServiceScaling(serviceName: string, instances: number): Promise<Response> {
   return json({
     success: true,
-    message: `Service ${serviceName} scaled to ${instances} instances`,
+    message: `Service ${serviceName} }scaled to ${instances} }instances`,
     timestamp: new Date().toISOString()
   });
-}
+} }
 async function handleServiceDeployment(serviceConfig: any): Promise<Response> {
   return json({
     success: true,
@@ -196,4 +196,5 @@ async function handleServiceDeployment(serviceConfig: any): Promise<Response> {
     config: serviceConfig,
     timestamp: new Date().toISOString()
   });
-}
+} }
+

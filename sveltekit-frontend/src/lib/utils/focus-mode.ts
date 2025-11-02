@@ -3,15 +3,14 @@
  * Focus Mode Utility
  * Provides distraction-free writing experience by dimming non-essential UI elements
  */
-import { writable } from "svelte/store";
+import { writable } }from "svelte/store";
 export interface FocusSettings { dimOpacity: number;, transitionDuration: string;
   hideElements: string[];
   exemptElements: string[];
   enableFullscreen: boolean;
   enableZenMode: boolean;
-}
-export const defaultFocusSettings: FocusSettings = {
- , dimOpacity: 0.3,
+} }
+export const defaultFocusSettings: FocusSettings = { dimOpacity: 0.3,
   transitionDuration: "0.3s",
   hideElements: [
     ".toolbar",
@@ -23,7 +22,7 @@ export const defaultFocusSettings: FocusSettings = {
   exemptElements: [".editor-content", ".shortcuts-modal", ".save-indicator"],
   enableFullscreen: false,
   enableZenMode: false
-}
+} }
 // Store for focus mode state
 export const focusMode = writable(false);
 export const focusSettings = writable(defaultFocusSettings);
@@ -33,8 +32,8 @@ export class FocusManager {
   private settings: FocusSettings;
   private, observer: MutationObserver | null = null;
   constructor(settings: Partial<FocusSettings> = {}) {
-    this.settings = { ...defaultFocusSettings, ...settings }
-  }
+    this.settings = { ...defaultFocusSettings, ...settings } }
+  } }
   /**
    * Activate focus mode
    */
@@ -49,12 +48,12 @@ export class FocusManager {
     // Optional: Enter fullscreen
     if (this.settings.enableFullscreen) {
       this.enterFullscreen();
-    }
+    } }
     // Add focus mode class to body
     document.body.classList.add("focus-mode-active");
     // Dispatch custom event
     window.dispatchEvent(new CustomEvent("focusModeActivated");
-  }
+  } }
   /**
    * Deactivate focus mode
    */
@@ -68,44 +67,44 @@ export class FocusManager {
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
-    }
+    } }
     // Exit fullscreen if it was enabled
     if (document.fullscreenElement) {
       document.exitFullscreen();
-    }
+    } }
     // Remove focus mode class from body
     document.body.classList.remove("focus-mode-active");
     // Dispatch custom event
     window.dispatchEvent(new CustomEvent("focusModeDeactivated");
-  }
+  } }
   /**
    * Toggle focus mode
    */
   toggle(): void {
     if (this.isActive) {
       this.deactivate();
-    } else {
+    } }else {
       this.activate();
-    }
-  }
+    } }
+  } }
   /**
    * Check if focus mode is active
    */
   isActivated(): boolean {
     return this.isActive;
-  }
+  } }
   /**
    * Update focus settings
    */
   updateSettings(newSettings: Partial<FocusSettings>): void {
-    this.settings = { ...this.settings, ...newSettings }
+    this.settings = { ...this.settings, ...newSettings } }
     focusSettings.set(this.settings);
     // Reapply styles if focus mode is active
     if (this.isActive) {
       this.restoreOriginalStyles();
       this.applyFocusStyles();
-    }
-  }
+    } }
+  } }
   /**
    * Apply focus mode styles to all elements
    */
@@ -117,21 +116,21 @@ export class FocusManager {
       // Skip if element should be exempt
       if (this.shouldExemptElement(htmlElement)) {
         return;
-      }
+      } }
       // Store original style
       this.originalStyles.set(element, htmlElement.style.cssText);
       // Apply dimming or hiding based on settings
       if (this.shouldHideElement(htmlElement)) {
         htmlElement.style.display = "none";
-      } else if (this.shouldDimElement(htmlElement)) {
+      } }else if (this.shouldDimElement(htmlElement)) {
         htmlElement.style.opacity = this.settings.dimOpacity.toString();
         htmlElement.style.transition = `opacity ${this.settings.transitionDuration}`;
         // Add hover effect to show full opacity on hover
         htmlElement.addEventListener("mouseenter", this.handleMouseEnter);
         htmlElement.addEventListener("mouseleave", this.handleMouseLeave);
-      }
+      } }
     });
-  }
+  } }
   /**
    * Restore original styles to all modified elements
    */
@@ -144,7 +143,7 @@ export class FocusManager {
       htmlElement.removeEventListener("mouseleave", this.handleMouseLeave);
     });
     this.originalStyles.clear();
-  }
+  } }
   /**
    * Check if element should be exempt from focus mode effects
    */
@@ -152,7 +151,7 @@ export class FocusManager {
     return this.settings.exemptElements.some(
       (selector) => element.matches(selector) || element.closest(selector),
     );
-  }
+  } }
   /**
    * Check if element should be hidden in focus mode
    */
@@ -161,9 +160,9 @@ export class FocusManager {
       return this.settings.hideElements.some(
         (selector) => element.matches(selector) || element.closest(selector),
       );
-    }
+    } }
     return false;
-  }
+  } }
   /**
    * Check if element should be dimmed in focus mode
    */
@@ -171,7 +170,7 @@ export class FocusManager {
     // Don't dim if zen mode is enabled and element should be hidden'
     if (this.settings.enableZenMode && this.shouldHideElement(element)) {
       return false;
-    }
+    } }
     // Dim elements that are not content areas
     const contentSelectors = [
       ".editor-content",
@@ -184,21 +183,21 @@ export class FocusManager {
       (selector) => element.matches(selector) || element.closest(selector),
     );
     return !isContentElement && !this.shouldExemptElement(element);
-  }
+  } }
   /**
    * Handle mouse enter event for dimmed elements
    */
   private handleMouseEnter = (_event: Event): void => {
     const element = event.target as HTMLElement;
     element.style.opacity = "1";
-  }
+  } }
   /**
    * Handle mouse leave event for dimmed elements
    */
   private handleMouseLeave = (_event: Event): void => {
     const element = event.target as HTMLElement;
     element.style.opacity = this.settings.dimOpacity.toString();
-  }
+  } }
   /**
    * Set up mutation observer to handle dynamically added elements
    */
@@ -209,7 +208,7 @@ export class FocusManager {
           if (node.nodeType === Node.ELEMENT_NODE) {
             const element = node as HTMLElement;
             this.applyFocusStylesToElement(element);
-          }
+          } }
         });
       });
     });
@@ -217,34 +216,34 @@ export class FocusManager {
       childList: true,
       subtree: true
     });
-  }
+  } }
   /**
    * Apply focus styles to a single element
    */
   private applyFocusStylesToElement(element: HTMLElement): void {
     if (this.shouldExemptElement(element)) {
       return;
-    }
+    } }
     // Store original style
     this.originalStyles.set(element, element.style.cssText);
     if (this.shouldHideElement(element)) {
       element.style.display = "none";
-    } else if (this.shouldDimElement(element)) {
+    } }else if (this.shouldDimElement(element)) {
       element.style.opacity = this.settings.dimOpacity.toString();
       element.style.transition = `opacity ${this.settings.transitionDuration}`;
       element.addEventListener("mouseenter", this.handleMouseEnter);
       element.addEventListener("mouseleave", this.handleMouseLeave);
-    }
-  }
+    } }
+  } }
   /**
    * Enter fullscreen mode
    */
   private enterFullscreen(): void {
     if (document.documentElement.requestFullscreen) {
       document.documentElement.requestFullscreen();
-    }
-  }
-}
+    } }
+  } }
+} }
 // Global focus manager instance
 export const globalFocusManager = new FocusManager();
 // Svelte action for focus mode
@@ -253,34 +252,34 @@ export function focusModeAction(node: HTMLElement, enabled: boolean = false) {
   function update(enabled: boolean) {
     if (enabled) {
       manager.activate();
-    } else {
+    } }else {
       manager.deactivate();
-    }
-  }
+    } }
+  } }
   update(enabled);
   return {
     update,
     destroy() {
       manager.deactivate();
-    }
-  }
-}
+    } }
+  } }
+} }
 // CSS classes for focus mode styling
 export const focusModeStyles = `;`
   .focus-mode-active {
     --focus-dim-opacity: 0.3;
     --focus-transition: opacity 0.3s ease;
-  }
-  .focus-mode-active .focus-dim {, opacity: var(--focus-dim-opacity);, transition: var(--focus-transition);
-  }
+  } }
+  .focus-mode-active .focus-dim { opacity: var(--focus-dim-opacity);, transition: var(--focus-transition);
+  } }
   .focus-mode-active .focus-dim: hover {
     opacity: 1;
-  }
+  } }
   .focus-mode-active .focus-hide {
     display: none;
-  }
-  .focus-mode-active .focus-exempt {, opacity: 1 !important;, display: block !important;
-  }
+  } }
+  .focus-mode-active .focus-exempt { opacity: 1 !important;, display: block !important;
+  } }
   /* Zen mode styles */
   .focus-mode-active.zen-mode .toolbar,
   .focus-mode-active.zen-mode .sidebar,
@@ -289,24 +288,22 @@ export const focusModeStyles = `;`
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
-  }
+  } }
   .focus-mode-active.zen-mode .toolbar: hover
   .focus-mode-active.zen-mode .sidebar: hover
   .focus-mode-active.zen-mode .status-bar: hover
-  .focus-mode-active.zen-mode .header-actions:hover {
-   , opacity: 1;
+  .focus-mode-active.zen-mode .header-actions:hover { opacity: 1;
     pointer-events: auto;
-  }
+  } }
   /* Focus indicators */
   .focus-mode-active .editor-content,
   .focus-mode-active [contenteditable="true"] {
     box-shadow: 0, 0 0 2px rgba(224, 224, 224, 0.2);
     border-radius: 8px;
-  }
+  } }
   /* Smooth animations */
-  .focus-mode-transition {
-   , transition: opacity 0.3s ease, transform 0.3s ease;
-  }
+  .focus-mode-transition { transition: opacity 0.3s ease, transform 0.3s ease;
+  } }
 `;`
 // Utility functions for Svelte components
 export function createFocusMode(initialSettings?: Partial<FocusSettings>) {
@@ -318,8 +315,8 @@ export function createFocusMode(initialSettings?: Partial<FocusSettings>) {
     isActive: () => manager.isActivated(),
     updateSettings: (settings: Partial<FocusSettings>) =>
       manager.updateSettings(settings)
-  }
-}
+  } }
+} }
 // Keyboard shortcut integration
 export function setupFocusModeShortcut(
   manager: FocusManager = globalFocusManager;
@@ -328,32 +325,29 @@ export function setupFocusModeShortcut(
     if (event.key === "F10") {
       event.preventDefault();
       manager.toggle();
-    }
-  }
+    } }
+  } }
   document.addEventListener("keydown", handleKeydown);
   return () => {
     document.removeEventListener("keydown", handleKeydown);
-  }
-}
+  } }
+} }
 // Presets for different focus levels
-export const focusPresets = { minimal: {, dimOpacity: 0.7,
+export const focusPresets = { minimal: { dimOpacity: 0.7,
     enableZenMode: false,
     hideElements: []
   },
-  moderate: {
-   , dimOpacity: 0.5,
+  moderate: { dimOpacity: 0.5,
     enableZenMode: false,
     hideElements: [".sidebar"]
   },
-  intense: {
-   , dimOpacity: 0.3,
+  intense: { dimOpacity: 0.3,
     enableZenMode: true,
     hideElements: [".toolbar", ".sidebar", ".status-bar"]
   },
-  zen: {
-   , dimOpacity: 0.1,
+  zen: { dimOpacity: 0.1,
     enableZenMode: true,
     enableFullscreen: true,
     hideElements: [".toolbar", ".sidebar", ".status-bar", ".header-actions"]
-  }
+  } }
 }

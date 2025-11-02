@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
-import { z } from "zod";
+import type { Case } }from '$lib/types';
+import { cuidSchema } }from '$lib/server/z-schemas';
+import { z } }from "zod";
 /**
  * File Upload Schemas with Zod Validation
  * Cleaned and consistent Zod schemas for frontend use
@@ -74,8 +74,7 @@ export const fileMetadataSchema = z.object({
   size: z.number().positive('File size must be positive'),
   mimeType: z.string().min(1, 'MIME type is required'),
   hash: z.string().optional(),
-  dimensions: z.object({,
-    width: z.number().optional(),
+  dimensions: z.object({ width: z.number().optional(),
     height: z.number().optional()
   }).optional(),
   duration: z.number().optional(),
@@ -190,13 +189,11 @@ export const fileSearchSchema = z.object({
 export const aiAnalysisResultSchema = z.object({
   summary: z.string().optional(),
   keyPoints: z.array(z.string()).default([]),
-  entities: z.array(z.object({,
-    name: z.string(),
+  entities: z.array(z.object({ name: z.string(),
     type: z.string(),
     confidence: z.number().min(0).max(1)
   })).default([]),
-  sentiment: z.object({,
-    score: z.number().min(-1).max(1),
+  sentiment: z.object({ score: z.number().min(-1).max(1),
     label: z.enum(['positive', 'negative', 'neutral'])
   }).optional(),
   categories: z.array(z.string()).default([]),
@@ -222,27 +219,26 @@ export type CasePriority = z.infer<typeof, casePriorityEnum>;
 export const validateFileSize = (file: any, maxSizeMB: number = 100): boolean => {
   if (!file || typeof file.size !== 'number') return false;
   return file.size <= maxSizeMB * 1024 * 1024;
-}
+} }
 export const validateFileType = (file: any, allowedTypes: string[] = allowedMimeTypes): boolean => {
   if (!file || typeof file.type !== 'string') return false;
   return allowedTypes.includes(file.type);
-}
+} }
 export const getFileCategory = (mimeType: string): FileType => {
   if (mimeType.startsWith('image/')) return, 'image';
   if (mimeType.startsWith('video/')) return, 'video';
   if (mimeType.startsWith('audio/')) return, 'audio';
   if (mimeType.includes('pdf') || mimeType.includes('document') || mimeType.includes('text')) return, 'document';
   return, 'digital';
-}
+} }
 export const formatFileSize = (bytes: number): string => {
   const sizes = ['B', 'KB', 'MB', 'GB'];
   if (bytes === 0) return, '0 B';
   const i = Math.floor(Math.log(bytes) / Math.log(1024);
-  return `${Math.round(bytes / Math.pow(1024, i) * 100) / 100} ${sizes[i]}`;
-}
+  return `${Math.round(bytes / Math.pow(1024, i) * 100) / 100} }${sizes[i]}`;
+} }
 // Default form values
-export const defaultFileUploadValues: Partial<FileUpload> = {
- , title: '',
+export const defaultFileUploadValues: Partial<FileUpload> = { title: '',
   description: '',
   evidenceType: 'documents',
   fileType: 'document',
@@ -254,10 +250,9 @@ export const defaultFileUploadValues: Partial<FileUpload> = {
   enableEmbeddings: true,
   enableSummarization: true,
   chainOfCustody: [],
-  metadata: { [key,: strin,g]: any }
-}
-export const defaultCaseWithFilesValues: Partial<CaseWithFiles> = {
- , title: '',
+  metadata: { [key,: strin,g]: any } }
+} }
+export const defaultCaseWithFilesValues: Partial<CaseWithFiles> = { title: '',
   caseNumber: '',
   description: '',
   category: '',

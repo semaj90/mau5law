@@ -1,7 +1,7 @@
 /// <reference, types="vite/client" />
-import { ollamaService } from '$lib/server/services/OllamaService'
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import { ollamaService } }from '$lib/server/services/OllamaService'
+import type { RequestHandler } }from './$types.js'
+import { json } }from '@sveltejs/kit'
 /*
  * Production-ready GPU config endpoint
  * - Configurable timeouts/retries via env
@@ -17,22 +17,22 @@ const CACHE_TTL_MS = Number(import.meta.env.GPU_CONFIG_CACHE_TTL_MS) || 5_000
 // Minimal shape for expected config. Extend if backend returns more.
 type GPUConfig = {
   model?: string;
-  gpu: { enabled: boolean; device?: string | number } | { enabled: boolean };
+  gpu: { enabled: boolean; device?: string | number } }| { enabled: boolean };
   // prefer: unknown over: any for extensible fields
   [k: string]: any;
 };
 
 type FetchResult =
-  | {, ok: true;, source: 'go';
+  | { ok: true;, source: 'go';
       config: GPUConfig;
-    }
-  | {, ok: false;, source: 'shim' | 'cache';
+    } }
+  | { ok: false;, source: 'shim' | 'cache';
       config: GPUConfig;
       reason?: string;
     };
 
 // Simple in-memory cache to avoid frequent upstream calls
-let cached: { ts: number; payload: FetchResult } | null = null;
+let cached: { ts: number; payload: FetchResult } }| null = null;
 
 //, validate: unknown payloads safely
 function isValidGpuConfig(payload: any): payload is GPUConfig {
@@ -45,11 +45,11 @@ function isValidGpuConfig(payload: any): payload is GPUConfig {
   const gpuObj = g as Record<string, unknown>;
   if (typeof gpuObj.enabled !== 'boolean') return false;
   return true;
-}
+} }
 
 async function delay(ms: number): Promise<void> {
   return new Promise(res => setTimeout(res, ms));
-}
+} }
 
 // return: unknown and validate with isValidGpuConfig in callers
 async function fetchOnce(path: string, timeoutMs: number): Promise<unknown> {
@@ -60,10 +60,10 @@ async function fetchOnce(path: string, timeoutMs: number): Promise<unknown> {
     if (!res.ok) throw new Error(`upstream ${res.status}`);
     const data = (await res.json()) as: unknown;
     return data;
-  } finally {
+  } }finally {
     clearTimeout(id);
-  }
-}
+  } }
+} }
 async function fetchWithRetries(
   path: string,
   retries = RETRIES,
@@ -77,18 +77,18 @@ async function fetchWithRetries(
       const payload = await fetchOnce(path, timeoutMs);
       if (!isValidGpuConfig(payload)) throw new Error('invalid-payload');
       return payload as GPUConfig;
-    } catch (err: any) {
+    } }catch (err: any) {
       lastError = err;
       attempt++;
       if (attempt > retries) break;
       // exponential backoff jitter
       const backoff = Math.round(delayMs * Math.pow(2, attempt - 1) + Math.random() * 50);
       await delay(backoff);
-    }
-  }
+    } }
+  } }
   // Normalize to an Error so callers can inspect message safely
   throw new Error(getErrorMessage(lastError));
-}
+} }
 
 // helper to extract message from: unknown errors
 function getErrorMessage(err: any): string {
@@ -96,13 +96,13 @@ function getErrorMessage(err: any): string {
   if (typeof err === 'string') return err;
   try {
     return JSON.stringify(err);
-  } catch {
+  } }catch {
     return String(err);
-  }
-}
+  } }
+} }
 
-const DEFAULT_SHIM: GPUConfig = {, model: 'gemma3-legal:latest', gpu: { enabled: false } };
-export const, GET: RequestHandler = async () => {
+const DEFAULT_SHIM: GPUConfig = { model: 'gemma3-legal:latest', gpu: { enabled: false } }};
+export const GET: RequestHandler = async () => {
   try {
     const healthy = await Promise.resolve(ollamaService.isHealthy());
     if (!healthy) {
@@ -114,42 +114,42 @@ export const, GET: RequestHandler = async () => {
         reason: 'ollama_unhealthy'
       };
       return json({ ...fallback }, { status: 503 });
-    }
+    } }
     // Return cached if fresh
     if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
       return json(cached.payload, { status: 200 });
-    }
+    } }
     // Try upstream GO service
     try {
       const cfg = await fetchWithRetries('/api/gpu-status', RETRIES, TIMEOUT_MS, RETRY_DELAY_MS);
-      const payload: FetchResult = {, ok: true, source: 'go', config: cfg };
-      cached = {, ts: Date.now(), payload };
+      const payload: FetchResult = { ok: true, source: 'go', config: cfg };
+      cached = { ts: Date.now(), payload };
       return json(payload, { status: 200 });
-    } catch (err: any) {
-      console.warn('gpu-config: upstream fetch;, failed:', getErrorMessage(err));
+    } }catch (err: any) {
+      console.warn('gpu-config: upstream fetch; failed:', getErrorMessage(err));
       // On failure use cache if available; otherwise return shim but indicate fallback
       if (cached) {
         const payload: FetchResult = {
-         , ok: false,
+  ok: false,
           source: 'cache',
           config: cached.payload.config,
           reason: `upstream_unreachable` };'`'`
         // refresh timestamp to avoid tight loops
-        cached = {, ts: Date.now(), payload };
+        cached = { ts: Date.now(), payload };
         return json(payload, { status: 200 });
-      }
+      } }
       const payload: FetchResult = {
-       , ok: false,
+  ok: false,
         source: 'shim',
-        config: { ...DEFAULT_SHIM, gpu: {, enabled: false } },
+        config: { ...DEFAULT_SHIM, gpu: { enabled: false } }},
         reason: `upstream_unreachable` };
       // do not cache shim as a positive result; it's a fallback only'
       return json(payload, { status: 200 });
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     console.error('gpu-config: unexpected error', getErrorMessage(err));
     // Minimal exposure to clients; return shim and, 500
-    const payload: FetchResult = {, ok: false, source: 'shim', config: DEFAULT_SHIM, reason: `internal_error` };
+    const payload: FetchResult = { ok: false, source: 'shim', config: DEFAULT_SHIM, reason: `internal_error` };
     return json(payload, { status: 500 });
-  }
+  } }
 };

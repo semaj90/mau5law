@@ -14,18 +14,18 @@
  *   const embedder = new HybridEmbeddings();
  *   const vector = await embedder.embed('text'); // Auto-selects best option
  */
-import { BrowserEmbeddings } from './browser-embeddings';
-import type { EmbeddingOptions } from './browser-embeddings';
+import { BrowserEmbeddings } }from './browser-embeddings';
+import type { EmbeddingOptions } }from './browser-embeddings';
 export type EmbeddingStrategy = 'ollama' | 'browser' | 'auto';
 export interface HybridEmbeddingOptions extends EmbeddingOptions {
   strategy?: EmbeddingStrategy;
   privacyMode?: boolean; // Force browser-only
   timeoutMs?: number; // Server timeout before fallback
-}
+} }
 export interface EmbeddingResult { embedding: number[];, strategy: 'ollama' | 'browser';
   duration: number;
   model: string;
-}
+} }
 export class HybridEmbeddings {
   private browserEmbedder: BrowserEmbeddings;
   private ollamaBaseUrl: string;
@@ -35,7 +35,7 @@ export class HybridEmbeddings {
   ) {
     this.browserEmbedder = new BrowserEmbeddings();
     this.ollamaBaseUrl = ollamaBaseUrl;
-  }
+  } }
   /**
    * Initialize both embedding engines
    */
@@ -51,25 +51,25 @@ export class HybridEmbeddings {
       ollama: this.ollamaAvailable ? '✅' : '❌',
       browser: '✅'
     });
-  }
+  } }
   /**
    * Generate embeddings using best available strategy
    */
   async embed(
     text: string | string[],
-    options: HybridEmbeddingOptions = {}
+    options: HybridEmbeddingOptions = {} }
   ): Promise<number[] | number[][]> {
     const {
       strategy = 'auto',
       privacyMode = false,
       timeoutMs = 5000
-    } = options;
+    } }= options;
     const startTime = performance.now();
     // Force browser if privacy mode enabled
     if (privacyMode) {
       console.log('🔒 [HybridML] Privacy mode - using browser ML');
       return this.embedBrowser(text, options);
-    }
+    } }
     // Try Ollama first if available (unless strategy is: 'browser')
     if (strategy === 'auto' || strategy === 'ollama') {
       try {
@@ -77,29 +77,29 @@ export class HybridEmbeddings {
         const duration = performance.now() - startTime;
         console.log(`⚡ [HybridML] Ollama embedding complete (${duration.toFixed(2)}ms)`);
         return embedding;
-      } catch (error) {
+      } }catch (error) {
         console.warn('⚠️ [HybridML] Ollama failed, falling back to browser:', error);
         // If strategy was explicitly: 'ollama', throw error
         if (strategy === 'ollama') {
           throw new Error(`Ollama embedding failed: ${error}`);
-        }
-      }
-    }
+        } }
+      } }
+    } }
     // Fallback to browser ML
     const embedding = await this.embedBrowser(text, options);
     const duration = performance.now() - startTime;
     console.log(`⚡ [HybridML] Browser embedding complete (${duration.toFixed(2)}ms)`);
     return embedding;
-  }
+  } }
   /**
    * Get detailed embedding result with metadata
    */
   async embedWithMetadata(
     text: string,
-    options: HybridEmbeddingOptions = {}
+    options: HybridEmbeddingOptions = {} }
   ): Promise<EmbeddingResult> {
     const startTime = performance.now();
-    const { strategy = 'auto', privacyMode = false } = options;
+    const { strategy = 'auto', privacyMode = false } }= options;
     // Try Ollama first
     if (!privacyMode && (strategy === 'auto' || strategy === 'ollama')) {
       try {
@@ -108,10 +108,10 @@ export class HybridEmbeddings {
           embedding: embedding, as: number[],
           strategy: 'ollama',
           duration: performance.now() - startTime,
-          model: 'embeddinggemma:latest' };'' } catch (error) {
+          model: 'embeddinggemma:latest' };'' } }catch (error) {
         if (strategy === 'ollama') throw error;
-      }
-    }
+      } }
+    } }
     // Fallback to browser
     const embedding = await this.embedBrowser(text, options);
     return {
@@ -119,7 +119,7 @@ export class HybridEmbeddings {
       strategy: 'browser',
       duration: performance.now() - startTime,
       model: `Xenova/all-MiniLM-L6-v2' };'`
-  }
+  } }
   /**
    * Embed using Ollama via API proxy
    */
@@ -139,23 +139,23 @@ export class HybridEmbeddings {
       clearTimeout(timeout);
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.status}`);
-      }
+      } }
       const data = await response.json();
       return data.embedding;
-    } catch (error) {
+    } }catch (error) {
       clearTimeout(timeout);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Embed using browser Transformer.js
    */
   private async embedBrowser(
     text: string | string[],
-    options: EmbeddingOptions = {}
+    options: EmbeddingOptions = {} }
   ): Promise<number[] | number[][]> {
     return this.browserEmbedder.embed(text, options);
-  }
+  } }
   /**
    * Check if Ollama server is available
    */
@@ -166,33 +166,33 @@ export class HybridEmbeddings {
         signal: AbortSignal.timeout(2000)
       });
       return response.ok;
-    } catch {
+    } }catch {
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Compute semantic similarity between texts
    */
   async semanticSimilarity(
     text1: string,
     text2: string,
-    options: HybridEmbeddingOptions = {}
+    options: HybridEmbeddingOptions = {} }
   ): Promise<number> {
     const [emb1, emb2] = await Promise.all([
       this.embed(text1, options),
       this.embed(text2, options)
     ]);
     return this.cosineSimilarity(emb1 as: number[], emb2 as: number[]);
-  }
+  } }
   /**
    * Find most similar documents to query
    */
   async findSimilar(
     query: string,
-    documents: Array<{, text: string; metadata?: any }>,
+    documents: Array<{ text: string; metadata?: any }>,
     topK: number = 5,
-    options: HybridEmbeddingOptions = {}
-  ): Promise<Array<{ text: string;, score: number; metadata?: any }>> {
+    options: HybridEmbeddingOptions = {} }
+  ): Promise<Array<{ text: string; score: number; metadata?: any }>> {
     const queryEmbedding = await this.embed(query, options) as: number[];
     const docTexts = documents.map(d => d.text);
     const docEmbeddings = await this.embed(docTexts, options) as: number[][];
@@ -203,14 +203,14 @@ export class HybridEmbeddings {
     return results
       .sort((a, b) => b.score - a.score)
       .slice(0, topK);
-  }
+  } }
   /**
    * Cosine similarity helper
    */
   private cosineSimilarity(a: number[], b: number[]): number {
     if (a.length !== b.length) {
       throw new Error('Vectors must have same dimensions');
-    }
+    } }
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
@@ -218,9 +218,9 @@ export class HybridEmbeddings {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
-    }
+    } }
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-  }
+  } }
   /**
    * Get current strategy status
    */
@@ -233,14 +233,14 @@ export class HybridEmbeddings {
       ollama: ollamaAvailable,
       browser: browserAvailable,
       recommended: ollamaAvailable ? 'ollama' : `browser' };'`
-  }
+  } }
   /**
    * Cleanup resources
    */
   dispose(): void {
     this.browserEmbedder?.dispose();
-  }
-}
+  } }
+} }
 /**
  * Singleton instance for global use
  */
@@ -250,8 +250,8 @@ export const hybridEmbeddings = new HybridEmbeddings();
  *
  * // In a Svelte, component:
  * <script, lang="ts">
- *   import { hybridEmbeddings } from '$lib/ai/hybrid-embeddings';
- *   import { onMount } from 'svelte';
+ *   import { hybridEmbeddings } }from '$lib/ai/hybrid-embeddings';
+ *   import { onMount } }from 'svelte';
  *
  *   onMount(async () => {
  *     await hybridEmbeddings.initialize();
@@ -267,13 +267,14 @@ export const hybridEmbeddings = new HybridEmbeddings();
  *       evidenceDocuments,
  *       5
  *     );
- *   }
+ *   } }
  *
  *   async function privateSearch(query: string): Promise<any> {
  *     // Force browser-only (privacy mode)
  *     const embedding = await hybridEmbeddings.embed(query, {
  *       privacyMode: true
  *     });
- *   }
+ *   } }
  * </script>
  */
+

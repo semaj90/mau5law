@@ -1,11 +1,11 @@
-import type { SearchResult } from '$lib/types';
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/database';
-import { testRagDocuments, testRagEmbeddings, testRagSearchSessions } from '$lib/server/db/schema-test-rag';
-import { desc, sql } from 'drizzle-orm';
-import { gpuRAGService } from '$lib/services/gpu-rag-service';
-import { qdrantService } from '$lib/services/qdrant-vector-service';
+import type { SearchResult } }from '$lib/types';
+import type { RequestHandler } }from './$types';
+import { json } }from '@sveltejs/kit';
+import { db } }from '$lib/server/database';
+import { testRagDocuments, testRagEmbeddings, testRagSearchSessions } }from '$lib/server/db/schema-test-rag';
+import { desc, sql } }from 'drizzle-orm';
+import { gpuRAGService } }from '$lib/services/gpu-rag-service';
+import { qdrantService } }from '$lib/services/qdrant-vector-service';
 
 /**
  * Test RAG Search API
@@ -13,18 +13,18 @@ import { qdrantService } from '$lib/services/qdrant-vector-service';
  * Endpoint: POST /api/test-rag/search
  */
 
-interface SearchResult {, id: string;, documentId: string;
+interface SearchResult { id: string;, documentId: string;
   filename: string;
   content: string;
   fullContent: string;
   similarity: number;
   score: number;
- , searchType: 'semantic' | 'text' | 'hybrid';
+  searchType: 'semantic' | 'text' | 'hybrid';
   confidence?: number;
   metadata?: Record<string, unknown>;
   legalAnalysis?: Record<string, unknown>;
   rank: number;
-}
+} }
 
 /**
  * Generate query embedding using Ollama embeddinggemma
@@ -33,19 +33,19 @@ async function generateQueryEmbedding(query: string): Promise<number[] | null> {
   try {
     console.log(`🔍 [Test RAG Search] Generating embedding for query: "${query.substring(0, 50)}..."`);
     const result = await gpuRAGService.generateEmbedding(query);
-    console.log(`✅ [Test RAG Search] Query embedding generated: ${result.embedding.length} dimensions`);
+    console.log(`✅ [Test RAG Search] Query embedding generated: ${result.embedding.length} }dimensions`);
     return result.embedding;
-  } catch (error) {
+  } }catch (error) {
     console.error('[Test RAG Search] Failed to generate query embedding:', error);
     return: null;
-  }
-}
+  } }
+} }
 
 /**
  * Perform semantic vector search using pgvector cosine similarity
  */
 async function vectorSearch(
- , queryEmbedding: number[],
+  queryEmbedding: number[],
   limit: number = 10,
   threshold: number = 0.7
 ): Promise<SearchResult[]> {
@@ -65,17 +65,17 @@ async function vectorSearch(
         confidence: testRagDocuments.confidence,
         legalAnalysis: testRagDocuments.legalAnalysis,
         createdAt: testRagDocuments.createdAt,
-        similarity: sql<number>`1 - (${testRagEmbeddings.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`.as(
+        similarity: sql<number>`1 - (${testRagEmbeddings.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector)`.as(
           'similarity'
         )
       })
       .from(testRagEmbeddings)
-      .innerJoin(testRagDocuments, sql`${testRagEmbeddings.documentId} = ${testRagDocuments.id}`)
-      .where(sql`1 - (${testRagEmbeddings.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector) > ${threshold}`)
-      .orderBy(desc(sql`1 - (${testRagEmbeddings.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`))
+      .innerJoin(testRagDocuments, sql`${testRagEmbeddings.documentId} }= ${testRagDocuments.id}`)
+      .where(sql`1 - (${testRagEmbeddings.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector) > ${threshold}`)
+      .orderBy(desc(sql`1 - (${testRagEmbeddings.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector)`))
       .limit(limit);
 
-    console.log(`✅ [Test RAG Search] Found ${results.length} results from pgvector`);
+    console.log(`✅ [Test RAG Search] Found ${results.length} }results from pgvector`);
 
     return results.map((r, index) => ({
       id: r.id,
@@ -91,11 +91,11 @@ async function vectorSearch(
       legalAnalysis: r.legalAnalysis,
       rank: index + 1
     }));
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('[Test RAG Search] Vector search failed:', err);
     return [];
-  }
-}
+  } }
+} }
 
 /**
  * Perform text search using PostgreSQL full-text search
@@ -123,7 +123,7 @@ async function textSearch(query: string, limit: number = 10): Promise<SearchResu
       )
       .limit(limit);
 
-    console.log(`✅ [Test RAG Search] Found ${results.length} results from text search`);
+    console.log(`✅ [Test RAG Search] Found ${results.length} }results from text search`);
 
     return results.map((r, index) => ({
       id: r.id,
@@ -139,11 +139,11 @@ async function textSearch(query: string, limit: number = 10): Promise<SearchResu
       legalAnalysis: r.legalAnalysis,
       rank: index + 1
     }));
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('[Test RAG Search] Text search failed:', err);
     return [];
-  }
-}
+  } }
+} }
 
 /**
  * Hybrid search: Combine semantic and text search results
@@ -167,29 +167,29 @@ function hybridSearch(vectorResults: SearchResult[], textResults: SearchResult[]
     if (existing) {
       // Boost score if found in both
       existing.score = existing.score * 0.6 + r.score * 0.4;
-    } else {
+    } }else {
       merged.set(r.documentId, {
         ...r,
         score: r.score * 0.6,
         searchType: 'hybrid' as const
       });
-    }
+    } }
   });
 
   return Array.from(merged.values())
     .sort((a, b) => b.score - a.score)
     .slice(0, limit)
     .map((r, index) => ({ ...r, rank: index + 1 }));
-}
+} }
 
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
 
   try {
-    const { query, searchType = 'hybrid', limit = 10, threshold = 0.7 } = await request.json();
+    const { query, searchType = 'hybrid', limit = 10, threshold = 0.7 } }= await request.json();
 
     if (!query || typeof query !== 'string') {
-      return json({ error: 'Query is required' }, { status: 400 });'` }'`
+      return json({ error: 'Query is required' }, { status: 400 });'` } }`
 
     console.log(`\n🔍 [Test RAG Search] Query: "${query}" (type=${searchType}, limit=${limit})');'`
 
@@ -205,19 +205,19 @@ export const POST: RequestHandler = async ({ request }) => {
 
         if (searchType === 'semantic') {
           results = vectorResults;
-        } else {
+        } }else {
           // Hybrid: also do text search
           const textResults = await textSearch(query, limit);
           results = hybridSearch(vectorResults, textResults, limit);
-        }
-      } else {
+        } }
+      } }else {
         console.warn('[Test RAG Search] Embedding generation failed, falling back to text search');
         results = await textSearch(query, limit);
-      }
-    } else {
+      } }
+    } }else {
       // Pure text search
       results = await textSearch(query, limit);
-    }
+    } }
 
     const processingTime = Date.now() - startTime;
 
@@ -228,7 +228,7 @@ export const POST: RequestHandler = async ({ request }) => {
           query,
           queryEmbedding,
           results: results.map(r => ({
-           , documentId: r.documentId,
+  documentId: r.documentId,
             filename: r.filename,
             similarity: r.similarity,
             score: r.score,
@@ -237,24 +237,24 @@ export const POST: RequestHandler = async ({ request }) => {
           searchType,
           resultCount: results.length,
           metadata: {
-           , processingTime: `${processingTime}ms`,
+  processingTime: `${processingTime}ms`,
             threshold
-          }
+          } }
         });
         console.log('✅ [Test RAG Search] Search session saved');
-      } catch (e) {
+      } }catch (e) {
         console.error('[Test RAG Search] Failed to save search session:', e);
-      }
-    }
+      } }
+    } }
 
-    console.log(`✅ [Test RAG Search] Completed in ${processingTime}ms, found ${results.length} results\n`);
+    console.log(`✅ [Test RAG Search] Completed in ${processingTime}ms, found ${results.length} }results\n`);
 
     return json({
       success: true,
       query,
       results,
       analytics: {
-       , totalResults: results.length,
+  totalResults: results.length,
         searchType,
         processingTime: `${processingTime}ms`,
         hasEmbedding: !!queryEmbedding,
@@ -262,23 +262,23 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
-    console.error('[Test RAG Search] Search error:', error);'
+  } }catch (error: any) {
+    console.error('[Test RAG Search] Search error:', error);
     return json(
       {
         error: 'Search failed',
         details: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
  * GET: Health check and stats
  */
-export const, GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'health';
 
@@ -293,49 +293,50 @@ export const, GET: RequestHandler = async ({ url }) => {
           .from(testRagDocuments)
           .limit(1)) as Array<{ count: number }>;
         const embCountRows = (await db
-          .select({, count: sql<number>`COUNT(*)` })
+          .select({ count: sql<number>`COUNT(*)` })
           .from(testRagEmbeddings)
           .limit(1)) as Array<{ count: number }>;
         const sesCountRows = (await db
-          .select({, count: sql<number>`COUNT(*)' })'`
+          .select({ count: sql<number>`COUNT(*)' })'`
           .from(testRagSearchSessions)
           .limit(1)) as Array<{ count: number }>;
 
         docCount = Array.isArray(docCountRows) && docCountRows[0] ? Number(docCountRows[0].count) : 0;
         embCount = Array.isArray(embCountRows) && embCountRows[0] ? Number(embCountRows[0].count) : 0;
         sesCount = Array.isArray(sesCountRows) && sesCountRows[0] ? Number(sesCountRows[0].count) : 0;
-      } catch (countErr) {
+      } }catch (countErr) {
         console.warn('[Test RAG] Failed to read table counts:', countErr);
-        // keep counts as -1 to indicate they couldn't be fetched` }'`
+        // keep counts as -1 to indicate they couldn't be fetched` } }`
 
       // Check qdrant health if available
       let qdrantHealthy = $state<boolean>(false);
       try {
         qdrantHealthy = await qdrantService.healthCheck();
-      } catch (e) {
+      } }catch (e) {
         qdrantHealthy = false;
-      }
+      } }
 
       return json({
         success: true,
         healthy: qdrantHealthy && !!db,
         stats: {
-         , documents: docCount,
+  documents: docCount,
           embeddings: embCount,
           searchSessions: sesCount
         },
         services: {
-         , pgvector: '✅ PostgreSQL pgvector',
+  pgvector: '✅ PostgreSQL pgvector',
           ollama: '✅ Ollama embeddinggemma',
           qdrant: qdrantHealthy ? '✅ Qdrant vector DB' : '❌ Qdrant unreachable',
           langextract: `✅ langextract-go entities` },
         timestamp: new Date().toISOString()
       });
-    }
+    } }
 
     return json({ success: true, action });
-  } catch (err: any) {
-    console.error('[Test RAG Search] GET error:', err);'
+  } }catch (err: any) {
+    console.error('[Test RAG Search] GET error:', err);
     return json({ error: 'Failed', details: err instanceof Error ? err.message : String(err) }, { status: 500 });
-  }
+  } }
 };
+

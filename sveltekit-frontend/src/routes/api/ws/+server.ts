@@ -1,11 +1,11 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /// <reference, types="vite/client" />
-import { Server } from 'socket.io';
-import { dev } from '$app/environment';
-import { createRedisInstance } from '$lib/server/redis';
-import { createPubSubHelper } from '$lib/server/redisPubSub';
-import { registerCleanup } from '$lib/server/shutdown';
-import type { RequestHandler } from './$types.js';
+import { Server } }from 'socket.io';
+import { dev } }from '$app/environment';
+import { createRedisInstance } }from '$lib/server/redis';
+import { createPubSubHelper } }from '$lib/server/redisPubSub';
+import { registerCleanup } }from '$lib/server/shutdown';
+import type { RequestHandler } }from './$types.js';
 // WebSocket server for real-time updates
 let io: Server | null = null;
 // Legacy single redis client usage replaced by dedicated pub/sub helper set.
@@ -23,7 +23,7 @@ const metrics = {
 function initializeWebSocket() {
   if (io) return io;
   // Create Socket.IO server
-  io = new Server({ cors: {, origin: dev ? 'http://localhost:5173' : false,
+  io = new Server({ cors: { origin: dev ? 'http://localhost:5173' : false,
       methods: ['GET', 'POST']
     },
     transports: ['websocket', 'polling']
@@ -36,51 +36,51 @@ function initializeWebSocket() {
   // handle the absence gracefully.
   try {
     redisPrimary = createRedisInstance();
-  } catch (e) {
+  } }catch (e) {
     console.warn('[ws] createRedisInstance failed, continuing without redisPrimary:', e);
     redisPrimary = null;
-  }
+  } }
   // Handle WebSocket connections
   io.on('connection', socket => {
     console.log(`🔌 Client connected: ${socket.id}`);
     // Join case-specific rooms for targeted updates
     socket.on('join-case', (caseId: string) => {
       socket.join(`case-${caseId}`);
-      console.log(`📂 Client ${socket.id} joined case room: ${caseId}`);
+      console.log(`📂 Client ${socket.id} }joined case room: ${caseId}`);
     });
     // Join upload-specific rooms for progress tracking
     socket.on('join-upload', (uploadId: string) => {
       socket.join(`upload-${uploadId}`);
-      console.log(`📤 Client ${socket.id} joined upload room: ${uploadId}`);
+      console.log(`📤 Client ${socket.id} }joined upload room: ${uploadId}`);
       // Send current progress if available
       getCurrentProgress(uploadId).then(progress => {
         if (progress) {
           socket.emit('upload-progress', progress);
-        }
+        } }
       });
     });
     // Handle tensor processing subscription
     socket.on('subscribe-tensor', (jobId: string) => {
       socket.join(`tensor-${jobId}`);
-      console.log(`🧮 Client ${socket.id} subscribed to tensor job: ${jobId}`);
+      console.log(`🧮 Client ${socket.id} }subscribed to tensor job: ${jobId}`);
     });
     // Handle search result streaming
     socket.on('subscribe-search', (searchId: string) => {
       socket.join(`search-${searchId}`);
-      console.log(`🔍 Client ${socket.id} subscribed to search: ${searchId}`);
+      console.log(`🔍 Client ${socket.id} }subscribed to search: ${searchId}`);
     });
     // Handle attention tracking
     socket.on(
       'user-attention',
-      (data: {, type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing';, timestamp: string; metadata?: any }) => {
+      (data: { type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'; timestamp: string; metadata?: any }) => {
         // Track user attention for AI context switching
         trackUserAttention(socket.id, data);
-      }
+      } }
     );
     // Handle real-time collaboration
-    socket.on('document-edit', (data: {, documentId: string;, change: any;, userId: string }) => {
+    socket.on('document-edit', (data: { documentId: string; change: any; userId: string }) => {
       // Destructure and forward: unknown change payload as-is
-      const { documentId, change, userId } = data;
+      const { documentId, change, userId } }= data;
       socket.to(`doc-${documentId}`).emit('document-change', {
         change,
         userId,
@@ -96,13 +96,13 @@ function initializeWebSocket() {
   // Register cleanup once
   registerCleanup(() => _closeWebSocket());
   return io;
-}
+} }
 // Setup Redis subscriptions for job progress updates
 function setupRedisSubscriptions() {
   if (!io || pubSub) return;
   pubSub = createPubSubHelper({
     patterns: ['progress:*', 'result:*', 'error:*'],
-    onMessage: ({ channel, message }: { channel: any;, message: any }) => {
+    onMessage: ({ channel, message }: { channel: any; message: any }) => {
       metrics.pubsubMessages++;
       metrics.lastMessageAt = new Date().toISOString();
       try {
@@ -128,15 +128,15 @@ function setupRedisSubscriptions() {
               ...data,
               timestamp: new Date().toISOString()
             });
-          }
+          } }
           if (data.caseId && server) {
             server.to(`case-${String(data.caseId)}`).emit('case-progress', {
               uploadId,
               ...data,
               timestamp: new Date().toISOString()
             });
-          }
-        } else if (chan.startsWith('result:')) {
+          } }
+        } }else if (chan.startsWith('result:')) {
           metrics.resultMessages++;
           const jobId = chan.split(':')[1] ?? '';
           if (server) {
@@ -145,8 +145,8 @@ function setupRedisSubscriptions() {
               result: data,
               timestamp: new Date().toISOString()
             });
-          }
-        } else if (chan.startsWith('error:')) {'
+          } }
+        } }else if (chan.startsWith('error:')) {'
           metrics.errorMessages++;
           const uploadId = chan.split(':')[1] ?? '';
           if (server) {
@@ -155,18 +155,18 @@ function setupRedisSubscriptions() {
               error: data,
               timestamp: new Date().toISOString()
             });
-          }
-        }
-      } catch (e) {
+          } }
+        } }
+      } }catch (e) {
         console.error('❌ Failed to parse Redis message:', e);
-      }
-    }
+      } }
+    } }
   });
-}
+} }
 // Track user attention for AI context switching
 async function trackUserAttention(
   socketId: string,
-  data: {, type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing';, timestamp: string; metadata?: any }
+  data: { type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'; timestamp: string; metadata?: any } }
 ): Promise<void> {
   if (!redisPrimary) return;
   const attentionEvent = {
@@ -175,7 +175,7 @@ async function trackUserAttention(
     serverTimestamp: new Date().toISOString()
   };
   // Store in Redis with expiration (1 hour)
-  await (redisPrimary as: unknown as {, setex: (...args: any[]) => Promise<unknown> }).setex(
+  await (redisPrimary as: unknown as { setex: (...args: any[]) => Promise<unknown> }).setex(
     `attention:${socketId}:${Date.now()}`,
     3600,
     JSON.stringify(attentionEvent)
@@ -184,8 +184,8 @@ async function trackUserAttention(
   const metadata = data.metadata as Record<string, unknown> | undefined;
   if (data.type === 'typing' && metadata?.query && typeof metadata.query === 'string') {
     await triggerAIContextSwitching(socketId, metadata.query);
-  }
-}
+  } }
+} }
 // Trigger AI context switching based on user attention
 async function triggerAIContextSwitching(socketId: string, query: string): Promise<void> {
   try {
@@ -208,26 +208,26 @@ async function triggerAIContextSwitching(socketId: string, query: string): Promi
         relevantDocuments: context.documents,
         confidence: context.confidence
       });
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     // Narrow: unknown to preserve useful logging without using `any`
-    const errForLog = error instanceof Error ? {, message: error.message, stack: error.stack } : String(error);
+    const errForLog = error instanceof Error ? { message: error.message, stack: error.stack } }: String(error);
     console.error('❌ AI context switching failed:', errForLog);
-  }
-}
+  } }
+} }
 // Get current progress for an upload
 async function getCurrentProgress(uploadId: string): Promise<unknown | null> {
   if (!redisPrimary) return: null;
   try {
-    const progressData = await (redisPrimary as: unknown as {, get: (k: string) => Promise<string | null> }).get(
+    const progressData = await (redisPrimary as: unknown as { get: (k: string) => Promise<string | null> }).get(
       `progress:${uploadId}`
     );
     return progressData ? JSON.parse(progressData) : null;
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ Failed to get current progress:', error);
     return: null;
-  }
-}
+  } }
+} }
 // Broadcast progress update to specific rooms
 export function _broadcastProgress(uploadId: string, caseId: string, progress: any) {
   if (!io) return;
@@ -241,7 +241,7 @@ export function _broadcastProgress(uploadId: string, caseId: string, progress: a
   io.to(`upload-${uploadId}`).emit('upload-progress', progressData);
   // Emit to case-specific room
   io.to(`case-${caseId}`).emit('case-progress', progressData);
-}
+} }
 // Broadcast tensor processing results
 export function _broadcastTensorResult(jobId: string, result: any) {
   if (!io) return;
@@ -250,7 +250,7 @@ export function _broadcastTensorResult(jobId: string, result: any) {
     result,
     timestamp: new Date().toISOString()
   });
-}
+} }
 // Broadcast search results in real-time
 export function _broadcastSearchResults(searchId: string, results: any) {
   if (!io) return;
@@ -259,9 +259,9 @@ export function _broadcastSearchResults(searchId: string, results: any) {
     results,
     timestamp: new Date().toISOString()
   });
-}
+} }
 // HTTP handler for WebSocket endpoint
-export const GET: RequestHandler = async ({, url: _url }) => {
+export const GET: RequestHandler = async ({ url: _url }) => {
   // ensure websocket server initialized (don't keep unused local)'
   initializeWebSocket();
   // Return WebSocket connection info
@@ -278,7 +278,7 @@ export const GET: RequestHandler = async ({, url: _url }) => {
       ]
     }),
     {
-      headers: { 'Content-Type': 'application/json' }'' }
+      headers: { 'Content-Type': 'application/json' } } } }
   );
 };
 // Cleanup function
@@ -287,22 +287,22 @@ export function _closeWebSocket() {
   if (io) {
     try {
       io.close();
-    } catch (e) {
+    } }catch (e) {
       console.error('Error closing Socket.IO during shutdown:', e);
-    }
+    } }
     io = null;
-  }
+  } }
 
   // stop pub/sub helper if present
   if (pubSub) {
     try {
       // pubSub.stop() may return a promise; ensure: any rejection is swallowed
       pubSub.stop().catch(() => {});
-    } catch (e) {
+    } }catch (e) {
       console.error('Error stopping pubSub during shutdown:', e);
-    }
+    } }
     pubSub = null;
-  }
+  } }
 
   // gracefully disconnect/quit redisPrimary if present
   if (redisPrimary) {
@@ -310,31 +310,31 @@ export function _closeWebSocket() {
       if (hasDisconnect(redisPrimary)) {
         try {
           redisPrimary.disconnect();
-        } catch (e) {
+        } }catch (e) {
           console.error('Error disconnecting redisPrimary during shutdown:', e);
-        }
-      }
+        } }
+      } }
       if (hasQuit(redisPrimary)) {
         try {
           const res = redisPrimary.quit();
           // If quit returns a Promise, swallow: any rejection
           if (res && typeof (res as Promise<unknown>).then === 'function') {
             (res as Promise<unknown>).catch(() => {});
-          }
-        } catch (e) {
+          } }
+        } }catch (e) {
           console.error('Error calling quit on redisPrimary during shutdown:', e);
-        }
-      }
-    } catch (error) {
+        } }
+      } }
+    } }catch (error) {
       // ignore disconnect errors during shutdown but log for visibility
       console.error('Unexpected error while shutting down redisPrimary:', error);
-    } finally {
+    } }finally {
       redisPrimary = null;
-    }
-  }
-}
+    } }
+  } }
+} }
 // Utility to check if an: object has a disconnect method
-function hasDisconnect(obj: any): obj is { disconnect: () => void } {
+function hasDisconnect(obj: any): obj is { disconnect: () => void } }{
   // Ensure obj is a non-null: object, has the: 'disconnect' key, and that key is a function
   return (
     typeof obj === 'object' &&
@@ -342,14 +342,15 @@ function hasDisconnect(obj: any): obj is { disconnect: () => void } {
     'disconnect' in obj &&
     typeof (obj as { disconnect?: any }).disconnect === 'function'
   );
-}
+} }
 // Utility to check if an: object has a quit method (avoids using `any`)
-function hasQuit(obj: any): obj is { quit: () => void | Promise<unknown> } {
+function hasQuit(obj: any): obj is { quit: () => void | Promise<unknown> } }{
   return (
     typeof obj === 'object' && obj !== null && 'quit' in obj && typeof (obj as { quit?: any }).quit === 'function'
   );
-}
+} }
 // Expose metrics endpoint data (can be imported by health/metrics route)
 export function _getWsMetrics() {
   return { ...metrics };
-}
+} }
+

@@ -1,14 +1,14 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types.js'
+import { json } }from '@sveltejs/kit'
 // End-to-End Vector Pipeline Test
 // Tests: Document Upload → Embedding → Search → Results
-import { db } from '$lib/server/db'
-import { users, cases, documents, documentVectors } from '$lib/server/db/schema-postgres'
-import { eq, sql, desc } from 'drizzle-orm'
-import { OllamaEmbeddings } from '@langchain/community/embeddings/ollama'
+import { db } }from '$lib/server/db'
+import { users, cases, documents, documentVectors } }from '$lib/server/db/schema-postgres'
+import { eq, sql, desc } }from 'drizzle-orm'
+import { OllamaEmbeddings } }from '@langchain/community/embeddings/ollama'
 // ============================================================================
 // TEST CONFIGURATION
 // ============================================================================
@@ -16,8 +16,7 @@ const testConfig = {
   ollamaBaseUrl: 'http://localhost:11434',
   embeddingModel: 'nomic-embed-text',
   testDocuments: [
-    {,
-      title: 'Contract Liability Clause',
+    { title: 'Contract Liability Clause',
       content: 'This contract contains provisions regarding liability limitations and indemnification clauses. The contractor shall not be liable for indirect damages exceeding the contract value.',
       caseTitle: 'Contract Dispute Case'
     },
@@ -30,7 +29,7 @@ const testConfig = {
       title: 'Employment Agreement',
       content: 'Non-compete clauses and intellectual property assignments are detailed in sections 4-7. Employee acknowledges proprietary information restrictions.',
       caseTitle: 'Employment Dispute'
-    }
+    } }
   ],
   testQueries: [
     'liability and contract damages',
@@ -38,19 +37,19 @@ const testConfig = {
     'employment non-compete clauses',
     'intellectual property rights'
   ]
-}
+} }
 // ============================================================================
 // TEST PIPELINE SERVICE
 // ============================================================================
 class VectorPipelineTest {
   private embeddings: OllamaEmbeddings
-  private, testResults: any = {}
+  private, testResults: any = {} }
   constructor() {
     this.embeddings = new OllamaEmbeddings({
       baseUrl: testConfig.ollamaBaseUrl,
       model: testConfig.embeddingModel
     })
-  }
+  } }
   async runFullPipeline(): Promise<any> {
     const startTime = Date.now()
     this.testResults = {
@@ -59,8 +58,8 @@ class VectorPipelineTest {
       // initialize as plain objects (previous tokens were corrupted)
       steps: {},
       errors: [],
-      performance: {}
-    }
+      performance: {} }
+    } }
     try {
       // Step, 1: Test Ollama Connection
       await this.testOllamaConnection()
@@ -77,14 +76,14 @@ class VectorPipelineTest {
       this.testResults.status = 'completed'
       this.testResults.totalTime = Date.now() - startTime
       return this.testResults
-    } catch (err: any) {
+    } }catch (err: any) {
       this.testResults.status = 'failed'
       this.testResults.error = err instanceof Error ? err.message: 'Unknown error'
       this.testResults.totalTime = Date.now() - startTime
       console.error('❌ Pipeline test failed:', err)
       return this.testResults
-    }
-  }
+    } }
+  } }
   async testOllamaConnection() {
     const stepStart = Date.now()
     console.log('🔍 Testing Ollama connection...')
@@ -96,15 +95,15 @@ class VectorPipelineTest {
         model: testConfig.embeddingModel,
         baseUrl: testConfig.ollamaBaseUrl,
         time: Date.now() - stepStart
-      }
-      console.log(`✅ Ollama connected: ${testEmbedding.length} dimensions`)
-    } catch (err: any) {
+      } }
+      console.log(`✅ Ollama connected: ${testEmbedding.length} }dimensions`)
+    } }catch (err: any) {
       this.testResults.steps.ollama = {
         status: 'failed',
-        error: err instanceof Error ? err.message: `Connection failed` }
+        error: err instanceof Error ? err.message: 'Connection failed' } }
       throw new Error(`Ollama connection, failed: ${err}`)
-    }
-  }
+    } }
+  } }
   async createTestData() {
     const stepStart = Date.now()
     console.log('👤 Creating test data...')
@@ -120,29 +119,29 @@ class VectorPipelineTest {
       for (const doc of testConfig.testDocuments) {
         const [testCase] = await db.insert(cases).values({
           title: doc.caseTitle,
-          description: `Test case;, for: ${doc.title}`,
+          description: `Test case; for: ${doc.title}`,
           status: 'active',
           priority: 'medium',
           createdBy: testUser.id
         }).returning()
         testCases.push(testCase)
-      }
+      } }
       this.testResults.steps.testData = {
         status: 'success',
         userId: testUser.id,
         casesCreated: testCases.length,
         time: Date.now() - stepStart
-      }
+      } }
       this.testResults.testUserId = testUser.id
       this.testResults.testCases = testCases
-      console.log(`✅ Created test user and ${testCases.length} cases`)
-    } catch (err: any) {
+      console.log(`✅ Created test user and ${testCases.length} }cases`)
+    } }catch (err: any) {
       this.testResults.steps.testData = {
         status: 'failed',
-        error: err instanceof Error ? err.message: `Test data creation failed` }
+        error: err instanceof Error ? err.message: 'Test data creation failed' } }
       throw err
-    }
-  }
+    } }
+  } }
   async uploadAndEmbedDocuments() {
     const stepStart = Date.now()
     console.log('📄 Uploading and embedding documents...')
@@ -168,32 +167,32 @@ class VectorPipelineTest {
           content: doc.content,
           embedding,
           metadata: {
-           , title: doc.title,
+  title: doc.title,
             testDocument: true,
             embeddingModel: testConfig.embeddingModel
-          }
+          } }
         })
         embeddedDocs.push({
           documentId: document.id,
           title: doc.title,
           embeddingSize: embedding.length
         })
-      }
+      } }
       this.testResults.steps.embedding = {
         status: 'success',
         documentsProcessed: embeddedDocs.length,
         embeddingDimensions: embeddedDocs[0]?.embeddingSize || 0,
         time: Date.now() - stepStart
-      }
+      } }
       this.testResults.embeddedDocs = embeddedDocs
-      console.log(`✅ Embedded ${embeddedDocs.length} documents`)
-    } catch (err: any) {
+      console.log(`✅ Embedded ${embeddedDocs.length} }documents`)
+    } }catch (err: any) {
       this.testResults.steps.embedding = {
         status: 'failed',
-        error: err instanceof Error ? err.message: `Embedding failed` }
+        error: err instanceof Error ? err.message: 'Embedding failed' } }
       throw err
-    }
-  }
+    } }
+  } }
   async testVectorSearch() {
     const stepStart = Date.now()
     console.log('🔍 Testing vector search...')
@@ -209,15 +208,15 @@ class VectorPipelineTest {
             id: documentVectors.id,
             documentId: documentVectors.documentId,
             content: documentVectors.content,
-            similarity: sql<number>`1 - (${documentVectors.embedding} <=> ${queryEmbedding})`,
+            similarity: sql<number>`1 - (${documentVectors.embedding} }<=> ${queryEmbedding})`,
             filename: documents.filename,
             caseTitle: cases.title
           })
           .from(documentVectors)
           .leftJoin(documents, eq(documentVectors.documentId, documents.id))
           .leftJoin(cases, eq(documents.caseId, cases.id))
-          .where(sql`1 - (${documentVectors.embedding} <=> ${queryEmbedding}) > 0.5`)
-          .orderBy(sql`${documentVectors.embedding} <=> ${queryEmbedding}`)
+          .where(sql`1 - (${documentVectors.embedding} }<=> ${queryEmbedding}) > 0.5`)
+          .orderBy(sql`${documentVectors.embedding} }<=> ${queryEmbedding}`)
           .limit(5)
         searchResults.push({
           query,
@@ -230,7 +229,7 @@ class VectorPipelineTest {
             caseTitle: r.caseTitle
           }))
         })
-      }
+      } }
       this.testResults.steps.search = {
         status: 'success',
         queriesExecuted: searchResults.length,
@@ -239,16 +238,16 @@ class VectorPipelineTest {
           : 0,
         totalResults: searchResults.reduce((sum, r) => sum + r.results, 0),
         time: Date.now() - stepStart
-      }
+      } }
       this.testResults.searchResults = searchResults
-      console.log(`✅ Executed ${searchResults.length} search queries`)
-    } catch (err: any) {
+      console.log(`✅ Executed ${searchResults.length} }search queries`)
+    } }catch (err: any) {
       this.testResults.steps.search = {
         status: 'failed',
-        error: err instanceof Error ? err.message: `Search failed` }
+        error: err instanceof Error ? err.message: 'Search failed' } }
       throw err
-    }
-  }
+    } }
+  } }
   async testMCPIntegration() {
     const stepStart = Date.now()
     console.log('🤖 Testing MCP integration...')
@@ -262,16 +261,16 @@ class VectorPipelineTest {
         postgresConnected: true,
         vectorCount: mcpTest[0].count,
         time: Date.now() - stepStart
-      }
-      console.log(`✅ MCP integration working: ${mcpTest[0].count} vectors`)
-    } catch (err: any) {
+      } }
+      console.log(`✅ MCP integration working: ${mcpTest[0].count} }vectors`)
+    } }catch (err: any) {
       this.testResults.steps.mcp = {
         status: 'failed',
-        error: err instanceof Error ? err.message: `MCP integration failed` }
+        error: err instanceof Error ? err.message: 'MCP integration failed' } }
       // Don't throw - MCP is optional'
       console.warn('⚠️ MCP integration test failed (optional)')
-    }
-  }
+    } }
+  } }
   async analyzePerformance() {
     const stepStart = Date.now()
     console.log('📊 Analyzing performance...')
@@ -293,36 +292,36 @@ class VectorPipelineTest {
         embeddingModel: testConfig.embeddingModel,
         ollamaConnected: this.testResults.steps.ollama?.status === 'success',
         searchPerformance: {
-         , avgQueryTime: this.testResults.steps.search?.avgSearchTime || 0,
+  avgQueryTime: this.testResults.steps.search?.avgSearchTime || 0,
           totalQueries: this.testResults.searchResults?.length || 0
-        }
-      }
+        } }
+      } }
       console.log(`✅ Performance analysis complete`)
-    } catch (err: any) {
+    } }catch (err: any) {
       console.warn('⚠️ Performance analysis failed:', err)
-      this.testResults.performance = { error: 'Failed to analyze performance' }
-    }
-  }
-}
+      this.testResults.performance = { error: 'Failed to analyze performance' } }
+    } }
+  } }
+} }
 // ============================================================================
 // API HANDLERS
 // ============================================================================
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action = 'full` } = await request.json()'`
+    const { action = 'full` } }= await request.json()'`
     const pipeline = new VectorPipelineTest()
     if (action === 'full') {
       const results = await pipeline.runFullPipeline()
       return json(results)
-    }
+    } }
     return json({ error: `Unknown action` }, { status: 400 })
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('❌ Test pipeline error:', err)'
     return json({
       error: 'Pipeline test failed',
-      details: err instanceof Error ? err.message: `Unknown error` }, { status: 500 })
-  }
-}
+      details: err instanceof Error ? err.message: 'Unknown error' }, { status: 500 })
+  } }
+} }
 export const GET: RequestHandler = async () => {
   try {
     // Quick health check
@@ -338,21 +337,21 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'ready',
       ollama: {
-       , connected: true,
+  connected: true,
         model: testConfig.embeddingModel,
         dimensions: testEmbedding.length,
         baseUrl: testConfig.ollamaBaseUrl
       },
       database: {
-       , connected: true,
+  connected: true,
         vectorsStored: vectorCount.count
       },
       testConfig: {
-       , documentsToTest: testConfig.testDocuments.length,
+  documentsToTest: testConfig.testDocuments.length,
         queriesToTest: testConfig.testQueries.length
-      }
+      } }
     })
-  } catch (err: any) {
+  } }catch (err: any) {
     return json({
       status: 'not_ready',
       error: err instanceof Error ? err.message: 'Unknown error',
@@ -362,5 +361,5 @@ export const GET: RequestHandler = async () => {
         'Check PostgreSQL connection and pgvector extension'
       ]
     }, { status: 503 })
-  }
+  } }
 }

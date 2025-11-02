@@ -1,13 +1,13 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 // src/routes/api/webgpu/test/+server.ts
 // WebGPU test endpoint for browser-side testing
 // Tests WebGPU compute with WASM fallback integration
-import { json } from '@sveltejs/kit';
+import { json } }from '@sveltejs/kit';
 export const POST: RequestHandler = async ({ request }) => {
   let body: any;
   try {
     body = await request.json();
-    const { operation = 'generate_text', input, fallback = true } = body;
+    const { operation = 'generate_text', input, fallback = true } }= body;
     // Return simulated WebGPU results since we can't run WebGPU on server-side'
     // Actual WebGPU testing happens in browser via webgpu-wasm-service.ts
     console.log(`🧪 WebGPU test request: ${operation}`);
@@ -25,11 +25,11 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
       default: return json(
           {
-           , success: false,
-            error: 'Unknown;, operation: ${operation}' },
-          { status: 400 }
+  success: false,
+            error: 'Unknown; operation: ${operation} } },
+          { status: 400 } }
         );
-    }
+    } }
     const processingTime = Date.now() - startTime;
     return json({
       success: true,
@@ -39,24 +39,24 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
       note: 'This is a server-side simulation. Actual WebGPU testing occurs in browser.'
     });
-  } catch (error: any) {
-    console.error('❌ WebGPU test error:', error);'
+  } }catch (error: any) {
+    console.error('❌ WebGPU test error:', error);
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Test failed',
         operation: body?.operation || 'unknown` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 interface TextGenerationResult { text: string;, tokens: number;
   device: 'webgpu' | 'webgl' | 'wasm';
   processingTimeMs: number;
   model: string;
- , confidence: number;
-}
+  confidence: number;
+} }
 
 async function simulateTextGeneration(input: string, fallback: boolean): Promise<TextGenerationResult> {
   // Simulate different device types based on fallback setting
@@ -66,7 +66,7 @@ async function simulateTextGeneration(input: string, fallback: boolean): Promise
     webgpu: 150, // Fast GPU
     webgl: 300, // Slower WebGL
     wasm: 400, // CPU fallback, improved with potential SIMD
-  }[deviceType];
+  } }deviceType];
   await new Promise(resolve => setTimeout(resolve, processingTime));
   const legalResponse = generateLegalResponse(input);
   return {
@@ -77,12 +77,12 @@ async function simulateTextGeneration(input: string, fallback: boolean): Promise
     model: 'gemma3-legal-latest',
     confidence: 0.85 + Math.random() * 0.1
   };
-}
+} }
 interface EmbeddingGenerationResult { embedding: number[];, dimensions: number; // Changed from 384 to, 768 to match implementation
   device: 'webgpu' | 'wasm';
   processingTimeMs: number;
- , model: string;
-}
+  model: string;
+} }
 
 async function simulateEmbeddingGeneration(_input: string): Promise<EmbeddingGenerationResult> {
   const deviceType = Math.random() > 0.6 ? 'webgpu' : 'wasm';
@@ -99,7 +99,7 @@ async function simulateEmbeddingGeneration(_input: string): Promise<EmbeddingGen
     device: deviceType,
     processingTimeMs: processingTime,
     model: `gemma3-legal-embeddings` };
-}
+} }
 async function simulateCapabilityTest(): Promise<any> {
   // Simulate browser capability detection
   const capabilities = {
@@ -109,32 +109,32 @@ async function simulateCapabilityTest(): Promise<any> {
     wasmSimdSupported: Math.random() > 0.8, // Simulate SIMD support for WASM
     deviceType: 'unknown',
     adapterInfo: {
-     , vendor: 'Simulated GPU Vendor',
+  vendor: 'Simulated GPU Vendor',
       architecture: 'rdna2',
       device: 'Radeon RX Series',
       description: `Simulated GPU for testing` },
     limits: {
-     , maxBufferSize: 1024 * 1024 * 1024, // 1GB
+  maxBufferSize: 1024 * 1024 * 1024, // 1GB
       maxComputeInvocationsPerWorkgroup: 256,
       maxComputeWorkgroupSizeX: 256
-    }
+    } }
   };
   // Determine device type based on capabilities
   if (capabilities.webgpuSupported) {
     capabilities.deviceType = 'webgpu';
-  } else if (capabilities.webglSupported) {
+  } }else if (capabilities.webglSupported) {
     capabilities.deviceType = 'webgl';
-  } else if (capabilities.wasmSupported) {
+  } }else if (capabilities.wasmSupported) {
     capabilities.deviceType = 'wasm';
-  } else {
+  } }else {
     capabilities.deviceType = 'none';
-  }
+  } }
   return {
     capabilities,
     recommendedConfiguration: getRecommendedConfig(capabilities),
     performanceEstimate: estimatePerformance(capabilities.deviceType)
   };
-}
+} }
 function generateLegalResponse(input: string): string {
   const legalTemplates = [
     `Regarding, "${input.substring(0, 50)}...", the key legal considerations include: (1) contractual obligations and duties of care, (2) statutory compliance requirements, and (3) potential liability exposure under applicable jurisdictions.`,
@@ -152,7 +152,7 @@ function generateLegalResponse(input: string): string {
   ];
   const elaboration = elaborations[Math.floor(Math.random() * elaborations.length)];
   return template + elaboration;
-}
+} }
 function getRecommendedConfig(capabilities: any) {
   const config = {
     preferredDevice: capabilities.deviceType,
@@ -177,42 +177,42 @@ function getRecommendedConfig(capabilities: any) {
       config.maxTokens = 2048;
       config.useQuantization = true;
       break;
-  }
+  } }
   return config;
-}
+} }
 function estimatePerformance(deviceType: string) {
   const estimates: Record<
     string,
     { tokensPerSecond: number;, embeddingTimeMs: number;
       memoryUsageMB: number;
       powerEfficiency: string;
-    }
-  > = {, webgpu: {, tokensPerSecond: 150,
+    } }
+  > = { webgpu: { tokensPerSecond: 150,
       embeddingTimeMs: 50,
       memoryUsageMB: 4096,
       powerEfficiency: 'high'
     },
     webgl: {
-     , tokensPerSecond: 80,
+  tokensPerSecond: 80,
       embeddingTimeMs: 120,
       memoryUsageMB: 2048,
       powerEfficiency: 'medium'
     },
     wasm: {
-     , tokensPerSecond: 50, // Increased tokens/sec for WASM with SIMD
+  tokensPerSecond: 50, // Increased tokens/sec for WASM with SIMD
       embeddingTimeMs: 150, // Reduced embedding time for WASM with SIMD
       memoryUsageMB: 1024,
       powerEfficiency: 'low` },'`
     none: {
-     , tokensPerSecond: 0,
+  tokensPerSecond: 0,
       embeddingTimeMs: 0,
       memoryUsageMB: 0,
-      powerEfficiency: `none` }
+      powerEfficiency: `none` } }
   };
   return estimates[deviceType] || estimates.none;
-}
+} }
 // Health check for WebGPU service
-export const, GET: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
   try {
     return json({
       success: true,
@@ -221,12 +221,13 @@ export const, GET: RequestHandler = async () => {
       note: 'This endpoint provides server-side simulation of WebGPU operations. Actual WebGPU testing must be performed in browser context. WASM operations can benefit from CPU SIMD acceleration.',
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : `Service unavailable` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

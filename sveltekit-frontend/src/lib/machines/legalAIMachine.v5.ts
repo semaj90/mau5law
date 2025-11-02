@@ -1,127 +1,120 @@
-import type { AIResponse } from '$lib/types';
-import type { Case } from '$lib/types';
-import { setup, assign, createActor, fromPromise, type DoneActorEvent, type ErrorActorEvent } from 'xstate';
-import { writable } from 'svelte/store';
-import { productionServiceClient } from '$lib/services/production-service-client.js';
+import type { AIResponse } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import { setup, assign, createActor, fromPromise, type DoneActorEvent, type ErrorActorEvent } }from 'xstate';
+import { writable } }from 'svelte/store';
+import { productionServiceClient } }from '$lib/services/production-service-client.js';
 // Legal AI Application State Machine - XState v5
 export interface Case { id: string;, title: string;
   status: string;
   priority: string;
   category: string;
   [key: string]: any;
-}
-export interface Evidence {, id: string;, caseId: string;
+} }
+export interface Evidence { id: string;, caseId: string;
   type: string;
   description?: string;
   fileUrl?: string;
   metadata?: { [key: string]: any };
   [key: string]: any;
-}
-export interface Source {, id: string;, title: string;
+} }
+export interface Source { id: string;, title: string;
   type: 'document' | 'case' | 'statute' | 'web_url';
   relevance: number;
   snippet?: string;
   url?: string;
-}
-export interface AIResponse {, response: string;, confidence: number;
+} }
+export interface AIResponse { response: string;, confidence: number;
   sources: Source[];
   timestamp: string;
   model: string;
  , metadata: Record<string, unknown>;
-}
+} }
 export interface AuthResponse { id: string;, email: string;
   role: string;
   permissions: string[];
-}
-export interface RegistrationData {, email: string;, password: string;
+} }
+export interface RegistrationData { email: string;, password: string;
   firstName: string;
   lastName: string;
   [key: string]: any;
-}
-export interface LegalAIContext {, user: {, id: string | null;
+} }
+export interface LegalAIContext { user: { id: string | null;
     email: string | null;
     role: string | null;
     permissions: string[];
     isAuthenticated: boolean;
   };
-  cases: {, items: Case[];, currentCase: Case | null;
-    filters: {, search: string;, status: string;
+  cases: { items: Case[];, currentCase: Case | null;
+    filters: { search: string;, status: string;
       priority: string;
       category: string;
     };
-    pagination: {, page: number;, limit: number;
+    pagination: { page: number;, limit: number;
       total: number;
     };
     loading: boolean;
     error: string | null;
   };
-  ai: {, isProcessing: boolean;, currentQuery: string;
+  ai: { isProcessing: boolean;, currentQuery: string;
     lastResponse: AIResponse | null;
     error: string | null;
-    models: {, primary: string;, embedding: string;
+    models: { primary: string;, embedding: string;
       available: string[];
     };
   };
-  system: {, connected: boolean;, services: {, database: boolean;, redis: boolean;
+  system: { connected: boolean;, services: { database: boolean;, redis: boolean;
       ollama: boolean;
       gpu: boolean;
       pgvector: boolean;
       qdrant: boolean;
       neo4j: boolean;
     };
-    metrics: {, errorCount: number;, performanceScore: number;
+    metrics: { errorCount: number;, performanceScore: number;
       uptime: number;
     };
   };
-}
+} }
 export type LegalAIEvent =
-  | { type: 'AUTH.LOGIN'; credentials: { email: string; password: string } }
-  | { type: 'AUTH.LOGOUT' }
-  | { type: 'AUTH.REGISTER'; userData: RegistrationData }
-  | { type: 'CASES.LOAD'; filters?: Partial<LegalAIContext['cases']['filters']> }
-  | { type: 'CASES.SELECT'; case Case }
-  | { type: 'CASES.CREATE'; caseData: Partial<Case> }
-  | { type: 'CASES.SEARCH'; query: string }
-  | { type: 'AI.QUERY';, prompt: string; context?: Record<string, unknown> }
+  | { type: 'AUTH.LOGIN'; credentials: { email: string; password: string } }} }
+  | { type: 'AUTH.LOGOUT' } }
+  | { type: 'AUTH.REGISTER'; userData: RegistrationData } }
+  | { type: 'CASES.LOAD'; filters?: Partial<LegalAIContext['cases']['filters']> } }
+  | { type: 'CASES.SELECT'; case Case } }
+  | { type: 'CASES.CREATE'; caseData: Partial<Case> } }
+  | { type: 'CASES.SEARCH'; query: string } }
+  | { type: 'AI.QUERY'; prompt: string; context?: Record<string, unknown> } }
   | { type: 'SYSTEM.CHECK_STATUS' };
-const initialContext: LegalAIContext = {, user: {, id: null,
+const initialContext: LegalAIContext = { user: { id: null,
     email: null,
     role: null,
     permissions: [],
     isAuthenticated: false
   },
-  cases: {
-   , items: [],
+  cases: { items: [],
     currentCase: null,
-    filters: {
-     , search: '',
+    filters: { search: '',
       status: 'all',
       priority: 'all',
       category: 'all'
     },
-    pagination: {
-     , page: 1,
+    pagination: { page: 1,
       limit: 10,
       total: 0
     },
     loading: false,
     error: null
   },
-  ai: {
-   , isProcessing: false,
+  ai: { isProcessing: false,
     currentQuery: '',
     lastResponse: null,
     error: null,
-    models: {
-     , primary: 'gemma3-legal',
+    models: { primary: 'gemma3-legal',
       embedding: 'nomic-embed-text',
       available: ['gemma3-legal', 'gpt4-legal', 'llama2-legal']
-    }
+    } }
   },
-  system: {
-   , connected: false,
-    services: {
-     , database: false,
+  system: { connected: false,
+    services: { database: false,
       redis: false,
       ollama: false,
       gpu: false,
@@ -129,67 +122,58 @@ const initialContext: LegalAIContext = {, user: {, id: null,
       qdrant: false,
       neo4j: false
     },
-    metrics: {
-     , errorCount: 0,
+    metrics: { errorCount: 0,
       performanceScore: 0,
       uptime: 0
-    }
-  }
+    } }
+  } }
 };
-export const legalAIMachine = setup({
- , types: {} as {, context: LegalAIContext;, events: LegalAIEvent;
+export const legalAIMachine = setup({ types: {} }as { context: LegalAIContext;, events: LegalAIEvent;
   },
-  actions: {, updateSystem: assign({, system: ({ event }) =>
+  actions: { updateSystem: assign({ system: ({ event }) =>
         (event as: unknown as DoneActorEvent<LegalAIContext['system']>).output || initialContext.system
     }),
-    setSystemError: assign({
-     , system: ({ context }) => ({
+    setSystemError: assign({ system: ({ context }) => ({
         ...context.system,
         connected: false
       })
     }),
-    setUser: assign({
-     , user: ({ event }) => ({
+    setUser: assign({ user: ({ event }) => ({
         ...(event as: unknown as DoneActorEvent<AuthResponse>).output,
         isAuthenticated: true
       })
     }),
-    clearUser: assign({, user: () => ({, id: null,
+    clearUser: assign({ user: () => ({ id: null,
         email: null,
         role: null,
         permissions: [],
         isAuthenticated: false
       })
     }),
-    setCases: assign({
-     , cases: ({ context, event }) => ({
+    setCases: assign({ cases: ({ context, event }) => ({
         ...context.cases,
         items: (event, as: unknown as DoneActorEvent<Case[]>).output || [],
         loading: false
       })
     }),
-    setCurrentCase: assign({
-     , cases: ({ context, event }) => ({
+    setCurrentCase: assign({ cases: ({ context, event }) => ({
         ...context.cases,
         currentCase: (event as Extract<LegalAIEvent, { type: 'CASES.SELECT' }>).case
       })
     }),
-    setAIResponse: assign({
-     , ai: ({ context, event }) => ({
+    setAIResponse: assign({ ai: ({ context, event }) => ({
         ...context.ai,
         lastResponse: (event, as: unknown as DoneActorEvent<AIResponse>).output,
         isProcessing: false
       })
     }),
-    setAIError: assign({
-     , ai: ({ context, event }) => ({
+    setAIError: assign({ ai: ({ context, event }) => ({
         ...context.ai,
         error: ((event, as: unknown as ErrorActorEvent).error as Error)?.message || 'AI processing failed',
         isProcessing: false
       })
     }),
-    startAIProcessing: assign({
-     , ai: ({ context, event }) => ({
+    startAIProcessing: assign({ ai: ({ context, event }) => ({
         ...context.ai,
         isProcessing: true,
         currentQuery: (event as Extract<LegalAIEvent, { type: 'AI.QUERY' }>).prompt || '',
@@ -197,8 +181,7 @@ export const legalAIMachine = setup({
       })
     })
   },
-  actors: {
-   , checkSystemStatus: fromPromise(async () => {
+  actors: { checkSystemStatus: fromPromise(async () => {
       try {
         const [clusterStatusResponse, serviceHealthResponse] = await Promise.all([
           productionServiceClient.makeRequest('/api/system/cluster-status', {}, {}),
@@ -206,7 +189,7 @@ export const legalAIMachine = setup({
         ]);
         if (!clusterStatusResponse.success || !serviceHealthResponse.success) {
           throw new Error('Failed to fetch system status');
-        }
+        } }
         const clusterStatus = clusterStatusResponse.data;
         const serviceHealth = serviceHealthResponse.data;
         // Calculate overall health metrics
@@ -215,8 +198,7 @@ export const legalAIMachine = setup({
         const performanceScore = totalServices > 0 ? Math.round((healthyServices / totalServices) * 100) : 0;
         return {
           connected: healthyServices > 0,
-          services: {
-           , database: serviceHealth.some(s => s.service.includes('postgres') && s.status === 'healthy'),
+          services: { database: serviceHealth.some(s => s.service.includes('postgres') && s.status === 'healthy'),
             redis: serviceHealth.some(s => s.service.includes('redis') && s.status === 'healthy'),
             ollama: serviceHealth.some(s => s.service.includes('ollama') && s.status === 'healthy'),
             gpu: serviceHealth.some(s => s.service.includes('gpu') && s.status === 'healthy'),
@@ -224,18 +206,16 @@ export const legalAIMachine = setup({
             qdrant: serviceHealth.some(s => s.service.includes('qdrant') && s.status === 'healthy'),
             neo4j: serviceHealth.some(s => s.service.includes('neo4j') && s.status === 'healthy')
           },
-          metrics: {
-           , errorCount: serviceHealth.reduce((acc: number, s) => acc + s.errorCount, 0),
+          metrics: { errorCount: serviceHealth.reduce((acc: number, s) => acc + s.errorCount, 0),
             performanceScore,
             uptime: Date.now()
-          }
+          } }
         };
-      } catch (error: any) {
+      } }catch (error: any) {
         console.error('System status check failed:', error);
         return {
           connected: false,
-          services: {
-           , database: false,
+          services: { database: false,
             redis: false,
             ollama: false,
             gpu: false,
@@ -243,12 +223,12 @@ export const legalAIMachine = setup({
             qdrant: false,
             neo4j: false
           },
-          metrics: {, errorCount: 1, performanceScore: 0, uptime: 0 }
+          metrics: { errorCount: 1, performanceScore: 0, uptime: 0 } }
         };
-      }
+      } }
     }),
     authenticateUser: fromPromise(
-      async ({ input }: {, input: {, credentials: {, email: string;, password: string } } }): Promise<AuthResponse> => {
+      async ({ input }: { input: { credentials: { email: string; password: string } }} }}): Promise<AuthResponse> => {
         try {
           const response = await productionServiceClient.makeRequest('/api/auth/login', input.credentials, {
             timeout: 15000,
@@ -261,17 +241,17 @@ export const legalAIMachine = setup({
               role: response.data.role || 'legal_professional',
               permissions: response.data.permissions || ['read:cases', 'write:cases', 'ai:query']
             };
-          } else {
+          } }else {
             throw new Error(response.error || 'Authentication failed');
-          }
-        } catch (error: any) {
-          console.error('Authentication error:', error);'
+          } }
+        } }catch (error: any) {
+          console.error('Authentication error:', error);
           throw new Error('Authentication service unavailable');
-        }
-      }
+        } }
+      } }
     ),
     loadCases: fromPromise(
-      async ({ input }: {, input: { filters?: Partial<LegalAIContext['cases']['filters']> } }): Promise<Case[]> => {
+      async ({ input }: { input: { filters?: Partial<LegalAIContext['cases']['filters']> } }}): Promise<Case[]> => {
         try {
           const response = await productionServiceClient.makeRequest('/api/cases', input?.filters, {
             timeout: 10000,
@@ -291,17 +271,17 @@ export const legalAIMachine = setup({
               description: caseData.description,
               assignedTo: caseData.assigned_to || caseData.assignedTo
             }));
-          } else {
+          } }else {
             console.warn('Failed to load cases:', response.error);
             return [];
-          }
-        } catch (error: any) {
+          } }
+        } }catch (error: any) {
           console.error('Error loading cases:', error);
           return [];
-        }
-      }
+        } }
+      } }
     ),
-    processAIQuery: fromPromise(async ({ input }: {, input: {, prompt: string } }): Promise<AIResponse> => {
+    processAIQuery: fromPromise(async ({ input }: { input: { prompt: string } }}): Promise<AIResponse> => {
       try {
         // call production service for AI query
         const response = await productionServiceClient.makeRequest('/api/ai/query', input, {
@@ -315,113 +295,96 @@ export const legalAIMachine = setup({
             sources: response.data.sources || response.data.references || [],
             timestamp: new Date().toISOString(),
             model: response.data?.model || 'unknown',
-            metadata: response.data.metadata || {}
+            metadata: response.data.metadata || {} }
           };
-        } else {
+        } }else {
           throw new Error(response.error || 'AI query failed');
-        }
-      } catch (error: any) {
-        console.error('AI query error:', error);'
+        } }
+      } }catch (error: any) {
+        console.error('AI query error:', error);
         throw new Error('AI service unavailable');
-      }
+      } }
     })
-  }
+  } }
 }).createMachine({
   id: 'legalAI',
   initial: 'initializing',
   context: initialContext,
-  states: {, initializing: {, invoke: {
-       , src: 'checkSystemStatus',
-        onDone: {
-         , target: 'idle',
+  states: { initializing: { invoke: { src: 'checkSystemStatus',
+        onDone: { target: 'idle',
           actions: ['updateSystem']
         },
-        onError: {
-         , target: 'error',
+        onError: { target: 'error',
           actions: ['setSystemError']
-        }
-      }
+        } }
+      } }
     },
-    idle: {
-     , on: {
+    idle: { on: {
         'AUTH.LOGIN': 'authenticating',
         'AUTH.REGISTER': 'registering',
         'CASES.LOAD': 'loadingCases',
         'CASES.CREATE': 'creatingCase',
         'AI.QUERY': 'processingAI',
         'SYSTEM.CHECK_STATUS': 'checkingStatus'
-      }
+      } }
     },
-    authenticating: {, invoke: {, src: 'authenticateUser',
+    authenticating: { invoke: { src: 'authenticateUser',
         input: ({ event }) => ({ credentials: (event as Extract<LegalAIEvent, { type: 'AUTH.LOGIN' }>).credentials }),
-        onDone: {
-         , target: 'authenticated',
+        onDone: { target: 'authenticated',
           actions: ['setUser']
         },
-        onError: {
-         , target: 'idle',
+        onError: { target: 'idle',
           actions: ['clearUser']
-        }
-      }
+        } }
+      } }
     },
-    authenticated: {
-     , initial: 'ready',
-      states: {, ready: {, on: {
+    authenticated: { initial: 'ready',
+      states: { ready: { on: {
             'CASES.LOAD': '#legalAI.loadingCases',
             'AI.QUERY': '#legalAI.processingAI',
             'AUTH.LOGOUT': '#legalAI.idle'
-          }
-        }
-      }
+          } }
+        } }
+      } }
     },
-    loadingCases: {, invoke: {, src: 'loadCases',
+    loadingCases: { invoke: { src: 'loadCases',
         input: ({ event }) => ({ filters: (event as Extract<LegalAIEvent, { type: 'CASES.LOAD' }>).filters }),
-        onDone: {
-         , target: 'authenticated',
+        onDone: { target: 'authenticated',
           actions: 'setCases'
         },
-        onError: {
-         , target: 'authenticated'
-        }
-      }
+        onError: { target: 'authenticated'
+        } }
+      } }
     },
-    processingAI: {
-     , entry: 'startAIProcessing',
-      invoke: {
-       , src: 'processAIQuery',
+    processingAI: { entry: 'startAIProcessing',
+      invoke: { src: 'processAIQuery',
         input: ({ event }) => ({ prompt: (event as Extract<LegalAIEvent, { type: 'AI.QUERY' }>).prompt }),
-        onDone: {
-         , target: 'authenticated',
+        onDone: { target: 'authenticated',
           actions: 'setAIResponse'
         },
-        onError: {
-         , target: 'authenticated',
+        onError: { target: 'authenticated',
           actions: 'setAIError'
-        }
-      }
+        } }
+      } }
     },
-    error: {
-     , on: {
+    error: { on: {
         'SYSTEM.CHECK_STATUS': 'initializing'
-      }
+      } }
     },
     // Placeholder states
     registering: {
-      after: {
-       , 1000: 'idle'
-      }
+      after: { 1000: 'idle'
+      } }
     },
     creatingCase: {
-      after: {
-       , 1000: 'authenticated'
-      }
+      after: { 1000: 'authenticated'
+      } }
     },
     checkingStatus: {
-      after: {
-       , 500: 'idle'
-      }
-    }
-  }
+      after: { 500: 'idle'
+      } }
+    } }
+  } }
 });
 // Create the actor
 export const legalAIActor = createActor(legalAIMachine);
@@ -434,3 +397,4 @@ legalAIActor.subscribe(snapshot => {
 // Start the actor
 legalAIActor.start();
 export default legalAIActor;
+

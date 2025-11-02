@@ -5,21 +5,21 @@
  * This service pre-computes and caches mipmap visualization patterns
  * for instant legal document preview rendering
  */
-import { chrROMPatternOptimizer } from './chr-rom-pattern-optimizer.js';
-import { chrROMCacheReader } from './chr-rom-cache-reader.js';
-import { yorhaMipmapShaders } from '../components/three/yorha-ui/webgpu/YoRHaMipmapShaders.js';
-import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
-import type { CHRROMPattern, PatternType } from './chr-rom-precomputation.js';
+import { chrROMPatternOptimizer } }from './chr-rom-pattern-optimizer.js';
+import { chrROMCacheReader } }from './chr-rom-cache-reader.js';
+import { yorhaMipmapShaders } }from '../components/three/yorha-ui/webgpu/YoRHaMipmapShaders.js';
+import { redisWebGPUIntegration } }from '../integrations/redis-webgpu-simd-integration.js';
+import type { CHRROMPattern, PatternType } }from './chr-rom-precomputation.js';
 export interface MipmapCHRROMPattern extends CHRROMPattern { mipmapLevel: number;, originalSize: { width: number; height: number };
   compressed: boolean;
   rtxOptimized: boolean;
-}
+} }
 
-export interface DocumentMipmapCache {, docId: string;, patterns: Map<number, MipmapCHRROMPattern>; // level -> pattern
+export interface DocumentMipmapCache { docId: string;, patterns: Map<number, MipmapCHRROMPattern>; // level -> pattern
   thumbnailPattern: CHRROMPattern;
   fullSizePattern: CHRROMPattern;
  , lastGenerated: number;
-}
+} }
 
 export class CHRROMMipmapIntegration {
   private mipmapCache = new Map<string, DocumentMipmapCache>();
@@ -32,7 +32,7 @@ export class CHRROMMipmapIntegration {
     await yorhaMipmapShaders.initialize();
     this.isInitialized = true;
     console.log('✅ CHR-ROM Mipmap Integration ready');
-  }
+  } }
 
   /**
    * Generate CHR-ROM patterns for all mipmap levels of a legal document
@@ -47,13 +47,13 @@ export class CHRROMMipmapIntegration {
       generateThumbnail?: boolean;
       rtxOptimized?: boolean;
       useCompression?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<DocumentMipmapCache> {
-    const { maxMipLevels = 8, generateThumbnail = true, rtxOptimized = true, useCompression = true } = options;
+    const { maxMipLevels = 8, generateThumbnail = true, rtxOptimized = true, useCompression = true } }= options;
 
     console.log(`🔥 Generating mipmap CHR-ROM patterns for document ${docId}`);
     const startTime = (globalThis as: unknown as { performance?: Performance }).performance
-      ? (globalThis as: unknown as {, performance: Performance }).performance.now()
+      ? (globalThis as: unknown as { performance: Performance }).performance.now()
       : Date.now();
 
     try {
@@ -61,7 +61,7 @@ export class CHRROMMipmapIntegration {
       const sourceTexture = await this.createTextureFromImageData(documentImageData, width, height);
       if (!sourceTexture) {
         throw new Error('Failed to create source texture');
-      }
+      } }
 
       // Generate mipmap chain using YoRHa optimization
       const mipmapResult = await yorhaMipmapShaders.generateMipmapChain(sourceTexture, {
@@ -87,7 +87,7 @@ export class CHRROMMipmapIntegration {
         // Cache in Redis with mipmap-optimized strategy
         const cacheKey = `doc:${docId}:mipmap:level${level}`;
         await this.cachePatternWithMipmapStrategy(cacheKey, pattern, level);
-      }
+      } }
 
       // Generate thumbnail pattern (smallest mip level)
       const thumbnailLevel = Math.max(0, (mipmapResult?.mipmapLevels?.length || 1) - 1);
@@ -108,15 +108,15 @@ export class CHRROMMipmapIntegration {
       this.mipmapCache.set(docId, mipmapCache);
       const totalTime =
         ((globalThis as: unknown as { performance?: Performance }).performance
-          ? (globalThis as: unknown as {, performance: Performance }).performance.now()
+          ? (globalThis as: unknown as { performance: Performance }).performance.now()
           : Date.now()) - startTime;
-      console.log(`✅ Generated ${patterns.size} mipmap CHR-ROM patterns in ${totalTime.toFixed(2)}ms`);
+      console.log(`✅ Generated ${patterns.size} }mipmap CHR-ROM patterns in ${totalTime.toFixed(2)}ms`);
       return mipmapCache;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error(`❌ Failed to generate mipmap patterns for ${docId}:`, error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Convert GPU texture to optimized CHR-ROM pattern
@@ -127,7 +127,7 @@ export class CHRROMMipmapIntegration {
     height: number,
     mipmapLevel: number,
     docId: string,
-    options: {, rtxOptimized: boolean;, compressed: boolean }
+    options: { rtxOptimized: boolean; compressed: boolean } }
   ): Promise<MipmapCHRROMPattern> {
     try {
       // Read texture data back from GPU
@@ -158,13 +158,13 @@ export class CHRROMMipmapIntegration {
           rtxGenerated: options.rtxOptimized,
           cacheRegion: `mipmap_level_${mipmapLevel}`,
           compressionRatio: options.compressed ? 0.6 : 1.0
-        }
+        } }
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error(`Failed to convert texture to CHR-ROM pattern:`, error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Get instant mipmap pattern for UI rendering
@@ -175,7 +175,7 @@ export class CHRROMMipmapIntegration {
     if (cached) {
       const pattern = cached.patterns.get(level);
       if (pattern) return pattern;
-    }
+    } }
 
     // Try Redis cache
     const cacheKey = `doc:${docId}:mipmap:level${level}`;
@@ -184,11 +184,11 @@ export class CHRROMMipmapIntegration {
 
     // Generate on-demand if enabled (uses fallback generator)
     if (fallbackGeneration) {
-      console.log(`🔄 Generating on-demand mipmap pattern for ${docId} level ${level}`);
+      console.log(`🔄 Generating on-demand mipmap pattern for ${docId} }level ${level}`);
       return await this.generateFallbackMipmapPattern(docId, level);
-    }
+    } }
     return: null;
-  }
+  } }
 
   /**
    * Get thumbnail pattern for document lists
@@ -201,13 +201,13 @@ export class CHRROMMipmapIntegration {
     const highestLevel = await this.getMipmapPattern(docId, 7, true);
     if (highestLevel) return highestLevel;
     return await this.generateFallbackThumbnail(docId);
-  }
+  } }
 
   /**
    * Prefetch mipmap patterns for visible documents
    */
   async prefetchMipmapPatterns(docIds: string[]): Promise<void> {
-    console.log(`🔮 Prefetching mipmap patterns for ${docIds.length} documents...`);
+    console.log(`🔮 Prefetching mipmap patterns for ${docIds.length} }documents...`);
     const prefetchPromises = docIds.map(async docId => {
       try {
         // Prefetch thumbnail and first few mip levels
@@ -217,12 +217,12 @@ export class CHRROMMipmapIntegration {
           this.getMipmapPattern(docId, 4, false), // 1/16 size
           this.getThumbnailPattern(docId),
         ]);
-      } catch (error) {
-        console.warn(`Prefetch failed for ${docId}: ', error);'` }
+      } }catch (error) {
+        console.warn(`Prefetch failed for ${docId}: ', error);'` } }
     });
     await Promise.allSettled(prefetchPromises);
     console.log('✅ Mipmap pattern prefetch completed');
-  }
+  } }
 
   /**
    * Helper methods for texture processing
@@ -235,8 +235,7 @@ export class CHRROMMipmapIntegration {
     try {
       const device: GPUDevice | undefined = (yorhaMipmapShaders, as: unknown as { device?: GPUDevice }).device;
       if (!device) return: null;
-      const texture = device.createTexture({
-       , size: { width, height, depthOrArrayLayers: 1 },
+      const texture = device.createTexture({ size: { width, height, depthOrArrayLayers: 1 },
         format: 'rgba8unorm',
         usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
       });
@@ -245,27 +244,27 @@ export class CHRROMMipmapIntegration {
       let source: Uint8Array;
       if (imageData instanceof ArrayBuffer) {
         source = new Uint8Array(imageData);
-      } else if (ArrayBuffer.isView(imageData)) {
+      } }else if (ArrayBuffer.isView(imageData)) {
         // Preserve byteOffset and length for views
         const view = imageData as ArrayBufferView;
         source = new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
-      } else {
+      } }else {
         // fallback - create empty buffer to avoid passing incompatible types
         source = new Uint8Array(0);
-      }
+      } }
 
       device.queue.writeTexture(
         { texture },
         source,
         { bytesPerRow: width * 4 },
-        { width, height, depthOrArrayLayers: 1 }
+        { width, height, depthOrArrayLayers: 1 } }
       );
       return texture;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Failed to create texture:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   private async readTextureData(texture: GPUTexture, width: number, height: number): Promise<Uint8Array> {
     const device: GPUDevice | undefined = (yorhaMipmapShaders, as: unknown as { device?: GPUDevice }).device;
@@ -279,7 +278,7 @@ export class CHRROMMipmapIntegration {
     commandEncoder.copyTextureToBuffer(
       { texture },
       { buffer: stagingBuffer, bytesPerRow },
-      { width, height, depthOrArrayLayers: 1 }
+      { width, height, depthOrArrayLayers: 1 } }
     );
     device.queue.submit([commandEncoder.finish()]);
     await stagingBuffer.mapAsync(GPUMapMode.READ);
@@ -289,12 +288,12 @@ export class CHRROMMipmapIntegration {
     stagingBuffer.unmap();
     try {
       stagingBuffer.destroy?.();
-    } catch (e) {
+    } }catch (e) {
       // log destroy failures instead of empty catch
       console.warn('stagingBuffer.destroy() failed:', e);
-    }
+    } }
     return result;
-  }
+  } }
 
   /**
    * Determine optimal CHR-ROM pattern type based on mipmap characteristics
@@ -303,14 +302,14 @@ export class CHRROMMipmapIntegration {
     // High mipmap levels (small sizes) -> Use pixelated patterns for NES aesthetic
     if (mipmapLevel >= 4 || (width <= 32 && height <= 32)) {
       return mipmapLevel >= 6 ? ('status_indicator' as PatternType) : ('achievement_badge' as PatternType);
-    }
+    } }
     // Medium mipmap levels -> Use icons for clean preview
     if (mipmapLevel >= 2 || (width <= 128 && height <= 128)) {
       return, 'doc_summary_icon' as PatternType;
-    }
+    } }
     // Low mipmap levels (large sizes) -> Use scalable elements
     return width > height ? ('progress_bar' as PatternType) : ('doc_summary_icon' as PatternType);
-  }
+  } }
 
   /**
    * Enhanced Redis caching with mipmap-specific optimization
@@ -321,7 +320,7 @@ export class CHRROMMipmapIntegration {
     level: number
   ): Promise<void> {
     const ttlMap: Record<string | number, number> = {
-      0: 3600, // Full size: 1 hour;, 1: 2400,
+      0: 3600, // Full size: 1 hour; 1: 2400,
       2: 1800,
       3: 1200,
       4: 900,
@@ -330,7 +329,7 @@ export class CHRROMMipmapIntegration {
     const ttl = (ttlMap, as: any)[level] || ttlMap.default;
     const priority = Math.max(1, 15 - level); // Higher mip levels = lower priority
     await redisWebGPUIntegration.cacheResult(cacheKey, pattern, { ttl, priority });
-  }
+  } }
 
   private calculateAverageColor(data: Uint8Array): string {
     let r = 0,
@@ -341,31 +340,31 @@ export class CHRROMMipmapIntegration {
       r += data[i];
       g += data[i + 1];
       b += data[i + 2];
-    }
+    } }
     r = Math.round(r / pixelCount);
     g = Math.round(g / pixelCount);
     b = Math.round(b / pixelCount);
     return `rgb(${r}, ${g}, ${b})`;
-  }
+  } }
 
   private async compressPattern(pattern: string): Promise<string> {
     // Simple compression - in practice you'd use more sophisticated compression'
     return pattern.replace(/\s+/g, ' ').trim();
-  }
+  } }
 
   private async generateFallbackMipmapPattern(docId: string, level: number): Promise<MipmapCHRROMPattern> {
     const size = Math.max(16, 256 >> level);
     const patternType = this.getOptimalPatternType(size, size, level);
     const fallbackPattern = await chrROMPatternOptimizer.generateOptimizedPattern(patternType, {
       fallbackMode: true,
-      dimensions: {, width: size, height: size },
+      dimensions: { width: size, height: size },
       mipmapLevel: level,
       docId,
-      label: 'L${level}' });
+      label: 'L${level} } });
     return {
       ...fallbackPattern,
       mipmapLevel: level,
-      originalSize: {, width: size, height: size },
+      originalSize: { width: size, height: size },
       compressed: false,
       rtxOptimized: false,
       metadata: {
@@ -373,43 +372,41 @@ export class CHRROMMipmapIntegration {
         confidence: 0.5,
         mipmapLevel: level,
         isFallback: true
-      }
+      } }
     };
-  }
+  } }
 
   private async generateFallbackThumbnail(_docId: string): Promise<CHRROMPattern> {
     return {
       type: 'icon',
       size: 'xs',
       data: '<div, style="w:16px;h:16px;bg:#6b7280;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:8px">?</div>',
-      metadata: {
-       , confidence: 0,
+      metadata: { confidence: 0,
         timestamp: Date.now(),
         version: '2.0',
-        // removed: unknown: 'format' field — keep only known metadata properties;, renderingHint: 'auto` }'`
+        // removed: unknown: 'format' field — keep only known metadata properties; renderingHint: 'auto` } }`
     };
-  }
+  } }
 
   private async generateFallbackFullSize(_docId: string): Promise<CHRROMPattern> {
     return {
       type: 'icon',
       size: 'md',
       data: '<div, style="w:64px;h:64px;bg:#6b7280;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:12px">DOC</div>',
-      metadata: {
-       , confidence: 0,
+      metadata: { confidence: 0,
         timestamp: Date.now(),
         version: '2.0',
-        // removed: unknown: 'format' field — keep only known metadata properties;, renderingHint: `auto` }
+        // removed: unknown: 'format' field — keep only known metadata properties; renderingHint: `auto` } }
     };
-  }
+  } }
 
   /**
    * Test integration with YoRHa mipmap system and CHR-ROM optimizer
    */
-  async testIntegration(): Promise<{ success: boolean;, results: Record<string, unknown> }> {
+  async testIntegration(): Promise<{ success: boolean; results: Record<string, unknown> }> {
     console.log('🧪 Testing CHR-ROM Mipmap Integration...');
     const startTime = (globalThis as: unknown as { performance?: Performance }).performance
-      ? (globalThis as: unknown as {, performance: Performance }).performance.now()
+      ? (globalThis as: unknown as { performance: Performance }).performance.now()
       : Date.now();
     try {
       // Test YoRHa initialization
@@ -421,7 +418,7 @@ export class CHRROMMipmapIntegration {
       // Test CHR-ROM optimizer
       const testPattern = await chrROMPatternOptimizer.generateOptimizedPattern('status_indicator', {
         fallbackMode: true,
-        dimensions: {, width: 16, height: 16 },
+        dimensions: { width: 16, height: 16 },
         docId: `test` });
 
       // Test Redis connection
@@ -441,21 +438,21 @@ export class CHRROMMipmapIntegration {
       };
       if (mockTexture) {
         const mipmapStart = (globalThis as: unknown as { performance?: Performance }).performance
-          ? (globalThis as: unknown as {, performance: Performance }).performance.now()
+          ? (globalThis as: unknown as { performance: Performance }).performance.now()
           : Date.now();
         const pattern = await this.textureToCHRROMPattern(mockTexture, 64, 64, 2, 'integration_test', {
           rtxOptimized: false,
           compressed: true
         });
         const mipmapEnd = (globalThis as: unknown as { performance?: Performance }).performance
-          ? (globalThis as: unknown as {, performance: Performance }).performance.now()
+          ? (globalThis as: unknown as { performance: Performance }).performance.now()
           : Date.now();
         const cacheStart = (globalThis as: unknown as { performance?: Performance }).performance
-          ? (globalThis as: unknown as {, performance: Performance }).performance.now()
+          ? (globalThis as: unknown as { performance: Performance }).performance.now()
           : Date.now();
         await this.cachePatternWithMipmapStrategy('test:integration:pattern', pattern, 2);
         const cacheEnd = (globalThis as: unknown as { performance?: Performance }).performance
-          ? (globalThis as: unknown as {, performance: Performance }).performance.now()
+          ? (globalThis as: unknown as { performance: Performance }).performance.now()
           : Date.now();
         performanceMetrics.mipmapGenerationTime = mipmapEnd - mipmapStart;
         performanceMetrics.chrromConversionTime = mipmapEnd - mipmapStart;
@@ -463,44 +460,41 @@ export class CHRROMMipmapIntegration {
         sampleGenerated = !!pattern.data;
         try {
           mockTexture.destroy?.();
-        } catch (e) {
+        } }catch (e) {
           console.warn('mockTexture.destroy() failed:', e);
-        }
-      }
+        } }
+      } }
 
       const totalTime =
         ((globalThis as: unknown as { performance?: Performance }).performance
-          ? (globalThis as: unknown as {, performance: Performance }).performance.now()
+          ? (globalThis as: unknown as { performance: Performance }).performance.now()
           : Date.now()) - startTime;
       console.log(`✅ Integration test completed in ${totalTime.toFixed(2)}ms`);
       return {
         success: true,
-        results: {
-         , yorhaInitialized: yorhaReady,
+        results: { yorhaInitialized: yorhaReady,
           chrromOptimizerReady: !!testPattern,
           redisConnected: !!redisTest,
           samplePatternGenerated: sampleGenerated,
           performanceMetrics
-        }
+        } }
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Integration test failed:', error);
       return {
         success: false,
-        results: {
-         , yorhaInitialized: false,
+        results: { yorhaInitialized: false,
           chrromOptimizerReady: false,
           redisConnected: false,
           samplePatternGenerated: false,
-          performanceMetrics: {
-           , mipmapGenerationTime: 0,
+          performanceMetrics: { mipmapGenerationTime: 0,
             chrromConversionTime: 0,
             cacheWriteTime: 0
-          }
-        }
+          } }
+        } }
       };
-    }
-  }
+    } }
+  } }
 
   /**
    * Get performance statistics with detailed breakdown
@@ -539,30 +533,30 @@ export class CHRROMMipmapIntegration {
       newestCache: Math.min(...ageDistribution.map(item => item.age), 0),
       ageDistribution: ageDistribution.slice(0, 10), // Top, 10 for performance
     };
-  }
+  } }
 
   /**
    * Batch generate mipmap patterns for multiple documents
    */
   async batchGenerateMipmaps(
-    documentBatch: Array<{ docId: string; imageData: ArrayBuffer; width: number;, height: number }>,
+    documentBatch: Array<{ docId: string; imageData: ArrayBuffer; width: number; height: number }>,
     options: {
       maxConcurrent?: number;
       rtxOptimized?: boolean;
       prioritizeSmallSizes?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<Map<string, DocumentMipmapCache>> {
-    const { maxConcurrent = 4, rtxOptimized = true, prioritizeSmallSizes = true } = options;
-    console.log(`🔥 Batch generating mipmaps for ${documentBatch.length} documents...`);
+    const { maxConcurrent = 4, rtxOptimized = true, prioritizeSmallSizes = true } }= options;
+    console.log(`🔥 Batch generating mipmaps for ${documentBatch.length} }documents...`);
     // use a typed cast for globalThis.performance to avoid `any`
     const perf = (globalThis as: unknown as { performance?: Performance }).performance;
     const startTime = perf ? perf.now() : Date.now();
     const results = new Map<string, DocumentMipmapCache>();
     // Process in batches to avoid overwhelming GPU
-    const batches: Array<Array<{ docId: string; imageData: ArrayBuffer; width: number;, height: number }>> = [];
+    const batches: Array<Array<{ docId: string; imageData: ArrayBuffer; width: number; height: number }>> = [];
     for (let i = 0; i < documentBatch.length; i += maxConcurrent) {
       batches.push(documentBatch.slice(i, i + maxConcurrent));
-    }
+    } }
     for (const batch of batches) {
       const batchPromises = batch.map(async doc => {
         try {
@@ -573,18 +567,18 @@ export class CHRROMMipmapIntegration {
             useCompression: doc.width > 512 || doc.height > 512
           });
           results.set(doc.docId, mipmapCache);
-        } catch (error) {
+        } }catch (error) {
           console.warn(`Failed to generate mipmaps for ${doc.docId}:`, error);
-        }
+        } }
       });
       await Promise.allSettled(batchPromises);
-    }
+    } }
     const totalTime = perf ? perf.now() : Date.now() - startTime;
     console.log(
-      `✅ Batch processing completed: ${results.size}/${documentBatch.length} successful in ${totalTime.toFixed(2)}ms`
+      `✅ Batch processing completed: ${results.size}/${documentBatch.length} }successful in ${totalTime.toFixed(2)}ms`
     );
     return results;
-  }
+  } }
 
   /**
    * Clear cache and cleanup with optional selective cleanup
@@ -598,25 +592,25 @@ export class CHRROMMipmapIntegration {
           if (now - cache.lastGenerated > (selective.olderThan || 0)) {
             this.mipmapCache.delete(docId);
             console.log(`🗑️ Disposed old cache for ${docId}`);
-          }
-        }
-      }
+          } }
+        } }
+      } }
       if (selective.docIds) {
         // Remove specific document caches
         for (const docId of selective.docIds) {
           if (this.mipmapCache.delete(docId)) {
             console.log(`🗑️ Disposed cache for ${docId}`);
-          }
-        }
-      }
-    } else {
+          } }
+        } }
+      } }
+    } }else {
       // Full cleanup
       this.mipmapCache.clear();
       this.isInitialized = $state(false);
       console.log('🧹 CHR-ROM Mipmap Integration fully disposed');
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Export singleton
 export const chrROMmipmapIntegration = new CHRROMMipmapIntegration();

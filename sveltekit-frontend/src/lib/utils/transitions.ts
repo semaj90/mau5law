@@ -1,7 +1,7 @@
 // Transition utilities for Melt UI components
 // Compatible with Pico CSS + UnoCSS setup
-import { cubicOut } from 'svelte/easing';
-import type { TransitionConfig } from 'svelte/transition';
+import { cubicOut } }from 'svelte/easing';
+import type { TransitionConfig } }from 'svelte/transition';
 // Restored TransitionConfig type import
 export function flyAndScale(
   node: Element,
@@ -10,7 +10,7 @@ export function flyAndScale(
     x?: number;
     start?: number;
     duration?: number;
-  } = {}
+  } }= {} }
 ): TransitionConfig {
   const style = getComputedStyle(node);
   const transform = style.transform === 'none' ? '' : style.transform;
@@ -35,14 +35,14 @@ export function flyAndScale(
       const x = scaleConversion(t, [0, 1], [params.x ?? 0, 0]);
       const scale = scaleConversion(t, [0, 1], [params.start ?? 0.95, 1]);
       return styleToString({
-        transform: `${transform} translate3d(${x}px, ${y}px, 0) scale(${scale})`,
+        transform: `${transform} }translate3d(${x}px, ${y}px, 0) scale(${scale})`,
         opacity: t
       });
     },
     easing: cubicOut
   };
-}
-export function slideInFromBottom(node: Element, params: { duration?: number; delay?: number } = {}): TransitionConfig {
+} }
+export function slideInFromBottom(node: Element, params: { duration?: number; delay?: number } }= {}): TransitionConfig {
   void node;
   return {
     duration: params.duration ?? 300,
@@ -51,12 +51,12 @@ export function slideInFromBottom(node: Element, params: { duration?: number; de
       const eased = cubicOut(t);
       return `
         transform: translateY(${(1 - eased) * 20}px);
-        opacity: ${eased}
+        opacity: ${eased} }
       `;`
-    }
+    } }
   };
-}
-export function scaleIn(node: Element, params: { duration?: number; start?: number } = {}): TransitionConfig {
+} }
+export function scaleIn(node: Element, params: { duration?: number; start?: number } }= {}): TransitionConfig {
   void node;
   return {
     duration: params.duration ?? 150,
@@ -65,7 +65,8 @@ export function scaleIn(node: Element, params: { duration?: number; start?: numb
       const scale = (params.start ?? 0.8) + (1 - (params.start ?? 0.8)) * eased;
       return `
         transform: scale(${scale});
-        opacity: ${eased}
-      `;' }'`
+        opacity: ${eased} }
+      `;' } }`
   };
-}
+} }
+

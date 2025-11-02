@@ -9,16 +9,17 @@ declare global {
   // Ensure Redis.disconnect exists in places where the client type is ambiguous
   interface Redis {
     disconnect?: () => void | Promise<void>;
-  }
+  } }
   // Provide loose Request typing to allow request.body?.query usage in server handlers
   interface LooseRequest {
     body?: any;
     json?: () => Promise<any>;
     [k: string]: any;
-  }
+  } }
   // Some code expects `request` to have a `body` property; add a global fallback type
   // This won't change runtime behavior, only eases type checking during remediation.'
   // (Files that import explicit Request types keep their own stricter typing.)
   // Note: we avoid changing lib.dom Request/Body definitions to stay safe.
   const __LOOSE_REQUEST__: LooseRequest | undefined;
-}
+} }
+

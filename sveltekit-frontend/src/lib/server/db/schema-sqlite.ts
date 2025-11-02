@@ -6,8 +6,8 @@ import {
   integer,
   real,
   blob
-} from "drizzle-orm/sqlite-core";
-import { relations } from "drizzle-orm";
+} }from "drizzle-orm/sqlite-core";
+import { relations } }from "drizzle-orm";
 // === AUTHENTICATION & USER MANAGEMENT ===
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),

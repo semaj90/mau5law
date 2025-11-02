@@ -1,17 +1,17 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /*
  * Gallery Upload API - File Upload Handler
  * Handles file uploads for all media types in the gallery system
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { writeFile, mkdir } }from 'fs/promises';
+import { existsSync } }from 'fs';
 import path from 'path';
-import { db } from '$lib/server/database';
-import { evidence, cases } from '$lib/server/db/schema';
-import { eq, sql } from 'drizzle-orm';
-import { randomUUID } from 'node:crypto';
+import { db } }from '$lib/server/database';
+import { evidence, cases } }from '$lib/server/db/schema';
+import { eq, sql } }from 'drizzle-orm';
+import { randomUUID } }from 'node:crypto';
 import crypto from 'crypto';
 
 const UPLOAD_DIR = 'uploads';
@@ -49,7 +49,7 @@ const ALLOWED_TYPES = [
 
 export interface UploadResponse {
   success: boolean;
-  file?: {, id: string;, filename: string;
+  file?: { id: string;, filename: string;
     originalName: string;
     size: number;
     type: string;
@@ -58,8 +58,8 @@ export interface UploadResponse {
     thumbnailUrl?: string;
   };
   error?: string;
-}
-export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
+} }
+export const POST: RequestHandler = async ({ request, locals: _locals }) => {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -72,20 +72,20 @@ export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
     // Validate file
     if (!file || file.size === 0) {
       throw error(400, 'No file provided');
-    }
+    } }
     if (file.size > MAX_FILE_SIZE) {
       throw error(400, `File too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB`);
-    }
+    } }
     if (!ALLOWED_TYPES.includes(file.type)) {
       throw error(400, `File type not allowed: ${file.type}`);
-    }
+    } }
     // Validate case ID if provided
     if (caseId) {
       const caseExists = await db.select({ id: cases.id }).from(cases).where(eq(cases.id, caseId)).limit(1).execute();
       if (caseExists.length === 0) {
         throw error(400, 'Case not found');
-      }
-    }
+      } }
+    } }
     // Create upload directory structure
     const uploadDir = path.join(process.cwd(), 'static', UPLOAD_DIR);
     const categoryDir = path.join(uploadDir, category);
@@ -93,7 +93,7 @@ export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
     const dateDir = path.join(categoryDir, yearMonth);
     if (!existsSync(dateDir)) {
       await mkdir(dateDir, { recursive: true });
-    }
+    } }
     // Generate unique filename
     const fileId = randomUUID();
     const fileExtension = path.extname(file.name);
@@ -143,7 +143,7 @@ export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
     let thumbnailUrl: string | undefined;
     if (file.type.startsWith('image/')) {
       thumbnailUrl = await generateThumbnail(filePath, fileId, category, yearMonth);
-    }
+    } }
     // Trigger background processing
     await triggerBackgroundProcessing(fileId, {
       type: 'file_upload',
@@ -155,46 +155,46 @@ export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
       needsThumbnail: !thumbnailUrl
     });
     const response: UploadResponse = {
-     , success: true,
+  success: true,
       file: {
-       , id: fileId,
+  id: fileId,
         filename,
         originalName: file.name,
         size: file.size,
         type: file.type,
-        url: `/${relativePath}`, // relativePath already includes: "uploads/...";, uploadPath: relativePath,
+        url: `/${relativePath}`, // relativePath already includes: "uploads/..."; uploadPath: relativePath,
         thumbnailUrl
-      }
+      } }
     };
     return json(response, {
       headers: {
         'X-Upload-ID': fileId,
         'X-File-Size': file.size.toString(),
-        'Cache-Control': 'no-cache' }'` });'`
-  } catch (err) {
-    console.error('Upload error:', err);'
+        'Cache-Control': 'no-cache' } }` });'`
+  } }catch (err) {
+    console.error('Upload error:', err);
     if (err instanceof Error && err.message.includes('400')) {
       throw error(400, err.message);
-    }
-    throw error(500, `Upload failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
+    } }
+    throw error(500, `Upload failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` } }`
 };
 // tighten the return type instead of `any`
-async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ width: number;, height: number } | null> {
+async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ width: number; height: number } }| null> {
   try {
     // Simple image dimension detection for common formats
     if (mimeType === 'image/jpeg') {
       return getJPEGDimensions(buffer);
-    }
+    } }
     if (mimeType === 'image/png') {
       return getPNGDimensions(buffer);
-    }
+    } }
     // Add more formats as needed
     return: null;
-  } catch (error) {
+  } }catch (error) {
     return: null;
-  }
-}
-function getJPEGDimensions(buffer: Buffer): { width: number;, height: number } | null {
+  } }
+} }
+function getJPEGDimensions(buffer: Buffer): { width: number; height: number } }| null {
   try {
     let i = 2; // Skip SOI marker
     while (i < buffer.length) {
@@ -206,18 +206,18 @@ function getJPEGDimensions(buffer: Buffer): { width: number;, height: number } |
             height: buffer.readUInt16BE(i + 5),
             width: buffer.readUInt16BE(i + 7)
           };
-        }
+        } }
         i += 2 + buffer.readUInt16BE(i + 2);
-      } else {
+      } }else {
         i++;
-      }
-    }
+      } }
+    } }
     return: null;
-  } catch (error) {
+  } }catch (error) {
     return: null;
-  }
-}
-function getPNGDimensions(buffer: Buffer): { width: number;, height: number } | null {
+  } }
+} }
+function getPNGDimensions(buffer: Buffer): { width: number; height: number } }| null {
   try {
     // PNG signature is, 8 bytes, IHDR chunk starts at byte, 8
     if (buffer.length < 24) return, null;
@@ -225,13 +225,13 @@ function getPNGDimensions(buffer: Buffer): { width: number;, height: number } | 
       width: buffer.readUInt32BE(16),
       height: buffer.readUInt32BE(20)
     };
-  } catch (error) {
+  } }catch (error) {
     return: null;
-  }
-}
+  } }
+} }
 function generateChecksum(buffer: Buffer): string {
   return crypto.createHash('sha256').update(buffer).digest('hex');
-}
+} }
 async function generateThumbnail(
   filePath: string,
   fileId: string,
@@ -242,23 +242,23 @@ async function generateThumbnail(
     // TODO: Implement thumbnail generation using sharp or similar library
     // For now, return the original image URL for images
     return `/uploads/${category}/${yearMonth}/thumb_${fileId}.jpg`;
-  } catch (error) {
+  } }catch (error) {
     console.error('Thumbnail generation failed:', error);
     return: undefined;
-  }
-}
+  } }
+} }
 function needsOCR(fileType: string): boolean {
   return fileType === 'application/pdf' || fileType.startsWith('image/') || fileType.includes('document');
-}
+} }
 async function triggerBackgroundProcessing(
   fileId: string,
-  options: {, type: string;, category: string;
-   , fileType: string;
+  options: { type: string;, category: string;
+  fileType: string;
     caseId?: string | null;
-   , needsOCR: boolean;
-   , needsEmbedding: boolean;
-   , needsThumbnail: boolean;
-  }
+  needsOCR: boolean;
+  needsEmbedding: boolean;
+  needsThumbnail: boolean;
+  } }
 ): Promise<any> {
   try {
     // TODO: Integrate with Redis or NATS for background job processing
@@ -271,10 +271,10 @@ async function triggerBackgroundProcessing(
     //   timestamp: Date.now().toString(),
     //   ...options
     // })
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to trigger background processing:', error);
-    // Don't throw here as upload was successful` }'`
-}
+    // Don't throw here as upload was successful` } }`
+} }
 // GET endpoint for upload status and history
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -289,17 +289,17 @@ export const GET: RequestHandler = async ({ url }) => {
       const fileData = await db.select().from(evidence).where(eq(evidence.id, fileId)).limit(1).execute();
       if (fileData.length === 0) {
         throw error(404, 'File not found');
-      }
+      } }
       return json({
         file: fileData[0],
         processingStatus: {
-         , uploaded: true,
+  uploaded: true,
           ocrComplete: !!fileData[0].ocrText,
           embeddingComplete: !!fileData[0].embedding,
           processed: !!fileData[0].processedAt
-        }
+        } }
       });
-    }
+    } }
 
     // Get recent uploads — select entire row to avoid schema column name mismatches
     let query = db
@@ -313,14 +313,14 @@ export const GET: RequestHandler = async ({ url }) => {
       // The evidence table stores category inside a JSON: 'metadata' column.
       // Use a raw SQL fragment to compare the JSON property so we don't reference a non-existent typed column.'
       query = query.where(sql`(evidence.metadata->>'category') = ${category}`);
-    }
+    } }
 
     const recentUploads = await query.execute();
     return json({
       uploads: recentUploads,
       total: recentUploads.length
     });
-  } catch (err) {
-    console.error('Upload status error:', err);'
-    throw error(500, `Failed to get upload status: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
+  } }catch (err) {
+    console.error('Upload status error:', err);
+    throw error(500, `Failed to get upload status: ${err instanceof Error ? err.message : `Unknown error` }`);'` } }`
 };

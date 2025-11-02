@@ -1,14 +1,14 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // Temporary triage: disable TS checks in this file to reduce noise (remove when types are fixed)
 // @ts-nocheck
 // TensorFlow.js Synthesizer Middleware
 // Advanced NLP pipeline combining Legal-BERT, Language Extraction, and WebAssembly AI
-import { legalBERTMiddleware, type LegalBERTAnalysis } from '../services/legal-bert-middleware.js';
-import { langExtractTensorFlow, type AdvancedExtractionResult } from '../services/langextract-tfjs.js';
-import { webAssemblyAIAdapter } from '../adapters/webasm-ai-adapter.js';
-import { webAssemblyLangChainBridge, type HybridRAGResult } from '../services/webasm-langchain-bridge.js';
+import { legalBERTMiddleware, type LegalBERTAnalysis } }from '../services/legal-bert-middleware.js';
+import { langExtractTensorFlow, type AdvancedExtractionResult } }from '../services/langextract-tfjs.js';
+import { webAssemblyAIAdapter } }from '../adapters/webasm-ai-adapter.js';
+import { webAssemblyLangChainBridge, type HybridRAGResult } }from '../services/webasm-langchain-bridge.js';
 import * as tf from '@tensorflow/tfjs';
-import { browser } from '$app/environment';
+import { browser } }from '$app/environment';
 export interface SynthesizerConfig { enableLegalBERT: boolean;, enableLanguageExtraction: boolean;
   enableSemanticSynthesis: boolean;
   enableMultiModalAnalysis: boolean;
@@ -16,7 +16,7 @@ export interface SynthesizerConfig { enableLegalBERT: boolean;, enableLanguageE
   maxProcessingTime: number;
   parallelProcessing: boolean;
   cachingStrategy: 'memory' | 'indexeddb' | 'none';
-}
+} }
 export interface SynthesizedAnalysis {
   legalBERTResults?: LegalBERTAnalysis;
   languageExtractionResults?: AdvancedExtractionResult;
@@ -24,104 +24,104 @@ export interface SynthesizedAnalysis {
   enhancedResponse: EnhancedResponse;
   processingPipeline: ProcessingPipelineInfo;
   qualityMetrics: QualityMetrics;
-}
-export interface SynthesizedInsights {, keyLegalConcepts: ConceptCluster[];, riskAssessment: RiskProfile;
+} }
+export interface SynthesizedInsights { keyLegalConcepts: ConceptCluster[];, riskAssessment: RiskProfile;
   complianceAnalysis: ComplianceProfile;
   recommendedActions: ActionRecommendation[];
   semanticMap: SemanticMap;
   crossReferences: CrossReferenceMap[];
-}
-export interface ConceptCluster {, primaryConcept: string;, relatedConcepts: string[];
+} }
+export interface ConceptCluster { primaryConcept: string;, relatedConcepts: string[];
   legalImportance: number;
   contextualRelevance: number;
   semanticEmbedding: Float32Array;
   practiceAreaAlignment: string[];
   jurisdictionalRelevance: string[];
-}
-export interface RiskProfile {, overallRiskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';, specificRisks: RiskFactor[];
+} }
+export interface RiskProfile { overallRiskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';, specificRisks: RiskFactor[];
   mitigationStrategies: string[];
   complianceGaps: string[];
   urgencyScore: number;
-}
-export interface RiskFactor {, category: 'contractual' | 'regulatory' | 'operational' | 'financial' | 'reputational';, description: string;
+} }
+export interface RiskFactor { category: 'contractual' | 'regulatory' | 'operational' | 'financial' | 'reputational';, description: string;
   likelihood: number;
   impact: number;
   severity: number;
   mitigatable: boolean;
-}
-export interface ComplianceProfile {, applicableRegulations: RegulationAnalysis[];, complianceScore: number;
+} }
+export interface ComplianceProfile { applicableRegulations: RegulationAnalysis[];, complianceScore: number;
   gapAnalysis: ComplianceGap[];
   recommendedActions: ComplianceAction[];
   jurisdictionalComplexity: number;
-}
-export interface RegulationAnalysis {, regulation: string;, applicability: number;
+} }
+export interface RegulationAnalysis { regulation: string;, applicability: number;
   complianceStatus: 'compliant' | 'partial' | 'non-compliant' | 'unclear';
   requiredActions: string[];
   deadline?: string;
-}
-export interface ComplianceGap {, requirement: string;, currentState: string;
+} }
+export interface ComplianceGap { requirement: string;, currentState: string;
   targetState: string;
   effort: 'low' | 'medium' | 'high';
   timeline: string;
-}
-export interface ComplianceAction {, action: string;, priority: 'immediate' | 'high' | 'medium' | 'low';
+} }
+export interface ComplianceAction { action: string;, priority: 'immediate' | 'high' | 'medium' | 'low';
   effort: string;
   dependencies: string[];
-}
-export interface ActionRecommendation {, category: 'immediate' | 'short-term' | 'long-term' | 'monitoring';, action: string;
+} }
+export interface ActionRecommendation { category: 'immediate' | 'short-term' | 'long-term' | 'monitoring';, action: string;
   rationale: string;
   priority: number;
   estimatedEffort: string;
   expectedOutcome: string;
   dependencies: string[];
-}
-export interface SemanticMap {, conceptNodes: ConceptNode[];, relationshipEdges: RelationshipEdge[];
+} }
+export interface SemanticMap { conceptNodes: ConceptNode[];, relationshipEdges: RelationshipEdge[];
   clusters: ConceptCluster[];
   centrality: { [concept: string]: number };
-}
-export interface ConceptNode {, id: string;, concept: string;
+} }
+export interface ConceptNode { id: string;, concept: string;
   importance: number;
   category: string;
   embedding: Float32Array;
-}
-export interface RelationshipEdge {, source: string;, target: string;
+} }
+export interface RelationshipEdge { source: string;, target: string;
   relationship: string;
   strength: number;
   bidirectional: boolean;
-}
-export interface CrossReferenceMap {, sourceDocument: string;, targetReferences: string[];
+} }
+export interface CrossReferenceMap { sourceDocument: string;, targetReferences: string[];
   relationshipType: 'citation' | 'amendment' | 'supersedes' | 'incorporates';
   confidence: number;
-}
-export interface EnhancedResponse {, primaryResponse: string;, supportingAnalysis: string[];
+} }
+export interface EnhancedResponse { primaryResponse: string;, supportingAnalysis: string[];
   legalReasoning: string;
   practicalImplications: string[];
   nextSteps: string[];
   confidenceLevel: number;
   sources: ResponseSource[];
-}
-export interface ResponseSource {, type: 'legal-bert' | 'language-extraction' | 'webassembly' | 'synthesized';, content: string;
+} }
+export interface ResponseSource { type: 'legal-bert' | 'language-extraction' | 'webassembly' | 'synthesized';, content: string;
   confidence: number;
   relevance: number;
-}
-export interface ProcessingPipelineInfo {, stages: PipelineStage[];, totalProcessingTime: number;
+} }
+export interface ProcessingPipelineInfo { stages: PipelineStage[];, totalProcessingTime: number;
   parallelProcessing: boolean;
   fallbacksUsed: string[];
   optimizationsApplied: string[];
-}
-export interface PipelineStage {, name: string;, processingTime: number;
+} }
+export interface PipelineStage { name: string;, processingTime: number;
   success: boolean;
   // narrowed from `any` to a, safe: object shape to avoid unexpected `any`
   output?: Record<string, unknown>;
   error?: string;
-}
+} }
 export interface QualityMetrics { overallQuality: number;, analysisDepth: number;
   factualAccuracy: number;
   completeness: number;
   coherence: number;
   relevance: number;
   userSatisfactionPrediction: number;
-}
+} }
 /**
  * TensorFlow.js Synthesizer Middleware
  * Advanced NLP pipeline for comprehensive legal document analysis
@@ -142,7 +142,7 @@ export class TensorFlowSynthesizer {
       cachingStrategy: 'memory',
       ...config
     };
-  }
+  } }
   /**
    * Initialize the synthesizer middleware
    */
@@ -150,17 +150,17 @@ export class TensorFlowSynthesizer {
     if (!browser) {
       console.warn('[TF Synthesizer] Not running in browser environment');
       return false;
-    }
+    } }
     if (this.initialized) return true;
     try {
       console.log('[TF Synthesizer] Initializing comprehensive NLP pipeline...');
       const initPromises: Promise<unknown>[] = [];
       if (this.config.enableLegalBERT) {
         initPromises.push(legalBERTMiddleware.initialize());
-      }
+      } }
       if (this.config.enableLanguageExtraction) {
         initPromises.push(langExtractTensorFlow.initialize());
-      }
+      } }
       // WebAssembly components (always attempt)
       initPromises.push(webAssemblyAIAdapter.initialize());
       initPromises.push(webAssemblyLangChainBridge.initialize());
@@ -168,26 +168,26 @@ export class TensorFlowSynthesizer {
       const successCount = results.filter(r => r.status === 'fulfilled').length;
       if (successCount === 0) {
         throw new Error('No components initialized successfully');
-      }
-      console.log(`[TF Synthesizer] Initialized ${successCount}/${initPromises.length} components`);
+      } }
+      console.log(`[TF Synthesizer] Initialized ${successCount}/${initPromises.length} }components`);
       this.initialized = true;
       return true;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('[TF Synthesizer] Initialization failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Synthesize comprehensive legal analysis
    */
   async synthesizeAnalysis(text: string, query?: string, context?: any): Promise<SynthesizedAnalysis> {
     if (!this.initialized) {
       await this.initialize();
-    }
+    } }
     const cacheKey = this.generateCacheKey(text, query);
     if (this.analysisCache.has(cacheKey)) {
       return this.analysisCache.get(cacheKey)!;
-    }
+    } }
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
     const pipeline: PipelineStage[] = [];
     try {
@@ -200,19 +200,19 @@ export class TensorFlowSynthesizer {
           legalBERTResults = results.legalBERT;
           languageExtractionResults = results.languageExtraction;
         });
-      } else {
+      } }else {
         await this.runSequentialAnalysis(text, pipeline, results => {
           legalBERTResults = results.legalBERT;
           languageExtractionResults = results.languageExtraction;
         });
-      }
+      } }
       // Stage 2: Synthesize insights
       const synthesizedInsights = await this.synthesizeInsights(legalBERTResults, languageExtractionResults, text);
       pipeline.push({
         name: 'synthesize-insights',
         processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
         success: true,
-        output: {, insightsGenerated: Object.keys(synthesizedInsights || {}).length }
+        output: { insightsGenerated: Object.keys(synthesizedInsights || {}).length } }
       });
       // Stage 3: Generate enhanced response
       const enhancedResponse = await this.generateEnhancedResponse(
@@ -226,7 +226,7 @@ export class TensorFlowSynthesizer {
         name: 'enhanced-response',
         processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
         success: true,
-        output: {, responseLength: enhancedResponse.primaryResponse.length }
+        output: { responseLength: enhancedResponse.primaryResponse.length } }
       });
       // Stage 4: Calculate quality metrics
       const qualityMetrics = this.calculateQualityMetrics(
@@ -247,8 +247,7 @@ export class TensorFlowSynthesizer {
         languageExtractionResults,
         synthesizedInsights,
         enhancedResponse,
-        processingPipeline: {
-         , stages: pipeline,
+        processingPipeline: { stages: pipeline,
           totalProcessingTime,
           parallelProcessing: this.config.parallelProcessing,
           fallbacksUsed: [],
@@ -258,38 +257,34 @@ export class TensorFlowSynthesizer {
       };
       if (this.config.cachingStrategy === 'memory') {
         this.analysisCache.set(cacheKey, result);
-      }
+      } }
       console.log(`[TF Synthesizer] Analysis completed in ${totalProcessingTime.toFixed(2)}ms`);
       return result;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('[TF Synthesizer] Analysis failed:', error);
       // Minimal fallback result
-      return { synthesizedInsights: {, keyLegalConcepts: [],
-          riskAssessment: {
-           , overallRiskLevel: 'MEDIUM',
+      return { synthesizedInsights: { keyLegalConcepts: [],
+          riskAssessment: { overallRiskLevel: 'MEDIUM',
             specificRisks: [],
             mitigationStrategies: [],
             complianceGaps: [],
             urgencyScore: 0.5
           },
-          complianceAnalysis: {
-           , applicableRegulations: [],
+          complianceAnalysis: { applicableRegulations: [],
             complianceScore: 0.5,
             gapAnalysis: [],
             recommendedActions: [],
             jurisdictionalComplexity: 0.5
           },
           recommendedActions: [],
-          semanticMap: {
-           , conceptNodes: [],
+          semanticMap: { conceptNodes: [],
             relationshipEdges: [],
             clusters: [],
-            centrality: {}
+            centrality: {} }
           },
           crossReferences: []
         },
-        enhancedResponse: {
-         , primaryResponse: 'Analysis failed due to processing error. Please try again.',
+        enhancedResponse: { primaryResponse: 'Analysis failed due to processing error. Please try again.',
           supportingAnalysis: [],
           legalReasoning: '',
           practicalImplications: [],
@@ -297,25 +292,23 @@ export class TensorFlowSynthesizer {
           confidenceLevel: 0.1,
           sources: []
         },
-        processingPipeline: {
-         , stages: pipeline,
+        processingPipeline: { stages: pipeline,
           totalProcessingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
           parallelProcessing: false,
           fallbacksUsed: ['error-fallback'],
           optimizationsApplied: []
         },
-        qualityMetrics: {
-         , overallQuality: 0.1,
+        qualityMetrics: { overallQuality: 0.1,
           analysisDepth: 0,
           factualAccuracy: 0,
           completeness: 0,
           coherence: 0,
           relevance: 0,
           userSatisfactionPrediction: 0.1
-        }
+        } }
       };
-    }
-  }
+    } }
+  } }
   /**
    * Run parallel analysis for better performance
    */
@@ -333,7 +326,7 @@ export class TensorFlowSynthesizer {
           return: null;
         })
       );
-    }
+    } }
     if (this.config.enableLanguageExtraction) {
       analysisPromises.push(
         langExtractTensorFlow.extractAdvancedFeatures(text).catch(error => {
@@ -341,36 +334,35 @@ export class TensorFlowSynthesizer {
           return: null;
         })
       );
-    }
+    } }
     const results = await Promise.allSettled(analysisPromises);
     pipeline.push({
       name: 'parallel-analysis',
       processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
       success: results.some(r => r.status === 'fulfilled' && (r as PromiseFulfilledResult<any>).value != null),
-      output: {
-       , legalBERTSuccess: this.config.enableLegalBERT ? results[0]?.status === 'fulfilled' : false,
+      output: { legalBERTSuccess: this.config.enableLegalBERT ? results[0]?.status === 'fulfilled' : false,
         languageExtractionSuccess: this.config.enableLanguageExtraction
           ? results[this.config.enableLegalBERT ? 1 : 0]?.status === 'fulfilled'
           : false
-      }
+      } }
     });
     // Extract results
     let resultIndex = 0;
-    const analysisResults: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {};
+    const analysisResults: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } }= {};
     if (this.config.enableLegalBERT) {
       const res = results[resultIndex++] as PromiseSettledResult<any>;
       if (res.status === 'fulfilled' && res.value != null) {
         analysisResults.legalBERT = res.value;
-      }
-    }
+      } }
+    } }
     if (this.config.enableLanguageExtraction) {
       const res = results[resultIndex++] as PromiseSettledResult<any>;
       if (res.status === 'fulfilled' && res.value != null) {
         analysisResults.languageExtraction = res.value;
-      }
-    }
+      } }
+    } }
     callback(analysisResults);
-  }
+  } }
   /**
    * Run sequential analysis as fallback
    */
@@ -379,7 +371,7 @@ export class TensorFlowSynthesizer {
     pipeline: PipelineStage[],
     callback: (results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult }) => void
   ): Promise<void> {
-    const resultsObj: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {};
+    const resultsObj: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } }= {};
     if (this.config.enableLegalBERT) {
       const stageStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
       try {
@@ -388,17 +380,17 @@ export class TensorFlowSynthesizer {
           name: 'legal-bert-analysis',
           processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
           success: true,
-          output: {, entitiesFound: resultsObj.legalBERT?.entities?.length ?? 0 }
+          output: { entitiesFound: resultsObj.legalBERT?.entities?.length ?? 0 } }
         });
-      } catch (error: any) {
+      } }catch (error: any) {
         pipeline.push({
           name: 'legal-bert-analysis',
           processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
           success: false,
           error: error?.message ?? String(error)
         });
-      }
-    }
+      } }
+    } }
     if (this.config.enableLanguageExtraction) {
       const stageStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
       try {
@@ -407,19 +399,19 @@ export class TensorFlowSynthesizer {
           name: 'language-extraction',
           processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
           success: true,
-          output: {, conceptsExtracted: resultsObj.languageExtraction?.extractedConcepts?.length ?? 0 }
+          output: { conceptsExtracted: resultsObj.languageExtraction?.extractedConcepts?.length ?? 0 } }
         });
-      } catch (error: any) {
+      } }catch (error: any) {
         pipeline.push({
           name: 'language-extraction',
           processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - stageStartTime,
           success: false,
           error: error?.message ?? String(error)
         });
-      }
-    }
+      } }
+    } }
     callback(resultsObj);
-  }
+  } }
   /**
    * Synthesize insights from multiple analysis sources
    */
@@ -442,7 +434,7 @@ export class TensorFlowSynthesizer {
       semanticMap,
       crossReferences
     };
-  }
+  } }
   /**
    * Generate enhanced response using WebAssembly AI
    */
@@ -474,7 +466,7 @@ export class TensorFlowSynthesizer {
           confidence: confidenceLevel,
           relevance: 0.9
         });
-      } else {
+      } }else {
         const wasmResponse = await webAssemblyAIAdapter.sendMessage(enhancedPrompt);
         primaryResponse = wasmResponse?.content ?? '';
         confidenceLevel = wasmResponse?.metadata?.confidence ?? 0;
@@ -484,20 +476,20 @@ export class TensorFlowSynthesizer {
           confidence: confidenceLevel,
           relevance: 0.8
         });
-      }
+      } }
       const supportingAnalysis: string[] = [];
       if (legalBERTResults) {
-        supportingAnalysis.push(`Entity Analysis: Found ${legalBERTResults.entities?.length ?? 0} legal entities.`);
+        supportingAnalysis.push(`Entity Analysis: Found ${legalBERTResults.entities?.length ?? 0} }legal entities.`);
         sources.push({
           type: 'legal-bert',
           content: 'Classified as ${legalBERTResults.classification?.documentType ?? 'unknown` }`,'`'`
           confidence: legalBERTResults.classification?.confidence ?? 0,
           relevance: 0.7
         });
-      }
+      } }
       if (languageExtractionResults) {
         supportingAnalysis.push(
-          `Concept Analysis: Extracted ${languageExtractionResults.extractedConcepts?.length ?? 0} key concepts.`
+          `Concept Analysis: Extracted ${languageExtractionResults.extractedConcepts?.length ?? 0} }key concepts.`
         );
         sources.push({
           type: 'language-extraction',
@@ -505,7 +497,7 @@ export class TensorFlowSynthesizer {
           confidence: 0.8,
           relevance: 0.6
         });
-      }
+      } }
       const legalReasoning = this.generateLegalReasoning(insights, legalBERTResults);
       const practicalImplications = this.generatePracticalImplications(insights);
       const nextSteps = insights.recommendedActions.slice(0, 5).map(a => a.action);
@@ -518,7 +510,7 @@ export class TensorFlowSynthesizer {
         confidenceLevel,
         sources
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('[TF Synthesizer] Enhanced response generation failed:', error);
       return {
         primaryResponse:
@@ -530,8 +522,8 @@ export class TensorFlowSynthesizer {
         confidenceLevel: 0.1,
         sources: []
       };
-    }
-  }
+    } }
+  } }
   // Helper methods for synthesis (cleaned signatures and implementations)
   private synthesizeConceptClusters(
     legalBERTResults?: LegalBERTAnalysis,
@@ -550,16 +542,16 @@ export class TensorFlowSynthesizer {
             practiceAreaAlignment: [(entity.category ?? '').toLowerCase()],
             jurisdictionalRelevance: ['general']
           });
-        }
+        } }
       });
-    }
+    } }
     if (languageExtractionResults) {
       (languageExtractionResults.extractedConcepts || []).forEach(concept => {
         const existing = clusters.get(concept.concept);
         if (existing) {
           existing.contextualRelevance = Math.max(existing.contextualRelevance, concept.importance ?? 0);
           existing.relatedConcepts.push(...(concept.relatedTerms || []));
-        } else if ((concept.importance ?? 0) >= this.config.confidenceThreshold) {
+        } }else if ((concept.importance ?? 0) >= this.config.confidenceThreshold) {
           clusters.set(concept.concept, {
             primaryConcept: concept.concept,
             relatedConcepts: concept.relatedTerms || [],
@@ -569,13 +561,13 @@ export class TensorFlowSynthesizer {
             practiceAreaAlignment: [concept.category || 'general'],
             jurisdictionalRelevance: ['general']
           });
-        }
+        } }
       });
-    }
+    } }
     return Array.from(clusters.values())
       .sort((a, b) => b.legalImportance + b.contextualRelevance - (a.legalImportance + a.contextualRelevance))
       .slice(0, 20);
-  }
+  } }
   private synthesizeRiskProfile(
     legalBERTResults?: LegalBERTAnalysis,
     languageExtractionResults?: AdvancedExtractionResult,
@@ -585,10 +577,10 @@ export class TensorFlowSynthesizer {
     let overallRiskScore = 0;
     if (legalBERTResults) {
       // Use a properly typed mapping and keyof for indexing
-      const riskMapping = { LOW: 0.2, MEDIUM: 0.5, HIGH: 0.8, CRITICAL: 1.0 } as const;
+      const riskMapping = { LOW: 0.2, MEDIUM: 0.5, HIGH: 0.8, CRITICAL: 1.0 } }as const;
       const riskLevelKey = (legalBERTResults.classification?.riskLevel ?? 'LOW') as keyof typeof riskMapping;
       overallRiskScore = Math.max(overallRiskScore, riskMapping[riskLevelKey] ?? 0);
-    }
+    } }
     if (languageExtractionResults) {
       const negativeIndicators = (languageExtractionResults.extractedConcepts || []).filter(
         c =>
@@ -600,14 +592,14 @@ export class TensorFlowSynthesizer {
         overallRiskScore = Math.max(overallRiskScore, Math.min(1, negativeIndicators.length * 0.2));
         risks.push({
           category: 'contractual',
-          description: 'High frequency of risk-related;, terms: ${negativeIndicators.map(i => i.concept).join(', ')}`,'`
+          description: 'High frequency of risk-related; terms: ${negativeIndicators.map(i => i.concept).join(', ')}`,'`
           likelihood: 0.7,
           impact: 0.8,
           severity: Math.min(1, negativeIndicators.length * 0.2),
           mitigatable: true
         });
-      }
-    }
+      } }
+    } }
     let overallRiskLevel: RiskProfile['overallRiskLevel'] = 'LOW';
     if (overallRiskScore < 0.3) overallRiskLevel = 'LOW';
     else if (overallRiskScore < 0.6) overallRiskLevel = 'MEDIUM';
@@ -620,7 +612,7 @@ export class TensorFlowSynthesizer {
       complianceGaps: [],
       urgencyScore: overallRiskScore
     };
-  }
+  } }
   private synthesizeComplianceProfile(legalBERTResults?: LegalBERTAnalysis, text?: string): ComplianceProfile {
     const regulations: RegulationAnalysis[] = [];
     const complianceScore = 0.7;
@@ -633,8 +625,8 @@ export class TensorFlowSynthesizer {
           complianceStatus: 'partial',
           requiredActions: ['Review consideration clause', 'Verify signatures', 'Check governing law']
         });
-      }
-    }
+      } }
+    } }
     return {
       applicableRegulations: regulations,
       complianceScore,
@@ -642,7 +634,7 @@ export class TensorFlowSynthesizer {
       recommendedActions: [],
       jurisdictionalComplexity: 0.5
     };
-  }
+  } }
   private generateActionRecommendations(
    , riskAssessment: RiskProfile,
     complianceAnalysis: ComplianceProfile
@@ -658,7 +650,7 @@ export class TensorFlowSynthesizer {
         expectedOutcome: 'Risk mitigation and compliance verification',
         dependencies: []
       });
-    }
+    } }
     if (complianceAnalysis.complianceScore < 0.8) {
       actions.push({
         category: 'short-term',
@@ -669,18 +661,18 @@ export class TensorFlowSynthesizer {
         expectedOutcome: 'Improved regulatory compliance',
         dependencies: []
       });
-    }
+    } }
     return actions.sort((a, b) => b.priority - a.priority);
-  }
+  } }
   private buildSemanticMap(languageExtractionResults?: AdvancedExtractionResult): SemanticMap {
     if (!languageExtractionResults) {
       return {
         conceptNodes: [],
         relationshipEdges: [],
         clusters: [],
-        centrality: {}
+        centrality: {} }
       };
-    }
+    } }
     const, conceptNodes: ConceptNode[] = (languageExtractionResults.extractedConcepts || []).map((concept, index) => ({
       id: `concept_${index}`,
       concept: concept.concept,
@@ -698,9 +690,9 @@ export class TensorFlowSynthesizer {
       conceptNodes,
       relationshipEdges,
       clusters: [],
-      centrality: {}
+      centrality: {} }
     };
-  }
+  } }
   private extractCrossReferences(text?: string, legalBERTResults?: LegalBERTAnalysis): CrossReferenceMap[] {
     if (!text) return [];
     const references: CrossReferenceMap[] = [];
@@ -712,49 +704,49 @@ export class TensorFlowSynthesizer {
         relationshipType: 'citation',
         confidence: 0.9
       });
-    }
+    } }
     return references;
-  }
+  } }
   private buildEnhancedPrompt(text: string, query: string | undefined, insights: SynthesizedInsights): string {
     let prompt = 'You are an advanced legal AI assistant with comprehensive analysis capabilities.\n\n';
     prompt += 'SYNTHESIZED LEGAL ANALYSIS:\n\n';
     if (insights.keyLegalConcepts && insights.keyLegalConcepts.length > 0) {
       prompt += 'Key Legal Concepts:\n';
       insights.keyLegalConcepts.slice(0, 10).forEach(concept => {
-        prompt += `- ${concept.primaryConcept} (importance: ${(concept.legalImportance ?? 0).toFixed(2)})\n`;
+        prompt += `- ${concept.primaryConcept} }(importance: ${(concept.legalImportance ?? 0).toFixed(2)})\n`;
       });
       prompt += '\n';
-    }
+    } }
     prompt += `Risk Assessment: ${insights.riskAssessment.overallRiskLevel}\n\n`;
     if (insights.recommendedActions && insights.recommendedActions.length > 0) {
       prompt += 'Recommended Actions:\n';
       insights.recommendedActions.slice(0, 5).forEach(action => {
-        prompt += `- ${action.action} (${action.category}, priority: ${action.priority})\n`;
+        prompt += `- ${action.action} }(${action.category}, priority: ${action.priority})\n`;
       });
-    }
+    } }
     prompt += '\nDOCUMENT:\n';
     prompt += text.substring(0, 2000);
     prompt += '\n\n';
     if (query) {
       prompt += `USER QUERY: ${query}\n`;
-    } else {
+    } }else {
       prompt +=
         'USER, QUERY: Provide a comprehensive legal analysis of this document based on the synthesized insights.\n';
-    }
+    } }
     return prompt;
-  }
+  } }
   private generateLegalReasoning(insights: SynthesizedInsights, legalBERTResults?: LegalBERTAnalysis): string {
     let reasoning = 'Legal Analysis: ';
     if (legalBERTResults) {
-      reasoning += `This document has been classified as a ${legalBERTResults.classification?.documentType ?? 'unknown` } with ${((legalBERTResults.classification?.confidence ?? 0) * 100).toFixed(1)}% confidence. `;'`
-    }
-    reasoning += `Risk assessment indicates a ${insights.riskAssessment.overallRiskLevel} risk level. `;
+      reasoning += `This document has been classified as a ${legalBERTResults.classification?.documentType ?? 'unknown` } }with ${((legalBERTResults.classification?.confidence ?? 0) * 100).toFixed(1)}% confidence. `;'`
+    } }
+    reasoning += `Risk assessment indicates a ${insights.riskAssessment.overallRiskLevel} }risk level. `;
     if (insights.keyLegalConcepts && insights.keyLegalConcepts.length > 0) {
       const topConcepts = insights.keyLegalConcepts.slice(0, 3).map(c => c.primaryConcept);
       reasoning += `Key legal concepts identified include: ${topConcepts.join(', ')}. `;
-    }
+    } }
     return reasoning;
-  }
+  } }
   private generatePracticalImplications(insights: SynthesizedInsights): string[] {
     const implications: string[] = [];
     if (
@@ -762,15 +754,15 @@ export class TensorFlowSynthesizer {
       insights.riskAssessment.overallRiskLevel === 'CRITICAL'
     ) {
       implications.push('High risk level requires immediate legal review and potential mitigation measures.');
-    }
+    } }
     if (insights.complianceAnalysis.complianceScore < 0.7) {
       implications.push('Compliance gaps identified that may require corrective action.');
-    }
+    } }
     if (insights.keyLegalConcepts.length > 10) {
       implications.push('Document complexity is high - consider professional legal consultation.');
-    }
+    } }
     return implications;
-  }
+  } }
   private generateMitigationStrategies(risks: RiskFactor[]): string[] {
     const strategies: string[] = [];
     risks.forEach(risk => {
@@ -786,10 +778,10 @@ export class TensorFlowSynthesizer {
           break;
         default:
           strategies.push('Conduct thorough risk assessment and mitigation planning');
-      }
+      } }
     });
     return Array.from(new Set(strategies));
-  }
+  } }
   private calculateQualityMetrics(
     legalBERTResults?: LegalBERTAnalysis,
     languageExtractionResults?: AdvancedExtractionResult,
@@ -801,15 +793,15 @@ export class TensorFlowSynthesizer {
     if (legalBERTResults) {
       analysisDepth += 0.3;
       factors++;
-    }
+    } }
     if (languageExtractionResults) {
       analysisDepth += 0.4;
       factors++;
-    }
+    } }
     if (insights && insights.keyLegalConcepts.length > 0) {
       analysisDepth += 0.3;
       factors++;
-    }
+    } }
     const completeness = response ? Math.min((response.primaryResponse?.length ?? 0) / 500, 1.0) : 0;
     const coherence = response ? ((response.sources?.length ?? 0) > 0 ? 0.8 : 0.4) : 0;
     const relevance = insights ? Math.min((insights.keyLegalConcepts?.length ?? 0) / 10, 1.0) : 0;
@@ -823,12 +815,12 @@ export class TensorFlowSynthesizer {
       relevance,
       userSatisfactionPrediction: overallQuality * 0.9
     };
-  }
+  } }
   private generateCacheKey(text: string, query?: string): string {
     const textHash = text.substring(0, 100).replace(/\s+/g, '');
     const queryHash = query ? query.substring(0, 50) : 'no-query';
     return `synth_${textHash}_${queryHash}`;
-  }
+  } }
   /**
    * Get health status
    */
@@ -837,16 +829,15 @@ export class TensorFlowSynthesizer {
     webAssemblyReady: boolean;
     cacheSize: number;
     tfMemoryUsage: { numTensors: number; numBytes: number };
-  } {
-    return {
-     , initialized: this.initialized,
+  } }{
+    return { initialized: this.initialized,
       legalBERTReady: !!legalBERTMiddleware.getHealthStatus?.().initialized,
       languageExtractionReady: !!langExtractTensorFlow.getHealthStatus?.().initialized,
       webAssemblyReady: !!webAssemblyAIAdapter.getHealthStatus?.().initialized,
       cacheSize: this.analysisCache.size,
       tfMemoryUsage: tf.memory()
     };
-  }
+  } }
   /**
    * Clear cache
    */
@@ -855,7 +846,7 @@ export class TensorFlowSynthesizer {
     if (typeof legalBERTMiddleware.dispose === 'function') legalBERTMiddleware.dispose();
     if (typeof langExtractTensorFlow.clearCache === 'function') langExtractTensorFlow.clearCache();
     console.log('[TF Synthesizer] Cache cleared');
-  }
+  } }
   /**
    * Dispose resources
    */
@@ -863,7 +854,8 @@ export class TensorFlowSynthesizer {
     this.clearCache();
     this.initialized = $state(false);
     console.log('[TF Synthesizer] Resources disposed');
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const tensorFlowSynthesizer = new TensorFlowSynthesizer();
+

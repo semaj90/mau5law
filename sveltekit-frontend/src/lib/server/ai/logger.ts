@@ -5,5 +5,6 @@ export const logger = {
   error: (...args: any[]) => console.error('[ERROR]', ...args),
   debug: (...args: any[]) => {
     if (process.env.DEBUG) console.debug('[DEBUG]', ...args);
-  }
+  } }
 };
+

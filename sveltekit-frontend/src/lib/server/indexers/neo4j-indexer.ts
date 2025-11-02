@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // Minimal Neo4j indexer with lazy driver import
-export async function indexNeo4j(doc: {, id: string;, text: string;, embedding: number[] }): Promise<any> {
+export async function indexNeo4j(doc: { id: string; text: string; embedding: number[] }): Promise<any> {
   try {
     const neo4j = await import('neo4j-driver');
     const url = process.env.NEO4J_URL || 'bolt://localhost:7687'
@@ -11,13 +11,13 @@ export async function indexNeo4j(doc: {, id: string;, text: string;, embedding: 
     await session.executeWrite((tx: any) =>
       tx.run(
         'MERGE (d:Document {id: $id}) SET d.text = $text, d.updatedAt = timestamp() RETURN d',
-        { id: doc.id, text: doc.text }
+        { id: doc.id, text: doc.text } }
       )
     );
     await session.close();
     await driver.close();
-    return { ok: true }
-  } catch (e) {
-    return { ok: false, error: String(e) }
-  }
+    return { ok: true } }
+  } }catch (e) {
+    return { ok: false, error: String(e) } }
+  } }
 }

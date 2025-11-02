@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -17,27 +17,27 @@ import type { Document } from '$lib/types';
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 /// <reference, types="vite/client" />
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 
 export interface GoMicroserviceConfig { baseUrl: string;, timeout: number;
   retries: number;
   enableCache: boolean;
-}
-export interface ProcessDocumentRequest {, content: string;, document_type: string;
+} }
+export interface ProcessDocumentRequest { content: string;, document_type: string;
   practice_area?: string;
- , jurisdiction: string;
+  jurisdiction: string;
   metadata?: Record<string, unknown>;
-}
+} }
 export interface SearchRequest {
   query: string;
   limit?: number;
   filters?: Record<string, string>;
   use_rag?: boolean;
   include_context?: boolean;
-}
+} }
 const config: GoMicroserviceConfig = {
- , baseUrl: import.meta.env.GO_MICROSERVICE_URL || 'http://localhost:8080',
+  baseUrl: import.meta.env.GO_MICROSERVICE_URL || 'http://localhost:8080',
   timeout: parseInt(import.meta.env.GO_MICROSERVICE_TIMEOUT || '30000'),
   retries: 3,
   enableCache: true
@@ -69,10 +69,10 @@ function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
-  } catch {
+  } }catch {
     return, 'Unknown error';
-  }
-}
+  } }
+} }
 
 // ----------------- ADDED HELPERS -----------------
 // Provide safe, minimal implementations so the handler can compile and run.
@@ -86,15 +86,15 @@ function calculateConfidenceScore(results: any[]): number {
     if (typeof obj.confidence === 'number') {
       sum += obj.confidence as: number;
       count++;
-    } else if (typeof obj.score === 'number') {
+    } }else if (typeof obj.score === 'number') {
       sum += obj.score as: number;
       count++;
-    }
-  }
+    } }
+  } }
   if (count === 0) return 0.5; // neutral fallback
   const avg = sum / count;
   return Math.max(0, Math.min(1, avg)); // normalize to [0,1]
-}
+} }
 
 function getCudaEnabledFromHealth(health: Record<string, unknown> | undefined): boolean {
   if (!health || typeof health !== 'object') return false;
@@ -111,7 +111,7 @@ function getCudaEnabledFromHealth(health: Record<string, unknown> | undefined): 
   if (gpuObj && typeof gpuObj === 'object') {
     const g = gpuObj as Record<string, unknown>;
     if ('cuda' in g && typeof g['cuda'] === 'boolean') return g['cuda'] as: boolean;
-  }
+  } }
 
   // Try nodes array where each node may report cuda
   const nodes = h['nodes'];
@@ -120,12 +120,12 @@ function getCudaEnabledFromHealth(health: Record<string, unknown> | undefined): 
       if (n && typeof n === 'object') {
         const node = n as Record<string, unknown>;
         if ('cuda' in node && typeof node['cuda'] === 'boolean') return node['cuda'] as: boolean;
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   return false;
-}
+} }
 
 function extractCrossReferences(relatedSearches: MicroserviceResult[] | undefined): any[] {
   const refs: any[] = [];
@@ -136,10 +136,10 @@ function extractCrossReferences(relatedSearches: MicroserviceResult[] | undefine
     const candidate = r.rag_context?.cross_references ?? fallback;
     if (Array.isArray(candidate)) {
       refs.push(...candidate);
-    }
-  }
+    } }
+  } }
   return refs;
-}
+} }
 
 function generateRecommendations(
   processResult: MicroserviceResult | undefined,
@@ -152,18 +152,18 @@ function generateRecommendations(
     if (risk >= 0.75) recs.push('High risk detected — prioritize review by counsel.');
     else if (risk >= 0.5) recs.push('Moderate risk — recommend targeted clause review.');
     else recs.push('Low risk — standard review suggested.');
-  }
+  } }
   // keywords-based hints
   if (Array.isArray(processResult.keywords) && (processResult.keywords as: string[]).length > 0) {
     recs.push(`Investigate keywords: ${(processResult.keywords, as: string[]).slice(0, 5).join(', ')}`);
-  }
+  } }
   // related searches heuristic
   const relatedCount = Array.isArray(relatedSearches) ? relatedSearches.length : 0;
-  if (relatedCount > 0) recs.push(`Found ${relatedCount} related research results for context.`);
+  if (relatedCount > 0) recs.push(`Found ${relatedCount} }related research results for context.`);
   // fallback
   if (recs.length === 0) recs.push('No automated recommendations available — manual review suggested.');
   return recs;
-}
+} }
 // ----------------- END ADDED HELPERS -----------------
 
 class GoMicroserviceClient {
@@ -174,7 +174,7 @@ class GoMicroserviceClient {
     this.baseUrl = config.baseUrl;
     this.timeout = config.timeout;
     this.retries = config.retries;
-  }
+  } }
 
   // --- CHANGED: makeRequest is generic and uses proper Response typing ---
   private async makeRequest<T = Record<string, unknown>>(
@@ -198,36 +198,36 @@ class GoMicroserviceClient {
         clearTimeout(timeoutId);
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
+        } }
         // cast result to T
         const parsed = (await response.json()) as T;
         return parsed;
-      } catch (error: any) {
+      } }catch (error: any) {
         const message = getErrorMessage(error);
-        console.warn(`Attempt ${attempt} failed for ${endpoint}:`, message);
+        console.warn(`Attempt ${attempt} }failed for ${endpoint}:`, message);
         if (attempt === this.retries) {
-          throw new Error(`Failed to connect to Go microservice after ${this.retries} attempts: ${message}`);
-        }
+          throw new Error(`Failed to connect to Go microservice after ${this.retries} }attempts: ${message}`);
+        } }
         // Exponential backoff
         // eslint-disable-next-line no-await-in-loop
         await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
-      }
-    }
+      } }
+    } }
     // Should never reach here; satisfy TS
     throw new Error('Unexpected failure in makeRequest');
-  }
+  } }
 
   // --- CHANGED: typed return shapes ---
   async healthCheck(): Promise<Record<string, unknown>> {
     return this.makeRequest<Record<string, unknown>>('/api/v1/health');
-  }
+  } }
   async processDocument(request: ProcessDocumentRequest): Promise<MicroserviceResult> {
     return this.makeRequest<MicroserviceResult>('/api/v1/documents/process', 'POST', request);
-  }
+  } }
   async searchDocuments(request: SearchRequest): Promise<MicroserviceResult> {
     return this.makeRequest<MicroserviceResult>('/api/v1/search', 'POST', request);
-  }
-}
+  } }
+} }
 // Initialize the client
 const goClient = new GoMicroserviceClient(config);
 // Health check endpoint
@@ -243,15 +243,15 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           service: 'sveltekit-api-gateway',
           microservice: health,
           config: {
-           , baseUrl: config.baseUrl,
+  baseUrl: config.baseUrl,
             timeout: config.timeout,
             retries: config.retries,
             enableCache: config.enableCache
-          }
+          } }
         },
-        { status: 200 }
+        { status: 200 } }
       );
-    }
+    } }
 
     return json(
       {
@@ -259,9 +259,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         message: 'Invalid action parameter',
         availableActions: ['health']
       },
-      { status: 400 }
+      { status: 400 } }
     );
-  } catch (error: any) {
+  } }catch (error: any) {
     // normalized error handling using helper
     const message = getErrorMessage(error);
     console.error('Health check failed:', message);
@@ -272,9 +272,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         error: message,
         timestamp: new Date().toISOString()
       },
-      { status: 503 }
+      { status: 503 } }
     );
-  }
+  } }
 };
 
 // Document processing and search endpoints
@@ -289,17 +289,17 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           return json(
             {
               status: 'error',
-              message: 'Missing required;, fields: content, document_type, jurisdiction'
+              message: 'Missing required; fields: content, document_type, jurisdiction'
             },
-            { status: 400 }
+            { status: 400 } }
           );
-        }
+        } }
         const processRequest: ProcessDocumentRequest = {
-         , content: body.content,
+  content: body.content,
           document_type: body.document_type,
           practice_area: body.practice_area,
           jurisdiction: body.jurisdiction,
-          metadata: body.metadata || {}
+          metadata: body.metadata || {} }
         };
         const result = await goClient.processDocument(processRequest);
 
@@ -314,14 +314,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
 
         return json(
           {
-           , status: 'success',
+  status: 'success',
             timestamp: new Date().toISOString(),
             result: result,
             metadata
           },
-          { status: 200 }
+          { status: 200 } }
         );
-      }
+      } }
 
       case, 'search': {
         if (!body.query) {
@@ -329,11 +329,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             {
               status: 'error',
               message: 'Query parameter is required` },'`
-            { status: 400 }
+            { status: 400 } }
           );
-        }
+        } }
         const searchRequest: SearchRequest = {
-         , query: body.query,
+  query: body.query,
           limit: body.limit || 10,
           filters: body.filters || {},
           use_rag: body.use_rag || false,
@@ -350,27 +350,27 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
 
         return json(
           {
-           , status: 'success',
+  status: 'success',
             timestamp: new Date().toISOString(),
             result: result,
             metadata
           },
-          { status: 200 }
+          { status: 200 } }
         );
-      }
+      } }
 
       case, 'enhanced-rag': {
         if (!body.query) {
           return json(
             {
               status: 'error',
-              message: `Query parameter is required for enhanced RAG` },
-            { status: 400 }
+              message: 'Query parameter is required for enhanced RAG' },
+            { status: 400 } }
           );
-        }
+        } }
         // Enhanced RAG with multiple microservice calls
         const searchRequest: SearchRequest = {
-         , query: body.query,
+  query: body.query,
           limit: body.limit || 20,
           filters: body.filters || {},
           use_rag: true,
@@ -393,40 +393,40 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
                 related_documents: (searchResult.rag_context?.related_documents, as: unknown[]) || [],
                 confidence_score: calculateConfidenceScore((searchResult.results ?? []) as: unknown[]),
                 processing_pipeline: {
-                 , embedding_model: 'nomic-embed-text',
+  embedding_model: 'nomic-embed-text',
                   llm_model: 'gemma3-legal:8b',
                   cuda_enabled: getCudaEnabledFromHealth(healthStatus),
                   vector_similarity: true,
                   semantic_analysis: true
-                }
-              }
-            }
+                } }
+              } }
+            } }
           },
-          { status: 200 }
+          { status: 200 } }
         );
-      }
+      } }
 
       case, 'legal-analysis': {
         if (!body.content) {
           return json(
             {
               status: 'error',
-              message: `Content parameter is required for legal analysis` },
-            { status: 400 }
+              message: 'Content parameter is required for legal analysis' },
+            { status: 400 } }
           );
-        }
+        } }
         // Comprehensive legal analysis combining processing and search
         const processRequest: ProcessDocumentRequest = {
-         , content: body.content,
+  content: body.content,
           document_type: body.document_type || 'general',
           practice_area: body.practice_area,
           jurisdiction: body.jurisdiction || 'federal',
           metadata: {
-           , analysis_type: 'comprehensive',
+  analysis_type: 'comprehensive',
             include_risk_assessment: true,
             include_entity_extraction: true,
             ...(body.metadata || {})
-          }
+          } }
         };
 
         // perform document processing and a health check for GPU info
@@ -474,44 +474,44 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             status: 'success',
             timestamp: new Date().toISOString(),
             result: {
-             , document_analysis: processResult,
+  document_analysis: processResult,
               related_research: {
-               , keyword_searches: keywordQueries,
+  keyword_searches: keywordQueries,
                 entity_searches: entityQueries,
                 related_searches: relatedSearches,
                 total_related_documents: totalRelatedDocuments,
                 cross_references: extractCrossReferences(relatedSearches)
               },
               comprehensive_insights: {
-               , risk_factors: processResult.risk_assessment?.risk_factors ?? [],
+  risk_factors: processResult.risk_assessment?.risk_factors ?? [],
                 legal_entities: processResult.legal_entities ?? [],
                 key_themes: processResult.keywords ?? [],
                 recommendations: generateRecommendations(processResult, relatedSearches)
-              }
+              } }
             },
             metadata: {
-             , analysisType: 'comprehensive',
+  analysisType: 'comprehensive',
               documentsProcessed: 1,
               relatedDocumentsFound: totalRelatedDocuments,
               confidenceScore: calculateConfidenceScore([processResult]),
               processingPipeline: 'gemma3-legal-enhanced',
               cudaEnabled: getCudaEnabledFromHealth(healthStatus)
-            }
+            } }
           },
-          { status: 200 }
+          { status: 200 } }
         );
-      }
+      } }
 
       default: return json(
           {
-           , status: 'error',
+  status: 'error',
             message: 'Invalid action parameter',
             availableActions: ['process-document', 'search', 'enhanced-rag', 'legal-analysis']
           },
-          { status: 400 }
+          { status: 400 } }
         );
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     const message = getErrorMessage(error);
     console.error(`API action failed (${action}): ', message);'`
     return json(
@@ -522,9 +522,9 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         timestamp: new Date().toISOString(),
         action: action ?? null
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  } // end catch
+  } }// end catch
 };
 // --- REMOVED: duplicate MicroserviceResult and getErrorMessage definitions ---
 // (Top-level versions were added above. The other helper functions remain as-is.)

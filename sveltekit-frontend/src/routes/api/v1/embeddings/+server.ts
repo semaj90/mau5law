@@ -3,10 +3,10 @@
  * Supports Gemma, nomic-embed-text, and GPU-accelerated embeddings
  * Integrates with OCR processing and agentic controller
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { generateEmbedding, generateEmbeddings } from '$lib/server/services/embedding-service';
-import { getOllamaBaseUrl, getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { generateEmbedding, generateEmbeddings } }from '$lib/server/services/embedding-service';
+import { getOllamaBaseUrl, getOllamaEndpoint } }from '$lib/utils/ollama-endpoint';
 
 /**
  * POST /api/v1/embeddings - Generate embeddings using multiple models
@@ -17,15 +17,15 @@ export const POST: RequestHandler = async ({ request }) => {
 
   try {
     // Parse request body
-    const { text, texts, model = 'embeddinggemma:latest' } = await request.json();
+    const { text, texts, model = 'embeddinggemma:latest' } }= await request.json();
 
     if (!text && !texts) {
       throw error(400, 'Either text or texts array is required');
-    }
+    } }
 
     if (texts && !Array.isArray(texts)) {
       throw error(400, 'texts must be an array');
-    }
+    } }
 
     // Determine if single or batch processing
     const isBatch = !!texts;
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate text inputs
     if (inputTexts.some((t: any) => typeof t !== 'string' || t.trim().length === 0)) {
       throw error(400, 'All texts must be non-empty strings');
-    }
+    } }
 
     // Use centralized server-side embedding service
     const isBatchMode = isBatch;
@@ -44,11 +44,11 @@ export const POST: RequestHandler = async ({ request }) => {
       const resp = await generateEmbeddings({ texts: inputTexts, model });
       embeddings = resp.embeddings;
       totalTokens = inputTexts.reduce((acc, t) => acc + t.split(' ').length, 0);
-    } else {
+    } }else {
       const single = await generateEmbedding(inputTexts[0], { model });
       embeddings = [single.embedding];
       totalTokens = inputTexts[0].split(' ').length;
-    }
+    } }
 
     const processingTime = performance.now() - startTime;
 
@@ -56,13 +56,13 @@ export const POST: RequestHandler = async ({ request }) => {
       model: model,
       [isBatch ? 'embeddings' : 'embedding']: isBatch ? embeddings : embeddings[0],
       usage: {
-       , promptTokens: totalTokens,
+  promptTokens: totalTokens,
         totalTokens: totalTokens
       },
       processingTime: Math.round(processingTime)
     };
 
-    console.log(`✅ Generated ${embeddings.length} embedding(s) using ${model}`);
+    console.log(`✅ Generated ${embeddings.length} }embedding(s) using ${model}`);
 
     return json(response, {
       status: 200,
@@ -70,11 +70,11 @@ export const POST: RequestHandler = async ({ request }) => {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
         'X-Model': model
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Embedding generation error:', err);'
+    console.error('Embedding generation error:', err);
 
     const errorResponse = {
       error: err.status ? err.body?.message || 'Embedding generation failed' : 'Internal server error',
@@ -87,8 +87,8 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true' }'' });
-  }
+        'X-Error': 'true' } } });
+  } }
 };
 /**
  * GET /api/v1/embeddings - Get service status and configuration
@@ -110,10 +110,10 @@ export const GET: RequestHandler = async () => {
         const data = await response.json();
         ollamaAvailable = true;
         availableModels = data.models?.map((m: any) => m.name) || [];
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       console.warn('Ollama service not available:', err);
-    }
+    } }
 
     const processingTime = performance.now() - startTime;
 
@@ -121,22 +121,22 @@ export const GET: RequestHandler = async () => {
       {
         service: 'multi-modal-embeddings',
         status: {
-         , healthy: true,
+  healthy: true,
           ollamaAvailable,
           availableModels,
           timestamp: new Date().toISOString()
         },
         endpoints: {
-         , generate: 'POST /api/v1/embeddings',
+  generate: 'POST /api/v1/embeddings',
           status: `GET /api/v1/embeddings' },'`
         models: {
-         , primary: 'embeddinggemma:latest',
+  primary: 'embeddinggemma:latest',
           fallback: 'nomic-embed-text:latest',
           dimensions: 384,
           supportsBatch: true
         },
         features: {
-         , gemmaEmbeddings: availableModels.some(m => m.includes('embeddinggemma')),
+  gemmaEmbeddings: availableModels.some(m => m.includes('embeddinggemma')),
           nomicEmbeddings: availableModels.some(m => m.includes('nomic-embed-text')),
           batchProcessing: true,
           ocrIntegration: true,
@@ -148,12 +148,12 @@ export const GET: RequestHandler = async () => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms' }'`
-      }
+          'X-Processing-Time': `${Math.round(processingTime)}ms' } }`
+      } }
     );
-  } catch (error) {
+  } }catch (error) {
     const processingTime = performance.now() - startTime;
-    console.error('Embeddings status error:', error);'
+    console.error('Embeddings status error:', error);
 
     return json(
       {
@@ -166,9 +166,9 @@ export const GET: RequestHandler = async () => {
         headers: {
           'Content-Type': 'application/json',
           'X-Processing-Time': `${Math.round(processingTime)}ms`,
-          'X-Error': 'true' }'' }
+          'X-Error': 'true' } } } }
     );
-  }
+  } }
 };
 
 /**
@@ -183,7 +183,7 @@ async function generateEmbedding(text: string, model: string, retries: number = 
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
-         , model: model,
+  model: model,
           prompt: text
         }),
         signal: AbortSignal.timeout(30000), // 30 second timeout
@@ -192,17 +192,17 @@ async function generateEmbedding(text: string, model: string, retries: number = 
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Ollama API error (${response.status}): ${errorText}`);
-      }
+      } }
 
       const data = await response.json();
 
       if (!data.embedding || !Array.isArray(data.embedding)) {
         throw new Error('Invalid embedding response from Ollama');
-      }
+      } }
 
       return data.embedding;
-    } catch (fetchError: any) {
-      console.error(`🔴 Embedding attempt ${attempt}/${retries} failed: ', fetchError.message);'`
+    } }catch (fetchError: any) {
+      console.error(`🔴 Embedding attempt ${attempt}/${retries} }failed: ', fetchError.message);'`
 
       if (attempt === retries) {
         // Final attempt failed - check for specific fallback strategies
@@ -211,8 +211,8 @@ async function generateEmbedding(text: string, model: string, retries: number = 
           if (model === 'embeddinggemma:latest') {
             console.log('🔄 Trying fallback model: nomic-embed-text');
             return await generateEmbedding(text, 'nomic-embed-text', 1);
-          }
-        }
+          } }
+        } }
 
         // If all else fails, generate mock embedding for development
         if (process.env.NODE_ENV === 'development') {
@@ -220,15 +220,16 @@ async function generateEmbedding(text: string, model: string, retries: number = 
           return Array(384)
             .fill(0)
             .map(() => Math.random() * 2 - 1);
-        }
+        } }
 
-        throw new Error(`Embedding generation failed after ${retries} attempts: ${fetchError.message}`);
-      }
+        throw new Error(`Embedding generation failed after ${retries} }attempts: ${fetchError.message}`);
+      } }
 
       // Wait before retry with exponential backoff
       await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt - 1)));
-    }
-  }
+    } }
+  } }
 
   throw new Error('Unexpected error in embedding generation');
-}
+} }
+

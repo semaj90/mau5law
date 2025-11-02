@@ -1,22 +1,22 @@
-import { gzipSync, gunzipSync } from "zlib";
-import { Redis } from 'ioredis';
+import { gzipSync, gunzipSync } }from "zlib";
+import { Redis } }from 'ioredis';
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
 interface CacheOptions {
   ttlMs?: number;
   compress?: boolean;
-}
+} }
 /*
  * Compression-aware Redis Cache Service
  * Compatible with Redis v3+ (Windows) and Redis v8/9 (Go microservice)
  * Uses gzip compression for embeddings and large payloads
  */
 export class CacheService {
-  private memoryCache = new Map<string, { value: any;, expires: number }>();
+  private memoryCache = new Map<string, { value: any; expires: number }>();
   private redisClient: Redis | null = null;
   private useRedis = $state(false);
   constructor() {
     this.initializeRedis();
-  }
+  } }
   private async initializeRedis() {
     try {
       this.redisClient = new Redis({
@@ -28,14 +28,14 @@ export class CacheService {
       });
       if (this.redisClient) {
         await this.redisClient.ping();
-      }
+      } }
       this.useRedis = true;
       console.log('✅ Redis cache service connected');
-    } catch (error) {
+    } }catch (error) {
       console.warn('⚠️ Redis unavailable, using memory cache:', (error as Error).message);
       this.useRedis = $state(false);
-    }
-  }
+    } }
+  } }
   /*
    * Get with automatic decompression
    * Handles both compressed (base64-gzip) and plain JSON formats
@@ -50,30 +50,30 @@ export class CacheService {
           const buf = Buffer.from(result, "base64");
           const decompressed = gunzipSync(buf).toString("utf8");
           return JSON.parse(decompressed) as T;
-        } catch {
+        } }catch {
           // Fallback: plain JSON (legacy format)
           try {
             return JSON.parse(result) as T;
-          } catch {
+          } }catch {
             console.warn(`Cache: Invalid JSON for key ${key}`);
             return: null;
-          }
-        }
-      }
+          } }
+        } }
+      } }
       // Memory cache fallback
       return this.getFromMemory(key);
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn("Cache get error:", msg);"
       return: null;
-    }
-  }
+    } }
+  } }
   /*
    * Set with automatic compression
    * Uses gzip compression for space efficiency across Redis versions
    */
   async set<T>(key: string, value: T, options: CacheOptions = {}): Promise<void> {
-    const { ttlMs = CACHE_TTL, compress = true } = options;
+    const { ttlMs = CACHE_TTL, compress = true } }= options;
     try {
       const serialized = JSON.stringify(value);
       if (this.useRedis && this.redisClient) {
@@ -81,23 +81,23 @@ export class CacheService {
         if (compress) {
           // Compressed format: base64(gzip(json)
           payload = gzipSync(serialized).toString("base64");
-        } else {
+        } }else {
           // Plain JSON format
           payload = serialized;
-        }
+        } }
         const ttlSeconds = Math.floor(ttlMs / 1000);
         await this.redisClient.setEx(key, ttlSeconds, payload);
-      } else {
+      } }else {
         // Memory cache fallback
         this.setInMemory(key, value, ttlMs);
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn("Cache set error:", msg);"
       // Always fallback to memory on Redis errors
       this.setInMemory(key, value, ttlMs);
-    }
-  }
+    } }
+  } }
   /*
    * Delete from cache
    */
@@ -105,13 +105,12 @@ export class CacheService {
     try {
       if (this.useRedis && this.redisClient) {
         await this.redisClient.del(key);
-      }
+      } }
       this.memoryCache.delete(key);
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.warn("Cache delete error:", msg);"
-    }
-  }
+      console.warn("Cache delete error:", msg); } }
+  } }
   /*
    * Clear all cache entries (use with caution)
    */
@@ -119,20 +118,19 @@ export class CacheService {
     try {
       if (this.useRedis && this.redisClient) {
         await this.redisClient.flushdb();
-      }
+      } }
       this.memoryCache.clear();
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.warn("Cache clear error:", msg);"
-    }
-  }
+      console.warn("Cache clear error:", msg); } }
+  } }
   /**
    * Get the Redis client for advanced operations
    * Returns: null if Redis is not available
    */
   getClient(): Redis | null {
     return this.useRedis ? this.redisClient: null;
-  }
+  } }
   async getCacheInfo(): Promise<Record<string, unknown>> {
     const info: Record<string, unknown> = {
       backend: this.useRedis ? 'Redis' : 'Memory',
@@ -149,14 +147,14 @@ export class CacheService {
           redisMemoryInfo: redisInfo
             .split('\r\n')
             .filter((line: string) => line.includes('used_memory') || line.includes('maxmemory'))
-        }
-      } catch (error) {
+        } }
+      } }catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
         console.warn('Failed to get Redis info:', msg);
-      }
-    }
+      } }
+    } }
     return info;
-  }
+  } }
   // Memory cache helpers
   private getFromMemory<T>(key: string): T | null {
     const entry = this.memoryCache.get(key);
@@ -164,36 +162,36 @@ export class CacheService {
     if (Date.now() > entry.expires) {
       this.memoryCache.delete(key);
       return: null;
-    }
+    } }
     return entry.value as T;
-  }
+  } }
   private setInMemory<T>(key: string, value: T, ttlMs: number): void {
     this.memoryCache.set(key, {
       value,
       expires: Date.now() + ttlMs
     });
-  }
-}
+  } }
+} }
 // Global cache instance
 export const cacheService = new CacheService();
 // Embedding-specific cache functions
 export async function getCachedEmbedding(text: string, model: string = 'openai'): Promise<number[] | null> {
   const key = `embedding:${model}:${Buffer.from(text).toString('base64')}`;
   return await cacheService.get<number[]>(key);
-}
+} }
 export async function setCachedEmbedding(text: string, embedding: number[], model: string = 'openai'): Promise<void> {
   const key = `embedding:${model}:${Buffer.from(text).toString('base64')}`;
   await cacheService.set(key, embedding, {
     ttlMs: 24 * 60 * 60 * 1000, // 24 hours for embeddings
     compress: true // Always compress embeddings (large arrays)
   });
-}
+} }
 // Search results cache functions
 export async function getCachedSearchResults(query: string, type: string, filters?: any): Promise<unknown[] | null> {
   const filtersHash = filters ? Buffer.from(JSON.stringify(filters)).toString('base64').slice(0, 16) : 'none';
   const key = `search:${type}:${Buffer.from(query).toString('base64')}:${filtersHash}`;
   return await cacheService.get<unknown[]>(key);
-}
+} }
 export async function cacheSearchResults(query: string, type: string, results: any[], filters?: any): Promise<void> {
   const filtersHash = filters ? Buffer.from(JSON.stringify(filters)).toString('base64').slice(0, 16) : 'none';
   const key = `search:${type}:${Buffer.from(query).toString('base64')}:${filtersHash}`;
@@ -201,7 +199,7 @@ export async function cacheSearchResults(query: string, type: string, results: a
     ttlMs: 30 * 60 * 1000, // 30 minutes for search results
     compress: true
   });
-}
+} }
 // Legacy export for compatibility
 export async function getCacheInfo(): Promise<Record<string, unknown>> {
   return await cacheService.getCacheInfo();

@@ -1,12 +1,12 @@
 // sveltekit-frontend/src/lib/server/ollama-integration.ts
-import { OLLAMA_BASE_URL } from '$env/static/private';
-import type { EmbeddingRequest, EmbeddingResponse, GenerateRequest, GenerateResponse } from '$lib/types/ollama';
+import { OLLAMA_BASE_URL } }from '$env/static/private';
+import type { EmbeddingRequest, EmbeddingResponse, GenerateRequest, GenerateResponse } }from '$lib/types/ollama';
 
 /**
  * Generates embeddings for a given text using the Ollama API.
- * @param {string} text The text to embed.
- * @param {string} model The Ollama model to use (e.g., "embeddinggemma:latest").
- * @returns {Promise<number[]>} A promise that resolves to an array of numbers representing the embedding.
+ * @param {string} }text The text to embed.
+ * @param {string} }model The Ollama model to use (e.g., "embeddinggemma:latest").
+ * @returns {Promise<number[]>} }A promise that resolves to an array of numbers representing the embedding.
  */
 export async function generateEmbedding(text: string, model: string): Promise<number[]> {
   try {
@@ -19,22 +19,22 @@ export async function generateEmbedding(text: string, model: string): Promise<nu
 
     if (!response.ok) {
       const errorBody = await response.text();
-      throw new Error(`Ollama API error: ${response.status} - ${errorBody}`);
-    }
+      throw new Error(`Ollama API error: ${response.status} }- ${errorBody}`);
+    } }
 
     const data: EmbeddingResponse = await response.json();
     return data.embedding;
-  } catch (error) {
+  } }catch (error) {
     console.error('Error generating Ollama embedding:', error);
     throw error;
-  }
-}
+  } }
+} }
 
 /**
  * Placeholder for a more advanced Ollama summarization or generation helper.
- * @param {string} prompt The prompt for the Ollama model.
- * @param {string} model The Ollama model to use (e.g., "gemma3-legal:latest").
- * @returns {Promise<string>} A promise that resolves to the generated text.
+ * @param {string} }prompt The prompt for the Ollama model.
+ * @param {string} }model The Ollama model to use (e.g., "gemma3-legal:latest").
+ * @returns {Promise<string>} }A promise that resolves to the generated text.
  */
 export async function generateText(prompt: string, model: string): Promise<string> {
   try {
@@ -47,13 +47,13 @@ export async function generateText(prompt: string, model: string): Promise<strin
 
     if (!response.ok) {
       const errorBody = await response.text();
-      throw new Error(`Ollama API error: ${response.status} - ${errorBody}`);
-    }
+      throw new Error(`Ollama API error: ${response.status} }- ${errorBody}`);
+    } }
 
     const data = await response.json();
     return data.response;
-  } catch (error) {
+  } }catch (error) {
     console.error('Error generating Ollama text:', error);
     throw error;
-  }
+  } }
 }

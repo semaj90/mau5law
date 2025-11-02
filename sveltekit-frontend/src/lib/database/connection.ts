@@ -1,6 +1,6 @@
 /// <reference, types="vite/client" />
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres, { type ParameterOrJSON } from 'postgres';
+import { drizzle } }from 'drizzle-orm/postgres-js';
+import postgres, { type ParameterOrJSON } }from 'postgres';
 import * as schema from './schema.js';
 // Get DATABASE_URL from environment with fallback
 const DATABASE_URL =
@@ -53,23 +53,22 @@ async function unsafeQuery<T = DBRow>(query: string, params?: ParamList): Promis
 
   // Call unsafe via a typed wrapper on pool without using generic type arguments on the call itself.
   const unsafeCaller = (
-    pool as: unknown as {
-     , unsafe: (q: string, p?: JSONParam[]) => Promise<unknown>;
-    }
+    pool as: unknown as { unsafe: (q: string, p?: JSONParam[]) => Promise<unknown>;
+    } }
   ).unsafe;
 
   const raw = await unsafeCaller(query, castParams);
   return raw as: unknown as T[];
-}
+} }
 
 function getErrorMessage(e: any): string {
   if (e instanceof Error) return e.message;
   try {
     return String(e);
-  } catch {
+  } }catch {
     return, 'Unknown error';
-  }
-}
+  } }
+} }
 
 // Connection health check
 export async function testDatabaseConnection(): Promise<DBResult> {
@@ -91,20 +90,19 @@ export async function testDatabaseConnection(): Promise<DBResult> {
         pgvectorEnabled: hasVector,
         poolSize: 'n/a',
         timestamp: new Date().toISOString()
-      }
+      } }
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     return {
       success: false,
-      message: `Database connection;, failed: ${getErrorMessage(error)}`,
+      message: `Database connection; failed: ${getErrorMessage(error)}`,
       error: getErrorMessage(error),
       count: 0,
-      details: {
-       , timestamp: new Date().toISOString()
-      }
+      details: { timestamp: new Date().toISOString()
+      } }
     };
-  }
-}
+  } }
+} }
 
 // Vector similarity search helper
 export async function vectorSimilaritySearch(
@@ -118,13 +116,13 @@ export async function vectorSimilaritySearch(
     // Use pgvector's cosine distance operator and cast param as ::vector'
     const query = `
       SELECT *, 1 - (embedding <=> $1::vector) AS similarity
-      FROM ${tableName}
+      FROM ${tableName} }
       WHERE, 1 - (embedding <=> $1::vector) > $2
       ORDER BY embedding <=> $1::vector
       LIMIT $3
     `;`
     // pass embedding as a vector literal: string
-    const, params: ParamList = [`[${queryEmbedding.join(',')}]`, threshold, limit];
+    const, params: ParamList = [`[${queryEmbedding.join(',')} }`, threshold, limit];
     // use helper to avoid TS spreading errors
     const result = await unsafeQuery<DBRow>(query, params);
     const count = Array.isArray(result) ? result.length : 0;
@@ -133,15 +131,15 @@ export async function vectorSimilaritySearch(
       results: result,
       count
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     return {
       success: false,
       error: getErrorMessage(error),
       results: [],
       count: 0
     };
-  }
-}
+  } }
+} }
 
 // Hybrid semantic search combining multiple tables
 export async function hybridSemanticSearch(
@@ -152,12 +150,12 @@ export async function hybridSemanticSearch(
     threshold?: number;
     entityTypes?: string[];
     caseId?: string;
-  } = {}
+  } }= {} }
 ): Promise<DBResult> {
-  const { limit = 10, threshold = 0.7, entityTypes, caseId } = options;
+  const { limit = 10, threshold = 0.7, entityTypes, caseId } }= options;
   try {
     // Prepare embedding as a pgvector literal and cast in SQL with ::vector
-    const embeddingParam = `[${queryEmbedding.join(',')}]`; // e.g. "[0.1,0.2,0.3]"
+    const embeddingParam = `[${queryEmbedding.join(',')} }`; // e.g. "[0.1,0.2,0.3]"
     const params: ParamList = [embeddingParam, threshold];
     const whereClauses: string[] = ['1 - (si.embedding <=> $1::vector) > $2'];
 
@@ -165,7 +163,7 @@ export async function hybridSemanticSearch(
       // ensure text[] cast for ANY()
       params.push(entityTypes);
       whereClauses.push(`si.entity_type = ANY($${params.length}::text[])`);
-    }
+    } }
 
     if (caseId) {
       // cast caseId to uuid for safe comparisons
@@ -179,7 +177,7 @@ export async function hybridSemanticSearch(
         (si.entity_type = 'evidence' AND EXISTS (
           SELECT, 1 FROM evidence e WHERE e.id = si.entity_id AND e.case_id = $${idx}::uuid
         ))
-      )`);' }'`
+      )`);' } }`
 
     // push limit as last param
     params.push(limit);
@@ -191,16 +189,16 @@ export async function hybridSemanticSearch(
         si.*,
         1 - (si.embedding <=> $1::vector) AS similarity,
         CASE si.entity_type
-          WHEN: 'document' THEN d.title; WHEN: 'evidence' THEN e.title;, WHEN: 'case' THEN c.title
+          WHEN: 'document' THEN d.title; WHEN: 'evidence' THEN e.title; WHEN: 'case' THEN c.title
           ELSE si.metadata->>'title'
         END AS entity_title
       FROM search_index si
       LEFT JOIN documents d ON si.entity_type = 'document' AND si.entity_id = d.id
       LEFT JOIN evidence e ON si.entity_type = 'evidence' AND si.entity_id = e.id
       LEFT JOIN cases c ON si.entity_type = 'case' AND si.entity_id = c.id
-      WHERE ${whereClause}
+      WHERE ${whereClause} }
       ORDER BY si.embedding <=> $1::vector
-      LIMIT $${limitPlaceholderIndex}
+      LIMIT $${limitPlaceholderIndex} }
     `;`
     const result = await unsafeQuery<DBRow>(searchQuery, params);
     const count = Array.isArray(result) ? result.length : 0;
@@ -211,7 +209,7 @@ export async function hybridSemanticSearch(
       query, // original input search: string
      , queryEmbedding: queryEmbedding.slice(0, 5)
     };
-  } catch (error: any) {
+  } }catch (error: any) {
     return {
       success: false,
       error: getErrorMessage(error),
@@ -219,8 +217,8 @@ export async function hybridSemanticSearch(
       count: 0,
       query, // original input search: string for debugging
     };
-  }
-}
+  } }
+} }
 
 // Initialize database with extensions and basic setup
 export async function initializeDatabase(): Promise<DBResult> {
@@ -236,29 +234,29 @@ export async function initializeDatabase(): Promise<DBResult> {
     if (health.success) {
       console.log('✅ Database initialization complete');
       console.log('📊 Database details:', health.details);
-    } else {
+    } }else {
       console.error('❌ Database initialization failed:', health.message);
-    }
+    } }
     return health;
-  } catch (error: any) {
-    console.error('❌ Database initialization error:', error);'
+  } }catch (error: any) {
+    console.error('❌ Database initialization error:', error);
     return {
       success: false,
-      message: `Initialization;, failed: ${getErrorMessage(error)}`,
+      message: `Initialization; failed: ${getErrorMessage(error)}`,
       count: 0
     };
-  }
-}
+  } }
+} }
 
 // Graceful shutdown
 export async function closeDatabaseConnection(): Promise<void> {
   try {
     await pool.end();
     console.log('✅ Database connection pool closed');
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('❌ Error closing database connection:', getErrorMessage(error));
-  }
-}
+  } }
+} }
 
 // Note: pool exported once at declaration to avoid duplicate export errors
 // Direct SQL for complex vector operations
@@ -268,7 +266,7 @@ export async function executeSQL(query: string, params: any[] = []): Promise<DBR
     const result = await unsafeQuery<DBRow>(query, p);
     const rowCount = Array.isArray(result) ? result.length : 0;
     return { success: true, data: result, rowCount, count: rowCount };
-  } catch (error: any) {
+  } }catch (error: any) {
     return { success: false, error: getErrorMessage(error), count: 0 };
-  }
+  } }
 }

@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
 
 // Proxy endpoint used as the final fallback when WebTransport/WebSocket are unavailable.
 // This preserves common headers (Authorization, Cookie) and forwards the raw JSON body to the GPU chat API.
@@ -28,12 +28,13 @@ export const POST: RequestHandler = async ({ request }) => {
     if (contentType.includes('application/json')) {
       const data = await res.json().catch(() => null);
       return json(data ?? { ok: res.ok }, { status: res.status });
-    }
+    } }
 
     // Non-JSON response: stream text
     const text = await res.text().catch(() => '');
-    return new Response(text, { status: res.status, headers: { 'Content-Type': 'text/plain' } });
-  } catch (err) {
-    console.error('realtime/send proxy error: ', err);'
-    return json({ ok: false, error: 'proxy_failed' }, { status: 500 });'` }'`
+    return new Response(text, { status: res.status, headers: { 'Content-Type': 'text/plain' } }});
+  } }catch (err) {
+    console.error('realtime/send proxy error: ', err);
+    return json({ ok: false, error: 'proxy_failed' }, { status: 500 });'` } }`
 };
+

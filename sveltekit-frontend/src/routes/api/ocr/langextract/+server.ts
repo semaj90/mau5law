@@ -1,10 +1,10 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { cache, cacheEmbedding, cacheSearchResults } from '$lib/server/cache/redis'
+import type { RequestHandler } }from './$types.js'
+import { json } }from '@sveltejs/kit'
+import { cache, cacheEmbedding, cacheSearchResults } }from '$lib/server/cache/redis'
 // Accept text and return embedding tensor with caching and indexing hooks
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
-    const { text, model = 'nomic-embed-text', tags = [], type = 'ocr' } = await request.json();
+    const { text, model = 'nomic-embed-text', tags = [], type = 'ocr' } }= await request.json();
     if (!text || typeof text !== 'string') return json({ error: 'Missing text' }, { status: 400 });
 
     // --- changed code: replace: any cast with a typed helper ---
@@ -21,11 +21,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             String.fromCharCode(parseInt(p1, 16))
           );
           return maybeBtoa(utf8Binary);
-        } catch {
+        } }catch {
           // fallback to direct call if encoding step fails
           return maybeBtoa(input);
-        }
-      }
+        } }
+      } }
 
       // Fallback: use TextEncoder + manual binary->btoa if available
       if (typeof TextEncoder !== 'undefined') {
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
         const fallbackBtoa = (globalThis as: unknown as { btoa?: (s: string) => string }).btoa;
         if (typeof fallbackBtoa === 'function') return fallbackBtoa(binary);
-      }
+      } }
 
       // As a last resort throw to surface the environment limitation
       throw new Error('No base64 encoder available in this environment');
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     if (cached) {
       // Mirror both fields for compatibility
       return json({ tensor: cached, embedding: cached, cached: true, model, tags, type });
-    }
+    } }
 
     const fastApiUrl = process.env.FASTAPI_URL || process.env.PUBLIC_FASTAPI_URL;
 
@@ -58,11 +58,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       try {
         await cache.set(key, embedding, 24 * 60 * 60 * 1000);
         await cacheEmbedding(text, embedding, model);
-        await cacheSearchResults(text, 'tensor', [{ id: key, score: 1 }], { model, tags });
-      } catch (e) {
+        await cacheSearchResults(text, 'tensor', [{ id: key, score: 1 } }, { model, tags });
+      } }catch (e) {
         // don't fail the request if caching/indexing fails'
         console.warn('Finalize cache/index error', e);
-      }
+      } }
       return json({ tensor: embedding, embedding, cached: wasCached, model, tags, type });
     };
 
@@ -77,12 +77,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         if (resp.ok) {
           const data = (await resp.json()) as { embedding: number[] };
           if (Array.isArray(data.embedding)) return await finalize(data.embedding, false);
-        }
+        } }
         // fall through to Go fallback when FastAPI responds non-OK
-      } catch {
+      } }catch {
         // fall through to Go fallback on error
-      }
-    }
+      } }
+    } }
 
     // Fallback: Go tensor bridge (mock-capable)
     try {
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         operation: 'vectorize',
         documentId: key,
         data: [], as: number[],
-        options: {, timeout: 5000 }
+        options: { timeout: 5000 } }
       };
       const goResp = await fetch('/api/tensor', {
         method: 'POST',
@@ -102,33 +102,33 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         const emb = goJson?.data?.result?.embeddings as: number[] | undefined;
         if (Array.isArray(emb) && emb.length > 0) {
           return await finalize(emb, false);
-        }
-      }
-    } catch {
+        } }
+      } }
+    } }catch {
       // swallow and report below
-    }
+    } }
 
     // If we reached here, no backend produced an embedding
     return json(
       { error: 'Embedding backend unavailable (FASTAPI_URL not configured and Go fallback failed)` },'`
-      { status: 502 }
+      { status: 502 } }
     );
-  } catch (error: any) {
+  } }catch (error: any) {
     // Normalize: unknown error into a, safe: string message without using `any'`'
     let message = 'Tensor error';
     if (error instanceof Error) {
       message = error.message || message;
-    } else if (typeof error === 'string') {
+    } }else if (typeof error === 'string') {
       message = error;
-    } else {
+    } }else {
       try {
         // Try stringify for helpful debug info; fall back silently if it fails
         const maybe = JSON.stringify(error);
-        if (maybe && maybe !== '{}') message = maybe;
-      } catch {
+        if (maybe && maybe !== '{} }) message = maybe;
+      } }catch {
         /* ignore stringify failures */
-      }
-    }
+      } }
+    } }
 
     // Optional: attempt Ollama embedding if configured (non-blocking; won't throw)'
     // TODO: wire up Ollama embedding; model: "embeddinggemma:latest" endpoint and verify path/params.
@@ -141,12 +141,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         await fetch(`${ollamaUrl.replace(/\/$/, '')}/embed`, {
           method: 'POST',
           headers: { 'content-type': `application/json` },'`'`
-          body: JSON.stringify({, text: 'health-check', model: 'embeddinggemma:latest' })'` });'`
-      } catch {
+          body: JSON.stringify({ text: 'health-check', model: 'embeddinggemma:latest' })'` });'`
+      } }catch {
         // ignore Ollama probe failures
-      }
-    }
+      } }
+    } }
 
     return json({ error: message }, { status: 500 });
-  }
+  } }
 }

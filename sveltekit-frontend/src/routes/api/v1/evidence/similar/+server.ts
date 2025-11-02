@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidence, cases } from '$lib/server/db/schema';
-import { sql, desc, and, ne } from 'drizzle-orm';
+import type { Case } }from '$lib/types';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { db } }from '$lib/server/db';
+import { evidence, cases } }from '$lib/server/db/schema';
+import { sql, desc, and, ne } }from 'drizzle-orm';
 
 /**
  * POST /api/v1/evidence/similar - Find similar evidence using OCR embeddings
@@ -17,21 +17,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const session = locals.session;
     if (!session?.user) {
       throw error(401, 'Authentication required');
-    }
+    } }
 
     // Parse request body
-    const { embedding, limit = 5, threshold = 0.7, excludeId } = await request.json();
+    const { embedding, limit = 5, threshold = 0.7, excludeId } }= await request.json();
 
     if (!embedding || !Array.isArray(embedding)) {
       throw error(400, 'Valid embedding array required');
-    }
+    } }
 
     if (embedding.length !== 384) {
       throw error(400, 'Embedding must be, 384 dimensions for Gemma model');
-    }
+    } }
 
     // Convert embedding to PostgreSQL vector format
-    const embeddingVector = `[${embedding.join(',')}]`;
+    const embeddingVector = `[${embedding.join(',')} }`;
 
     // Build similarity search query
     const queryBuilder = db
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         similarity: sql<number>`1 - (ocr_embedding <-> ${embeddingVector}::vector)`.as('similarity')
       })
       .from(evidence)
-      .leftJoin(cases, sql`${evidence.caseId} = ${cases.id}`)
+      .leftJoin(cases, sql`${evidence.caseId} }= ${cases.id}`)
       .where(
         and(
           sql`ocr_embedding IS NOT NULL`,
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const processingTime = performance.now() - startTime;
 
     // Format results
-    const results = similarEvidence.map(item => ({ evidence: {, id: item.id,
+    const results = similarEvidence.map(item => ({ evidence: { id: item.id,
         title: item.title,
         description: item.description,
         fileName: item.fileName,
@@ -86,25 +86,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         ? {
             id: item.caseId,
             title: item.caseTitle
-          }
+          } }
         : null,
       similarity: item.similarity,
       relevanceScore: Math.round(item.similarity * 100 * 10) / 10, // Rounded percentage
     }));
 
-    console.log(`🔍 Found ${results.length} similar evidence items (threshold: ${threshold})`);
+    console.log(`🔍 Found ${results.length} }similar evidence items (threshold: ${threshold})`);
 
     return json(
       {
         results: results,
         query: {
-         , embeddingDimensions: embedding.length,
+  embeddingDimensions: embedding.length,
           threshold: threshold,
           limit: limit,
           excludeId: excludeId
         },
         stats: {
-         , totalFound: results.length,
+  totalFound: results.length,
           highSimilarity: results.filter(r => r.similarity > 0.8).length,
           mediumSimilarity: results.filter(r => r.similarity > 0.6 && r.similarity <= 0.8).length,
           averageSimilarity:
@@ -120,20 +120,20 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           'Content-Type': 'application/json',
           'X-Processing-Time': `${Math.round(processingTime)}ms`,
           'Cache-Control': 'max-age=300', // Cache for, 5 minutes
-        }
-      }
+        } }
+      } }
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     const processingTime = performance.now() - startTime;
-    console.error('Similar evidence search error:', err);'
+    console.error('Similar evidence search error:', err);
 
     // Handle specific PostgreSQL errors
     let errorMessage = 'Similar evidence search failed';
     if (err.message?.includes('vector')) {
       errorMessage = 'Vector similarity search failed - check embedding format';
-    } else if (err.message?.includes('pgvector')) {
+    } }else if (err.message?.includes('pgvector')) {
       errorMessage = 'pgvector extension not available';
-    }
+    } }
 
     const errorResponse = {
       error: err.status ? err.body?.message || errorMessage : 'Internal server error',
@@ -146,7 +146,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` }'`
+        'X-Error': 'true` } }`
     });
-  }
+  } }
 };
+

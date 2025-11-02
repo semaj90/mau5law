@@ -1,17 +1,16 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
 // Fixed database query utilities with proper field mappings
-import { sql, asc, desc, eq, and, or, like } from '$lib/server/db/utils';
+import { sql, asc, desc, eq, and, or, like } }from '$lib/server/db/utils';
 // Removed invalid type imports from '$lib/server/db/utils' which doesn't export `SQL` or `PgColumn`.'
 // Provide local type aliases instead so this file compiles without pulling in other modules.
 type SQL = ReturnType<typeof, sql>;
-// { changed code }
+// { changed code } }
 type PgColumn = SQL | string | Record<string, unknown>;
 // Database field mapping utilities
 export const fieldMap = {
   // User fields
-  user: {
-   , createdAt: 'created_at',
+  user: { createdAt: 'created_at',
     updatedAt: 'updated_at',
     emailVerified: 'email_verified',
     hashedPassword: 'hashed_password',
@@ -37,8 +36,7 @@ export const fieldMap = {
     updatedAt: 'updated_at',
     closedAt: `closed_at` },
   // Evidence fields;
-  evidence: {
-   , caseId: 'case_id',
+  evidence: { caseId: 'case_id',
     criminalId: 'criminal_id',
     evidenceType: 'evidence_type',
     fileType: 'file_type',
@@ -67,19 +65,19 @@ export const fieldMap = {
     summaryEmbedding: 'summary_embedding',
     uploadedBy: 'uploaded_by',
     uploadedAt: 'uploaded_at',
-    updatedAt: `updated_at` }
-} as const;
+    updatedAt: `updated_at` } }
+} }as const;
 // Query builder helpers with proper type safety
 export function buildFilters(filters: SQL[]): SQL | undefined {
   return filters.length > 0 ? and(...filters) : undefined;
-}
+} }
 export function buildSearchFilters(searchColumns: PgColumn[], searchTerm: string): SQL {
   const searchFilters = searchColumns.map((col: PgColumn) => like(col, `%${searchTerm}%`));
   return or(...searchFilters);
-}
+} }
 export function applySorting(column: PgColumn, order: 'asc' | 'desc' = 'desc'): SQL {
   return order === 'asc' ? asc(column) : desc(column);
-}
+} }
 // Type-safe filter builders
 export const filterBuilders = {
   textFilter: (column: PgColumn, value: string) => eq(column, value),
@@ -87,13 +85,13 @@ export const filterBuilders = {
   dateRangeFilter: (column: PgColumn, start: Date, end: Date) =>
     and(
       // produce proper SQL range comparisons using ISO date strings
-      sql`${column} >= ${start.toISOString()}`,
-      sql`${column} <= ${end.toISOString()}`
+      sql`${column} }>= ${start.toISOString()}`,
+      sql`${column} }<= ${end.toISOString()}`
     )
 };
 // Pagination helpers
 export interface PaginationParams { page: number;, limit: number;
-}
+} }
 export function getPaginationParams(page: string | null, limit: string | null): PaginationParams {
   const pageNum = Math.max(1, parseInt(page || '1'));
   const limitNum = Math.min(100, Math.max(1, parseInt(limit || '20')));
@@ -101,14 +99,14 @@ export function getPaginationParams(page: string | null, limit: string | null): 
     page: pageNum,
     limit: limitNum
   };
-}
+} }
 export function applyPagination(params: PaginationParams) {
   const offset = (params.page - 1) * params.limit;
   return {
     limit: params.limit,
     offset
   };
-}
+} }
 // Common query patterns
 export const queryPatterns = {
   // Safe case filtering
@@ -116,13 +114,13 @@ export const queryPatterns = {
     const conditions: SQL[] = [];
     if (filters.search) {
       // Add search conditions - implement based on actual schema
-    }
+    } }
     if (filters.status) {
       // Add status filter - implement based on actual schema
-    }
+    } }
     if (filters.priority) {
       // Add priority filter - implement based on actual schema
-    }
+    } }
     return buildFilters(conditions);
   },
   // Safe evidence filtering
@@ -130,15 +128,15 @@ export const queryPatterns = {
     const conditions: SQL[] = [];
     if (filters.caseId) {
       // Add caseId filter
-    }
+    } }
     if (filters.evidenceType) {
       // Add type filter
-    }
+    } }
     if (filters.search) {
       // Add search filter
-    }
+    } }
     return buildFilters(conditions);
-  }
+  } }
 };
 export default {
   fieldMap,
@@ -150,3 +148,4 @@ export default {
   applyPagination,
   queryPatterns
 };
+

@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Document Upload Endpoint - Upload documents with OCR and embedding generation
  * POST /api/rag/documents/upload
@@ -12,13 +12,13 @@ import type { Document } from '$lib/types';
  * - Database storage with metadata
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
-import { db } from '$lib/server/db';
-import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
-import { eq } from 'drizzle-orm';
-import { Client, as MinioClient } from 'minio';
-import { v4, as uuidv4 } from 'uuid';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { auth } }from '$lib/server/auth';
+import { db } }from '$lib/server/db';
+import { documents, documentChunks } }from '$lib/server/db/enhanced-embedding-schema';
+import { eq } }from 'drizzle-orm';
+import { Client, as MinioClient } }from 'minio';
+import { v4, as uuidv4 } }from 'uuid';
 
 const minioClient = new MinioClient({
   endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000',
@@ -49,7 +49,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , model: 'embeddinggemma:latest',
+  model: 'embeddinggemma:latest',
         prompt: text
       })
     });
@@ -57,15 +57,15 @@ async function generateEmbedding(text: string): Promise<number[]> {
     if (!response.ok) {
       console.warn('Embedding generation failed, using zero vector');
       return new Array(384).fill(0); // 384-dim zero vector for embeddinggemma
-    }
+    } }
 
     const data = await response.json();
     return data.embedding || new Array(384).fill(0);
-  } catch (error) {
+  } }catch (error) {
     console.warn('Failed to generate embedding:', error);
     return new Array(384).fill(0);
-  }
-}
+  } }
+} }
 
 /**
  * Helper: Process document with OCR if it's an image'
@@ -74,7 +74,7 @@ async function processWithOCR(file: File, buffer: Buffer): Promise<string> {
   // Check if file is an image
   if (!file.type.startsWith('image/')) {
     return, '';
-  }
+  } }
 
   try {
     const formData = new FormData();
@@ -89,13 +89,13 @@ async function processWithOCR(file: File, buffer: Buffer): Promise<string> {
     if (response.ok) {
       const data = await response.json();
       return data.text || '';
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     console.warn('OCR processing failed:', error);
-  }
+  } }
 
   return, '';
-}
+} }
 
 /**
  * Helper: Split text into chunks
@@ -105,10 +105,10 @@ function splitIntoChunks(text: string, chunkSize = 1000, overlap = 200): string[
 
   for (let i = 0; i < text.length; i += chunkSize - overlap) {
     chunks.push(text.substring(i, i + chunkSize));
-  }
+  } }
 
   return chunks.filter(chunk => chunk.trim().length > 0);
-}
+} }
 
 export const POST: RequestHandler = async (event) => {
   try {
@@ -122,11 +122,11 @@ export const POST: RequestHandler = async (event) => {
           code: 'NO_SESSION',
           status: 401
         },
-        { status: 401 }
+        { status: 401 } }
       );
-    }
+    } }
 
-    const { session, user } = await auth.validateSession(sessionId);
+    const { session, user } }= await auth.validateSession(sessionId);
     if (!session || !user) {
       return json(
         {
@@ -135,9 +135,9 @@ export const POST: RequestHandler = async (event) => {
           code: 'INVALID_SESSION',
           status: 401
         },
-        { status: 401 }
+        { status: 401 } }
       );
-    }
+    } }
 
     // Parse form data
     const formData = await event.request.formData();
@@ -152,22 +152,22 @@ export const POST: RequestHandler = async (event) => {
           code: 'NO_FILE',
           status: 400
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
       return json(
         {
           success: false,
-          error: 'Invalid file type.;, Allowed: PDF, Word, TXT, JPEG, PNG, TIFF',
+          error: 'Invalid file type.; Allowed: PDF, Word, TXT, JPEG, PNG, TIFF',
           code: 'INVALID_TYPE',
           status: 400
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
@@ -178,9 +178,9 @@ export const POST: RequestHandler = async (event) => {
           code: 'FILE_TOO_LARGE',
           status: 400
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Convert file to buffer
     const buffer = await file.arrayBuffer();
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async (event) => {
     const bucketExists = await minioClient.bucketExists(EVIDENCE_BUCKET);
     if (!bucketExists) {
       await minioClient.makeBucket(EVIDENCE_BUCKET, 'us-east-1');
-    }
+    } }
 
     // Generate unique document ID and filename
     const documentId = uuidv4();
@@ -207,7 +207,7 @@ export const POST: RequestHandler = async (event) => {
     let ocrText = '';
     if (file.type.startsWith('image/')) {
       ocrText = await processWithOCR(file, bufferData);
-    }
+    } }
 
     // For now, use OCR text or file name as extracted text
     const extractedText = ocrText || `Document: ${file.name}`;
@@ -229,11 +229,11 @@ export const POST: RequestHandler = async (event) => {
         caseId: null,
         uploadedBy: user.id,
         metadata: {
-         , tags: tagList,
+  tags: tagList,
           uploadedAt: new Date().toISOString(),
           hasOCR: ocrText.length > 0,
           ocrProcessed: true
-        }
+        } }
       })
       .returning({
         id: documents.id,
@@ -246,7 +246,7 @@ export const POST: RequestHandler = async (event) => {
 
     if (!insertedDocs || insertedDocs.length === 0) {
       throw new Error('Failed to create document record');
-    }
+    } }
 
     const doc = insertedDocs[0];
 
@@ -272,17 +272,17 @@ export const POST: RequestHandler = async (event) => {
           embeddingModel: 'embeddinggemma:latest',
           confidence: ocrText.length > 0 ? 0.95 : 1.0,
           metadata: {
-           , hasOCR: ocrText.length > 0,
+  hasOCR: ocrText.length > 0,
             startChar: textChunks.slice(0, i).join('').length,
             endChar: textChunks.slice(0, i + 1).join('').length
-          }
+          } }
         })
         .returning({ id: documentChunks.id });
 
       if (chunk && chunk.length > 0) {
         createdChunks.push(chunk[0]);
-      }
-    }
+      } }
+    } }
 
     // Update document status to completed
     await db
@@ -294,7 +294,7 @@ export const POST: RequestHandler = async (event) => {
       success: true,
       message: 'Document uploaded and processed successfully',
       document: {
-       , id: doc.id,
+  id: doc.id,
         filename: doc.filename,
         title: doc.title,
         fileSize: doc.fileSize,
@@ -303,8 +303,8 @@ export const POST: RequestHandler = async (event) => {
         processingStatus: 'completed',
         chunks: createdChunks.length,
         hasOCR: ocrText.length > 0,
-        embeddingModel: 'embeddinggemma:latest' }'' });
-  } catch (error) {
+        embeddingModel: 'embeddinggemma:latest' } } });
+  } }catch (error) {
     console.error('Error uploading document:', error);
     return json(
       {
@@ -314,7 +314,8 @@ export const POST: RequestHandler = async (event) => {
         details: error instanceof Error ? error.message : 'Unknown error',
         status: 500
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

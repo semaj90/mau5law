@@ -12,14 +12,14 @@ export interface RerankResult {
   timeOfDay?: string;
   position?: string;
   confidence?: number; // 0-100
-}
-export interface UserContext {, intent: 'search' | 'analyze' | 'review' | 'create' | 'navigate';, timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
+} }
+export interface UserContext { intent: 'search' | 'analyze' | 'review' | 'create' | 'navigate';, timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
   focusedElement?: string;
   currentCase?: string;
   recentActions: string[];
   userRole: 'prosecutor' | 'detective' | 'admin' | 'user';
   workflowState: 'draft' | 'review' | 'approved' | 'archived';
-}
+} }
 // Specific types to replace broad `any` usages in reranking logic
 export interface RerankMetadata {
   type?: string;
@@ -29,13 +29,13 @@ export interface RerankMetadata {
   neo4jPath?: number;
   relatedCases?: string[];
   userFrequency?: number;
-}
+} }
 export interface ResultPayload {
   text?: string;
   tags?: string[];
   caseId?: string;
   nodeId?: string;
-}
+} }
 export type ResultLike = {
   id: string;
   payload?: ResultPayload;
@@ -45,16 +45,15 @@ export type ResultLike = {
   confidence?: number;
   originalScore?: number;
 };
-export interface SynthesisResult {, fixes: string[];, codeReview: string;
+export interface SynthesisResult { fixes: string[];, codeReview: string;
   analysis: string;
   summary: string;
   nextSteps: string[];
   generativeAutocomplete: string;
   selfPrompt: string;
-}
+} }
 export class LegalAIReranker {
-  private contextWeights = {
-   , intent: 2.0,
+  private contextWeights = { intent: 2.0,
     timeOfDay: 1.0,
     position: 1.5,
     role: 1.8,
@@ -89,18 +88,18 @@ export class LegalAIReranker {
         // Semantic similarity boost
         if (queryEmbedding) {
           base += await this.calculateSemanticBoost(result, queryEmbedding);
-        }
+        } }
         // Confidence penalty (default to, 100 if absent)
         const conf = result.confidence ?? 100;
         const finalScore = conf ? base * (conf / 100) : base;
         return {
           ...result,
           rerankScore: finalScore
-        } as RerankResult;
+        } }as RerankResult;
       })
     );
     return scored.sort((a, b) => (b.rerankScore ?? 0) - (a.rerankScore ?? 0));
-  }
+  } }
   /**
    * Role-specific scoring for legal professionals
    */
@@ -120,24 +119,24 @@ export class LegalAIReranker {
         'case-management': 2.0,
         'user-activity': 1.5,
         'system-reports': 1.3
-      }
+      } }
     };
     const boosts = roleBoosts[role as keyof typeof roleBoosts];
     const contentType = result.metadata?.type;
     return boosts?.[contentType as keyof typeof boosts] || 0;
-  }
+  } }
   /**
    * Workflow state context scoring
    */
   private calculateWorkflowScore(result: RerankResult, workflowState: string): number {
-    const workflowBoosts = { draft: {, templates: 1.5, examples: 1.3 },
-      review: {, checklist: 1.8, validation: 1.5 },
-      approved: {, archive: 1.2, export: 1.5 }
+    const workflowBoosts = { draft: { templates: 1.5, examples: 1.3 },
+      review: { checklist: 1.8, validation: 1.5 },
+      approved: { archive: 1.2, export: 1.5 } }
     };
     const boosts = workflowBoosts[workflowState as keyof typeof workflowBoosts];
     const actionType = result.metadata?.actionType;
     return boosts?.[actionType as keyof typeof boosts] || 0;
-  }
+  } }
   /**
    * Recency scoring based on user's recent actions'
    */
@@ -147,7 +146,7 @@ export class LegalAIReranker {
     if (actionIndex === -1) return 0;
     // More recent actions get higher scores
     return this.contextWeights.recency * (1 - actionIndex / recentActions.length);
-  }
+  } }
   /**
    * Semantic similarity boost using embeddings
    */
@@ -155,7 +154,7 @@ export class LegalAIReranker {
     if (!result.metadata?.embedding || !queryEmbedding) return 0;
     const resultEmbedding = result.metadata.embedding as: number[];
     return this.cosineSimilarity(queryEmbedding, resultEmbedding);
-  }
+  } }
   /**
    * Cosine similarity calculation
    */
@@ -165,9 +164,9 @@ export class LegalAIReranker {
     const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
     if (magnitudeA === 0 || magnitudeB === 0) {
       return 0;
-    }
+    } }
     return dotProduct / (magnitudeA * magnitudeB);
-  }
+  } }
   /**
    * Update context weights based on user feedback
    */
@@ -175,20 +174,20 @@ export class LegalAIReranker {
     Object.entries(feedbackData).forEach(([key, value]) => {
       if (key in this.contextWeights) {
         this.contextWeights[key as keyof typeof this.contextWeights] = value;
-      }
+      } }
     });
-  }
-}
+  } }
+} }
 // Neo4j path context enhancement
 export interface Neo4jPathContext { userPath: string[];, relatedCases: string[];
   frequentActions: string[];
   collaborators: string[];
  , timeSpentByNode: Record<string, number>;
-}
+} }
 /**
  * Enhanced search with Neo4j path context
  */
-import type { Schemas } from '@qdrant/js-client-rest/dist/types';
+import type { Schemas } }from '@qdrant/js-client-rest/dist/types';
 export async function enhancedSearchWithNeo4j(
   query: string,
   userContext: UserContext,
@@ -196,24 +195,22 @@ export async function enhancedSearchWithNeo4j(
   limit: number = 10
 ): Promise<RerankResult[]> {
   // Use existing qdrant service for initial ANN search
-  const { qdrantService } = await import('$lib/server/services/qdrant-service');
+  const { qdrantService } }= await import('$lib/server/services/qdrant-service');
   // Generate embedding for the query
-  const { nomicEmbeddings } = await import('./nomic-embeddings');
+  const { nomicEmbeddings } }= await import('./nomic-embeddings');
   const embeddingResult = await nomicEmbeddings.embed(query);
   const annResults = await qdrantService.searchSimilar(embeddingResult.embedding, limit * 2); // Get more for reranking
   // Convert to rerank format with Neo4j enrichment
   const rerankInput: RerankResult[] = annResults.map((result: Schemas.ScoredPoint): RerankResult => {
     const payload = result.payload as ResultPayload | undefined;
     const metadata = result.payload as RerankMetadata | undefined;
-    const resultLike: ResultLike = {
-     , id: result.id.toString(),
+    const resultLike: ResultLike = { id: result.id.toString(),
       payload: payload,
       score: result.score,
       content: payload?.text,
       metadata: metadata
     };
-    return {
-     , id: result.id.toString(),
+    return { id: result.id.toString(),
       content: payload?.text || '',
       payload: payload,
       metadata: {
@@ -231,7 +228,7 @@ export async function enhancedSearchWithNeo4j(
   const reranker = new LegalAIReranker();
   const rerankedResults = await reranker.rerank(rerankInput, userContext, embeddingResult.embedding);
   return rerankedResults.slice(0, limit);
-}
+} }
 /**
  * Calculate path relevance score from Neo4j context
  */
@@ -241,16 +238,16 @@ function calculatePathScore(result: RerankResult | ResultLike, neo4jContext: Neo
   neo4jContext.userPath.forEach((pathNode, index) => {
     if (result.content?.includes(pathNode) || result.payload?.tags?.includes(pathNode)) {
       pathScore += (neo4jContext.userPath.length - index) / neo4jContext.userPath.length;
-    }
+    } }
   });
   // Boost score for related cases
   neo4jContext.relatedCases.forEach(caseId => {
     if (result.payload?.caseId === caseId) {
       pathScore += 1.5;
-    }
+    } }
   });
   return pathScore;
-}
+} }
 /**
  * Calculate user frequency score
  */
@@ -259,7 +256,7 @@ function calculateFrequencyScore(result: RerankResult | ResultLike, neo4jContext
   if (!nodeId) return 0;
   const timeSpent = neo4jContext.timeSpentByNode[nodeId] || 0;
   return Math.min(timeSpent / 1000, 2.0); // Max boost of 2.0 points
-}
+} }
 // Legacy function for backward compatibility
 export async function enhancedSearch(
   query: string,
@@ -267,11 +264,11 @@ export async function enhancedSearch(
   limit: number = 10
 ): Promise<RerankResult[]> {
   return enhancedSearchWithNeo4j(query, userContext, undefined, limit);
-}
+} }
 // Export for use in components
 export { LegalAIReranker, as default };
-import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData, SynthesisResult } from './types.js';
-import { dimensionalCache } from './dimensional-cache-engine';
+import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData, SynthesisResult } }from './types.js';
+import { dimensionalCache } }from './dimensional-cache-engine';
 /**
  * Multi-LLM synthesis function for advanced legal AI workflows
  * Accepts multiple LLM outputs, user history, uploaded files, MCP server data, and synthesizes a rich output.
@@ -291,7 +288,7 @@ export async function synthesizeMultiLLMOutput({
   const cachedResult = await dimensionalCache.get(cacheKey);
   if (cachedResult) {
     return cachedResult as SynthesisResult;
-  }
+  } }
   // 2. Aggregate LLM outputs, user history, uploaded files, and MCP data
   const allInputs = [
     ...llmOutputs.map(o => o.content),
@@ -335,4 +332,5 @@ export async function synthesizeMultiLLMOutput({
     sessionId: 'session-456',
     behaviorPattern: 'power_user` });'`
   return result;
-}
+} }
+

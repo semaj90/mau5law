@@ -1,9 +1,9 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { db } from, '$lib/server/db';
-import { personsOfInterest, casePoiRelations, cases } from, '$lib/database/enhanced-schema';
-import { eq, and } from, 'drizzle-orm';
-import { z } from, 'zod';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { db } }from '$lib/server/db';
+import { personsOfInterest, casePoiRelations, cases } }from '$lib/database/enhanced-schema';
+import { eq, and } }from 'drizzle-orm';
+import { z } }from 'zod';
 
 const updatePoiSchema = z.object({
   name: z.string().min(1).max(255).optional(),
@@ -17,7 +17,7 @@ const updatePoiSchema = z.object({
   threatLevel: z.enum(['low', 'medium', 'high', 'extreme']).optional(),
   physicalDescription: z
     .object({
-     , height: z.string().optional(),
+  height: z.string().optional(),
       weight: z.string().optional(),
       hair: z.string().optional(),
       eyes: z.string().optional(),
@@ -26,7 +26,7 @@ const updatePoiSchema = z.object({
     .optional(),
   profileData: z
     .object({
-     , modusOperandi: z.string().optional(),
+  modusOperandi: z.string().optional(),
       knownHabits: z.array(z.string()).optional(),
       associates: z.array(z.string()).optional()
     })
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    } }
 
     const poiId = params.id;
 
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     if (!poi) {
       return json({ error: 'POI not found' }, { status: 404 });
-    }
+    } }
 
     // Get case relationships
     const caseRelations = await db
@@ -70,12 +70,12 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       data: {
         ...poi,
         caseRelations
-      }
+      } }
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error fetching POI:', error);
     return json({ error: 'Failed to fetch POI' }, { status: 500 });
-  }
+  } }
 };
 
 // PUT /api/poi/[id] - Update POI
@@ -84,7 +84,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    } }
 
     const poiId = params.id;
     const body = await request.json();
@@ -95,16 +95,16 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
     if (!existingPoi) {
       return json({ error: 'POI not found' }, { status: 404 });
-    }
+    } }
 
     // Prepare update data
     const updateData: any = { ...validatedData };
     if (validatedData.dateOfBirth) {
       updateData.dateOfBirth = new Date(validatedData.dateOfBirth);
-    }
+    } }
     if (validatedData.lastSeen) {
       updateData.lastSeen = new Date(validatedData.lastSeen);
-    }
+    } }
     updateData.updatedAt = new Date();
 
     const [updatedPoi] = await db
@@ -117,13 +117,13 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       success: true,
       data: updatedPoi
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error updating POI:', error);
     if (error instanceof z.ZodError) {
       return json({ error: 'Validation error', details: error.errors }, { status: 400 });
-    }
+    } }
     return json({ error: 'Failed to update POI' }, { status: 500 });
-  }
+  } }
 };
 
 // DELETE /api/poi/[id] - Soft delete POI
@@ -132,7 +132,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    } }
 
     const poiId = params.id;
 
@@ -141,7 +141,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 
     if (!existingPoi) {
       return json({ error: 'POI not found' }, { status: 404 });
-    }
+    } }
 
     // Soft delete by setting isActive to false
     await db
@@ -156,8 +156,9 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       success: true,
       message: 'POI deleted successfully'
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Error deleting POI:', error);
     return json({ error: 'Failed to delete POI' }, { status: 500 });
-  }
+  } }
 };
+

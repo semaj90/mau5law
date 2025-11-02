@@ -16,11 +16,11 @@
  * Database, Tables: citations, legalDocuments, cases
  * Tech Stack: TensorRT-LLM → Triton → PyTorch → Ollama
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db';
-import { citations, legalDocuments, cases } from '$lib/server/db/schema-postgres';
-import { eq, and, desc, like } from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { db } }from '$lib/server/db';
+import { citations, legalDocuments, cases } }from '$lib/server/db/schema-postgres';
+import { eq, and, desc, like } }from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -56,47 +56,47 @@ export const GET: RequestHandler = async ({ url }) => {
     if (citationType) conditions.push(eq(citations.citationType, citationType));
     if (search) {
       conditions.push(like(citations.quotedText, `%${search}%`));
-    }
+    } }
 
     if (conditions.length > 0) {
       query = query.where(and(...conditions));
-    }
+    } }
 
     const result = await query;
 
     return json({
       citations: result,
       metadata: {
-       , count: result.length,
+  count: result.length,
         source: 'database',
         cached: false
-      }
+      } }
     });
-  } catch (error) {
-    console.error('❌ Citations API error:', error);'
+  } }catch (error) {
+    console.error('❌ Citations API error:', error);
     return json(
       {
         error: 'Failed to fetch citations',
         citations: [],
-        metadata: {, count: 0, source: 'error', cached: false }
+        metadata: { count: 0, source: 'error', cached: false } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { caseId, documentId, citationType, quotedText, legalPrinciple } = body;
+    const { caseId, documentId, citationType, quotedText, legalPrinciple } }= body;
 
     if (!citationType || !quotedText) {
       return json(
         {
           error: 'citationType and quotedText are required' },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     const [newCitation] = await db
       .insert(citations)
@@ -115,12 +115,13 @@ export const POST: RequestHandler = async ({ request }) => {
       citation: newCitation,
       success: true
     });
-  } catch (error) {
-    console.error('❌ Create citation error: ', error);'
+  } }catch (error) {
+    console.error('❌ Create citation error: ', error);
     return json(
       {
         error: 'Failed to create citation` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

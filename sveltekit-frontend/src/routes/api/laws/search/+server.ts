@@ -1,9 +1,8 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 // Mock legal database - in production this would connect to a real legal database
 const mockLegalDatabase = [
-  {,
-    id: 'ca-pen-187',
+  { id: 'ca-pen-187',
     title: 'California Penal Code Section, 187 - Murder',
     description: 'Defines murder as the unlawful killing of a human being, or a fetus, with malice aforethought.',
     jurisdiction: 'california',
@@ -38,7 +37,7 @@ const mockLegalDatabase = [
     code: 'CIV § 1550',
     lastUpdated: '2023-01-01',
     fullText:
-      'It is essential to the existence of a contract that there should;, be: 1. Parties capable of contracting...',
+      'It is essential to the existence of a contract that there should; be: 1. Parties capable of contracting...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1550&lawCode=CIV',
     keywords: ['contract', 'agreement', 'parties', 'consideration', 'lawful', 'consent'],
     relatedSections: ['CIV § 1551', 'CIV § 1552', 'CIV § 1565']
@@ -78,7 +77,7 @@ const mockLegalDatabase = [
     category: 'corporate',
     code: 'CORP § 204',
     lastUpdated: '2023-01-01',
-    fullText: 'The articles of incorporation shall set;, forth: (a) The name of the corporation...',
+    fullText: 'The articles of incorporation shall set; forth: (a) The name of the corporation...',
     fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=204&lawCode=CORP',
     keywords: ['corporation', 'articles', 'incorporation', 'business', 'entity', 'filing'],
     relatedSections: ['CORP § 200', 'CORP § 201', 'CORP § 202']
@@ -95,12 +94,12 @@ export const GET: RequestHandler = async ({ url }) => {
     // Filter by jurisdiction
     if (jurisdiction !== 'all') {
       results = results.filter(law => law.jurisdiction === jurisdiction);
-    }
+    } }
 
     // Filter by category
     if (category !== 'all') {
       results = results.filter(law => law.category === category);
-    }
+    } }
 
     // Search by query (simple text search)
     if (query.trim()) {
@@ -122,7 +121,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const bScore = calculateRelevanceScore(b, searchTerm);
         return bScore - aScore;
       });
-    }
+    } }
 
     // Limit results
     results = results.slice(0, Math.max(0, limit));
@@ -135,24 +134,24 @@ export const GET: RequestHandler = async ({ url }) => {
       filters: { jurisdiction, category },
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
-    console.error('Laws search error:', error);'
+  } }catch (error: any) {
+    console.error('Laws search error:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
         success: false,
-        error: 'Search;, failed: ' + message,
+        error: 'Search; failed: ' + message,
         laws: [],
         count: 0
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // add: typed shape for legal entries / search results
 type Law = {
- , id: string;
+  id: string;
   title?: string;
   description?: string;
   jurisdiction?: string;
@@ -170,29 +169,29 @@ function calculateRelevanceScore(law: Law, searchTerm: string): number {
   // Title match gets highest score
   if (law.title && law.title.toLowerCase().includes(searchTerm)) {
     score += 10;
-  }
+  } }
   // Code match gets high score
   if (law.code && law.code.toLowerCase().includes(searchTerm)) {
     score += 8;
-  }
+  } }
   // Description match gets medium score
   if (law.description && law.description.toLowerCase().includes(searchTerm)) {
     score += 5;
-  }
+  } }
   // Keyword matches get lower score
   if (Array.isArray(law.keywords)) {
     law.keywords.forEach(keyword => {
       if (keyword.toLowerCase().includes(searchTerm)) {
         score += 2;
-      }
+      } }
     });
-  }
+  } }
   // Exact keyword match gets bonus
   if (Array.isArray(law.keywords) && law.keywords.map(k => k.toLowerCase()).includes(searchTerm)) {
     score += 5;
-  }
+  } }
   return score;
-}
+} }
 
 // For integration with vector search in the future
 export async function performVectorSearch(query: string, jurisdiction: string, category: string): Promise<Law[]> {
@@ -212,9 +211,10 @@ export async function performVectorSearch(query: string, jurisdiction: string, c
       const result = await response.json();
       // assume the remote API returns array of objects compatible with Law
       return Array.isArray(result.results) ? (result.results as Law[]) : [];
-    }
-  } catch (error: any) {
-    console.error('Vector search error:', error instanceof Error ? error.message : String(error));'
-  }
+    } }
+  } }catch (error: any) {
+    console.error('Vector search error:', error instanceof Error ? error.message : String(error));
+  } }
   return [];
-}
+} }
+

@@ -8,17 +8,17 @@ export interface FlashAttention2Config { maxSequenceLength: number;, batchSize:
   numHeads: number;
   enableGPUOptimization: boolean;
   memoryOptimization: 'balanced' | 'speed' | 'memory';
-}
+} }
 
-export interface AttentionResult {, embeddings: Float32Array;, attentionWeights: Float32Array;
+export interface AttentionResult { embeddings: Float32Array;, attentionWeights: Float32Array;
   contextualEmbeddings?: Float32Array;
   processingTime: number;
   memoryUsage: number;
   confidence: number;
   sequenceLength: number;
-}
+} }
 
-export interface LegalContextAnalysis {, relevanceScore: number;, conceptClusters: string[];
+export interface LegalContextAnalysis { relevanceScore: number;, conceptClusters: string[];
   legalEntities: string[];
   precedentReferences: string[];
   riskLevel?: 'low' | 'medium' | 'high' | 'critical';
@@ -26,20 +26,20 @@ export interface LegalContextAnalysis {, relevanceScore: number;, conceptCluste
   keyTerms?: string[];
   complianceScore?: number;
   recommendations?: string[];
-  confidenceMetrics: {, semantic: number;, syntactic: number;
+  confidenceMetrics: { semantic: number;, syntactic: number;
     contextual: number;
   };
-}
+} }
 
 // --- Minimal local GPU types to, avoid: 'any' casts ---
 type GPUDeviceLike = Record<string, unknown>;
 type GPUAdapterLike = { requestDevice?: (desc?: any) => Promise<GPUDeviceLike | null> | null };
-type NavigatorWithGPU = { gpu?: { requestAdapter?: (opts?: any) => Promise<GPUAdapterLike | null> | null } };
+type NavigatorWithGPU = { gpu?: { requestAdapter?: (opts?: any) => Promise<GPUAdapterLike | null> | null } }};
 
 /**
  * Add a small Performance type that includes optional memory to avoid: 'any' casts
  */
-type PerformanceWithMemory = Performance & { memory?: { usedJSHeapSize?: number } };
+type PerformanceWithMemory = Performance & { memory?: { usedJSHeapSize?: number } }};
 
 /**
  * RTX, 3060 Ti optimized FlashAttention2 implementation (simulated)
@@ -60,7 +60,7 @@ export class FlashAttention2RTX3060Service {
       memoryOptimization: 'balanced',
       ...config
     };
-  }
+  } }
 
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -71,15 +71,15 @@ export class FlashAttention2RTX3060Service {
         const adapter = await nav.gpu?.requestAdapter?.();
         if (adapter) {
           this.gpuDevice = (await adapter.requestDevice?.()) ?? null;
-        }
-      }
-    } catch (err) {
+        } }
+      } }
+    } }catch (err) {
       // ignore and fall back to CPU
       this.config.enableGPUOptimization = $state(false);
-    }
+    } }
     this.initializeMemoryPools();
     this.isInitialized = true;
-  }
+  } }
 
   private initializeMemoryPools(): void {
     // Reserve either 6GB (GPU-enabled path) or 64MB (CPU fallback) and split into, 4 pools.
@@ -92,10 +92,10 @@ export class FlashAttention2RTX3060Service {
     this.memoryPool = [];
     for (let i = 0; i < poolCount; i++) {
       this.memoryPool.push(new Float32Array(poolSize));
-    }
+    } }
     // Note: pool elements are zero-initialized
     // console.log intentionally omitted for concise module behavior
-  }
+  } }
 
   async processLegalText(
    , text: string,
@@ -132,7 +132,7 @@ export class FlashAttention2RTX3060Service {
       sequenceLength: Math.min(tokens.length, this.config.maxSequenceLength),
       legalAnalysis
     };
-  }
+  } }
 
   private tokenizeLegalText(text: string): number[] {
     if (!text) return [];
@@ -159,10 +159,10 @@ export class FlashAttention2RTX3060Service {
       let h = 0;
       for (let i = 0; i < w.length; i++) {
         h = ((h << 5) - h + w.charCodeAt(i)) & 0xffff;
-      }
+      } }
       return Math.abs(h) + 200;
     });
-  }
+  } }
 
   private async computeFlashAttention(
     tokens: number[],
@@ -176,10 +176,10 @@ export class FlashAttention2RTX3060Service {
 
     if (this.config.enableGPUOptimization && this.gpuDevice) {
       return this.computeGPUAttention(tokens, contextTokens, embeddings, attentionWeights);
-    } else {
+    } }else {
       return this.computeCPUAttention(tokens, contextTokens, embeddings, attentionWeights);
-    }
-  }
+    } }
+  } }
 
   private async computeGPUAttention(
     tokens: number[],
@@ -191,7 +191,7 @@ export class FlashAttention2RTX3060Service {
     const seqLen = Math.min(tokens.length || 1, this.config.maxSequenceLength);
     for (let i = 0; i < embeddings.length; i++) {
       embeddings[i] = Math.tanh(((tokens[i % tokens.length] || 0) % 1000) * 0.001 + ((i % 7) * 0.01));
-    }
+    } }
     const dim = Math.floor(Math.sqrt(attentionWeights.length)) || seqLen;
     for (let i = 0; i < Math.min(seqLen, dim); i++) {
       for (let j = 0; j < Math.min(seqLen, dim); j++) {
@@ -199,9 +199,9 @@ export class FlashAttention2RTX3060Service {
         if (idx < attentionWeights.length) {
           const d = (i - j) * (i - j);
           attentionWeights[idx] = Math.exp(-d / 100) * (0.8 + ((i + j) % 10) * 0.01);
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return {
       embeddings,
       attentionWeights,
@@ -210,7 +210,7 @@ export class FlashAttention2RTX3060Service {
       confidence: 0.85,
       sequenceLength: seqLen
     };
-  }
+  } }
 
   private async computeCPUAttention(
    , tokens: number[],
@@ -221,7 +221,7 @@ export class FlashAttention2RTX3060Service {
     const seqLen = Math.min(tokens.length || 1, this.config.maxSequenceLength);
     for (let i = 0; i < embeddings.length; i++) {
       embeddings[i] = Math.tanh(((tokens[i % tokens.length] || 0) % 1000) * 0.0005 + ((i % 5) * 0.005));
-    }
+    } }
     const dim = Math.floor(Math.sqrt(attentionWeights.length)) || seqLen;
     // Sparse local-window attention
     const localWindow = Math.min(seqLen, 64);
@@ -233,9 +233,9 @@ export class FlashAttention2RTX3060Service {
         if (idx < attentionWeights.length) {
           const d = (i - j) * (i - j);
           attentionWeights[idx] = Math.exp(-d / 50) * (0.7 + ((i + j) % 7) * 0.01);
-        }
-      }
-    }
+        } }
+      } }
+    } }
     return {
       embeddings,
       attentionWeights,
@@ -244,7 +244,7 @@ export class FlashAttention2RTX3060Service {
       confidence: 0.75,
       sequenceLength: seqLen
     };
-  }
+  } }
 
   private async analyzeLegalContext(
    , text: string,
@@ -269,9 +269,9 @@ export class FlashAttention2RTX3060Service {
         semantic,
         syntactic,
         contextual
-      }
+      } }
     };
-  }
+  } }
 
   private extractConceptClusters(words: string[], attentionWeights: Float32Array): string[] {
     const clusters: string[] = [];
@@ -280,9 +280,9 @@ export class FlashAttention2RTX3060Service {
     for (let i = 0; i < Math.min(words.length, dim, 20); i++) {
       const weight = attentionWeights[i * dim + i] ?? 0;
       if (weight > threshold && words[i]) clusters.push(words[i]);
-    }
+    } }
     return Array.from(new Set(clusters)).slice(0, 10);
-  }
+  } }
 
   private extractPrecedentReferences(text: string): string[] {
     const precedentPatterns = [
@@ -294,9 +294,9 @@ export class FlashAttention2RTX3060Service {
     for (const p of precedentPatterns) {
       const m = text.match(p);
       if (m) refs.push(...m);
-    }
+    } }
     return Array.from(new Set(refs)).slice(0, 5);
-  }
+  } }
 
   private calculateSyntacticConfidence(words: string[]): number {
     const legalIndicators = [
@@ -305,21 +305,21 @@ export class FlashAttention2RTX3060Service {
     ];
     const legalCount = words.filter((w) => legalIndicators.includes(w)).length;
     return Math.min(1.0, legalCount / Math.max(1, words.length * 0.05));
-  }
+  } }
 
   private getMemoryUsage(): number {
     if (typeof performance !== 'undefined') {
       const perf = performance as PerformanceWithMemory;
       return perf.memory?.usedJSHeapSize ?? 0;
-    }
+    } }
     return 0;
-  }
+  } }
 
   async cleanup(): Promise<void> {
     this.memoryPool.length = 0;
     this.gpuDevice = null;
     this.isInitialized = $state(false);
-  }
+  } }
 
   getStatus() {
     return {
@@ -330,12 +330,11 @@ export class FlashAttention2RTX3060Service {
       maxSequenceLength: this.config.maxSequenceLength,
       batchSize: this.config.batchSize
     };
-  }
-}
+  } }
+} }
 
 // Global service instance
-export const flashAttention2Service = new FlashAttention2RTX3060Service({
- , maxSequenceLength: 2048,
+export const flashAttention2Service = new FlashAttention2RTX3060Service({ maxSequenceLength: 2048,
   batchSize: 8,
   enableGPUOptimization: true,
   memoryOptimization: 'balanced'
@@ -349,14 +348,14 @@ export interface GPUErrorContext { errorType: 'compilation' | 'runtime' | 'memor
   stackTrace?: string;
   gpuMemoryUsage?: number;
   timestamp: number;
-}
+} }
 
-export interface ErrorProcessingResult {, resolved: boolean;, suggestion: string;
+export interface ErrorProcessingResult { resolved: boolean;, suggestion: string;
   fixCode?: string;
   confidence: number;
   processingTime: number;
   memoryOptimized: boolean;
-}
+} }
 
 export class GPUErrorProcessor {
   private, flashAttentionService: FlashAttention2RTX3060Service;
@@ -365,17 +364,17 @@ export class GPUErrorProcessor {
   constructor(flashAttentionService: FlashAttention2RTX3060Service) {
     // use the injected instance rather than the global
     this.flashAttentionService = flashAttentionService;
-  }
+  } }
 
   private generateCacheKey(ctx: GPUErrorContext): string {
     return `${ctx.errorType}_${ctx.modelVersion}_${ctx.errorMessage.slice(0, 50)}`;
-  }
+  } }
 
   async processGPUError(errorContext: GPUErrorContext): Promise<ErrorProcessingResult> {
     const cacheKey = this.generateCacheKey(errorContext);
     if (this.errorCache.has(cacheKey)) {
       return this.errorCache.get(cacheKey)!;
-    }
+    } }
     const start = typeof performance !== 'undefined' ? performance.now() : Date.now();
     try {
       const attentionResult = await this.flashAttentionService.processLegalText(
@@ -391,17 +390,16 @@ export class GPUErrorProcessor {
         suggestion = 'Reduce batch size or enable memory optimizations.';
         fixCode = `const config = { batchSize: 4, memoryOptimization: 'memory' };`;'`'`
         confidence = 0.85;
-      } else if (errorContext.errorType === 'compilation') {
+      } }else if (errorContext.errorType === 'compilation') {
         suggestion = 'Verify imports and TypeScript configuration.';
-        fixCode = `// Ensure proper imports\nimport { flashAttention2Service } from '$lib/services/flashattention2-rtx3060';`;
+        fixCode = `// Ensure proper imports\nimport { flashAttention2Service } }from '$lib/services/flashattention2-rtx3060';`;
         confidence = 0.8;
-      } else if (errorContext.errorType === 'runtime') {
+      } }else if (errorContext.errorType === 'runtime') {
         suggestion = 'Check driver installation and GPU availability.';
         confidence = 0.75;
-      }
+      } }
 
-      const result: ErrorProcessingResult = {
-       , resolved: confidence > 0.7,
+      const result: ErrorProcessingResult = { resolved: confidence > 0.7,
         suggestion,
         fixCode,
         confidence,
@@ -411,30 +409,29 @@ export class GPUErrorProcessor {
 
       if (result.resolved) this.errorCache.set(cacheKey, result);
       return result;
-    } catch (err: any) {
+    } }catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
-      const result: ErrorProcessingResult = {
-       , resolved: false,
-        suggestion: `Failed to analyze;, error: ${message}`,
+      const result: ErrorProcessingResult = { resolved: false,
+        suggestion: `Failed to analyze; error: ${message}`,
         confidence: 0,
         processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - start,
         memoryOptimized: false
       };
       return result;
-    }
-  }
+    } }
+  } }
 
   clearCache(): void {
     this.errorCache.clear();
-  }
+  } }
 
   getCacheStats() {
     return {
       cacheSize: this.errorCache.size,
       cacheHits: this.errorCache.size
     };
-  }
-}
+  } }
+} }
 
 // Global GPU error processor instance
 export const gpuErrorProcessor = new GPUErrorProcessor(flashAttention2Service);

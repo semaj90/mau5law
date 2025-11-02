@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,8 +16,8 @@ import type { Document } from '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { json } }from '@sveltejs/kit';
 /**
  * Minimal, dependency-safe implementation:
  * - Tries optional $lib/services/aiAutoTagging if present, otherwise falls back to a heuristic tagger
@@ -25,17 +25,17 @@ import { json } from '@sveltejs/kit';
  */
 type AutoTagResult = { tags: string[];, entities: string[];
   summary: string;
- , confidence: number;
+  confidence: number;
 };
 const memoryStore = new Map<
   string,
   { id: string;, tags: string[];
     summary: string;
     embedding: number[] | null;
-   , updatedAt: string;
-  }
+  updatedAt: string;
+  } }
 >();
-type AutoTagDocument = (params: {, documentId: string;, content: string;, documentType: string }) => Promise<{
+type AutoTagDocument = (params: { documentId: string; content: string; documentType: string }) => Promise<{
   tags?: string[];
   entities?: (string | { text?: string })[];
   summary?: string;
@@ -58,7 +58,7 @@ function simpleAutoTag(content: string): AutoTagResult {
   const summary = content.length > 400 ? content.slice(0, 400) + '…' : content;
   const confidence = Math.min(0.99, Math.max(0.4, tags.length / 10));
   return { tags, entities, summary, confidence };
-}
+} }
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as { documentId?: string; content?: string; documentType?: string };
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const documentType = body.documentType ?? 'unknown';
     if (!documentId || !content) {
       return json({ success: false, error: 'documentId and content are required' }, { status: 400 });
-    }
+    } }
     let result: AutoTagResult | null = null;
     // Try optional real service if available
     try {
@@ -83,13 +83,13 @@ export const POST: RequestHandler = async ({ request }) => {
           summary: r?.summary ?? '',
           confidence: r?.confidence ?? 0.7
         };
-      }
-    } catch {
+      } }
+    } }catch {
       // ignore and use heuristic fallback below
-    }
+    } }
     if (!result) {
       result = simpleAutoTag(content);
-    }
+    } }
     memoryStore.set(documentId, {
       id: documentId,
       tags: result.tags,
@@ -105,10 +105,10 @@ export const POST: RequestHandler = async ({ request }) => {
       summary: result.summary,
       confidence: result.confidence,
       processing: {
-       , gpuAccelerated: false
-      }
+  gpuAccelerated: false
+      } }
     });
-  } catch (error) {
+  } }catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -116,22 +116,22 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'Failed to auto-tag document',
         details: message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     const user = locals.user;
     if (!user) {
       return json({ error: 'Authentication required' }, { status: 401 });
-    }
+    } }
     const documentId = url.searchParams.get('documentId');
     if (documentId) {
       const doc = memoryStore.get(documentId);
       if (!doc) {
         return json({ error: 'Document not found' }, { status: 404 });
-      }
+      } }
       return json({
         documentId,
         tags: doc.tags || [],
@@ -139,14 +139,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         hasEmbedding: !!doc.embedding,
         lastUpdated: doc.updatedAt
       });
-    }
+    } }
     const docs = Array.from(memoryStore.values());
     const tagged = docs.filter(d => (d.tags?.length ?? 0) > 0);
     const withEmb = docs.filter(d => !!d.embedding);
     const averageTagsPerDocument = tagged.length
       ? Math.round((tagged.reduce((sum: number, d) => sum + (d.tags?.length ?? 0), 0) / tagged.length) * 100) / 100
       : 0;
-    return json({ statistics: {, totalDocuments: docs.length,
+    return json({ statistics: { totalDocuments: docs.length,
         taggedDocuments: tagged.length,
         documentsWithEmbeddings: withEmb.length,
         averageTagsPerDocument
@@ -159,14 +159,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       goMicroservice: 'unknown',
       gpuAcceleration: false
     });
-  } catch (error) {
+  } }catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
         error: 'Failed to get auto-tagging status',
         details: message
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

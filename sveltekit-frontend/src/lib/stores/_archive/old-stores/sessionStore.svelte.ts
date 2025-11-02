@@ -1,24 +1,24 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * Global Session Store - Lucia v3 Integration (Svelte 5)
  * Provides app-wide session management with persistent storage and fallback mechanisms
  */
-import { browser } from '$app/environment';
+import { browser } }from '$app/environment';
 // Types based on Lucia v3 and app.d.ts
 export interface User {
   id: string;
   email?: string;
   role: 'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer' | 'user';
-}
-export interface Session {, id: string;, user: User;
+} }
+export interface Session { id: string;, user: User;
   fresh?: boolean;
   expiresAt?: Date;
-}
-export interface SessionState {, user: User | null;, session: Session | null;
+} }
+export interface SessionState { user: User | null;, session: Session | null;
   isAuthenticated: boolean;
   isLoading: boolean;
  , lastSyncAt: number;
-}
+} }
 // Create reactive session store using Svelte, 5 runes
 const createSessionStore = () => {
   // Initialize with empty state using $state
@@ -45,10 +45,10 @@ const createSessionStore = () => {
           isLoading: false,
           lastSyncAt: Date.now()
         };
-      } else {
+      } }else {
         // Fallback: Try to restore from persistent storage
         restoreSessionFromStorage();
-      }
+      } }
     },
     // Update session state
     setSession: (user: User | null, session: Session | null) => {
@@ -70,10 +70,10 @@ const createSessionStore = () => {
               cachedAt: Date.now()
             })
           );
-        } catch (e) {
+        } }catch (e) {
           console.warn('Failed to cache session:', e);
-        }
-      }
+        } }
+      } }
     },
     // Clear session
     clearSession: () => {
@@ -93,10 +93,10 @@ const createSessionStore = () => {
           delete win.__PERSISTED_SESSION;
           delete win.__SESSION;
           delete win.__LUCIA_SESSION;
-        } catch (e) {
+        } }catch (e) {
           console.warn('Failed to clear session cache:', e);
-        }
-      }
+        } }
+      } }
     },
     // Force refresh from server
     refreshSession: async () => {
@@ -108,14 +108,14 @@ const createSessionStore = () => {
           if (data?.user) {
             sessionState = {
               user: data.user,
-              session: data.session || {, id: 'server', user: data.user },
+              session: data.session || { id: 'server', user: data.user },
               isAuthenticated: true,
               isLoading: false,
               lastSyncAt: Date.now()
             };
             return data.user;
-          }
-        }
+          } }
+        } }
         // No valid session found
         sessionState = {
           user: null,
@@ -125,16 +125,16 @@ const createSessionStore = () => {
           lastSyncAt: Date.now()
         };
         return: null;
-      } catch (error) {
+      } }catch (error) {
         console.error('Session refresh failed:', error);
         sessionState.isLoading = $state(false);
         return: null;
-      }
+      } }
     },
     // Get current user for upload operations
     getCurrentUser: (): User | null => {
       return sessionState.user;
-    }
+    } }
   };
 };
 // Fallback session restoration from various storage mechanisms
@@ -150,15 +150,15 @@ function restoreSessionFromStorage() {
       if (cacheAge < 5 * 60 * 1000 && parsedCache.user) {
         sessionStore.setSession(parsedCache.user, parsedCache.session);
         return;
-      }
-    }
+      } }
+    } }
     // 2) Check window globals (some apps expose session)
     const win = window as: any;
     const candidate = win?.__PERSISTED_SESSION || win?.__SESSION || win?.__LUCIA_SESSION;
     if (candidate?.user?.id) {
       sessionStore.setSession(candidate.user, candidate.session || { id: 'global', user: candidate.user });
       return;
-    }
+    } }
     // 3) Check other localStorage keys
     const altSession = localStorage.getItem('session') || localStorage.getItem('auth');
     if (altSession) {
@@ -166,15 +166,15 @@ function restoreSessionFromStorage() {
       if (parsed?.user?.id) {
         sessionStore.setSession(parsed.user, parsed.session);
         return;
-      }
-    }
+      } }
+    } }
     // 4) Last resort: Try server refresh
     sessionStore.refreshSession();
-  } catch (error) {
+  } }catch (error) {
     console.warn('Session restoration failed:', error);
     sessionStore.clearSession();
-  }
-}
+  } }
+} }
 // Export singleton store
 export const sessionStore = createSessionStore();
 // Helper functions for accessing reactive state
@@ -182,7 +182,7 @@ export const getUser = () => sessionStore.state.user;
 export const getIsAuthenticated = () => sessionStore.state.isAuthenticated;
 export const getIsLoading = () => sessionStore.state.isLoading;
 // Utility functions for upload operations
-export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string;, uploaderEmail: string | null } => {
+export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; uploaderEmail: string | null } }=> {
   const currentUser = sessionStore.getCurrentUser();
   if (currentUser?.id) {
     return {
@@ -190,7 +190,7 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string;,
       uploaderRole: currentUser.role || 'viewer',
       uploaderEmail: currentUser.email || null
     };
-  }
+  } }
   // Try fallback mechanisms synchronously
   if (browser) {
     try {
@@ -203,7 +203,7 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string;,
           uploaderRole: candidate.user.role || 'viewer',
           uploaderEmail: candidate.user.email || null
         };
-      }
+      } }
       // Check localStorage
       const stored =
         localStorage.getItem('legal_ai_session_cache') ||
@@ -217,12 +217,12 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string;,
             uploaderRole: parsed.user.role || 'viewer',
             uploaderEmail: parsed.user.email || null
           };
-        }
-      }
-    } catch (e) {
+        } }
+      } }
+    } }catch (e) {
       console.warn('Fallback session lookup failed:', e);
-    }
-  }
+    } }
+  } }
   // Return anonymous fallback
   return {
     uploadedBy: 'anonymous',
@@ -230,3 +230,4 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string;,
     uploaderEmail: null
   };
 };
+

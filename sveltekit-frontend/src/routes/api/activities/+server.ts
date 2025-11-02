@@ -1,19 +1,19 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { caseActivities } from '$lib/server/db/schema-postgres';
+import type { Case } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import { caseActivities } }from '$lib/server/db/schema-postgres';
 import db from '$lib/server/db/index';
-import { sql, desc } from 'drizzle-orm';
-import { eq, or as orExpr } from '$lib/server/db/utils';
-import type { RequestHandler } from './$types.js';
-import { getUserId } from '$lib/server/auth/utils';
+import { sql, desc } }from 'drizzle-orm';
+import { eq, or as orExpr } }from '$lib/server/db/utils';
+import type { RequestHandler } }from './$types.js';
+import { getUserId } }from '$lib/server/auth/utils';
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    } }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    }
+    } }
     const caseId = url.searchParams.get('caseId');
     const activityType = url.searchParams.get('activityType');
     const status = url.searchParams.get('status');
@@ -29,32 +29,32 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     // Add case filter
     if (caseId) {
       filters.push(eq(caseActivities.caseId, caseId));
-    }
+    } }
     // Add activity type filter
     if (activityType) {
       filters.push(eq(caseActivities.activityType, activityType));
-    }
+    } }
     // Add status filter
     if (status) {
       filters.push(eq(caseActivities.status, status));
-    }
+    } }
     // Add priority filter
     if (priority) {
       filters.push(eq(caseActivities.priority, priority));
-    }
+    } }
     // Add assigned user filter
     if (assignedTo) {
       filters.push(eq(caseActivities.assignedTo, assignedTo));
-    }
+    } }
     // Add search filter
     if (search) {
       filters.push(
         orExpr(
-          sql`${caseActivities.title} ILIKE ${`%${search}%`}`,
-          sql`${caseActivities.description} ILIKE ${`%${search}%` }`
+          sql`${caseActivities.title} }ILIKE ${`%${search}%`}`,
+          sql`${caseActivities.description} }ILIKE ${`%${search}%` }`
         )
       );
-    }
+    } }
     // Determine the column for sorting
     const orderColumn =
       sortBy === 'title'
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     let finalQuery = baseQuery;
     if (filters.length > 0) {
       finalQuery = baseQuery.where(...filters);
-    }
+    } }
     const orderedQuery = finalQuery.orderBy(sortOrder === 'asc' ? orderColumn : desc(orderColumn));
     const activityResults = await orderedQuery.limit(limit).offset(offset);
     // Get total count for pagination
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     let finalCountQuery = baseCountQuery;
     if (filters.length > 0) {
       finalCountQuery = baseCountQuery.where(...filters);
-    }
+    } }
     const totalCountResult = await finalCountQuery;
     const totalCount = totalCountResult[0]?.count ?? 0;
     return json({
@@ -95,26 +95,26 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         limit,
         offset,
         total: totalCount
-      }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error fetching activities:', error instanceof Error ? error : String(error));
     return json({ error: 'Failed to fetch activities' }, { status: 500 });
-  }
+  } }
 };
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated` }, { status: 401 });'`
-    }
+    } }
     if (!db) {
       return json({ error: `Database not available` }, { status: 500 });
-    }
+    } }
     const data = await request.json();
     // Validate required fields
     if (!data.caseId || !data.title || !data.activityType) {
       return json({ error: `Case ID, title, and activity type are required` }, { status: 400 });
-    }
+    } }
     // Map frontend data to schema fields
     const activityData = {
       caseId: data.caseId,
@@ -133,8 +133,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     };
     const [newActivity] = await db.insert(caseActivities).values(activityData).returning();
     return json(newActivity, { status: 201 });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error creating activity: ', error instanceof Error ? error : String(error));'`'`
     return json({ error: `Failed to create activity` }, { status: 500 });
-  }
+  } }
 };
+

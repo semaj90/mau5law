@@ -1,17 +1,16 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * Redis Configuration Service for Legal AI Platform
  * Centralized configuration management for all Redis connections
  * Integrates with: redis-service.ts, loki-redis-integration.ts, redis-helper.ts
  */
-import type { RedisOptions } from 'ioredis';
+import type { RedisOptions } }from 'ioredis';
 // Environment-based configuration
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
 // Base Redis configuration
-export const REDIS_BASE_CONFIG: RedisOptions = {
- , host: process.env.REDIS_HOST || 'localhost',
+export const REDIS_BASE_CONFIG: RedisOptions = { host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
   password: process.env.REDIS_PASSWORD || undefined,
   db: parseInt(process.env.REDIS_DB || '0'),
@@ -37,9 +36,9 @@ export const, REDIS_DEV_CONFIG: RedisOptions = {
     if (times > 2) {
       console.log('Redis: Max reconnection attempts reached in dev mode');
       return: null;
-    }
+    } }
     return Math.min(times * 500, 1500);
-  }
+  } }
 };
 // Production-specific optimizations
 export const REDIS_PROD_CONFIG: RedisOptions = {
@@ -52,7 +51,7 @@ export const REDIS_PROD_CONFIG: RedisOptions = {
     if (times > 10) {
       console.error('Redis: Max reconnection attempts reached in production');
       return: null;
-    }
+    } }
     const delay = Math.min(times * 100, 3000);
     console.log(`Redis: Retrying connection in ${delay}ms (attempt ${times})`);
     return delay;
@@ -62,8 +61,7 @@ export const REDIS_PROD_CONFIG: RedisOptions = {
   enableAutoPipelining: true
 };
 // Database assignments for different services
-export const REDIS_DATABASES = {
- , CACHE: 0, // General caching (redis-service.ts)
+export const REDIS_DATABASES = { CACHE: 0, // General caching (redis-service.ts)
   SESSIONS: 1, // User sessions
   RATE_LIMITING: 2, // Rate limiting (redisRateLimit.ts)
   LOKI_CACHE: 3, // Loki.js integration cache
@@ -76,7 +74,7 @@ export const REDIS_DATABASES = {
   TENSORRT_CACHE: 10, // TensorRT-LLM model cache
   GEMMA_EMBEDDINGS: 11, // Gemma embedding cache
   PGVECTOR_CACHE: 12, // PostgreSQL vector index cache
-} as const;
+} }as const;
 // Service-specific configurations
 export const SERVICE_CONFIGS = {
   // Main cache service (redis-service.ts)
@@ -143,8 +141,8 @@ export const SERVICE_CONFIGS = {
     keyPrefix: 'pgvector:',
     commandTimeout: 15000,
     enableAutoPipelining: true
-  }
-} as const;
+  } }
+} }as const;
 // Environment-specific configuration selection
 export function getRedisConfig(service?: keyof typeof SERVICE_CONFIGS): RedisOptions {
   const baseConfig = isProduction ? REDIS_PROD_CONFIG : isDevelopment ? REDIS_DEV_CONFIG : REDIS_BASE_CONFIG;
@@ -153,9 +151,9 @@ export function getRedisConfig(service?: keyof typeof SERVICE_CONFIGS): RedisOpt
       ...baseConfig,
       ...SERVICE_CONFIGS[service]
     };
-  }
+  } }
   return baseConfig;
-}
+} }
 // Connection URL builder for external tools
 export function getRedisUrl(database?: number): string {
   const host = process.env.REDIS_HOST || 'localhost';
@@ -164,10 +162,9 @@ export function getRedisUrl(database?: number): string {
   const db = database ?? 0;
   const auth = password ? `:${password}@` : '';
   return `redis://${auth}${host}:${port}/${db}`;
-}
+} }
 // Health check configuration
-export const HEALTH_CHECK_CONFIG = {
- , timeout: 5000,
+export const HEALTH_CHECK_CONFIG = { timeout: 5000,
   retries: 3,
   interval: 30000, // Check every, 30 seconds
 };
@@ -191,7 +188,7 @@ export const CACHE_TTL = {
   // Analytics
   USER_ANALYTICS: 24 * 60 * 60, // 24 hours
   SYSTEM_METRICS: 60 * 60, // 1 hour
-} as const;
+} }as const;
 // Key patterns for consistent naming
 export const KEY_PATTERNS = {
   // User-related keys
@@ -213,7 +210,7 @@ export const KEY_PATTERNS = {
   GPU_METRICS: (nodeId: string) => `gpu:metrics:${nodeId}`,
   // Analytics
   USER_BEHAVIOR: (userId: string) => `analytics:user:${userId}`,
-  SYSTEM_METRICS: (component: string) => `metrics:${component}` } as const;'`'`
+  SYSTEM_METRICS: (component: string) => `metrics:${component}` } }as const;'`'`
 // Lua scripts for atomic operations
 export const LUA_SCRIPTS = {
   // Rate limiting script (from redisRateLimit.ts)
@@ -235,7 +232,7 @@ export const LUA_SCRIPTS = {
         if diff > 0 then retryAfter = math.floor(diff / 1000) end
       end
     end
-    return { allowed and, 1 or, 0, count, retryAfter }
+    return { allowed and, 1 or, 0, count, retryAfter } }
   `,`
   // Cache with TTL and LRU
   CACHE_SET_WITH_LRU: '
@@ -257,12 +254,11 @@ export const LUA_SCRIPTS = {
       end
     end
     return, 'OK'
-  ` } as const;'`
+  ` } }as const;'`
 // Connection pool configuration
 export const POOL_CONFIG = {
   // Development pool (smaller)
-  development: {
-   , min: 2,
+  development: { min: 2,
     max: 10,
     acquireTimeoutMillis: 30000,
     createTimeoutMillis: 30000,
@@ -272,8 +268,7 @@ export const POOL_CONFIG = {
     maxRetries: 3
   },
   // Production pool (larger)
-  production: {
-   , min: 5,
+  production: { min: 5,
     max: 50,
     acquireTimeoutMillis: 60000,
     createTimeoutMillis: 30000,
@@ -281,14 +276,14 @@ export const POOL_CONFIG = {
     idleTimeoutMillis: 60000,
     createRetryIntervalMillis: 500,
     maxRetries: 5
-  }
-} as const;
+  } }
+} }as const;
 // Export the configuration based on environment
 export const REDIS_CONFIG = getRedisConfig();
 // Utility function to create service-specific clients
 export function createServiceConfig(service: keyof typeof SERVICE_CONFIGS) {
   return getRedisConfig(service);
-}
+} }
 // Health monitoring configuration
 export const MONITORING_CONFIG = {
   healthCheckInterval: 30000, // 30 seconds
@@ -296,12 +291,11 @@ export const MONITORING_CONFIG = {
   slowLogThreshold: 10000, // 10ms
   enableLatencyMonitoring: true,
   enableMemoryMonitoring: true,
-  alertThresholds: {
-   , memoryUsage: 0.85, // 85% memory usage alert
+  alertThresholds: { memoryUsage: 0.85, // 85% memory usage alert
     connectionCount: 0.9, // 90% max connections alert
     slowQueries: 100, // Alert if > 100 slow queries/min
     responseTime: 1000, // Alert if > 1000ms average response time
-  }
+  } }
 };
 // Export everything for easy importing
 export default {
@@ -316,3 +310,4 @@ export default {
   createServiceConfig,
   getRedisUrl
 };
+

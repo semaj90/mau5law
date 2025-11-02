@@ -2,8 +2,7 @@
 // Compatible with the comprehensive schema structure
 
 export const mockUsers = [
-  {,
-    id: 'c7b5e5f0-3c4a-4b1a-8e9f-1a2b3c4d5e6f',
+  { id: 'c7b5e5f0-3c4a-4b1a-8e9f-1a2b3c4d5e6f',
     email: 'attorney1@example.com',
     username: 'attorney1',
     firstName: 'Sarah',
@@ -21,7 +20,7 @@ export const mockUsers = [
     metadata: {
       specializations: ['white_collar_crime', 'appeals'],
       years_experience: 12
-    }
+    } }
   },
   {
     id: 'd8c6f6g1-4d5b-5c2b-9f0g-2b3c4d5e6f7g',
@@ -42,13 +41,12 @@ export const mockUsers = [
     metadata: {
       clearance_level: 'confidential',
       years_experience: 5
-    }
+    } }
   },
 ];
 
 export const mockCases = [
-  {,
-    id: 'e9d7g7h2-5e6c-6d3c-a1h0-3c4d5e6f7g8h',
+  { id: 'e9d7g7h2-5e6c-6d3c-a1h0-3c4d5e6f7g8h',
     caseNumber: 'CR-2024-001',
     title: 'People v. Johnson - Embezzlement Investigation',
     description:
@@ -71,7 +69,7 @@ export const mockCases = [
       case_type: 'felony',
       complexity_score: 8.5,
       investigation_priority: 'high'
-    }
+    } }
   },
   {
     id: 'f0e8h8i3-6f7d-7e4d-b2i1-4d5e6f7g8h9i',
@@ -97,13 +95,12 @@ export const mockCases = [
       case_type: 'civil',
       complexity_score: 5.2,
       injury_severity: 'moderate'
-    }
+    } }
   },
 ];
 
 export const mockEvidence = [
-  {,
-    id: 'g1f9i9j4-7g8e-8f5e-c3j2-5e6f7g8h9i0j',
+  { id: 'g1f9i9j4-7g8e-8f5e-c3j2-5e6f7g8h9i0j',
     caseId: 'e9d7g7h2-5e6c-6d3c-a1h0-3c4d5e6f7g8h',
     title: 'Financial Records - Acme Technologies Bank Statements',
     description: 'Bank statements from Chase Manhattan showing suspicious large transfers over an 18-month period.',
@@ -116,8 +113,7 @@ export const mockEvidence = [
     collectedBy: 'David Chen',
     location: 'Acme Technologies CFO Office',
     chainOfCustody: [
-      {,
-        timestamp: '2024-03-20T14:30:00Z',
+      { timestamp: '2024-03-20T14:30:00Z',
         officer: 'David Chen',
         action: 'evidence_collected',
         location: 'Acme Technologies CFO Office'
@@ -150,7 +146,7 @@ export const mockEvidence = [
       transaction_count: 23,
       date_range: '2023-01-15 to 2024-06-30',
       evidence_quality: 'high'
-    }
+    } }
   },
   {
     id: 'h2g0j0k5-8h9f-9g6f-d4k3-6f7g8h9i0j1k',
@@ -186,7 +182,7 @@ export const mockEvidence = [
       duration_seconds: 62,
       camera_id: 'CAM-01',
       evidence_quality: 'medium'
-    }
+    } }
   },
 ];
 
@@ -215,7 +211,7 @@ export const mockChatMessages: ChatMessage[] = [];
 // Helper function to generate embeddings (mock implementation)
 export function generateMockEmbedding(dimensions: number = 384): number[] {
   return Array.from({ length: dimensions }, () => Math.random() * 2 - 1);
-}
+} }
 
 // Initialize mock data with embeddings (returns cloned collections with embeddings attached)
 export function initializeMockDataWithEmbeddings() {

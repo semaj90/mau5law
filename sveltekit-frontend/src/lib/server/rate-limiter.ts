@@ -3,11 +3,11 @@
 interface RateLimitOptions {
   window: number; // time window in ms,
   max: number; // max requests per window
-}
+} }
 interface RateLimitResult { allowed: boolean;, remaining: number;
   reset: number; // timestamp when window resets
   retryAfter?: number;
-}
+} }
 class InMemoryRateLimiter {
   private store: Map<string, { count: number; expires: number }> = new Map();
   async check(identifier: string, bucket: string, options: RateLimitOptions): Promise<RateLimitResult> {
@@ -17,7 +17,7 @@ class InMemoryRateLimiter {
     if (!existing || existing.expires < now) {
       this.store.set(key, { count: 1, expires: now + options.window });
       return { allowed: true, remaining: options.max - 1, reset: now + options.window };
-    }
+    } }
     if (existing.count >= options.max) {
       return {
         allowed: false,
@@ -25,10 +25,10 @@ class InMemoryRateLimiter {
         reset: existing.expires,
         retryAfter: Math.max(0, Math.ceil((existing.expires - now) / 1000))
       };
-    }
+    } }
     existing.count += 1;
     return { allowed: true, remaining: options.max - existing.count, reset: existing.expires };
-  }
-}
+  } }
+} }
 export const rateLimiter = new InMemoryRateLimiter();
 export type { RateLimitOptions, RateLimitResult }

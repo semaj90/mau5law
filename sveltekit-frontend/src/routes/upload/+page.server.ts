@@ -1,19 +1,18 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import type { User } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 /// <reference, types="vite/client" />
-import type { PageServerLoad } from './$types.js';
-import { fail } from '@sveltejs/kit';
-import type { Actions } from './$types.js';
-import { fileUploadSchema } from '$lib/schemas/fileUploadSchema'; // Import the canonical schema
+import type { PageServerLoad } }from './$types.js';
+import { fail } }from '@sveltejs/kit';
+import type { Actions } }from './$types.js';
+import { fileUploadSchema } }from '$lib/schemas/fileUploadSchema'; // Import the canonical schema
 import xstateIntegration from '$lib/services/xstate-integration'; // For session management
-import { z } from 'zod'; // Import z from zod for schema manipulation
+import { z } }from 'zod'; // Import z from zod for schema manipulation
 
 // The `z.any()` type for files can cause type inference issues with sveltekit-superforms.
 // The recommended approach is to use `z.instanceof(File)` for server-side schemas.
 // This provides strong typing for the file: object received from FormData.
-const serverFileUploadSchema = fileUploadSchema.extend({
- , file: z.instanceof(File, { message: `Please upload a file.` }).refine(f => f.size > 0, 'File cannot be empty.')
+const serverFileUploadSchema = fileUploadSchema.extend({ file: z.instanceof(File, { message: 'Please upload a file.' }).refine(f => f.size > 0, 'File cannot be empty.')
 });
 
 // --- NEW: infer a concrete TypeScript type from the Zod schema ---
@@ -24,7 +23,7 @@ const detectServicePort = (): string => {
   // Priority 1: Explicit environment variable
   if (process.env.UPLOAD_SERVICE_URL) {
     return process.env.UPLOAD_SERVICE_URL;
-  }
+  } }
 
   // Priority 2: Check if running behind Caddy QUIC proxy
   const isCaddyQuic = process.env.QUIC_ENABLED === 'true' || process.env.CADDY_QUIC === 'true';
@@ -45,11 +44,11 @@ const UPLOAD_SERVICE_URL = detectServicePort();
 const REDIS_URL = process.env.REDIS_URL || process.env.REDIS || undefined;
 
 // --- Replace `any` with a minimal Redis-like interface to satisfy TS ---
-type RedisLike = { lpush: (key: string;, value: string) => Promise<number>;, ltrim: (key: string;, start: number;, stop: number) => Promise<void>;
-  on?: (event: string;, handler: (e: any) => void) => void;
+type RedisLike = { lpush: (key: string; value: string) => Promise<number>;, ltrim: (key: string; start: number; stop: number) => Promise<void>;
+  on?: (event: string; handler: (e: any) => void) => void;
   quit?: () => Promise<void>;
   disconnect?: () => void;
-} | null;
+} }| null;
 
 let _redisClient: RedisLike = null;
 
@@ -64,7 +63,7 @@ const getRedisClient = async () => {
     type IORedisConstructor = new (uri?: string) => Exclude<RedisLike, null>;
 
     // Use: unknown casts (not `any`) to extract the constructor from the dynamic module.
-    const maybe = mod as: unknown as { default?: IORedisConstructor } | IORedisConstructor;
+    const maybe = mod as: unknown as { default?: IORedisConstructor } }| IORedisConstructor;
     const IORedis = (maybe as { default?: IORedisConstructor }).default ?? (maybe as IORedisConstructor);
 
     // Create a concrete client instance and attach safe event handlers
@@ -79,31 +78,31 @@ const getRedisClient = async () => {
             '[Redis] NOAUTH (authentication required). Redis calls will be disabled until a valid REDIS_URL with credentials is provided.'
           );
           return;
-        }
-      } catch {
+        } }
+      } }catch {
         // swallow unexpected errors in the handler
-      }
+      } }
       console.warn('[Redis] connection error', e);
     });
     clientInstance.on?.('connect', () => console.log('[Redis] connected (ioredis)'));
     _redisClient = clientInstance as RedisLike;
     return _redisClient;
-  } catch (e) {
+  } }catch (e) {
     console.warn('ioredis not available, falling back to console logging.', e);
     _redisClient = null;
     return: null;
-  }
+  } }
 };
 
 const logError = async (context: string, error: any, details?: Record<string, unknown>) => {
   const payload = {
     timestamp: new Date().toISOString(),
     context,
-    error: error instanceof Error ? {, message: error.message, stack: error.stack } : String(error),
-    details: details ?? {}
+    error: error instanceof Error ? { message: error.message, stack: error.stack } }: String(error),
+    details: details ?? {} }
   };
   // Always print to stderr for immediate visibility
-  console.error(`[${context}], Error: ', payload);'`
+  console.error(`[${context} }, Error: ', payload);'`
 
   // Attempt to push to Redis list if available
   try {
@@ -113,27 +112,25 @@ const logError = async (context: string, error: any, details?: Record<string, un
       await client.lpush('error_logs', JSON.stringify(payload));
       // Optionally trim to keep list bounded
       await client.ltrim('error_logs', 0, 999); // keep last, 1000 entries
-    }
-  } catch (redisErr) {
+    } }
+  } }catch (redisErr) {
     // don't throw - just log that redis logging failed'
     console.warn('[logError] failed to write to redis', redisErr);
-  }
+  } }
 };
 
-export const load: PageServerLoad = async ({, request: _request }) => {
+export const load: PageServerLoad = async ({ request: _request }) => {
   // Provide a minimal initial form: object for the page (no file uploaded yet).
   // We avoid calling superValidate here (types vary between library versions) and
   // instead return a small: object with the properties used by the rest of the code.
-  const initialForm = {
-   , valid: true,
+  const initialForm = { valid: true,
     errors: {},
-    data: {} as: unknown as ServerFileUploadData
+    data: {} }as: unknown as ServerFileUploadData
   };
   return { form: initialForm };
 };
 
-export const actions: Actions = {
- , upload: async ({ request, fetch }) => {
+export const actions: Actions = { upload: async ({ request, fetch }) => {
     // Parse form data from the Request and validate against the Zod schema.
     // We use safeParseAsync to get a predictable ValidationResult without relying on
     // superValidate typings which differ across versions.
@@ -157,13 +154,12 @@ export const actions: Actions = {
           valid: false,
           errors: parsed.error.flatten(),
           data: build
-        } as const;
-      }
-      return {
-       , valid: true,
+        } }as const;
+      } }
+      return { valid: true,
         errors: {},
         data: parsed.data
-      } as const;
+      } }as const;
     };
 
     const form = await parseFormFromRequest(request);
@@ -171,17 +167,17 @@ export const actions: Actions = {
     if (!form.valid) {
       await logError('UploadAction', 'Form validation failed', { errors: form.errors });
       return fail(400, { form });
-    }
+    } }
 
     try {
       // Get user from XState session for: 'uploadedBy' metadata
       // Provide a narrow typed view of xstateIntegration to, avoid: 'any' usage
       type User = { id?: string };
-      type SessionMachineSnapshot = { context?: { user?: User } } | undefined;
-      type ChildActor = { getSnapshot?: () => SessionMachineSnapshot } | undefined;
-      type ChildrenMap = { get?: (name: string) => ChildActor | undefined } | undefined;
-      type GlobalSnapshot = { children?: ChildrenMap } | undefined;
-      type GlobalActor = { getSnapshot?: () => GlobalSnapshot } | undefined;
+      type SessionMachineSnapshot = { context?: { user?: User } }} }| undefined;
+      type ChildActor = { getSnapshot?: () => SessionMachineSnapshot } }| undefined;
+      type ChildrenMap = { get?: (name: string) => ChildActor | undefined } }| undefined;
+      type GlobalSnapshot = { children?: ChildrenMap } }| undefined;
+      type GlobalActor = { getSnapshot?: () => GlobalSnapshot } }| undefined;
       type XStateIntegrationLike = {
         globalState?: GlobalActor;
         getGlobalState?: () => GlobalActor | undefined;
@@ -207,14 +203,14 @@ export const actions: Actions = {
       // form.data.caseId is now correctly typed as: string | undefined
       if (form.data.caseId) {
         uploadFormData.append('caseId', String(form.data.caseId)); // Ensure: string conversion
-      }
+      } }
       // form.data.type is now correctly typed, as: string
       uploadFormData.append('documentType', String(form.data.type)); // Ensure: string conversion
 
       // form.data.description is now correctly typed, as: string | undefined
       if (form.data.description) {
         uploadFormData.append('description', String(form.data.description)); // Ensure: string conversion
-      }
+      } }
 
       // Add tags if provided
       // form.data.tags is now correctly typed, as: string[] | undefined
@@ -226,7 +222,7 @@ export const actions: Actions = {
           return acc;
         }, {});
         uploadFormData.append('tags', JSON.stringify(tagsMap));
-      }
+      } }
 
       // Add metadata
       const metadata = {
@@ -258,7 +254,7 @@ export const actions: Actions = {
         });
         return fail(uploadResponse.status, {
           form,
-          message: 'Upload;, failed: ${errorText || 'Unknown error from upload service' }' });'' }
+          message: 'Upload; failed: ${errorText || 'Unknown error from upload service' } } });'' } }
 
       const uploadResult = await uploadResponse.json();
       if (!uploadResult.success) {
@@ -271,19 +267,19 @@ export const actions: Actions = {
         return fail(500, {
           form,
           message: uploadResult.message || 'Upload failed due to an internal service error.` });'`
-      }
+      } }
 
       return {
         form,
         uploadResult,
-        message: `Document uploaded successfully!` };
-    } catch (error: any) {
+        message: 'Document uploaded successfully!' };
+    } }catch (error: any) {
       let errMessage = 'An unexpected internal server error occurred during document upload.';
       if (error instanceof Error) {
         errMessage = error.message;
-      } else if (typeof error === 'string') {
+      } }else if (typeof error === 'string') {
         errMessage = error;
-      }
+      } }
       await logError('UploadAction', error, {
         userMessage: errMessage,
         stack: error instanceof Error ? error.stack : undefined
@@ -292,6 +288,7 @@ export const actions: Actions = {
         form,
         message: errMessage
       });
-    }
-  }
+    } }
+  } }
 };
+

@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getDb } from '$lib/server/db';
-import { getRedisHealth } from '$lib/server/redis-cache';
-import { sql } from 'drizzle-orm';
-import { legalDocumentsJsonb } from '../../../../drizzle/schema';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { getDb } }from '$lib/server/db';
+import { getRedisHealth } }from '$lib/server/redis-cache';
+import { sql } }from 'drizzle-orm';
+import { legalDocumentsJsonb } }from '../../../../drizzle/schema';
 
 /**
  * GET /api/search-pgvector-optimized/health
@@ -16,12 +16,12 @@ import { legalDocumentsJsonb } from '../../../../drizzle/schema';
  * - Indexed documents count
  * - Embedding dimensions
  */
-export const, GET: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
   const checks = {
     timestamp: new Date().toISOString(),
     service: 'pgvector-optimized-search',
     status: 'healthy' as const,
-    checks: {} as Record<string, any>
+    checks: {} }as Record<string, any>
   };
 
   try {
@@ -32,13 +32,13 @@ export const, GET: RequestHandler = async () => {
       status: 'ok',
       connected: true
     };
-  } catch (error) {
+  } }catch (error) {
     checks.checks.postgresql = {
       status: 'error',
       connected: false,
       error: error instanceof Error ? error.message : `Unknown error` };
     checks.status = 'unhealthy';
-  }
+  } }
 
   try {
     // Check, 2: pgvector extension
@@ -50,13 +50,13 @@ export const, GET: RequestHandler = async () => {
     checks.checks.pgvector = {
       status: 'ok',
       installed: true,
-      version: (pgvectorCheck, as: any)[0]?.extversion || 'unknown' };'` } catch (error) {'`
+      version: (pgvectorCheck, as: any)[0]?.extversion || 'unknown' };'` } }catch (error) {'`
     checks.checks.pgvector = {
       status: 'error',
       installed: false,
       error: error instanceof Error ? error.message : `pgvector not found` };
     checks.status = 'unhealthy';
-  }
+  } }
 
   try {
     // Check, 3: Redis cache
@@ -67,12 +67,12 @@ export const, GET: RequestHandler = async () => {
       ping: redisHealth.ping,
       memory: redisHealth.memory
     };
-  } catch (error) {
+  } }catch (error) {
     checks.checks.redis = {
       status: 'error',
       healthy: false,
       error: error instanceof Error ? error.message : `Redis check failed' };'`
-    // Redis being down doesn't make service unhealthy (graceful degradation)` }'`
+    // Redis being down doesn't make service unhealthy (graceful degradation)` } }`
 
   try {
     // Check 4: Indexed documents count
@@ -87,12 +87,12 @@ export const, GET: RequestHandler = async () => {
       indexed: documentCount,
       embeddingDimensions: 384,
       indexType: `IVFFlat` };
-  } catch (error) {
+  } }catch (error) {
     checks.checks.documents = {
       status: 'error',
       indexed: 0,
       error: error instanceof Error ? error.message : `Count check failed` };
-  }
+  } }
 
   // Overall status
   const hasErrors = Object.values(checks.checks).some(
@@ -101,8 +101,9 @@ export const, GET: RequestHandler = async () => {
 
   if (hasErrors) {
     checks.status = 'unhealthy';
-  }
+  } }
 
   const statusCode = checks.status === 'healthy' ? 200 : 503;
   return json(checks, { status: statusCode });
 };
+

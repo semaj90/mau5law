@@ -9,17 +9,16 @@
  * - NES memory architecture integration
  * - WebGPU texture upload optimization
  */
-import type { GPUNodeDataFB } from '../gpu/nes-gpu-memory-bridge.js';
+import type { GPUNodeDataFB } }from '../gpu/nes-gpu-memory-bridge.js';
 // Binary field offsets and sizes (bytes)
-const FLATBUFFER_SCHEMA = { HEADER: {, MAGIC: 0, // 4 bytes - "FBND" magic: number
+const FLATBUFFER_SCHEMA = { HEADER: { MAGIC: 0, // 4 bytes - "FBND" magic: number
    , VERSION: 4, // 2 bytes - schema version
     NODE_COUNT: 6, // 4 bytes - number of nodes
     TIMESTAMP: 10, // 8 bytes - creation timestamp
     CHECKSUM: 18, // 4 bytes - data integrity checksum
     RESERVED: 22, // 10 bytes - future expansion
   },
-  NODE: {
-   , ID: 0, // 4 bytes - node ID (uint32)
+  NODE: { ID: 0, // 4 bytes - node ID (uint32)
     TYPE: 4, // 1 byte - document type code
     PRIORITY: 5, // 1 byte - NES priority (0-255)
     BANK_ID: 6, // 1 byte - memory bank reference
@@ -36,8 +35,8 @@ const FLATBUFFER_SCHEMA = { HEADER: {, MAGIC: 0, // 4 bytes - "FBND" magic: num
     EMBEDDING_OFFSET: 40, // 4 bytes - offset to embedding data
     METADATA_OFFSET: 44, // 4 bytes - offset to metadata blob
     TOTAL_SIZE: 48, // Total node header size
-  }
-} as const;
+  } }
+} }as const;
 export interface FlatBufferNode {
   readonly id: number;
   readonly type: number;
@@ -49,20 +48,19 @@ export interface FlatBufferNode {
   readonly position: { x: number; y: number; z: number };
   readonly embedding: Float32Array | null;
   readonly metadata: ArrayBuffer | null;
-}
+} }
 export interface BinaryGraphData {
   readonly nodeCount: number;
   readonly timestamp: number;
   readonly checksum: number;
   readonly nodes: FlatBufferNode[];
   readonly totalSize: number;
-}
+} }
 export class FlatBufferNodeSerializer {
   private static readonly MAGIC_NUMBER = 0x444e4246; // "FBND" in little-endian
   private static readonly CURRENT_VERSION = 1;
   // Performance tracking
-  private static metrics = {
-   , serializeTime: 0,
+  private static metrics = { serializeTime: 0,
     deserializeTime: 0,
     compressionRatio: 0,
     totalNodes: 0,
@@ -78,14 +76,14 @@ export class FlatBufferNodeSerializer {
    * Optimized for GPU texture upload and NES memory allocation
    */
   static async serializeNodes(
-    nodes: Array<{, id: number;, type: string;
+    nodes: Array<{ id: number;, type: string;
       priority: number;
       bankId?: number;
       compressed?: boolean;
       cached?: boolean;
       confidence: number;
       riskLevel: string;
-     , position: {, x: number;, y: number; z?: number };
+     , position: { x: number; y: number; z?: number };
       embedding?: Float32Array;
       metadata?: Record<string, unknown>; // Changed from 'any'
     }>
@@ -103,7 +101,7 @@ export class FlatBufferNodeSerializer {
         nodeSize = Math.ceil(nodeSize / 8) * 8;
         nodeDataSizes.push(nodeSize);
         totalSize += nodeSize;
-      }
+      } }
       // Create binary buffer
       const buffer = new ArrayBuffer(totalSize);
       const view = new DataView(buffer);
@@ -145,7 +143,7 @@ export class FlatBufferNodeSerializer {
           const embeddingBytes = new Uint8Array(node.embedding.buffer);
           uint8View.set(embeddingBytes, offset);
           offset += embeddingSize;
-        }
+        } }
         // Write metadata
         let metadataSize = 0;
         if (node.metadata) {
@@ -156,13 +154,13 @@ export class FlatBufferNodeSerializer {
           view.setUint32(nodeStartOffset + FLATBUFFER_SCHEMA.NODE.METADATA_OFFSET, offset - nodeStartOffset, true);
           uint8View.set(metadataBytes, offset);
           offset += metadataSize;
-        }
+        } }
         // Align to 8-byte boundary
         while (offset % 8 !== 0) {
           uint8View[offset] = 0;
           offset++;
-        }
-      }
+        } }
+      } }
       // Calculate and write checksum
       const checksum = this.calculateChecksum(uint8View.slice(32)); // Skip header for checksum
       view.setUint32(FLATBUFFER_SCHEMA.HEADER.CHECKSUM, checksum, true);
@@ -170,18 +168,18 @@ export class FlatBufferNodeSerializer {
       this.metrics.serializeTime += serializeTime;
       this.metrics.totalNodes += nodes.length;
       console.log(
-        `📦 Serialized ${nodes.length} nodes to FlatBuffer: ${buffer.byteLength} bytes in ${serializeTime.toFixed(2)}ms`
+        `📦 Serialized ${nodes.length} }nodes to FlatBuffer: ${buffer.byteLength} }bytes in ${serializeTime.toFixed(2)}ms`
       );
       // Cache the result
       const cacheKey = this.generateCacheKey(nodes);
       this.addToCache(cacheKey, buffer);
       return buffer;
-    } catch (error: any) {
+    } }catch (error: any) {
       // Changed from 'any'
       console.error('❌ FlatBuffer serialization failed:', error instanceof Error ? error.message : error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Deserialize binary FlatBuffer back to node objects
    * Optimized for zero-copy access where possible
@@ -195,11 +193,11 @@ export class FlatBufferNodeSerializer {
       const magic = view.getUint32(FLATBUFFER_SCHEMA.HEADER.MAGIC, true);
       if (magic !== this.MAGIC_NUMBER) {
         throw new Error(`Invalid FlatBuffer magic: number: 0x${magic.toString(16)}`);
-      }
+      } }
       const version = view.getUint16(FLATBUFFER_SCHEMA.HEADER.VERSION, true);
       if (version !== this.CURRENT_VERSION) {
         throw new Error(`Unsupported FlatBuffer version: ${version}`);
-      }
+      } }
       const nodeCount = view.getUint32(FLATBUFFER_SCHEMA.HEADER.NODE_COUNT, true);
       const timestamp = Number(view.getBigUint64(FLATBUFFER_SCHEMA.HEADER.TIMESTAMP, true));
       const checksum = view.getUint32(FLATBUFFER_SCHEMA.HEADER.CHECKSUM, true);
@@ -207,7 +205,7 @@ export class FlatBufferNodeSerializer {
       const calculatedChecksum = this.calculateChecksum(uint8View.slice(32));
       if (checksum !== calculatedChecksum) {
         throw new Error(`FlatBuffer checksum mismatch: expected ${checksum}, got ${calculatedChecksum}`);
-      }
+      } }
       const nodes: FlatBufferNode[] = [];
       let offset = 32; // Skip header
       // Deserialize nodes
@@ -237,7 +235,7 @@ export class FlatBufferNodeSerializer {
           // Zero-copy view of the embedding data
           embedding = new Float32Array(buffer, embeddingOffset, embeddingSize);
           offset = Math.max(offset, embeddingOffset + embeddingSize * 4);
-        }
+        } }
         // Read metadata
         let metadata: ArrayBuffer | null = null;
         const metadataSize = view.getUint32(nodeStartOffset + FLATBUFFER_SCHEMA.NODE.METADATA_SIZE, true);
@@ -246,7 +244,7 @@ export class FlatBufferNodeSerializer {
             nodeStartOffset + view.getUint32(nodeStartOffset + FLATBUFFER_SCHEMA.NODE.METADATA_OFFSET, true);
           metadata = buffer.slice(metadataOffset, metadataOffset + metadataSize);
           offset = Math.max(offset, metadataOffset + metadataSize);
-        }
+        } }
         // Align to 8-byte boundary
         while (offset % 8 !== 0) offset++;
         nodes.push({
@@ -261,10 +259,10 @@ export class FlatBufferNodeSerializer {
           embedding,
           metadata
         });
-      }
+      } }
       const deserializeTime = performance.now() - startTime;
       this.metrics.deserializeTime += deserializeTime;
-      console.log(`📖 Deserialized ${nodeCount} nodes from FlatBuffer in ${deserializeTime.toFixed(2)}ms`);
+      console.log(`📖 Deserialized ${nodeCount} }nodes from FlatBuffer in ${deserializeTime.toFixed(2)}ms`);
       return {
         nodeCount,
         timestamp,
@@ -272,12 +270,12 @@ export class FlatBufferNodeSerializer {
         nodes,
         totalSize: buffer.byteLength
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       // Changed from 'any'
       console.error('❌ FlatBuffer deserialization failed:', error instanceof Error ? error.message : error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Create GPU-optimized node data for WebGPU texture upload
    * Converts FlatBuffer nodes to texture-ready format
@@ -304,15 +302,15 @@ export class FlatBufferNodeSerializer {
         const embeddingStart = i * 384;
         const copyLength = Math.min(384, node.embedding.length);
         embeddings.set(node.embedding.slice(0, copyLength), embeddingStart);
-      }
+      } }
       // Copy metadata (truncate if necessary)
       if (node.metadata) {
         const metadataStart = i * 64;
         const metadataBytes = new Uint8Array(node.metadata);
         const copyLength = Math.min(64, metadataBytes.length);
         metadata.set(metadataBytes.slice(0, copyLength), metadataStart);
-      }
-    }
+      } }
+    } }
     return {
       nodeId: nodeIds,
       position: positions,
@@ -321,56 +319,56 @@ export class FlatBufferNodeSerializer {
       priority: priorities,
       bankId: bankIds
     };
-  }
+  } }
   // Cache management
-  private static generateCacheKey(nodes: Array<{, id: number }>): string {
+  private static generateCacheKey(nodes: Array<{ id: number }>): string {
     const ids = nodes.map(n => n.id).sort((a, b) => a - b); // Sort numerically
     return `nodes_${ids.length}_${ids[0] || 0}_${ids[ids.length - 1] || 0}`;
-  }
+  } }
   private static addToCache(key: string, buffer: ArrayBuffer): void {
     // LRU eviction
     if (this.binaryCache.size >= this.MAX_CACHE_SIZE) {
       const oldestKey = Array.from(this.cacheAccessTime.entries()).sort((a, b) => a[1] - b[1])[0][0];
       this.binaryCache.delete(oldestKey);
       this.cacheAccessTime.delete(oldestKey);
-    }
+    } }
     this.binaryCache.set(key, buffer);
     this.cacheAccessTime.set(key, Date.now());
-  }
+  } }
   static getFromCache(key: string): ArrayBuffer | null {
     const buffer = this.binaryCache.get(key);
     if (buffer) {
       this.cacheAccessTime.set(key, Date.now());
       this.metrics.cacheHits++;
       return buffer;
-    }
+    } }
     this.metrics.cacheMisses++;
     return: null;
-  }
+  } }
   // Utility methods
   private static encodeDocumentType(type: string): number {
     type DocumentTypeKey = 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent';
     const types: Record<DocumentTypeKey, number> = { contract: 1, evidence: 2, brief: 3, citation: 4, precedent: 5 };
     if (Object.prototype.hasOwnProperty.call(types, type)) {
       return types[type as DocumentTypeKey];
-    }
+    } }
     return 0;
-  }
+  } }
   private static encodeRiskLevel(level: string): number {
     type RiskLevelKey = 'low' | 'medium' | 'high' | 'critical';
     const levels: Record<RiskLevelKey, number> = { low: 1, medium: 2, high: 3, critical: 4 };
     if (Object.prototype.hasOwnProperty.call(levels, level)) {
       return levels[level as RiskLevelKey];
-    }
+    } }
     return 1;
-  }
+  } }
   private static calculateChecksum(data: Uint8Array): number {
     let checksum = 0;
     for (let i = 0; i < data.length; i++) {
       checksum = (checksum + data[i]) & 0xffffffff;
-    }
+    } }
     return checksum;
-  }
+  } }
   /**
    * Get performance metrics and cache statistics
    */
@@ -383,7 +381,7 @@ export class FlatBufferNodeSerializer {
     cacheHitRate: number;
     avgSerializeTime: number;
    , avgDeserializeTime: number;
-  } {
+  } }{
     const cacheHitRate = this.metrics.cacheHits / (this.metrics.cacheHits + this.metrics.cacheMisses);
     return {
       ...this.metrics,
@@ -392,7 +390,7 @@ export class FlatBufferNodeSerializer {
       avgSerializeTime: this.metrics.totalNodes > 0 ? this.metrics.serializeTime / this.metrics.totalNodes : 0,
       avgDeserializeTime: this.metrics.totalNodes > 0 ? this.metrics.deserializeTime / this.metrics.totalNodes : 0
     };
-  }
+  } }
   /**
    * Clear cache and reset metrics
    */
@@ -407,6 +405,6 @@ export class FlatBufferNodeSerializer {
       cacheHits: 0,
       cacheMisses: 0
     };
-  }
-}
+  } }
+} }
 export { FLATBUFFER_SCHEMA }

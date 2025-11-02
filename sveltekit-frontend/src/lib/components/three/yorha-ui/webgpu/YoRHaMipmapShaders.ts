@@ -4,42 +4,41 @@
  * Features: Multi-level generation, NVIDIA RTX optimization, memory streaming
  */
 /// <reference, types="@webgpu/types" />
-import { yorhaWebGPU } from './YoRHaWebGPUMath.js';
+import { yorhaWebGPU } }from './YoRHaWebGPUMath.js';
 
 // Add a typed interface for the external helper instead of using `any`
 interface YoRHaWebGPUHelper {
   initialize(): Promise<boolean>; // changed to Promise<boolean> to match implementation
   device?: GPUDevice | null;
-}
+} }
 
 // Define a custom GPUTexture interface to include width and height
 interface YoRHaGPUTexture extends GPUTexture { width: number;, height: number;
-}
+} }
 
-export interface MipmapConfig {, maxMipLevels: number;, filterMode: 'linear' | 'nearest' | 'cubic';
+export interface MipmapConfig { maxMipLevels: number;, filterMode: 'linear' | 'nearest' | 'cubic';
   enableOptimizations: boolean;
   rtxOptimized: boolean;
   enableStreaming: boolean;
   maxTextureSize: number;
-}
-export interface MipmapChainResult { mipLevels: { width: number; height: number }[];
+} }
+export interface MipmapChainResult { mipLevels: { width: number; height: number } }];
   totalGenerationTime: number;
   memoryUsed: number;
-  optimization: {, levelsGenerated: number;, streamingUsed: boolean;
+  optimization: { levelsGenerated: number;, streamingUsed: boolean;
     rtxAcceleration: boolean;
   };
-}
-export interface TextureStreamingOptions {, chunkSize: number;, concurrentStreams: number;
+} }
+export interface TextureStreamingOptions { chunkSize: number;, concurrentStreams: number;
   memoryBudget: number;
   priority: 'quality' | 'performance' | 'balanced';
-}
+} }
 export class YoRHaMipmapShaders {
   private, device: GPUDevice | null = null;
   private mipmapPipelines = new Map<string, GPUComputePipeline>();
   private streamingBuffers = new Map<string, GPUBuffer[]>();
   private isInitialized = $state(false);
-  private readonly DEFAULT_CONFIG: MipmapConfig = {
-   , maxMipLevels: 12,
+  private readonly DEFAULT_CONFIG: MipmapConfig = { maxMipLevels: 12,
     filterMode: 'linear',
     enableOptimizations: true,
     rtxOptimized: true,
@@ -53,16 +52,16 @@ export class YoRHaMipmapShaders {
       if (!this.device) {
         console.warn('WebGPU device not available for mipmap generation');
         return false;
-      }
+      } }
       await this.setupMipmapPipelines();
       this.isInitialized = true;
       console.log('🔥 YoRHa Mipmap Shaders initialized with RTX optimization');
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to initialize mipmap shaders:', error);
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Initialize headless WebGPU device for server-side processing
    * Based on https://eliemichel.github.io/LearnWebGPU/advanced-techniques/headless.html
@@ -74,58 +73,54 @@ export class YoRHaMipmapShaders {
       if (!navigator.gpu) {
         console.warn('WebGPU not available - falling back to CPU processing');
         return false;
-      }
+      } }
       const adapter = await navigator.gpu.requestAdapter({
         powerPreference: 'high-performance'
       });
       if (!adapter) {
         console.warn('WebGPU adapter not available for headless mode');
         return false;
-      }
+      } }
       this.device = await adapter.requestDevice({
         requiredFeatures: ['timestamp-query'],
-        requiredLimits: {
-         , maxBufferSize: 256 * 1024 * 1024, // 256MB for large legal documents
+        requiredLimits: { maxBufferSize: 256 * 1024 * 1024, // 256MB for large legal documents
           maxComputeWorkgroupStorageSize: 16384,
           maxComputeInvocationsPerWorkgroup: 256,
           maxStorageBufferBindingSize: 128 * 1024 * 1024, // 128MB storage buffers
-        }
+        } }
       });
       await this.setupMipmapPipelines();
       this.isInitialized = true;
       console.log('🎯 YoRHa Headless Mipmap Shaders initialized for server processing');
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to initialize headless mipmap shaders:', error);
       return false;
-    }
-  }
+    } }
+  } }
   private async getWebGPUDevice(): Promise<GPUDevice | null> {
     try {
       if (typeof yorhaWebGPU !== 'undefined') {
         // cast to: unknown first if needed; helper returns Promise<boolean>
         await (yorhaWebGPU, as: unknown as YoRHaWebGPUHelper).initialize();
         return (yorhaWebGPU as: unknown as YoRHaWebGPUHelper).device || null;
-      }
+      } }
       // Fallback direct WebGPU initialization
       if (!navigator.gpu) return: null;
-      const adapter = await navigator.gpu.requestAdapter({
-       , powerPreference: 'high-performance'
+      const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'high-performance'
       });
       if (!adapter) return: null;
-      return await adapter.requestDevice({
-       , requiredFeatures: [],
-        requiredLimits: {
-         , maxBufferSize: 256 * 1024 * 1024, // 256MB for large textures
+      return await adapter.requestDevice({ requiredFeatures: [],
+        requiredLimits: { maxBufferSize: 256 * 1024 * 1024, // 256MB for large textures
           maxComputeWorkgroupStorageSize: 16384,
           maxComputeInvocationsPerWorkgroup: 256
-        }
+        } }
       });
-    } catch (error) {
+    } }catch (error) {
       console.error('WebGPU device initialization failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
   /**
    * Setup optimized compute pipelines based on NVIDIA vk_compute_mipmaps approach
    */
@@ -137,9 +132,9 @@ export class YoRHaMipmapShaders {
       'box',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {, module: this.device.createShaderModule({, code: boxFilterShader }),
+        compute: { module: this.device.createShaderModule({ code: boxFilterShader }),
           entryPoint: 'main'
-        }
+        } }
       })
     );
     // 2. Bilinear filter (balanced quality/performance)
@@ -148,9 +143,9 @@ export class YoRHaMipmapShaders {
       'bilinear',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {, module: this.device.createShaderModule({, code: bilinearFilterShader }),
+        compute: { module: this.device.createShaderModule({ code: bilinearFilterShader }),
           entryPoint: 'main'
-        }
+        } }
       })
     );
     // 3. Gaussian filter (high quality, slower)
@@ -159,9 +154,9 @@ export class YoRHaMipmapShaders {
       'gaussian',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {, module: this.device.createShaderModule({, code: gaussianFilterShader }),
+        compute: { module: this.device.createShaderModule({ code: gaussianFilterShader }),
           entryPoint: 'main'
-        }
+        } }
       })
     );
     // 4. NVIDIA RTX-optimized tensor core acceleration
@@ -170,9 +165,9 @@ export class YoRHaMipmapShaders {
       'rtx_optimized',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {, module: this.device.createShaderModule({, code: rtxOptimizedShader }),
+        compute: { module: this.device.createShaderModule({ code: rtxOptimizedShader }),
           entryPoint: 'main'
-        }
+        } }
       })
     );
     // 5. Multi-level batch generation (parallel mip levels)
@@ -181,13 +176,13 @@ export class YoRHaMipmapShaders {
       'multi_level',
       this.device.createComputePipeline({
         layout: 'auto',
-        compute: {, module: this.device.createShaderModule({, code: multiLevelShader }),
+        compute: { module: this.device.createShaderModule({ code: multiLevelShader }),
           entryPoint: 'main'
-        }
+        } }
       })
     );
     console.log('✅ Mipmap compute pipelines initialized');
-  }
+  } }
   /**
    * Generate complete mipmap chain with NVIDIA-style optimizations
    * - sourceTexture: input texture (must be GPUTexture with width/height fields)
@@ -199,13 +194,12 @@ export class YoRHaMipmapShaders {
    , sourceTexture: YoRHaGPUTexture,
     targetTexture: GPUTexture,
     options: Partial<TextureStreamingOptions> = {},
-    config: Partial<MipmapConfig> = {}
+    config: Partial<MipmapConfig> = {} }
   ): Promise<MipmapChainResult> {
     if (!this.device) throw new Error('Device not initialized');
     const device = this.device;
     const cfg: MipmapConfig = { ...this.DEFAULT_CONFIG, ...config };
-    const opts: TextureStreamingOptions = {
-     , chunkSize: options.chunkSize ?? 1024,
+    const opts: TextureStreamingOptions = { chunkSize: options.chunkSize ?? 1024,
       concurrentStreams: options.concurrentStreams ?? 1,
       memoryBudget: options.memoryBudget ?? 64 * 1024 * 1024,
       priority: options.priority ?? 'balanced` };'`
@@ -221,7 +215,7 @@ export class YoRHaMipmapShaders {
 
     const start = performance.now();
     let memoryUsed = 0;
-    const mipLevels: { width: number;, height: number }[] = [];
+    const mipLevels: { width: number; height: number } }] = [];
 
     // For demonstration we generate the first mip level by processing chunks
     for (let y = 0; y < sourceHeight; y += chunkSize) {
@@ -254,8 +248,8 @@ export class YoRHaMipmapShaders {
         const bindGroup = device.createBindGroup({
           layout: pipeline.getBindGroupLayout(0),
           entries: [
-            {, binding: 0, resource: sourceChunk.createView() },
-            { binding: 1, resource: targetChunk.createView() }
+            { binding: 0, resource: sourceChunk.createView() },
+            { binding: 1, resource: targetChunk.createView() } }
           ]
         });
         pass.setPipeline(pipeline);
@@ -277,8 +271,8 @@ export class YoRHaMipmapShaders {
         targetChunk.destroy();
 
         memoryUsed += chunkWidth * chunkHeight * 4; // rough estimate (bytes)
-      }
-    }
+      } }
+    } }
 
     // populate a minimal mipLevels array (user can extend to full chain)
     mipLevels.push({ width: Math.ceil(sourceWidth / 2), height: Math.ceil(sourceHeight / 2) });
@@ -288,14 +282,13 @@ export class YoRHaMipmapShaders {
       mipLevels,
       totalGenerationTime,
       memoryUsed,
-      optimization: {
-       , levelsGenerated: mipLevels.length,
+      optimization: { levelsGenerated: mipLevels.length,
         streamingUsed: cfg.enableStreaming,
         rtxAcceleration: cfg.rtxOptimized
-      }
+      } }
     };
     return result;
-  }
+  } }
   /**
    * Box filter shader - fastest, good for thumbnails
    */
@@ -310,7 +303,7 @@ export class YoRHaMipmapShaders {
         let targetDim = textureDimensions(targetTexture);
         if (coord.x >= i32(targetDim.x) || coord.y >= i32(targetDim.y)) {
           return;
-        }
+        } }
         let sourceCoord = coord * 2;
         var color = vec4<f32>(0.0);
         color += textureLoad(sourceTexture, sourceCoord + vec2<i32>(0, 0), 0);
@@ -319,9 +312,9 @@ export class YoRHaMipmapShaders {
         color += textureLoad(sourceTexture, min(sourceCoord + vec2<i32>(1, 1), vec2<i32>(sourceDim) - 1), 0);
         color = color * 0.25;
         textureStore(targetTexture, coord, color);
-      }
+      } }
     `;`
-  }
+  } }
   /**
    * Bilinear filter shader - balanced quality/performance
    */
@@ -336,13 +329,13 @@ export class YoRHaMipmapShaders {
         let targetDim = textureDimensions(targetTexture);
         if (coord.x >= i32(targetDim.x) || coord.y >= i32(targetDim.y)) {
           return;
-        }
+        } }
         let uv = (vec2<f32>(coord) + 0.5) / vec2<f32>(targetDim);
         let color = textureSampleLevel(sourceTexture, linearSampler, uv, 0.0);
         textureStore(targetTexture, coord, color);
-      }
+      } }
     `;`
-  }
+  } }
   /**
    * Gaussian filter shader - high quality, slower
    */
@@ -362,7 +355,7 @@ export class YoRHaMipmapShaders {
         let targetDim = textureDimensions(targetTexture);
         if (coord.x >= i32(targetDim.x) || coord.y >= i32(targetDim.y)) {
           return;
-        }
+        } }
         let sourceCoord = coord * 2;
         var color = vec4<f32>(0.0);
         for (var yy: i32 = -1; yy <= 1; yy = yy + 1) {
@@ -374,12 +367,12 @@ export class YoRHaMipmapShaders {
             );
             let kernelIndex = (yy + 1) * 3 + (xx + 1);
             color = color + textureLoad(sourceTexture, sampleCoord, 0) * gaussianKernel[kernelIndex];
-          }
-        }
+          } }
+        } }
         textureStore(targetTexture, coord, color);
-      }
+      } }
     `;`
-  }
+  } }
   /**
    * RTX-optimized shader with tensor core acceleration hints
    */
@@ -396,7 +389,7 @@ export class YoRHaMipmapShaders {
         let targetDim = textureDimensions(targetTexture);
         if (coord.x >= i32(targetDim.x) || coord.y >= i32(targetDim.y)) {
           return;
-        }
+        } }
         let sourceCoord = coord * 2;
         let tileIndex = localCoord.y * 8 + localCoord.x;
         var samples = array<vec4<f32>, 4>();
@@ -411,9 +404,9 @@ export class YoRHaMipmapShaders {
         filteredColor = samples[0] * weights.x + samples[1] * weights.y + samples[2] * weights.z + samples[3] * weights.w;
         filteredColor = clamp(filteredColor, vec4<f32>(0.0), vec4<f32>(1.0));
         textureStore(targetTexture, coord, filteredColor);
-      }
+      } }
     `;`
-  }
+  } }
   /**
    * Multi-level batch shader for parallel mip generation
    */
@@ -437,7 +430,7 @@ export class YoRHaMipmapShaders {
           color1 += textureLoad(sourceTexture, min(sourceCoord + vec2<i32>(0, 1), vec2<i32>(sourceDim) - 1), 0);
           color1 += textureLoad(sourceTexture, min(sourceCoord + vec2<i32>(1, 1), vec2<i32>(sourceDim) - 1), 0);
           textureStore(mipLevel1, baseCoord, color1 * 0.25);
-        }
+        } }
         // Level, 2 (1/4 size)
         if (baseCoord.x < i32(sourceDim.x / 4u) && baseCoord.y < i32(sourceDim.y / 4u)) {
           let sourceCoord = baseCoord * 4;
@@ -445,10 +438,10 @@ export class YoRHaMipmapShaders {
           for (var yy: i32 = 0; yy < 4; yy = yy + 1) {
             for (var xx: i32 = 0; xx < 4; xx = xx + 1) {
               color2 += textureLoad(sourceTexture, min(sourceCoord + vec2<i32>(xx, yy), vec2<i32>(sourceDim) - 1), 0);
-            }
-          }
+            } }
+          } }
           textureStore(mipLevel2, baseCoord, color2 / 16.0);
-        }
+        } }
         // Level, 3 (1/8 size)
         if (baseCoord.x < i32(sourceDim.x / 8u) && baseCoord.y < i32(sourceDim.y / 8u)) {
           let sourceCoord = baseCoord * 8;
@@ -456,10 +449,10 @@ export class YoRHaMipmapShaders {
           for (var yy: i32 = 0; yy < 8; yy = yy + 2) {
             for (var xx: i32 = 0; xx < 8; xx = xx + 2) {
               color3 += textureLoad(sourceTexture, min(sourceCoord + vec2<i32>(xx, yy), vec2<i32>(sourceDim) - 1), 0);
-            }
-          }
+            } }
+          } }
           textureStore(mipLevel3, baseCoord, color3 / 16.0);
-        }
+        } }
         // Level, 4 (1/16 size)
         if (baseCoord.x < i32(sourceDim.x / 16u) && baseCoord.y < i32(sourceDim.y / 16u)) {
           let sourceCoord = baseCoord * 16;
@@ -467,12 +460,12 @@ export class YoRHaMipmapShaders {
           for (var yy: i32 = 0; yy < 16; yy = yy + 4) {
             for (var xx: i32 = 0; xx < 16; xx = xx + 4) {
               color4 += textureLoad(sourceTexture, min(sourceCoord + vec2<i32>(xx, yy), vec2<i32>(sourceDim) - 1), 0);
-            }
-          }
+            } }
+          } }
           textureStore(mipLevel4, baseCoord, color4 / 16.0);
-        }
-      }
-    `;` }
+        } }
+      } }
+    `;` } }
   /**
    * Cleanup resources
    */
@@ -485,7 +478,7 @@ export class YoRHaMipmapShaders {
     this.streamingBuffers.clear();
     this.isInitialized = $state(false);
     console.log('🧹 YoRHa mipmap shaders disposed');
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const yorhaMipmapShaders = new YoRHaMipmapShaders();

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } }from 'zod';
 // Validation schemas for authentication forms
 export const loginSchema = z.object({
   email: z
@@ -33,3 +33,4 @@ export const registerSchema = z
     path: ['confirmPassword']
   });
 export type RegisterSchema = typeof registerSchema;
+

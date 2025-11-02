@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import { ensureError } from '$lib/utils/ensure-error';
-import { json, error } from '@sveltejs/kit';
+import type { Case } }from '$lib/types';
+import { ensureError } }from '$lib/utils/ensure-error';
+import { json, error } }from '@sveltejs/kit';
 // Import connection defensively: prefer named `db` but fall back to default export
 import * as databaseConnection from '$lib/database/connection';
 
@@ -26,10 +26,10 @@ interface QueryBuilder<T = unknown> {
   catch?<TResult = never>(
     onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null
   ): Promise<T[] | TResult>;
-}
+} }
 
-type MinimalDrizzleDB = { select: <T = unknown>(sel?: any) => QueryBuilder<T>;, insert: (table: any) => { values: (v: any) => {; returning: (sel: any) => Promise<unknown[]> } };
-  update: (table: any) => { set: (u: any) => {, where: (cond?: any) => {, returning: (sel: any) => Promise<unknown[]> } };
+type MinimalDrizzleDB = { select: <T = unknown>(sel?: any) => QueryBuilder<T>;, insert: (table: any) => { values: (v: any) => {; returning: (sel: any) => Promise<unknown[]> } }};
+  update: (table: any) => { set: (u: any) => { where: (cond?: any) => { returning: (sel: any) => Promise<unknown[]> } }};
   };
 };
 
@@ -38,10 +38,10 @@ const db = ((databaseConnection as { db?: MinimalDrizzleDB }).db ??
   (databaseConnection as { default?: MinimalDrizzleDB }).default ??
   (databaseConnection as: unknown as MinimalDrizzleDB)) as MinimalDrizzleDB;
 
-import { cases } from '$lib/db/schema';
-import { eq, and, desc } from 'drizzle-orm';
-import { nanoid } from 'nanoid';
-import type { RequestHandler } from './$types.js';
+import { cases } }from '$lib/db/schema';
+import { eq, and, desc } }from 'drizzle-orm';
+import { nanoid } }from 'nanoid';
+import type { RequestHandler } }from './$types.js';
 
 // GET - Fetch cases
 export const GET: RequestHandler = async ({ url, locals: _locals }) => {
@@ -77,17 +77,17 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
         limit,
         offset,
         total: casesList.length
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const e = ensureError(err);
     console.error('Error fetching cases: ', e);'`'`
     return error(
       500,
       ensureError({
-        message: `Failed to fetch cases` })
+        message: 'Failed to fetch cases' })
     );
-  }
+  } }
 };
 // POST - Create new case
 export const POST: RequestHandler = async ({ request, locals: _locals }) => {
@@ -98,11 +98,11 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       return error(
         400,
         ensureError({
-          message: `Title and description are required` })
+          message: 'Title and description are required' })
       );
-    }
+    } }
     // Get current user (from auth or default). Prefixed with $ because unused vars are allowed only with $ prefix in this repo.
-    const $currentUserId = (_locals as: unknown as { user?: { id?: string } })?.user?.id ?? 'system';
+    const $currentUserId = (_locals as: unknown as { user?: { id?: string } }})?.user?.id ?? 'system';
     // Generate case ID
     const caseId = `CASE-${new Date().getFullYear()}-${nanoid(6).toUpperCase()}`;
     // Prepare case data
@@ -133,13 +133,13 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
         data: insertedCase[0],
         message: 'Case created successfully'
       },
-      { status: 201 }
+      { status: 201 } }
     );
-  } catch (err: any) {
+  } }catch (err: any) {
     const e = ensureError(err);
     console.error('Error creating case:', e);
     // Handle specific database errors by narrowing the: unknown
-    const dbErr = err as { code?: string } | undefined;
+    const dbErr = err as { code?: string } }| undefined;
     if (dbErr?.code === '23505') {
       // Unique constraint violation
       return error(
@@ -148,14 +148,14 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
           message: 'Case with this ID already exists'
         })
       );
-    }
+    } }
     return error(
       500,
       ensureError({
         message: 'Failed to create case'
       })
     );
-  }
+  } }
 };
 // PUT - Update existing case
 export const PUT: RequestHandler = async ({ request, locals: _locals }) => {
@@ -168,7 +168,7 @@ export const PUT: RequestHandler = async ({ request, locals: _locals }) => {
           message: 'Case ID is required for updates'
         })
       );
-    }
+    } }
     // Check if case exists
     const existingCase = await db.select({ id: cases.id }).from(cases).where(eq(cases.id, body.id)).limit(1);
     if (existingCase.length === 0) {
@@ -178,7 +178,7 @@ export const PUT: RequestHandler = async ({ request, locals: _locals }) => {
           message: 'Case not found'
         })
       );
-    }
+    } }
     // Prepare update data
     const updateData: Record<string, unknown> = {
       updatedAt: new Date()
@@ -203,7 +203,7 @@ export const PUT: RequestHandler = async ({ request, locals: _locals }) => {
       data: updatedCase[0],
       message: 'Case updated successfully'
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const e = ensureError(err);
     console.error('Error updating case:', e);
     return error(
@@ -212,7 +212,7 @@ export const PUT: RequestHandler = async ({ request, locals: _locals }) => {
         message: 'Failed to update case'
       })
     );
-  }
+  } }
 };
 // DELETE - Delete case
 export const DELETE: RequestHandler = async ({ url, locals: _locals }) => {
@@ -224,16 +224,16 @@ export const DELETE: RequestHandler = async ({ url, locals: _locals }) => {
         ensureError({
           message: 'Case ID is required` })'`
       );
-    }
+    } }
     // Check if case exists
     const existingCase = await db.select({ id: cases.id }).from(cases).where(eq(cases.id, caseId)).limit(1);
     if (existingCase.length === 0) {
       return error(
         404,
         ensureError({
-          message: `Case not found` })
+          message: 'Case not found' })
       );
-    }
+    } }
     // Soft delete by updating status
     await db
       .update(cases)
@@ -244,14 +244,15 @@ export const DELETE: RequestHandler = async ({ url, locals: _locals }) => {
       .where(eq(cases.id, caseId));
     return json({
       success: true,
-      message: `Case deleted successfully` });
-  } catch (err: any) {
+      message: 'Case deleted successfully' });
+  } }catch (err: any) {
     const e = ensureError(err);
     console.error('Error deleting case: ', e);'`'`
     return error(
       500,
       ensureError({
-        message: `Failed to delete case` })
+        message: 'Failed to delete case' })
     );
-  }
+  } }
 };
+

@@ -10,6 +10,7 @@ declare global {
     error?: any;
     // Accept arbitrary index access used in some codepaths
     [key: string]: any;
-  }
-}
+  } }
+} }
 export {};
+

@@ -5,9 +5,9 @@
  * This integration layer connects the revolutionary Bitmap HMM-SOM predictor
  * with real legal workflows, enabling seamless, predictive user experiences.
  */
-import { HybridGemmaBitmapEngine } from './hybrid-gemma-bitmap-engine.js';
-import type { LegalContext, HybridPredictionResult } from './hybrid-gemma-bitmap-engine.js';
-import { createRedisInstance } from '$lib/server/redis.js';
+import { HybridGemmaBitmapEngine } }from './hybrid-gemma-bitmap-engine.js';
+import type { LegalContext, HybridPredictionResult } }from './hybrid-gemma-bitmap-engine.js';
+import { createRedisInstance } }from '$lib/server/redis.js';
 // --- new: small adapter type covering the methods we use from Redis clients ---
 type RedisSetReturn = 'OK' | null;
 interface RedisLike {
@@ -20,38 +20,37 @@ interface RedisLike {
   ltrim?(key: string, start: number, stop: number): Promise<RedisSetReturn>;
   // fall back generic index signature for other minor calls (if needed)
   [key: string]: any;
-}
+} }
 // ---, MOVED: AssetData must be top-level (cannot declare interface inside a class) ---
 interface AssetData { assetType: string;, sessionId: string;
   generatedAt: string;
   workflowStage: string;
   // additional fields allowed
   [key: string]: any;
-}
+} }
 // Legal workflow stage definitions
 export interface LegalWorkflowStage {
   stage: 'intake' | 'analysis' | 'research' | 'drafting' | 'review' | 'filing';
   substage?: string;
   priority: number;
   expectedAssets: string[];
-  nextStages: Array<{, stage: string;, probability: number;
+  nextStages: Array<{ stage: string;, probability: number;
     timeEstimate: number;
   }>;
-}
+} }
 // Legal document types with specialized handling
-export interface LegalDocumentProfile {, type: 'contract' | 'case_law' | 'statute' | 'brief' | 'evidence' | 'motion' | 'discovery';, domain: 'corporate' | 'litigation' | 'criminal' | 'family' | 'intellectual_property' | 'real_estate';
+export interface LegalDocumentProfile { type: 'contract' | 'case_law' | 'statute' | 'brief' | 'evidence' | 'motion' | 'discovery';, domain: 'corporate' | 'litigation' | 'criminal' | 'family' | 'intellectual_property' | 'real_estate';
   complexity: 'simple' | 'moderate' | 'complex' | 'highly_complex';
   urgency: 'routine' | 'priority' | 'urgent' | 'emergency';
   requiredAssets: string[];
   recommendedActions: string[];
-}
+} }
 // Asset preloading strategies for different legal contexts
-export interface AssetPreloadingStrategy {
- , immediate: string[]; // Load instantly (< 100ms),
+export interface AssetPreloadingStrategy { immediate: string[]; // Load instantly (< 100ms),
   background: string[]; // Load in background (< 2s)
   predictive: string[]; // Predict and cache (< 5s),
   ondemand: string[]; // Load when explicitly requested
-}
+} }
 export class LegalWorkflowOrchestrator {
   private hybridEngine: HybridGemmaBitmapEngine;
   private redis: RedisLike;
@@ -63,7 +62,7 @@ export class LegalWorkflowOrchestrator {
     this.redis = (redis || createRedisInstance()) as RedisLike;
     this.initializeWorkflowProfiles();
     this.initializeDocumentProfiles();
-  }
+  } }
   /**
    * Main orchestration method: predict workflow needs and preload assets
    */
@@ -94,7 +93,7 @@ export class LegalWorkflowOrchestrator {
       preloadingStrategy,
       nextSteps
     };
-  }
+  } }
   /**
    * Generate contextual prediction without explicit query
    */
@@ -102,7 +101,7 @@ export class LegalWorkflowOrchestrator {
     // Generate implicit query based on current workflow context
     const implicitQuery = this.generateImplicitQuery(context);
     return await this.hybridEngine.predictWithContext(implicitQuery, context);
-  }
+  } }
   /**
    * Generate workflow-specific guidance
    */
@@ -119,7 +118,7 @@ export class LegalWorkflowOrchestrator {
       riskAlerts: this.generateRiskAlerts(context, prediction),
       qualityChecklist: this.generateQualityChecklist(currentStage, documentProfile)
     };
-  }
+  } }
   /**
    * Calculate optimal asset preloading strategy
    */
@@ -127,8 +126,7 @@ export class LegalWorkflowOrchestrator {
     context: LegalContext,
     prediction: HybridPredictionResult
   ): AssetPreloadingStrategy {
-    const strategy: AssetPreloadingStrategy = {
-     , immediate: [],
+    const strategy: AssetPreloadingStrategy = { immediate: [],
       background: [],
       predictive: [],
       ondemand: []
@@ -137,20 +135,20 @@ export class LegalWorkflowOrchestrator {
     for (const asset of prediction.behavioralPrediction.recommendedAssets) {
       if (asset.priority > 85 && context.systemMetrics.fps > 55) {
         strategy.immediate.push(asset.type);
-      } else if (asset.priority > 60 && context.systemMetrics.memoryUsage < 75) {
+      } }else if (asset.priority > 60 && context.systemMetrics.memoryUsage < 75) {
         strategy.background.push(asset.type);
-      } else if (asset.priority > 30) {
+      } }else if (asset.priority > 30) {
         strategy.predictive.push(asset.type);
-      } else {
+      } }else {
         strategy.ondemand.push(asset.type);
-      }
-    }
+      } }
+    } }
     // Add workflow-specific assets
     const workflowAssets = this.getWorkflowSpecificAssets(context);
     strategy.background.push(...workflowAssets.essential);
     strategy.predictive.push(...workflowAssets.recommended);
     return strategy;
-  }
+  } }
   /**
    * Generate next step recommendations
    */
@@ -171,8 +169,8 @@ export class LegalWorkflowOrchestrator {
           reasoning: `${(nextStage.probability * 100).toFixed(1)}% chance of progressing to ${nextStage.stage}`,
           assets: this.getStageAssets(nextStage.stage)
         });
-      }
-    }
+      } }
+    } }
     // Behavioral prediction recommendations
     for (const nextState of prediction.behavioralPrediction.nextStates.slice(0, 3)) {
       recommendations.push({
@@ -180,26 +178,26 @@ export class LegalWorkflowOrchestrator {
         action: nextState.action,
         priority: Math.round(nextState.probability * 100),
         timeEstimate: nextState.timeEstimate,
-        reasoning: `AI predicts ${nextState.action} with ${(nextState.probability * 100).toFixed(1)}% confidence`,
+        reasoning: `AI predicts ${nextState.action} }with ${(nextState.probability * 100).toFixed(1)}% confidence`,
         assets: prediction.behavioralPrediction.recommendedAssets
           .filter(asset => asset.priority > 50)
           .map(asset => asset.type)
       });
-    }
+    } }
     // Semantic similarity recommendations
     if (prediction.semanticSimilarity.length > 0) {
       const topMatch = prediction.semanticSimilarity[0];
       recommendations.push({
         type: 'semantic_insight',
-        action: `Explore ${topMatch.legalDomain} documents`,
+        action: `Explore ${topMatch.legalDomain} }documents`,
         priority: Math.round(topMatch.similarity * 100),
         timeEstimate: 30000, // 30 seconds
         reasoning: `Found ${(topMatch.similarity * 100).toFixed(1)}% similar content in ${topMatch.legalDomain}`,
         assets: ['document_viewer', 'comparison_tools', 'citation_helper']
       });
-    }
+    } }
     return recommendations.sort((a, b) => b.priority - a.priority);
-  }
+  } }
   /**
    * Execute asset preloading in background
    */
@@ -207,20 +205,20 @@ export class LegalWorkflowOrchestrator {
     // Immediate loading (highest priority)
     for (const asset of strategy.immediate) {
       this.preloadAsset(asset, 'immediate', context);
-    }
+    } }
     // Background loading
     setTimeout(() => {
       for (const asset of strategy.background) {
         this.preloadAsset(asset, 'background', context);
-      }
+      } }
     }, 100);
     // Predictive loading
     setTimeout(() => {
       for (const asset of strategy.predictive) {
         this.preloadAsset(asset, 'predictive', context);
-      }
+      } }
     }, 1000);
-  }
+  } }
   /**
    * Preload individual asset
    */
@@ -234,8 +232,8 @@ export class LegalWorkflowOrchestrator {
     // Cache with appropriate TTL (use node-redis/set EX style)
     const ttl = loadingType === 'immediate' ? 600 : loadingType === 'background' ? 300 : 180;
     await this.redis.set(cacheKey, JSON.stringify(assetData), { EX: ttl });
-    console.log(`🎮 Preloaded ${assetType} (${loadingType}) for session ${context.sessionId}`);
-  }
+    console.log(`🎮 Preloaded ${assetType} }(${loadingType}) for session ${context.sessionId}`);
+  } }
   // =============================================================================
   // INITIALIZATION AND CONFIGURATION
   // =============================================================================
@@ -248,9 +246,9 @@ export class LegalWorkflowOrchestrator {
           priority: 100,
           expectedAssets: ['intake_forms', 'client_portal', 'document_upload', 'basic_templates'],
           nextStages: [
-            {, stage: 'analysis', probability: 0.8, timeEstimate: 300000 },
+            { stage: 'analysis', probability: 0.8, timeEstimate: 300000 },
             { stage: 'research', probability: 0.15, timeEstimate: 600000 },
-            { stage: 'drafting', probability: 0.05, timeEstimate: 900000 }
+            { stage: 'drafting', probability: 0.05, timeEstimate: 900000 } }
           ]
         },
       ],
@@ -261,9 +259,9 @@ export class LegalWorkflowOrchestrator {
           priority: 90,
           expectedAssets: ['document_viewer', 'annotation_tools', 'evidence_canvas', 'timeline_creator'],
           nextStages: [
-            {, stage: 'research', probability: 0.6, timeEstimate: 240000 },
+            { stage: 'research', probability: 0.6, timeEstimate: 240000 },
             { stage: 'drafting', probability: 0.3, timeEstimate: 480000 },
-            { stage: 'review', probability: 0.1, timeEstimate: 180000 }
+            { stage: 'review', probability: 0.1, timeEstimate: 180000 } }
           ]
         },
       ],
@@ -274,9 +272,9 @@ export class LegalWorkflowOrchestrator {
           priority: 85,
           expectedAssets: ['legal_database', 'case_search', 'citation_tools', 'research_notes'],
           nextStages: [
-            {, stage: 'drafting', probability: 0.7, timeEstimate: 360000 },
+            { stage: 'drafting', probability: 0.7, timeEstimate: 360000 },
             { stage: 'analysis', probability: 0.2, timeEstimate: 240000 },
-            { stage: 'review', probability: 0.1, timeEstimate: 300000 }
+            { stage: 'review', probability: 0.1, timeEstimate: 300000 } }
           ]
         },
       ],
@@ -287,9 +285,9 @@ export class LegalWorkflowOrchestrator {
           priority: 80,
           expectedAssets: ['text_editor', 'template_library', 'citation_helper', 'style_guide'],
           nextStages: [
-            {, stage: 'review', probability: 0.8, timeEstimate: 180000 },
+            { stage: 'review', probability: 0.8, timeEstimate: 180000 },
             { stage: 'research', probability: 0.15, timeEstimate: 300000 },
-            { stage: 'filing', probability: 0.05, timeEstimate: 120000 }
+            { stage: 'filing', probability: 0.05, timeEstimate: 120000 } }
           ]
         },
       ],
@@ -300,9 +298,9 @@ export class LegalWorkflowOrchestrator {
           priority: 75,
           expectedAssets: ['review_tools', 'collaboration_suite', 'version_control', 'approval_workflow'],
           nextStages: [
-            {, stage: 'filing', probability: 0.6, timeEstimate: 120000 },
+            { stage: 'filing', probability: 0.6, timeEstimate: 120000 },
             { stage: 'drafting', probability: 0.3, timeEstimate: 240000 },
-            { stage: 'analysis', probability: 0.1, timeEstimate: 180000 }
+            { stage: 'analysis', probability: 0.1, timeEstimate: 180000 } }
           ]
         },
       ],
@@ -313,17 +311,17 @@ export class LegalWorkflowOrchestrator {
           priority: 70,
           expectedAssets: ['filing_system', 'court_integration', 'deadline_tracker', 'confirmation_tools'],
           nextStages: [
-            {, stage: 'intake', probability: 0.4, timeEstimate: 600000 },
+            { stage: 'intake', probability: 0.4, timeEstimate: 600000 },
             { stage: 'analysis', probability: 0.3, timeEstimate: 300000 },
-            { stage: 'review', probability: 0.3, timeEstimate: 240000 }
+            { stage: 'review', probability: 0.3, timeEstimate: 240000 } }
           ]
         },
       ],
     ];
     for (const [key, profile] of profiles) {
       this.workflowProfiles.set(key, profile);
-    }
-  }
+    } }
+  } }
   private initializeDocumentProfiles(): void {
     const profiles: Array<[string, LegalDocumentProfile]> = [
       [
@@ -362,8 +360,8 @@ export class LegalWorkflowOrchestrator {
     ];
     for (const [key, profile] of profiles) {
       this.documentProfiles.set(key, profile);
-    }
-  }
+    } }
+  } }
   // =============================================================================
   // UTILITY METHODS
   // =============================================================================
@@ -371,26 +369,26 @@ export class LegalWorkflowOrchestrator {
     const stage = context.workflowStage;
     const docType = context.documentContext?.type || 'general';
     const domain = context.documentContext?.domain || 'general';
-    return `${stage} workflow for ${docType} in ${domain} legal domain`;
-  }
+    return `${stage} }workflow for ${docType} }in ${domain} }legal domain`;
+  } }
   private generateStageAdvice(stage: LegalWorkflowStage | undefined, _context: LegalContext): string {
     if (!stage) return, 'Continue with current workflow';
-    return `Focus on ${stage.expectedAssets.slice(0, 2).join(' and: ')} for optimal ${stage.stage} workflow efficiency`;
-  }
+    return `Focus on ${stage.expectedAssets.slice(0, 2).join(' and: ')} }for optimal ${stage.stage} }workflow efficiency`;
+  } }
   private generateNextStagePreparation(
     currentStage: LegalWorkflowStage | undefined,
     _prediction: HybridPredictionResult
   ): string {
     if (!currentStage || currentStage.nextStages.length === 0) {
       return, 'Prepare for workflow continuation based on case requirements';
-    }
+    } }
     const nextStage = currentStage.nextStages[0];
-    return `Prepare for ${nextStage.stage} transition with ${(nextStage.probability * 100).toFixed(0)}% likelihood`;
-  }
+    return `Prepare for ${nextStage.stage} }transition with ${(nextStage.probability * 100).toFixed(0)}% likelihood`;
+  } }
   private generateDocumentGuidance(profile: LegalDocumentProfile | null, _context: LegalContext): string {
     if (!profile) return, 'Apply general document handling best practices';
-    return `${profile.complexity} ${profile.type} requires ${profile.requiredAssets.slice(0, 2).join(' and: ')}`;
-  }
+    return `${profile.complexity} }${profile.type} }requires ${profile.requiredAssets.slice(0, 2).join(' and: ')}`;
+  } }
   private generateEfficiencyTips(context: LegalContext, prediction: HybridPredictionResult): string[] {
     const tips = [
       `System predicts ${prediction.fusedInsights.confidenceScore}% accuracy - leverage AI insights`,
@@ -398,22 +396,22 @@ export class LegalWorkflowOrchestrator {
     ];
     if (context.systemMetrics.fps > 55) {
       tips.push('High system performance - enable aggressive quality tier');
-    }
+    } }
     return tips;
-  }
+  } }
   private generateRiskAlerts(context: LegalContext, prediction: HybridPredictionResult): string[] {
     const alerts: string[] = [];
     if (prediction.fusedInsights.confidenceScore < 60) {
       alerts.push('Low prediction confidence - manual verification recommended');
-    }
+    } }
     if (context.systemMetrics.memoryUsage > 85) {
       alerts.push('High memory usage - consider reducing background processes');
-    }
+    } }
     if (String(context.documentContext?.complexity) === 'highly_complex') {
       alerts.push('Complex document detected - additional review cycles recommended');
-    }
+    } }
     return alerts;
-  }
+  } }
   private generateQualityChecklist(
     stage: LegalWorkflowStage | undefined,
     profile: LegalDocumentProfile | null
@@ -422,30 +420,29 @@ export class LegalWorkflowOrchestrator {
     if (stage?.stage === 'review') {
       checklist.push('Cross-reference citations and precedents');
       checklist.push('Validate formatting and style consistency');
-    }
+    } }
     if (profile?.urgency === 'urgent' || profile?.urgency === 'emergency') {
       checklist.push('Double-check deadline compliance');
       checklist.push('Verify priority stakeholder notifications');
-    }
+    } }
     return checklist;
-  }
+  } }
   private getDocumentProfile(type: string, domain: string): LegalDocumentProfile | null {
     return this.documentProfiles.get(`${type}:${domain}`) || null;
-  }
-  private getWorkflowSpecificAssets(context: LegalContext): { essential: string[];, recommended: string[] } {
+  } }
+  private getWorkflowSpecificAssets(context: LegalContext): { essential: string[]; recommended: string[] } }{
     const stage = this.workflowProfiles.get(context.workflowStage);
     if (!stage) {
       return { essential: [], recommended: [] };
-    }
-    return {
-     , essential: stage.expectedAssets.slice(0, 2),
+    } }
+    return { essential: stage.expectedAssets.slice(0, 2),
       recommended: stage.expectedAssets.slice(2)
     };
-  }
+  } }
   private getStageAssets(stageName: string): string[] {
     const stage = this.workflowProfiles.get(stageName);
     return stage?.expectedAssets || [];
-  }
+  } }
   private generateAssetData(assetType: string, context: LegalContext): AssetData {
     // Generate appropriate asset data based on type and context
     const baseData: AssetData = {
@@ -457,14 +454,14 @@ export class LegalWorkflowOrchestrator {
     // Add specific data based on asset type
     switch (assetType) {
       case, 'document_viewer':
-        return { ...baseData, viewerConfig: {, mode: 'legal', annotations: true } };
+        return { ...baseData, viewerConfig: { mode: 'legal', annotations: true } }};
       case, 'evidence_canvas':
-        return { ...baseData, canvasConfig: {, collaboration: true, version: '2.0' } };'`'`
+        return { ...baseData, canvasConfig: { collaboration: true, version: '2.0' } }};'`'`
       case, 'legal_database':
-        return { ...baseData, searchConfig: { domain: context.documentContext?.domain } };
+        return { ...baseData, searchConfig: { domain: context.documentContext?.domain } }};
      , default: return baseData;
-    }
-  }
+    } }
+  } }
   private async recordWorkflowTransition(context: LegalContext, prediction: HybridPredictionResult): Promise<void> {
     const transitionData = {
       fromStage: context.workflowStage,
@@ -476,16 +473,16 @@ export class LegalWorkflowOrchestrator {
     if (typeof this.redis.lPush === 'function') {
       await this.redis.lPush('workflow:transitions', JSON.stringify(transitionData));
       await this.redis.lTrim('workflow:transitions', 0, 999); // Keep last, 1000 transitions
-    } else if (typeof this.redis.lpush === 'function') {
+    } }else if (typeof this.redis.lpush === 'function') {
       await this.redis.lpush('workflow:transitions', JSON.stringify(transitionData));
       await this.redis.ltrim('workflow:transitions', 0, 999); // Keep last, 1000 transitions
-    } else {
+    } }else {
       // best-effort fallback: prepend a simple set + index key (non-list) so we don't throw at runtime'
       const fallbackKey = `workflow:transitions:fallback:${Date.now()}`;
       await this.redis.set(fallbackKey, JSON.stringify(transitionData), { EX: 60 * 60 * 24 }); // 1 day
-    }
-  }
-}
+    } }
+  } }
+} }
 // =============================================================================
 // TYPE DEFINITIONS
 // =============================================================================
@@ -494,10 +491,11 @@ interface WorkflowGuidance { currentStageAdvice: string;, nextStagePreparation:
   efficiencyTips: string[];
   riskAlerts: string[];
   qualityChecklist: string[];
-}
-interface NextStepRecommendation {, type: 'workflow_progression' | 'behavioral_prediction' | 'semantic_insight';, action: string;
+} }
+interface NextStepRecommendation { type: 'workflow_progression' | 'behavioral_prediction' | 'semantic_insight';, action: string;
   priority: number;
   timeEstimate: number;
   reasoning: string;
  , assets: string[];
-}
+} }
+

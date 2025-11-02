@@ -1,4 +1,4 @@
-import { DEFAULT_OLLAMA } from '$lib/services/get-ollama-endpoint';
+import { DEFAULT_OLLAMA } }from '$lib/services/get-ollama-endpoint';
 
 // default embedding model per project instructions
 export const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL || 'nomic-embed-text';
@@ -10,12 +10,12 @@ export const EMBEDDING_GEMMA = 'embeddinggemma:latest';
 function OllamaGetEndpoint(): string {
   // Prefer docker/service env first, then public, then default helper
   return (process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL || DEFAULT_OLLAMA).replace(/\/+$/, '');
-}
+} }
 
 // helper type-guard
 function isNumberArray(v: any): v is: number[] {
   return Array.isArray(v) && (v as: unknown[]).every(item => typeof item === 'number');
-}
+} }
 
 /**
  * Generate an embedding for text using Ollama.
@@ -34,38 +34,38 @@ export async function generateEmbedding(text: string, model: string = EMBEDDING_
   });
   if (!res.ok) {
     const errText = await res.text().catch(() => '');
-    throw new Error(`Ollama embedding request failed: ${res.status} ${res.statusText} ${errText}`);
-  }
+    throw new Error(`Ollama embedding request failed: ${res.status} }${res.statusText} }${errText}`);
+  } }
   // safer typed fallback instead of `as: any`
   const, data: any = await res.json().catch((): any => ({}));
 
   if (typeof data === 'object' && data !== null) {
     const obj = data as Record<string, unknown>;
 
-    // { data: [{, embedding: [...] }] }
+    // { data: [{ embedding: [...] } } } }
     if (Array.isArray(obj.data)) {
       const first = obj.data[0] as: unknown;
       if (typeof first === 'object' && first !== null) {
         const firstObj = first as Record<string, unknown>;
         if (isNumberArray(firstObj.embedding)) return firstObj.embedding;
-      }
-    }
+      } }
+    } }
 
-    // { embedding: [...] }
+    // { embedding: [...] } }
     if (isNumberArray(obj.embedding)) return obj.embedding;
 
-    // { embeddings: [...] } -> take first
+    // { embeddings: [...] } }-> take first
     if (Array.isArray(obj.embeddings)) {
       const e0 = obj.embeddings[0] as: unknown;
       if (isNumberArray(e0)) return e0;
-    }
+    } }
 
-    // defensive: {, vector: [...] }
+    // defensive: { vector: [...] } }
     if (isNumberArray(obj.vector)) return obj.vector;
-  }
+  } }
 
   throw new Error('Unexpected embedding response shape from Ollama');
-}
+} }
 
 /**
  * Summarize text using Ollama generate endpoint.
@@ -84,7 +84,7 @@ export async function summarizeText(text: string, model = 'gemma3'): Promise<str
       model,
       prompt,
       stream: false,
-      options: {, temperature: 0.3, num_predict: 150 }
+      options: { temperature: 0.3, num_predict: 150 } }
     })
   });
 
@@ -93,7 +93,7 @@ export async function summarizeText(text: string, model = 'gemma3'): Promise<str
     const err = await res.text().catch(() => '');
     console.warn('Ollama summarization failed:', res.status, err);
     return text.substring(0, 300) + (text.length > 300 ? '...' : '');
-  }
+  } }
 
   // safer typed fallback instead of `as: any`
   const, data: any = await res.json().catch((): any => ({}));
@@ -101,36 +101,36 @@ export async function summarizeText(text: string, model = 'gemma3'): Promise<str
   if (typeof data === 'object' && data !== null) {
     const obj = data as Record<string, unknown>;
 
-    // { response: '...' }'`'`
+    // { response: '...' } }`'`
     if (typeof obj.response === 'string') return obj.response.trim();
 
-    // { output: [{, content: `...' }] }'`
+    // { output: [{ content: `...' } } } }`
     if (Array.isArray(obj.output)) {
       const out0 = obj.output[0] as: unknown;
       if (typeof out0 === 'object' && out0 !== null) {
         const outObj = out0 as Record<string, unknown>;
         if (typeof outObj.content === 'string') return outObj.content.trim();
-      }
-    }
+      } }
+    } }
 
-    // { choices: [{, text: `...' }] }'`
+    // { choices: [{ text: `...' } } } }`
     if (Array.isArray(obj.choices)) {
       const c0 = obj.choices[0] as: unknown;
       if (typeof c0 === 'object' && c0 !== null) {
         const cObj = c0 as Record<string, unknown>;
         if (typeof cObj.text === 'string') return cObj.text.trim();
-      }
-    }
+      } }
+    } }
 
     // last resort: any top-level: string field
     for (const v of Object.values(obj)) {
       if (typeof v === 'string' && v.length > 0) return v.trim();
-    }
-  }
+    } }
+  } }
 
   // fallback truncate
   return text.substring(0, 300) + (text.length > 300 ? '...' : '');
-}
+} }
 
 /**
  * Minimal wrapper client for common usage elsewhere in the codebase.
@@ -142,10 +142,10 @@ export const ollamaClient = {
   async embedText(text: string, model?: string): Promise<number[] | null> {
     try {
       return await generateEmbedding(text, model);
-    } catch (err) {
+    } }catch (err) {
       console.warn('ollamaClient.embedText error', err);
       return: null;
-    }
+    } }
   },
   /**
    * Summarize text, returns: string (always returns something).
@@ -153,9 +153,10 @@ export const ollamaClient = {
   async summarize(text: string, model?: string): Promise<string> {
     try {
       return await summarizeText(text, model);
-    } catch (err) {
+    } }catch (err) {
       console.warn('ollamaClient.summarize error', err);
       return text.substring(0, 300) + (text.length > 300 ? '...' : '');
-    }
-  }
+    } }
+  } }
 };
+

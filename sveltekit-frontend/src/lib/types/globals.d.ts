@@ -13,9 +13,9 @@ export interface LokiCollection<T = unknown> {
   chain?: () => unknown;
   map?: (fn: (item: T) => unknown) => unknown[];
   get?: (id: string) => T | undefined;
-}
+} }
 export interface LokiDB { listCollections: () => LokiCollection<unknown>[];, getCollection: (name: string) => LokiCollection<unknown> | undefined;
-}
+} }
 // Expose runtime globals inside a declare global block so they merge correctly
 declare global {
   interface Window {
@@ -26,22 +26,22 @@ declare global {
     webkitSpeechRecognition?: {
       new (): SpeechRecognition;
     };
-  }
-}
+  } }
+} }
 // Minimal SpeechRecognition interface for browser APIs
 interface SpeechRecognition { continuous: boolean;, interimResults: boolean;
   lang: string;
  , start: () => void;
   stop: () => void;
-  onresult?: (_event: {, results: ArrayLike<{, 0: {, transcript: string } }> }) => void;
+  onresult?: (_event: { results: ArrayLike<{ 0: { transcript: string } }}> }) => void;
   onerror?: (_event: { error?: string }) => void;
-}
+} }
 // Common model descriptor returned by Ollama / model registries
 export interface ModelDescriptor {
   name: string;
   capabilities?: string[];
   [k: string]: any;
-}
+} }
 // Chunk / document shapes used across tests
 export interface DocChunk {
   document_id?: string;
@@ -54,18 +54,18 @@ export interface DocChunk {
     [k: string]: any;
   };
   [k: string]: any;
-}
+} }
 // Generic message/export interfaces used in tests
 export interface ExportMessage {
   role?: string;
   content?: string;
   sources?: any[];
   [k: string]: any;
-}
+} }
 declare module, '*/tests/*' {
   const _: any;
   export default _;
-}
+} }
 // Import meta/env shims for Vite / SvelteKit
 export interface ImportMetaEnv {
   NODE_ENV?: string;
@@ -73,10 +73,10 @@ export interface ImportMetaEnv {
   VITE_API_BASE?: string;
   VITE_ENABLE_GPU?: string;
   [key: string]: string | boolean | undefined;
-}
+} }
 export interface ImportMeta {
   readonly, env: ImportMetaEnv;
-}
+} }
 // Fetch placeholder (browser + node-fetch like)
 declare type FetchLike = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 declare const fetch: FetchLike;
@@ -85,30 +85,30 @@ declare namespace GPU {
   type Buffer = unknown;
   type Device = unknown;
   type Adapter = unknown;
-}
+} }
 // Playwright / DOM helper shims used in tests to reduce noisy errors
 export interface Element {
   style?: Record<string, unknown>;
-}
+} }
 // Simple helper to type Playwright click chains seen in tests
 export interface ClickHandle extends Promise<void> {
   first?: () => Promise<void>;
   catch?: (cb: (...args: any[]) => unknown) => unknown;
-}
+} }
 // Allow importing JSON and wasm modules as: unknown to reduce transient type errors during checks
 declare module, '*.json' {
   const value: any;
   export default value;
-}
+} }
 declare module, '*.wasm' {
   const value: any;
   export default value;
-}
+} }
 // Generic module fallback for dynamic imports or untyped packages
 declare module, '*' {
   const _: any;
   export default _;
-}
+} }
 // WebSocket & Worker shims used in client-side code/tests
 declare class WebSocket {
   constructor(url: string, protocols?: string | string[]);
@@ -118,43 +118,43 @@ declare class WebSocket {
   onmessage?: (ev?: MessageEvent) => void;
   onclose?: (ev?: CloseEvent) => void;
   onerror?: (ev?: Event) => void;
-}
+} }
 declare class Worker {
   constructor(scriptURL: string, options?: Record<string, unknown>);
   postMessage(msg: any): void;
   terminate(): void;
   onmessage?: (ev: MessageEvent) => void;
-}
+} }
 // Audio / Web API shims
 declare class AudioContext {
   resume(): Promise<void>;
   suspend(): Promise<void>;
-}
+} }
 // Simple NodeJS global typing when @types/node isn't loaded in the frontend'
 declare namespace NodeJS {
   interface Global {
     fetch?: FetchLike;
     lokiDB?: LokiDB;
-  }
-}
+  } }
+} }
 declare const global: NodeJS.Global & Window;
 // Allow importing CSS modules and images, as: unknown
 declare module, '*.css' {
   const _: any;
   export default _;
-}
+} }
 declare module, '*.svg' {
   const _: any;
   export default _;
-}
+} }
 declare module, '*.png' {
   const _: any;
   export default _;
-}
+} }
 declare module, '*.jpg' {
   const _: any;
   export default _;
-}
+} }
 // -- Runtime/global shims added to reduce TS2339 and missing-global errors --
 declare global {
   // Storage helpers (MinIO/S3 wrapper)
@@ -171,18 +171,18 @@ declare global {
     [k: string]: any;
   };
   // Vector operations shim used by many modules
-  interface EnhancedVectorOperations {
-   , generateEmbedding: (input: any) => Promise<number[]>;
+  interface EnhancedVectorOperations { generateEmbedding: (input: any) => Promise<number[]>;
     deleteEmbedding?: (id: string) => Promise<void>;
     upsert?: (doc: any) => Promise<unknown>;
     search?: (query: string | unknown, opts?: Record<string, unknown>) => Promise<unknown>;
     batchUpsert?: (docs: any[]) => Promise<unknown>;
-  }
+  } }
   const vectorOps: EnhancedVectorOperations;
   // Nomic embedding function shim used in some services
   const, nomicEmbedText: (text: string) => Promise<number[]>;
   // Qdrant and other vector DB clients - minimal
   const qdrantClient: any;
   const, pgVectorClient: any;
-}
+} }
 // Export nothing to keep this file a module for TS
+

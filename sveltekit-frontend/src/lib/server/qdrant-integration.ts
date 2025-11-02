@@ -1,19 +1,19 @@
 // sveltekit-frontend/src/lib/server/qdrant-integration.ts
-import { QDRANT_URL, QDRANT_API_KEY } from '$env/static/private';
+import { QDRANT_URL, QDRANT_API_KEY } }from '$env/static/private';
 import type {
   PointStruct,
   SearchRequest,
   SearchResponse,
   UpsertPoints,
   UpsertResponse
-} from '$lib/types/qdrant'; // Assuming these types will be defined
+} }from '$lib/types/qdrant'; // Assuming these types will be defined
 
 const QDRANT_COLLECTION_NAME = 'legal_documents'; // Example collection name
 
 /**
  * Upserts points (vectors and payloads) into a Qdrant collection.
- * @param {PointStruct[]} points An array of points to upsert.
- * @returns {Promise<UpsertResponse>} The response from the Qdrant upsert operation.
+ * @param {PointStruct[]} }points An array of points to upsert.
+ * @returns {Promise<UpsertResponse>} }The response from the Qdrant upsert operation.
  */
 export async function upsertVectors(points: PointStruct[]): Promise<UpsertResponse> {
   try {
@@ -23,25 +23,25 @@ export async function upsertVectors(points: PointStruct[]): Promise<UpsertRespon
         'Content-Type': 'application/json',
         'api-key': QDRANT_API_KEY
       },
-      body: JSON.stringify({ points, wait: true } as UpsertPoints)
+      body: JSON.stringify({ points, wait: true } }as UpsertPoints)
     });
 
     if (!response.ok) {
       const errorBody = await response.text();
-      throw new Error(`Qdrant upsert error: ${response.status} - ${errorBody}`);
-    }
+      throw new Error(`Qdrant upsert error: ${response.status} }- ${errorBody}`);
+    } }
 
     return await response.json();
-  } catch (error) {
+  } }catch (error) {
     console.error('Error upserting vectors to Qdrant:', error);
     throw error;
-  }
-}
+  } }
+} }
 
 /**
  * Searches for similar vectors in a Qdrant collection.
- * @param {SearchRequest} searchRequest The search query including vector and filters.
- * @returns {Promise<SearchResponse>} The search results from Qdrant.
+ * @param {SearchRequest} }searchRequest The search query including vector and filters.
+ * @returns {Promise<SearchResponse>} }The search results from Qdrant.
  */
 export async function searchVectors(searchRequest: SearchRequest): Promise<SearchResponse> {
   try {
@@ -56,12 +56,12 @@ export async function searchVectors(searchRequest: SearchRequest): Promise<Searc
 
     if (!response.ok) {
       const errorBody = await response.text();
-      throw new Error(`Qdrant search error: ${response.status} - ${errorBody}`);
-    }
+      throw new Error(`Qdrant search error: ${response.status} }- ${errorBody}`);
+    } }
 
     return await response.json();
-  } catch (error) {
+  } }catch (error) {
     console.error('Error searching vectors in Qdrant:', error);
     throw error;
-  }
+  } }
 }

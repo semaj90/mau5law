@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js'
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types.js'
 // Simple Qdrant Service Test API
 // Basic test without Redis dependencies
-import { json } from '@sveltejs/kit'
+import { json } }from '@sveltejs/kit'
 
 export type TestResult = { test: string;, status: 'success' | 'error' | 'warning';
   data?: Record<string, unknown>;
@@ -27,20 +27,20 @@ export const GET: RequestHandler = async ({ url }) => {
           memoryLimit: '32MB'
         };
         results.push({
-         , test: 'qdrant_config',
+  test: 'qdrant_config',
           status: 'success',
           data: config,
           duration: Date.now() - startTime
         });
-      } catch (error) {
+      } }catch (error) {
         results.push({
           test: 'qdrant_config',
           status: 'error',
           error: error instanceof Error ? error.message : String(error),
           duration: Date.now() - startTime
         });
-      }
-    }
+      } }
+    } }
     // Test 2: Vector Simulation
     if (testType === 'all' || testType === 'vector') {
       const startTime = Date.now();
@@ -54,30 +54,30 @@ export const GET: RequestHandler = async ({ url }) => {
           id: `doc_${i + 1}`,
           score: Math.random() * 0.5 + 0.5,
           payload: {
-           , title: `Legal Document ${i + 1}`,
+  title: `Legal Document ${i + 1}`,
             type: 'evidence',
-            caseId: 'case_${Math.floor(Math.random() * 3) + 1}` }'`
+            caseId: 'case_${Math.floor(Math.random() * 3) + 1}` } }`
         }));
         results.push({
           test: 'vector_operations',
           status: 'success',
           data: {
-           , vector_dimensions: normalizedVector.length,
+  vector_dimensions: normalizedVector.length,
             is_normalized: Math.abs(magnitude - 1) < 0.001,
             mock_search_results: mockResults.length,
             sample_scores: mockResults.map(r => Math.round(r.score * 1000) / 1000)
           },
           duration: Date.now() - startTime
         });
-      } catch (error) {
+      } }catch (error) {
         results.push({
           test: 'vector_operations',
           status: 'error',
           error: error instanceof Error ? error.message : String(error),
           duration: Date.now() - startTime
         });
-      }
-    }
+      } }
+    } }
     // Test 3: Memory Usage Simulation
     if (testType === 'all' || testType === 'memory') {
       const startTime = Date.now();
@@ -90,48 +90,48 @@ export const GET: RequestHandler = async ({ url }) => {
           som_clusters: 12,
           status: `optimal` };'`'`
         results.push({
-         , test: 'memory_efficiency',
+  test: 'memory_efficiency',
           status: 'success',
           data: memoryStats,
           duration: Date.now() - startTime
         });
-      } catch (error) {
+      } }catch (error) {
         results.push({
           test: 'memory_efficiency',
           status: 'error',
           error: error instanceof Error ? error.message : String(error),
           duration: Date.now() - startTime
         });
-      }
-    }
+      } }
+    } }
     return json({
       success: true,
       timestamp: new Date().toISOString(),
       service: 'qdrant_simple_test',
       tests: results,
       summary: {
-       , total: results.length,
+  total: results.length,
         passed: results.filter(item => item.status === 'success').length,
         failed: results.filter(item => item.status === 'error').length,
         warnings: results.filter(item => item.status === 'warning').length,
         avg_duration: Math.round(results.reduce((sum, r) => sum + (r.duration || 0), 0) / (results.length || 1))
       },
       configuration: {
-       , vector_dimensions: 384,
+  vector_dimensions: 384,
         embedding_model: 'nomic-embed-text',
         memory_efficient: true,
         clustering_enabled: true,
         caching_enabled: true
-      }
+      } }
     });
-  } catch (error) {
+  } }catch (error) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };

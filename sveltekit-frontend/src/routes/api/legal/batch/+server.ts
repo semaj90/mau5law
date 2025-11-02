@@ -3,16 +3,16 @@
  *
  * Endpoint for processing multiple legal documents in batches
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { unifiedLegalOrchestrationService } from '$lib/services/unified-legal-orchestration-service.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { unifiedLegalOrchestrationService } }from '$lib/services/unified-legal-orchestration-service.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { documents = [] } = body;
+    const { documents = [] } }= body;
     if (!Array.isArray(documents) || documents.length === 0) {
       return json({ error: 'Documents array is required' }, { status: 400 });
-    }
+    } }
     // Validate document structure
     for (const doc of documents) {
       if (!doc.id || !doc.content) {
@@ -20,27 +20,27 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             error: 'Each document must have id and content properties'
           },
-          { status: 400 }
+          { status: 400 } }
         );
-      }
-    }
+      } }
+    } }
     // Process documents in batch
     const results = await unifiedLegalOrchestrationService.batchProcessDocuments(documents);
     // Convert results to serializable format
-    const processedDocuments: { [key: string]: any } = {};
+    const processedDocuments: { [key: string]: any } }= {};
     for (const [docId, result] of results) {
-      const jobStatuses: { [key: string]: any } = {};
+      const jobStatuses: { [key: string]: any } }= {};
       for (const [jobId, store] of (result as { statusStores?: any; jobIds?: any; processingMetrics?: any })
         .statusStores) {
         jobStatuses[jobId] = {
-          subscriptionEndpoint: '/api/legal/status/${jobId}' };'` }'`
+          subscriptionEndpoint: '/api/legal/status/${jobId} } };'` } }`
       processedDocuments[docId] = {
-       , jobIds: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds,
+  jobIds: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds,
         jobStatuses,
         aggregateStatusEndpoint: '/api/legal/status/aggregate/${(result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds.join(',')}`,'`
         processingMetrics: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).processingMetrics
       };
-    }
+    } }
     return json({
       success: true,
       documentsProcessed: documents.length,
@@ -48,13 +48,14 @@ export const POST: RequestHandler = async ({ request }) => {
       batchId: `batch_${Date.now()}`,
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
-    console.error('Batch processing error:', error);'
+  } }catch (error) {
+    console.error('Batch processing error:', error);
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

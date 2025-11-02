@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { env } from '$env/dynamic/private'; // For server-side environment variables
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { env } }from '$env/dynamic/private'; // For server-side environment variables
 
 // Mock interfaces for demonstration purposes, these should ideally be imported from a shared types file
 interface PrecedentMatch { id: string;, title: string;
@@ -19,13 +19,13 @@ interface PrecedentMatch { id: string;, title: string;
   recentCitations: number;
   distinguishingFactors: string[];
   applicabilityScore: number;
-  strengthIndicators: {, factualAlignment: number;, legalPrinciples: number;
+  strengthIndicators: { factualAlignment: number;, legalPrinciples: number;
     jurisdictionalRelevance: number;
     temporalRelevance: number;
   };
-}
+} }
 
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const {
       searchQuery,
@@ -33,7 +33,7 @@ export const, POST: RequestHandler = async ({ request }) => {
       selectedJurisdiction,
       selectedCourtLevel,
       selectedPracticeArea
-    } = await request.json();
+    } }= await request.json();
 
     console.log('Received precedent matching request:', {
       searchQuery,
@@ -64,29 +64,29 @@ export const, POST: RequestHandler = async ({ request }) => {
     //    const embeddingResponse = await fetch(`${ollamaUrl}/api/embeddings`, {
     //      method: 'POST',
     //      headers: { 'Content-Type': 'application/json' },'`'`
-    //      body: JSON.stringify({, model: 'nomic-embed-text', prompt: searchQuery || caseFactPattern })
+    //      body: JSON.stringify({ model: 'nomic-embed-text', prompt: searchQuery || caseFactPattern })
     //    });
     //    const embeddingData = await embeddingResponse.json();
     //    const embedding = embeddingData.embedding;
 
     // 2. Perform vector search using Qdrant or pgvector (Drizzle ORM)
     //    Example using a hypothetical enhancedVectorSearchService from instructions:
-    //    import { enhancedVectorSearchService } from '$lib/server/db/drizzle-vector-config';
+    //    import { enhancedVectorSearchService } }from '$lib/server/db/drizzle-vector-config';
     //    const vectorSearchResults = await enhancedVectorSearchService.searchDocuments(embedding, {
     //      limit: 10,
-    //      filters: {, jurisdiction: selectedJurisdiction, practice_area: selectedPracticeArea }
+    //      filters: { jurisdiction: selectedJurisdiction, practice_area: selectedPracticeArea } }
     //    });
 
     // 3. Refine results, build reasoning chains, etc.
     //    This would involve more complex logic, potentially calling other Go microservices
     //    via productionServiceClient as mentioned in instructions.
-    //    import { productionServiceClient } from '$lib/api/production-service-client';
+    //    import { productionServiceClient } }from '$lib/api/production-service-client';
     //    const goServiceResult = await productionServiceClient.makeRequest('enhanced-rag', { /* ... */ });
 
     // Mock results for demonstration
     const mockMatches: PrecedentMatch[] = [
       {
-       , id: 'API-CASE-2023-001',
+  id: 'API-CASE-2023-001',
         title: 'API: State v. Johnson - Contract Interpretation Under Duress',
         citation: '847 F.3d, 234 (5th Cir. 2023)',
         court: '5th Circuit Court of Appeals',
@@ -107,11 +107,11 @@ export const, POST: RequestHandler = async ({ request }) => {
         distinguishingFactors: [],
         applicabilityScore: 0.92,
         strengthIndicators: {
-         , factualAlignment: 93,
+  factualAlignment: 93,
           legalPrinciples: 97,
           jurisdictionalRelevance: 88,
           temporalRelevance: 99
-        }
+        } }
       },
       {
         id: 'API-CASE-2022-087',
@@ -135,12 +135,12 @@ export const, POST: RequestHandler = async ({ request }) => {
         distinguishingFactors: ['API: Different factual context (consumer vs. commercial)'],
         applicabilityScore: 0.80,
         strengthIndicators: {
-         , factualAlignment: 80,
+  factualAlignment: 80,
           legalPrinciples: 90,
           jurisdictionalRelevance: 75,
           temporalRelevance: 88
-        }
-      }
+        } }
+      } }
     ];
 
     // Simulate some delay for API processing
@@ -154,7 +154,7 @@ export const, POST: RequestHandler = async ({ request }) => {
       totalMatches: mockMatches.length
     });
 
-  } catch (error) {
+  } }catch (error) {
     console.error('API Error in precedent-matching:', error);
     return json({
       success: false,
@@ -162,5 +162,6 @@ export const, POST: RequestHandler = async ({ request }) => {
       matches: [],
       totalMatches: 0
     }, { status: 500 });
-  }
+  } }
 };
+

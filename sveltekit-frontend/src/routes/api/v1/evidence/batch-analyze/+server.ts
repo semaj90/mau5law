@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Multi-File Evidence Batch Analysis API
  *
@@ -9,23 +9,23 @@ import type { Document } from '$lib/types';
  * - Batch citation verification
  * - Evidence relationship mapping
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { z } }from 'zod';
 
-import { getUserId } from '$lib/server/auth/utils';
+import { getUserId } }from '$lib/server/auth/utils';
 // Batch analysis schemas
 const BatchAnalysisSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
   files: z
     .array(
       z.object({
-       , id: z.string(),
+  id: z.string(),
         filename: z.string(),
         content: z.string(),
         type: z.enum(['document', 'image', 'video', 'audio', 'other']),
         metadata: z
           .object({
-           , fileSize: z.number().optional(),
+  fileSize: z.number().optional(),
             uploadDate: z.string().datetime().optional(),
             source: z.string().optional()
           })
@@ -35,7 +35,7 @@ const BatchAnalysisSchema = z.object({
     .min(1, 'At least one file is required'),
   analysisOptions: z
     .object({
-     , enableCrossDocumentAnalysis: z.boolean().default(true),
+  enableCrossDocumentAnalysis: z.boolean().default(true),
       extractTimelines: z.boolean().default(true),
       detectRelationships: z.boolean().default(true),
       generateSummary: z.boolean().default(true),
@@ -74,10 +74,10 @@ type AnalysisResult = {
   [key: string]: any;
 };
 
-type IndividualResult = {, fileId: string;, filename: string;
+type IndividualResult = { fileId: string;, filename: string;
   success: boolean;
   analysis: AnalysisResult | null;
- , error: string | null;
+  error: string | null;
 };
 
 // AI Integration
@@ -87,10 +87,10 @@ async function analyzeDocumentBatch(files: EvidenceFile[], options: AnalysisOpti
   // Process files in parallel if enabled
   if (options.parallelProcessing) {
     return await processBatchParallel(files, model, options);
-  } else {
+  } }else {
     return await processBatchSequential(files, model, options);
-  }
-}
+  } }
+} }
 
 async function processBatchParallel(files: EvidenceFile[], model: string, options: AnalysisOptions): Promise<any> {
   const concurrency = Math.min(options.maxConcurrency, files.length);
@@ -99,7 +99,7 @@ async function processBatchParallel(files: EvidenceFile[], model: string, option
   // Split files into concurrent batches
   for (let i = 0; i < files.length; i += concurrency) {
     batches.push(files.slice(i, i + concurrency));
-  }
+  } }
 
   const results: IndividualResult[] = [];
 
@@ -123,13 +123,13 @@ async function processBatchParallel(files: EvidenceFile[], model: string, option
           success: result.status === 'fulfilled',
           analysis: result.status === 'fulfilled' ? (result.value as AnalysisResult) : null,
           error: errorMessage
-        } as IndividualResult;
+        } }as IndividualResult;
       })
     );
-  }
+  } }
 
   return results;
-}
+} }
 
 async function processBatchSequential(files: EvidenceFile[], model: string, _options: AnalysisOptions): Promise<any> {
   const results: IndividualResult[] = [];
@@ -144,7 +144,7 @@ async function processBatchSequential(files: EvidenceFile[], model: string, _opt
         analysis,
         error: null
       });
-    } catch (error) {
+    } }catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
       results.push({
         fileId: file.id,
@@ -153,16 +153,16 @@ async function processBatchSequential(files: EvidenceFile[], model: string, _opt
         analysis: null,
         error: msg
       });
-    }
-  }
+    } }
+  } }
 
   return results;
-}
+} }
 
 async function analyzeSingleDocument(file: EvidenceFile, model: string): Promise<AnalysisResult> {
   const analysisPrompt = `Analyze this legal evidence document and provide comprehensive analysis: '`
-; DOCUMENT: ${file.filename}
-TYPE: ${file.type}, CONTENT: ${file.content.substring(0, 3000)}${file.content.length > 3000 ? '...' : `` }'`'`
+; DOCUMENT: ${file.filename} }
+TYPE: ${file.type} }, CONTENT: ${file.content.substring(0, 3000)}${file.content.length > 3000 ? '...' : `` } }`'`
 
 Provide analysis in this exact JSON format:
 {
@@ -171,14 +171,14 @@ Provide analysis in this exact JSON format:
   "document_type": "contract|court_filing|correspondence|report|other",
   "key_entities": ["Person A", "Company B", "Location C"],
   "important_dates": [
-    {"date": "2024-01-15", "event": "Contract signed", "confidence": 0.9}
+    {"date": "2024-01-15", "event": "Contract signed", "confidence": 0.9} }
   ],
   "legal_issues": ["Contract breach", "Statutory violation"],
   "evidence_strength": 0.8,
   "recommendations": ["Verify signatures", "Check jurisdiction"],
   "cross_references": ["Other document mentions", "Related case citations"],
   "timeline_events": [
-    {"date": "2024-01-15T10:00:00Z", "description": "Event occurred", "importance": 0.9}
+    {"date": "2024-01-15T10:00:00Z", "description": "Event occurred", "importance": 0.9} }
   ]
 }`;`
 
@@ -191,28 +191,28 @@ Provide analysis in this exact JSON format:
         prompt: analysisPrompt,
         stream: false,
         options: {
-         , temperature: 0.1,
+  temperature: 0.1,
           top_p: 0.9,
           num_predict: 1536,
           num_ctx: 6144
-        }
+        } }
       })
     });
 
     if (!response.ok) {
       throw new Error(`AI analysis failed: ${response.status}`);
-    }
+    } }
 
     const payload = (await response.json()) as Record<string, unknown>;
     let textResponse = '';
 
     if (typeof payload.response === 'string') {
       textResponse = payload.response;
-    } else if (typeof payload.output === 'string') {
+    } }else if (typeof payload.output === 'string') {
       textResponse = payload.output;
-    } else {
+    } }else {
       textResponse = JSON.stringify(payload);
-    }
+    } }
 
     // Parse AI response
     let analysisResult: AnalysisResult;
@@ -220,10 +220,10 @@ Provide analysis in this exact JSON format:
       const jsonMatch = textResponse.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         analysisResult = JSON.parse(jsonMatch[0]) as AnalysisResult;
-      } else {
+      } }else {
         throw new Error('No JSON found in AI response');
-      }
-    } catch (parseError) {
+      } }
+    } }catch (parseError) {
       // Fallback analysis (typed)
       analysisResult = {
         summary: `Analysis of ${file.filename}`,
@@ -237,14 +237,14 @@ Provide analysis in this exact JSON format:
         cross_references: [],
         timeline_events: []
       };
-    }
+    } }
 
     return analysisResult;
-  } catch (error) {
+  } }catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     throw new Error(`Document analysis failed: ${msg}`);
-  }
-}
+  } }
+} }
 
 // Cross-document analysis (use typed IndividualResult[])
 async function performCrossDocumentAnalysis(analysisResults: IndividualResult[]): Promise<any> {
@@ -277,20 +277,20 @@ async function performCrossDocumentAnalysis(analysisResults: IndividualResult[])
     .filter(([_, count]) => count > 1)
     .map(([issue, count]) => ({ issue, frequency: count }));
 
-  return { correlation_analysis: {, common_entities: commonEntities,
+  return { correlation_analysis: { common_entities: commonEntities,
       date_patterns: datePatterns,
       common_legal_issues: commonIssues,
       document_relationships: generateDocumentRelationships(analysisResults)
     },
     unified_timeline: generateUnifiedTimeline(analysisResults),
     summary_insights: {
-     , total_documents: analysisResults.length,
+  total_documents: analysisResults.length,
       successful_analyses: analysisResults.filter(r => r.success).length,
       key_correlations: commonEntities.length + commonIssues.length,
       timeline_events: datePatterns.length
-    }
+    } }
   };
-}
+} }
 
 function generateDocumentRelationships(analysisResults: IndividualResult[]) {
   const relationships: Array<Record<string, unknown>> = [];
@@ -316,16 +316,16 @@ function generateDocumentRelationships(analysisResults: IndividualResult[]) {
           document2: doc2.filename,
           relationship_strength: (commonEntities.length + commonIssues.length) / 10,
           common_elements: {
-           , entities: commonEntities,
+  entities: commonEntities,
             legal_issues: commonIssues
-          }
+          } }
         });
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   return relationships;
-}
+} }
 
 function generateUnifiedTimeline(analysisResults: IndividualResult[]) {
   const allTimelineEvents = analysisResults
@@ -341,12 +341,12 @@ function generateUnifiedTimeline(analysisResults: IndividualResult[]) {
   return {
     events: allTimelineEvents,
     date_range: {
-     , earliest: allTimelineEvents[0]?.date || null,
+  earliest: allTimelineEvents[0]?.date || null,
       latest: allTimelineEvents[allTimelineEvents.length - 1]?.date || null
     },
     event_count: allTimelineEvents.length
   };
-}
+} }
 
 // GPU detection - safe, environment-driven fallback (no: undefined `response`)
 async function detectGPU(): Promise<boolean> {
@@ -355,15 +355,15 @@ async function detectGPU(): Promise<boolean> {
     if (process.env.USE_GPU === '1' || process.env.GPU === 'true') return true;
     // Otherwise default to false (server-side endpoints typically cannot access browser GPU)
     return false;
-  } catch {
+  } }catch {
     return false;
-  }
-}
+  } }
+} }
 
 async function getOptimalModel(): Promise<string> {
   const hasGPU = await detectGPU();
   return hasGPU ? LEGAL_MODEL_GPU : LEGAL_MODEL_FALLBACK;
-}
+} }
 
 /**
  * POST /api/v1/evidence/batch-analyze - Analyze multiple evidence files
@@ -373,12 +373,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Check authentication (allow test mode)
     const isTestMode = request.headers.get('x-test-mode') === 'true';
     if (!isTestMode && (!locals.session || !locals.user)) {
-      return json({ message: 'Authentication required' }, { status: 401 });'` }'`
+      return json({ message: 'Authentication required' }, { status: 401 });'` } }`
 
     const body = await request.json();
-    const { caseId, files, analysisOptions } = BatchAnalysisSchema.parse(body);
+    const { caseId, files, analysisOptions } }= BatchAnalysisSchema.parse(body);
 
-    console.log(`Starting batch analysis for ${files.length} files...`);
+    console.log(`Starting batch analysis for ${files.length} }files...`);
     const startTime = Date.now();
 
     // Analyze all documents
@@ -388,7 +388,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     let crossDocumentAnalysis = null;
     if (analysisOptions.enableCrossDocumentAnalysis) {
       crossDocumentAnalysis = await performCrossDocumentAnalysis(analysisResults);
-    }
+    } }
 
     const processingTime = Date.now() - startTime;
     const successCount = analysisResults.filter(r => r.success).length;
@@ -398,24 +398,24 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       data: {
         caseId,
         batch_analysis: {
-         , individual_results: analysisResults,
+  individual_results: analysisResults,
           cross_document_analysis: crossDocumentAnalysis,
           processing_summary: {
-           , total_files: files.length,
+  total_files: files.length,
             successful_analyses: successCount,
             failed_analyses: files.length - successCount,
             processing_time_ms: processingTime,
             analysis_options: analysisOptions
           },
           metadata: {
-           , model_used: await getOptimalModel(),
+  model_used: await getOptimalModel(),
             processed_at: new Date().toISOString(),
             user_id: isTestMode ? 'test-user' : getUserId(locals)
-          }
-        }
-      }
+          } }
+        } }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     // Log raw error for diagnostics (keeps type-safety)
     console.error('Batch analysis failed:', err);
 
@@ -426,9 +426,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           message: 'Invalid batch analysis request',
           details: err.errors
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Normalize message for non-Zod errors
     const message = err instanceof Error ? err.message : String(err);
@@ -437,7 +437,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       {
         message: 'Batch analysis failed',
         details: message || 'Unknown error` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

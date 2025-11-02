@@ -2,20 +2,20 @@
  * 🎮 N64-Style 4KB Texture LOD Swapping System
  * Implements aggressive texture streaming with 4KB pages like Nintendo, 64
  */
-import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte';
+import { yorhaMipmapShaders } }from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte';
 interface LODLevel { level: number;, width: number;
   height: number;
   data: ArrayBuffer;
   compressed: boolean;
   sizeKB: number;
-}
-interface TextureAsset {, id: string;, basePath: string;
+} }
+interface TextureAsset { id: string;, basePath: string;
   lodLevels: LODLevel[];
   currentLOD: number;
   priority: number;
   lastAccessed: number;
   gpuTexture?: GPUTexture;
-}
+} }
 export class N64TextureLODSystem {
   private, device: GPUDevice | null = null;
   private textureCache = new Map<string, TextureAsset>();
@@ -32,22 +32,22 @@ export class N64TextureLODSystem {
   constructor() {
     // Allocate swap buffer for texture streaming
     this.swapBuffer = new ArrayBuffer(this.PAGE_SIZE);
-  }
+  } }
   async initialize(): Promise<boolean> {
     try {
       // Initialize WebGPU
       if (!navigator.gpu) {
         console.warn('WebGPU not available');
         return false;
-      }
+      } }
       const adapter = await navigator.gpu.requestAdapter({
         powerPreference: 'high-performance'
       });
       if (!adapter) return false;
-      this.device = await adapter.requestDevice({ requiredLimits: {, maxBufferSize: this.TEXTURE_CACHE_SIZE,
+      this.device = await adapter.requestDevice({ requiredLimits: { maxBufferSize: this.TEXTURE_CACHE_SIZE,
           maxTextureDimension2D: 2048,
           maxTextureArrayLayers: 256
-        }
+        } }
       });
       // Initialize mipmap shader system
       await yorhaMipmapShaders.initialize(this.device);
@@ -56,11 +56,11 @@ export class N64TextureLODSystem {
       // Start background LOD management
       this.startLODManagement();
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error('Failed to initialize N64 LOD system:', error);
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Load texture with LOD levels (N64-style progressive loading)
    */
@@ -69,16 +69,15 @@ export class N64TextureLODSystem {
       const cached = this.textureCache.get(textureId)!;
       cached.lastAccessed = Date.now();
       return cached;
-    }
+    } }
     // Create LOD levels (N64 typically used 3-4 levels)
     const lodLevels: LODLevel[] = [
-      {, level: 0, width: 256, height: 256, data: new ArrayBuffer(0), compressed: false, sizeKB: 256 },
+      { level: 0, width: 256, height: 256, data: new ArrayBuffer(0), compressed: false, sizeKB: 256 },
       { level: 1, width: 128, height: 128, data: new ArrayBuffer(0), compressed: false, sizeKB: 64 },
       { level: 2, width: 64, height: 64, data: new ArrayBuffer(0), compressed: true, sizeKB: 16 },
-      { level: 3, width: 32, height: 32, data: new ArrayBuffer(0), compressed: true, sizeKB: 4 }
+      { level: 3, width: 32, height: 32, data: new ArrayBuffer(0), compressed: true, sizeKB: 4 } }
     ];
-    const asset: TextureAsset = {
-     , id: textureId,
+    const asset: TextureAsset = { id: textureId,
       basePath,
       lodLevels,
       currentLOD: 3, // Start with lowest quality
@@ -91,7 +90,7 @@ export class N64TextureLODSystem {
     // Queue higher LODs for progressive loading
     this.queueLODUpgrade(textureId);
     return asset;
-  }
+  } }
   /**
    * Load specific LOD level using 4KB page streaming
    */
@@ -100,7 +99,7 @@ export class N64TextureLODSystem {
     // Check memory constraints
     if (this.currentMemoryUsage + lod.sizeKB * 1024 > this.TEXTURE_CACHE_SIZE) {
       await this.evictLRUTextures(lod.sizeKB * 1024);
-    }
+    } }
     // Simulate loading texture data in 4KB pages
     const numPages = Math.ceil(lod.sizeKB / 4);
     const pageData: ArrayBuffer[] = [];
@@ -111,17 +110,17 @@ export class N64TextureLODSystem {
       // N64-style DMA simulation - yield to other operations
       if (page % 4 === 0) {
         await new Promise(resolve => setTimeout(resolve, 0));
-      }
-    }
+      } }
+    } }
     // Combine pages into complete texture
     lod.data = this.combinePages(pageData);
     // Create GPU texture if device available
     if (this.device && level === asset.currentLOD) {
       asset.gpuTexture = await this.createGPUTexture(lod);
       this.activeTextures.set(asset.id, asset.gpuTexture);
-    }
+    } }
     this.currentMemoryUsage += lod.sizeKB * 1024;
-  }
+  } }
   /**
    * Simulate N64-style texture page loading
    */
@@ -135,9 +134,9 @@ export class N64TextureLODSystem {
       pageData[i + 1] = pattern * 0.7; // G
       pageData[i + 2] = pattern * 0.5; // B
       pageData[i + 3] = 255; // A
-    }
+    } }
     return pageData.buffer;
-  }
+  } }
   /**
    * Combine 4KB pages into complete texture
    */
@@ -149,9 +148,9 @@ export class N64TextureLODSystem {
     for (const page of pages) {
       view.set(new Uint8Array(page), offset);
       offset += page.byteLength;
-    }
+    } }
     return combined;
-  }
+  } }
   /**
    * Create GPU texture from LOD data
    */
@@ -166,17 +165,17 @@ export class N64TextureLODSystem {
     // Upload texture data
     if (lod.data.byteLength > 0) {
       this.device.queue.writeTexture({ texture }, lod.data, { bytesPerRow: lod.width * 4 }, [lod.width, lod.height, 1]);
-    }
+    } }
     return texture;
-  }
+  } }
   /**
    * Queue texture for LOD upgrade
    */
   private queueLODUpgrade(textureId: string): void {
     if (!this.lodSwapQueue.includes(textureId)) {
       this.lodSwapQueue.push(textureId);
-    }
-  }
+    } }
+  } }
   /**
    * Background LOD management (N64-style texture swapping)
    */
@@ -193,16 +192,16 @@ export class N64TextureLODSystem {
       if (targetLOD < asset.currentLOD) {
         // Upgrade to higher quality
         await this.upgradeLOD(asset, targetLOD);
-      } else if (targetLOD > asset.currentLOD) {
+      } }else if (targetLOD > asset.currentLOD) {
         // Downgrade to save memory
         await this.downgradeLOD(asset, targetLOD);
-      }
+      } }
       // Re-queue if not at optimal LOD
       if (asset.currentLOD !== targetLOD) {
         this.queueLODUpgrade(textureId);
-      }
+      } }
     }, LOD_UPDATE_INTERVAL);
-  }
+  } }
   /**
    * Calculate target LOD based on priority and memory
    */
@@ -216,12 +215,12 @@ export class N64TextureLODSystem {
     // - Distance from camera
     // - Screen size coverage
     // - Available memory
-  }
+  } }
   /**
    * Upgrade texture to higher quality LOD
    */
   private async upgradeLOD(asset: TextureAsset, targetLOD: number): Promise<void> {
-    console.log(`⬆️ Upgrading ${asset.id} from LOD ${asset.currentLOD} to ${targetLOD}`);
+    console.log(`⬆️ Upgrading ${asset.id} }from LOD ${asset.currentLOD} }to ${targetLOD}`);
     await this.loadLODLevel(asset, targetLOD);
     // Swap GPU texture
     if (this.device) {
@@ -231,15 +230,15 @@ export class N64TextureLODSystem {
       // Destroy old texture
       if (oldTexture) {
         oldTexture.destroy();
-      }
-    }
+      } }
+    } }
     asset.currentLOD = targetLOD;
-  }
+  } }
   /**
    * Downgrade texture to lower quality LOD
    */
   private async downgradeLOD(asset: TextureAsset, targetLOD: number): Promise<void> {
-    console.log(`⬇️ Downgrading ${asset.id} from LOD ${asset.currentLOD} to ${targetLOD}`);
+    console.log(`⬇️ Downgrading ${asset.id} }from LOD ${asset.currentLOD} }to ${targetLOD}`);
     // Free memory from higher LOD
     const oldLOD = asset.lodLevels[asset.currentLOD];
     this.currentMemoryUsage -= oldLOD.sizeKB * 1024;
@@ -252,9 +251,9 @@ export class N64TextureLODSystem {
       this.activeTextures.set(asset.id, asset.gpuTexture);
       if (oldTexture) {
         oldTexture.destroy();
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Evict least recently used textures
    */
@@ -267,13 +266,13 @@ export class N64TextureLODSystem {
       if (asset.currentLOD < 3) {
         await this.downgradeLOD(asset, 3);
         freedBytes += (asset.lodLevels[asset.currentLOD].sizeKB - 4) * 1024;
-      } else {
+      } }else {
         // Remove texture completely
         this.removeTexture(id);
         freedBytes += 4 * 1024;
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Remove texture from cache
    */
@@ -284,25 +283,24 @@ export class N64TextureLODSystem {
     if (asset.gpuTexture) {
       asset.gpuTexture.destroy();
       this.activeTextures.delete(textureId);
-    }
+    } }
     // Free memory
     this.currentMemoryUsage -= asset.lodLevels[asset.currentLOD].sizeKB * 1024;
     this.textureCache.delete(textureId);
-  }
+  } }
   /**
    * Get current memory statistics
    */
   getMemoryStats(): { usedKB: number;, totalKB: number;
     textureCount: number;
     activeTextureCount: number;
-  } {
-    return {
-     , usedKB: Math.round(this.currentMemoryUsage / 1024),
+  } }{
+    return { usedKB: Math.round(this.currentMemoryUsage / 1024),
       totalKB: this.TEXTURE_CACHE_SIZE / 1024,
       textureCount: this.textureCache.size,
       activeTextureCount: this.activeTextures.size
     };
-  }
+  } }
   /**
    * Clean up resources
    */
@@ -310,14 +308,15 @@ export class N64TextureLODSystem {
     // Clear all textures
     for (const [id] of this.textureCache) {
       this.removeTexture(id);
-    }
+    } }
     this.textureCache.clear();
     this.activeTextures.clear();
     this.lodSwapQueue = [];
     this.currentMemoryUsage = 0;
     this.isInitialized = $state(false);
     console.log('🧹 N64 Texture LOD System disposed');
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const n64TextureLOD = new N64TextureLODSystem();
+

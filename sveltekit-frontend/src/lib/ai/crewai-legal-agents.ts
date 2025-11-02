@@ -1,11 +1,11 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // CrewAI Legal Document Review Multi-Agent System
 // Integrates Claude Code CLI + Local Gemma3 + Self-Prompting + Auto-Save
-import { ChatOllama } from '@langchain/ollama';
-import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { documentUpdateLoop } from '$lib/services/documentUpdateLoop';
-import { documents, aiHistory, cases } from '$lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { ChatOllama } }from '@langchain/ollama';
+import { HumanMessage, SystemMessage } }from '@langchain/core/messages';
+import { documentUpdateLoop } }from '$lib/services/documentUpdateLoop';
+import { documents, aiHistory, cases } }from '$lib/db/schema';
+import { eq } }from 'drizzle-orm';
 // ============================================================================
 // AGENT DEFINITIONS & TYPES
 // ============================================================================
@@ -16,8 +16,8 @@ export interface LegalAgent { id: string;, name: string;
   systemPrompt: string;
   maxTokens: number;
   temperature: number;
-}
-export interface DocumentReviewTask {, taskId: string;, documentId: string;
+} }
+export interface DocumentReviewTask { taskId: string;, documentId: string;
   documentContent: string;
   reviewType: 'comprehensive' | 'compliance' | 'risk_assessment' | 'quick_scan';
   priority: 'low' | 'medium' | 'high' | 'urgent';
@@ -28,8 +28,8 @@ export interface DocumentReviewTask {, taskId: string;, documentId: string;
     clientGoals?: string[];
     riskTolerance?: 'low' | 'medium' | 'high';
   };
-}
-export interface AgentResponse {, agentId: string;, taskId: string;
+} }
+export interface AgentResponse { agentId: string;, taskId: string;
   reviewSummary: string;
   findings: string[];
   recommendations: string[];
@@ -37,18 +37,17 @@ export interface AgentResponse {, agentId: string;, taskId: string;
   confidence: number;
   processingTime: number;
   errors?: string[];
-}
+} }
 // ============================================================================
 // LEGAL DOCUMENT REVIEW AGENTS
 // ============================================================================
 export const legalAgents: LegalAgent[] = [
-  {
-   , id: 'contract-analyst',
+  { id: 'contract-analyst',
     name: 'Contract Analysis Specialist',
     role: 'Primary Document Reviewer',
     expertise: ['contract-law', 'risk-assessment', 'compliance'],
     model: 'gemma3:legal-latest',
-    systemPrompt: `You are a senior contract analyst with 15+ years experience reviewing legal documents. Analyze contracts;, for:`
+    systemPrompt: `You are a senior contract analyst with 15+ years experience reviewing legal documents. Analyze contracts; for:`
     - Key terms and obligations
     - Risk factors and liability exposure
     - Compliance with applicable laws
@@ -63,7 +62,7 @@ export const legalAgents: LegalAgent[] = [
     role: 'Compliance Verification',
     expertise: ['regulatory-compliance', 'industry-standards', 'legal-requirements'],
     model: 'gemma3:legal-latest',
-    systemPrompt: `You are a compliance auditor specializing in regulatory requirements. Focus;, on:`
+    systemPrompt: `You are a compliance auditor specializing in regulatory requirements. Focus; on:`
     - Regulatory compliance violations
     - Industry standard adherence
     - Legal requirement gaps
@@ -78,7 +77,7 @@ export const legalAgents: LegalAgent[] = [
     role: 'Risk Analysis',
     expertise: ['risk-management', 'liability-analysis', 'litigation-prevention'],
     model: 'gemma3:legal-latest',
-    systemPrompt: `You are a legal risk assessment expert. Evaluate documents;, for:`
+    systemPrompt: `You are a legal risk assessment expert. Evaluate documents; for:`
     - Potential litigation risks
     - Financial exposure
     - Operational risks
@@ -98,7 +97,7 @@ export class CrewAILegalReviewSystem {
     legalAgents.forEach(agent => {
       this.agents.set(agent.id, agent);
     });
-  }
+  } }
   async reviewDocument(task: DocumentReviewTask): Promise<AgentResponse[]> {
     this.activeJobs.set(task.taskId, task);
     const responses: AgentResponse[] = [];
@@ -113,9 +112,9 @@ export class CrewAILegalReviewSystem {
       agentResponses.forEach((result, index) => {
         if ((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled') {
           responses.push((result as { status?: any; value?: any; reason?: any }).value);
-        } else {
+        } }else {
           console.error(
-            `Agent ${assignedAgents[index]} failed: ','`
+            `Agent ${assignedAgents[index]} }failed: ','`
             (result as { status?: any; value?: any; reason?: any }).reason
           );
           responses.push({
@@ -129,21 +128,21 @@ export class CrewAILegalReviewSystem {
             processingTime: 0,
             errors: [(result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error']
           });
-        }
+        } }
       });
       // Store results and trigger document update loop
       await this.storeResults(task, responses);
       documentUpdateLoop.queueDocumentUpdate(task.documentId, JSON.stringify(responses));
       return responses;
-    } finally {
+    } }finally {
       this.activeJobs.delete(task.taskId);
-    }
-  }
+    } }
+  } }
   private async processWithAgent(task: DocumentReviewTask, agentId: string): Promise<AgentResponse> {
     const agent = this.agents.get(agentId);
     if (!agent) {
-      throw new Error(`Agent ${agentId} not found`);
-    }
+      throw new Error(`Agent ${agentId} }not found`);
+    } }
     const startTime = Date.now();
     try {
       const ollama = new ChatOllama({
@@ -156,11 +155,11 @@ export class CrewAILegalReviewSystem {
         new SystemMessage(agent.systemPrompt),
         new HumanMessage(`
 Document Review Task:
--;, Type: ${task.reviewType}
--, Priority: ${task.priority}
--, Context: ${JSON.stringify(task.context, null, 2)}
+-; Type: ${task.reviewType} }
+-, Priority: ${task.priority} }
+-, Context: ${JSON.stringify(task.context, null, 2)} }
 Document Content:
-${task.documentContent}
+${task.documentContent} }
 Please provide your analysis in the following JSON, format:
 {
   "summary": "Brief overview of the document",
@@ -168,7 +167,7 @@ Please provide your analysis in the following JSON, format:
   "recommendations": ["Recommendation 1", "Recommendation 2", ...],
   "riskLevel": "low|medium|high",
   "confidence": 0.0-1.0
-}
+} }
         `),`
       ];
       const response = await ollama.invoke(messages);
@@ -185,7 +184,7 @@ Please provide your analysis in the following JSON, format:
         confidence: analysis.confidence,
         processingTime: Date.now() - startTime
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error(`Error processing with agent ${agentId}: ', error);'`
       return {
         agentId,
@@ -198,18 +197,18 @@ Please provide your analysis in the following JSON, format:
         processingTime: Date.now() - startTime,
         errors: [error instanceof Error ? error.message : String(error)]
       };
-    }
-  }
+    } }
+  } }
   private parseAgentResponse(responseText: string) {
     try {
       // Try to extract JSON from response
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]);
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       console.warn('Failed to parse structured response, using fallback parsing');
-    }
+    } }
     // Fallback parsing for unstructured responses
     return {
       summary: responseText.substring(0, 200) + '...',
@@ -218,40 +217,40 @@ Please provide your analysis in the following JSON, format:
       riskLevel: 'medium' as const,
       confidence: 0.5
     };
-  }
+  } }
   private async storeResults(task: DocumentReviewTask, responses: AgentResponse[]) {
     try {
       // Store in ai_history table
-      const { db } = await import('$lib/db');
+      const { db } }= await import('$lib/db');
       await db.insert(aiHistory).values({
-        userId: 'system', // TODO: Get from context;, prompt: `Legal document, review: ${task.reviewType}`,
+        userId: 'system', // TODO: Get from context; prompt: `Legal document, review: ${task.reviewType}`,
         response: JSON.stringify(responses),
         model: 'gemma3:legal-latest',
         tokensUsed: Math.floor(
           (task.documentContent.length + responses.reduce((acc, r) => acc + r.reviewSummary.length, 0)) / 4
         ),
-        cost: 0, // TODO: Calculate based on token usage; metadata: {
-         , taskType: 'legal-document-review',
+        cost: 0, // TODO: Calculate based on token usage; metadata: { taskType: 'legal-document-review',
           reviewType: task.reviewType,
           priority: task.priority,
           agentCount: responses.length
-        }
+        } }
       });
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Failed to store agent results:', error);
-    }
-  }
+    } }
+  } }
   getActiveJobs(): DocumentReviewTask[] {
     return Array.from(this.activeJobs.values());
-  }
+  } }
   getAgentInfo(agentId: string): LegalAgent | undefined {
     return this.agents.get(agentId);
-  }
+  } }
   getAllAgents(): LegalAgent[] {
     return Array.from(this.agents.values());
-  }
-}
+  } }
+} }
 // ============================================================================
 // EXPORT SINGLETON INSTANCE
 // ============================================================================
 export const crewAILegalSystem = new CrewAILegalReviewSystem();
+

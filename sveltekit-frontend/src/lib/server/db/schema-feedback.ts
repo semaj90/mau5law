@@ -1,5 +1,5 @@
-import { pgTable, uuid, text, jsonb, timestamp, real, boolean } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+import { pgTable, uuid, text, jsonb, timestamp, real, boolean } }from 'drizzle-orm/pg-core';
+import { sql } }from 'drizzle-orm';
 // Define the schema for feedback-related tables
 // These tables are assumed to be part of the legal_ai_db as per project overview
 export const userRatings = pgTable('user_ratings', {
@@ -84,3 +84,4 @@ export type NewInteractionHistory = typeof interactionHistory.$inferInsert;
 export type NewTrainingData = typeof trainingData.$inferInsert;
 export type NewUserBehaviorPattern = typeof userBehaviorPatterns.$inferInsert;
 export type NewFeedbackMetric = typeof feedbackMetrics.$inferInsert;
+

@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Drizzle ORM Schema Example - Legal AI Platform
  *
@@ -22,9 +22,9 @@ import {
   real,
   index,
   primaryKey
-} from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
-import { vector } from 'drizzle-orm/pg-core';
+} }from 'drizzle-orm/pg-core';
+import { sql } }from 'drizzle-orm';
+import { vector } }from 'drizzle-orm/pg-core';
 // ==================================================
 // Type Definitions for JSONB Fields
 // ==================================================
@@ -32,18 +32,18 @@ export interface LegalMetadata {
   case { id: string;, caseNumber: string;
     jurisdiction: string;
     courtLevel: 'district' | 'appellate' | 'supreme';
-    parties: Array<{, role: 'plaintiff' | 'defendant' | 'witness' | 'expert';, name: string;
+    parties: Array<{ role: 'plaintiff' | 'defendant' | 'witness' | 'expert';, name: string;
       type: 'individual' | 'corporation' | 'government';
     }>;
     datesFiled: string[];
     status: 'active' | 'closed' | 'pending' | 'appealed';
   };
-  classification: {, documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'motion' | 'order';, practiceArea: string[];
+  classification: { documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'motion' | 'order';, practiceArea: string[];
     confidenceLevel: number; // 0-1
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     priority: number; // 1-10
   };
-  processing: {, extractedEntities: Array<{, type: string;
+  processing: { extractedEntities: Array<{ type: string;
       value: string;
       confidence: number;
     }>;
@@ -52,15 +52,15 @@ export interface LegalMetadata {
     complexity: number; // 0-1
     language: string;
   };
-  aiAnalysis: {, summary: string;, keyPoints: string[];
+  aiAnalysis: { summary: string;, keyPoints: string[];
     recommendations: string[];
     relatedCases: string[];
     confidence: number;
     model: string;
     timestamp: string;
   };
-}
-export interface ChainOfCustody {, entries: Array<{, timestamp: string;
+} }
+export interface ChainOfCustody { entries: Array<{ timestamp: string;
     action: 'uploaded' | 'modified' | 'accessed' | 'shared' | 'deleted';
     userId: string;
     userName: string;
@@ -68,7 +68,7 @@ export interface ChainOfCustody {, entries: Array<{, timestamp: string;
     details: string;
    , hash: string; // SHA-256 hash for integrity
   }>;
-}
+} }
 // ==================================================
 // Legal Documents Table
 // ==================================================
@@ -116,12 +116,12 @@ export const legalDocuments = pgTable(
     // GIN index for JSONB metadata queries
     metadataIdx: index('legal_documents_metadata_idx').using(
       'gin',
-      sql`${table.metadata} jsonb_path_ops`
+      sql`${table.metadata} }jsonb_path_ops`
     ),
     // HNSW index for vector similarity search (pgvector)
     embeddingIdx: index('legal_documents_embedding_idx').using(
       'hnsw',
-      sql`${table.embedding} vector_cosine_ops`
+      sql`${table.embedding} }vector_cosine_ops`
     ),
     // B-tree indexes for common queries
     caseIdIdx: index('legal_documents_case_id_idx').on(table.caseId),
@@ -202,7 +202,7 @@ export const vectorSearchCache = pgTable(
     expiresAtIdx: index('vector_search_cache_expires_at_idx').on(table.expiresAt),
     embeddingIdx: index('vector_search_cache_embedding_idx').using(
       'hnsw',
-      sql`${table.queryEmbedding} vector_cosine_ops`
+      sql`${table.queryEmbedding} }vector_cosine_ops`
     )
   })
 );
@@ -278,3 +278,4 @@ export type AIProcessingQueue = typeof aiProcessingQueue.$inferSelect;
 export type NewAIProcessingQueue = typeof aiProcessingQueue.$inferInsert;
 export type AuditLog = typeof auditLog.$inferSelect;
 export type NewAuditLog = typeof auditLog.$inferInsert;
+

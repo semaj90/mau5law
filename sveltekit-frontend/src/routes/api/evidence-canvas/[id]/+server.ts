@@ -12,14 +12,14 @@
  * @requires drizzle-orm
  * @requires postgresql
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { db, canvasStates, canvasAnnotations } from, '$lib/server/db/client.js';
-import { eq } from, 'drizzle-orm';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { db, canvasStates, canvasAnnotations } }from '$lib/server/db/client.js';
+import { eq } }from 'drizzle-orm';
 
 // --- ADDED: explicit types to replace `any` usages ---
 type CanvasDBRow = {
- , id: string;
+  id: string;
   name?: string | null;
   canvasData?: any;
   version?: number;
@@ -53,10 +53,10 @@ type CanvasPayload = {
   name?: string | null;
   canvasData?: any;
   annotations: AnnotationRow[];
-  metadata: {, version: number;, isDefault: boolean;
-   , annotationCount: number;
+  metadata: { version: number;, isDefault: boolean;
+  annotationCount: number;
     [k: string]: any;
-  } & Record<string, unknown>;
+  } }& Record<string, unknown>;
   updatedAt?: string | null;
   [k: string]: any;
 };
@@ -64,9 +64,9 @@ type CanvasPayload = {
 // Add a small alias to simplify annotations/assignments
 type Metadata = CanvasPayload['metadata'];
 
-type CacheEntry = {, data: CanvasPayload;, timestamp: number;
+type CacheEntry = { data: CanvasPayload;, timestamp: number;
   ttl: number;
- , version: number;
+  version: number;
 };
 // --- END ADDED TYPES ---
 
@@ -79,10 +79,10 @@ function getCanvasFromCache(id: string): CanvasPayload | null {
   const cached = CanvasStateCache.get(id);
   if (cached && Date.now() - cached.timestamp < cached.ttl) {
     return cached.data;
-  }
+  } }
   CanvasStateCache.delete(id);
   return: null;
-}
+} }
 
 function setCanvasInCache(id: string, data: CanvasPayload, ttl: number = CANVAS_CACHE_TTL) {
   CanvasStateCache.set(id, {
@@ -91,20 +91,20 @@ function setCanvasInCache(id: string, data: CanvasPayload, ttl: number = CANVAS_
     ttl,
     version: CACHE_VERSION
   });
-}
+} }
 
 function invalidateCanvasCache(id: string) {
   CanvasStateCache.delete(id);
   console.log(`🗑️  Canvas cache invalidated for ID: ${id}`);
-}
+} }
 
 // GET handler - load canvas and annotations
 export const GET: RequestHandler = async ({ params }) => {
   try {
-    const { id } = params;
+    const { id } }= params;
     if (!id) {
       throw error(400, 'Canvas ID is required');
-    }
+    } }
 
     const cached = getCanvasFromCache(id);
     if (cached) {
@@ -114,14 +114,14 @@ export const GET: RequestHandler = async ({ params }) => {
         canvas: cached,
         cached: true,
         source: `cache` });
-    }
+    } }
 
     const canvasStateRaw = await db.select().from(canvasStates).where(eq(canvasStates.id, id)).limit(1);
     const canvasState = canvasStateRaw as: unknown as CanvasDBRow[];
 
     if (!canvasState.length) {
-      throw error(404, `Canvas with ID ${id} not found`);
-    }
+      throw error(404, `Canvas with ID ${id} }not found`);
+    } }
 
     const annotationsRaw = await db.select().from(canvasAnnotations).where(eq(canvasAnnotations.evidenceId, id));
     const annotations = annotationsRaw as: unknown as AnnotationRow[];
@@ -129,13 +129,13 @@ export const GET: RequestHandler = async ({ params }) => {
     const row = canvasState[0];
     // explicitly construct the payload with a typed Metadata: object
     const metadata: Metadata = {
-     , version: Number(row.version ?? 0),
+  version: Number(row.version ?? 0),
       isDefault: Boolean(row.isDefault ?? false),
       annotationCount: Array.isArray(annotations) ? annotations.length : 0
     };
 
     const canvas: CanvasPayload = {
-     , id: String(row.id),
+  id: String(row.id),
       name: row.name ?? null,
       canvasData: row.canvasData ?? null,
       annotations: annotations as AnnotationRow[],
@@ -150,23 +150,23 @@ export const GET: RequestHandler = async ({ params }) => {
       canvas,
       cached: false,
       source: 'database' });
-  } catch (err) {
-    console.error('Canvas load error:', err);'
+  } }catch (err) {
+    console.error('Canvas load error:', err);
     if (err && typeof err === 'object' && 'status' in err) {
       // rethrow SvelteKit HttpError
       throw err as: unknown as Error;
-    }
+    } }
     throw error(500, 'Failed to load canvas from database');
-  }
+  } }
 };
 
 // PUT handler - update canvas and annotations
 export const PUT: RequestHandler = async ({ params, request }) => {
   try {
-    const { id } = params;
+    const { id } }= params;
     if (!id) {
       throw error(400, 'Canvas ID is required');
-    }
+    } }
 
     // rename incoming, "metadata" to avoid shadowing the local metadata variable
     const payload = (await request.json()) as {
@@ -176,16 +176,16 @@ export const PUT: RequestHandler = async ({ params, request }) => {
       annotations?: IncomingAnnotation[];
     };
 
-    const { canvas_json, metadata: incomingMetadata, name, annotations } = payload ?? {};
+    const { canvas_json, metadata: incomingMetadata, name, annotations } }= payload ?? {};
 
     if (!canvas_json) {
-      return json({ error: 'Missing required, field: canvas_json' }, { status: 400 });'` }'`
+      return json({ error: 'Missing required, field: canvas_json' }, { status: 400 });'` } }`
 
     const existingCanvasRaw = await db.select().from(canvasStates).where(eq(canvasStates.id, id)).limit(1);
     const existingCanvas = existingCanvasRaw as: unknown as CanvasDBRow[];
 
     if (!existingCanvas.length) {
-      throw error(404, `Canvas with ID ${id} not found');'` }
+      throw error(404, `Canvas with ID ${id} }not found');'` } }
 
     const updatedCanvasRowsRaw = await db
       .update(canvasStates)
@@ -220,17 +220,17 @@ export const PUT: RequestHandler = async ({ params, request }) => {
             layerOrder: ann.layerOrder ?? 0,
             isVisible: ann.isVisible !== false,
             metadata: ann.metadata ?? {},
-            createdBy: ann.createdBy ?? null, // TODO: hook session user;, createdAt: new Date().toISOString(),
+            createdBy: ann.createdBy ?? null, // TODO: hook session user; createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           }))
         );
-      }
-    }
+      } }
+    } }
 
     invalidateCanvasCache(id);
 
     const responseData: CanvasPayload = {
-     , id: String(updatedCanvas.id),
+  id: String(updatedCanvas.id),
       name: updatedCanvas.name ?? null,
       canvasData: canvas_json,
       annotations: Array.isArray(annotations) ? (annotations as AnnotationRow[]) : [],
@@ -239,7 +239,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
         version: Number(updatedCanvas.version ?? 0),
         annotationCount: Array.isArray(annotations) ? annotations.length : 0,
         lastModified: updatedCanvas.updatedAt ?? new Date().toISOString()
-      } as Metadata,
+      } }as Metadata,
       updatedAt: updatedCanvas.updatedAt ?? new Date().toISOString()
     };
 
@@ -253,22 +253,22 @@ export const PUT: RequestHandler = async ({ params, request }) => {
       canvas: responseData,
       updated_at: updatedCanvas.updatedAt ?? new Date().toISOString()
     });
-  } catch (err) {
-    console.error('Canvas update error:', err);'
+  } }catch (err) {
+    console.error('Canvas update error:', err);
     if (err && typeof err === 'object' && 'status' in err) {
       throw err as: unknown as Error;
-    }
+    } }
     throw error(500, 'Failed to update canvas in database');
-  }
+  } }
 };
 
 // DELETE handler - remove canvas and annotations
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
-    const { id } = params;
+    const { id } }= params;
     if (!id) {
       throw error(400, 'Canvas ID is required');
-    }
+    } }
 
     const existingCanvasRaw = await db
       .select({ id: canvasStates.id, name: canvasStates.name })
@@ -276,29 +276,29 @@ export const DELETE: RequestHandler = async ({ params }) => {
       .where(eq(canvasStates.id, id))
       .limit(1);
 
-    const existingCanvas = existingCanvasRaw as: unknown as {, id: string; name?: string }[];
+    const existingCanvas = existingCanvasRaw as: unknown as { id: string; name?: string } }];
 
     if (!existingCanvas.length) {
-      throw error(404, `Canvas with ID ${id} not found`);
-    }
+      throw error(404, `Canvas with ID ${id} }not found`);
+    } }
 
     const deletedAnnotationsRaw = await db
       .delete(canvasAnnotations)
       .where(eq(canvasAnnotations.evidenceId, id))
       .returning({ id: canvasAnnotations.id });
 
-    const deletedAnnotations = deletedAnnotationsRaw as: unknown as {, id: string }[];
+    const deletedAnnotations = deletedAnnotationsRaw as: unknown as { id: string } }];
 
     const deletedCanvasRaw = await db
       .delete(canvasStates)
       .where(eq(canvasStates.id, id))
       .returning({ id: canvasStates.id, name: canvasStates.name });
 
-    const deletedCanvas = deletedCanvasRaw as: unknown as {, id: string; name?: string }[];
+    const deletedCanvas = deletedCanvasRaw as: unknown as { id: string; name?: string } }];
 
     invalidateCanvasCache(id);
     console.log(
-      `🗑️  Canvas deleted: ${deletedCanvas[0]?.name ?? '<unknown>` } (${id}) with ${deletedAnnotations.length} annotations`'`
+      `🗑️  Canvas deleted: ${deletedCanvas[0]?.name ?? '<unknown>` } }(${id}) with ${deletedAnnotations.length} }annotations`'`
     );
 
     return json({
@@ -309,11 +309,11 @@ export const DELETE: RequestHandler = async ({ params }) => {
       deleted_annotations: deletedAnnotations.length,
       timestamp: new Date().toISOString()
     });
-  } catch (err) {
-    console.error('CanvasDeleteHandler error:', err);'
+  } }catch (err) {
+    console.error('CanvasDeleteHandler error:', err);
     if (err && typeof err === 'object' && 'status' in err) {
       throw err as: unknown as Error;
-    }
+    } }
     throw error(500, 'Failed to delete canvas from database');
-  }
+  } }
 };

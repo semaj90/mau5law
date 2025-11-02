@@ -1,12 +1,11 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Case } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     // Mock recent cases data - replace with actual database query
     const recentCases = [
-      {,
-        id: '1',
+      { id: '1',
         title: 'Robbery Investigation',
         status: 'active',
         priority: 'high',
@@ -31,8 +30,9 @@ export const GET: RequestHandler = async () => {
       },
     ];
     return json(recentCases);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Error fetching recent cases:', error);
     return json({ error: 'Failed to fetch recent cases' }, { status: 500 });
-  }
+  } }
 };
+

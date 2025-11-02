@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { databaseOrchestrator, type EventData } from '$lib/server/database-orchestrator';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
+import { databaseOrchestrator, type EventData } }from '$lib/server/database-orchestrator';
 
 // Provide an underscore-prefixed export for compatibility with SvelteKit's export rules'
 export const _databaseOrchestrator = databaseOrchestrator;
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ url }) => {
       events.push({
         ...(payload as Record<string, unknown>),
         timestamp: new Date().toISOString()
-      } as EventData);
+      } }as EventData);
     };
 
     const eventTypes = [
@@ -54,11 +54,11 @@ export const GET: RequestHandler = async ({ url }) => {
     let filteredEvents: EventData[] = events.slice();
     if (eventType) {
       filteredEvents = filteredEvents.filter(e => e.type === eventType);
-    }
+    } }
     if (since) {
       const sinceDate = new Date(since);
       filteredEvents = filteredEvents.filter(e => new Date((e.timestamp ?? '') as: string) > sinceDate);
-    }
+    } }
 
     // Limit results
     filteredEvents = filteredEvents.slice(0, limit);
@@ -70,24 +70,24 @@ export const GET: RequestHandler = async ({ url }) => {
         count: filteredEvents.length,
         total_available: events.length,
         filters: {
-         , type: eventType,
+  type: eventType,
           since,
           limit
         },
         timestamp: new Date().toISOString()
       },
-      { status: 200 }
+      { status: 200 } }
     );
-  } catch (error) {
+  } }catch (error) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // POST /api/database-orchestrator/events - Trigger custom events
@@ -105,12 +105,12 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Event type is required'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     const eventData: EventData = {
-     , type: eventType,
+  type: eventType,
       data: data || {},
       metadata: metadata || {},
       timestamp: new Date().toISOString(),
@@ -127,16 +127,17 @@ export const POST: RequestHandler = async ({ request }) => {
         event: eventData,
         timestamp: new Date().toISOString()
       },
-      { status: 201 }
+      { status: 201 } }
     );
-  } catch (error) {
+  } }catch (error) {
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

@@ -3,21 +3,21 @@
  * Direct pgvector database operations for semantic search
  * Optimized for legal document retrieval with Gemma embeddings
  */
-import { db } from './connection.js';
-import { sql } from 'drizzle-orm';
-import type { VectorSearchOptions, VectorSearchResult } from '$lib/types/vector-search.js';
-import { performance } from 'perf_hooks';
+import { db } }from './connection.js';
+import { sql } }from 'drizzle-orm';
+import type { VectorSearchOptions, VectorSearchResult } }from '$lib/types/vector-search.js';
+import { performance } }from 'perf_hooks';
 interface EmbeddingVector { id: string;, content: string;
   embedding: number[];
-  metadata: { [key: string]: any }
+  metadata: { [key: string]: any } }
   similarity?: number;
-}
+} }
 /**
  * Perform semantic vector search using pgvector
  */
 export async function vectorSearch(
  , queryEmbedding: number[],
-  options: VectorSearchOptions = {}
+  options: VectorSearchOptions = {} }
 ): Promise<VectorSearchResult> {
   const startTime = performance.now();
   const {
@@ -25,29 +25,29 @@ export async function vectorSearch(
     threshold = 0.7,
     includeContent = true,
     includeMetadata = true,
-    filters = {}
-  } = options;
+    filters = {} }
+  } }= options;
   try {
     // Convert embedding to pgvector format
-    const embeddingVector = `[${queryEmbedding.join(',')}]`;
+    const embeddingVector = `[${queryEmbedding.join(',')} }`;
     // Build dynamic WHERE clause for filters
     let whereClause = sql``;
     const conditions: any[] = [];
     if (filters.documentType?.length) {
       conditions.push(sql`metadata->>'documentType' = ANY(${filters.documentType})`);
-    }
+    } }
     if (filters.dateRange?.start) {
       conditions.push(sql`created_at >= ${filters.dateRange.start}`);
-    }
+    } }
     if (filters.dateRange?.end) {
       conditions.push(sql`created_at <= ${filters.dateRange.end}`);
-    }
+    } }
     if (filters.tags?.length) {
       conditions.push(sql`metadata->'tags' ?| ${filters.tags}`);
-    }
+    } }
     if (conditions.length > 0) {
       whereClause = sql`WHERE ${sql.join(conditions, sql` AND `)}`;
-    }
+    } }
     // Optimized vector search query with cosine similarity
     const searchQuery = sql`
       SELECT
@@ -57,16 +57,15 @@ export async function vectorSearch(
         embedding,
         1 - (embedding <=> ${embeddingVector}::vector) as similarity
       FROM legal_documents
-      ${whereClause}
-      ${conditions.length === 0 ? sql`` : sql`AND' } 1 - (embedding <=> ${embeddingVector}::vector) >= ${threshold}'`
+      ${whereClause} }
+      ${conditions.length === 0 ? sql`` : sql`AND' } }1 - (embedding <=> ${embeddingVector}::vector) >= ${threshold} }`
       ORDER BY embedding <=> ${embeddingVector}::vector
-      LIMIT ${limit}
+      LIMIT ${limit} }
     `;`
     const results = await db.execute(searchQuery);
     const queryTime = performance.now() - startTime;
     // Transform results to expected format
-    const documents = results.rows.map((row: any) => ({,
-      id: row.id,
+    const documents = results.rows.map((row: any) => ({ id: row.id,
       content: row.content,
       metadata: row.metadata,
       similarity: parseFloat(row.similarity),
@@ -79,14 +78,13 @@ export async function vectorSearch(
       searchStrategy: 'pgvector_cosine_similarity',
       indexUsed: 'ivfflat_embedding_idx',
       threshold,
-      embedding: {
-       , dimensions: queryEmbedding.length,
+      embedding: { dimensions: queryEmbedding.length,
         model: 'gemma',
-        format: 'float32' }'' }
-  } catch (error) {
-    console.error('Vector search error:', error);'
-    throw new Error(`Vector search failed: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
-}
+        format: 'float32' } } } }
+  } }catch (error) {
+    console.error('Vector search error:', error);
+    throw new Error(`Vector search failed: ${error instanceof Error ? error.message : 'Unknown error' }`);'' } }
+} }
 /**
  * Get vector search statistics
  */
@@ -108,20 +106,19 @@ export async function getVectorSearchStats(): Promise<any> {
       indexType: 'ivfflat',
       similarityFunction: 'cosine',
       vectorType: 'vector(768)' // Gemma embedding dimension
-    }
-  } catch (error) {
-    console.error('Vector stats error:', error);'
-    throw new Error(`Failed to get vector statistics: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
-}
+    } }
+  } }catch (error) {
+    console.error('Vector stats error:', error);
+    throw new Error(`Failed to get vector statistics: ${error instanceof Error ? error.message : 'Unknown error' }`);'' } }
+} }
 /**
  * Batch insert embeddings for multiple documents
  */
 export async function batchInsertEmbeddings(
-  documents: Array<{,
-    id,: strin,g;
+  documents: Array<{ id,: strin,g;
     content: string;
    , embedding: number[];
-    metadata?: { [key: string]: any }
+    metadata?: { [key: string]: any } }
   }>
 ): Promise<any> {
   try {
@@ -131,13 +128,13 @@ export async function batchInsertEmbeddings(
         documents.map(doc => sql`(`
           ${doc.id},
           ${doc.content},
-          ${`[${doc.embedding.join(',')}]' }:: vector'`
+          ${`[${doc.embedding.join(',')} } }:: vector'`
           ${JSON.stringify(doc.metadata || {})},
           NOW(),
           NOW()
         )`),`
         sql`, `
-      )}
+      )} }
       ON CONFLICT (id) DO UPDATE SET
         content = EXCLUDED.content,
         embedding = EXCLUDED.embedding,
@@ -145,11 +142,11 @@ export async function batchInsertEmbeddings(
         updated_at = NOW()
     `;`
     await db.execute(insertQuery);
-    return { success: true, inserted: documents.length }
-  } catch (error) {
-    console.error('Batch insert error:', error);'
-    throw new Error(`Batch insert failed: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
-}
+    return { success: true, inserted: documents.length } }
+  } }catch (error) {
+    console.error('Batch insert error:', error);
+    throw new Error(`Batch insert failed: ${error instanceof Error ? error.message : 'Unknown error' }`);'' } }
+} }
 /**
  * Update vector index for optimal performance
  */
@@ -171,10 +168,10 @@ export async function optimizeVectorIndex(): Promise<any> {
       success: true,
       indexType: 'ivfflat',
       lists: 100,
-      operation: 'cosine_similarity' }'' } catch (error) {
-    console.error('Index optimization error:', error);'
-    throw new Error(`Index optimization failed: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
-}
+      operation: 'cosine_similarity' } } } }catch (error) {
+    console.error('Index optimization error:', error);
+    throw new Error(`Index optimization failed: ${error instanceof Error ? error.message : 'Unknown error' }`);'' } }
+} }
 /**
  * Health check for vector search capability
  */
@@ -201,12 +198,12 @@ export async function vectorSearchHealthCheck(): Promise<any> {
         'inner_product',
         'ivfflat_indexing'
       ]
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     console.error('Vector health check failed:', error);
     return { healthy: false;, error: error instanceof Error ? error.message : 'Unknown error',
       vectorExtension: 'unknown',
       extensionLoaded: false
-    }
-  }
+    } }
+  } }
 }

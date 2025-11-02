@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { db } from, '$lib/server/db';
-import { documents, documentChunks } from, '$lib/server/db/enhanced-embedding-schema';
-import { eq } from, 'drizzle-orm';
+import type { Document } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { db } }from '$lib/server/db';
+import { documents, documentChunks } }from '$lib/server/db/enhanced-embedding-schema';
+import { eq } }from 'drizzle-orm';
 
 /**
  * GET /api/rag/documents/[id]
@@ -11,7 +11,7 @@ import { eq } from, 'drizzle-orm';
  */
 export const GET: RequestHandler = async ({ params }) => {
   try {
-    const { id } = params;
+    const { id } }= params;
 
     // Get document
     const doc = await db
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
     if (doc.length === 0) {
       return json({ error: 'Document not found' }, { status: 404 });
-    }
+    } }
 
     const document = doc[0];
 
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ params }) => {
     return json({
       success: true,
       document: {
-       , id: document.id,
+  id: document.id,
         filename: document.filename,
         title: document.title || document.filename,
         fileSize: document.fileSize ? parseInt(String(document.fileSize)) : 0,
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ params }) => {
       })),
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to get document:', error);
     return json(
       {
@@ -68,9 +68,9 @@ export const GET: RequestHandler = async ({ params }) => {
         error: 'Failed to get document',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({ params }) => {
  */
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
-    const { id } = params;
+    const { id } }= params;
 
     // Verify document exists
     const doc = await db
@@ -90,7 +90,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
 
     if (doc.length === 0) {
       return json({ error: 'Document not found' }, { status: 404 });
-    }
+    } }
 
     // Delete all chunks (cascade will handle this, but we do it explicitly for clarity)
     await db.delete(documentChunks).where(eq(documentChunks.documentId, id));
@@ -105,9 +105,9 @@ export const DELETE: RequestHandler = async ({ params }) => {
         documentId: id,
         timestamp: new Date().toISOString()
       },
-      { status: 200 }
+      { status: 200 } }
     );
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to delete document:', error);
     return json(
       {
@@ -115,7 +115,8 @@ export const DELETE: RequestHandler = async ({ params }) => {
         error: 'Failed to delete document',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

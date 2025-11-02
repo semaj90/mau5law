@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
-import { z } from "zod";
+import type { Document } }from '$lib/types';
+import { cuidSchema } }from '$lib/server/z-schemas';
+import { z } }from "zod";
 // Allowed file types for evidence upload
 const ALLOWED_MIME_TYPES = [
   'application/pdf',
@@ -48,8 +48,7 @@ export const documentProcessingSchema = z.object({
 // Batch upload schema
 export const batchUploadSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
-  files: z.array(z.object({,
-      file: z.instanceof(File),
+  files: z.array(z.object({ file: z.instanceof(File),
       title: z.string().optional(),
       type: z.enum(['document', 'image', 'video', 'audio', 'physical', 'digital']).optional()
     })
@@ -72,18 +71,18 @@ export function validateFileUpload(file: File) {
   const errors: string[] = [];
   if (file.size === 0) {
     errors.push('File is empty');
-  }
+  } }
   if (file.size > MAX_FILE_SIZE) {
     errors.push(`File size exceeds ${MAX_FILE_SIZE / (1024 * 1024)}MB limit`);
-  }
+  } }
   if (!ALLOWED_MIME_TYPES.includes(file.type as: any)) {
-    errors.push(`File type: '${file.type}' is not supported`);
-  }
+    errors.push(`File type: '${file.type} } is not supported`);
+  } }
   return {
     valid: errors.length === 0,
     errors
-  }
-}
+  } }
+} }
 // Export types
 export type FileUploadInput = z.input<typeof, fileUploadSchema>;
 export type FileUploadData = z.output<typeof, fileUploadSchema>;

@@ -15,13 +15,13 @@
  * - Type-safe implementation
  * - Graceful error handling
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { readBodyFast } from '$lib/server/utils/json-fast';
-import { generateChatResponse } from '$lib/server/services';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { readBodyFast } }from '$lib/server/utils/json-fast';
+import { generateChatResponse } }from '$lib/server/services';
 
-type ChatMessage = { role: 'user' | 'assistant' | 'system';, content: string };
-type ChatSimpleRequest = { messages?: ChatMessage[] } | unknown;
+type ChatMessage = { role: 'user' | 'assistant' | 'system'; content: string };
+type ChatSimpleRequest = { messages?: ChatMessage[] } }| unknown;
 
 function isChatMessageArray(x: any): x is ChatMessage[] {
   return (
@@ -32,7 +32,7 @@ function isChatMessageArray(x: any): x is ChatMessage[] {
         typeof (it as Record<string, unknown>)?.content === 'string'
     )
   );
-}
+} }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!messages || messages.length === 0) {
       return json({ error: 'Messages array required' }, { status: 400 });
-    }
+    } }
 
     console.log('🚀 chat-simple: Processing', messages.length, 'messages via centralized Ollama');
 
@@ -54,9 +54,10 @@ export const POST: RequestHandler = async ({ request }) => {
       production: true,
       service: 'ollama-centralized'
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const error = err instanceof Error ? err : new Error(String(err));
-    console.error('❌ chat-simple error:', error.message);'
+    console.error('❌ chat-simple error:', error.message);
     return json({ error: error.message }, { status: 500 });
-  }
+  } }
 };
+

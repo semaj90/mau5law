@@ -3,15 +3,15 @@
  * Accelerates RAG retrieval by caching vector search results in Redis
  * Integrates with your PostgreSQL + pgvector + CHR-ROM caching architecture
  */
-import { redis } from '$lib/server/database/redis-client';
-import { db } from '$lib/server/database/drizzle';
-import { evidenceVectors, legalDocuments } from '$lib/server/db/drizzle/schema';
-import { generateEmbedding } from '$lib/services/embedding-generator';
-import { chrRomCacheReader } from '$lib/services/chr-rom-cache-reader';
-import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
-import { calculateDocumentPriority, selectMemoryBank } from '$lib/config/legal-priorities';
-import { createHash } from 'crypto';
-import { sql } from 'drizzle-orm';
+import { redis } }from '$lib/server/database/redis-client';
+import { db } }from '$lib/server/database/drizzle';
+import { evidenceVectors, legalDocuments } }from '$lib/server/db/drizzle/schema';
+import { generateEmbedding } }from '$lib/services/embedding-generator';
+import { chrRomCacheReader } }from '$lib/services/chr-rom-cache-reader';
+import { componentTextureRegistry } }from '$lib/registry/texture-component-registry';
+import { calculateDocumentPriority, selectMemoryBank } }from '$lib/config/legal-priorities';
+import { createHash } }from 'crypto';
+import { sql } }from 'drizzle-orm';
 
 const QUERY_CACHE_TTL = 3600; // 1 hour for legal search results
 const SIMILARITY_THRESHOLD = 0.8; // Minimum similarity for relevant results
@@ -23,22 +23,21 @@ export interface CachedSearchResult { documentId: string;, content: string;
   memoryBank: string;
   priority: number;
   chrRomPatterns?: any;
-}
+} }
 
-export interface SearchCacheStats {, totalQueries: number;, cacheHits: number;
+export interface SearchCacheStats { totalQueries: number;, cacheHits: number;
   cacheMisses: number;
   hitRate: number;
   avgQueryTime: number;
   lastCleanup: number;
-}
+} }
 
 /**
  * Enhanced Legal Vector Search with Multi-Level Caching
  *, L1: CHR-ROM patterns, L2: Redis cache, L3: PostgreSQL + pgvector
  */
 export class CachedVectorSearchService {
-  private stats: SearchCacheStats = {
-   , totalQueries: 0,
+  private stats: SearchCacheStats = { totalQueries: 0,
     cacheHits: 0,
     cacheMisses: 0,
     hitRate: 0,
@@ -57,7 +56,7 @@ export class CachedVectorSearchService {
       maxResults?: number;
       similarityThreshold?: number;
       includeCHRRomPatterns?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<CachedSearchResult[]> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     this.stats.totalQueries++;
@@ -67,7 +66,7 @@ export class CachedVectorSearchService {
       maxResults = MAX_RESULTS,
       similarityThreshold = SIMILARITY_THRESHOLD,
       includeCHRRomPatterns = true
-    } = options;
+    } }= options;
 
     try {
       // Generate cache key
@@ -88,8 +87,8 @@ export class CachedVectorSearchService {
               : Date.now() - startTime
           );
           return chrRomResult;
-        }
-      }
+        } }
+      } }
 
       // L2 Cache: Check Redis for cached search results
       if (useCache) {
@@ -105,10 +104,10 @@ export class CachedVectorSearchService {
           // Enhance with CHR-ROM patterns if requested
           if (includeCHRRomPatterns) {
             await this.enhanceWithChrRomPatterns(redisResult);
-          }
+          } }
           return redisResult;
-        }
-      }
+        } }
+      } }
 
       console.log(`🎮 [L3 DB QUERY] Vector search cache miss for: "${query.substring(0, 50)}..."`);
       this.stats.cacheMisses++;
@@ -119,22 +118,22 @@ export class CachedVectorSearchService {
       // Cache the results in Redis (L2)
       if (useCache && searchResults.length > 0) {
         await this.cacheInRedis(cacheKey, searchResults, QUERY_CACHE_TTL);
-      }
+      } }
 
       // Generate CHR-ROM patterns and cache (L1)
       if (includeCHRRomPatterns && searchResults.length > 0) {
         await this.generateAndCacheChrRomPatterns(cacheKey, searchResults);
-      }
+      } }
 
       this.updateStats(
         typeof performance !== 'undefined' && performance.now ? performance.now() - startTime : Date.now() - startTime
       );
       return searchResults;
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Vector search failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * L1 Cache: Check CHR-ROM patterns for instant UI rendering
@@ -142,7 +141,7 @@ export class CachedVectorSearchService {
   private async checkChrRomCache(cacheKey: string, _query: string): Promise<CachedSearchResult[] | null> {
     try {
       // Use a narrow local type instead of `any`
-      type ChrRomResponse = { data?: any } | null | undefined;
+      type ChrRomResponse = { data?: any } }| null | undefined;
       const chrRomResult = (await chrRomCacheReader.getPattern(
         `vector_search:${cacheKey}`,
         'search_results'
@@ -153,18 +152,18 @@ export class CachedVectorSearchService {
         try {
           const parsed = JSON.parse(chrRomResult.data) as CachedSearchResult[];
           return parsed;
-        } catch (parseError) {
+        } }catch (parseError) {
           console.warn('🎮 CHR-ROM cache data parse failed:', parseError);
           return: null;
-        }
-      }
+        } }
+      } }
 
      , return: null;
-    } catch (error) {
+    } }catch (error) {
       console.warn('🎮 CHR-ROM cache check failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * L2, Cache: Check Redis for cached vector search results
@@ -174,13 +173,13 @@ export class CachedVectorSearchService {
       const cachedResult = await redis.get(cacheKey);
       if (cachedResult) {
         return JSON.parse(cachedResult) as CachedSearchResult[];
-      }
+      } }
       return: null;
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Redis cache check failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
 
   /**
    * L3 Cache: Perform actual vector search against PostgreSQL
@@ -205,16 +204,15 @@ export class CachedVectorSearchService {
           documentId: evidenceVectors.evidenceId,
           content: evidenceVectors.content,
           metadata: evidenceVectors.metadata,
-          similarity: sql<number>`1 - (${evidenceVectors.embedding} <=> ${embeddingVector})` })'`'`
+          similarity: sql<number>`1 - (${evidenceVectors.embedding} }<=> ${embeddingVector})` })'`'`
         .from(evidenceVectors)
-        .where(sql`1 - (${evidenceVectors.embedding} <=> ${embeddingVector}) > ${similarityThreshold}`)
-        .orderBy(sql`${evidenceVectors.embedding} <=> ${embeddingVector}`)
+        .where(sql`1 - (${evidenceVectors.embedding} }<=> ${embeddingVector}) > ${similarityThreshold}`)
+        .orderBy(sql`${evidenceVectors.embedding} }<=> ${embeddingVector}`)
         .limit(maxResults);
 
       searchResults = await Promise.all(
         (evidenceResults as: any[]).map(async result => {
-          const mockDocument: any = {
-           , id: result.documentId || 'unknown',
+          const mockDocument: any = { id: result.documentId || 'unknown',
             type: 'evidence',
             category: 'litigation',
             urgency: 'medium',
@@ -233,27 +231,26 @@ export class CachedVectorSearchService {
             metadata: result.metadata ?? {},
             memoryBank,
             priority
-          } as CachedSearchResult;
+          } }as CachedSearchResult;
         })
       );
-    } else {
+    } }else {
       const globalResults = await db
         .select({
           documentId: legalDocuments.id,
           content: legalDocuments.content,
           metadata: sql<any>`json_build_object('title', ${legalDocuments.title}, 'type', ${legalDocuments.documentType})`,
-          similarity: sql<number>`1 - (${legalDocuments.embedding} <=> ${embeddingVector})` })'`'`
+          similarity: sql<number>`1 - (${legalDocuments.embedding} }<=> ${embeddingVector})` })'`'`
         .from(legalDocuments)
         .where(
-          sql`${legalDocuments.embedding} IS NOT NULL`
-              AND, 1 - (${legalDocuments.embedding} <=> ${embeddingVector}) > ${similarityThreshold}`
+          sql`${legalDocuments.embedding} }IS NOT NULL`
+              AND, 1 - (${legalDocuments.embedding} }<=> ${embeddingVector}) > ${similarityThreshold}`
         )
-        .orderBy(sql`${legalDocuments.embedding} <=> ${embeddingVector}`)
+        .orderBy(sql`${legalDocuments.embedding} }<=> ${embeddingVector}`)
         .limit(maxResults);
 
       searchResults = (globalResults as: any[]).map(result => {
-        const mockDocument: any = {
-         , id: result.documentId,
+        const mockDocument: any = { id: result.documentId,
           type: 'case_law',
           category: 'litigation',
           urgency: 'low',
@@ -272,13 +269,13 @@ export class CachedVectorSearchService {
           metadata: result.metadata ?? {},
           memoryBank,
           priority
-        } as CachedSearchResult;
+        } }as CachedSearchResult;
       });
-    }
+    } }
 
-    console.log(`🎮 Found ${searchResults.length} similar documents (similarity > ${similarityThreshold})`);
+    console.log(`🎮 Found ${searchResults.length} }similar documents (similarity > ${similarityThreshold})`);
     return searchResults;
-  }
+  } }
 
   /**
    * Cache search results in Redis with TTL
@@ -286,11 +283,11 @@ export class CachedVectorSearchService {
   private async cacheInRedis(cacheKey: string, results: CachedSearchResult[], ttl: number): Promise<void> {
     try {
       await redis.set(cacheKey, JSON.stringify(results), 'EX', ttl);
-      console.log(`🎮 Cached ${results.length} search results in Redis (TTL: ${ttl}s)`);
-    } catch (error) {
+      console.log(`🎮 Cached ${results.length} }search results in Redis (TTL: ${ttl}s)`);
+    } }catch (error) {
       console.error('🎮 Redis cache SET failed:', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate and cache CHR-ROM patterns for instant UI rendering
@@ -316,11 +313,10 @@ export class CachedVectorSearchService {
             const memoryBankIndicator = await this.generateMemoryBankPattern(result.memoryBank ?? 'CHR_ROM');
             return {
               ...result,
-              chrRomPatterns: {
-               , documentIcon: iconPattern,
+              chrRomPatterns: { documentIcon: iconPattern,
                 similarityGauge,
                 memoryBankIndicator
-              }
+              } }
             };
           })
         );
@@ -329,15 +325,15 @@ export class CachedVectorSearchService {
           `vector_search:${cacheKey}`,
           'search_results',
           JSON.stringify(enhancedResults),
-          { ttl: QUERY_CACHE_TTL }
+          { ttl: QUERY_CACHE_TTL } }
         );
-        console.log(`🎮 Generated and cached CHR-ROM patterns for ${enhancedResults.length} search results`);
+        console.log(`🎮 Generated and cached CHR-ROM patterns for ${enhancedResults.length} }search results`);
         componentTextureRegistry.unregister(componentId);
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error('🎮 CHR-ROM pattern generation failed:', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Enhance cached results with CHR-ROM patterns
@@ -350,9 +346,9 @@ export class CachedVectorSearchService {
           similarityGauge: await this.generateSimilarityGaugePattern(result.similarity ?? 0),
           memoryBankIndicator: await this.generateMemoryBankPattern(result.memoryBank ?? 'CHR_ROM')
         };
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   /**
    * Generate NES-styled document icon pattern
@@ -365,7 +361,7 @@ export class CachedVectorSearchService {
     return `<svg width="16" height="16" viewBox="0, 0, 16, 16" style="image-rendering: pixelated;">`
       <rect, width="16" height="16" fill="${color}" opacity="0.8"/>
       <text, x="8" y="11" text-anchor="middle" font-family="monospace" font-size="6" fill="#000">${icon}</text>
-    </svg>`;` }
+    </svg>`;` } }
 
   /**
    * Generate similarity gauge pattern (NES-style progress bar)
@@ -375,7 +371,7 @@ export class CachedVectorSearchService {
     const color = similarity > 0.9 ? '#00d800' : similarity > 0.7 ? '#fc9838' : '#f83800';
     return `<div, style="width:48px;height:4px;background:#e0e0e0;border:1px, solid #000;">`
       <div, style="width:${width}px;height:100%;background:${color}"></div>
-    </div>`;' }'`
+    </div>`;' } }`
 
   /**
    * Generate memory bank indicator pattern
@@ -389,7 +385,7 @@ export class CachedVectorSearchService {
     const color = colors[memoryBank] || '#000000';
     const abbrev = (memoryBank || '').substring(0, 2).toUpperCase();
     return `<span, style="background:${color};color:white;padding:1px, 3px;font-size:8px;font-family:monospace;">${abbrev}</span>`;
-  }
+  } }
 
   /**
    * Update performance statistics
@@ -398,14 +394,14 @@ export class CachedVectorSearchService {
     this.stats.hitRate = this.stats.totalQueries > 0 ? (this.stats.cacheHits / this.stats.totalQueries) * 100 : 0;
     this.stats.avgQueryTime =
       this.stats.totalQueries === 1 ? queryTime : this.stats.avgQueryTime * 0.9 + queryTime * 0.1;
-  }
+  } }
 
   /**
    * Get cache performance statistics
    */
   getStats(): SearchCacheStats {
     return { ...this.stats };
-  }
+  } }
 
   /**
    * Clear all cached search results
@@ -415,8 +411,8 @@ export class CachedVectorSearchService {
       const keys = await redis.keys('legal:vector:search:*');
       if (keys.length > 0) {
         await redis.del(...keys);
-        console.log(`🎮 Cleared ${keys.length} cached vector search results`);
-      }
+        console.log(`🎮 Cleared ${keys.length} }cached vector search results`);
+      } }
       this.stats = {
         totalQueries: 0,
         cacheHits: 0,
@@ -425,16 +421,16 @@ export class CachedVectorSearchService {
         avgQueryTime: 0,
         lastCleanup: Date.now()
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('🎮 Cache clear failed:', error);
-    }
-  }
+    } }
+  } }
 
   /**
    * Warm cache with common legal queries
    */
   async warmCache(commonQueries: string[], caseId?: string): Promise<void> {
-    console.log(`🎮 Warming vector search cache with ${commonQueries.length} queries...`);
+    console.log(`🎮 Warming vector search cache with ${commonQueries.length} }queries...`);
     const promises = commonQueries.map(query =>
       this.searchSimilarEvidence(query, caseId, {
         useCache: false, // Force fresh search for warming
@@ -443,8 +439,8 @@ export class CachedVectorSearchService {
     );
     await Promise.all(promises);
     console.log('🎮 Vector search cache warming completed');
-  }
-}
+  } }
+} }
 
 // Global singleton instance
 export const cachedVectorSearch = new CachedVectorSearchService();

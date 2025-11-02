@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Route Groups Configuration for Phase, 2 Consolidation
  * Organized route structure with proper categorization and theming
@@ -10,26 +10,24 @@ export interface RouteGroupDefinition { id: string;, label: string;
   description: string;
   theme: 'matrix' | 'cyberpunk' | 'amber' | 'retro';
   routes: RouteDefinition[];
-}
-export interface RouteDefinition {, id: string;, label: string;
+} }
+export interface RouteDefinition { id: string;, label: string;
   route: string;
   icon: string;
   description: string;
   status: 'active' | 'beta' | 'experimental' | 'deprecated';
   tags: string[];
-}
+} }
 // New consolidated route groups
 export const routeGroups: RouteGroupDefinition[] = [
-  {
-   , id: 'legal',
+  { id: 'legal',
     label: 'Legal Operations',
     path: '/(legal)',
     icon: '⚖️',
     description: 'Case management, evidence analysis, and legal research',
     theme: 'matrix',
     routes: [
-      {,
-        id: 'legal-cases',
+      { id: 'legal-cases',
         label: 'Cases',
         route: '/cases',
         icon: '📁',
@@ -119,8 +117,7 @@ export const routeGroups: RouteGroupDefinition[] = [
     description: 'AI-powered analysis, chat, and GPU acceleration',
     theme: 'cyberpunk',
     routes: [
-      {,
-        id: 'ai-assistant',
+      { id: 'ai-assistant',
         label: 'Assistant',
         route: '/(ai)/assistant',
         icon: '💬',
@@ -201,8 +198,7 @@ export const routeGroups: RouteGroupDefinition[] = [
     description: 'System administration and monitoring',
     theme: 'amber',
     routes: [
-      {,
-        id: 'admin-dashboard',
+      { id: 'admin-dashboard',
         label: 'Dashboard',
         route: '/(admin)/dashboard',
         icon: '📊',
@@ -265,8 +261,7 @@ export const routeGroups: RouteGroupDefinition[] = [
     description: 'Authentication, user profile, and system features',
     theme: 'amber',
     routes: [
-      {,
-        id: 'core-auth',
+      { id: 'core-auth',
         label: 'Authentication',
         route: '/auth/login',
         icon: '🔐',
@@ -320,8 +315,7 @@ export const routeGroups: RouteGroupDefinition[] = [
     description: 'Development tools, testing, and debugging',
     theme: 'retro',
     routes: [
-      {,
-        id: 'dev-tests',
+      { id: 'dev-tests',
         label: 'Testing Suite',
         route: '/(dev)/tests',
         icon: '🧪',
@@ -452,16 +446,17 @@ export const legacyRouteMapping: Record<string, string> = {
 // Get route group by theme
 export function getRouteGroupByTheme(theme: string) {
   return routeGroups.find(group => group.theme === theme);
-}
+} }
 // Get all routes flattened
 export function getAllRoutes(): RouteDefinition[] {
   return routeGroups.flatMap(group => group.routes);
-}
+} }
 // Get route by ID
 export function getRouteById(id: string): RouteDefinition | undefined {
   return getAllRoutes().find(route => route.id === id);
-}
+} }
 // Get route group containing a specific route
 export function getRouteGroup(routeId: string): RouteGroupDefinition | undefined {
   return routeGroups.find(group => group.routes.some(route => route.id === routeId));
-}
+} }
+

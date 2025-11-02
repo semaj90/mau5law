@@ -4,7 +4,7 @@
  * File upload with AI processing has been integrated into /api/v2/evidence
  *
  * Migration:
- *;, OLD: POST /api/ai/process-evidence (multipart/form-data)
+ *; OLD: POST /api/ai/process-evidence (multipart/form-data)
  * NEW: POST /api/v2/evidence (multipart/form-data)
  *
  * The unified API automatically:
@@ -25,7 +25,7 @@
  * Documentation: /EVIDENCE-API-MIGRATION-GUIDE.md
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } }from '@sveltejs/kit';
 
 export const POST: RequestHandler = async () => {
   return json({
@@ -33,19 +33,16 @@ export const POST: RequestHandler = async () => {
     route: '/api/ai/process-evidence',
     replaceWith: 'POST /api/v2/evidence',
     message: 'File upload with AI processing is now unified in Evidence API v2',
-    example: {
-     , endpoint: 'POST /api/v2/evidence',
+    example: { endpoint: 'POST /api/v2/evidence',
       contentType: 'multipart/form-data',
-      fields: {
-       , file: 'File (required)',
+      fields: { file: 'File (required)',
         caseId: 'string (required)',
         user_id: 'string (optional, defaults to session user)'
-      }
+      } }
     },
-    response: {
-     , success: true,
-      evidence: {, id: 'uuid', title: 'filename' },
-      aiProcessing: {, file_id: 'evidence_abc123', message: 'Processing started' },
+    response: { success: true,
+      evidence: { id: 'uuid', title: 'filename' },
+      aiProcessing: { file_id: 'evidence_abc123', message: 'Processing started' },
       websocket: 'ws://localhost:8000/ws',
       source: 'python-ai'
     },
@@ -60,6 +57,7 @@ export const POST: RequestHandler = async () => {
     headers: {
       'X-Deprecated': 'true',
       'X-Migrate-To': 'POST /api/v2/evidence'
-    }
+    } }
   });
 };
+

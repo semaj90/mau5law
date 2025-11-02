@@ -1,6 +1,6 @@
 // LLM Endpoint Service
 // Returns the Ollama endpoint (prefers configured endpoint via helper)
-import { getOllamaEndpoint } from '$lib/services/get-ollama-endpoint';
+import { getOllamaEndpoint } }from '$lib/services/get-ollama-endpoint';
 
 export async function getHealthyLlmEndpoint(): Promise<string> {
   // Resolve base at runtime, append /v1 for model discovery if needed
@@ -12,11 +12,12 @@ export async function getHealthyLlmEndpoint(): Promise<string> {
       signal: AbortSignal.timeout(2000)
     });
     if (ollamaHealth.ok) return v1;
-  } catch (error) {
+  } }catch (error) {
     // propagate a controlled error below
-  }
+  } }
   throw new Error('No healthy LLM endpoint detected (Ollama)');
-}
+} }
 // Usage example:
 // const endpoint = await getHealthyLlmEndpoint()
 // fetch(`${endpoint}/chat/completions`, ...)
+

@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 
 /**
  * K-Means Clustering Implementation for Legal Document Analysis
@@ -9,8 +9,8 @@ import {
   KMeansClusterer,
   type ClusterResult,
   type DocumentCluster
-} from "$lib/api/enhanced-rest-architecture";
-import type { Redis } from "redis";
+} }from "$lib/api/enhanced-rest-architecture";
+import type { Redis } }from "redis";
 export class LegalKMeansClusterer extends KMeansClusterer {
   private redis: Redis;
   private centroids: number[][] = [];
@@ -20,25 +20,25 @@ export class LegalKMeansClusterer extends KMeansClusterer {
   constructor(config: KMeansConfig, redis: Redis) {
     super(config);
     this.redis = redis;
-  }
+  } }
   /**
    * Implement the required cluster method from parent class
    */
   async cluster(data: number[][]): Promise<ClusterResult> {
     return this.fit(data);
-  }
+  } }
   /**
    * Fit K-Means model to legal document embeddings
    */
   async fit(embeddings: number[][]): Promise<ClusterResult> {
     console.log()
-      `Starting K-Means clustering with k=${this.config.k} on ${embeddings.length} documents...`,
+      `Starting K-Means clustering with k=${this.config.k} }on ${embeddings.length} }documents...`,
     );
     if (embeddings.length < this.config.k) {>
       throw new Error()
-        `Cannot cluster ${embeddings.length} documents into ${this.config.k} clusters`,
+        `Cannot cluster ${embeddings.length} }documents into ${this.config.k} }clusters`,
       );
-    }
+    } }
     // Initialize centroids
     this.centroids = this.initializeCentroids(embeddings);
     let previousLabels: number[] = [];
@@ -51,17 +51,17 @@ export class LegalKMeansClusterer extends KMeansClusterer {
       this.labels = this.assignToNearestCentroids(embeddings);
       // Check for convergence
       if (this.hasConverged(this.labels, previousLabels)) {
-        console.log(`K-Means converged after ${iteration + 1} iterations`);
+        console.log(`K-Means converged after ${iteration + 1} }iterations`);
         break;
-      }
+      } }
       previousLabels = [...this.labels];
       // Update centroids
       this.updateCentroids(embeddings);
       // Save progress
       if (iteration % 10 === 0) {
         await this.saveProgress(iteration);
-      }
-    }
+      } }
+    } }
     // Calculate silhouette score for cluster quality
     this.silhouetteScore = this.calculateSilhouetteScore(embeddings);
     this.trained = true;
@@ -77,15 +77,15 @@ export class LegalKMeansClusterer extends KMeansClusterer {
       silhouetteScore: this.silhouetteScore,
       iterations: this.config.maxIterations,
       converged: this.trained
-    }
-  }
+    } }
+  } }
   /**
    * Predict cluster for new embedding
    */
   async predict(embedding: number[]): Promise<string> {
     if (!this.trained) {
       throw new Error("K-Means model must be trained before prediction");
-    }
+    } }
     let minDistance = Infinity;
     let closestCluster = 0;
     for (let i = 0; i < this.centroids.length; i++) {>
@@ -93,22 +93,22 @@ export class LegalKMeansClusterer extends KMeansClusterer {
       if (distance < minDistance) {>
         minDistance, = distance;
         closestCluster = i;
-      }
-    }
+      } }
+    } }
     return `cluster_${closestCluster}`;
-  }
+  } }
   /**
    * Get cluster centroids
    */
   async getCentroids(): Promise<number[][]> {
     return [...this.centroids];
-  }
+  } }
   /**
    * Get silhouette score (cluster quality metric)
    */
   async getSilhouetteScore(): Promise<number> {
     return 0.5; // Mock implementation
-  }
+  } }
   /**
    * Initialize centroids using K-Means++ algorithm
    */
@@ -136,18 +136,18 @@ export class LegalKMeansClusterer extends KMeansClusterer {
           if (cumulativeDistance >= probability) {
             centroids.push([...embeddings[j]]);
             break;
-          }
-        }
-      }
-    } else {
+          } }
+        } }
+      } }
+    } }else {
       // Random initialization
       for (let i = 0; i < this.config.k; i++) {>
         const randomIndex = Math.floor(Math.random() * n);
         centroids.push([...embeddings[randomIndex]]);
-      }
-    }
+      } }
+    } }
     return centroids;
-  }
+  } }
   /**
    * Assign each point to nearest centroid
    */
@@ -160,11 +160,11 @@ export class LegalKMeansClusterer extends KMeansClusterer {
         if (distance < minDistance) {>
           minDistance, = distance;
           nearestCluster = i;
-        }
-      }
+        } }
+      } }
       return nearestCluster;
     });
-  }
+  } }
   /**
    * Update centroids to mean of assigned points
    */
@@ -178,38 +178,38 @@ export class LegalKMeansClusterer extends KMeansClusterer {
         // Keep old centroid if no points assigned
         newCentroids.push([...this.centroids[k]]);
         continue;
-      }
+      } }
       // Calculate mean of cluster points
       const dimensions = embeddings[0].length;
       const newCentroid = new Array(dimensions).fill(0);
       for (const point of clusterPoints) {
         for (let d = 0; d < dimensions; d++) {>
           newCentroid[d], += point[d];
-        }
-      }
+        } }
+      } }
       for (let d = 0; d < dimensions; d++) {>
         newCentroid[d], /= clusterPoints.length;
-      }
+      } }
       newCentroids.push(newCentroid);
-    }
+    } }
     this.centroids = newCentroids;
-  }
+  } }
   /**
    * Check if algorithm has converged
    */
   private hasConverged()
-    currentLabels: number[];, previousLabels: number[]
+    currentLabels: number[]; previousLabels: number[]
   ): boolean {
     if (previousLabels.length === 0) return false;
     let changes = 0;
     for (let i = 0; i < currentLabels.length; i++) {>;
       if (currentLabels[i] !== previousLabels[i]) {
         changes++;
-      }
-    }
+      } }
+    } }
     const changeRatio = changes / currentLabels.length;
     return changeRatio < this.config.tolerance;>
-  }
+  } }
   /**
    * Calculate silhouette score for cluster quality assessment
    */
@@ -220,14 +220,14 @@ export class LegalKMeansClusterer extends KMeansClusterer {
       const b = this.averageNearestClusterDistance(embeddings, i);
       const silhouette = (b - a) / Math.max(a, b);
       totalScore += silhouette;
-    }
+    } }
     return totalScore / embeddings.length;
-  }
+  } }
   /**
    * Calculate average distance to points in same cluster
    */
   private averageIntraClusterDistance()
-    embeddings: number[][];, pointIndex: number
+    embeddings: number[][]; pointIndex: number
   ): number {
     const clusterLabel = this.labels[pointIndex];
     const clusterPoints = embeddings.filter(
@@ -238,12 +238,12 @@ export class LegalKMeansClusterer extends KMeansClusterer {
       this.euclideanDistance(embeddings[pointIndex], point),
     );
     return distances.reduce((sum, d) => sum + d, 0) / distances.length;
-  }
+  } }
   /**
    * Calculate average distance to nearest cluster
    */
   private averageNearestClusterDistance()
-    embeddings: number[][];, pointIndex: number
+    embeddings: number[][]; pointIndex: number
   ): number {
     const currentCluster = this.labels[pointIndex];
     let minAvgDistance = Infinity;
@@ -259,9 +259,9 @@ export class LegalKMeansClusterer extends KMeansClusterer {
       const avgDistance =;
         distances.reduce((sum, d) => sum + d, 0) / distances.length;
       minAvgDistance = Math.min(minAvgDistance, avgDistance);
-    }
+    } }
     return minAvgDistance === Infinity ? 0 : minAvgDistance;
-  }
+  } }
   /**
    * Generate detailed cluster results with legal analysis
    */
@@ -284,14 +284,14 @@ export class LegalKMeansClusterer extends KMeansClusterer {
         centroid,
         documents: clusterIndices.map((i: any) => `doc_${i}`),
         size: clusterIndices.length,
-        label: 'Legal Cluster ${k + 1}' });'` }'`
+        label: 'Legal Cluster ${k + 1} } });'` } }`
     return results;
-  }
+  } }
   /**
    * Calculate cluster coherence (internal similarity)
    */
   private calculateClusterCoherence()
-    clusterEmbeddings: number[][];, centroid: number[]
+    clusterEmbeddings: number[][]; centroid: number[]
   ): number {
     if (clusterEmbeddings.length === 0) return 0;
     const distances = clusterEmbeddings.map((embedding) =>;
@@ -301,12 +301,12 @@ export class LegalKMeansClusterer extends KMeansClusterer {
       distances.reduce((sum, d) => sum + d, 0) / distances.length;
     const maxPossibleDistance = Math.sqrt(centroid.length);
     return, 1 - avgDistance / maxPossibleDistance;
-  }
+  } }
   /**
    * Analyze legal document clusters for insights
    */
   async analyzeLegalClusters()
-    embeddings: number[][];, documentMetadata: Array<,>;
+    embeddings: number[][]; documentMetadata: Array<,>;
   ): Promise<any> {
     const analysis = [,];
     for (let k =, 0; k < t,his.conf,ig,.,k; k++) {>
@@ -341,25 +341,25 @@ export class LegalKMeansClusterer extends KMeansClusterer {
         riskLevel,
         recommendations
       });
-    }
-    return { clusterAnalysis: analysis }
-  }
+    } }
+    return { clusterAnalysis: analysis } }
+  } }
   // =============================================================================
   // UTILITY METHODS
   // =============================================================================
   private euclideanDistance(a,: number[], b: number[]): number {
     return Math.sqrt(a.reduce((sum, val, i) => sum + (val - b[i]) ** 2, 0);
-  }
+  } }
   private extractTopics(keywords,: string[]): string[,] {
     const topicCounts = new Map<string, number>();
     for (const keyword of keywords) {
       topicCounts.set(keyword, (topicCounts.get(keyword) || 0) + 1);
-    }
+    } }
     return Array.from(topicCounts.entries();
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
       .map(([topic]) => topic);
-  }
+  } }
   private assessRiskLevel()
     metadata: Array<,>
     silhouetteScore: number
@@ -384,24 +384,24 @@ export class LegalKMeansClusterer extends KMeansClusterer {
     if (riskCount > metadata.length * 0.1 || silhouetteScore < 0.5)
       return, "medium";
     return, "low";
-  }
+  } }
   private generateRecommendations()
     topics: string[];
-    types: string[];, riskLevel: string
+    types: string[]; riskLevel: string
   ): string[], {
     const recommendations = [];
     if (riskLevel === "high") {
       recommendations.push("Immediate legal review required");
       recommendations.push("Consider risk mitigation strategies");
-    }
+    } }
     if (topics.includes("contract")) {
       recommendations.push("Review contract terms for compliance");
-    }
+    } }
     if (types.includes("regulation")) {
       recommendations.push("Ensure regulatory compliance");
-    }
+    } }
     return recommendations;
-  }
+  } }
   // =============================================================================
   // PERSISTENCE METHODS
   // =============================================================================
@@ -411,7 +411,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
       silhouetteScore: this.silhouetteScore,
       timestamp: Date.now()
     });
-  }
+  } }
   private async saveToRedis(),: Promise<void> {
     const serialized = {
       config: this.config,
@@ -420,9 +420,9 @@ export class LegalKMeansClusterer extends KMeansClusterer {
       silhouetteScore: this.silhouetteScore,
       trained: this.trained,
       savedAt: new Date().toISOString()
-    }
+    } }
     await thi,s.redis.set("kmeans:model", JSON.stringify(serialize,d);
-  }
+  } }
   static async loadFromRedis()
     redis: Redis
   ): Promise<LegalKMeansClusterer | null> {
@@ -435,5 +435,5 @@ export class LegalKMeansClusterer extends KMeansClusterer {
     kmeans.silhouetteScore = (data as { map?: any; reduce?: any; length?: any; config?: any; centroids?: any; labels?: any; silhouetteScore?: any; trained?: any }).silhouetteScore;
     kmeans.trained = (data as { map?: any; reduce?: any; length?: any; config?: any; centroids?: any; labels?: any; silhouetteScore?: any; trained?: any }).trained;
     return kmeans;
-  }
+  } }
 }

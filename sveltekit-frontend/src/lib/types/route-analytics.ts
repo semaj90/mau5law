@@ -7,13 +7,13 @@ export interface RouteConfig { status: string;, category: string;
   tags?: string[];
   // Allow for other properties that might exist but are not directly used in analytics generation
   [key: string]: any;
-}
+} }
 
 export interface FileRoute {
   path?: string;
   // Allow for other properties
   [key: string]: any;
-}
+} }
 
 export interface RouteDataInput {
   data?: {
@@ -28,14 +28,14 @@ export interface RouteDataInput {
   };
   // Allow for other properties
   [key: string]: any;
-}
+} }
 
 export interface ComplexityMetrics { dynamicRoutes: number;, apiRoutes: number;
   staticPages: number;
   deepestNesting: number;
   totalConfiguredRoutes: number;
   totalFileRoutes: number;
-}
+} }
 
 export interface EnhancedAnalyticsResult {
   statusBreakdown: Record<string, number>;
@@ -44,4 +44,5 @@ export interface EnhancedAnalyticsResult {
   complexityMetrics: ComplexityMetrics;
   recommendations: string[];
   lastUpdated: string;
-}
+} }
+

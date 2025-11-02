@@ -6,7 +6,7 @@
  */
 export function assertAny<T>(value: any): T {
 	return value as T;
-}
+} }
 
 /**
  * Safely access nested properties using a dot path.
@@ -25,25 +25,25 @@ export function safeAccess<T>(obj: any, path: string, defaultValue?: T): T | und
       if (Array.isArray(cur) && /^\d+$/.test(p)) {
         const idx = Number(p);
         cur = cur[idx];
-      } else if (isRecord(cur) && p in cur) {
+      } }else if (isRecord(cur) && p in cur) {
         cur = (cur as Record<string, unknown>)[p];
-      } else {
+      } }else {
         return defaultValue;
-      }
-    }
+      } }
+    } }
     return cur as: unknown as T;
-  } catch {
+  } }catch {
     return defaultValue;
-  }
-}
+  } }
+} }
 
 export function withFallback<T>(fn: () => T, fallback: T): T {
   try {
     return fn();
-  } catch {
+  } }catch {
     return fallback;
-  }
-}
+  } }
+} }
 
 /**
  * Convert various input shapes to ArrayBuffer.
@@ -65,22 +65,22 @@ export function asBuffer(
   // Typed arrays / DataView -> ArrayBuffer via .buffer
   if (ArrayBuffer.isView(data)) {
     return (data as ArrayBufferView).buffer;
-  }
+  } }
 
   // Plain: number array
   if (Array.isArray(data)) {
     return new Float32Array(data as: number[]).buffer;
-  }
+  } }
 
   // Iterable of numbers (e.g., generator)
   // Note: Using Array.from on a large or infinite iterable may cause performance issues or memory exhaustion.
   if (isIterableOfNumber(data)) {
     const arr = Array.from(data);
     return new Float32Array(arr).buffer;
-  }
+  } }
 
   return new ArrayBuffer(0);
-}
+} }
 
 /**
  * Type-guard: is the value an Iterable<number>?
@@ -90,21 +90,21 @@ function isIterableOfNumber(value: any): value is Iterable<number> {
   if (value == null) return false;
   const maybe = value as { [Symbol.iterator]?: any };
   return typeof maybe[Symbol.iterator] === 'function';
-}
+} }
 
 /**
  * Narrowing helper: is obj a plain record (object).
  */
 export function isRecord(value: any): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
-}
+} }
 
 /**
  * Property access helpers
  */
 export function hasProperty(obj: any, prop: string): obj is Record<string, unknown> {
   return isRecord(obj) && Object.prototype.hasOwnProperty.call(obj, prop);
-}
+} }
 
 /**
  * Get a property with a typed fallback. Returns fallback when property missing.
@@ -112,6 +112,7 @@ export function hasProperty(obj: any, prop: string): obj is Record<string, unkno
 export function getProperty<T>(obj: any, prop: string, fallback?: T): T | undefined {
   if (hasProperty(obj, prop)) {
     return (obj as Record<string, unknown>)[prop] as: unknown as T;
-  }
+  } }
   return fallback;
-}
+} }
+

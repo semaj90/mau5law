@@ -1,10 +1,10 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Document } }from '$lib/types';
 // Extension to unified-schema.ts for vector search capabilities
-import { pgTable, index, text, uuid, timestamp, jsonb, integer } from 'drizzle-orm/pg-core';
-import type { AnyPgColumn } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-import { relations } from 'drizzle-orm/relations';
+import { pgTable, index, text, uuid, timestamp, jsonb, integer } }from 'drizzle-orm/pg-core';
+import type { AnyPgColumn } }from 'drizzle-orm/pg-core';
+import { vector } }from 'pgvector/drizzle-orm';
+import { relations } }from 'drizzle-orm/relations';
 // Document embeddings for semantic search
 export const documentEmbeddings = pgTable(
   'document_embeddings',
@@ -15,7 +15,7 @@ export const documentEmbeddings = pgTable(
     chunkIndex: integer('chunk_index').notNull().default(0),
     chunkText: text('chunk_text').notNull(),
     embedding: vector('embedding', { dimensions: 384 }),
-    // removed .$type<Record<string, unknown>>() to avoid: "Untyped function calls may not accept type arguments";, metadata: jsonb('metadata').default({}),
+    // removed .$type<Record<string, unknown>>() to avoid: "Untyped function calls may not accept type arguments"; metadata: jsonb('metadata').default({}),
     modelUsed: text('model_used').default('nomic-embed-text'),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow()
@@ -84,3 +84,4 @@ export type SearchQuery = typeof searchQueries.$inferSelect;
 export type NewSearchQuery = typeof searchQueries.$inferInsert;
 export type AIModel = typeof aiModels.$inferSelect;
 export type NewAIModel = typeof aiModels.$inferInsert;
+

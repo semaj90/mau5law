@@ -11,7 +11,7 @@ declare module, '$lib/database/schema/legal-documents' {
   export const document_chunks: any;
   const, _default: any;
   export default _default;
-}
+} }
 declare module, '$lib/server/db/schema-postgres' {
   // Duplicate removed: // Duplicate; removed: export const; legalDocuments: any
   // Duplicate removed: // Duplicate; removed: export const; documentChunks: any
@@ -24,7 +24,7 @@ declare module, '$lib/server/db/schema-postgres' {
   // Duplicate removed: // Duplicate; removed: export const; document_chunks: any
   const, _default: any;
   export default _default;
-}
+} }
 declare module, '$lib/server/db/index' {
   export const db: any;
   export const connection: any;
@@ -50,7 +50,7 @@ declare module, '$lib/server/db/index' {
   export const SQL: any;
   const, _default: any;
   export default _default;
-}
+} }
 // Common database operations shim
 declare module, '$lib/server/db/*' {
   const _whatever: any;
@@ -58,4 +58,5 @@ declare module, '$lib/server/db/*' {
   // Duplicate removed: // Duplicate; removed: export const; db: any
   // Duplicate removed: // Duplicate; removed: export const; connection: any
   export const, rows: any;
-}
+} }
+

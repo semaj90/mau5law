@@ -9,12 +9,12 @@ export const comprehensiveOrchestrator = {
   disabled: true,
   initialize: () => console.log('Comprehensive orchestrator disabled'),
   getSystemStatus: () => ({ status: 'disabled' })
-}
+} }
 // Stub exports for Context7 integration compatibility
 export const copilotOrchestrator = {
   disabled: true,
   analyze: () => Promise.resolve({ status: 'disabled' })
-}
+} }
 export const mcpMemoryReadGraph = async () => ({
   nodes: [],
   edges: [],

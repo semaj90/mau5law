@@ -2,9 +2,9 @@
  * Singleton instance of VectorSearchService
  * Provides lazy initialization for the search service
  */
-import { VectorSearchService } from './vector-search-service';
-import { redis } from '$lib/server/cache/redis';
-import { db } from '$lib/server/db/client';
+import { VectorSearchService } }from './vector-search-service';
+import { redis } }from '$lib/server/cache/redis';
+import { db } }from '$lib/server/db/client';
 let serviceInstance: VectorSearchService | null = null;
 /**
  * Get or create the vector search service instance
@@ -22,13 +22,13 @@ export async function getVectorSearchService(): Promise<VectorSearchService> {
     });
     try {
       await serviceInstance.initialize();
-    } catch (error) {
+    } }catch (error) {
       console.warn('[VectorSearchServiceInstance] Initialization failed:', error);
       // Service will still work with degraded capabilities
-    }
-  }
+    } }
+  } }
   return serviceInstance;
-}
+} }
 /**
  * Export a proxy: object that lazily initializes the service
  */
@@ -64,5 +64,6 @@ export const enhancedVectorSearchService = {
   async clearCache() {
     const service = await getVectorSearchService();
     return service.clearCache();
-  }
+  } }
 };
+

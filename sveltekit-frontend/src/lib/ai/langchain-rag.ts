@@ -1,31 +1,31 @@
 // LangChain.js RAG Implementation for Legal AI Platform
 // Advanced RAG with Ollama integration and legal domain specialization
-import type { Document as LangChainDocumentType } from '@langchain/core/documents';
-import { ChatPromptTemplate, PromptTemplate } from '@langchain/core/prompts';
-import { RunnableMap, RunnablePassthrough, RunnableSequence } from '@langchain/core/runnables';
-import { StringOutputParser } from '@langchain/core/output_parsers';
-import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import type { Document as LangChainDocumentType } }from '@langchain/core/documents';
+import { ChatPromptTemplate, PromptTemplate } }from '@langchain/core/prompts';
+import { RunnableMap, RunnablePassthrough, RunnableSequence } }from '@langchain/core/runnables';
+import { StringOutputParser } }from '@langchain/core/output_parsers';
+import { ChatOpenAI, OpenAIEmbeddings } }from '@langchain/openai';
+import { RecursiveCharacterTextSplitter } }from 'langchain/text_splitter';
 // Note: formatDocumentsAsString may need to be implemented locally
 const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {
   return documents.map(doc => doc.pageContent).join('\n\n');
 };
 // Note: QdrantVectorStore and QdrantClient may need to be installed separately
-// import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant"
-// import { QdrantClient } from "@qdrant/js-client-rest"
+// import { QdrantVectorStore } }from "@langchain/community/vectorstores/qdrant"
+// import { QdrantClient } }from "@qdrant/js-client-rest"
 // Temporary type placeholders until proper imports are available
 // (Removed the duplicate and unsafe `type QdrantVectorStore = any;` alias)
 // Replace loose: any with a small typed interface for the parts we use
 interface QdrantCollectionInfo {
   result?: {
     points_count?: number;
-  } | null;
+  } }| null;
   [key: string]: any;
-}
+} }
 interface QdrantClient {
   url?: string;
   getCollection(collectionName: string): Promise<QdrantCollectionInfo>;
-}
+} }
 // --- REPLACED: previously `type QdrantVectorStore = any;` ---
 // Provide a minimal typed interface for the vector store surface we use.
 interface QdrantVectorStore {
@@ -42,7 +42,7 @@ interface QdrantVectorStore {
   asRetriever(opts: { k?: number; filter?: MetadataFilter }): {
     getRelevantDocuments(query: string): Promise<LangChainDocumentType[]>;
   };
-}
+} }
 // Import types
 interface LegalDocumentMetadata {
   id?: string;
@@ -52,13 +52,13 @@ interface LegalDocumentMetadata {
   practiceArea?: string;
   createdAt?: string;
   [key: string]: any;
-}
-export interface LegalRAGConfig {, qdrantUrl: string;, ollamaGenerationUrl: string;
+} }
+export interface LegalRAGConfig { qdrantUrl: string;, ollamaGenerationUrl: string;
   ollamaEmbeddingUrl: string;
   apiKey: string;
   collectionName: string;
   embeddingDimensions: number;
-}
+} }
 export interface RAGQueryOptions {
   thinkingMode?: boolean;
   verbose?: boolean;
@@ -70,17 +70,17 @@ export interface RAGQueryOptions {
   includeMetadata?: boolean;
   confidenceThreshold?: number;
   useEnhancedSemanticSearch?: boolean; // New option for enhanced semantic search API
-}
-export interface RAGResult {, answer: string;, sourceDocuments: LangChainDocumentType[];
+} }
+export interface RAGResult { answer: string;, sourceDocuments: LangChainDocumentType[];
   confidence: number;
   reasoning?: string;
-  metadata: {, retrievedChunks: number;, processingTime: number;
+  metadata: { retrievedChunks: number;, processingTime: number;
     usedThinkingMode: boolean;
     usedCompression: boolean;
     enhancedSemanticSearch?: boolean; // New field for tracking enhanced search usage
     semanticProcessingTime?: number; // Processing time from semantic search API
   };
-}
+} }
 /**
  * Advanced Legal RAG System with LangChain.js
  * Implements sophisticated retrieval and generation patterns for legal document analysis
@@ -103,8 +103,8 @@ export class LegalRAGService {
     STANDARD_RAG: ChatPromptTemplate.fromTemplate(`
 You are a specialized legal AI assistant. Answer the user's question based solely on the provided legal document context.'
 Context from legal, documents:)
-{context}
-Question: {question}, Instructions:
+{context} }
+Question: {question} }, Instructions:
 - Provide accurate legal analysis based only on the provided context
 - Cite specific document sections when making claims
 - If the context is insufficient, clearly state this limitation
@@ -114,8 +114,8 @@ Question: {question}, Instructions:
     THINKING_MODE_RAG: ChatPromptTemplate.fromTemplate(`
 You are a specialized legal AI assistant operating, in: "thinking mode." Provide comprehensive legal analysis based on the provided context.
 Context from legal, documents:)
-{context}
-Question: {question}
+{context} }
+Question: {question} }
 Instructions for thinking, mode:
 - Provide step-by-step legal reasoning
 - Consider multiple legal perspectives and interpretations
@@ -128,8 +128,8 @@ Comprehensive Analysis:`),`
     VERBOSE_RAG: ChatPromptTemplate.fromTemplate(`
 You are a specialized legal AI assistant providing detailed legal analysis based on the provided context.
 Context from legal, documents:)
-{context}
-Question: {question}
+{context} }
+Question: {question} }
 Instructions for verbose mode:
 - Provide comprehensive explanations with legal background
 - Include relevant legal principles and doctrines
@@ -141,7 +141,7 @@ Instructions for verbose mode:
 Detailed Legal, Analysis:`),`
     QUERY_GENERATION: PromptTemplate.fromTemplate(`
 You are a legal research assistant. Generate diverse search queries to find relevant information for the following question.
-Original, question: {question}
+Original, question: {question} }
 Generate, 3 different search queries that would help find relevant legal, information:
 1. A query focusing on legal concepts and principles
 2. A query focusing on specific legal terms and definitions
@@ -152,7 +152,7 @@ Only return the queries, one per line.`)` };
     this.llm = new ChatOpenAI({
       model: 'gemma-3-legal',
       apiKey: config.apiKey,
-      // Note: baseURL may not be supported in this version;, temperature: 0.1, // Low temperature for legal accuracy
+      // Note: baseURL may not be supported in this version; temperature: 0.1, // Low temperature for legal accuracy
       maxTokens: 4096,
       timeout: 120000
     }, as: any);
@@ -168,19 +168,18 @@ Only return the queries, one per line.`)` };
       // minimal mock implementation to satisfy typed interface;
       // real client should implement getCollection with actual HTTP call
       async getCollection(_: string) {
-        return { result: {, points_count: 0 } };
-      }
-    } as QdrantClient;
+        return { result: { points_count: 0 } }};
+      } }
+    } }as QdrantClient;
     // Initialize text splitter optimized for legal documents
-    this.textSplitter = new RecursiveCharacterTextSplitter({
-     , chunkSize: 1200, // Larger chunks for legal context
+    this.textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1200, // Larger chunks for legal context
       chunkOverlap: 200, // Substantial overlap to preserve legal context
       separators: [
         '\n\n', // Paragraph breaks: '\n', // Line breaks: '. ', // Sentence endings: ', ', // Clause separators: ' ', // Word breaks
       ]
     });
     this.initializeVectorStore();
-  }
+  } }
   /**
    * Initialize Qdrant vector store
    */
@@ -189,8 +188,7 @@ Only return the queries, one per line.`)` };
     if (this.vectorStore) return;
     try {
       // Build a local mock store so retriever closures can reference similaritySearch
-      const mockStore: QdrantVectorStore = {
-       , embeddings: this.embeddings,
+      const mockStore: QdrantVectorStore = { embeddings: this.embeddings,
         client: this.qdrantClient,
         collectionName: this.config.collectionName,
         contentPayloadKey: 'content',
@@ -205,7 +203,7 @@ Only return the queries, one per line.`)` };
           return docs.map((_, i) => `vec_${base}_${i}_${Math.random().toString(36).slice(2, 8)}`);
         },
         // Minimal retriever adapter that delegates to mockStore.similaritySearch
-        asRetriever(opts: { k?: number; filter?: MetadataFilter } = {}) {
+        asRetriever(opts: { k?: number; filter?: MetadataFilter } }= {}) {
           const baseK = opts.k ?? 5;
           return {
             async getRelevantDocuments(query: string) {
@@ -213,31 +211,31 @@ Only return the queries, one per line.`)` };
                 // Prefer calling the store's similaritySearch if available'
                 if (typeof mockStore.similaritySearch === 'function') {
                   return await mockStore.similaritySearch(query, baseK);
-                }
+                } }
                 return [] as LangChainDocumentType[];
-              } catch (err) {
+              } }catch (err) {
                 console.warn('Mock retriever similaritySearch failed:', err);
                 return [] as LangChainDocumentType[];
-              }
-            }
+              } }
+            } }
           };
-        }
-      } as QdrantVectorStore;
+        } }
+      } }as QdrantVectorStore;
       this.vectorStore = mockStore;
       console.log('✅ Legal RAG vector store initialized');
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('❌ Failed to initialize vector store:', msg);
       throw error instanceof Error ? error : new Error(msg);
-    }
-  }
+    } }
+  } }
   /**
    * Ensure vector store is initialized before use
    */ private async ensureVectorStoreInitialized(): Promise<void> {
     if (!this.vectorStore) {
       await this.initializeVectorStore();
-    }
-  }
+    } }
+  } }
   /**
    * Main query method with enhanced legal RAG capabilities
    * Now includes integration with new semantic search API
@@ -253,7 +251,7 @@ Only return the queries, one per line.`)` };
       jurisdiction,
       practiceArea,
       useEnhancedSemanticSearch = true
-    } = options;
+    } }= options;
     try {
       // NEW: Try enhanced semantic search first (preferred method)
       if (useEnhancedSemanticSearch && typeof fetch !== 'undefined') {
@@ -262,15 +260,13 @@ Only return the queries, one per line.`)` };
             method: 'POST',
             headers: {
               'Content-Type': `application/json` },
-            body: JSON.stringify({
-             , query: question,
+            body: JSON.stringify({ query: question,
               limit: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,
               threshold: confidenceThreshold,
-              filters: {
-               , category: documentType,
+              filters: { category: documentType,
                 jurisdiction,
                 practice_area: practiceArea
-              }
+              } }
             })
           });
           if (semanticResponse.ok) {
@@ -285,15 +281,15 @@ Only return the queries, one per line.`)` };
                   title: result?.title,
                   score: result?.semantic_score ?? (result?.distance ? 1 - (result.distance, as: number) : 1),
                   document_type: result?.document_type,
-                  source: `enhanced_semantic_search` }
+                  source: `enhanced_semantic_search` } }
               }));
               const contextText = formatDocumentsAsString(enhancedRetrievedDocs);
               let promptTemplate = this.LEGAL_PROMPTS.STANDARD_RAG;
               if (thinkingMode) {
                 promptTemplate = this.LEGAL_PROMPTS.THINKING_MODE_RAG;
-              } else if (verbose) {
+              } }else if (verbose) {
                 promptTemplate = this.LEGAL_PROMPTS.VERBOSE_RAG;
-              }
+              } }
               const formattedPrompt = await promptTemplate.format({
                 context: contextText,
                 question
@@ -320,23 +316,22 @@ Only return the queries, one per line.`)` };
                 sourceDocuments: enhancedRetrievedDocs,
                 confidence,
                 reasoning: thinkingMode
-                  ? `Applied enhanced semantic search with ${semanticData.results.length} relevant documents. Average semantic, score: ${avgSemanticScore.toFixed(3)}`
+                  ? `Applied enhanced semantic search with ${semanticData.results.length} }relevant documents. Average semantic, score: ${avgSemanticScore.toFixed(3)}`
                   : undefined,
-                metadata: {
-                 , retrievedChunks: enhancedRetrievedDocs.length,
+                metadata: { retrievedChunks: enhancedRetrievedDocs.length,
                   processingTime,
                   usedThinkingMode: thinkingMode,
                   usedCompression: useCompression,
                   enhancedSemanticSearch: true,
                   semanticProcessingTime: semanticData.processingTime || 0
-                }
+                } }
               };
-            }
-          }
-        } catch (error) {
+            } }
+          } }
+        } }catch (error) {
           console.warn('Enhanced semantic search failed, falling back to traditional RAG:', error);
-        }
-      }
+        } }
+      } }
       // Fallback to traditional LangChain RAG if enhanced semantic search fails
       await this.ensureVectorStoreInitialized();
       // Create retriever with legal-specific filtering
@@ -356,7 +351,7 @@ Only return the queries, one per line.`)` };
       //   })
       //   // Use MultiQueryRetriever directly
       //   retriever = multiQueryRetriever
-      // }
+      // } }
       // Add contextual compression for better relevance
       // TODO: Fix LLMChainExtractor import issue
       // if (useCompression) {
@@ -367,21 +362,20 @@ Only return the queries, one per line.`)` };
       //   })
       //   // Use ContextualCompressionRetriever directly
       //   retriever = compressionRetriever
-      // }
+      // } }
       // Select appropriate prompt template
       let promptTemplate = this.LEGAL_PROMPTS.STANDARD_RAG;
       if (thinkingMode) {
         promptTemplate = this.LEGAL_PROMPTS.THINKING_MODE_RAG;
-      } else if (verbose) {
+      } }else if (verbose) {
         promptTemplate = this.LEGAL_PROMPTS.VERBOSE_RAG;
-      }
+      } }
       const contextRetriever = RunnableSequence.from([
         (input: string) => retriever.getRelevantDocuments(input),
         formatDocumentsAsString,
       ]);
       const ragChain = RunnableSequence.from([
-        RunnableMap.from({,
-          context: contextRetriever,
+        RunnableMap.from({ context: contextRetriever,
           question: new RunnablePassthrough()
         }),
         promptTemplate,
@@ -390,11 +384,11 @@ Only return the queries, one per line.`)` };
       ]);
       const [answer, retrievedDocs] = await Promise.all([
         ragChain.invoke(question).catch((error: any) => {
-          console.warn('RAG chain error:', error);'
+          console.warn('RAG chain error:', error);
           return, 'Unable to generate response due to processing error.';
         }),
         retriever.getRelevantDocuments(question).catch((error: any) => {
-          console.warn('Document retrieval error:', error);'
+          console.warn('Document retrieval error:', error);
           return [];
         }),
       ]);
@@ -407,14 +401,13 @@ Only return the queries, one per line.`)` };
         sourceDocuments: retrievedDocs,
         confidence,
         reasoning: thinkingMode ? 'Applied multi-query retrieval with comprehensive analysis' : undefined,
-        metadata: {
-         , retrievedChunks: retrievedDocs.length,
+        metadata: { retrievedChunks: retrievedDocs.length,
           processingTime,
           usedThinkingMode: thinkingMode,
           usedCompression: useCompression
-        }
+        } }
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Error in RAG query:', msg);
       // record metrics even on error
@@ -424,22 +417,21 @@ Only return the queries, one per line.`)` };
         answer: 'I apologize, but I encountered an error processing your query. Please try again.',
         sourceDocuments: [],
         confidence: 0,
-        metadata: {
-         , retrievedChunks: 0,
+        metadata: { retrievedChunks: 0,
           processingTime: Date.now() - startTime,
           usedThinkingMode: options.thinkingMode ?? false,
           usedCompression: options.useCompression ?? false
-        }
+        } }
       };
-    }
-  }
+    } }
+  } }
   /**
    * Index a legal document into the vector store
    */ async indexDocument(text: string, metadata: LegalDocumentMetadata): Promise<string[]> {
     await this.ensureVectorStoreInitialized();
     if (!this.vectorStore) {
       throw new Error('Vector store not initialized');
-    }
+    } }
     try {
       const chunks = await this.textSplitter.splitText(text);
       const documents = chunks.map((chunk, index) => ({
@@ -449,7 +441,7 @@ Only return the queries, one per line.`)` };
           chunkIndex: index,
           totalChunks: chunks.length,
           chunkSize: chunk.length
-        }
+        } }
       }));
       const ids = await this.vectorStore.addDocuments(documents);
       // Update lightweight index statistics
@@ -458,17 +450,17 @@ Only return the queries, one per line.`)` };
         // approximate bytes by character length (UTF-16 code units) as a cheap estimate
         const approxBytes = documents.reduce((sum, d) => sum + (d.pageContent?.length || 0), 0);
         this.totalIndexBytes = (this.totalIndexBytes || 0) + approxBytes;
-      } catch {
+      } }catch {
         // ignore stats collection failures
-      }
-      console.log(`✅ Indexed ${chunks.length} chunks for document ${metadata.documentId ?? metadata.id ?? 'unknown` }`);'`
+      } }
+      console.log(`✅ Indexed ${chunks.length} }chunks for document ${metadata.documentId ?? metadata.id ?? 'unknown` }`);'`
       return ids || [];
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Error indexing document:', msg);
       throw new Error(`Document indexing failed: ${msg}`);
-    }
-  }
+    } }
+  } }
   /**
    * Perform legal document summarization with RAG context
    */ async summarizeWithContext(documentId: string, options: RAGQueryOptions = {}): Promise<string> {
@@ -480,57 +472,57 @@ Only return the queries, one per line.`)` };
     });
     // Return the answer with a safe fallback
     return result?.answer ?? '';
-  }
+  } }
   /**
    * Compare multiple legal documents
    */
   async compareDocuments(
     documentIds: string[],
     comparisonFocus: string,
-    options: RAGQueryOptions = {}
+    options: RAGQueryOptions = {} }
   ): Promise<RAGResult> {
     const query = `Compare and contrast the following aspects across the provided documents: ${comparisonFocus}.`
     Identify similarities, differences, and: any potential conflicts or inconsistencies.`;`
     // Note: Filter would be applied in the query method
     // const filter = {
     //  , documentId: { $in: documentIds },
-    // }
+    // } }
     return await this.query(query, {
       ...options,
       maxRetrievedDocs: 15, // Get more context for comparison
     });
-  }
+  } }
   /**
    * Extract specific legal information
    */
   async extractLegalEntities(query: string, documentType?: string, options: RAGQueryOptions = {}): Promise<RAGResult> {
-    const entityQuery = `Extract and list all ${query} mentioned in the legal documents.`
+    const entityQuery = `Extract and list all ${query} }mentioned in the legal documents.`
     Provide specific references to where each item is mentioned.`;`
     return await this.query(entityQuery, {
       ...options,
       documentType
     });
-  }
+  } }
   /**
    * Build metadata filter for Qdrant queries
    */
   private buildMetadataFilter(documentType?: string, jurisdiction?: string, practiceArea?: string): MetadataFilter {
     const must: MetadataCondition[] = [];
     if (documentType) {
-      must.push({ key: 'documentType', match: {, value: documentType } });
-    }
+      must.push({ key: 'documentType', match: { value: documentType } }});
+    } }
     if (jurisdiction) {
-      must.push({ key: 'jurisdiction', match: {, value: jurisdiction } });
-    }
+      must.push({ key: 'jurisdiction', match: { value: jurisdiction } }});
+    } }
     if (practiceArea) {
       must.push({
         key: 'classification.practiceArea',
-        match: {, value: practiceArea }
+        match: { value: practiceArea } }
       });
-    }
+    } }
     // Return a valid empty: object as the fallback
-    return must.length ? { must } : {};
-  }
+    return must.length ? { must } }: {};
+  } }
   /**
    * Calculate confidence score based on retrieved documents
    */ private calculateConfidence(documents: LangChainDocumentType[], threshold: number): number {
@@ -549,11 +541,11 @@ Only return the queries, one per line.`)` };
     if (typeof threshold === 'number' && threshold > 0) {
       if (averageScore < threshold) {
         finalConfidence = averageScore * (averageScore / threshold);
-      }
-    }
+      } }
+    } }
     // Clamp to valid range [0, 1]
     return Math.max(0, Math.min(1, finalConfidence));
-  }
+  } }
   /**
    * Health check for the RAG service
    */
@@ -568,7 +560,7 @@ Only return the queries, one per line.`)` };
         collectionExists,
         documentsCount
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('Health check failed:', msg);
       return {
@@ -578,8 +570,8 @@ Only return the queries, one per line.`)` };
         documentsCount: 0,
         errorMessage: msg
       };
-    }
-  }
+    } }
+  } }
   /**
    * Upload and index a document file with real file processing
    */
@@ -594,55 +586,51 @@ Only return the queries, one per line.`)` };
         fileName = options.file.name;
         fileSize = options.file.size;
         documentContent = await this.extractTextFromFile(options.file);
-      } else if (options?.content) {
+      } }else if (options?.content) {
         documentContent = options.content;
         fileSize = new Blob([documentContent]).size;
         fileName = filePath.split('/').pop() || filePath;
-      } else {
+      } }else {
         const fs = await import('fs').catch(() => null);
         const path = await import('path').catch(() => null);
         if (!fs || !path) {
           throw new Error(
             'File system operations not available in browser environment. Use file or content options instead.'
           );
-        }
+        } }
         fileName = path.basename(filePath);
         try {
           const fileBuffer = await fs.promises.readFile(filePath);
           fileSize = fileBuffer.length;
           const fileExtension = path.extname(filePath).toLowerCase();
           documentContent = await this.extractTextFromBuffer(fileBuffer, fileExtension);
-        } catch (error: any) {
+        } }catch (error: any) {
           const msg = error instanceof Error ? error.message : String(error);
           throw new Error(`Failed to read file: ${msg}`);
-        }
-      }
+        } }
+      } }
       if (!documentContent || documentContent.trim().length === 0) {
         throw new Error('No readable content found in the document');
-      }
+      } }
       const documentId = `doc_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
-      const metadata: LegalDocumentMetadata = {
-       , id: documentId,
+      const metadata: LegalDocumentMetadata = { id: documentId,
         title: options?.title || this.generateDocumentTitle(documentContent, fileName),
         documentId, // keep legacy field if other code expects it
         filename: fileName,
         documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
         uploadedBy: 'system',
         uploadedAt: new Date().toISOString(),
-        fileMetadata: {
-         , size: fileSize,
+        fileMetadata: { size: fileSize,
           mimeType: this.getMimeType(fileName),
           wordCount: documentContent.split(/\s+/).filter(Boolean).length,
           language: `en` },
-        classification: {
-         , documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
+        classification: { documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
           practiceArea: this.inferPracticeArea(documentContent),
           jurisdiction: this.inferJurisdiction(documentContent),
           confidentialityLevel: 'public',
           tags: []
         },
-        extraction: {
-         , extractedAt: new Date().toISOString(),
+        extraction: { extractedAt: new Date().toISOString(),
           extractedLength: documentContent.length,
           confidence: this.calculateExtractionConfidence(documentContent, fileName)
         },
@@ -661,10 +649,10 @@ Only return the queries, one per line.`)` };
             metadata,
             chunks: chunkIds.length
           });
-        } catch (error) {
+        } }catch (error) {
           console.warn('Failed to notify semantic search API:', error);
-        }
-      }
+        } }
+      } }
       return {
         success: true,
         documentId,
@@ -674,22 +662,21 @@ Only return the queries, one per line.`)` };
           extractedLength: documentContent.length,
           processingTime,
           chunksCreated: chunkIds.length
-        }
+        } }
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
         error: msg,
-        processingDetails: {
-         , fileSize: 0,
+        processingDetails: { fileSize: 0,
           extractedLength: 0,
           processingTime: Date.now() - startTime,
           chunksCreated: 0
-        }
+        } }
       };
-    }
-  }
+    } }
+  } }
   /**
    * Extract text from a, File: object (browser environment)
    */ private async extractTextFromFile(file: File): Promise<string> {
@@ -699,27 +686,27 @@ Only return the queries, one per line.`)` };
       case, 'md':
       case, 'rtf': {
         return await file.text();
-      }
+      } }
       case, 'pdf': {
         return await this.extractTextFromPDF(file);
-      }
+      } }
       case, 'doc':
       case, 'docx': {
         return await this.extractTextFromWord(file);
-      }
+      } }
       case, 'html':
       case, 'htm': {
         return this.extractTextFromHTML(await file.text());
-      }
+      } }
       default: {
         const text = await file.text();
         if (this.isValidText(text)) {
           return text;
-        }
+        } }
         throw new Error(`Unsupported file type: ${fileExtension}`);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Extract text from a buffer (server environment)
    */ private async extractTextFromBuffer(buffer: Buffer, extension: string): Promise<string> {
@@ -728,27 +715,27 @@ Only return the queries, one per line.`)` };
       case, '.md':
       case, '.rtf': {
         return buffer.toString('utf-8');
-      }
+      } }
       case, '.pdf': {
         return await this.extractTextFromPDFBuffer(buffer);
-      }
+      } }
       case, '.doc':
       case, '.docx': {
         return await this.extractTextFromWordBuffer(buffer);
-      }
+      } }
       case, '.html':
       case, '.htm': {
         return this.extractTextFromHTML(buffer.toString('utf-8'));
-      }
+      } }
       default: {
         const text = buffer.toString('utf-8');
         if (this.isValidText(text)) {
           return text;
-        }
+        } }
         throw new Error(`Unsupported file type: ${extension}`);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   /**
    * Extract text from PDF file (browser)
    */ private async extractTextFromPDF(file: File): Promise<string> {
@@ -759,23 +746,23 @@ Only return the queries, one per line.`)` };
     // Minimal page proxy used to read text content
     interface PDFPageProxy {
       getTextContent(): Promise<PDFTextContent>;
-    }
+    } }
     // Minimal document proxy exposing page count and page accessor
     interface PDFDocumentProxy {
       numPages?: number;
       getPage(pageNumber: number): Promise<PDFPageProxy>;
-    }
+    } }
     // Loading task that may expose a promise for the document (pdfjs returns either a LoadingTask or the document)
     interface PDFLoadingTask {
       promise?: Promise<PDFDocumentProxy>;
-    }
+    } }
     // Narrow module shape for pdfjs-dist (supports both default export and top-level functions)
     type PDFJSModule = {
       default?: {
-        getDocument(src: {;, data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
+        getDocument(src: {; data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
         GlobalWorkerOptions?: { workerSrc?: string };
       };
-      getDocument?(src: {, data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
+      getDocument?(src: { data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
       GlobalWorkerOptions?: { workerSrc?: string };
     };
     try {
@@ -785,14 +772,14 @@ Only return the queries, one per line.`)` };
       try {
         // @ts-ignore - This path may not exist if only the main package is installed
         pdfjsModule = (await import('pdfjs-dist/legacy/build/pdf')) as PDFJSModule;
-      } catch {
+      } }catch {
         // Fallback to main package if legacy build isn't present'
         // @ts-ignore - This module might not be installed
         pdfjsModule = (await import('pdfjs-dist').catch(() => null)) as PDFJSModule | null;
-      }
+      } }
       if (!pdfjsModule) {
         throw new Error('PDF.js not found. Install pdfjs-dist (e.g. npm i pdfjs-dist).');
-      }
+      } }
       const pdfjs = pdfjsModule?.default ?? pdfjsModule;
       // Attempt to set workerSrc if available to avoid worker-loading issues in browser
       try {
@@ -800,13 +787,13 @@ Only return the queries, one per line.`)` };
           // Use a CDN fallback for the worker if no bundler-provided worker is available.
           // Adjust the version/URL if your project pins pdfjs-dist to a specific release.
           pdfjs.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.6.172/build/pdf.worker.min.js';
-        }
-      } catch {
-        // Non-fatal if worker configuration isn't possible in the runtime.` }'`
+        } }
+      } }catch {
+        // Non-fatal if worker configuration isn't possible in the runtime.` } }`
       const arrayBuffer = await file.arrayBuffer();
       if (typeof pdfjs.getDocument !== 'function') {
         throw new Error('pdfjs.getDocument is not a function. PDF.js module may be corrupt or incompatible.');
-      }
+      } }
       const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
       // loadingTask may be:
       // - a LoadingTask with a `.promise` property,
@@ -827,12 +814,12 @@ Only return the queries, one per line.`)` };
           ) {
             // await the loading task's promise'
             return (await (maybePromise as Promise<PDFDocumentProxy>)) as PDFDocumentProxy;
-          }
-        }
+          } }
+        } }
         // If it looks like a Promise (has a then function), await it.
         if (typeof task === 'object' && task !== null && typeof (task as { then?: any }).then === 'function') {
           return (await (task as Promise<PDFDocumentProxy>)) as PDFDocumentProxy;
-        }
+        } }
         // Otherwise assume it's already a PDFDocumentProxy'
         return task as PDFDocumentProxy;
       };
@@ -843,13 +830,13 @@ Only return the queries, one per line.`)` };
         const textContent = await page.getTextContent();
         const pageText = (textContent.items as PDFTextItem[]).map(item => item?.str ?? '').join(' ');
         fullText += pageText + '\n';
-      }
+      } }
       return fullText.trim();
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`PDF extraction failed: ${msg}`);
-    }
-  }
+    } }
+  } }
   /**
    * Extract text from PDF buffer (server)
    */ private async extractTextFromPDFBuffer(buffer: Buffer): Promise<string> {
@@ -861,13 +848,13 @@ Only return the queries, one per line.`)` };
       if (pdfParse) {
         const data = (await pdfParse.default(buffer)) as PDFParseResult;
         return data.text ?? '';
-      }
+      } }
       throw new Error('PDF processing requires pdf-parse library. Please install pdf-parse package.');
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`PDF extraction failed: ${msg}`);
-    }
-  }
+    } }
+  } }
   /**
    * Extract text from Word document (browser)
    */ private async extractTextFromWord(file: File): Promise<string> {
@@ -880,13 +867,13 @@ Only return the queries, one per line.`)` };
         const arrayBuffer = await file.arrayBuffer();
         const result = (await mammoth.extractRawText({ arrayBuffer })) as MammothResult;
         return result.value ?? '';
-      }
+      } }
       throw new Error('Word document processing requires mammoth library. Please install mammoth package.');
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`Word document extraction failed: ${msg}`);
-    }
-  }
+    } }
+  } }
   /**
    * Extract text from Word document buffer (server)
    */ private async extractTextFromWordBuffer(buffer: Buffer): Promise<string> {
@@ -898,13 +885,13 @@ Only return the queries, one per line.`)` };
       if (mammoth) {
         const result = (await mammoth.extractRawText({ buffer })) as MammothResult;
         return result.value ?? '';
-      }
+      } }
       throw new Error('Word document processing requires mammoth library. Please install mammoth package.');
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`Word document extraction failed: ${msg}`);
-    }
-  }
+    } }
+  } }
   /**
    * Extract text from HTML content
    */ private extractTextFromHTML(htmlContent: string): string {
@@ -915,7 +902,7 @@ Only return the queries, one per line.`)` };
       .replace(/<[^>]+>/g, ' ') // Remove HTML tags
       .replace(/\s+/g, ' ') // Normalize whitespace
       .trim();
-  }
+  } }
   /**
    * Check if text content is valid and readable
    */ private isValidText(text: string): boolean {
@@ -925,7 +912,7 @@ Only return the queries, one per line.`)` };
     const printableChars = text.match(/[a-zA-Z0-9\s.,:!?()-]/g)?.length || 0;
     const ratio = printableChars / text.length;
     return ratio > 0.7; // At least 70% printable characters
-  }
+  } }
   /**
    * Infer document type from filename and content
    */ private inferDocumentType(fileName: string, content: string): string {
@@ -952,8 +939,8 @@ Only return the queries, one per line.`)` };
       case, 'docx':
         return, 'legal-document';
       default: return, 'general';
-    }
-  }
+    } }
+  } }
   /**
    * Infer practice area from content
    */ private inferPracticeArea(content: string): string {
@@ -965,14 +952,14 @@ Only return the queries, one per line.`)` };
       contentLower.includes('copyright')
     ) {
       return, 'intellectual-property';
-    }
+    } }
     if (
       contentLower.includes('contract') ||
       contentLower.includes('agreement') ||
       contentLower.includes('terms and conditions')
     ) {
       return, 'contract-law';
-    }
+    } }
     if (
       contentLower.includes('litigation') ||
       contentLower.includes('plaintiff') ||
@@ -980,10 +967,10 @@ Only return the queries, one per line.`)` };
       contentLower.includes('motion')
     ) {
       return, 'litigation';
-    }
+    } }
     if (contentLower.includes('employment') || contentLower.includes('labor') || contentLower.includes('workplace')) {
       return, 'employment-law';
-    }
+    } }
     if (
       contentLower.includes('real estate') ||
       contentLower.includes('property') ||
@@ -991,9 +978,9 @@ Only return the queries, one per line.`)` };
       contentLower.includes('deed')
     ) {
       return, 'real-estate';
-    }
+    } }
     return, 'general';
-  }
+  } }
   /**
    * Infer jurisdiction from content
    */ private inferJurisdiction(content: string): string {
@@ -1006,7 +993,7 @@ Only return the queries, one per line.`)` };
       contentLower.includes('supreme court')
     ) {
       return, 'federal';
-    }
+    } }
     // State patterns - add more as needed
     const states = [
       'california',
@@ -1023,10 +1010,10 @@ Only return the queries, one per line.`)` };
     for (const state of states) {
       if (contentLower.includes(state)) {
         return state;
-      }
-    }
+      } }
+    } }
     return, 'unknown';
-  }
+  } }
   /**
    * Calculate extraction confidence score
    */ private calculateExtractionConfidence(content: string, fileName: string): number {
@@ -1045,7 +1032,7 @@ Only return the queries, one per line.`)` };
     const extension = fileName.split('.').pop()?.toLowerCase();
     if (['pdf', 'doc', 'docx'].includes(extension || '')) confidence += 0.1;
     return Math.min(1.0, confidence);
-  }
+  } }
   /**
    * Generate document title from content and filename
    */ private generateDocumentTitle(content: string, fileName: string): string {
@@ -1057,11 +1044,11 @@ Only return the queries, one per line.`)` };
       const firstLine = lines[0].trim();
       if (firstLine.length > 10 && firstLine.length < 100) {
         return firstLine;
-      }
-    }
+      } }
+    } }
     const baseName = fileName.replace(/\.[^/.]+$/, '');
     return baseName.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  }
+  } }
   /**
    * Get MIME type from filename
    */ private getMimeType(fileName: string): string {
@@ -1076,7 +1063,7 @@ Only return the queries, one per line.`)` };
       htm: 'text/html',
       rtf: `application/rtf` };'`'`
     return mimeTypes[extension || ''] || 'application/octet-stream';
-  }
+  } }
   /**
    * Notify semantic search API about new document
    */ private async notifySemanticSearchAPI(
@@ -1094,11 +1081,11 @@ Only return the queries, one per line.`)` };
             ...documentInfo
           })
         });
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('Failed to notify semantic search API:', error);
-    }
-  }
+    } }
+  } }
   async getSystemStats(): Promise<SystemStats> {
     try {
       const health = await this.healthCheck();
@@ -1118,7 +1105,7 @@ Only return the queries, one per line.`)` };
         indexStatus: health.status === 'healthy' ? 'healthy' : 'degraded',
         uptime: Math.max(0, uptimeMs)
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to get system stats:', msg);
       return {
@@ -1130,8 +1117,8 @@ Only return the queries, one per line.`)` };
         indexStatus: 'error',
         uptime: 0
       };
-    }
-  }
+    } }
+  } }
   //, Helper: obtain uptime in milliseconds in a cross-environment safe way.
   // Uses globalThis.process.uptime() in Node if available, otherwise falls back to performance.now() in browsers.
   private getUptimeMs(): number {
@@ -1143,36 +1130,36 @@ Only return the queries, one per line.`)` };
       const maybeProcess = g?.process;
       if (maybeProcess && typeof maybeProcess.uptime === 'function') {
         return Math.floor(maybeProcess.uptime() * 1000);
-      }
+      } }
       if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
         return Math.floor(performance.now());
-      }
-    } catch {
+      } }
+    } }catch {
       // swallow and return, 0 as a safe fallback
-    }
+    } }
     return 0;
-  }
+  } }
   // Added: record lightweight query metrics so calls to this.recordQueryMetrics(...) compile
   private recordQueryMetrics(processingTimeMs: number): void {
     try {
       const ms = Number(processingTimeMs) || 0;
       this.queryCount = (this.queryCount || 0) + 1;
       this.totalQueryTime = (this.totalQueryTime || 0) + ms;
-    } catch {
+    } }catch {
       // intentionally swallow metric collection failures
-    }
-  }
-}
+    } }
+  } }
+} }
 // --- MOVED TYPES: place these above the class so they are available when referenced ---
 // Add HealthCheckResult at top-level so class methods can reference it
-type HealthCheckResult = {, status: 'healthy' | 'unhealthy';, vectorStoreConnected: boolean;
+type HealthCheckResult = { status: 'healthy' | 'unhealthy';, vectorStoreConnected: boolean;
   collectionExists: boolean;
   documentsCount: number;
   errorMessage?: string;
 };
 type MetadataMatch = { value: string | number | boolean };
-type MetadataCondition = { key: string;, match: MetadataMatch };
-type MetadataFilter = { must?: MetadataCondition[] } | Record<string, never>;
+type MetadataCondition = { key: string; match: MetadataMatch };
+type MetadataFilter = { must?: MetadataCondition[] } }| Record<string, never>;
 type UploadMetadata = Partial<LegalDocumentMetadata> | Record<string, unknown>;
 interface UploadOptions {
   caseId?: string;
@@ -1181,21 +1168,21 @@ interface UploadOptions {
   metadata?: UploadMetadata;
   file?: File;
   content?: string;
-}
+} }
 type ProcessingDetails = { fileSize: number;, extractedLength: number;
   processingTime: number;
   chunksCreated: number;
 };
-type UploadResultSuccess = {, success: true;, documentId: string;
+type UploadResultSuccess = { success: true;, documentId: string;
   chunks: number;
   processingDetails: ProcessingDetails;
 };
-type UploadResultFailure = {, success: false;, error: string;
+type UploadResultFailure = { success: false;, error: string;
   processingDetails: ProcessingDetails;
 };
 type UploadResult = UploadResultSuccess | UploadResultFailure;
 // Add SystemStats type near the other top-level types
-type SystemStats = {, documentCount: number;, queryCount: number;
+type SystemStats = { documentCount: number;, queryCount: number;
   indexSize: number; // bytes
   averageQueryTime: number; // ms
   averageResponseTime: number; // ms
@@ -1203,7 +1190,7 @@ type SystemStats = {, documentCount: number;, queryCount: number;
   uptime: number; // ms
 };
 // New type: strongly-typed payload for semantic search notifications
-type SemanticSearchDocumentInfo = {, title: string;, content: string;
+type SemanticSearchDocumentInfo = { title: string;, content: string;
   metadata?: Partial<LegalDocumentMetadata> | Record<string, unknown>;
   chunks?: number;
   summary?: string;
@@ -1221,11 +1208,11 @@ type SemanticSearchResult = {
   [key: string]: any;
 };
 // Export singleton instance with environment configuration
-export const legalRAG = new LegalRAGService({
- , qdrantUrl: import.meta.env.QDRANT_URL || 'http://localhost:6333',
+export const legalRAG = new LegalRAGService({ qdrantUrl: import.meta.env.QDRANT_URL || 'http://localhost:6333',
   ollamaGenerationUrl: import.meta.env.OLLAMA_GENERATION_URL || 'http://localhost:11434/v1',
   ollamaEmbeddingUrl: import.meta.env.OLLAMA_EMBEDDING_URL || 'http://localhost:11434/v1',
   apiKey: import.meta.env.OLLAMA_API_KEY || 'EMPTY',
   collectionName: 'legal_documents',
   embeddingDimensions: 768
 });
+

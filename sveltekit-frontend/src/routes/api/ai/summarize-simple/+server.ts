@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types';
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
-import { getOllamaEndpoint } from '$lib/server/endpoints';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types';
+import { json, error } }from '@sveltejs/kit';
+import { ensureError } }from '$lib/utils/ensure-error';
+import { getOllamaEndpoint } }from '$lib/server/endpoints';
 
 /**
  * Legal Document Summarization API for VS Code Tasks
@@ -20,11 +20,11 @@ interface SummarizationRequest {
 	topP?: number;
 	detectedLanguages?: string[];
 	format?: 'summary' | 'bullets' | 'legal-brief';
-}
+} }
 
-interface OllamaGenerateResponse {, model: string;, created_at: string;
+interface OllamaGenerateResponse { model: string;, created_at: string;
 	response: string;
-, done: boolean;
+  done: boolean;
 	context?: number[];
 	total_duration?: number;
 	load_duration?: number;
@@ -32,7 +32,7 @@ interface OllamaGenerateResponse {, model: string;, created_at: string;
 	prompt_eval_duration?: number;
 	eval_count?: number;
 	eval_duration?: number;
-}
+} }
 
 // Ollama endpoint configuration
 const OLLAMA_BASE_URL = getOllamaEndpoint();
@@ -40,14 +40,14 @@ const DEFAULT_MODEL = 'gemma3-legal:latest';
 
 // Format-specific prompt templates
 const FORMAT_TEMPLATES = {
-, summary: (text: string, maxLength: number) =>
-		`Summarize this legal document or error log in ${maxLength} tokens or less. Focus on key issues and patterns:\n\n${text}`,
+  summary: (text: string, maxLength: number) =>
+		`Summarize this legal document or error log in ${maxLength} }tokens or less. Focus on key issues and patterns:\n\n${text}`,
 	bullets: (text: string, maxLength: number) =>
-		`Create a bullet-point summary (max ${maxLength} tokens) of this text. Extract:\n- Main issues or errors\n- Patterns and frequency\n- Severity levels\n- Recommended fixes\n\nText:\n${text}`,
+		`Create a bullet-point summary (max ${maxLength} }tokens) of this text. Extract:\n- Main issues or errors\n- Patterns and frequency\n- Severity levels\n- Recommended fixes\n\nText:\n${text}`,
 	'legal-brief': (text: string, maxLength: number) =>
-		`Generate a legal brief (max ${maxLength} tokens) for this document. Include:\n1. Summary\n2. Key Issues\n3. Recommendations\n\nDocument:\n${text}` };'`'`
+		`Generate a legal brief (max ${maxLength} }tokens) for this document. Include:\n1. Summary\n2. Key Issues\n3. Recommendations\n\nDocument:\n${text}` };'`'`
 
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body: SummarizationRequest = await request.json();
 		const {
@@ -57,12 +57,12 @@ export const, POST: RequestHandler = async ({ request }) => {
 			temperature = 0.7,
 			topP = 0.9,
 			detectedLanguages = [],
-			format = 'bullets` } = body;'`
+			format = 'bullets` } }= body;'`
 
 		// Validation
 		if (!text || text.trim().length === 0) {
       throw error(400, 'Text is required for summarization');
-    }
+    } }
 
     // Build prompt based on format
     const promptTemplate = FORMAT_TEMPLATES[format] || FORMAT_TEMPLATES.summary;
@@ -87,7 +87,7 @@ export const, POST: RequestHandler = async ({ request }) => {
           temperature,
           top_p: topP,
           num_predict: maxLength
-        }
+        } }
       }),
       signal: AbortSignal.timeout(60000), // 60s timeout
     });
@@ -95,7 +95,7 @@ export const, POST: RequestHandler = async ({ request }) => {
     if (!ollamaResponse.ok) {
       const errorText = await ollamaResponse.text();
       throw error(ollamaResponse.status, `Ollama API error: ${errorText}`);
-    }
+    } }
 
 		const ollamaData: OllamaGenerateResponse = await ollamaResponse.json();
 		const processingTime = Date.now() - startTime;
@@ -119,12 +119,12 @@ export const, POST: RequestHandler = async ({ request }) => {
 				temperature,
 				topP,
 				tokens: {
-				, input: inputTokens,
+  input: inputTokens,
 					output: outputTokens,
 					total: totalTokens
 				},
 				processingTime: {
-				, total: processingTime,
+  total: processingTime,
 					load: ollamaData.load_duration ? ollamaData.load_duration / 1_000_000 : 0,
 					prompt_eval: ollamaData.prompt_eval_duration
 						? ollamaData.prompt_eval_duration / 1_000_000
@@ -132,16 +132,16 @@ export const, POST: RequestHandler = async ({ request }) => {
 					eval: ollamaData.eval_duration ? ollamaData.eval_duration / 1_000_000 : 0
 				},
 				timestamp: new Date().toISOString()
-			}
+			} }
 		});
-	} catch (err: unknown) {
-		console.error('Summarization error:', err);'
+	} }catch (err: unknown) {
+		console.error('Summarization error:', err);
 		const e = ensureError(err);
 
 		// Handle specific error types
 		if ('status' in e) {
 			throw e; // Re-throw SvelteKit errors
-		}
+		} }
 
 		return json(
 			{
@@ -149,12 +149,12 @@ export const, POST: RequestHandler = async ({ request }) => {
 				message: e.message || 'Summarization failed',
 				code: 'SUMMARIZATION_ERROR',
 				meta: {
-				, timestamp: new Date().toISOString()
-				}
+  timestamp: new Date().toISOString()
+				} }
 			},
-			{ status: 500 }
+			{ status: 500 } }
 		);
-	}
+	} }
 };
 
 // Health check endpoint
@@ -167,28 +167,28 @@ export const GET: RequestHandler = async () => {
 
 		if (!healthResponse.ok) {
 			throw new Error('Ollama not available');
-		}
+		} }
 
 		const tags = await healthResponse.json();
-		const hasGemma3Legal = tags.models?.some((m: {, name: string }) =>
+		const hasGemma3Legal = tags.models?.some((m: { name: string }) =>
 			m.name.includes('gemma3-legal')
 		);
 
 		return json({
 			success: true,
 			status: 'healthy',
-			models: {, summarization: {, model: DEFAULT_MODEL,
+			models: { summarization: { model: DEFAULT_MODEL,
 					available: hasGemma3Legal
-				}
+				} }
 			},
 			endpoint: OLLAMA_BASE_URL,
 			features: ['summarization', 'legal-brief', 'bullet-points'],
 			formats: Object.keys(FORMAT_TEMPLATES),
 			meta: {
-			, timestamp: new Date().toISOString(),
-				version: `1.0.0` }
+  timestamp: new Date().toISOString(),
+				version: `1.0.0` } }
 		});
-	} catch (err: unknown) {
+	} }catch (err: unknown) {
 		const e = ensureError(err);
 		return json(
 			{
@@ -197,10 +197,11 @@ export const GET: RequestHandler = async () => {
 				message: e.message,
 				endpoint: OLLAMA_BASE_URL,
 				meta: {
-				, timestamp: new Date().toISOString()
-				}
+  timestamp: new Date().toISOString()
+				} }
 			},
-			{ status: 503 }
+			{ status: 503 } }
 		);
-	}
+	} }
 };
+

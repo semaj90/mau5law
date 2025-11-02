@@ -1,4 +1,4 @@
-import type {     ComponentType     } from 'svelte';
+import type {     ComponentType     } }from 'svelte';
 /**
  * Performance Optimizations for Enhanced Bits UI Components
  *
@@ -9,7 +9,7 @@ import type {     ComponentType     } from 'svelte';
 export interface ComponentModule { default: ComponentType;, name: string;
   dependencies?: string[];
   size?: number;
-}
+} }
 // Lazy loading registry
 const componentRegistry = new Map<string, () => Promise<ComponentModule>>();
 // Performance metrics tracking
@@ -17,7 +17,7 @@ export interface PerformanceMetrics { componentLoadTime: number;, renderTime: n
   memoryUsage: number;
   bundleSize: number;
  , dependencies: string[];
-}
+} }
 const performanceMetrics = new Map<string, PerformanceMetrics>();
 /**
  * Register a component for lazy loading
@@ -27,15 +27,15 @@ export function registerComponent(
   loader: () => Promise<ComponentModule>,
 ): void {
   componentRegistry.set(name, loader);
-}
+} }
 /**
  * Lazy load a component with performance tracking
  */
 export async function loadComponent(name: string): Promise<ComponentModule> {
   const loader = componentRegistry.get(name);
   if (!loader) {
-    throw new Error(`Component, '${name}' not registered`);
-  }
+    throw new Error(`Component, '${name} } not registered`);
+  } }
   const startTime = performance.now();
   try {
     const module = await loader();
@@ -49,20 +49,20 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
       dependencies: module.dependencies || []
     });
     return module;
-  } catch (error: any) {
-    console.error(`Failed to load component: '${name}':`, error);
+  } }catch (error: any) {
+    console.error(`Failed to load component: '${name} }:`, error);
     throw error;
-  }
-}
+  } }
+} }
 /**
  * Get current memory usage (if available)
  */
 function getMemoryUsage(): number {
   if ("memory" in performance && performance.memory) {
     return (performance.memory as: any).usedJSHeapSize;
-  }
+  } }
   return 0;
-}
+} }
 /**
  * Component factory with tree-shaking optimization
  */
@@ -73,11 +73,11 @@ export class OptimizedComponentFactory {
     // Return cached component if already loaded
     if (this.loadedComponents.has(name)) {
       return this.loadedComponents.get(name)!;
-    }
+    } }
     // Return existing loading promise if component is being loaded
     if (this.loadingPromises.has(name)) {
       return this.loadingPromises.get(name)!;
-    }
+    } }
     // Start loading the component
     const loadingPromise = loadComponent(name);
     this.loadingPromises.set(name, loadingPromise);
@@ -86,26 +86,26 @@ export class OptimizedComponentFactory {
       this.loadedComponents.set(name, component);
       this.loadingPromises.delete(name);
       return component;
-    } catch (error: any) {
+    } }catch (error: any) {
       this.loadingPromises.delete(name);
       throw error;
-    }
-  }
+    } }
+  } }
   preloadComponent(name: string): void {
     if (!this.loadedComponents.has(name) && !this.loadingPromises.has(name)) {
       this.getComponent(name).catch(console.error);
-    }
-  }
+    } }
+  } }
   getLoadedComponents(): string[] {
     return Array.from(this.loadedComponents.keys());
-  }
+  } }
   getPerformanceMetrics(name: string): PerformanceMetrics | undefined {
     return performanceMetrics.get(name);
-  }
+  } }
   getAllPerformanceMetrics(): Map<string, PerformanceMetrics> {
     return new Map(performanceMetrics);
-  }
-}
+  } }
+} }
 /**
  * Virtual scrolling for large lists of legal documents/evidence
  */
@@ -114,7 +114,7 @@ export interface VirtualScrollOptions {
   bufferSize?: number;
   overscan?: number;
   scrollElement?: HTMLElement;
-}
+} }
 export class VirtualScrollManager {
   private, options: Required<VirtualScrollOptions>;
   private scrollTop = 0;
@@ -126,17 +126,17 @@ export class VirtualScrollManager {
       overscan: 3,
       scrollElement: document.documentElement,
       ...options
-    }
-  }
+    } }
+  } }
   updateScrollPosition(scrollTop: number, containerHeight: number): void {
     this.scrollTop = scrollTop;
     this.containerHeight = containerHeight;
-  }
+  } }
   setTotalItems(count: number): void {
     this.totalItems = count;
-  }
-  getVisibleRange(): { start: number; end: number;, offset: number } {
-    const { itemHeight, bufferSize, overscan } = this.options;
+  } }
+  getVisibleRange(): { start: number; end: number; offset: number } }{
+    const { itemHeight, bufferSize, overscan } }= this.options;
     const startIndex = Math.floor(this.scrollTop / itemHeight);
     const endIndex = Math.min(
       startIndex + Math.ceil(this.containerHeight / itemHeight) + bufferSize,
@@ -149,12 +149,12 @@ export class VirtualScrollManager {
       start: visibleStart,
       end: visibleEnd,
       offset
-    }
-  }
+    } }
+  } }
   getTotalHeight(): number {
     return this.totalItems * this.options.itemHeight;
-  }
-}
+  } }
+} }
 /**
  * Debounced search for evidence and case queries
  */
@@ -173,19 +173,19 @@ export function createDebouncedSearch<T>(
           if (currentPromise) {
             // Note: This would need to be implemented based on your API client
             console.log("Cancelling previous search request");
-          }
+          } }
           currentPromise = searchFn(query);
           const result = await currentPromise;
           currentPromise = null;
           resolve(result);
-        } catch (error: any) {
+        } }catch (error: any) {
           currentPromise = null;
           reject(error);
-        }
+        } }
       }, delay);
     });
-  }
-}
+  } }
+} }
 /**
  * Memoization utility for expensive computations
  */
@@ -198,12 +198,12 @@ export function memoize<Args, extends, unknown[], Return>(
     const key = keyFn ? keyFn(...args) : JSON.stringify(args);
     if (cache.has(key)) {
       return cache.get(key)!;
-    }
+    } }
     const result = fn(...args);
     cache.set(key, result);
     return result;
-  }
-}
+  } }
+} }
 /**
  * Intersection Observer for lazy loading evidence cards
  */
@@ -219,7 +219,7 @@ export class LazyLoadManager {
         ...options
       },
     );
-  }
+  } }
   private handleIntersection(entries: IntersectionObserverEntry[]): void {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -227,23 +227,23 @@ export class LazyLoadManager {
         if (callback) {
           callback();
           this.unobserve(entry.target);
-        }
-      }
+        } }
+      } }
     });
-  }
+  } }
   observe(element: Element, callback: () => void): void {
     this.loadingCallbacks.set(element, callback);
     this.observer.observe(element);
-  }
+  } }
   unobserve(element: Element): void {
     this.loadingCallbacks.delete(element);
     this.observer.unobserve(element);
-  }
+  } }
   disconnect(): void {
     this.observer.disconnect();
     this.loadingCallbacks.clear();
-  }
-}
+  } }
+} }
 /**
  * Resource pool for managing expensive resources
  */
@@ -261,53 +261,53 @@ export class ResourcePool<T> {
     this.factory = factory;
     this.maxSize = maxSize;
     this.destructor = destructor;
-  }
+  } }
   acquire(): T {
     let resource: T;
     if (this.available.length > 0) {
       resource = this.available.pop()!;
-    } else {
+    } }else {
       resource = this.factory();
-    }
+    } }
     this.inUse.add(resource);
     return resource;
-  }
+  } }
   release(resource: T): void {
     if (!this.inUse.has(resource)) {
       return;
-    }
+    } }
     this.inUse.delete(resource);
     if (this.available.length < this.maxSize) {
       this.available.push(resource);
-    } else if (this.destructor) {
+    } }else if (this.destructor) {
       this.destructor(resource);
-    }
-  }
+    } }
+  } }
   clear(): void {
     // Destroy all available resources
     if (this.destructor) {
       this.available.forEach(this.destructor);
-    }
+    } }
     this.available = [];
     this.inUse.clear();
-  }
+  } }
   getStats() {
     return {
       available: this.available.length,
       inUse: this.inUse.size,
       total: this.available.length + this.inUse.size,
       maxSize: this.maxSize
-    }
-  }
-}
+    } }
+  } }
+} }
 /**
  * Bundle analyzer for component dependencies
  */
-export interface BundleAnalysis {, totalSize: number;, gzippedSize: number;
+export interface BundleAnalysis { totalSize: number;, gzippedSize: number;
   components: Array<any>;
   duplicates: Array<any>;
  , recommendations: string[];
-}
+} }
 export function analyzeBundleSize(): BundleAnalysis {
   // This would integrate with your build tool to provide real bundle analysis
   // For now, return mock data for demonstration
@@ -315,8 +315,7 @@ export function analyzeBundleSize(): BundleAnalysis {
     totalSize: 245000, // 245KB
     gzippedSize: 89000, // 89KB
     components: [
-      {,
-        name: "Button",
+      { name: "Button",
         size: 12000,
         dependencies: ["bits-ui", "lucide-svelte"],
         critical: true
@@ -338,22 +337,21 @@ export function analyzeBundleSize(): BundleAnalysis {
         size: 45000,
         dependencies: ["Button", "Select", "Input", "Card"],
         critical: false
-      }
+      } }
     ],
     duplicates: [
-      {,
-        module: "lucide-svelte",
+      { module: "lucide-svelte",
         count: 3,
         size: 8000
-      }
+      } }
     ],
     recommendations: [
       "Consider lazy loading VectorIntelligenceDemo component",
       "Optimize lucide-svelte imports to reduce duplication",
       "Use dynamic imports for non-critical components"
     ]
-  }
-}
+  } }
+} }
 /**
  * Performance monitoring utilities
  */
@@ -371,47 +369,47 @@ export class PerformanceMonitor {
       try {
         longTaskObserver.observe({ entryTypes: ["longtask"] });
         this.observers.push(longTaskObserver);
-      } catch (e: any) {
+      } }catch (e: any) {
         // Long task API not supported
-      }
+      } }
       // Monitor layout shifts
       const layoutShiftObserver = new PerformanceObserver((list) => {
         list.getEntries().forEach((entry) => {
           if ("value" in entry) {
             this.recordMetric("layoutShift", (entry as: any).value);
-          }
+          } }
         });
       });
       try {
         layoutShiftObserver.observe({ entryTypes: ["layout-shift"] });
         this.observers.push(layoutShiftObserver);
-      } catch (e: any) {
+      } }catch (e: any) {
         // Layout shift API not supported
-      }
-    }
-  }
+      } }
+    } }
+  } }
   recordMetric(name: string, value: number): void {
     if (!this.metrics.has(name)) {
       this.metrics.set(name, []);
-    }
+    } }
     this.metrics.get(name)!.push(value);
-  }
+  } }
   getMetrics(name: string): number[] {
     return this.metrics.get(name) || [];
-  }
+  } }
   getAverageMetric(name: string): number {
     const values = this.getMetrics(name);
     return values.length > 0
       ? values.reduce((a, b) => a + b, 0) / values.length : 0;
-  }
+  } }
   stopMonitoring(): void {
     this.observers.forEach((observer) => observer.disconnect());
     this.observers = [];
-  }
+  } }
   clear(): void {
     this.metrics.clear();
-  }
-}
+  } }
+} }
 // Export singleton instances
 export const componentFactory = new OptimizedComponentFactory();
 export const performanceMonitor = new PerformanceMonitor();

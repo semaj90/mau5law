@@ -1,9 +1,9 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema-unified';
-import { eq } from 'drizzle-orm';
-import { lucia } from '$lib/server/auth';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { db } }from '$lib/server/db';
+import { users } }from '$lib/server/db/schema-unified';
+import { eq } }from 'drizzle-orm';
+import { lucia } }from '$lib/server/auth';
 
 /**
  * POST /api/auth/demo-login
@@ -11,7 +11,7 @@ import { lucia } from '$lib/server/auth';
  *
  * ⚠️ SECURITY: Only enabled when DEV_BYPASS_AUTH=true
  */
-export const, POST: RequestHandler = async ({ request, cookies }) => {
+export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     // Check if demo login is enabled
     const devBypassAuth = process.env.DEV_BYPASS_AUTH === 'true';
@@ -21,10 +21,10 @@ export const, POST: RequestHandler = async ({ request, cookies }) => {
         message: 'Demo login is disabled in production',
         code: 'DEMO_LOGIN_DISABLED'
       });
-    }
+    } }
 
     const body = await request.json();
-    const { email = 'demo@legal.ai.dev', role = 'user' } = body;
+    const { email = 'demo@legal.ai.dev', role = 'user' } }= body;
 
     // Get or create demo user
     let user = await db
@@ -51,7 +51,7 @@ export const, POST: RequestHandler = async ({ request, cookies }) => {
         .returning();
 
       user = newUser;
-    } else if (user.role !== role && role !== 'user') {
+    } }else if (user.role !== role && role !== 'user') {
       // Update role if different
       const [updated] = await db
         .update(users)
@@ -60,7 +60,7 @@ export const, POST: RequestHandler = async ({ request, cookies }) => {
         .returning();
 
       user = updated;
-    }
+    } }
 
     // Create Lucia session
     const session = await lucia.createSession(user.id, {});
@@ -73,25 +73,25 @@ export const, POST: RequestHandler = async ({ request, cookies }) => {
 
     return json({
       success: true,
-      message: `Logged in as ${email} (${role})`,
+      message: `Logged in as ${email} }(${role})`,
       user: {
-       , id: user.id,
+  id: user.id,
         email: user.email,
         username: user.username,
         role: user.role,
         isActive: user.isActive
       },
       session: {
-       , id: session.id,
+  id: session.id,
         userId: session.userId
       },
       timestamp: new Date().toISOString()
     });
-  } catch (err) {
+  } }catch (err) {
     console.error('[Demo Login] Error:', err);
     return error(500, {
       message: err instanceof Error ? err.message : 'Failed to create demo session',
-      code: 'DEMO_LOGIN_ERROR' });'' }
+      code: 'DEMO_LOGIN_ERROR' });'' } }
 };
 
 /**
@@ -102,3 +102,4 @@ export const GET: RequestHandler = async (event) => {
   // Redirect to form submission to avoid GET side effects
   return POST(event);
 };
+

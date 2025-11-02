@@ -17,11 +17,11 @@
  */
 // Enhanced GRPO-thinking API endpoint - Simplified working version
 // Integrates with existing infrastructure and new GRPO database tables
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { db } from '$lib/db/connection'
-import { sql } from 'drizzle-orm'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
+import { db } }from '$lib/db/connection'
+import { sql } }from 'drizzle-orm'
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware'
 // Generate embedding using nomic-embed-text
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
@@ -29,19 +29,19 @@ async function generateEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , model: 'nomic-embed-text',
+  model: 'nomic-embed-text',
         prompt: text.slice(0, 2048)
       })
     })
     if ((response as { ok?: any; json?: any }).ok) {
       const data = await (response as { ok?: any; json?: any }).json()
       return (data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).embedding || []
-    }
-  } catch (error) {
+    } }
+  } }catch (error) {
     console.warn('Failed to generate embedding:', error)
-  }
+  } }
   return new Array(768).fill(0)
-}
+} }
 // Get AI response using Gemma3-Legal with thinking
 async function getAIResponse(query: string): Promise<any> {
   try {
@@ -49,7 +49,7 @@ async function getAIResponse(query: string): Promise<any> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-       , model: 'gemma3-legal:latest',
+  model: 'gemma3-legal:latest',
         prompt: `<|thinking|>`
 Let me analyze this legal query step by, step:
 1. Identify the key legal concepts
@@ -57,7 +57,7 @@ Let me analyze this legal query step by, step:
 3. Provide structured reasoning
 4. Draw conclusions based on legal doctrine
 </|thinking|>
-${query}
+${query} }
 Please provide a comprehensive legal analysis with structured reasoning.`,`
         stream: false
       })
@@ -73,16 +73,16 @@ Please provide a comprehensive legal analysis with structured reasoning.`,`
         thinking,
         response: responseText,
         confidence: 0.85
-      }
-    }
-  } catch (error) {
+      } }
+    } }
+  } }catch (error) {
     console.error('AI response error:', error)` }`'
   return {
     thinking: 'Unable to generate thinking content',
     response: 'I apologize, but I encountered an issue processing your request.',
     confidence: 0.3
-  }
-}
+  } }
+} }
 // Extract structured reasoning from thinking content
 function extractStructuredReasoning(thinking: string) {
   const lines = thinking
@@ -90,8 +90,8 @@ function extractStructuredReasoning(thinking: string) {
     .map(line => line.trim())
     .filter(line => line.length > 0);
 
-  const matchers: { [key: string]: RegExp } = {
-   , premises: /premise|given|established/i,
+  const matchers: { [key: string]: RegExp } }= {
+  premises: /premise|given|established/i,
     inferences: /therefore|infer|follows/i,
     conclusions: /conclude|conclusion|result/i,
     legal_principles: /principle|rule|doctrine/i,
@@ -109,18 +109,18 @@ function extractStructuredReasoning(thinking: string) {
     counter_arguments: pick(matchers.counter_arguments, 3),
     confidence_factors: pick(matchers.confidence_factors, 3)
   };
-}
+} }
 // Calculate temporal score with exponential decay
 function calculateTemporalScore(createdAt: Date, halfLifeDays: number = 30): number {
   const now = new Date();
   const ageDays = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
   const decayFactor = Math.exp(-Math.LN2 * ageDays / halfLifeDays);
   return Math.max(0.1, Math.min(1.0, decayFactor));
-}
+} }
 // Get similar responses from database using vector similarity
 async function getSimilarResponses(queryEmbedding: number[], maxResults: number = 5): Promise<any> {
   try {
-    const embeddingVector = `[${queryEmbedding.join(',')}]`
+    const embeddingVector = `[${queryEmbedding.join(',')} }`
     const results = await db.execute(sql`
       SELECT
         id,
@@ -135,7 +135,7 @@ async function getSimilarResponses(queryEmbedding: number[], maxResults: number 
       WHERE query_embedding IS NOT NULL
         AND (1 - (query_embedding <=> ${embeddingVector}::vector)) > 0.5
       ORDER BY similarity DESC
-      LIMIT ${maxResults}
+      LIMIT ${maxResults} }
     `)`
     return results.rows.map(row => ({
       id: row.id, as: string,
@@ -148,16 +148,16 @@ async function getSimilarResponses(queryEmbedding: number[], maxResults: number 
         created_at: row.created_at, as: string,
         usage_count: row.usage_count, as: number,
         confidence: row.confidence, as: string
-      }
+      } }
     }))
-  } catch (error) {
+  } }catch (error) {
     console.warn('Failed to get similar responses:', error)
     return []
-  }
-}
+  } }
+} }
 // Save enhanced response to database
-async function saveEnhancedResponse(data: {, query: string, response: string; thinking: string; structuredReasoning: any;, queryEmbedding: number[];, responseEmbedding: number[];
- , confidence: number
+async function saveEnhancedResponse(data: { query: string, response: string; thinking: string; structuredReasoning: any; queryEmbedding: number[]; responseEmbedding: number[];
+  confidence: number
   userId?: string
   legalDomain?: string
 }): Promise<void> {
@@ -183,8 +183,8 @@ async function saveEnhancedResponse(data: {, query: string, response: string; 
         ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).thinking},
         ${JSON.stringify((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning)},
         ${JSON.stringify((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.premises.concat((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.inferences, (data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.conclusions))},
-        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).queryEmbedding.join(',')}]` }:: vector
-        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).responseEmbedding.join(',')}]` }:: vector'`'`
+        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).queryEmbedding.join(',')} }` }:: vector
+        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).responseEmbedding.join(',')} }` }:: vector'`'`
         ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).confidence},
         ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).legalDomain || 'general` },'`
         ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).userId || null},
@@ -194,11 +194,11 @@ async function saveEnhancedResponse(data: {, query: string, response: string; 
       ) RETURNING id
     `)`
     return (result as { rows?: any }).rows[0]?.id as: string
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to save enhanced response:', error)
     return: null
-  }
-}
+  } }
+} }
 const, originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const startTime = Date.now()
@@ -212,14 +212,14 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
       analysisType = 'reasoning',
       enableRecommendations = true,
       maxRecommendations = 5,
-      legalDomain = 'general` } = requestData'`
+      legalDomain = 'general` } }= requestData'`
     // Validate input
     if (!query && !text) {
       return json({
         error: 'Query or text is required',
         success: false
       }, { status: 400 })
-    }
+    } }
     const inputText = query || text
     // Step 1: Get AI response with thinking
     const aiResponse = await getAIResponse(inputText)
@@ -232,10 +232,10 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
     let recommendations = []
     if (enableRecommendations && queryEmbedding.some(x => x !== 0)) {
       recommendations = await getSimilarResponses(queryEmbedding, maxRecommendations)
-    }
+    } }
     // Step 5: Save to database
     const grpoId = await saveEnhancedResponse({
-     , query: inputText,
+  query: inputText,
       response: aiResponse.response,
       thinking: aiResponse.thinking,
       structuredReasoning,
@@ -252,7 +252,7 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
         COUNT(*) as count,
         AVG(COALESCE(confidence::numeric, 0.8)) as avg_confidence
       FROM ai_responses
-      WHERE created_at >= NOW() - INTERVAL ${sql.raw(`'7 days'`)}
+      WHERE created_at >= NOW() - INTERVAL ${sql.raw(`'7 days'`)} }
         AND legal_domain IS NOT NULL
       GROUP BY legal_domain
       ORDER BY count DESC, avg_confidence DESC
@@ -262,7 +262,7 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
     const response = {
       success: true,
       analysis: {
-       , thinking: aiResponse.thinking,
+  thinking: aiResponse.thinking,
         response: aiResponse.response,
         confidence: aiResponse.confidence,
         reasoning_steps: structuredReasoning.premises
@@ -272,36 +272,34 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
         structured_reasoning: structuredReasoning,
         temporal_score: 1.0, // New response gets max temporal score
         // Recommendations
-        recommendations: recommendations.map(rec => ({,
-          id: rec.id,
+        recommendations: recommendations.map(rec => ({ id: rec.id,
           score: rec.final_score,
           confidence: parseFloat(rec.metadata.confidence || '0.8'),
           snippet: rec.snippet,
           metadata: {
-           , similarity: rec.similarity,
+  similarity: rec.similarity,
             temporal_factor: rec.temporal_factor,
             legal_domain: rec.metadata.legal_domain,
             created_at: rec.metadata.created_at
-          }
+          } }
         })),
         // Context
-        trending_topics: trendingTopics.rows.map(row => ({,
-          topic: row.topic, as: string,
+        trending_topics: trendingTopics.rows.map(row => ({ topic: row.topic, as: string,
           count: parseInt(row.count, as: string),
           avg_confidence: parseFloat(row.avg_confidence, as: string)
         })),
         // Reasoning breakdown
         reasoning_components: {
-         , premises: structuredReasoning.premises,
+  premises: structuredReasoning.premises,
           inferences: structuredReasoning.inferences,
           conclusions: structuredReasoning.conclusions,
           legal_principles: structuredReasoning.legal_principles,
           counter_arguments: structuredReasoning.counter_arguments,
           confidence_factors: structuredReasoning.confidence_factors
-        }
+        } }
       },
       metadata: {
-       , processing_time: processingTime,
+  processing_time: processingTime,
         model_used: 'gemma3-legal:latest',
         algorithm: 'enhanced-grpo',
         grpo_id: grpoId,
@@ -318,25 +316,25 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
           'vector_recommendations',
           'trend_analysis'
         ]
-      }
-    }
+      } }
+    } }
     return json(response)
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Enhanced GRPO API error:', error)'
     return json({
       success: false,
       error: 'Enhanced analysis failed',
       details: error.message || 'Unknown error occurred',
       metadata: {
-       , processing_time: 0,
+  processing_time: 0,
         model_used: 'gemma3-legal:latest',
         algorithm: 'enhanced-grpo',
         thinking_enabled: false,
         error_type: error.constructor.name
-      }
+      } }
     }, { status: 500 })
-  }
-}
+  } }
+} }
 // GET endpoint for retrieving recommendations and trends
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
@@ -352,16 +350,15 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
             AVG(COALESCE(confidence::numeric, 0.8)) as avg_confidence,
             MAX(created_at) as latest_activity
           FROM ai_responses
-          WHERE created_at >= NOW() - INTERVAL ${sql.raw(`'${days} days'`)}
+          WHERE created_at >= NOW() - INTERVAL ${sql.raw(`'${days} }days'`)} }
             AND legal_domain IS NOT NULL
           GROUP BY legal_domain
           ORDER BY count DESC, avg_confidence DESC
-          LIMIT ${limit}
+          LIMIT ${limit} }
         `)`
         return json({
           success: true,
-          trending_topics: trendingTopics.rows.map(row => ({,
-            topic: row.topic, as: string,
+          trending_topics: trendingTopics.rows.map(row => ({ topic: row.topic, as: string,
             count: parseInt(row.count, as: string),
             avg_confidence: parseFloat(row.avg_confidence, as: string),
             latest_activity: row.latest_activity, as: string
@@ -380,12 +377,12 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
             usage_count
           FROM ai_responses
           ORDER BY created_at DESC
-          LIMIT ${limit}
+          LIMIT ${limit} }
         `)`
         return json({
           success: true,
           recent_responses: recentResponses.rows.map(row => ({
-           , id: row.id, as: string,
+  id: row.id, as: string,
             query: row.query, as: string,
             snippet: (row.response, as: string).slice(0, 200) + '...',
             confidence: parseFloat(row.confidence, as: string || '0.8'),
@@ -394,22 +391,21 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
             usage_count: row.usage_count, as: number
           })
         })
-      default: return json({,
-          success: true,
+      default: return json({ success: true,
           message: 'Enhanced GRPO API is operational',
           available_operations: ['trending', 'recent'],
           database_tables: ['ai_responses', 'grpo_feedback', 'recommendation_scores']
         })
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     console.error('Enhanced GRPO GET error:', error)'
     return json({
       success: false,
       error: 'Failed to retrieve data',
       details: error.message
     }, { status: 500 })
-  }
-}
+  } }
+} }
 // PATCH endpoint for recording feedback
 const originalPATCHHandler: RequestHandler = async ({ request }) => {
   try {
@@ -424,13 +420,13 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       relevance,
       userId,
       userRole
-    } = feedbackData
+    } }= feedbackData
     if (!responseId || !userRating || userRating < 1 || userRating > 5) {
       return json({
         error: 'responseId and userRating (1-5) are required',
         success: false
       }, { status: 400 })
-    }
+    } }
     // Record feedback
     await db.execute(sql`
       INSERT INTO grpo_feedback (
@@ -463,22 +459,22 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       SET usage_count = COALESCE(usage_count, 0) + 1,
           success_metric = ${userRating / 5.0},
           last_accessed = NOW()
-      WHERE id = ${responseId}
+      WHERE id = ${responseId} }
     `)`
     return json({
       success: true,
       message: 'Feedback recorded successfully',
       feedback_id: responseId,
       impact: `Learning algorithms updated with your feedback` })
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Feedback recording error:', error)'
     return json({
       success: false,
       error: 'Failed to record feedback',
       details: error.message
     }, { status: 500 })
-  }
-}
+  } }
+} }
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler);

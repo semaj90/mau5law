@@ -8,4 +8,5 @@ export interface OllamaConfig { baseUrl: string;, chatModel: string;
   temperature: number;
   numCtx: number;
   numPredict: number;
-}
+} }
+

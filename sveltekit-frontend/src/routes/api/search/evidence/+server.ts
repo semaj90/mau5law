@@ -1,12 +1,12 @@
-import type { SearchResult } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { SearchResult } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 // Evidence search API endpoint with advanced vector capabilities
 // Supports document content search, image analysis, and multi-modal search
-import { evidence } from '$lib/server/db/schema-postgres';
-import { and, desc, ilike, or, sql } from 'drizzle-orm';
-import { db } from '$lib/server/db/index';
+import { evidence } }from '$lib/server/db/schema-postgres';
+import { and, desc, ilike, or, sql } }from 'drizzle-orm';
+import { db } }from '$lib/server/db/index';
 
 export const GET: RequestHandler = async ({ url }) => {
   // declare here so catch() can access them
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (!query || query.length < 2) {
       return json({ results: [], searchMode: 'none', executionTime: 0 });
-    }
+    } }
     const startTime = Date.now();
     let results: SearchResult[] = [];
     switch (searchMode) {
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ url }) => {
           limit
         });
         break;
-    }
+    } }
     const executionTime = Date.now() - startTime;
     return json({
       results,
@@ -72,22 +72,21 @@ export const GET: RequestHandler = async ({ url }) => {
       query,
       totalResults: results.length
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     // safe fallbacks for use in the mock response
     const safeQuery = query ?? '';
     const safeCaseId = caseId ?? 'mock-case-1';
     const safeEvidenceType = evidenceType ?? 'document';
     const safeSearchMode = searchMode ?? 'hybrid';
-    console.error('Evidence search error:', error);'
+    console.error('Evidence search error:', error);
     const errorMessage = error instanceof Error ? error.message : String(error);
     return json(
       { error: `failure default to, mock: ${errorMessage}`,
         results: [
-          {,
-            id: 'mock-evidence-search-1',
+          { id: 'mock-evidence-search-1',
             caseId: safeCaseId,
             title: 'Mock Contract Document - Search Result',
-            description: `Mock evidence search result for;, query: "${safeQuery}"`,
+            description: `Mock evidence search result for; query: "${safeQuery}"`,
             evidenceType: safeEvidenceType,
             fileName: 'mock_contract_search.pdf',
             fileUrl: '/api/evidence/mock/mock-evidence-search-1',
@@ -102,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
             id: 'mock-evidence-search-2',
             caseId: safeCaseId,
             title: 'Mock Email Communication - Search Result',
-            description: `Mock email evidence for;, query: "${safeQuery}"`,
+            description: `Mock email evidence for; query: "${safeQuery}"`,
             evidenceType: 'communication',
             fileName: 'mock_email_search.eml',
             fileUrl: '/api/evidence/mock/mock-evidence-search-2',
@@ -120,9 +119,9 @@ export const GET: RequestHandler = async ({ url }) => {
         totalResults: 2,
         mockData: true
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // Add explicit types to avoid `any`
@@ -144,7 +143,7 @@ type EvidenceRecord = { id: string;, caseId: string;
   // other DB columns may exist
 };
 
-type EvidenceResult = EvidenceRecord & {, similarity: number;, searchType: 'text' | 'content' | 'semantic' | 'hybrid';
+type EvidenceResult = EvidenceRecord & { similarity: number;, searchType: 'text' | 'content' | 'semantic' | 'hybrid';
   contentMatch?: string | null;
   mockData?: boolean;
 };
@@ -153,12 +152,12 @@ type QdrantHit = { payload: {; evidence_id: string;
     content_snippet?: string | null;
     // other payload fields...
   };
- , score: number;
+  score: number;
 };
 
 // Fast text search on evidence metadata
 async function searchEvidenceText(query: string, options: SearchOptions): Promise<EvidenceResult[]> {
-  const { caseId, evidenceType, limit } = options;
+  const { caseId, evidenceType, limit } }= options;
   const whereConditions = [];
   // Text search conditions
   const textSearch = or(
@@ -169,8 +168,8 @@ async function searchEvidenceText(query: string, options: SearchOptions): Promis
   );
   whereConditions.push(textSearch);
   // Apply filters
-  if (caseId) whereConditions.push(sql`${evidence.caseId} = ${caseId}`);
-  if (evidenceType) whereConditions.push(sql`${evidence.evidenceType} = ${evidenceType}`);
+  if (caseId) whereConditions.push(sql`${evidence.caseId} }= ${caseId}`);
+  if (evidenceType) whereConditions.push(sql`${evidence.evidenceType} }= ${evidenceType}`);
   return await db
     .select({
       id: evidence.id,
@@ -189,27 +188,27 @@ async function searchEvidenceText(query: string, options: SearchOptions): Promis
     .where(and(...whereConditions))
     .orderBy(desc(evidence.uploadedAt))
     .limit(limit);
-}
+} }
 
 // Deep content search using Qdrant
 async function searchEvidenceContent(query: string, options: SearchOptions): Promise<EvidenceResult[]> {
-  const { caseId, evidenceType, limit } = options;
+  const { caseId, evidenceType, limit } }= options;
   try {
     // Search Qdrant for document content
     const qdrantResults = await searchEvidence(query, {
       limit,
       filter: {
-       , must: [
-          ...(caseId ? [{, key: 'case_id', match: {, value: caseId } }] : []),
-          ...(evidenceType ? [{ key: 'evidence_type', match: {, value: evidenceType } }] : [])
+  must: [
+          ...(caseId ? [{ key: 'case_id', match: { value: caseId } }} } : []),
+          ...(evidenceType ? [{ key: 'evidence_type', match: { value: evidenceType } }} } : [])
         ]
-      }
+      } }
     });
     // qdrantResults typed as QdrantHit[]
     const evidenceIds = qdrantResults.map(r => r.payload.evidence_id);
     if (evidenceIds.length === 0) {
       return [];
-    }
+    } }
     const evidenceRecords = await db
       .select({
         id: evidence.id,
@@ -224,7 +223,7 @@ async function searchEvidenceContent(query: string, options: SearchOptions): Pro
         uploadedAt: evidence.uploadedAt
       })
       .from(evidence)
-      .where(sql`${evidence.id} = ANY(${evidenceIds})`);
+      .where(sql`${evidence.id} }= ANY(${evidenceIds})`);
     // Merge with similarity scores
     return evidenceRecords.map(record => {
       const qdrantMatch = qdrantResults.find(r => r.payload.evidence_id === record.id);
@@ -235,20 +234,20 @@ async function searchEvidenceContent(query: string, options: SearchOptions): Pro
         contentMatch: qdrantMatch?.payload.content_snippet || null
       };
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Qdrant search failed, falling back to PostgreSQL:', error);
     return await searchEvidenceSemantic(query, options);
-  }
-}
+  } }
+} }
 
 // PostgreSQL vector search
 async function searchEvidenceSemantic(query: string, options: SearchOptions): Promise<EvidenceResult[]> {
-  const { caseId, evidenceType, limit } = options;
+  const { caseId, evidenceType, limit } }= options;
   // keep embedding generation but use a `$`-prefixed name so linters/TS allow it when not consumed
   const $queryEmbedding = await generateEmbedding(query);
   const whereConditions = [sql`1=1`]; // Remove missing column reference
-  if (caseId) whereConditions.push(sql`${evidence.caseId} = ${caseId}`);
-  if (evidenceType) whereConditions.push(sql`${evidence.evidenceType} = ${evidenceType}`);
+  if (caseId) whereConditions.push(sql`${evidence.caseId} }= ${caseId}`);
+  if (evidenceType) whereConditions.push(sql`${evidence.evidenceType} }= ${evidenceType}`);
   return await db
     .select({
       id: evidence.id,
@@ -267,11 +266,11 @@ async function searchEvidenceSemantic(query: string, options: SearchOptions): Pr
     .where(and(...whereConditions))
     .orderBy(desc(evidence.uploadedAt))
     .limit(limit);
-}
+} }
 
 // Hybrid search combining all methods
 async function searchEvidenceHybrid(query: string, options: SearchOptions): Promise<EvidenceResult[]> {
-  const { limit } = options;
+  const { limit } }= options;
   // Run searches in parallel for speed and provide explicit settled typing
   const [textResults, contentResults, semanticResults] = (await Promise.allSettled([
     searchEvidenceText(query, { ...options, limit: Math.ceil((options.limit || limit || 20) / 3) }),
@@ -295,7 +294,7 @@ async function searchEvidenceHybrid(query: string, options: SearchOptions): Prom
           ...result,
           similarity: (result.similarity ?? 0) * boost
         });
-      }
+      } }
     });
   };
   // Add results with different priority weights
@@ -311,7 +310,7 @@ async function searchEvidenceHybrid(query: string, options: SearchOptions): Prom
       ...result,
       searchType: 'hybrid' as const
     }));
-}
+} }
 
 // Lightweight Qdrant search shim — replace with real client integration as available
 async function searchEvidence(query: string, opts: { limit?: number; filter?: any }): Promise<QdrantHit[]> {
@@ -321,10 +320,11 @@ async function searchEvidence(query: string, opts: { limit?: number; filter?: an
     const qdrantClient = mod?.qdrantClient;
     if (qdrantClient && typeof qdrantClient.search === 'function') {
       return (await qdrantClient.search(query, opts)) as QdrantHit[];
-    }
-  } catch (e) {
+    } }
+  } }catch (e) {
     console.warn('qdrant search shim failed:', e);
-  }
+  } }
   // Default: no results so the caller can fallback to semantic search
   return [];
-}
+} }
+

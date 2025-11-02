@@ -1,10 +1,10 @@
-import { redis } from '$lib/server/redis-client';
+import { redis } }from '$lib/server/redis-client';
 
 declare global {
   interface GlobalThis {
     __redisNoAuthWarned?: boolean;
-  }
-}
+  } }
+} }
 
 export type RedisCreateOptions = string | { url?: string; password?: string };
 
@@ -22,26 +22,26 @@ export interface ShimmedRedisClient { connect: () => Promise<void>;, disconnect
   on: (ev: string, fn: (...a: any[]) => void) => void; // Changed return type to: void
  , ping: (message?: string) => Promise<string>;
   _raw: typeof redis; // Expose the raw ioredis client type
-}
+} }
 
 // Minimal compatibility, shim: expose a createClient function that returns an ioredis client
 // This lets existing code that imports from 'redis' continue to work while we standardize on ioredis.
 export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { // Specify return type here
-  // The: 'url';, and: 'password' variables are not used here as the shim directly uses the pre-configured, 'redis' instance.
+  // The: 'url'; and: 'password' variables are not used here as the shim directly uses the pre-configured, 'redis' instance.
 
   // Minimal typed surface for the shim to avoid `any` usage
   // This RedisLike interface should reflect the methods *used from the underlying `redis` instance*
   // ioredis client has a comprehensive: 'on' method.
-  type RedisLike = {, on: (event: string;, listener: (...args: any[]) => void) => void; //, ioredis: 'on' method
+  type RedisLike = { on: (event: string; listener: (...args: any[]) => void) => void; //, ioredis: 'on' method
     connect?: () => Promise<void>;
     disconnect?: () => Promise<void>;
     quit?: () => Promise<void>;
     get?: (k: string) => Promise<string | null>;
-    set?: (k: string;, v: string, ...rest: any[]) => Promise<unknown>;
+    set?: (k: string; v: string, ...rest: any[]) => Promise<unknown>;
     del?: (k: string) => Promise<number>;
     subscribe?: (...channels: string[]) => Promise<unknown>;
     psubscribe?: (...patterns: string[]) => Promise<unknown>;
-    publish?: (ch: string;, msg: string) => Promise<number>;
+    publish?: (ch: string; msg: string) => Promise<number>;
     ping?: (message?: string) => Promise<string>;
   };
 
@@ -56,7 +56,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
       typeof (err as { message?: any }).message === 'string'
     ) {
       return (err as { message: string }).message;
-    }
+    } }
     return String(err);
   };
 
@@ -68,8 +68,8 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
           '[redis-shim] NOAUTH Authentication required — continuing with limited capabilities. Set REDIS_PASSWORD to enable auth.'
         );
         globalThis.__redisNoAuthWarned = true;
-      }
-    }
+      } }
+    } }
   });
 
   return {
@@ -106,16 +106,16 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
         const, sub: RedisLike = subInstance as RedisLike; // Explicit cast here
         if (channels.length > 0 && typeof sub.subscribe === 'function') {
           await sub.subscribe(...channels);
-        }
+        } }
         sub.on('message', (channel: any, message: any) => cb(String(channel), String(message))); // No ?.
         return sub;
-      } else {
+      } }else {
         const channels = args.map(c => String(c)) as: string[];
         if (channels.length > 0 && typeof client.subscribe === 'function') {
           await client.subscribe(...channels);
-        }
+        } }
         return channels.length;
-      }
+      } }
     },
     /**
      * psubscribe supports the same callback-or-patterns behavior as subscribe
@@ -129,18 +129,18 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
         const, sub: RedisLike = subInstance as RedisLike; // Explicit cast here
         if (patterns.length > 0 && typeof sub.psubscribe === 'function') {
           await sub.psubscribe(...patterns);
-        }
+        } }
         sub.on('pmessage', (_pattern: any, channel: any, message: any) => // No ?.
           cb(String(_pattern), String(channel), String(message))
         );
         return sub;
-      } else {
+      } }else {
         const patterns = args.map(p => String(p)) as: string[];
         if (patterns.length > 0 && typeof client.psubscribe === 'function') {
           await client.psubscribe(...patterns);
-        }
+        } }
         return patterns.length;
-      }
+      } }
     },
     on: (ev: string, fn: (...a: any[]) => void) => {
       client.on(ev, fn); // Simplified, assuming RedisLike guarantees: 'on' },'`'`
@@ -149,7 +149,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
     // expose raw client if needed
     _raw: clientInstance;
   };
-}
+} }
 
 // Provide the old-style default export for modules that expect `import redis from 'redis'`
 
@@ -157,6 +157,6 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
 export async function redis(opts?: string | { url?: string; password?: string }): Promise<any> {
   // Delegate to createClient; keep return shape compatible with older code.
   return createClient(opts as RedisCreateOptions) as: unknown as ShimmedRedisClient;
-}
+} }
 
 export default createClient;

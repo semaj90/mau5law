@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // Vector Service - Production Implementation for Legal AI Platform
-import { getAuthHeaders } from './auth-service.js';
+import { getAuthHeaders } }from './auth-service.js';
 export interface VectorDocument { id: string;, content: string;
   metadata: {
     title?: string;
@@ -17,7 +17,7 @@ export interface VectorDocument { id: string;, content: string;
   embedding: number[];
   chunkIndex?: number;
   totalChunks?: number;
-}
+} }
 
 export interface VectorSearchQuery {
   query: string;
@@ -27,14 +27,14 @@ export interface VectorSearchQuery {
   includeMetadata?: boolean;
   includeEmbeddings?: boolean;
   hybridSearch?: boolean; // Combine semantic + keyword search
-}
+} }
 
 export interface VectorSearchFilters {
   type?: VectorDocument['metadata']['type'][];
   caseId?: string[];
   practiceArea?: string[];
   jurisdiction?: string[];
-  dateRange?: {, start: string;, end: string;
+  dateRange?: { start: string;, end: string;
   };
   confidence?: {
     min?: number;
@@ -42,43 +42,43 @@ export interface VectorSearchFilters {
   };
   source?: string[];
   customFilters?: { [key: string]: any };
-}
+} }
 
-export interface VectorSearchResult {, document: VectorDocument;, score: number;
+export interface VectorSearchResult { document: VectorDocument;, score: number;
   explanation?: string;
   highlights?: string[];
-}
+} }
 
-export interface VectorSearchResponse {, results: VectorSearchResult[];, total: number;
+export interface VectorSearchResponse { results: VectorSearchResult[];, total: number;
   query: string;
   processingTime: number;
   searchType: 'semantic' | 'hybrid' | 'keyword';
   suggestions?: string[];
-}
+} }
 
 export interface VectorUpsertRequest {
   documents: Array<any>;
   updateExisting?: boolean;
   generateEmbeddings?: boolean;
-}
+} }
 
-export interface VectorUpsertResponse {, inserted: number;, updated: number;
+export interface VectorUpsertResponse { inserted: number;, updated: number;
   failed: Array<any>;
   processingTime: number;
-}
+} }
 
 export interface VectorDeleteRequest {
   ids?: string[];
   filters?: VectorSearchFilters;
   deleteAll?: boolean;
-}
-export interface VectorStatsResponse {, totalDocuments: number;, totalVectors: number;
+} }
+export interface VectorStatsResponse { totalDocuments: number;, totalVectors: number;
   indexSize: string;
   dimensions: number;
   lastUpdated: string;
  , typeBreakdown: Record<string, number>;
   practiceAreaBreakdown: Record<string, number>;
-}
+} }
 // Core Vector Search Functions
 export async function searchVectors(query: VectorSearchQuery): Promise<VectorSearchResponse> {
   try {
@@ -90,7 +90,7 @@ export async function searchVectors(query: VectorSearchQuery): Promise<VectorSea
       includeMetadata: query.includeMetadata !== false,
       includeEmbeddings: query.includeEmbeddings || false,
       hybridSearch: query.hybridSearch || false
-    }
+    } }
     const response = await fetch('/api/vectors/search', {
       method: 'POST',
       headers: {
@@ -102,36 +102,36 @@ export async function searchVectors(query: VectorSearchQuery): Promise<VectorSea
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Vector search failed');
-    }
+    } }
     const data: VectorSearchResponse = await response.json();
     // TODO: Add caching layer for frequently used queries
-    console.log(`Vector search, completed: ${data.results.length} results in ${data.processingTime}ms`);
+    console.log(`Vector search, completed: ${data.results.length} }results in ${data.processingTime}ms`);
     return data;
-  } catch (error: any) {
-    console.error('Vector search error:', error);'
+  } }catch (error: any) {
+    console.error('Vector search error:', error);
     throw new Error(`Vector search failed: ${error.message}`);
-  }
-}
+  } }
+} }
 export async function vectorSemanticSearch(
   query: string,
-  options: Omit<VectorSearchQuery, 'query'> = {}
+  options: Omit<VectorSearchQuery, 'query'> = {} }
 ): Promise<VectorSearchResponse> {
   return searchVectors({
     ...options,
     query,
     hybridSearch: false
   });
-}
+} }
 export async function hybridSearch(
   query: string,
-  options: Omit<VectorSearchQuery, 'query'> = {}
+  options: Omit<VectorSearchQuery, 'query'> = {} }
 ): Promise<VectorSearchResponse> {
   return searchVectors({
     ...options,
     query,
     hybridSearch: true
   });
-}
+} }
 // Vector Document Management
 export async function upsertVectors(request: VectorUpsertRequest): Promise<VectorUpsertResponse> {
   try {
@@ -141,8 +141,7 @@ export async function upsertVectors(request: VectorUpsertRequest): Promise<Vecto
         'Content-Type': 'application/json',
         ...getAuthHeaders()
       },
-      body: JSON.stringify({
-       , documents: request.documents,
+      body: JSON.stringify({ documents: request.documents,
         updateExisting: request.updateExisting !== false,
         generateEmbeddings: request.generateEmbeddings !== false
       })
@@ -150,16 +149,16 @@ export async function upsertVectors(request: VectorUpsertRequest): Promise<Vecto
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Vector upsert failed');
-    }
+    } }
     const data: VectorUpsertResponse = await response.json();
     // TODO: Add audit logging for vector upserts
-    console.log(`Vector upsert, completed: ${data.inserted} inserted, ${data.updated} updated`);
+    console.log(`Vector upsert, completed: ${data.inserted} }inserted, ${data.updated} }updated`);
     return data;
-  } catch (error: any) {
-    console.error('Vector upsert error:', error);'
+  } }catch (error: any) {
+    console.error('Vector upsert error:', error);
     throw new Error(`Vector upsert failed: ${error.message}`);
-  }
-}
+  } }
+} }
 export async function deleteVectors(request: VectorDeleteRequest): Promise<any> {
   try {
     const response = await fetch('/api/vectors/delete', {
@@ -173,16 +172,16 @@ export async function deleteVectors(request: VectorDeleteRequest): Promise<any> 
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Vector deletion failed');
-    }
+    } }
     const data = await response.json();
     // TODO: Add audit logging for vector deletions (critical for legal compliance)
-    console.log(`Vector deletion completed: ${data.deleted} vectors deleted`);
+    console.log(`Vector deletion completed: ${data.deleted} }vectors deleted`);
     return data;
-  } catch (error: any) {
-    console.error('Vector deletion error:', error);'
+  } }catch (error: any) {
+    console.error('Vector deletion error:', error);
     throw new Error(`Vector deletion failed: ${error.message}`);
-  }
-}
+  } }
+} }
 export async function getVectorById(id: string): Promise<VectorDocument | null> {
   try {
     const response = await fetch(`/api/vectors/${id}`, {
@@ -190,28 +189,28 @@ export async function getVectorById(id: string): Promise<VectorDocument | null> 
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (response.status === 404) {
       return: null;
-    }
+    } }
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to fetch vector document');
-    }
+    } }
     const document: VectorDocument = await response.json();
     console.log(`Fetched vector document: ${id}`);
     return document;
-  } catch (error: any) {
-    console.error('Vector fetch error:', error);'
+  } }catch (error: any) {
+    console.error('Vector fetch error:', error);
     throw new Error(`Failed to fetch vector document: ${error.message}`);
-  }
-}
+  } }
+} }
 // Specialized Legal AI Search Functions
 export async function searchCaseRelevantDocuments(
   caseId: string,
   query: string,
-  options: Partial<VectorSearchQuery> = {}
+  options: Partial<VectorSearchQuery> = {} }
 ): Promise<VectorSearchResponse> {
   return searchVectors({
     ...options,
@@ -222,7 +221,7 @@ export async function searchCaseRelevantDocuments(
     },
     hybridSearch: true, // Use hybrid for better case document matching
   });
-}
+} }
 export async function findSimilarCases(
   caseDescription: string,
   practiceArea?: string,
@@ -231,8 +230,7 @@ export async function findSimilarCases(
 ): Promise<VectorSearchResponse> {
   return searchVectors({
     query: caseDescription,
-    filters: {
-     , type: ['case'],
+    filters: { type: ['case'],
       practiceArea: practiceArea ? [practiceArea] : undefined,
       jurisdiction: jurisdiction ? [jurisdiction] : undefined
     },
@@ -240,11 +238,11 @@ export async function findSimilarCases(
     threshold: 0.75, // Higher threshold for case similarity
     hybridSearch: true
   });
-}
+} }
 export async function searchLegalPrecedents(
   query: string,
   jurisdiction?: string,
-  options: Partial<VectorSearchQuery> = {}
+  options: Partial<VectorSearchQuery> = {} }
 ): Promise<VectorSearchResponse> {
   return searchVectors({
     ...options,
@@ -256,11 +254,11 @@ export async function searchLegalPrecedents(
     },
     hybridSearch: true
   });
-}
+} }
 export async function searchContractClauses(
   clauseDescription: string,
   contractType?: string,
-  options: Partial<VectorSearchQuery> = {}
+  options: Partial<VectorSearchQuery> = {} }
 ): Promise<VectorSearchResponse> {
   return searchVectors({
     ...options,
@@ -268,11 +266,11 @@ export async function searchContractClauses(
     filters: {
       ...options.filters,
       type: ['contract'],
-      customFilters: contractType ? { contractType } : undefined
+      customFilters: contractType ? { contractType } }: undefined
     },
     hybridSearch: true
   });
-}
+} }
 // Vector Analytics and Management
 export async function getVectorStats(): Promise<VectorStatsResponse> {
   try {
@@ -281,23 +279,23 @@ export async function getVectorStats(): Promise<VectorStatsResponse> {
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()
-      }
+      } }
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to fetch vector stats');
-    }
+    } }
     const stats: VectorStatsResponse = await response.json();
-    console.log(`Vector database stats: ${stats.totalDocuments} documents, ${stats.totalVectors} vectors`);
+    console.log(`Vector database stats: ${stats.totalDocuments} }documents, ${stats.totalVectors} }vectors`);
     return stats;
-  } catch (error: any) {
-    console.error('Vector stats error:', error);'
+  } }catch (error: any) {
+    console.error('Vector stats error:', error);
     throw new Error(`Failed to fetch vector stats: ${error.message}`);
-  }
-}
+  } }
+} }
 export async function reindexVectors(
   filters?: VectorSearchFilters,
-  options: { batchSize?: number; skipEmbeddings?: boolean } = {}
+  options: { batchSize?: number; skipEmbeddings?: boolean } }= {} }
 ): Promise<any> {
   try {
     const response = await fetch('/api/vectors/reindex', {
@@ -315,16 +313,16 @@ export async function reindexVectors(
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Vector reindexing failed');
-    }
+    } }
     const data = await response.json();
     // TODO: Add audit logging for reindexing operations
-    console.log(`Vector reindexing, completed: ${data.reindexed} reindexed, ${data.failed} failed`);
+    console.log(`Vector reindexing, completed: ${data.reindexed} }reindexed, ${data.failed} }failed`);
     return data;
-  } catch (error: any) {
-    console.error('Vector reindexing error:', error);'
+  } }catch (error: any) {
+    console.error('Vector reindexing error:', error);
     throw new Error(`Vector reindexing failed: ${error.message}`);
-  }
-}
+  } }
+} }
 // Advanced Query Functions
 export async function getQuerySuggestions(partialQuery: string): Promise<string[]> {
   try {
@@ -334,20 +332,20 @@ export async function getQuerySuggestions(partialQuery: string): Promise<string[
         'Content-Type': 'application/json',
         ...getAuthHeaders()
       },
-      body: JSON.stringify({, query: partialQuery })
+      body: JSON.stringify({ query: partialQuery })
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to get suggestions');
-    }
+    } }
     const data = await response.json();
     return data.suggestions || [];
-  } catch (error: any) {
-    console.error('Query suggestions error:', error);'
+  } }catch (error: any) {
+    console.error('Query suggestions error:', error);
     // Return empty array on error rather than throwing
     return [];
-  }
-}
+  } }
+} }
 export async function explainVectorSearch(
   query: string,
   resultId: string
@@ -364,15 +362,15 @@ export async function explainVectorSearch(
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to explain search result');
-    }
+    } }
     const explanation = await response.json();
     console.log(`Generated explanation for search result: ${resultId}`);
     return explanation;
-  } catch (error: any) {
-    console.error('Search explanation error:', error);'
+  } }catch (error: any) {
+    console.error('Search explanation error:', error);
     throw new Error(`Failed to explain search result: ${error.message}`);
-  }
-}
+  } }
+} }
 // Batch Operations for Legal Document Processing
 export async function processBatchDocuments(
   documents: Array<any>,
@@ -380,7 +378,7 @@ export async function processBatchDocuments(
     chunkSize?: number;
     generateEmbeddings?: boolean;
     extractMetadata?: boolean;
-  } = {}
+  } }= {} }
 ): Promise<VectorUpsertResponse> {
   try {
     const response = await fetch('/api/vectors/batch-process', {
@@ -399,13 +397,13 @@ export async function processBatchDocuments(
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Batch processing failed');
-    }
+    } }
     const data: VectorUpsertResponse = await response.json();
     // TODO: Add audit logging for batch operations
-    console.log(`Batch processing, completed: ${data.inserted} documents processed`);
+    console.log(`Batch processing, completed: ${data.inserted} }documents processed`);
     return data;
-  } catch (error: any) {
-    console.error('Batch processing error:', error);'
+  } }catch (error: any) {
+    console.error('Batch processing error:', error);
     throw new Error(`Batch processing failed: ${error.message}`);
-  }
+  } }
 }

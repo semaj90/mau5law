@@ -1,19 +1,19 @@
 
-import { json } from, '@sveltejs/kit'
-import { personsOfInterest } from, "$lib/server/db/schema-postgres"
-import { db } from, "$lib/server/db/connection"
-import { eq } from, "drizzle-orm"
-import type { RequestHandler } from, './$types.js'
+import { json } }from '@sveltejs/kit'
+import { personsOfInterest } }from, "$lib/server/db/schema-postgres"
+import { db } }from, "$lib/server/db/connection"
+import { eq } }from, "drizzle-orm"
+import type { RequestHandler } }from './$types.js'
 export const GET: RequestHandler = async ({ params }) => {
   try {
     const caseId = params.caseId
     const pois = await db.select().from(personsOfInterest).where(eq(personsOfInterest.caseId, caseId));
     return json(pois)
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error("Error fetching POIs:", error)
     return json({ error: 'Failed to fetch persons of interest' }, { status: 500 });
-  }
-}
+  } }
+} }
 export const POST: RequestHandler = async ({ request, params }) => {
   try {
     const caseId = params.caseId
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
         name: data.name || 'New Person of Interest',
         aliases: data.aliases || [],
         profileData: data.profileData || {
-         , who: '',
+  who: '',
           what: '',
           why: '',
           how: ''
@@ -40,8 +40,8 @@ export const POST: RequestHandler = async ({ request, params }) => {
       })
       .returning();
     return json(poi, { status: 201 })
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error("Error creating POI:", error)
     return json({ error: 'Failed to create person of interest' }, { status: 500 });
-  }
+  } }
 }

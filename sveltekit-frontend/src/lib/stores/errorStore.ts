@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } }from 'svelte/store';
 
 export type Toast = {
   id: string;
@@ -18,10 +18,11 @@ export function pushToast(t: Omit<Toast, 'id'>) {
     setTimeout(() => {
       removeToast(id);
     }, toast.timeout);
-  }
+  } }
   return id;
-}
+} }
 
 export function removeToast(id: string) {
   toasts.update((arr) => arr.filter((t) => t.id !== id));
-}
+} }
+

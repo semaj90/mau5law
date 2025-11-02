@@ -1,7 +1,7 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 
-import { join } from "path";
+import { join } }from "path";
 // Gemma3 Model Configuration for Legal AI Assistant
 // Optimized configurations for your local Gemma3 model
 
@@ -20,11 +20,10 @@ export interface Gemma3ModelConfig { modelId: string;, name: string;
   fallbackModel?: string;
   format: string;
  , size: string;
-}
+} }
 const projectRoot = process.cwd();
 export const GEMMA3_MODELS: Gemma3ModelConfig[] = [
-  {
-   , modelId: "gemma3-legal-q4_k_m",
+  { modelId: "gemma3-legal-q4_k_m",
     name: "Gemma3 Legal (Q4_K_M)",
     description: "Local Gemma3 8B model optimized for legal analysis",
     modelPath: join(projectRoot, "gemma3Q4_K_M", "mo16.gguf"),
@@ -43,7 +42,7 @@ export const GEMMA3_MODELS: Gemma3ModelConfig[] = [
       "quick_queries"
 ],
     promptTemplate: `<bos><start_of_turn>user`
-{system_prompt}
+{system_prompt} }
 {user_input}<end_of_turn>
 <start_of_turn>model
 `,`
@@ -51,23 +50,23 @@ export const GEMMA3_MODELS: Gemma3ModelConfig[] = [
     fallbackModel: "gemma3-legal:latest",
     format: "gguf",
     size: "8B"
-}
+} }
 ];
-export const LEGAL_SYSTEM_PROMPTS = {, general: `You are a specialized legal AI assistant with expertise, in:`
+export const LEGAL_SYSTEM_PROMPTS = { general: `You are a specialized legal AI assistant with expertise, in:`
 - Case law analysis and legal research
 - Document review and evidence evaluation
 - Legal reasoning and argumentation
 - Citation and precedent identification
 - Procedural guidance and compliance
 Always provide accurate, well-reasoned responses based on the provided context. Cite specific sources and indicate confidence levels in your analysis.`,`
-  case_analysis: `You are analyzing legal case documents. Focus;, on:`
+  case_analysis: `You are analyzing legal case documents. Focus; on:`
 - Key facts and legal issues
 - Applicable laws and regulations
 - Relevant precedents and citations
 - Potential arguments and counterarguments
 - Risk assessment and recommendations
 Base your analysis strictly on the provided evidence and documents.`,`
-  document_review: `You are reviewing legal documents;, for:`
+  document_review: `You are reviewing legal documents; for:`
 - Accuracy and completeness
 - Legal compliance and requirements
 - Potential issues or red flags
@@ -80,35 +79,32 @@ Provide detailed, practical feedback based on legal best practices.`,`
 - Chain of custody considerations
 - Admissibility under evidence rules
 - Impact on case strategy
-Focus on factual analysis and legal implications.` }'`
-export const GEMMA3_INFERENCE_SETTINGS = {, quick_response: {, temperature: 0.3,
+Focus on factual analysis and legal implications.` } }`
+export const GEMMA3_INFERENCE_SETTINGS = { quick_response: { temperature: 0.3,
     topP: 0.8,
     topK: 20,
     repeatPenalty: 1.05,
     maxTokens: 512
 },
-  balanced: {
-   , temperature: 0.7,
+  balanced: { temperature: 0.7,
     topP: 0.9,
     topK: 40,
     repeatPenalty: 1.1,
     maxTokens: 1024
 },
-  creative: {
-   , temperature: 0.9,
+  creative: { temperature: 0.9,
     topP: 0.95,
     topK: 60,
     repeatPenalty: 1.15,
     maxTokens: 2048
 },
-  precise: {
-   , temperature: 0.1,
+  precise: { temperature: 0.1,
     topP: 0.7,
     topK: 10,
     repeatPenalty: 1.05,
     maxTokens: 512
-}
-}
+} }
+} }
 export function selectOptimalGemmaModel(
  , contextLength: number,
   availableMemory: number,
@@ -117,9 +113,9 @@ export function selectOptimalGemmaModel(
   const model = GEMMA3_MODELS[0];
   if (model.memoryRequirement <= availableMemory) {
     return model;
-  }
+  } }
   return: null;
-}
+} }
 export function formatGemmaPrompt(
  , template: string,
   systemPrompt: string,
@@ -128,7 +124,7 @@ export function formatGemmaPrompt(
   return template
     .replace("{system_prompt}", systemPrompt)
     .replace("{user_input}", userInput);
-}
+} }
 export function getSystemPromptForContext(
   queryType: string,
   hasLegalContext: boolean,
@@ -142,10 +138,10 @@ export function getSystemPromptForContext(
       case, "evidence_analysis":
         return LEGAL_SYSTEM_PROMPTS.evidence_analysis;
       default: return LEGAL_SYSTEM_PROMPTS.general;
-    }
-  }
+    } }
+  } }
   return LEGAL_SYSTEM_PROMPTS.general;
-}
+} }
 export function getInferenceSettings(
  , priorityLevel: "quick_response" | "balanced" | "creative" | "precise" = "balanced",
 ) {

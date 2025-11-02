@@ -7,17 +7,17 @@ export interface LegalDocument { id: string;, title: string;
   confidence: number;
   priority: 'critical' | 'high' | 'medium' | 'low';
   metadata: Record<string, unknown>;
-}
+} }
 export interface EvidenceItem { id: string;, title: string;
   type: "document" | "image" | "video" | "audio" | "transcript";
   priority: "critical" | "high" | "medium" | "low";
   confidence: number;
   metadata?: Record<string, unknown>;
-}
+} }
 export interface AIAnalysis { confidence: number;, entities: Array<any>;
   themes: Array<any>;
   summary: string;
-}
+} }
 // Pure logic functions - no UI dependencies
 export class LegalAILogic {
   static processDocument(_document: LegalDocument): AIAnalysis {
@@ -26,7 +26,7 @@ export class LegalAILogic {
       confidence: Math.random(),
       entities: [],
       themes: [],
-      summary: 'Analysis of ${document.title}' }'` }'`
+      summary: 'Analysis of ${document.title} } } }` } }`
   static categorizeEvidence(evidence: EvidenceItem[]): Record<string, EvidenceItem[]> {
     // Pure categorization logic
     return evidence.reduce((acc, item) => {
@@ -34,12 +34,12 @@ export class LegalAILogic {
       if (!acc[category]) acc[category] = [];
       acc[category].push(item);
       return acc;
-    }, {} as Record<string, EvidenceItem[]>);
-  }
+    }, {} }as Record<string, EvidenceItem[]>);
+  } }
   static calculateCaseScore(evidence: EvidenceItem[]): number {
     // Pure calculation logic
     return evidence.reduce((score, item) => score + (item as { type?: any; confidence?: any }).confidence, 0) / evidence.length;
-  }
+  } }
   // Determines if glyph engine is needed
   static requiresGlyphEngine(data: any): boolean {
     // Use canvas for:
@@ -48,5 +48,5 @@ export class LegalAILogic {
     if ((data as { documents?: any; textLength?: any; realTimeUpdates?: any; interactiveElements?: any }).realTimeUpdates) return true; // Real-time AI chat
     if ((data as { documents?: any; textLength?: any; realTimeUpdates?: any; interactiveElements?: any }).interactiveElements > 50) return true; // Complex interactions
     return false; // Use regular DOM
-  }
+  } }
 }

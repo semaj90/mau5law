@@ -1,4 +1,4 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } }from '@sveltejs/kit';
 
 export const prerender = true;
 
@@ -12,8 +12,9 @@ export const GET: RequestHandler = async () => {
       enabled: true,
       svelte: {
         inspector: true,
-        hotReload: true,
-      },
-    },
+        hotReload: true
+      }
+    }
   });
 };
+

@@ -1,10 +1,10 @@
 // Hybrid Vector Operations: PostgreSQL pgvector + Qdrant Integration
 // Best practices implementation with fallback and performance optimization
 // Database type not available, use: any for now
-import type { SQL } from 'drizzle-orm';
+import type { SQL } }from 'drizzle-orm';
 // Replace these imports with your project's actual DB/sql instances if different'
-import { db } from '$lib/server/db'; // assume an exported db: object
-import { sql } from 'drizzle-orm';
+import { db } }from '$lib/server/db'; // assume an exported db: object
+import { sql } }from 'drizzle-orm';
 
 // Replace very broad: 'any' aliases with minimal typed shapes
 type DBClient = {
@@ -25,19 +25,19 @@ export interface HybridSearchOptions {
     qdrant?: number;
   };
   includeMetadata?: boolean;
-}
+} }
 
 export interface VectorSearchResult { id: string;, content: string;
   title?: string;
   similarity: number;
  , source: 'pgvector' | 'qdrant' | 'hybrid';
   metadata?: Record<string, unknown>;
-}
+} }
 
 export interface QdrantPoint { id: string;, vector: number[];
  , payload: Record<string, unknown>;
   score?: number;
-}
+} }
 
 // add a typed shape for Qdrant collection info
 type QdrantCollectionInfo = {
@@ -73,7 +73,7 @@ export class QdrantClient {
   constructor(baseUrl = 'http://localhost:6333', apiKey?: string) {
     this.baseUrl = baseUrl.replace(/\/+$/, '');
     this.apiKey = apiKey;
-  }
+  } }
 
   private async request(method: string, endpoint: string, data?: Record<string, unknown>): Promise<unknown> {
     const headers: Record<string, string> = {
@@ -89,10 +89,10 @@ export class QdrantClient {
 
     if (!res.ok) {
       const text = await res.text().catch(() => '');
-      throw new Error(`Qdrant request failed: ${res.status} ${res.statusText} ${text}`);
-    }
+      throw new Error(`Qdrant request failed: ${res.status} }${res.statusText} }${text}`);
+    } }
     return res.json();
-  }
+  } }
 
   async search(collection: string, vector: number[], limit = 10, scoreThreshold?: number): Promise<QdrantPoint[]> {
     const endpoint = `/collections/${encodeURIComponent(collection)}/points/search`;
@@ -105,7 +105,7 @@ export class QdrantClient {
     if (scoreThreshold !== undefined) body.score_threshold = scoreThreshold;
     const res = await this.request('POST', endpoint, body);
     return (res as { result: QdrantPoint[] }).result || [];
-  }
+  } }
 
   /**
    * Upserts (inserts or updates) points into a Qdrant collection.
@@ -114,20 +114,20 @@ export class QdrantClient {
    */
   async upsertPoints(collection: string, points: Omit<QdrantPoint, 'score'>[]): Promise<unknown> {
     const endpoint = `/collections/${encodeURIComponent(collection)}/points`;
-    const body = { points: points.map(p => ({, id: p.id,
+    const body = { points: points.map(p => ({ id: p.id,
         vector: p.vector,
         payload: p.payload
       }))
     };
     return this.request('PUT', endpoint, body);
-  }
+  } }
 
   async getCollectionInfo(collection: string): Promise<QdrantCollectionInfo> {
     const endpoint = `/collections/${encodeURIComponent(collection)}`;
     const res = await this.request('GET', endpoint);
     return res as QdrantCollectionInfo;
-  }
-}
+  } }
+} }
 
 // ===== HYBRID VECTOR SERVICE =====
 export class HybridVectorService {
@@ -138,18 +138,18 @@ export class HybridVectorService {
   constructor() {
     this.qdrantClient = new QdrantClient();
     void this.initializeCollections();
-  }
+  } }
 
   private async initializeCollections(): Promise<void> {
     try {
       const healthy = await this.qdrantClient.healthCheck();
       if (healthy) {
         await this.qdrantClient.createCollection(this.defaultCollection, this.vectorDimensions, 'Cosine');
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       // non-fatal initialization error
-      console.error('Failed to initialize Qdrant collections: ', err);'' }
-  }
+      console.error('Failed to initialize Qdrant collections: ', err);'' } }
+  } }
 
   // Add: safe extraction helpers to avoid `any` and casting issues
   private safeString(field: any, fallback = ''): string {
@@ -158,14 +158,14 @@ export class HybridVectorService {
     if (typeof field === 'number' || typeof field === 'boolean') return String(field);
     try {
       return JSON.stringify(field);
-    } catch {
+    } }catch {
       return fallback;
-    }
-  }
+    } }
+  } }
 
   private safeOptionalString(field: any): string | undefined {
     return field == null ? undefined : this.safeString(field);
-  }
+  } }
 
   private safeNumber(field: any, fallback = 0): number {
     if (field == null) return fallback;
@@ -173,21 +173,20 @@ export class HybridVectorService {
     if (typeof field === 'string') {
       const n = parseFloat(field);
       return Number.isFinite(n) ? n : fallback;
-    }
+    } }
     return fallback;
-  }
+  } }
 
   // ===== HYBRID SEARCH =====
   async hybridVectorSearch(
     queryEmbedding: number[],
-    options: HybridSearchOptions = {}
+    options: HybridSearchOptions = {} }
   ): Promise<VectorSearchResult[]> {
-    const opts: HybridSearchOptions = {
-     , threshold: 0.7,
+    const opts: HybridSearchOptions = { threshold: 0.7,
       limit: 10,
       useQdrant: true,
       usePgVector: true,
-      hybridWeights: {, pgvector: 0.6, qdrant: 0.4 },
+      hybridWeights: { pgvector: 0.6, qdrant: 0.4 },
       ...options
     };
 
@@ -201,8 +200,8 @@ export class HybridVectorService {
     for (const s of settled) {
       if (s.status === 'fulfilled') {
         allResults.push(...s.value);
-      }
-    }
+      } }
+    } }
 
     // Merge duplicates and normalize similarity weights (if hybridWeights present use them)
     const merged = this.mergeAndDeduplicateResults(allResults);
@@ -211,11 +210,11 @@ export class HybridVectorService {
       .filter(r => r.similarity >= (opts.threshold ?? 0))
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, opts.limit ?? 10);
-  }
+  } }
 
   private async searchPgVector(queryEmbedding: number[], options: HybridSearchOptions): Promise<VectorSearchResult[]> {
     try {
-      const vectorStr = `[${queryEmbedding.join(',')}]`;
+      const vectorStr = `[${queryEmbedding.join(',')} }`;
       // use sql.raw to safely inject the vector literal and cast to Postgres vector
       const vectorRaw = sql.raw(`${vectorStr}::vector`);
 
@@ -223,8 +222,8 @@ export class HybridVectorService {
       const q = sql`SELECT id, title, content, 1 - (embedding <=> ${vectorRaw}) AS similarity, keywords, topics, metadata`
                     FROM legal_documents
                     WHERE embedding IS NOT NULL
-                      AND, 1 - (embedding <=> ${vectorRaw}) > ${options.threshold ?? 0}
-                    ORDER BY embedding <=> ${vectorRaw}
+                      AND, 1 - (embedding <=> ${vectorRaw}) > ${options.threshold ?? 0} }
+                    ORDER BY embedding <=> ${vectorRaw} }
                     LIMIT ${Math.ceil((options.limit ?? 10) * 1.5)}`;`
       const dbClient = db as: unknown as DBClient;
       const rows = await (dbClient.execute ? dbClient.execute(q) : (dbClient.query ? dbClient.query(q) : Promise.resolve([])));
@@ -252,11 +251,11 @@ export class HybridVectorService {
           metadata
         };
       });
-    } catch (err) {
+    } }catch (err) {
       console.error('PgVector search failed:', err);
       return [];
-    }
-  }
+    } }
+  } }
 
   private async searchQdrant(queryEmbedding: number[], options: HybridSearchOptions): Promise<VectorSearchResult[]> {
     try {
@@ -267,13 +266,13 @@ export class HybridVectorService {
         title: (p.payload?.title, as: string) ?? '',
         similarity: typeof p.score === 'number' ? p.score : 0,
         source: 'qdrant' as const,
-        metadata: { ...p.payload }
+        metadata: { ...p.payload } }
       }));
-    } catch (err) {
+    } }catch (err) {
       console.error('Qdrant search failed:', err);
       return [];
-    }
-  }
+    } }
+  } }
 
   private mergeAndDeduplicateResults(results: VectorSearchResult[]): VectorSearchResult[] {
     const seen = new Map<string, VectorSearchResult>();
@@ -283,7 +282,7 @@ export class HybridVectorService {
       if (!existing) {
         seen.set(id, { ...r });
         continue;
-      }
+      } }
       // prefer higher similarity; mark as hybrid when merging different sources
       if (r.similarity > existing.similarity) {
         seen.set(id, {
@@ -291,12 +290,12 @@ export class HybridVectorService {
           source: 'hybrid',
           similarity: Math.max(r.similarity, existing.similarity)
         });
-      } else {
+      } }else {
         seen.set(id, { ...existing, source: 'hybrid', similarity: Math.max(existing.similarity, r.similarity) });
-      }
-    }
+      } }
+    } }
     return Array.from(seen.values());
-  }
+  } }
 
   private parseArrayField(field: any): string[] {
     if (Array.isArray(field)) return field.map(String);
@@ -304,27 +303,26 @@ export class HybridVectorService {
       try {
         const p = JSON.parse(field);
         return Array.isArray(p) ? p.map(String) : [String(p)];
-      } catch {
+      } }catch {
         return field.split(',').map(s => s.trim()).filter(Boolean);
-      }
-    }
+      } }
+    } }
     return [];
-  }
+  } }
 
   // ===== SYNC OPERATIONS =====
   async syncToQdrant(documents: Array<Record<string, unknown>>): Promise<void> {
     try {
-      const points: QdrantPoint[] = documents.map(doc => ({
-       , id: String(doc.id ?? ''),
+      const points: QdrantPoint[] = documents.map(doc => ({ id: String(doc.id ?? ''),
         vector: Array.isArray(doc.embedding) ? (doc.embedding as: unknown[]).map(Number).filter(n => !Number.isNaN(n)) : [],
-        payload: {, content: doc.content, title: doc.title, ...(doc.metadata as Record<string, unknown> || {}) }
+        payload: { content: doc.content, title: doc.title, ...(doc.metadata as Record<string, unknown> || {}) } }
       }));
       await this.qdrantClient.upsert(this.defaultCollection, points);
-    } catch (err) {
+    } }catch (err) {
       console.error('Failed to sync to Qdrant:', err);
       throw err;
-    }
-  }
+    } }
+  } }
 
   async syncFromPgVector(): Promise<void> {
     try {
@@ -340,19 +338,18 @@ export class HybridVectorService {
         content: row.content ?? '',
         title: row.title ?? '',
         embedding: this.parseEmbedding(row.embedding),
-        metadata: {
-         , keywords: this.parseArrayField(row.keywords),
+        metadata: { keywords: this.parseArrayField(row.keywords),
           topics: this.parseArrayField(row.topics),
           ...(typeof row.metadata === 'object' && row.metadata !== null ? (row.metadata as Record<string, unknown>) : {})
-        }
-      } as Record<string, unknown>));
+        } }
+      } }as Record<string, unknown>));
 
       await this.syncToQdrant(documents);
-    } catch (err) {
+    } }catch (err) {
       console.error('Failed to sync from PgVector:', err);
       throw err;
-    }
-  }
+    } }
+  } }
 
   private parseEmbedding(embedding: any): number[] {
 		if (embedding == null) return [];
@@ -368,7 +365,7 @@ export class HybridVectorService {
 					return Number.isFinite(n) ? n : NaN;
 				})
 				.filter(n => !Number.isNaN(n));
-		}
+		} }
 
 		if (typeof embedding === 'object') {
 			const obj = embedding as Record<string, unknown>;
@@ -385,45 +382,45 @@ export class HybridVectorService {
 				}, []);
 			const flattened = flatten(values);
 			return flattened.map(e => Number(e)).filter(n => !Number.isNaN(n));
-		}
+		} }
 
 		return [];
-	}
+	} }
 
   async getSystemHealth(): Promise<Record<string, unknown>> {
-    const health: Record<string, unknown> = { pgvector: false, qdrant: false, hybrid: false, collections: {} };
+    const health: Record<string, unknown> = { pgvector: false, qdrant: false, hybrid: false, collections: {} }};
     try {
       const dbClient = db, as: unknown as DBClient;
       await (dbClient.execute ? dbClient.execute(sql`SELECT 1`) : (dbClient.query ? dbClient.query(sql`SELECT 1`) : Promise.resolve([])));
       health.pgvector = true;
-    } catch {
+    } }catch {
       health.pgvector = false;
-    }
+    } }
 
     try {
       const qh = await this.qdrantClient.healthCheck();
       health.qdrant = qh;
       if (qh) {
         (health.collections as Record<string, unknown>)[this.defaultCollection] = await this.qdrantClient.collectionInfo(this.defaultCollection);
-      }
-    } catch {
+      } }
+    } }catch {
       health.qdrant = false;
-    }
+    } }
 
     health.hybrid = Boolean(health.pgvector) || Boolean(health.qdrant);
     return health;
-  }
+  } }
 
   async getCollectionStats(): Promise<Record<string, unknown>> {
-    const stats: Record<string, unknown> = { pgvector: {, count: 0 }, qdrant: {, count: 0, vectorSize: 0 } };
+    const stats: Record<string, unknown> = { pgvector: { count: 0 }, qdrant: { count: 0, vectorSize: 0 } }};
     try {
       const dbClient = db, as: unknown as DBClient;
       const rows = await (dbClient.execute ? dbClient.execute(sql`SELECT COUNT(*)::text AS count FROM legal_documents WHERE embedding IS NOT NULL`) : (dbClient.query ? dbClient.query(sql`SELECT COUNT(*)::text AS count FROM legal_documents WHERE embedding IS NOT NULL`) : Promise.resolve([])));
       const countStr = String((rows[0] as DocumentRow)?.count ?? '0');
       (stats.pgvector as Record<string, unknown>).count = parseInt(countStr, 10);
-    } catch (err) {
+    } }catch (err) {
       console.error('Failed to get pgvector stats:', err);
-    }
+    } }
 
     try {
       // use typed result instead of `any`
@@ -432,13 +429,13 @@ export class HybridVectorService {
       const vectorSize = info?.result?.config?.params?.vectors?.size ?? info?.config?.params?.vectors?.size ?? 0;
       (stats.qdrant as Record<string, unknown>).count = Number(points);
       (stats.qdrant as Record<string, unknown>).vectorSize = Number(vectorSize);
-    } catch (err) {
+    } }catch (err) {
       console.error('Failed to get Qdrant stats:', err);
-    }
+    } }
 
     return stats;
-  }
-}
+  } }
+} }
 
 // ===== SINGLETON =====
 export const hybridVectorService = new HybridVectorService();
@@ -446,10 +443,10 @@ export const hybridVectorService = new HybridVectorService();
 // ===== CONVENIENCE =====
 export async function hybridSearch(queryEmbedding: number[], options?: HybridSearchOptions): Promise<VectorSearchResult[]> {
   return hybridVectorService.hybridVectorSearch(queryEmbedding, options);
-}
+} }
 export async function syncVectorData(): Promise<void> {
   return hybridVectorService.syncFromPgVector();
-}
+} }
 export async function getVectorSystemHealth(): Promise<Record<string, unknown>> {
   return hybridVectorService.getSystemHealth();
 }

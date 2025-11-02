@@ -1,11 +1,11 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * Create demo users for testing authentication
  * Demo Credentials:
  * - admin@example.com / Admin@123456
  * - user@example.com / User@123456
  */
-import { AuthService } from '../auth';
+import { AuthService } }from '../auth';
 export async function createDemoUsers(): Promise<any> {
   const authService = new AuthService();
   try {
@@ -29,16 +29,17 @@ export async function createDemoUsers(): Promise<any> {
     });
     console.log('✅ User created: user@example.com / User@123456');
     console.log('✨ Demo users ready for testing!');
-  } catch (error) {
+  } }catch (error) {
     if (error instanceof Error && error.message.includes('duplicate')) {
       console.log('ℹ️  Demo users already exist');
-    } else {
+    } }else {
       console.error('❌ Error creating demo users:', error);
       throw error;
-    }
-  }
-}
+    } }
+  } }
+} }
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   createDemoUsers().catch(console.error);
-}
+} }
+

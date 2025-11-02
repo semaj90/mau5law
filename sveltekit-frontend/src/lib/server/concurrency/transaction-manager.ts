@@ -1,12 +1,12 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Transaction Manager with Advisory Locks for Legal AI Platform
  * Ensures ACID properties for critical legal operations
  */
-import { sql } from '$lib/database/connection';
-import { advisoryLocks, type LockType, type LockMode, LOCK_MODES } from './advisory-locks.js';
-import { randomUUID } from 'crypto';
+import { sql } }from '$lib/database/connection';
+import { advisoryLocks, type LockType, type LockMode, LOCK_MODES } }from './advisory-locks.js';
+import { randomUUID } }from 'crypto';
 
 export interface TransactionOptions {
   isolationLevel?: 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE';
@@ -14,14 +14,14 @@ export interface TransactionOptions {
   userId?: string;
   sessionId?: string;
   metadata?: Record<string, unknown>;
-}
+} }
 export interface TransactionContext { transactionId: string;, startTime: Date;
   userId?: string;
   sessionId?: string;
   // Strongly typed lock records to avoid `any`
  , locks: LockRecord[];
   metadata?: Record<string, unknown>;
-}
+} }
 // Typed representation of locks tracked by the transaction manager
 export type LockRecord = { entityType: LockType;, entityId: string;
  , mode: LockMode;
@@ -32,14 +32,14 @@ export interface HealthCheckResult {
   activeTransactions: number;
   oldestTransaction?: { id: string; age: number };
  , locksHeld: number;
-}
+} }
 export class TransactionManager {
   private activeTransactions = new Map<string, TransactionContext>();
   /**
    * Execute a function within a database transaction with advisory locks
    */
   async withTransaction<T>(fn: (ctx: TransactionContext) => Promise<T>, options: TransactionOptions = {}): Promise<T> {
-    const { isolationLevel = 'READ COMMITTED', timeout = 30000, userId, sessionId, metadata } = options;
+    const { isolationLevel = 'READ COMMITTED', timeout = 30000, userId, sessionId, metadata } }= options;
     const transactionId = randomUUID();
     const context: TransactionContext = {
       transactionId,
@@ -50,7 +50,7 @@ export class TransactionManager {
       metadata
     };
     this.activeTransactions.set(transactionId, context);
-    console.log(`📝 Starting transaction ${transactionId} with ${isolationLevel} isolation`);
+    console.log(`📝 Starting transaction ${transactionId} }with ${isolationLevel} }isolation`);
     try {
       // Depending on your SQL client the pattern to begin a transaction may differ.
       // The code below assumes sql.begin accepts a callback; adapt isolation/timeout statements if needed.
@@ -60,23 +60,23 @@ export class TransactionManager {
         if (timeout) {
           try {
             await tx`SET statement_timeout = ${timeout}`;
-          } catch {
-            // If the client doesn't support direct template execution here, ignore - caller should implement.` }'`
-        }
+          } }catch {
+            // If the client doesn't support direct template execution here, ignore - caller should implement.` } }`
+        } }
         try {
           const result = await fn(context);
-          console.log(`✅ Transaction ${transactionId} completed successfully`);
+          console.log(`✅ Transaction ${transactionId} }completed successfully`);
           return result;
-        } catch (error) {
-          console.error(`❌ Transaction ${transactionId} failed:`, error);
+        } }catch (error) {
+          console.error(`❌ Transaction ${transactionId} }failed:`, error);
           throw error;
-        }
+        } }
       })) as T;
-    } finally {
+    } }finally {
       // Clean up locks and transaction context
       await this.cleanupTransaction(transactionId);
-    }
-  }
+    } }
+  } }
   /**
    * Execute with lock acquisition inside transaction
    */
@@ -85,7 +85,7 @@ export class TransactionManager {
     entityId: string,
     fn: (ctx: TransactionContext) => Promise<T>,
     mode: LockMode = LOCK_MODES.EXCLUSIVE,
-    options: TransactionOptions = {}
+    options: TransactionOptions = {} }
   ): Promise<T> {
     return this.withTransaction(async ctx => {
       // Acquire lock within transaction
@@ -95,21 +95,21 @@ export class TransactionManager {
         timeout: options.timeout
       });
       if (!lock) {
-        throw new Error(`Failed to acquire ${mode} lock for ${entityType} ${entityId}`);
-      }
+        throw new Error(`Failed to acquire ${mode} }lock for ${entityType} }${entityId}`);
+      } }
       // Track lock in context
       ctx.locks.push({ entityType, entityId, mode });
       try {
         return await fn(ctx);
-      } finally {
+      } }finally {
         // Attempt release (advisoryLocks.releaseLock should be idempotent)
         try {
           await advisoryLocks.releaseLock(entityType, entityId, mode);
-        } catch (err) {
-          console.warn(`Warning: releaseLock failed for ${entityType}:${entityId}: ', err);'` }
-      }
+        } }catch (err) {
+          console.warn(`Warning: releaseLock failed for ${entityType}:${entityId}: ', err);'` } }
+      } }
     }, options);
-  }
+  } }
   /**
    * Legal AI specific: Chain of Custody transaction
    * Ensures atomic updates to evidence custody records
@@ -117,7 +117,7 @@ export class TransactionManager {
   async withCustodyTransaction<T>(
    , evidenceId: string,
     fn: (ctx: TransactionContext) => Promise<T>,
-    options: TransactionOptions = {}
+    options: TransactionOptions = {} }
   ): Promise<T> {
     return this.withTransactionAndLock('evidence', evidenceId, fn, LOCK_MODES.EXCLUSIVE, {
       ...options,
@@ -126,9 +126,9 @@ export class TransactionManager {
         ...options.metadata,
         operationType: 'chain_of_custody',
         evidenceId
-      }
+      } }
     });
-  }
+  } }
   /**
    * Legal AI specific: Case modification transaction
    * Prevents concurrent case updates that could cause inconsistencies
@@ -136,7 +136,7 @@ export class TransactionManager {
   async withCaseTransaction<T>(
    , caseId: string,
     fn: (ctx: TransactionContext) => Promise<T>,
-    options: TransactionOptions = {}
+    options: TransactionOptions = {} }
   ): Promise<T> {
     return this.withTransactionAndLock('case', caseId, fn, LOCK_MODES.EXCLUSIVE, {
       ...options,
@@ -145,9 +145,9 @@ export class TransactionManager {
         ...options.metadata,
         operationType: 'case_modification',
         caseId
-      }
+      } }
     });
-  }
+  } }
   /**
    * Legal AI specific: Document analysis transaction
    * Allows concurrent reads but exclusive writes for AI analysis
@@ -156,7 +156,7 @@ export class TransactionManager {
    , documentId: string,
     fn: (ctx: TransactionContext) => Promise<T>,
     isReadOnly: boolean = false,
-    options: TransactionOptions = {}
+    options: TransactionOptions = {} }
   ): Promise<T> {
     const mode = isReadOnly ? LOCK_MODES.SHARED : LOCK_MODES.EXCLUSIVE;
     return this.withTransactionAndLock('document', documentId, fn, mode, {
@@ -167,9 +167,9 @@ export class TransactionManager {
         operationType: 'document_analysis',
         documentId,
         readOnly: isReadOnly
-      }
+      } }
     });
-  }
+  } }
   /**
    * Legal AI specific: Vector index update transaction
    * Prevents concurrent vector operations that could corrupt indexes
@@ -177,7 +177,7 @@ export class TransactionManager {
   async withVectorIndexTransaction<T>(
    , indexName: string,
     fn: (ctx: TransactionContext) => Promise<T>,
-    options: TransactionOptions = {}
+    options: TransactionOptions = {} }
   ): Promise<T> {
     return this.withTransactionAndLock('vector_index', indexName, fn, LOCK_MODES.EXCLUSIVE, {
       ...options,
@@ -187,16 +187,16 @@ export class TransactionManager {
         ...options.metadata,
         operationType: 'vector_index_update',
         indexName
-      }
+      } }
     });
-  }
+  } }
   /**
    * Batch operation with multiple entity locks
    */
   async withMultiEntityTransaction<T>(
-    entities: Array<{, type: LockType;, id: string; mode?: LockMode }>,
+    entities: Array<{ type: LockType; id: string; mode?: LockMode }>,
     fn: (ctx: TransactionContext) => Promise<T>,
-    options: TransactionOptions = {}
+    options: TransactionOptions = {} }
   ): Promise<T> {
     return this.withTransaction(async ctx => {
       // Sort entities to prevent deadlocks (consistent ordering)
@@ -209,40 +209,40 @@ export class TransactionManager {
           timeout: options.timeout
         });
         if (!lock) {
-          throw new Error(`Failed to acquire lock for ${entity.type} ${entity.id}`);
-        }
+          throw new Error(`Failed to acquire lock for ${entity.type} }${entity.id}`);
+        } }
         ctx.locks.push({
           entityType: entity.type,
           entityId: entity.id,
           mode: entity.mode || LOCK_MODES.EXCLUSIVE
         });
-      }
+      } }
       try {
         return await fn(ctx);
-      } finally {
+      } }finally {
         // Release locks in reverse order
         for (const lock of [...ctx.locks].reverse()) {
           try {
             await advisoryLocks.releaseLock(lock.entityType, lock.entityId, lock.mode);
-          } catch (err) {
+          } }catch (err) {
             console.warn(`Warning: Failed to release lock ${lock.entityType}:${lock.entityId}`, err);
-          }
-        }
-      }
+          } }
+        } }
+      } }
     }, options);
-  }
+  } }
   /**
    * Get active transaction information
    */
   getActiveTransactions(): TransactionContext[] {
     return Array.from(this.activeTransactions.values());
-  }
+  } }
   /**
    * Get transaction by ID
    */
   getTransaction(transactionId: string): TransactionContext | undefined {
     return this.activeTransactions.get(transactionId);
-  }
+  } }
   /**
    * Clean up expired transactions
    */
@@ -255,13 +255,13 @@ export class TransactionManager {
       if (age > 300000) {
         await this.cleanupTransaction(id);
         cleanedCount++;
-      }
-    }
+      } }
+    } }
     if (cleanedCount > 0) {
-      console.log(`🧹 Cleaned up ${cleanedCount} expired transactions`);
-    }
+      console.log(`🧹 Cleaned up ${cleanedCount} }expired transactions`);
+    } }
     return cleanedCount;
-  }
+  } }
   /**
    * Clean up a specific transaction
    */
@@ -273,35 +273,35 @@ export class TransactionManager {
     for (const lock of ctx.locks) {
       try {
         await advisoryLocks.releaseLock(lock.entityType, lock.entityId, lock.mode);
-      } catch (error) {
-        console.warn(`Warning: Failed to release lock during;, cleanup:`, error);
-      }
-    }
+      } }catch (error) {
+        console.warn(`Warning: Failed to release lock during; cleanup:`, error);
+      } }
+    } }
     // Remove from active transactions
     this.activeTransactions.delete(transactionId);
-  }
+  } }
   /**
    * Health check
    */
   async healthCheck(): Promise<HealthCheckResult> {
     const transactions = Array.from(this.activeTransactions.values());
     const now = Date.now();
-    let oldestTransaction: { id: string;, age: number } | undefined;
+    let oldestTransaction: { id: string; age: number } }| undefined;
     let totalLocks = 0;
     for (const [id, ctx] of this.activeTransactions.entries()) {
       const age = now - ctx.startTime.getTime();
       totalLocks += ctx.locks.length;
       if (!oldestTransaction || age > oldestTransaction.age) {
         oldestTransaction = { id, age };
-      }
-    }
+      } }
+    } }
     return {
       activeTransactions: transactions.length,
       oldestTransaction,
       locksHeld: totalLocks
     };
-  }
-}
+  } }
+} }
 // Export singleton instance
 export const transactionManager = new TransactionManager();
 export default transactionManager;

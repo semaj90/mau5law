@@ -1,19 +1,19 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * SSR Legal API Cache
  * High-performance SSR-optimized cache for legal AI platform
  * Integrates with existing parallel cache orchestrator
  */
-import { parallelCacheOrchestrator } from './parallel-cache-orchestrator';
-import type { ParallelCacheRequest, ParallelCacheResponse, CacheExecutionMetrics } from './parallel-cache-orchestrator';
-import { browser } from '$app/environment';
+import { parallelCacheOrchestrator } }from './parallel-cache-orchestrator';
+import type { ParallelCacheRequest, ParallelCacheResponse, CacheExecutionMetrics } }from './parallel-cache-orchestrator';
+import { browser } }from '$app/environment';
 export interface SSRCacheConfig { defaultTTL: number;, maxAge: number;
   staleWhileRevalidate: number;
   quantizeResponses: boolean;
   enableRAG: boolean;
   legalOptimizations: boolean;
-}
-export interface LegalAPIResponse {, success: boolean;, data: any;
+} }
+export interface LegalAPIResponse { success: boolean;, data: any;
   meta?: {
     userId?: string;
     timestamp?: string;
@@ -22,13 +22,13 @@ export interface LegalAPIResponse {, success: boolean;, data: any;
     cached?: boolean;
     cacheLayer?: string;
   };
-  pagination?: {, page: number;, limit: number;
+  pagination?: { page: number;, limit: number;
     total: number;
     totalPages: number;
     hasNext: boolean;
    , hasPrev: boolean;
   };
-}
+} }
 
 // New, stricter helper types
 type Params = Record<string, string | number | boolean | undefined>;
@@ -40,12 +40,12 @@ export interface SSRCacheEntry { key: string;, data: LegalAPIResponse;
  , contentType: string;
   quantized?: boolean;
   ragContext?: Array<Record<string, unknown>>;
-}
+} }
 
 // Helper function to validate if an: object is a LegalAPIResponse
 function isLegalAPIResponse(obj: any): obj is LegalAPIResponse {
   return typeof obj === 'object' && obj !== null && typeof (obj as LegalAPIResponse).success === 'boolean';
-}
+} }
 
 // Move and export CacheStatsResult to top-level (interfaces cannot be declared inside a class)
 export interface CacheStatsResult { hitRate: number;, totalRequests: number;
@@ -54,11 +54,10 @@ export interface CacheStatsResult { hitRate: number;, totalRequests: number;
   cacheSize: number;
   quantizedResponses: number;
   ragContextEntries: number;
-}
+} }
 
 class SSRLegalAPICache {
-  private config: SSRCacheConfig = {
-   , defaultTTL: 5 * 60 * 1000, // 5 minutes
+  private config: SSRCacheConfig = { defaultTTL: 5 * 60 * 1000, // 5 minutes
     maxAge: 3600, // 1 hour
     staleWhileRevalidate: 86400, // 24 hours
     quantizeResponses: true,
@@ -75,7 +74,7 @@ class SSRLegalAPICache {
     const perf: any = (globalThis, as: any).performance;
     if (perf && typeof perf.now === 'function') return perf.now();
     return Date.now();
-  }
+  } }
   /**
    * Cache GET request with intelligent key generation
    */
@@ -87,14 +86,13 @@ class SSRLegalAPICache {
       quantize?: boolean;
       ragContext?: boolean;
       userId?: string;
-    } = {}
+    } }= {} }
   ): Promise<LegalAPIResponse | null> {
     const cacheKey = this.generateCacheKey(endpoint, params, options.userId);
     const startTime = this.now();
     try {
       // Create parallel cache request
-      const cacheRequest: ParallelCacheRequest = {
-       , id: `ssr-${Date.now()}`,
+      const cacheRequest: ParallelCacheRequest = { id: `ssr-${Date.now()}`,
         type: options.ragContext ? 'rag' : 'hybrid',
         priority: this.determinePriority(endpoint),
         keys: [cacheKey],
@@ -113,25 +111,25 @@ class SSRLegalAPICache {
             const parsed = JSON.parse(cacheHit.data);
             if (isLegalAPIResponse(parsed)) {
               cachedResponse = parsed;
-            } else {
+            } }else {
               // If parsed but not a LegalAPIResponse, wrap it
               cachedResponse = { success: true, data: parsed };
-            }
-          } catch {
+            } }
+          } }catch {
             // If parsing fails, treat the raw: string as data
-            cachedResponse = {, success: true, data: cacheHit.data };
-          }
-        } else if (cacheHit.data && typeof cacheHit.data === 'object') {
+            cachedResponse = { success: true, data: cacheHit.data };
+          } }
+        } }else if (cacheHit.data && typeof cacheHit.data === 'object') {
           if (isLegalAPIResponse(cacheHit.data)) {
             cachedResponse = cacheHit.data;
-          } else {
+          } }else {
             // If: object but not a LegalAPIResponse, wrap it
             cachedResponse = { success: true, data: cacheHit.data };
-          }
-        } else {
+          } }
+        } }else {
           // Fallback for: null/undefined/non-object data
-          cachedResponse = {, success: true, data: null };
-        }
+          cachedResponse = { success: true, data: null };
+        } }
         // Add cache metadata
         cachedResponse.meta = {
           ...(cachedResponse.meta ?? {}),
@@ -141,16 +139,16 @@ class SSRLegalAPICache {
         };
         const latencyNum = typeof result?.metrics?.totalLatency === 'number' ? result.metrics!.totalLatency! : null;
         const latencyStr = latencyNum !== null ? latencyNum.toFixed(2) : '0';
-        console.log(`🚀 SSR Cache HIT: ${endpoint} from ${cacheHit.source} (${latencyStr}ms)`);
+        console.log(`🚀 SSR Cache HIT: ${endpoint} }from ${cacheHit.source} }(${latencyStr}ms)`);
         return cachedResponse;
-      }
+      } }
       console.log(`💾 SSR Cache MISS: ${cacheKey}`);
       return: null;
-    } catch (error) {
+    } }catch (error) {
       console.error('SSR cache lookup failed:', error);
       return: null;
-    }
-  }
+    } }
+  } }
   /**
    * Store response with intelligent caching strategy
    */
@@ -163,7 +161,7 @@ class SSRLegalAPICache {
       quantize?: boolean;
       ragContext?: Array<Record<string, unknown>>;
       userId?: string;
-    } = {}
+    } }= {} }
   ): Promise<void> {
     const cacheKey = this.generateCacheKey(endpoint, params, options.userId);
     try {
@@ -171,14 +169,13 @@ class SSRLegalAPICache {
       let processedResponse = response;
       if (options.quantize !== false && this.config.quantizeResponses) {
         processedResponse = await this.responseQuantizer.quantize(response);
-      }
+      } }
       // Store RAG context if provided
       if (options.ragContext && this.config.enableRAG) {
         this.ragContextCache.set(cacheKey, options.ragContext);
-      }
+      } }
       // Create cache entry
-      const cacheEntry: SSRCacheEntry = {
-       , key: cacheKey,
+      const cacheEntry: SSRCacheEntry = { key: cacheKey,
         data: processedResponse,
         timestamp: Date.now(),
         ttl: options.ttl || this.config.defaultTTL,
@@ -193,11 +190,11 @@ class SSRLegalAPICache {
         ttl: cacheEntry.ttl,
         priority: this.determinePriority(endpoint), // Removed incorrect type assertion syntax
         type: 'ssr_legal_api` });'`
-      console.log(`💾 SSR Cache SET: ${cacheKey} (quantized: ${cacheEntry.quantized})`);
-    } catch (error) {
+      console.log(`💾 SSR Cache SET: ${cacheKey} }(quantized: ${cacheEntry.quantized})`);
+    } }catch (error) {
       console.error('SSR cache store failed:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Execute cached API call with automatic caching
    */
@@ -212,16 +209,16 @@ class SSRLegalAPICache {
       quantize?: boolean;
       userId?: string;
       ragContext?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<T> {
-    const { method = 'GET', params = {}, body, headers = {}, ttl, quantize, userId, ragContext = false } = options;
+    const { method = 'GET', params = {}, body, headers = {}, ttl, quantize, userId, ragContext = false } }= options;
     // Only cache GET requests
     if (method === 'GET') {
       const cached = await this.cacheGet(endpoint, params, { ttl, quantize, ragContext, userId });
       if (cached) {
         return cached as: unknown as T;
-      }
-    }
+      } }
+    } }
     // Execute actual API call
     const response = await this.executeAPICall(endpoint, {
       method,
@@ -238,9 +235,9 @@ class SSRLegalAPICache {
         ragContext: ragContextData,
         userId
       });
-    }
+    } }
     return response as: unknown as T;
-  }
+  } }
   /**
    * Generate HTTP cache headers for SSR
    */
@@ -257,15 +254,15 @@ class SSRLegalAPICache {
         headers['X-Content-Type'] = 'legal-api-response';
         if (response.meta?.aiModel) {
           headers['X-AI-Model'] = response.meta.aiModel;
-        }
-      }
-    } else {
+        } }
+      } }
+    } }else {
       headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
       headers['Pragma'] = 'no-cache';
       headers['Expires'] = '0';
-    }
+    } }
     return headers;
-  }
+  } }
   /**
    * Invalidate cache entries by pattern
    */
@@ -290,10 +287,10 @@ class SSRLegalAPICache {
     const invalidated = matchedPatterns.length;
     // Note: actual invalidation would call parallelCacheOrchestrator if supported.
     console.log(
-      `🗑️ Cache invalidation requested for, pattern: ${pattern} (user: ${userId ?? 'any` }) — matched ${invalidated} known pattern(s)`'`
+      `🗑️ Cache invalidation requested for, pattern: ${pattern} }(user: ${userId ?? 'any` }) — matched ${invalidated} }known pattern(s)`'`
     );
     return invalidated;
-  }
+  } }
   /**
    * Get cache statistics
    */
@@ -303,7 +300,7 @@ class SSRLegalAPICache {
     // Assuming CacheExecutionMetrics contains cacheHitRate and totalLatency
     const current: CacheExecutionMetrics = perfStats?.currentMetrics ?? {};
     const layer = current.layerPerformance ?? {};
-    const cacheStats = perfStats?.cacheStats ?? {, l1Size: 0, l2Size: 0, l3Size: 0 }; //, Fix: Access cacheStats from perfStats
+    const cacheStats = perfStats?.cacheStats ?? { l1Size: 0, l2Size: 0, l3Size: 0 }; //, Fix: Access cacheStats from perfStats
 
     const l1 = Number(layer.l1MemoryHits ?? 0);
     const l2 = Number(layer.l2RedisHits ?? 0);
@@ -323,7 +320,7 @@ class SSRLegalAPICache {
       quantizedResponses: 0, // Would need instrumentation to track this
       ragContextEntries: this.ragContextCache.size
     };
-  }
+  } }
   // Private helper methods
   private generateCacheKey(endpoint: string, params: Params, userId?: string): string {
     const paramString = Object.keys(params)
@@ -332,55 +329,55 @@ class SSRLegalAPICache {
       .join('&');
     const baseKey = `api:v1:${endpoint.replace('/api/v1/', '')}:${this.hashString(paramString)}`;
     return userId ? `${baseKey}:${userId}` : baseKey;
-  }
+  } }
   private determinePriority(endpoint: string): 'low' | 'normal' | 'high' | 'critical' {
     if (endpoint.includes('/detective/') || endpoint.includes('/recommendations')) {
       return, 'high';
-    }
+    } }
     if (endpoint.includes('/cases/') || endpoint.includes('/evidence/')) {
       return, 'normal';
-    }
+    } }
     return, 'low';
-  }
+  } }
   private selectOptimalTier(endpoint: string, response: LegalAPIResponse): 'l1' | 'l2' | 'l3' | 'all' {
     const dataSize = JSON.stringify(response).length;
     // Critical endpoints -> all tiers
     if (endpoint.includes('/detective/') || endpoint.includes('/recommendations')) {
       return, 'all';
-    }
+    } }
     // Large responses -> L2/L3 only
     if (dataSize > 50000) {
       return, 'l3';
-    }
+    } }
     // Small frequent responses -> all tiers
     if (dataSize < 10000) {
       return, 'all';
-    }
+    } }
     return, 'l2';
-  }
+  } }
   private isCacheable(endpoint: string, response: LegalAPIResponse): boolean {
     // Don't cache errors'
     if (!response.success) {
       return false;
-    }
+    } }
     // Don't cache user-specific real-time data'
     if (endpoint.includes('/auth/') || endpoint.includes('/session/')) {
       return false;
-    }
+    } }
     // Cache legal data
     return true;
-  }
+  } }
   private generateETag(response: LegalAPIResponse): string {
     const content = JSON.stringify(response.data);
     return `"${this.hashString(content)}"`;
-  }
+  } }
   private hashString(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = ((hash << 5) - hash + str.charCodeAt(i)) & 0xffffffff;
-    }
+    } }
     return Math.abs(hash).toString(36);
-  }
+  } }
   private async executeAPICall(
     endpoint: string,
     options: {
@@ -388,7 +385,7 @@ class SSRLegalAPICache {
       params?: Params;
       body?: any;
       headers?: Record<string, string>;
-    }
+    } }
   ): Promise<LegalAPIResponse> {
     // Build URL robustly for absolute or relative endpoints
     const isAbsolute = /^https?:\/\//i.test(endpoint);
@@ -399,7 +396,7 @@ class SSRLegalAPICache {
       Object.entries(options.params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) urlObj.searchParams.append(key, String(value));
       });
-    }
+    } }
 
     const res = await fetch(urlObj.toString(), {
       method: options.method || 'GET',
@@ -414,38 +411,37 @@ class SSRLegalAPICache {
     let parsed: any = null;
     try {
       parsed = text ? JSON.parse(text) : null;
-    } catch {
+    } }catch {
       // Non-JSON body — keep as text
       parsed = text;
-    }
+    } }
 
     if (!res.ok) {
       // attach body if present for debugging
       const bodyPreview = typeof parsed === 'string' ? parsed.slice(0, 1024) : JSON.stringify(parsed ?? {});
-      throw new Error(`HTTP ${res.status}: ${res.statusText} — ${bodyPreview}`);
-    }
+      throw new Error(`HTTP ${res.status}: ${res.statusText} }— ${bodyPreview}`);
+    } }
 
-    return (parsed as LegalAPIResponse) ?? ({ success: true, data: parsed } as LegalAPIResponse);
-  }
+    return (parsed as LegalAPIResponse) ?? ({ success: true, data: parsed } }as LegalAPIResponse);
+  } }
 
   private async extractRAGContext(response: LegalAPIResponse): Promise<Array<Record<string, unknown>>> {
     const meta = response.meta;
     if (meta && (meta.aiModel ?? meta.timestamp ?? meta.processingTime)) {
       return [
-        {,
-          model: meta.aiModel,
+        { model: meta.aiModel,
           timestamp: meta.timestamp,
           processingTime: meta.processingTime
         },
       ];
-    }
+    } }
     return [];
-  }
+  } }
 
   private serializeEntry(entry: SSRCacheEntry): string {
     return JSON.stringify(entry);
-  }
-}
+  } }
+} }
 /**
  * Response Quantizer - Compress API responses
  */
@@ -456,10 +452,10 @@ class ResponseQuantizer {
     // Compress data arrays
     if (Array.isArray(quantized.data)) {
       quantized.data = (quantized.data as: unknown[]).map(item => this.quantizeAny(item));
-    } else if (quantized.data && typeof quantized.data === 'object') {
+    } }else if (quantized.data && typeof quantized.data === 'object') {
       quantized.data = this.quantizeAny(quantized.data) as Record<string, unknown>;
-    }
+    } }
     return quantized;
-  }
+  } }
   private quantizeAny(value: any): any {
     if

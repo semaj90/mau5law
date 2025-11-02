@@ -587,7 +587,7 @@ export const xstateIntegration = {
     - Before (problematic pattern):
       ```svelte
       {#each cards as card}
-        <svelte:component this={card.component} {...card.props} />
+        <card.component {...card.props} />
       {/each}
       ```
     - After (Svelte 5 supports dynamic tags in loops):

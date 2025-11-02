@@ -1,4 +1,4 @@
-import type { Candidate } from '$lib/types';
+import type { Candidate } }from '$lib/types';
 
 // Placeholder for a server-side embedding function (e.g., calling a TensorRT/Gemma3 service)
 export async function embedTextServer(text: string): Promise<number[]> {
@@ -8,7 +8,7 @@ export async function embedTextServer(text: string): Promise<number[]> {
   const hash = text.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const dummyEmbedding = Array.from({ length: 768 }, (_, i) => Math.sin(hash + i) * 0.1);
   return Promise.resolve(dummyEmbedding);
-}
+} }
 
 // Placeholder for Cosine Similarity calculation
 function calculateCosineSimilarity(vecA: number[], vecB: number[]): number {
@@ -21,10 +21,10 @@ function calculateCosineSimilarity(vecA: number[], vecB: number[]): number {
     dot += vecA[i] * vecB[i];
     na += vecA[i] * vecA[i];
     nb += vecB[i] * vecB[i];
-  }
+  } }
   if (na === 0 || nb === 0) return 0;
   return dot / (Math.sqrt(na) * Math.sqrt(nb));
-}
+} }
 
 /**
  * Maximal Marginal Relevance (MMR) diversification.
@@ -52,8 +52,8 @@ export function MMR(
     if ((remaining[i].relevanceScore ?? 0) > maxRelevance) {
       maxRelevance = (remaining[i].relevanceScore ?? 0);
       bestInitialIndex = i;
-    }
-  }
+    } }
+  } }
 
   selected.push(remaining.splice(bestInitialIndex, 1)[0]);
   const selectedEmbeddings: number[][] = [remainingEmbeddings.splice(bestInitialIndex, 1)[0]];
@@ -75,27 +75,27 @@ export function MMR(
         const similarity = calculateCosineSimilarity(candidateEmb, selectedEmb);
         if (similarity > maxSimilarityWithSelected) {
           maxSimilarityWithSelected = similarity;
-        }
-      }
+        } }
+      } }
 
       const mmrScore = lambda * relevance - (1 - lambda) * maxSimilarityWithSelected;
 
       if (mmrScore > maxMmrScore) {
         maxMmrScore = mmrScore;
         bestCandidateIndex = i;
-      }
-    }
+      } }
+    } }
 
     if (bestCandidateIndex !== -1) {
       selected.push(remaining.splice(bestCandidateIndex, 1)[0]);
       selectedEmbeddings.push(remainingEmbeddings.splice(bestCandidateIndex, 1)[0]);
-    } else {
+    } }else {
       break; // No more candidates can be selected
-    }
-  }
+    } }
+  } }
 
   return selected;
-}
+} }
 
 /**
  * Cross-encoder reranking.
@@ -116,4 +116,5 @@ export async function crossEncoderRerank(query: string, candidates: Candidate[])
   });
 
   return rerankedCandidates.sort((a, b) => (b.rerankedScore ?? 0) - (a.rerankedScore ?? 0));
-}
+} }
+

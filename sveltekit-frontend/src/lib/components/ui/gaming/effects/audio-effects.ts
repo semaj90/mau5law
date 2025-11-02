@@ -7,9 +7,9 @@ export class RetroAudioEngine {
   private getContext(): AudioContext {
     if (!this.audioContext) {
       this.audioContext = new (window.AudioContext || (window as: any).webkitAudioContext)();
-    }
+    } }
     return this.audioContext;
-  }
+  } }
   /**
    * SNES-style button click sound (16-bit enhanced)
    */
@@ -18,9 +18,9 @@ export class RetroAudioEngine {
       volume?: number;
       duration?: number;
       harmonics?: boolean;
-    } = {}
+    } }= {} }
   ): Promise<void> {
-    const { volume = 0.3, duration = 0.15, harmonics = true } = options;
+    const { volume = 0.3, duration = 0.15, harmonics = true } }= options;
     try {
       const ctx = this.getContext();
       // Main tone
@@ -46,13 +46,13 @@ export class RetroAudioEngine {
         harmonyGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration * 0.8);
         harmonyOsc.start();
         harmonyOsc.stop(ctx.currentTime + duration);
-      }
+      } }
       mainOsc.start();
       mainOsc.stop(ctx.currentTime + duration + 0.05);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Could not play SNES button sound:', error);
-    }
-  }
+    } }
+  } }
   /**
    * NES-style 8-bit button click
    */
@@ -60,9 +60,9 @@ export class RetroAudioEngine {
     options: {
       volume?: number;
       pitch?: number;
-    } = {}
+    } }= {} }
   ): Promise<void> {
-    const { volume = 0.2, pitch = 440 } = options;
+    const { volume = 0.2, pitch = 440 } }= options;
     try {
       const ctx = this.getContext();
       const osc = ctx.createOscillator();
@@ -76,10 +76,10 @@ export class RetroAudioEngine {
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
       osc.start();
       osc.stop(ctx.currentTime + 0.12);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Could not play NES button sound:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Menu navigation sound
    */
@@ -96,10 +96,10 @@ export class RetroAudioEngine {
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
       osc.start();
       osc.stop(ctx.currentTime + 0.06);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Could not play menu nav sound:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Error/invalid action sound
    */
@@ -117,10 +117,10 @@ export class RetroAudioEngine {
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
       osc.start();
       osc.stop(ctx.currentTime + 0.22);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Could not play error sound:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Success/confirmation sound
    */
@@ -148,10 +148,11 @@ export class RetroAudioEngine {
       osc1.stop(ctx.currentTime + 0.16);
       osc2.start(ctx.currentTime + 0.08);
       osc2.stop(ctx.currentTime + 0.26);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Could not play success sound:', error);
-    }
-  }
-}
+    } }
+  } }
+} }
 // Singleton instance
 export const retroAudio = new RetroAudioEngine();
+

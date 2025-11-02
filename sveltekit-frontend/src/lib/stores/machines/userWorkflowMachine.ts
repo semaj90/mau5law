@@ -1,32 +1,32 @@
-import type { User } from '$lib/types';
+import type { User } }from '$lib/types';
 
 /**
  * User Workflow XState Machine
  * Manages user interaction workflows, case management, and collaborative processes
  */
-import { createMachine, assign, type ActorRefFrom } from 'xstate';
+import { createMachine, assign, type ActorRefFrom } }from 'xstate';
 // Type definitions
 export interface User { id: string;, email: string;
   name: string;
   role: string;
-}
-export interface LegalCase {, id: string;, title: string;
+} }
+export interface LegalCase { id: string;, title: string;
   status: string;
   createdAt: Date;
-}
-export interface Evidence {, id: string;, title: string;
+} }
+export interface Evidence { id: string;, title: string;
   type: string;
   caseId: string;
   createdAt: Date;
-}
+} }
 export interface WorkflowContext {
   caseId?: string;
   userId: string;
   currentStep: string;
   progress: number;
   errors: string[];
-  data: { [key: string]: any }
-}
+  data: { [key: string]: any } }
+} }
 export interface UserWorkflowContext extends WorkflowContext {
   user?: User;
   activeCase?: LegalCase;
@@ -40,49 +40,45 @@ export interface UserWorkflowContext extends WorkflowContext {
     totalSteps: number;
     startedAt?: Date;
     completedAt?: Date;
-  }
+  } }
   collaborators: User[];
   notifications: Array<any>;
-  preferences: {, autoSave: boolean;, notifications: boolean;
+  preferences: { autoSave: boolean;, notifications: boolean;
     collaborationMode: 'real-time' | 'async';
-  }
-}
+  } }
+} }
 export type UserWorkflowEvent =
-  | { type: 'LOGIN'; user: User }
-  | { type: 'LOGOUT' }
-  | { type: 'START_WORKFLOW'; workflowType: 'case_creation' | 'evidence_processing' | 'document_review' | 'collaboration' | 'case_closure'; data?: any }
-  | { type: 'NEXT_STEP'; data?: any }
-  | { type: 'PREVIOUS_STEP' }
-  | { type: 'COMPLETE_STEP'; stepData: any }
-  | { type: 'CANCEL_WORKFLOW' }
-  | { type: 'COMPLETE_WORKFLOW' }
-  | { type: 'SET_ACTIVE_CASE'; case LegalCase }
-  | { type: 'SET_ACTIVE_EVIDENCE'; evidence: Evidence }
-  | { type: 'ADD_COLLABORATOR'; collaborator: User }
-  | { type: 'REMOVE_COLLABORATOR'; userId: string }
-  | { type: 'ADD_NOTIFICATION'; notification: { type: 'info' | 'warning' | 'error' | 'success'; message: string } }
-  | { type: 'MARK_NOTIFICATION_READ'; notificationId: string }
-  | { type: 'CLEAR_NOTIFICATIONS' }
-  | { type: 'UPDATE_PREFERENCES'; preferences: Partial<UserWorkflowContext['preferences']> }
-  | { type: 'ERROR'; error: string }
-  | { type: 'RETRY' }
-  | { type: 'RESET' }
-export const userWorkflowMachine = createMachine({
- , id: 'userWorkflow',
-  types: {
-   , context: { [key,: strin,g]: any } as UserWorkflowContext,
-    events: { [key,: strin,g]: any } as UserWorkflowEvent
+  | { type: 'LOGIN'; user: User } }
+  | { type: 'LOGOUT' } }
+  | { type: 'START_WORKFLOW'; workflowType: 'case_creation' | 'evidence_processing' | 'document_review' | 'collaboration' | 'case_closure'; data?: any } }
+  | { type: 'NEXT_STEP'; data?: any } }
+  | { type: 'PREVIOUS_STEP' } }
+  | { type: 'COMPLETE_STEP'; stepData: any } }
+  | { type: 'CANCEL_WORKFLOW' } }
+  | { type: 'COMPLETE_WORKFLOW' } }
+  | { type: 'SET_ACTIVE_CASE'; case LegalCase } }
+  | { type: 'SET_ACTIVE_EVIDENCE'; evidence: Evidence } }
+  | { type: 'ADD_COLLABORATOR'; collaborator: User } }
+  | { type: 'REMOVE_COLLABORATOR'; userId: string } }
+  | { type: 'ADD_NOTIFICATION'; notification: { type: 'info' | 'warning' | 'error' | 'success'; message: string } }} }
+  | { type: 'MARK_NOTIFICATION_READ'; notificationId: string } }
+  | { type: 'CLEAR_NOTIFICATIONS' } }
+  | { type: 'UPDATE_PREFERENCES'; preferences: Partial<UserWorkflowContext['preferences']> } }
+  | { type: 'ERROR'; error: string } }
+  | { type: 'RETRY' } }
+  | { type: 'RESET' } }
+export const userWorkflowMachine = createMachine({ id: 'userWorkflow',
+  types: { context: { [key,: strin,g]: any } }as UserWorkflowContext,
+    events: { [key,: strin,g]: any } }as UserWorkflowEvent
   },
   initial: 'idle',
-  context: {
-   , caseId: undefined,
+  context: { caseId: undefined,
     userId: '',
     currentStep: 'idle',
     progress: 0,
     errors: [],
     data: { [key,: strin,g]: any },
-    workflow: {
-     , type: 'case_creation',
+    workflow: { type: 'case_creation',
       status: 'pending',
       steps: [],
       currentStepIndex: 0,
@@ -90,28 +86,23 @@ export const userWorkflowMachine = createMachine({
     },
     collaborators: [],
     notifications: [],
-    preferences: {
-     , autoSave: true,
+    preferences: { autoSave: true,
       notifications: true,
       collaborationMode: 'real-time'
-    }
+    } }
   },
-  states: {, idle: {, on: {, LOGIN: {, target: 'authenticated',
-          actions: assign({
-           , user: ({ event }) => event.user,
+  states: { idle: { on: { LOGIN: { target: 'authenticated',
+          actions: assign({ user: ({ event }) => event.user,
             userId: ({ event }) => event.user.id
           })
-        }
-      }
+        } }
+      } }
     },
-    authenticated: {
-     , initial: 'ready',
-      entry: assign({
-       , currentStep: 'authenticated'
+    authenticated: { initial: 'ready',
+      entry: assign({ currentStep: 'authenticated'
       }),
-      states: {, ready: {, on: {, START_WORKFLOW: {, target: 'workflowActive',
-              actions: assign({
-               , workflow: ({ event, context }) => ({
+      states: { ready: { on: { START_WORKFLOW: { target: 'workflowActive',
+              actions: assign({ workflow: ({ event, context }) => ({
                   ...context.workflow,
                   id: `workflow_${Date.now()}`,
                   type: event.workflowType,
@@ -123,54 +114,46 @@ export const userWorkflowMachine = createMachine({
                 }),
                 currentStep: 'workflow_started',
                 progress: 0,
-                data: ({ event }) => event.data || {}
+                data: ({ event }) => event.data || {} }
               })
             },
-            SET_ACTIVE_CASE: {, actions: assign({, activeCase: ({ event }) => event.case,
+            SET_ACTIVE_CASE: { actions: assign({ activeCase: ({ event }) => event.case,
                 caseId: ({ event }) => event.case.id
               })
             },
-            SET_ACTIVE_EVIDENCE: {, actions: assign({, activeEvidence: ({ event }) => event.evidence
+            SET_ACTIVE_EVIDENCE: { actions: assign({ activeEvidence: ({ event }) => event.evidence
               })
             },
-            ADD_COLLABORATOR: {, actions: assign({, collaborators: ({ context, event }) => {
+            ADD_COLLABORATOR: { actions: assign({ collaborators: ({ context, event }) => {
                   const exists = context.collaborators.some((c: any) => c.id === event.collaborator.id);
                   return exists ? context.collaborators: [...context.collaborators, event.collaborator];
-                }
+                } }
               })
             },
-            REMOVE_COLLABORATOR: {, actions: assign({, collaborators: ({ context, event }) =>
+            REMOVE_COLLABORATOR: { actions: assign({ collaborators: ({ context, event }) =>
                   context.collaborators.filter((c: any) => c.id !== event.userId)
               })
-            }
-          }
+            } }
+          } }
         },
-        workflowActive: {
-         , initial: 'executingStep',
-          entry: assign({
-           , currentStep: ({ context }) => context.workflow.steps[context.workflow.currentStepIndex] || 'unknown' }),'`'`
-          states: {, executingStep: {, on: {, COMPLETE_STEP: {, target: 'stepCompleted',
-                  actions: assign({
-                   , data: ({ context, event }) => ({ ...context.data, ...event.stepData }),
+        workflowActive: { initial: 'executingStep',
+          entry: assign({ currentStep: ({ context }) => context.workflow.steps[context.workflow.currentStepIndex] || 'unknown' }),'`'`
+          states: { executingStep: { on: { COMPLETE_STEP: { target: 'stepCompleted',
+                  actions: assign({ data: ({ context, event }) => ({ ...context.data, ...event.stepData }),
                     progress: ({ context }) =>
                       Math.round((context.workflow.currentStepIndex + 1) / context.workflow.totalSteps * 100)
                   })
                 },
-                ERROR: {
-                 , target: 'stepError',
-                  actions: assign({
-                   , errors: ({ context, event }) => [...context.errors, event.error]
+                ERROR: { target: 'stepError',
+                  actions: assign({ errors: ({ context, event }) => [...context.errors, event.error]
                   })
-                }
-              }
+                } }
+              } }
             },
-            stepCompleted: {
-             , always: [
-                {,
-                  target: '#userWorkflow.authenticated.workflowCompleted',
+            stepCompleted: { always: [
+                { target: '#userWorkflow.authenticated.workflowCompleted',
                   guard: ({ context }) => context.workflow.currentStepIndex >= context.workflow.totalSteps - 1,
-                  actions: assign({
-                   , workflow: ({ context }) => ({
+                  actions: assign({ workflow: ({ context }) => ({
                       ...context.workflow,
                       status: 'completed' as const,
                       completedAt: new Date()
@@ -180,29 +163,24 @@ export const userWorkflowMachine = createMachine({
                 },
                 {
                   target: 'executingStep',
-                  actions: assign({
-                   , workflow: ({ context }) => ({
+                  actions: assign({ workflow: ({ context }) => ({
                       ...context.workflow,
                       currentStepIndex: context.workflow.currentStepIndex + 1
                     }),
                     currentStep: ({ context }) => {
                       const nextIndex = context.workflow.currentStepIndex + 1;
                       return context.workflow.steps[nextIndex] || 'unknown';
-                    }
+                    } }
                   })
-                }
+                } }
               ]
             },
-            stepError: {, on: {, RETRY: {
-                 , target: 'executingStep',
-                  actions: assign({
-                   , errors: []
+            stepError: { on: { RETRY: { target: 'executingStep',
+                  actions: assign({ errors: []
                   })
                 },
-                NEXT_STEP: {
-                 , target: 'executingStep',
-                  actions: assign({
-                   , workflow: ({ context }) => ({
+                NEXT_STEP: { target: 'executingStep',
+                  actions: assign({ workflow: ({ context }) => ({
                       ...context.workflow,
                       currentStepIndex: Math.min(context.workflow.currentStepIndex + 1, context.workflow.totalSteps - 1)
                     }),
@@ -210,14 +188,12 @@ export const userWorkflowMachine = createMachine({
                     currentStep: ({ context }) => {
                       const nextIndex = Math.min(context.workflow.currentStepIndex + 1, context.workflow.totalSteps - 1);
                       return context.workflow.steps[nextIndex] || 'unknown';
-                    }
+                    } }
                   })
                 },
-                PREVIOUS_STEP: {
-                 , target: 'executingStep',
+                PREVIOUS_STEP: { target: 'executingStep',
                   guard: ({ context }) => context.workflow.currentStepIndex > 0,
-                  actions: assign({
-                   , workflow: ({ context }) => ({
+                  actions: assign({ workflow: ({ context }) => ({
                       ...context.workflow,
                       currentStepIndex: Math.max(context.workflow.currentStepIndex - 1, 0)
                     }),
@@ -225,26 +201,23 @@ export const userWorkflowMachine = createMachine({
                     currentStep: ({ context }) => {
                       const prevIndex = Math.max(context.workflow.currentStepIndex - 1, 0);
                       return context.workflow.steps[prevIndex] || 'unknown';
-                    }
+                    } }
                   })
-                }
-              }
-            }
+                } }
+              } }
+            } }
           },
-          on: {, CANCEL_WORKFLOW: {, target: 'workflowCancelled',
-              actions: assign({
-               , workflow: ({ context }) => ({
+          on: { CANCEL_WORKFLOW: { target: 'workflowCancelled',
+              actions: assign({ workflow: ({ context }) => ({
                   ...context.workflow,
                   status: 'cancelled' as const
                 }),
                 currentStep: `workflow_cancelled' })'`
-            }
-          }
+            } }
+          } }
         },
-        workflowCompleted: {, on: {, START_WORKFLOW: {
-             , target: 'workflowActive',
-              actions: assign({
-               , workflow: ({ event, context }) => ({
+        workflowCompleted: { on: { START_WORKFLOW: { target: 'workflowActive',
+              actions: assign({ workflow: ({ event, context }) => ({
                   ...context.workflow,
                   id: `workflow_${Date.now()}`,
                   type: event.workflowType,
@@ -258,13 +231,11 @@ export const userWorkflowMachine = createMachine({
                 currentStep: 'workflow_started',
                 progress: 0,
                 errors: [],
-                data: ({ event }) => event.data || {}
+                data: ({ event }) => event.data || {} }
               })
             },
-            RESET: {
-             , target: 'ready',
-              actions: assign({
-               , workflow: ({ context }) => ({
+            RESET: { target: 'ready',
+              actions: assign({ workflow: ({ context }) => ({
                   ...context.workflow,
                   status: 'pending' as const,
                   currentStepIndex: 0,
@@ -274,15 +245,13 @@ export const userWorkflowMachine = createMachine({
                 currentStep: 'ready',
                 progress: 0,
                 errors: [],
-                data: { [key,: strin,g]: any }
+                data: { [key,: strin,g]: any } }
               })
-            }
-          }
+            } }
+          } }
         },
-        workflowCancelled: {, on: {, START_WORKFLOW: {
-             , target: 'workflowActive',
-              actions: assign({
-               , workflow: ({ event, context }) => ({
+        workflowCancelled: { on: { START_WORKFLOW: { target: 'workflowActive',
+              actions: assign({ workflow: ({ event, context }) => ({
                   ...context.workflow,
                   id: `workflow_${Date.now()}`,
                   type: event.workflowType,
@@ -296,13 +265,11 @@ export const userWorkflowMachine = createMachine({
                 currentStep: 'workflow_started',
                 progress: 0,
                 errors: [],
-                data: ({ event }) => event.data || {}
+                data: ({ event }) => event.data || {} }
               })
             },
-            RESET: {
-             , target: 'ready',
-              actions: assign({
-               , workflow: ({ context }) => ({
+            RESET: { target: 'ready',
+              actions: assign({ workflow: ({ context }) => ({
                   ...context.workflow,
                   status: 'pending' as const,
                   currentStepIndex: 0,
@@ -312,14 +279,13 @@ export const userWorkflowMachine = createMachine({
                 currentStep: 'ready',
                 progress: 0,
                 errors: [],
-                data: { [key,: strin,g]: any }
+                data: { [key,: strin,g]: any } }
               })
-            }
-          }
-        }
+            } }
+          } }
+        } }
       },
-      on: {, ADD_NOTIFICATION: {, actions: assign({
-           , notifications: ({ context, event }) => [
+      on: { ADD_NOTIFICATION: { actions: assign({ notifications: ({ context, event }) => [
               ...context.notifications,
               {
                 id: `notification_${Date.now()}`,
@@ -327,33 +293,30 @@ export const userWorkflowMachine = createMachine({
                 message: event.notification.message,
                 timestamp: new Date(),
                 read: false
-              }
+              } }
             ]
           })
         },
-        MARK_NOTIFICATION_READ: {, actions: assign({, notifications: ({ context, event }) =>
-              context.notifications.map((n: any) => n.id === event.notificationId ? { ...n, read: true } : n
+        MARK_NOTIFICATION_READ: { actions: assign({ notifications: ({ context, event }) =>
+              context.notifications.map((n: any) => n.id === event.notificationId ? { ...n, read: true } }: n
               )
           })
         },
-        CLEAR_NOTIFICATIONS: {, actions: assign({, notifications: []
+        CLEAR_NOTIFICATIONS: { actions: assign({ notifications: []
           })
         },
-        UPDATE_PREFERENCES: {, actions: assign({, preferences: ({ context, event }) => ({
+        UPDATE_PREFERENCES: { actions: assign({ preferences: ({ context, event }) => ({
               ...context.preferences,
               ...event.preferences
             })
           })
         },
-        LOGOUT: {
-         , target: 'idle',
-          actions: assign({
-           , user: undefined,
+        LOGOUT: { target: 'idle',
+          actions: assign({ user: undefined,
             userId: '',
             activeCase: undefined,
             activeEvidence: undefined,
-            workflow: {
-             , type: 'case_creation' as const,
+            workflow: { type: 'case_creation' as const,
               status: 'pending' as const,
               steps: [],
               currentStepIndex: 0,
@@ -364,12 +327,12 @@ export const userWorkflowMachine = createMachine({
             currentStep: 'idle',
             progress: 0,
             errors: [],
-            data: { [key,: strin,g]: any }
+            data: { [key,: strin,g]: any } }
           })
-        }
-      }
-    }
-  }
+        } }
+      } }
+    } }
+  } }
 }, {
   // Machine options
   actions: {
@@ -377,7 +340,7 @@ export const userWorkflowMachine = createMachine({
   },
   guards: {
     // Custom guards can be defined here if needed
-  }
+  } }
 });
 // Workflow step definitions
 function getWorkflowSteps(workflowType: UserWorkflowContext['workflow']['type']): string[] {
@@ -417,36 +380,36 @@ function getWorkflowSteps(workflowType: UserWorkflowContext['workflow']['type'])
       'close_case_record',
       'case_closed'
     ]
-  }
+  } }
   return workflowSteps[workflowType] || ['unknown_workflow'];
-}
+} }
 export type UserWorkflowMachine = typeof userWorkflowMachine;
 export type UserWorkflowActor = ActorRefFrom<UserWorkflowMachine>;
 // Utility functions
 export function createUserWorkflowActor() {
   return userWorkflowMachine;
-}
+} }
 export function isWorkflowActive(state: any): boolean {
   return state?.matches('authenticated.workflowActive');
-}
+} }
 export function isWorkflowCompleted(state: any): boolean {
   return state?.matches('authenticated.workflowCompleted');
-}
+} }
 export function getCurrentWorkflowStep(context: UserWorkflowContext): string {
   return context.workflow.steps[context.workflow.currentStepIndex] || 'unknown';
-}
+} }
 export function getWorkflowProgress(context: UserWorkflowContext): number {
   return context.progress;
-}
+} }
 export function getUnreadNotifications(context: UserWorkflowContext): number {
   return context.notifications.filter((n: any) => !n.read).length;
-}
+} }
 export function hasActiveCollaborators(context: UserWorkflowContext): boolean {
   return context.collaborators.length > 0;
-}
+} }
 export function canProceedToNextStep(context: UserWorkflowContext): boolean {
   return context.workflow.currentStepIndex < context.workflow.totalSteps - 1;
-}
+} }
 export function canGoToPreviousStep(context: UserWorkflowContext): boolean {
   return context.workflow.currentStepIndex > 0;
 }

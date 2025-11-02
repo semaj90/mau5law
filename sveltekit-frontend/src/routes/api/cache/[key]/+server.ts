@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
 /**
  * Individual cache key API endpoint for headless UI cache sync
  * GET /api/cache/[key] - Get specific cache entry
@@ -8,13 +8,13 @@ import type { RequestHandler } from, './$types.js'
 type JsonValue = string | number | boolean | null | JsonObject | JsonValue[];
 type JsonObject = { [key: string]: JsonValue };
 
-interface CacheEntry {, value: JsonValue;, timestamp: number;
+interface CacheEntry { value: JsonValue;, timestamp: number;
   ttl: number;
   version: string;
-}
+} }
 
 //, Add: dynamic env lookup for Docker/Redis URL (used later when replacing mock with real Redis)
-import { env } from, '$env/dynamic/private';
+import { env } }from '$env/dynamic/private';
 const $DOCKER_REDIS_URL = env.REDIS_URL ?? env.DOCKER_HOST_URL ?? 'redis://:redis@localhost:6379/0';
 // Use it once so the value is not flagged as unused and so it's visible in logs for future real-Redis integration'
 console.debug('[Cache API] configured Redis, URL:', $DOCKER_REDIS_URL);
@@ -28,25 +28,25 @@ function getErrorMessage(err: any): string {
   if (typeof err === 'string') return err;
   try {
     return JSON.stringify(err) || String(err);
-  } catch {
+  } }catch {
     return, 'Unknown error';
-  }
-}
+  } }
+} }
 
 export const GET: RequestHandler = async ({ params }) => {
   try {
-    const { key } = params;
+    const { key } }= params;
     const decodedKey = decodeURIComponent(key);
     const entry = mockCache.get(decodedKey);
 
     if (!entry) {
       return json({ success: false, error: 'Cache key not found' }, { status: 404 });
-    }
+    } }
 
     // Check if expired
     if (Date.now() - entry.timestamp > entry.ttl) {
       mockCache.delete(decodedKey);
-      return json({ success: false, error: 'Cache key expired' }, { status: 404 });'` }'`
+      return json({ success: false, error: 'Cache key expired' }, { status: 404 });'` } }`
 
     return json({
       success: true,
@@ -56,9 +56,9 @@ export const GET: RequestHandler = async ({ params }) => {
       timestamp: entry.timestamp,
       ttl: entry.ttl
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const msg = getErrorMessage(error);
     console.error('[Cache API] Individual key fetch failed:', error);
     return json({ success: false, error: msg }, { status: 500 });
-  }
+  } }
 };

@@ -3,9 +3,9 @@
    - Corrected XState machine actions (assign) and services
    - Fixed helper functions and exports
 */
-import { createMachine, interpret, assign } from 'xstate';
-import type { OptimizedRabbitMQOrchestrator, JobType, JobDefinition } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js';
-import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js';
+import { createMachine, interpret, assign } }from 'xstate';
+import type { OptimizedRabbitMQOrchestrator, JobType, JobDefinition } }from '$lib/orchestration/optimized-rabbitmq-orchestrator.js';
+import { rabbitmqService } }from '$lib/server/messaging/rabbitmq-service.js';
 
 /**
  * Auto-Attach Self-Optimized Queue Manager
@@ -19,100 +19,99 @@ export interface QueueAttachment { queueName: string;, jobTypes: JobType[];
   performance: QueuePerformance;
   autoScaling: AutoScalingState;
   lastOptimized: number;
-}
+} }
 
-export interface QueueWorker {, id: string;, status: 'idle' | 'busy' | 'overloaded' | 'error' | 'scaling';
+export interface QueueWorker { id: string;, status: 'idle' | 'busy' | 'overloaded' | 'error' | 'scaling';
   currentJob?: string;
   capabilities: WorkerCapability[];
   performance: WorkerPerformance;
   health: WorkerHealth;
-}
+} }
 
-export interface WorkerCapability {, type: JobType;, proficiency: number; // 0-1 scale
+export interface WorkerCapability { type: JobType;, proficiency: number; // 0-1 scale
   resourceCost: ResourceCost;
   specialization: string[];
-}
+} }
 
-export interface WorkerPerformance {, jobsCompleted: number;, avgProcessingTime: number;
+export interface WorkerPerformance { jobsCompleted: number;, avgProcessingTime: number;
   successRate: number;
   throughput: number;
   efficiency: number;
   lastUpdateTime: number;
-}
+} }
 
-export interface WorkerHealth {, cpuUsage: number;, memoryUsage: number;
+export interface WorkerHealth { cpuUsage: number;, memoryUsage: number;
   gpuUsage?: number;
   temperature: number;
   errorRate: number;
   uptime: number;
-}
+} }
 
-export interface ResourceCost {, cpu: number;, memory: number;
+export interface ResourceCost { cpu: number;, memory: number;
   gpu?: number;
   network: number;
   storage: number;
-}
+} }
 
-export interface QueueConfiguration {, maxConcurrency: number;, prefetchCount: number;
+export interface QueueConfiguration { maxConcurrency: number;, prefetchCount: number;
   retryPolicy: RetryPolicy;
   loadBalancing: LoadBalancingStrategy;
   prioritization: PrioritizationRules;
   autoOptimization: AutoOptimizationSettings;
-}
+} }
 
-export interface RetryPolicy {, maxRetries: number;, backoffStrategy: 'linear' | 'exponential' | 'fibonacci' | 'adaptive';
+export interface RetryPolicy { maxRetries: number;, backoffStrategy: 'linear' | 'exponential' | 'fibonacci' | 'adaptive';
   baseDelay: number;
   maxDelay: number;
   retryConditions: string[];
-}
+} }
 
-export interface LoadBalancingStrategy {
- , algorithm: 'round_robin' | 'least_connections' | 'weighted' | 'cpu_aware' | 'ml_predicted';
+export interface LoadBalancingStrategy { algorithm: 'round_robin' | 'least_connections' | 'weighted' | 'cpu_aware' | 'ml_predicted';
   weights?: Map<string, number>;
   healthThreshold: number;
   failoverEnabled: boolean;
-}
+} }
 
-export interface PrioritizationRules {, enabled: boolean;, rules: PriorityRule[];
+export interface PrioritizationRules { enabled: boolean;, rules: PriorityRule[];
   dynamicAdjustment: boolean;
  , userBoosts: Map<string, number>;
-}
+} }
 
 export interface PriorityRule { condition: string;, boost: number;
   duration?: number;
   tags?: string[];
-}
+} }
 
-export interface AutoOptimizationSettings {, enabled: boolean;, optimizationInterval: number;
+export interface AutoOptimizationSettings { enabled: boolean;, optimizationInterval: number;
   learningEnabled: boolean;
   adaptiveThresholds: boolean;
   historicalWindow: number;
   optimizationStrategies: string[];
-}
+} }
 
-export interface QueuePerformance {, throughput: number;, avgWaitTime: number;
+export interface QueuePerformance { throughput: number;, avgWaitTime: number;
   processingTime: number;
   errorRate: number;
   utilization: number;
   bottlenecks: BottleneckInfo[];
   trends: PerformanceTrend[];
-}
+} }
 
-export interface BottleneckInfo {, type: 'cpu' | 'memory' | 'gpu' | 'network' | 'queue_depth' | 'worker_availability';, severity: number; // 0-1 scale
+export interface BottleneckInfo { type: 'cpu' | 'memory' | 'gpu' | 'network' | 'queue_depth' | 'worker_availability';, severity: number; // 0-1 scale
   impact: number;   // 0-1 scale
   detectedAt: number;
   suggestedFix: string;
   autoFixApplied: boolean;
-}
+} }
 
-export interface PerformanceTrend {, metric: string;, direction: 'improving' | 'degrading' | 'stable';
+export interface PerformanceTrend { metric: string;, direction: 'improving' | 'degrading' | 'stable';
   rate: number;
   confidence: number;
   predictedValue: number;
   timeHorizon: number;
-}
+} }
 
-export interface AutoScalingState {, enabled: boolean;, currentWorkers: number;
+export interface AutoScalingState { enabled: boolean;, currentWorkers: number;
   minWorkers: number;
   maxWorkers: number;
   targetUtilization: number;
@@ -121,31 +120,30 @@ export interface AutoScalingState {, enabled: boolean;, currentWorkers: number;
   cooldownPeriod: number;
   lastScaleAction: number;
   pendingScaleActions: ScaleAction[];
-}
+} }
 
-export interface ScaleAction {, type: 'scale_up' | 'scale_down';, workerCount: number;
+export interface ScaleAction { type: 'scale_up' | 'scale_down';, workerCount: number;
   reason: string;
   scheduledAt: number;
   estimatedDuration: number;
-}
+} }
 
-export interface AttachmentContext {
- , attachments: Map<string, QueueAttachment>;
+export interface AttachmentContext { attachments: Map<string, QueueAttachment>;
   globalPerformance: GlobalPerformance;
   optimizationHistory: OptimizationEvent[];
   systemResources: SystemResourceSnapshot;
   learningData: LearningData;
   configuration: GlobalConfiguration;
-}
+} }
 
-export interface GlobalPerformance {, totalThroughput: number;, avgResponseTime: number;
+export interface GlobalPerformance { totalThroughput: number;, avgResponseTime: number;
   systemUtilization: number;
   queueHealth: number;
   predictedCapacity: number;
   bottleneckSeverity: number;
-}
+} }
 
-export interface OptimizationEvent {, timestamp: number;, type: string;
+export interface OptimizationEvent { timestamp: number;, type: string;
   queueName: string;
   action: string;
   // Stronger typed parameter bag instead of `any`
@@ -154,82 +152,81 @@ export interface OptimizationEvent {, timestamp: number;, type: string;
   beforeMetrics: Partial<QueuePerformance> | Record<string, unknown>;
   afterMetrics: Partial<QueuePerformance> | Record<string, unknown>;
   effectiveness: number;
-}
+} }
 
-export interface SystemResourceSnapshot {, timestamp: number;, cpu: ResourceSnapshot;
+export interface SystemResourceSnapshot { timestamp: number;, cpu: ResourceSnapshot;
   memory: ResourceSnapshot;
   gpu?: ResourceSnapshot;
   network: ResourceSnapshot;
   storage: ResourceSnapshot;
-}
+} }
 
-export interface ResourceSnapshot {, total: number;, used: number;
+export interface ResourceSnapshot { total: number;, used: number;
   available: number;
   utilization: number;
   trend: 'increasing' | 'decreasing' | 'stable';
-}
+} }
 
-export interface LearningData {
- , jobPatterns: Map<JobType, JobPattern>;
+export interface LearningData { jobPatterns: Map<JobType, JobPattern>;
   optimalConfigurations: Map<string, QueueConfiguration>;
   performancePredictions: Map<string, PerformancePrediction>;
   anomalyBaselines: Map<string, AnomalyBaseline>;
-}
+} }
 
 export interface JobPattern { frequency: number[];        // Hourly frequency over last week, avgDuration: number;
   resourceRequirements: ResourceCost;
   dependencies: JobType[];
   seasonality: SeasonalityInfo;
   userBehavior: QueueUserBehaviorPattern;
-}
+} }
 
-export interface SeasonalityInfo {, dailyPattern: number[];     // 24 hours, weeklyPattern: number[];    // 7 days
+export interface SeasonalityInfo { dailyPattern: number[];     // 24 hours, weeklyPattern: number[];    // 7 days
   monthlyTrend: number;
   confidence: number;
-}
+} }
 
-export interface QueueUserBehaviorPattern {, peakHours: number[];, avgSessionDuration: number;
+export interface QueueUserBehaviorPattern { peakHours: number[];, avgSessionDuration: number;
   jobSubmissionRate: number;
   preferredJobTypes: JobType[];
-}
+} }
 
-export interface PerformancePrediction {, metric: string;, predictedValue: number;
+export interface PerformancePrediction { metric: string;, predictedValue: number;
   confidence: number;
   timeHorizon: number;
   methodology: string;
   factors: PredictionFactor[];
-}
+} }
 
-export interface PredictionFactor {, name: string;, impact: number;
+export interface PredictionFactor { name: string;, impact: number;
   confidence: number;
-}
+} }
 
-export interface AnomalyBaseline {, metric: string;, normalRange: [number, number];
+export interface AnomalyBaseline { metric: string;, normalRange: [number, number];
   seasonalAdjustment: number[];
   sensitivity: number;
   falsePositiveRate: number;
-}
+} }
 
-export interface GlobalConfiguration {, autoAttachThreshold: number;, optimizationInterval: number;
+export interface GlobalConfiguration { autoAttachThreshold: number;, optimizationInterval: number;
   learningRate: number;
   anomalyDetectionEnabled: boolean;
   predictiveScalingEnabled: boolean;
   experimentalFeaturesEnabled: boolean;
  , enableN64Logging: boolean;
-}
+} }
 
 /* Events (clean) */
 type AttachmentEvent =
-  | { type: 'DETECT_WORKLOAD_PATTERN';, pattern: Record<string, unknown> }
-  | { type: 'ATTACH_QUEUE'; queueName: string; jobTypes: JobType[] }
-  | { type: 'DETACH_QUEUE'; queueName: string }
-  | { type: 'OPTIMIZE_QUEUE'; queueName: string }
-  | { type: 'SCALE_WORKERS'; queueName: string; action: ScaleAction }
-  | { type: 'WORKER_HEALTH_UPDATE'; workerId: string; health: WorkerHealth }
-  | { type: 'PERFORMANCE_THRESHOLD_BREACH'; queueName: string; metric: string; value: number }
-  | { type: 'LEARN_FROM_DATA' }
-  | { type: 'APPLY_OPTIMIZATIONS' }
-  | { type: 'HANDLE_ANOMALY'; queueName: string;, anomaly: Record<string, unknown> };
+  | { type: 'DETECT_WORKLOAD_PATTERN'; pattern: Record<string, unknown> } }
+  | { type: 'ATTACH_QUEUE'; queueName: string; jobTypes: JobType[] } }
+  | { type: 'DETACH_QUEUE'; queueName: string } }
+  | { type: 'OPTIMIZE_QUEUE'; queueName: string } }
+  | { type: 'SCALE_WORKERS'; queueName: string; action: ScaleAction } }
+  | { type: 'WORKER_HEALTH_UPDATE'; workerId: string; health: WorkerHealth } }
+  | { type: 'PERFORMANCE_THRESHOLD_BREACH'; queueName: string; metric: string; value: number } }
+  | { type: 'LEARN_FROM_DATA' } }
+  | { type: 'APPLY_OPTIMIZATIONS' } }
+  | { type: 'HANDLE_ANOMALY'; queueName: string; anomaly: Record<string, unknown> };
 
 /* Machine */
 /* NOTE: removed explicit generics from createMachine(...) to avoid XState v5 generic arity errors.
@@ -238,10 +235,8 @@ type AttachmentEvent =
 const autoAttachMachine = createMachine({
   id: 'autoAttachQueueManager',
   initial: 'initializing',
-  context: {
-   , attachments: new Map(),
-    globalPerformance: {
-     , totalThroughput: 0,
+  context: { attachments: new Map(),
+    globalPerformance: { totalThroughput: 0,
       avgResponseTime: 0,
       systemUtilization: 0,
       queueHealth: 1.0,
@@ -249,79 +244,70 @@ const autoAttachMachine = createMachine({
       bottleneckSeverity: 0
     },
     optimizationHistory: [],
-    systemResources: {
-     , timestamp: Date.now(),
-      cpu: {, total: 100, used: 0, available: 100, utilization: 0, trend: 'stable' },
-      memory: {, total: 32, used: 0, available: 32, utilization: 0, trend: 'stable' },
-      network: {, total: 1000, used: 0, available: 1000, utilization: 0, trend: 'stable' },
-      storage: {, total: 1000, used: 0, available: 1000, utilization: 0, trend: 'stable' }
+    systemResources: { timestamp: Date.now(),
+      cpu: { total: 100, used: 0, available: 100, utilization: 0, trend: 'stable' },
+      memory: { total: 32, used: 0, available: 32, utilization: 0, trend: 'stable' },
+      network: { total: 1000, used: 0, available: 1000, utilization: 0, trend: 'stable' },
+      storage: { total: 1000, used: 0, available: 1000, utilization: 0, trend: 'stable' } }
     },
-    learningData: {
-     , jobPatterns: new Map(),
+    learningData: { jobPatterns: new Map(),
       optimalConfigurations: new Map(),
       performancePredictions: new Map(),
       anomalyBaselines: new Map()
     },
-    configuration: {
-     , autoAttachThreshold: 0.8,
+    configuration: { autoAttachThreshold: 0.8,
       optimizationInterval: 30000,
       learningRate: 0.1,
       anomalyDetectionEnabled: true,
       predictiveScalingEnabled: true,
       experimentalFeaturesEnabled: false,
       enableN64Logging: false
-    }
+    } }
   },
-  states: {, initializing: {, entry: 'initializeBaselineMetrics',
-      invoke: {
-       , id: 'systemDiscovery',
+  states: { initializing: { entry: 'initializeBaselineMetrics',
+      invoke: { id: 'systemDiscovery',
         src: 'discoverExistingQueues',
-        onDone: {
-         , target: 'monitoring',
+        onDone: { target: 'monitoring',
           actions: 'attachExistingQueues'
         },
         onError: 'error'
-      }
+      } }
     },
     monitoring: {
       invoke: [
-        {, id: 'performanceMonitor', src: 'monitorGlobalPerformance' },
+        { id: 'performanceMonitor', src: 'monitorGlobalPerformance' },
         { id: 'workloadDetector', src: 'detectWorkloadPatterns' },
-        { id: 'anomalyDetector', src: 'detectAnomalies' }
+        { id: 'anomalyDetector', src: 'detectAnomalies' } }
       ],
       initial: 'active',
-      states: {, active: {, on: {, DETECT_WORKLOAD_PATTERN: {, actions: 'evaluateAutoAttachment' },
-            ATTACH_QUEUE: {, actions: 'attachQueue' },
-            DETACH_QUEUE: {, actions: 'detachQueue' },
-            WORKER_HEALTH_UPDATE: {, actions: 'updateWorkerHealth' },
+      states: { active: { on: { DETECT_WORKLOAD_PATTERN: { actions: 'evaluateAutoAttachment' },
+            ATTACH_QUEUE: { actions: 'attachQueue' },
+            DETACH_QUEUE: { actions: 'detachQueue' },
+            WORKER_HEALTH_UPDATE: { actions: 'updateWorkerHealth' },
             PERFORMANCE_THRESHOLD_BREACH: 'optimizing',
-            HANDLE_ANOMALY: {, actions: 'handleAnomaly' }
+            HANDLE_ANOMALY: { actions: 'handleAnomaly' } }
           },
-          after: {, 30000: 'learning' }
+          after: { 30000: 'learning' } }
         },
-        learning: {
-         , entry: 'collectLearningData',
-          invoke: {
-           , id: 'machineLearning',
+        learning: { entry: 'collectLearningData',
+          invoke: { id: 'machineLearning',
             src: 'runLearningAlgorithms',
-            onDone: {, target: 'optimizing', actions: 'storeLearningResults' },
-            onError: 'active' }'` },'`
-        optimizing: {
-         , entry: 'startOptimization',
-          invoke: {
-           , id: 'optimizer',
+            onDone: { target: 'optimizing', actions: 'storeLearningResults' },
+            onError: 'active' } }` },'`
+        optimizing: { entry: 'startOptimization',
+          invoke: { id: 'optimizer',
             src: 'runOptimizationEngine',
-            onDone: {, target: 'active', actions: `applyOptimizations` },
-            onError: `active` }
-        }
-      }
+            onDone: { target: 'active', actions: `applyOptimizations` },
+            onError: `active` } }
+        } }
+      } }
     },
-    error: { after: {, 10000: `initializing` } }
-  }
+    error: { after: { 10000: `initializing` } }} }
+  } }
 }, {
   actions: {
     // initializeBaselineMetrics now returns a fully populated GlobalPerformance: object
-    initializeBaselineMetrics: assign({, globalPerformance: () => ({, totalThroughput: 0,
+    initializeBaselineMetrics: assign({ globalPerformance: () => ({ totalThroughput: 0,
         avgResponseTime: 0,
         systemUtilization: 0,
         queueHealth: 1.0,
@@ -362,7 +348,7 @@ const autoAttachMachine = createMachine({
     },
     startOptimization: (_ctx, _evt) => {
       // placeholder: bootstrap optimization process
-    }
+    } }
   },
   services: {
     // Minimal service stubs to satisfy invoked services in the state machine.
@@ -383,7 +369,7 @@ const autoAttachMachine = createMachine({
     detectWorkloadPatterns: (_ctx: AttachmentContext, _evt: AttachmentEvent) => (_send: (e: AttachmentEvent) => void) => {
       // placeholder: detect workload patterns and send DETECT_WORKLOAD_PATTERN when appropriate
       const interval = setInterval(() => {
-        _send({ type: 'DETECT_WORKLOAD_PATTERN', pattern: {} });
+        _send({ type: 'DETECT_WORKLOAD_PATTERN', pattern: {} }});
       }, 20000);
       return () => clearInterval(interval);
     },
@@ -392,14 +378,15 @@ const autoAttachMachine = createMachine({
       // lightweight anomaly scanning loop; send HANDLE_ANOMALY when something is detected
       const interval = setInterval(() => {
         // No-op scan for now; implement anomaly detection later.
-        // Example send: _send({, type: 'HANDLE_ANOMALY', queueName: 'q1', anomaly: {} });
+        // Example send: _send({ type: 'HANDLE_ANOMALY', queueName: 'q1', anomaly: {} }});
       }, 60000);
       return () => clearInterval(interval);
-    }
-  }
-} as: any); // cast to: any to avoid XState internal typing mismatch, for: 'services'
+    } }
+  } }
+} }as: any); // cast to: any to avoid XState internal typing mismatch, for: 'services'
 
 // Start and export a running interpreter for convenience.
 export const autoAttachService = interpret(autoAttachMachine).start();
 export { autoAttachMachine };
+
 

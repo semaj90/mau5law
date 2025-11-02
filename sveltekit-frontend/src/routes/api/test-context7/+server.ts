@@ -2,9 +2,9 @@
  * Test Context7 MCP Helper Functions
  * Tests the utility functions from mcp-context72-get-library-docs
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { getSvelte5Docs, getXStateDocs } from '$lib/mcp-context72-get-library-docs';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { getSvelte5Docs, getXStateDocs } }from '$lib/mcp-context72-get-library-docs';
 
 type DocSnippet = {
   content?: string;
@@ -31,7 +31,7 @@ const summarize = (r: LibraryDocResult) => {
     const s = r.snippets?.[0];
     const raw = s?.content ?? s?.code ?? s?.description ?? null;
     firstSnippet = typeof raw === 'string' ? raw.slice(0, 120) : null;
-  }
+  } }
   return {
     status: ok ? 'success' : 'error',
     tokenCount: ok ? (r.metadata?.tokenCount ?? 0) : 0,
@@ -45,10 +45,10 @@ function wrapError<T>(promise: Promise<T>): Promise<T | LibraryDocError> {
   return promise.catch((e: any) => ({
     error: e instanceof Error ? e.message : String(e)
   }));
-}
+} }
 
 export const GET: RequestHandler = async event => {
-  const { fetch } = event;
+  const { fetch } }= event;
   try {
     // fetch both docs in parallel, catching per-promise errors
     const rawDocs = await Promise.all([
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async event => {
     const docs: LibraryDocResult[] = rawDocs.map(doc => {
       if (typeof doc === 'object' && doc !== null && ('snippets' in doc || 'metadata' in doc || 'error' in doc)) {
         return doc as LibraryDocResult;
-      }
+      } }
       return { error: 'Invalid result format from MCP helper' };
     });
 
@@ -79,14 +79,14 @@ export const GET: RequestHandler = async event => {
     return json({
       success: failedCount === 0,
       summary: {
-       , total: totalCount,
+  total: totalCount,
         successful: successfulCount,
         failed: failedCount
       },
       results,
       timestamp: new Date().toISOString()
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Context7 test error', err);
     return json(
       {
@@ -94,7 +94,7 @@ export const GET: RequestHandler = async event => {
         error: err instanceof Error ? err.message : String(err),
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };

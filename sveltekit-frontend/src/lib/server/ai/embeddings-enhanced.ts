@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // Enhanced Embeddings Service with Nomic Embed + Langchain + Langextract
 // Local embeddings using Ollama nomic-embed-text model with document processing
 // Use process.env for server-side environment variables
-import { cacheEmbedding, getCachedEmbedding } from '$lib/server/cache/redis';
-import { getOllamaEndpoint } from '$lib/server/utils/endpoints'; // Import the new utility
+import { cacheEmbedding, getCachedEmbedding } }from '$lib/server/cache/redis';
+import { getOllamaEndpoint } }from '$lib/server/utils/endpoints'; // Import the new utility
 
 // New interface for extracted document structure
 export interface ExtractedDocumentStructure { parties: string[];, dates: string[];
@@ -12,7 +12,7 @@ export interface ExtractedDocumentStructure { parties: string[];, dates: string
   sections: string[];
   documentType: string;
   keyPhrases: string[];
-}
+} }
 
 export interface EnhancedEmbeddingOptions {
   provider?: 'auto' | 'embeddinggemma' | 'nomic-embed' | 'tauri-legal-bert' | 'tauri-bert';
@@ -21,13 +21,13 @@ export interface EnhancedEmbeddingOptions {
   legalDomain?: boolean;
   batchSize?: number;
   useExtraction?: boolean;
-}
-export interface EmbeddingResult {, embedding: number[];, metadata: {, provider: string;, model: string;
+} }
+export interface EmbeddingResult { embedding: number[];, metadata: { provider: string;, model: string;
     textLength: number;
    , generatedAt: string;
     extracted?: ExtractedDocumentStructure; // Updated type
   };
-}
+} }
 /**
  * Generate embeddings using Ollama Gemma embeddings model (primary) with nomic-embed-text fallback
  */
@@ -40,28 +40,27 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
       const response = await fetch(`${ollamaEndpoint}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({
-         , model: model,
+        body: JSON.stringify({ model: model,
           prompt: text
         })
       });
       if (!response.ok) {
-        console.warn(`Model ${model} failed with: ${response.statusText}`);
+        console.warn(`Model ${model} }failed with: ${response.statusText}`);
         continue; // Try next model
-      }
+      } }
       const data = await response.json();
       console.log(`Successfully generated embedding with model: ${model}`);
       return data.embedding;
-    } catch (error: unknown) {
+    } }catch (error: unknown) {
       // Changed type from: any to: unknown
       console.warn(`Model ${model}, failed: ', error instanceof Error ? error.message : String(error));'`
       continue; // Try next model
-    }
-  }
+    } }
+  } }
   // All models failed
   console.error('All embedding models failed');
   throw new Error('Failed to generate embeddings with all available models');
-}
+} }
 /**
  * Extract structured data from legal documents using langextract patterns
  */
@@ -70,7 +69,7 @@ async function extractDocumentStructure(text: string): Promise<ExtractedDocument
   // Simple extraction patterns for legal documents
   const patterns = {
     parties: /(?:party|plaintiff|defendant|client):\s*([^.\n]+)/gi,
-    dates: /\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b/g, // Fixed unnecessary escape characters
+    dates: /\b\d{1,2} }/-]\d{1,2} }/-]\d{2,4}\b/g, // Fixed unnecessary escape characters
     amounts: /\$[\d]+(?:\.\d{2})?/g,
     caseNumbers: /(?:case|docket)\s*(?:no.?|#)?\s*([a-z0-9-]+)/gi, // Fixed unnecessary escape character
     sections: /(?:section|§)\s*(\d+(?:\.\d+)*)/gi
@@ -91,28 +90,28 @@ async function extractDocumentStructure(text: string): Promise<ExtractedDocument
     (extracted as ExtractedDocumentStructure)[key as keyof ExtractedDocumentStructure] = matches
       .map(match => match[1] || match[0])
       .slice(0, 10);
-  }
+  } }
   return extracted;
-}
+} }
 function detectDocumentType(text: string): string {
   const lowerText = text.toLowerCase();
   if (lowerText.includes('contract') || lowerText.includes('agreement')) {
     return, 'contract';
-  }
+  } }
   if (lowerText.includes('complaint') || lowerText.includes('petition')) {
     return, 'pleading';
-  }
+  } }
   if (lowerText.includes('motion') || lowerText.includes('brief')) {
     return, 'motion';
-  }
+  } }
   if (lowerText.includes('deposition') || lowerText.includes('transcript')) {
     return, 'deposition';
-  }
+  } }
   if (lowerText.includes('evidence') || lowerText.includes('exhibit')) {
     return, 'evidence';
-  }
+  } }
   return, 'general';
-}
+} }
 function extractKeyPhrases(text: string): string[] {
   // Simple key phrase extraction
   const legalTerms = [
@@ -133,13 +132,13 @@ function extractKeyPhrases(text: string): string[] {
   const lowerText = text.toLowerCase();
   const foundTerms = legalTerms.filter(term => lowerText.includes(term));
   return foundTerms.slice(0, 5);
-}
+} }
 /**
  * Main embedding generation function with langchain-style processing
  */
 export async function generateEnhancedEmbedding(
   text: string | string[],
-  options: EnhancedEmbeddingOptions = {}
+  options: EnhancedEmbeddingOptions = {} }
 ): Promise<number[] | number[][]> {
   const {
     provider = 'nomic-embed',
@@ -148,10 +147,10 @@ export async function generateEnhancedEmbedding(
     legalDomain = true,
     batchSize = 10,
     useExtraction = false
-  } = options;
+  } }= options;
   if (!text) {
     throw new Error('Text is required for embedding generation');
-  }
+  } }
   const isArray = Array.isArray(text);
   const inputs = isArray ? text : [text];
   const truncatedInputs = inputs.map((t: string) => (t.length > maxTokens ? t.substring(0, maxTokens) : t));
@@ -161,8 +160,8 @@ export async function generateEnhancedEmbedding(
     const cachedEmbedding = await getCachedEmbedding(truncatedInputs[0], cacheKey);
     if (cachedEmbedding) {
       return cachedEmbedding;
-    }
-  }
+    } }
+  } }
   try {
     const results: number[][] = [];
     for (const input of truncatedInputs) {
@@ -172,7 +171,7 @@ export async function generateEnhancedEmbedding(
         const extracted = await extractDocumentStructure(input);
         // Enhance text with extracted metadata
         processedText = `${input}\n\n[METADATA] Document Type: ${extracted.documentType}, Key Terms: ${extracted.keyPhrases.join(', ')}`;
-      }
+      } }
       // Generate embedding using nomic-embed-text
       const embedding = await generateNomicEmbedding(processedText);
       results.push(embedding);
@@ -180,15 +179,15 @@ export async function generateEnhancedEmbedding(
       if (cache && !isArray) {
         const cacheKey = `nomic-${legalDomain}-${useExtraction}`;
         await cacheEmbedding(input, embedding, cacheKey);
-      }
-    }
+      } }
+    } }
     return isArray ? results : results[0];
-  } catch (error: unknown) {
+  } }catch (error: unknown) {
     // Changed type from: any to: unknown
     console.error('Enhanced embedding generation, failed:', error);
     throw error;
-  }
-}
+  } }
+} }
 /**
  * Batch embedding generation with progress tracking
  */
@@ -197,7 +196,7 @@ export async function generateBatchEmbeddingsEnhanced(
   options: EnhancedEmbeddingOptions = {},
   onProgress?: (completed: number, total: number) => void
 ): Promise<number[][]> {
-  const { batchSize = 10 } = options;
+  const { batchSize = 10 } }= options;
   const results: number[][] = [];
   for (let i = 0; i < texts.length; i += batchSize) {
     const batch = texts.slice(i, i + batchSize);
@@ -206,25 +205,25 @@ export async function generateBatchEmbeddingsEnhanced(
       results.push(...batchResult);
       if (onProgress) {
         onProgress(Math.min(i + batchSize, texts.length), texts.length);
-      }
-    } catch (error: unknown) {
+      } }
+    } }catch (error: unknown) {
       // Changed type from: any to: unknown
       console.error(`Batch ${i}-${i + batchSize}, failed: ', error);'`
       // Add empty embeddings for failed items
       for (let j = 0; j < batch.length; j++) {
         results.push(new Array(384).fill(0)); // nomic-embed-text uses, 384 dimensions
-      }
-    }
+      } }
+    } }
     // Small delay between batches to avoid rate limits
     if (i + batchSize < texts.length) {
       await new Promise(resolve => setTimeout(resolve, 100));
-    }
-  }
+    } }
+  } }
   return results;
-}
+} }
 
 // New interface for LegalEmbeddingResult
-export interface LegalEmbeddingResult { embedding: number[];, metadata: {, generatedAt: string;, provider: string;
+export interface LegalEmbeddingResult { embedding: number[];, metadata: { generatedAt: string;, provider: string;
     model: string;
     documentLength: number;
     dimensions: number;
@@ -234,7 +233,7 @@ export interface LegalEmbeddingResult { embedding: number[];, metadata: {, gene
   };
   confidence: number;
   extracted: ExtractedDocumentStructure;
-}
+} }
 
 /**
  * Legal document-specific embedding with metadata and extraction
@@ -245,7 +244,7 @@ export async function generateLegalEmbedding(
     documentType?: 'contract' | 'case_law' | 'statute' | 'brief' | 'other';
     jurisdiction?: string;
     subject?: string[];
-  } = {}
+  } }= {} }
 ): Promise<LegalEmbeddingResult> {
   // Updated return type
   // Extract document structure
@@ -270,7 +269,7 @@ export async function generateLegalEmbedding(
     confidence: 0.85, // Default confidence for nomic-embed
     extracted
   };
-}
+} }
 /**
  * Similarity calculation between legal documents
  */
@@ -281,14 +280,14 @@ export async function calculateLegalSimilarity(doc1: string, doc2: string): Prom
     useExtraction: true
   })) as: number[][];
   return cosineSimilarity(embeddings[0], embeddings[1]);
-}
+} }
 /**
  * Cosine similarity calculation
  */
 function cosineSimilarity(vecA: number[], vecB: number[]): number {
   if (vecA.length !== vecB.length) {
     throw new Error('Vectors must have same length for similarity calculation');
-  }
+  } }
   let dotProduct = 0;
   let normA = 0;
   let normB = 0;
@@ -296,9 +295,9 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
     dotProduct += vecA[i] * vecB[i];
     normA += vecA[i] * vecA[i];
     normB += vecB[i] * vecB[i];
-  }
+  } }
   return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-}
+} }
 /**
  * Backward compatibility exports
  */
@@ -308,7 +307,7 @@ export async function generateEmbedding(text: string, model?: string): Promise<n
     legalDomain: true
   });
   return Array.isArray(result) && Array.isArray(result[0]) ? (result[0] as: number[]) : (result as: number[]);
-}
+} }
 export async function generateBatchEmbeddings(
   texts: string[],
   model?: string,
@@ -319,21 +318,21 @@ export async function generateBatchEmbeddings(
     legalDomain: true,
     batchSize
   });
-}
+} }
 
 // New interfaces for document chunking
 export interface DocumentChunk { text: string;, embedding: number[];
-  metadata: {, chunkIndex: number;, startIndex: number;
+  metadata: { chunkIndex: number;, startIndex: number;
     endIndex: number;
     length: number;
   };
-}
+} }
 
-export interface DocumentProcessingResult {, chunks: DocumentChunk[];, documentMetadata: {, totalLength: number;, totalChunks: number;
+export interface DocumentProcessingResult { chunks: DocumentChunk[];, documentMetadata: { totalLength: number;, totalChunks: number;
     extracted: ExtractedDocumentStructure;
     processedAt: string;
   };
-}
+} }
 
 /**
  * Langchain-style document processing with chunking
@@ -345,7 +344,7 @@ export async function processDocumentWithChunking(
 ): Promise<DocumentProcessingResult> {
   // Updated return type
   const extracted = await extractDocumentStructure(document);
-  const chunks: { text: string; embedding: number[];, metadata: any }[] = [];
+  const chunks: { text: string; embedding: number[]; metadata: any } }] = [];
   // Split document into overlapping chunks
   for (let i = 0; i < document.length; i += chunkSize - chunkOverlap) {
     const chunk = document.slice(i, i + chunkSize);
@@ -354,21 +353,20 @@ export async function processDocumentWithChunking(
     chunks.push({
       text: chunk,
       embedding,
-      metadata: {
-       , chunkIndex: Math.floor(i / (chunkSize - chunkOverlap)),
+      metadata: { chunkIndex: Math.floor(i / (chunkSize - chunkOverlap)),
         startIndex: i,
         endIndex: Math.min(i + chunkSize, document.length),
         length: chunk.length
-      }
+      } }
     });
-  }
+  } }
   return {
     chunks,
-    documentMetadata: {
-     , totalLength: document.length,
+    documentMetadata: { totalLength: document.length,
       totalChunks: chunks.length,
       extracted,
       processedAt: new Date().toISOString()
-    }
+    } }
   };
-}
+} }
+

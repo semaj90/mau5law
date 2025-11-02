@@ -1,4 +1,4 @@
-import type { SvelteComponentTyped } from 'svelte';
+import type { SvelteComponentTyped } }from 'svelte';
 
 /**
  * A single dashboard card entry.
@@ -21,3 +21,4 @@ export type DashboardCard = {
  * Layout keyed by region/slot name (e.g. "left", "right", "top", "overview").
  */
 export type DashboardLayout = Record<string, { cards: DashboardCard[] }>;
+

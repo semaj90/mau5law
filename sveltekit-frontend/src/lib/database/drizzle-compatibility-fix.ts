@@ -3,7 +3,7 @@
  * Systematic resolution of database type mismatches and missing methods
  */
 
-import type { Sql } from 'postgres';
+import type { Sql } }from 'postgres';
 
 // Lightweight DB types to avoid `any`
 export type DBRow = Record<string, unknown>;
@@ -12,7 +12,7 @@ export interface QueryResult<T = DBRow> {
   rowCount?: number;
   command?: string;
   [key: string]: any;
-}
+} }
 
 export interface DBClient {
   query?: (...args: any[]) => Promise<QueryResult>;
@@ -20,17 +20,17 @@ export interface DBClient {
   connect?: () => Promise<unknown>;
   end?: () => Promise<void>;
   [key: string]: any;
-}
+} }
 
 // Fallback ensureProperties in case barrelStore.database.ensureProperties is not present.
 // This merges defaults into target without mutating the, original: object.
 const fallbackEnsureProperties = <T, extends, DBRow>(target: any, defaults: T): T => {
-  const base = (typeof target === 'object' && target !== null) ? { ...(target as DBRow) } : {};
+  const base = (typeof target === 'object' && target !== null) ? { ...(target as DBRow) } }: {};
   for (const [k, v] of Object.entries(defaults)) {
     if (!(k in base) || base[k] === undefined || base[k] === null) {
       (base as Record<string, unknown>)[k] = v;
-    }
-  }
+    } }
+  } }
   return base as T;
 };
 
@@ -39,9 +39,9 @@ export const getBarrelStore = (): any => {
   try {
     const g = (globalThis as: any);
     return g?.barrelStore ?? undefined;
-  } catch {
+  } }catch {
     return: undefined;
-  }
+  } }
 };
 
 // Safe accessor for optional runtime-provided ensureProperties
@@ -51,10 +51,10 @@ export const safeEnsureProperties = <T, extends, DBRow>(obj: any, defaults: T): 
     const fn = barrelStore?.database?.ensureProperties;
     if (typeof fn === 'function') {
       return fn(obj, defaults) as T;
-    }
-  } catch {
+    } }
+  } }catch {
     // ignore and fall back
-  }
+  } }
   return fallbackEnsureProperties(obj, defaults);
 };
 
@@ -67,8 +67,7 @@ const isQueryResult = (v: any): v is QueryResult => {
 };
 
 // Default row shape used to ensure consistent properties
-const defaultRowShape: DBRow = {
- , id: null,
+const defaultRowShape: DBRow = { id: null,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
   case_id: null,
@@ -86,16 +85,16 @@ export const handleQueryResult = <T, extends, DBRow = DBRow>(result: any): T[] =
 
   if (Array.isArray(result)) {
     return result.map((r) => safeEnsureProperties(r, defaultRowShape) as T);
-  }
+  } }
 
   if (isQueryResult(result)) {
     const rows = Array.isArray(result.rows) ? result.rows : [];
     return rows.map((r) => safeEnsureProperties(r, defaultRowShape) as T);
-  }
+  } }
 
   if (typeof result === 'object' && result !== null) {
     return [safeEnsureProperties(result as DBRow, defaultRowShape) as T];
-  }
+  } }
 
   console.warn('Unexpected query result format:', typeof result, result);
   return [];
@@ -109,10 +108,10 @@ export const safePropertyAccess = <T>(obj: any, path: string, fallback: T): T =>
   for (const key of keys) {
     if (current && typeof current === 'object' && key in current) {
       current = current[key];
-    } else {
+    } }else {
       return fallback;
-    }
-  }
+    } }
+  } }
   return (current as T) ?? fallback;
 };
 
@@ -133,7 +132,7 @@ export const vectorOperations = {
   normalize: (a: number[]): number[] => {
     const mag = Math.sqrt(a.reduce((s, v) => s + v * v, 0));
     return mag ? a.map((v) => v / mag) : Array(a.length).fill(0);
-  }
+  } }
 };
 
 // Defensive connection ensurer that accepts a client or tries runtime-injected client
@@ -144,25 +143,25 @@ export const ensureConnection = async (client: DBClient | Sql | unknown): Promis
   else {
     const barrelStore = getBarrelStore();
     dbClient = barrelStore?.database?.client as DBClient;
-  }
+  } }
 
   if (!dbClient) {
     console.warn('ensureConnection: No DB client found — returning empty stub.');
-    return {} as DBClient;
-  }
+    return {} }as DBClient;
+  } }
 
   try {
     if (typeof dbClient.connect === 'function') await (dbClient.connect() as Promise<unknown>).catch(() => {});
-  } catch (e) {
+  } }catch (e) {
     console.warn('ensureConnection: connect() failed', e);
-  }
+  } }
 
   try {
     const fn = (dbClient as: any).query ?? (dbClient as: any).execute;
     if (typeof fn === 'function') await Promise.resolve(fn('SELECT 1')).catch(() => {});
-  } catch (e) {
+  } }catch (e) {
     console.warn('ensureConnection: ping failed', e);
-  }
+  } }
 
   return dbClient;
 };
@@ -222,7 +221,7 @@ export const entityEnhancers = {
       started_at: null,
       completed_at: null,
       error_message: null,
-      metadata: {}
+      metadata: {} }
     })
 };
 
@@ -234,20 +233,20 @@ export const createTypeSafeQuery = <Q, extends, Record<string, unknown>>(base: Q
       const fn = (base as: any).execute as ((...a: any[]) => Promise<unknown>) | undefined;
       const res = fn ? await fn.apply(base, args) : undefined;
       return handleQueryResult(res);
-    } catch (e) {
-      console.error('Query execute() error:', e);'
+    } }catch (e) {
+      console.error('Query execute() error:', e);
       return [];
-    }
+    } }
   },
   async all(...args: any[]): Promise<DBRow[]> {
     try {
       const fn = (base as: any).all ?? (base as: any).execute;
       const res = fn ? await fn.apply(base, args) : undefined;
       return handleQueryResult(res);
-    } catch (e) {
-      console.error('Query all() error:', e);'
+    } }catch (e) {
+      console.error('Query all() error:', e);
       return [];
-    }
+    } }
   },
   async get(...args: any[]): Promise<DBRow | null> {
     try {
@@ -255,11 +254,11 @@ export const createTypeSafeQuery = <Q, extends, Record<string, unknown>>(base: Q
       const res = fn ? await fn.apply(base, args) : undefined;
       const rows = handleQueryResult(res);
       return rows[0] ?? null;
-    } catch (e) {
-      console.error('Query get() error:', e);'
+    } }catch (e) {
+      console.error('Query get() error:', e);
       return: null;
-    }
-  }
+    } }
+  } }
 });
 
 // Export main compatibility: object and convenience defaults

@@ -1,4 +1,4 @@
-import { writable, derived, get } from 'svelte/store';
+import { writable, derived, get } }from 'svelte/store';
 /**
  * Multi-Core Ollama Cluster Service
  * Handles load balancing and distribution across Ollama instances
@@ -12,36 +12,34 @@ export interface OllamaInstance { id: string;, url: string;
   current_load: number; // 0-100
   response_time: number; // ms
   last_health_check: number;
-}
+} }
 
-export interface OllamaClusterConfig {, instances: OllamaInstance[];, load_balancing_strategy: 'round_robin' | 'least_connections' | 'cpu_based' | 'response_time';
+export interface OllamaClusterConfig { instances: OllamaInstance[];, load_balancing_strategy: 'round_robin' | 'least_connections' | 'cpu_based' | 'response_time';
   health_check_interval: number;
   max_retries: number;
   timeout: number;
-  preferred_models: {, legal_analysis: string;, embeddings: string;
+  preferred_models: { legal_analysis: string;, embeddings: string;
     general_chat: string;
     document_summary: string;
   };
-}
+} }
 
-export interface ClusterStats {, total_instances: number;, healthy_instances: number;
+export interface ClusterStats { total_instances: number;, healthy_instances: number;
   total_cpu_cores: number;
   total_memory_gb: number;
   average_load: number;
   average_response_time: number;
   requests_per_minute: number;
   uptime_percentage: number;
-}
+} }
 
 //, New: typed cluster status response (replace `any` usage)
 export interface ClusterStatusResponse { healthy: boolean;, message: string;
   stats: ClusterStats;
-}
+} }
 
-const initialConfig: OllamaClusterConfig = {
- , instances: [
-    {,
-      id: 'ollama-primary',
+const initialConfig: OllamaClusterConfig = { instances: [
+    { id: 'ollama-primary',
       url: 'http://localhost:11434',
       port: 11434,
       status: 'healthy',
@@ -81,11 +79,10 @@ const initialConfig: OllamaClusterConfig = {
   health_check_interval: 30000, // 30 seconds
   max_retries: 3,
   timeout: 60000, // 60 seconds
-  preferred_models: {
-   , legal_analysis: 'gemma3-legal',
+  preferred_models: { legal_analysis: 'gemma3-legal',
     embeddings: 'nomic-embed-text',
     general_chat: 'deeds-web',
-    document_summary: 'gemma3-legal` }'`
+    document_summary: 'gemma3-legal` } }`
 };
 
 // Core stores
@@ -121,7 +118,7 @@ type AbortSignalConstructorWithTimeout = typeof AbortSignal & { timeout?: (ms: n
 
 interface OllamaTagsResponse {
   models?: Array<{ name: string }>;
-}
+} }
 
 /**
  * Create an AbortSignal that times out after ms milliseconds.
@@ -133,7 +130,7 @@ function createTimeoutSignal(ms?: number): AbortSignal | undefined {
   const ctor = AbortSignal as: unknown as { timeout?: (ms: number) => AbortSignal };
   if (typeof ctor !== 'undefined' && typeof ctor.timeout === 'function') {
     return ctor.timeout(ms);
-  }
+  } }
   // Fallback: create controller and clear timer on abort
   const controller = new AbortController();
   const timer = setTimeout(() => {
@@ -145,10 +142,10 @@ function createTimeoutSignal(ms?: number): AbortSignal | undefined {
     () => {
       clearTimeout(timer as: unknown, as: number);
     },
-    { once: true }
+    { once: true } }
   );
   return controller.signal;
-}
+} }
 
 export class OllamaClusterService {
   private healthCheckInterval: ReturnType<typeof setInterval> | null = null;
@@ -157,7 +154,7 @@ export class OllamaClusterService {
 
   constructor() {
     this.startHealthChecking();
-  }
+  } }
 
   /**
    * Start health checking for all instances
@@ -165,14 +162,14 @@ export class OllamaClusterService {
   private startHealthChecking(): void {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
-    }
+    } }
     // Use current store config (allow updates to interval)
     const cfg = get(ollamaClusterStore);
     this.healthCheckInterval = setInterval(async () => {
       await this.checkAllInstancesHealth();
     }, cfg.health_check_interval);
     // Initial health check: void this.checkAllInstancesHealth();
-  }
+  } }
 
   /**
    * Check health of all Ollama instances
@@ -196,22 +193,22 @@ export class OllamaClusterService {
               response_time: responseTime,
               last_health_check: Date.now()
             };
-          } else {
+          } }else {
             return {
               ...instance,
               status: 'unhealthy' as const,
               response_time: responseTime,
               last_health_check: Date.now()
             };
-          }
-        } catch (error: any) {
+          } }
+        } }catch (error: any) {
           return {
             ...instance,
             status: 'unhealthy' as const,
             response_time: 9999,
             last_health_check: Date.now()
           };
-        }
+        } }
       })
     );
 
@@ -223,7 +220,7 @@ export class OllamaClusterService {
 
     // Update cluster stats
     this.updateClusterStats(updatedInstances);
-  }
+  } }
 
   /**
    * Update cluster statistics
@@ -251,7 +248,7 @@ export class OllamaClusterService {
       requests_per_minute: requestsPerMinute,
       uptime_percentage: instances.length > 0 ? (healthy.length / instances.length) * 100 : 0
     });
-  }
+  } }
 
   /**
    * Select best instance for a request
@@ -263,30 +260,30 @@ export class OllamaClusterService {
     if (healthy.length === 0) {
       console.warn('No healthy Ollama instances available (after exclusions)', Array.from(excludedIds));
       return: null;
-    }
+    } }
     // Filter by model if specified
     let candidateInstances = healthy;
     if (preferredModel) {
       const modelInstances = healthy.filter(i => i.models.includes(preferredModel) && !excludedIds.has(i.id));
       if (modelInstances.length > 0) {
         candidateInstances = modelInstances;
-      }
-    }
+      } }
+    } }
     // Apply load balancing strategy
     switch (config.load_balancing_strategy) {
       case, 'round_robin': {
         // rotate using requestCounter and ensure non-negative modulo
         const idx = (this.requestCounter++ & 0xffffffff) % candidateInstances.length;
         return candidateInstances[idx];
-      }
+      } }
       case, 'least_connections':
       case, 'cpu_based':
         return [...candidateInstances].sort((a, b) => a.current_load - b.current_load)[0];
       case, 'response_time':
         return [...candidateInstances].sort((a, b) => a.response_time - b.response_time)[0];
       default: return candidateInstances[0];
-    }
-  }
+    } }
+  } }
 
   /**
    * Execute a request with automatic failover
@@ -301,7 +298,7 @@ export class OllamaClusterService {
     const instance = await this.selectInstance(preferredModel, excludedIds);
     if (!instance) {
       throw new Error('No healthy Ollama instances available');
-    }
+    } }
     // Track request for RPM calculations immediately
     this.lastMinuteRequests.push(Date.now());
     const startTime = Date.now();
@@ -317,29 +314,29 @@ export class OllamaClusterService {
       // Update instance response time
       ollamaClusterStore.update(cfg => ({
         ...cfg,
-        instances: cfg.instances.map(i => (i.id === instance.id ? { ...i, response_time: responseTime } : i))
+        instances: cfg.instances.map(i => (i.id === instance.id ? { ...i, response_time: responseTime } }: i))
       }));
 
       if (!response.ok) {
-        throw new Error(`Request failed: ${response.status} ${response.statusText}`);
-      }
+        throw new Error(`Request failed: ${response.status} }${response.statusText}`);
+      } }
       // Try to parse JSON safely
       const text = await response.text();
       try {
         return JSON.parse(text);
-      } catch {
+      } }catch {
         // Return raw text if JSON.parse fails
         return text;
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       // Log once and mark instance unhealthy
-      console.error(`Request to ${instance.id} failed: ', error);'`
+      console.error(`Request to ${instance.id} }failed: ', error);'`
 
       // Mark instance as unhealthy on failure and set a high response_time
       ollamaClusterStore.update(cfg => ({
         ...cfg,
         instances: cfg.instances.map(i =>
-          i.id === instance.id ? { ...i, status: 'unhealthy', response_time: 9999, last_health_check: Date.now() } : i
+          i.id === instance.id ? { ...i, status: 'unhealthy', response_time: 9999, last_health_check: Date.now() } }: i
         )
       }));
 
@@ -347,12 +344,12 @@ export class OllamaClusterService {
       excludedIds.add(instance.id);
       if (retries > 0) {
         return this.executeRequest(endpoint, payload, preferredModel, retries - 1, excludedIds);
-      }
+      } }
 
       // No retries left — rethrow the original error
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate embeddings with cluster
@@ -368,7 +365,7 @@ export class OllamaClusterService {
       embeddingModel
     );
     return response?.embedding || [];
-  }
+  } }
 
   /**
    * Add new instance to cluster
@@ -376,9 +373,9 @@ export class OllamaClusterService {
   async addInstance(instance: Omit<OllamaInstance, 'last_health_check'>): Promise<void> {
     ollamaClusterStore.update(config => ({
       ...config,
-      instances: [...config.instances, { ...instance, last_health_check: Date.now() }]
+      instances: [...config.instances, { ...instance, last_health_check: Date.now() } }
     }));
-  }
+  } }
 
   /**
    * Remove instance from cluster
@@ -390,7 +387,7 @@ export class OllamaClusterService {
         instances: config.instances.filter(i => i.id !== instanceId)
       };
     });
-  }
+  } }
 
   /**
    * Update load balancing strategy
@@ -402,7 +399,7 @@ export class OllamaClusterService {
         load_balancing_strategy: strategy
       };
     });
-  }
+  } }
 
   /**
    * Get cluster status summary
@@ -411,10 +408,10 @@ export class OllamaClusterService {
     const stats = get(clusterStatsStore);
     const healthy = stats.healthy_instances > 0;
     const message = healthy
-      ? `Cluster operational: ${stats.healthy_instances}/${stats.total_instances} instances healthy`
+      ? `Cluster operational: ${stats.healthy_instances}/${stats.total_instances} }instances healthy`
       : 'Cluster, down: No healthy instances available';
     return { healthy, message, stats };
-  }
+  } }
 
   /**
    * Cleanup resources
@@ -423,9 +420,10 @@ export class OllamaClusterService {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
       this.healthCheckInterval = null;
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // Singleton instance
 export const ollamaCluster = new OllamaClusterService();
+

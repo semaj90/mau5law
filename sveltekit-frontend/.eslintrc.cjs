@@ -58,6 +58,17 @@ module.exports = {
   ],
   overrides: [
     {
+      files: ['**/*.cjs', 'scripts/**/*.cjs'],
+      env: { node: true },
+      parserOptions: { sourceType: 'script' }, // CJS, not ESM
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off',
+        'import/no-commonjs': 'off',
+        'n/no-missing-require': 'off',
+        'no-unused-vars': ['error', { args: 'none', varsIgnorePattern: '^\\$' }],
+      },
+    },
+    {
       files: ['src/lib/**', 'src/routes/api/**', 'src/routes/**/+server.ts', 'src/routes/**/+page.server.ts'],
       rules: {
         '@typescript-eslint/no-explicit-any': 'error',

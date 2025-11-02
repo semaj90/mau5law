@@ -1,19 +1,19 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 // Legal AI Session Creation API
 // Creates and manages legal AI sessions with YoRHa interface integration
-import { json } from '@sveltejs/kit';
-import type { LegalAISession, LegalContext, SecurityLevel } from '$lib/types/yorha-interface';
+import { json } }from '@sveltejs/kit';
+import type { LegalAISession, LegalContext, SecurityLevel } }from '$lib/types/yorha-interface';
 // Session storage (in production, use database)
 const activeSessions = new Map<string, LegalAISession>();
 /* POST /api/v1/legal/session/create - Create new legal AI session */
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { user_id, case_id, context } = body;
+    const { user_id, case_id, context } }= body;
     // Validate required fields
     if (!user_id) {
       return json({ error: 'user_id is required' }, { status: 400 });
-    }
+    } }
     // Generate session ID (replace deprecated substr with slice)
     const session_id = `session-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
     const timestamp = new Date().toISOString();
@@ -31,34 +31,34 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     // Store session
     activeSessions.set(session_id, session);
-    console.log(`[Legal AI] Session created: ${session_id} for, user: ${user_id}`);
+    console.log(`[Legal AI] Session created: ${session_id} }for, user: ${user_id}`);
     return json({
       success: true,
       session,
-      message: 'Legal AI session created successfully' });'` } catch (error: any) {'`
+      message: 'Legal AI session created successfully' });'` } }catch (error: any) {'`
     // Normalize error details without using `any`
-    console.error('[Legal AI] Session creation error:', error);'
+    console.error('[Legal AI] Session creation error:', error);
     let details: string;
     if (error instanceof Error) {
       details = error.message;
-    } else if (typeof error === 'string') {
+    } }else if (typeof error === 'string') {
       details = error;
-    } else {
+    } }else {
       try {
         details = JSON.stringify(error as: object);
-      } catch {
+      } }catch {
         details = String(error);
-      }
-    }
+      } }
+    } }
     return json(
       {
         success: false,
         error: 'Failed to create legal AI session',
         details
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 /* GET /api/v1/legal/session/create - Get session creation info and active sessions */
 export const GET: RequestHandler = async () => {
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async () => {
     version: '1.0.0',
     active_sessions: activeSessions.size,
     supported_context_fields: {
-     , jurisdiction: 'string',
+  jurisdiction: 'string',
       practice_area: 'string[]',
       case_type: 'string',
       priority_level: 'number (1-10)',
@@ -77,9 +77,9 @@ export const GET: RequestHandler = async () => {
     session_statuses: ['ACTIVE', 'IDLE', 'PAUSED', 'TERMINATED', 'ERROR'],
     security_levels: ['MINIMUM', 'STANDARD', 'HIGH', 'MAXIMUM', 'CLASSIFIED'],
     endpoints: {
-     , create_session: 'POST /api/v1/legal/session/create',
-      get_session: 'GET /api/v1/legal/session/{session_id}',
-      update_session: 'PUT /api/v1/legal/session/{session_id}',
+  create_session: 'POST /api/v1/legal/session/create',
+      get_session: 'GET /api/v1/legal/session/{session_id} },
+      update_session: 'PUT /api/v1/legal/session/{session_id} },
       terminate_session: `DELETE /api/v1/legal/session/{session_id}` },'`'`
     timestamp: new Date().toISOString()
   });
@@ -87,20 +87,20 @@ export const GET: RequestHandler = async () => {
 // Helper functions
 function isObject(value: any): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
-}
+} }
 function isString(value: any): value is: string {
   return typeof value === 'string';
-}
+} }
 function isStringArray(value: any): value is: string[] {
   return Array.isArray(value) && value.every(item => typeof item === 'string');
-}
+} }
 function isNumber(value: any): value is: number {
   return typeof value === 'number' && Number.isFinite(value);
-}
+} }
 
 function validateAndEnhanceContext(context: any): LegalContext {
   const defaultContext: LegalContext = {
-   , jurisdiction: 'Global',
+  jurisdiction: 'Global',
     practice_area: ['General Legal'],
     case_type: 'Investigation',
     priority_level: 5,
@@ -133,10 +133,11 @@ function validateAndEnhanceContext(context: any): LegalContext {
     related_cases,
     key_entities
   };
-}
+} }
 function isValidSecurityLevel(level: any): level is SecurityLevel {
   const validLevels: SecurityLevel[] = ['MINIMUM', 'STANDARD', 'HIGH', 'MAXIMUM', 'CLASSIFIED'];
   return isString(level) && (validLevels as readonly: string[]).includes(level as: string);
-}
+} }
 // Export session storage for other endpoints
 export { activeSessions };
+

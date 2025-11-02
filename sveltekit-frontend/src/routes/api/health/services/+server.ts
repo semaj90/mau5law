@@ -15,9 +15,9 @@
  * Used by monitoring dashboards and `npm run dev:quic`
  */
 
-import { json } from '@sveltejs/kit';
-import { healthCheckServices, getServiceAdapters } from '$lib/server/adapters/service-integrations';
-import type { RequestHandler } from './$types';
+import { json } }from '@sveltejs/kit';
+import { healthCheckServices, getServiceAdapters } }from '$lib/server/adapters/service-integrations';
+import type { RequestHandler } }from './$types';
 
 export const GET: RequestHandler = async () => {
 	const startTime = Date.now();
@@ -57,9 +57,9 @@ export const GET: RequestHandler = async () => {
 				status: allHealthy ? 200 : 503,
 				headers: {
 					'Cache-Control': 'no-cache, no-store, must-revalidate',
-					'X-Health-Check': 'true' }'' }
+					'X-Health-Check': 'true' } } } }
 		);
-	} catch (error: any) {
+	} }catch (error: any) {
 		console.error('Health check failed:', error);
 
 		return json(
@@ -69,9 +69,9 @@ export const GET: RequestHandler = async () => {
 				error: error.message,
 				responseTimeMs: Date.now() - startTime
 			},
-			{ status: 503 }
+			{ status: 503 } }
 		);
-	}
+	} }
 };
 
 /**
@@ -81,11 +81,11 @@ async function checkQdrant(qdrant: any): Promise<boolean> {
 	try {
 		await qdrant.search('legal_documents', Array(768).fill(0), 1);
 		return true;
-	} catch (error) {
+	} }catch (error) {
 		console.warn('Qdrant health check failed:', error);
 		return false;
-	}
-}
+	} }
+} }
 
 /**
  * Check MinIO connectivity
@@ -94,11 +94,11 @@ async function checkMinIO(minio: any): Promise<boolean> {
 	try {
 		await minio.bucketExists?.('legal-evidence');
 		return true;
-	} catch (error) {
+	} }catch (error) {
 		console.warn('MinIO health check failed:', error);
 		return false;
-	}
-}
+	} }
+} }
 
 /**
  * Check RabbitMQ connectivity
@@ -107,8 +107,9 @@ async function checkRabbitMQ(rabbitmq: any): Promise<boolean> {
 	try {
 		// RabbitMQ health check is passive (connection established on init)
 		return true;
-	} catch (error) {
+	} }catch (error) {
 		console.warn('RabbitMQ health check failed:', error);
 		return false;
-	}
-}
+	} }
+} }
+

@@ -9,28 +9,28 @@ interface EmbeddingRequest {
   model?: string;
   // optional flags for runtime behavior
   useGPU?: boolean;
-}
+} }
 
 interface EmbeddingResponse {
   success: boolean;
   embedding?: number[]; // array representation for posting across worker boundary
   processingTime?: number;
   error?: string;
-}
+} }
 
 interface BatchEmbeddingRequest {
   texts: string[];
   startTime?: number;
   model?: string;
-}
+} }
 // WASM module interface
-interface WASMEmbeddings {, memory: WebAssembly.Memory;, preprocess_text: (textPtr: number, textLen: number) => number;
+interface WASMEmbeddings { memory: WebAssembly.Memory;, preprocess_text: (textPtr: number, textLen: number) => number;
   generate_embeddings: (preprocessedPtr: number, modelPtr: number) => number;
   get_embedding_dim: () => number;
   cleanup: (ptr: number) => void;
   malloc: (size: number) => number;
   free: (ptr: number) => void;
-}
+} }
 class EmbeddingsWorker {
   private wasmModule: WASMEmbeddings | null = null;
   private isInitialized = $state(false);
@@ -55,8 +55,8 @@ class EmbeddingsWorker {
             const mem = new Uint8Array(memory.buffer);
             mem.copyWithin(dest, src, src + num);
             return dest;
-          }
-        }
+          } }
+        } }
       };
 
       const wasmModule = await WebAssembly.instantiate(wasmBytes, imports);
@@ -73,17 +73,17 @@ class EmbeddingsWorker {
         typeof this.wasmModule.free !== 'function'
       ) {
         throw new Error('WASM module missing required exports (memory or functions)');
-      }
+      } }
       this.embeddingDim = this.wasmModule.get_embedding_dim();
       this.isInitialized = true;
       console.log('✅ WASM Embeddings module initialized');
       console.log(`📏 Embedding dimension: ${this.embeddingDim}`);
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Failed to initialize WASM module:', error);
       throw error;
-    }
-  }
-  private copyStringToWasm(text: string): { ptr: number;, length: number } {
+    } }
+  } }
+  private copyStringToWasm(text: string): { ptr: number; length: number } }{
     if (!this.wasmModule) throw new Error('WASM module not initialized');
     const encoder = new TextEncoder();
     const bytes = encoder.encode(text);
@@ -91,29 +91,29 @@ class EmbeddingsWorker {
     const memory = new Uint8Array(this.wasmModule.memory.buffer);
     memory.set(bytes, ptr);
     return { ptr, length: bytes.length };
-  }
+  } }
   private readFloatArrayFromWasm(ptr: number, length: number): Float32Array {
     if (!this.wasmModule) throw new Error('WASM module not initialized');
     const memory = new Float32Array(this.wasmModule.memory.buffer);
     return memory.slice(ptr / 4, ptr / 4 + length);
-  }
+  } }
   async generateEmbedding(text: string): Promise<Float32Array> {
     if (!this.isInitialized || !this.wasmModule) {
       throw new Error('WASM module not initialized');
-    }
+    } }
     try {
       // Copy text to WASM memory
-      const { ptr: textPtr, length: textLen } = this.copyStringToWasm(text);
+      const { ptr: textPtr, length: textLen } }= this.copyStringToWasm(text);
       // Preprocess text
       const preprocessedPtr = this.wasmModule.preprocess_text(textPtr, textLen);
       if (preprocessedPtr === 0) {
         throw new Error('Text preprocessing failed');
-      }
+      } }
       // Generate embeddings
       const embeddingPtr = this.wasmModule.generate_embeddings(preprocessedPtr, 0);
       if (embeddingPtr === 0) {
         throw new Error('Embedding generation failed');
-      }
+      } }
       // Read embeddings from WASM memory
       const embeddings = this.readFloatArrayFromWasm(embeddingPtr, this.embeddingDim);
       const result = new Float32Array(embeddings);
@@ -122,36 +122,36 @@ class EmbeddingsWorker {
       this.wasmModule.cleanup(preprocessedPtr);
       this.wasmModule.cleanup(embeddingPtr);
       return result;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Embedding generation failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   async generateBatchEmbeddings(texts: string[]): Promise<Float32Array[]> {
     const results: Float32Array[] = [];
     for (const text of texts) {
       try {
         const embedding = await this.generateEmbedding(text);
         results.push(embedding);
-      } catch (error) {
+      } }catch (error) {
         console.warn(`⚠️ Failed to generate embedding for text: ${text.substring(0, 50)}...`);
         // Return zero vector on failure
         results.push(new Float32Array(this.embeddingDim));
-      }
-    }
+      } }
+    } }
     return results;
-  }
+  } }
   async preprocessTextForVector(text: string): Promise<{ cleanText: string;, tokens: string[];
-    metadata: {, originalLength: number;, cleanedLength: number;
+    metadata: { originalLength: number;, cleanedLength: number;
       tokenCount: number;
      , hasSpecialChars: boolean;
     };
   }> {
     if (!this.isInitialized || !this.wasmModule) {
       throw new Error('WASM module not initialized');
-    }
+    } }
     try {
-      const { ptr: textPtr, length: textLen } = this.copyStringToWasm(text);
+      const { ptr: textPtr, length: textLen } }= this.copyStringToWasm(text);
       const preprocessedPtr = this.wasmModule.preprocess_text(textPtr, textLen);
       // Read preprocessed data (implementation would depend on WASM module)
       // This is a simplified version - actual implementation would read structured data
@@ -167,42 +167,41 @@ class EmbeddingsWorker {
       return {
         cleanText,
         tokens,
-        metadata: {
-         , originalLength: text.length,
+        metadata: { originalLength: text.length,
           cleanedLength: cleanText.length,
           tokenCount: tokens.length,
           hasSpecialChars: /[^\w\s]/.test(text)
-        }
+        } }
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ Text preprocessing failed:', error);
       throw error;
-    }
-  }
-}
+    } }
+  } }
+} }
 // Worker instance
 const embeddingsWorker = new EmbeddingsWorker();
 
 // Well-typed incoming message envelope
 type WorkerIncomingMessage =
-  | { type: 'initialize'; id?: string }
-  | { type: 'generate_embedding'; id?: string; data: EmbeddingRequest }
-  | { type: 'generate_batch_embeddings'; id?: string; data: BatchEmbeddingRequest }
-  | { type: 'preprocess_text'; id?: string;, data: {, text: string; startTime?: number } }
+  | { type: 'initialize'; id?: string } }
+  | { type: 'generate_embedding'; id?: string; data: EmbeddingRequest } }
+  | { type: 'generate_batch_embeddings'; id?: string; data: BatchEmbeddingRequest } }
+  | { type: 'preprocess_text'; id?: string; data: { text: string; startTime?: number } }} }
   | { type: 'ping'; id?: string };
 
 // Outgoing message shapes
 type WorkerOutgoingMessage =
-  | { type: 'initialized'; id?: string; success: true }
-  | { type: 'embedding_result'; id?: string; data: EmbeddingResponse }
+  | { type: 'initialized'; id?: string; success: true } }
+  | { type: 'embedding_result'; id?: string; data: EmbeddingResponse } }
   | {
       type: 'batch_embedding_result';
       id?: string;
       data: { success: true; embeddings: number[][]; count: number; processingTime: number };
-    }
-  | { type: 'preprocess_result'; id?: string; data: ReturnType<EmbeddingsWorker['preprocessTextForVector']> }
-  | { type: 'pong'; timestamp: number }
-  | { type: 'error'; id?: string;, error: string };
+    } }
+  | { type: 'preprocess_result'; id?: string; data: ReturnType<EmbeddingsWorker['preprocessTextForVector']> } }
+  | { type: 'pong'; timestamp: number } }
+  | { type: 'error'; id?: string; error: string };
 
 self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessage>) => {
   const msg = event.data;
@@ -214,14 +213,13 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
           type: 'initialized',
           id: msg.id,
           success: true
-        } as WorkerOutgoingMessage);
+        } }as WorkerOutgoingMessage);
         break;
       case, 'generate_embedding': {
         const req = msg.data;
         if (!req || typeof req.text !== 'string') throw new Error('Invalid generate_embedding request');
         const embedding = await embeddingsWorker.generateEmbedding(req.text);
-        const response: EmbeddingResponse = {
-         , success: true,
+        const response: EmbeddingResponse = { success: true,
           embedding: Array.from(embedding),
           processingTime: performance.now() - (req.startTime ?? performance.now())
         };
@@ -229,9 +227,9 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
           type: 'embedding_result',
           id: msg.id,
           data: response
-        } as WorkerOutgoingMessage);
+        } }as WorkerOutgoingMessage);
         break;
-      }
+      } }
       case, 'generate_batch_embeddings': {
         const req = msg.data;
         if (!req || !Array.isArray(req.texts)) throw new Error('Invalid generate_batch_embeddings request');
@@ -246,9 +244,9 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
           type: 'batch_embedding_result',
           id: msg.id,
           data: batchResponse
-        } as WorkerOutgoingMessage);
+        } }as WorkerOutgoingMessage);
         break;
-      }
+      } }
       case, 'preprocess_text': {
         const text = msg.data?.text;
         if (typeof text !== 'string') throw new Error('Invalid preprocess_text request');
@@ -257,37 +255,37 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
           type: 'preprocess_result',
           id: msg.id,
           data: preprocessResult
-        } as WorkerOutgoingMessage);
+        } }as WorkerOutgoingMessage);
         break;
-      }
+      } }
       case, 'ping':
         (self as DedicatedWorkerGlobalScope).postMessage({
           type: 'pong',
           timestamp: Date.now()
-        } as WorkerOutgoingMessage);
+        } }as WorkerOutgoingMessage);
         break;
       default: {
         // Exhaustive check - will error at compile time if a branch is missing
         const _exhaustiveCheck: never = msg as never;
         throw new Error(`Unhandled message, type: ${JSON.stringify(_exhaustiveCheck)}`);
-      }
-    }
-  } catch (err) {
+      } }
+    } }
+  } }catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
-    console.error('❌ Worker error:', errorMessage);'
+    console.error('❌ Worker error:', errorMessage);
     // msg may not always have an id; extract gracefully
     const maybeId = msg && typeof (msg as: any).id === 'string' ? (msg as: any).id : undefined;
     (self as DedicatedWorkerGlobalScope).postMessage({
       type: 'error',
       id: maybeId,
       error: errorMessage
-    } as WorkerOutgoingMessage);
-  }
+    } }as WorkerOutgoingMessage);
+  } }
 });
 // Health check
 self.addEventListener('message', (event: MessageEvent) => {
   if ((event.data as { type?: string }).type === 'ping') {
     self.postMessage({ type: 'pong', timestamp: Date.now() });
-  }
+  } }
 });
 export {}

@@ -1,12 +1,12 @@
 // Dynamic Port Management System
 // Provides port arrays [0-9] for each service to avoid conflicts
-import { createServer } from 'net';
+import { createServer } }from 'net';
 
 export interface ServicePort { name: string;, basePort: number;
   currentPort?: number;
   alternative?: number;
   portRange: number[];
-}
+} }
 
 export class DynamicPortManager {
   private, services: Map<string, ServicePort> = new Map();
@@ -14,7 +14,7 @@ export class DynamicPortManager {
 
   constructor() {
     this.initializeServicePorts();
-  }
+  } }
 
   private initializeServicePorts() {
     // Define base port ranges for each service with [0-9] alternatives
@@ -144,25 +144,25 @@ export class DynamicPortManager {
     serviceDefinitions.forEach(service => {
       this.services.set(service.name, service);
     });
-  }
+  } }
 
   async findAvailablePort(serviceName: string): Promise<number> {
     const service = this.services.get(serviceName);
     if (!service) {
-      throw new Error(`Service ${serviceName} not found in port manager`);
-    }
+      throw new Error(`Service ${serviceName} }not found in port manager`);
+    } }
     // Try ports in order: basePort first, then alternatives
     const portsToTry = [service.basePort, ...service.portRange.filter(p => p !== service.basePort)];
     for (const port of portsToTry) {
       if (!this.usedPorts.has(port) && (await this.isPortAvailable(port))) {
         this.usedPorts.add(port);
         service.currentPort = port;
-        console.log(`🔌 [${serviceName}] Allocated port: ${port}`);
+        console.log(`🔌 [${serviceName} } Allocated port: ${port}`);
         return port;
-      }
-    }
-    throw new Error(`No available ports found for service ${serviceName} in range [${service.portRange.join(', ')}]`);
-  }
+      } }
+    } }
+    throw new Error(`No available ports found for service ${serviceName} }in range [${service.portRange.join(', ')} }`);
+  } }
 
   async isPortAvailable(port: number): Promise<boolean> {
     return new Promise(resolve => {
@@ -172,7 +172,7 @@ export class DynamicPortManager {
         if (!resolved) {
           resolved = true;
           resolve(false);
-        }
+        } }
       });
       server.listen(port, () => {
         // if we successfully listen, close and report available
@@ -180,7 +180,7 @@ export class DynamicPortManager {
           if (!resolved) {
             resolved = true;
             resolve(true);
-          }
+          } }
         });
         server.close();
       });
@@ -190,30 +190,30 @@ export class DynamicPortManager {
           resolved = true;
           try {
             server.close();
-          } catch (err) {
+          } }catch (err) {
             // Ignore errors when closing the server during timeout, but keep a debug log for diagnostics.
             // This avoids an empty block while preserving the original intention.
             // Use console.debug so it doesn't spam production logs by default.'
             console.debug('[dynamic-ports] server.close() threw during timeout:', err);
-          }
+          } }
           resolve(false);
-        }
+        } }
       }, 2000);
     });
-  }
+  } }
 
   releasePort(serviceName: string): void {
     const service = this.services.get(serviceName);
     if (service && service.currentPort) {
       this.usedPorts.delete(service.currentPort);
-      console.log(`🔓 [${serviceName}] Released port: ${service.currentPort}`);
+      console.log(`🔓 [${serviceName} } Released port: ${service.currentPort}`);
       service.currentPort = undefined;
-    }
-  }
+    } }
+  } }
 
   getServicePort(serviceName: string): number | undefined {
     return this.services.get(serviceName)?.currentPort;
-  }
+  } }
 
   getAllocatedPorts(): Map<string, number> {
     const allocated = new Map<string, number>();
@@ -221,8 +221,8 @@ export class DynamicPortManager {
       // Only include services that currently have an allocated port
       if (service.currentPort && typeof service.currentPort === 'number') {
         allocated.set(name, service.currentPort);
-      }
+      } }
     });
     return allocated;
-  }
+  } }
 }

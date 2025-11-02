@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 
 /**
  * Demo Data Generator for Legal AI System Testing
@@ -10,12 +10,11 @@ export interface DemoCase { id: string;, title: string;
   createdAt: Date;
   updatedAt: Date;
   assignedTo?: string;
-  tags: string[]; }
-export interface DemoEvidence {, id: string;, caseId: string;
+  tags: string[]; } }
+export interface DemoEvidence { id: string;, caseId: string;
   title: string;
   description: string;
-  type:;
-    | "police_report"
+  type:| "police_report"
     | "witness_statement"
     | "financial_records"
     | "digital_forensics"
@@ -26,16 +25,16 @@ export interface DemoEvidence {, id: string;, caseId: string;
   uploadedAt: Date;
   fileSize: number;
   tags: string[];
-}
-export interface DemoPerson {, id: string;, name: string;
+} }
+export interface DemoPerson { id: string;, name: string;
   role: "suspect" | "witness" | "victim" | "officer" | "expert" | "other";
   contactInfo: {
     phone?: string;
     email?: string;
     address?: string;
-  }
+  } }
  , notes: string;
-}
+} }
 class DemoDataGenerator {
   private caseCounter = 1;
   private evidenceCounter = 1;
@@ -45,8 +44,7 @@ class DemoDataGenerator {
    */
   generateCases(count: number = 5): DemoCase[], {
     const caseTemplates = [
-      {,
-        title: "State v. Johnson - Embezzlement Investigation",
+      { title: "State v. Johnson - Embezzlement Investigation",
         description:
           "Corporate embezzlement investigation involving $2.3M in misappropriated funds. Multiple financial institutions affected.",
         priority: "high" as const,
@@ -79,7 +77,7 @@ class DemoDataGenerator {
           "Large-scale narcotics distribution network. Surveillance operations and controlled purchases documented.",
         priority: "medium" as const,
         tags: ["drug-crimes", "distribution", "surveillance"]
-      }
+      } }
     ];
     return Array.from({ length: count }, (_, i) => {
       const template = caseTemplates[i, % caseTemplates.length];
@@ -99,24 +97,23 @@ class DemoDataGenerator {
         assignedTo: ["Detective, Smith", "Prosecutor Jones", "Officer Brown"][
           Math.floor(Math.random(), * 3)
         ]
-      }
+      } }
     });
-  }
+  } }
   /**
    * Generate sample evidence for a case
    */
   generateEvidence(caseId: string, count: number = 8): DemoEvidence[], {
     const evidenceTemplates = [
-      {,
-        title: "Initial Police Report",
+      { title: "Initial Police Report",
         type: "police_report" as const,
-        content: 'INCIDENT REPORT - Case ${caseId}', Date: ${new Date().toLocaleDateString()}
+        content: 'INCIDENT REPORT - Case ${caseId} }, Date: ${new Date().toLocaleDateString()} }
 Reporting Officer: Officer Martinez, Badge #1247
 Location: 1425 Main Street, Downtown District
 INCIDENT SUMMARY:
 On the above date and time, I responded to a call regarding suspicious activity at the above location. Upon arrival, I observed several individuals engaged in what appeared to be an illegal transaction.
 INDIVIDUALS INVOLVED:
-- Primary;, Suspect: John Doe, Male, Age, 34, 5'10", Brown hair, Blue eyes'"
+- Primary; Suspect: John Doe, Male, Age, 34, 5'10", Brown hair, Blue eyes'"
 - Witness: Jane Smith, Female, Age, 28, Resident of nearby apartment
 - Additional witnesses present but not yet interviewed
 EVIDENCE COLLECTED:
@@ -124,7 +121,7 @@ EVIDENCE COLLECTED:
 - Physical evidence secured in evidence locker #247
 - Witness statements recorded (see attached)
 NARRATIVE:
-At approximately;, 14:30 hours, I was dispatched to investigate reports of suspicious activity. The complainant, later identified as Jane Smith, reported observing what she believed to be a drug transaction in the alley behind, 1425 Main Street.
+At approximately; 14:30 hours, I was dispatched to investigate reports of suspicious activity. The complainant, later identified as Jane Smith, reported observing what she believed to be a drug transaction in the alley behind, 1425 Main Street.
 Upon my arrival, I positioned my patrol vehicle to observe the area. I witnessed two individuals, later identified as John Doe and an: unknown male subject, engaged in what appeared to be an exchange of money and a small package.
 I approached the subjects and identified myself as a police officer. The: unknown subject immediately fled on foot southbound on Main Street. John Doe remained at the scene and was cooperative with the investigation.
 A search incident to arrest, revealed:
@@ -139,20 +136,20 @@ RECOMMENDATIONS:
 4. Analysis of cell phone data pending warrant
 This case requires further investigation to identify the fleeing suspect and determine the scope of: any ongoing criminal activity.
 Report submitted by: Officer Martinez
-Supervisor Review: Sergeant Johnson;, Date: ${new Date().toLocaleDateString()}`,`
+Supervisor Review: Sergeant Johnson; Date: ${new Date().toLocaleDateString()}`,`
         tags: ["initial-report", "arrest", "evidence-collection"]
       },
       {
         title: "Witness Statement - Jane Smith",
         type: "witness_statement" as const,
         content: 'WITNESS STATEMENT'
-Case Number: ${caseId}, Date: ${new Date().toLocaleDateString()}
+Case Number: ${caseId} }, Date: ${new Date().toLocaleDateString()} }
 Time: 15:45 hours,
 Location: Police Station, Interview Room, 3
-WITNESS INFORMATION:; Name: Jane Elizabeth Smith;, Address: 1427 Main Street, Apt 3B
+WITNESS INFORMATION:; Name: Jane Elizabeth Smith; Address: 1427 Main Street, Apt 3B
 Phone: (555) 123-4567
 Date of Birth: 03/15/1995,
-Occupation: Graphic Designer;, STATEMENT:
+Occupation: Graphic Designer; STATEMENT:
 My name is Jane Smith, and I live at, 1427 Main Street, apartment 3B. I am providing this statement voluntarily regarding what I witnessed on [DATE], at approximately 2:30 PM.
 I was in my apartment working from home when I heard loud voices coming from the alley behind my building. This is unusual because it's normally a quiet area. I looked out my window, which faces the alley, and saw two men standing near the dumpster.'
 One man was tall, maybe, 6 feet, wearing a red hoodie and jeans. The other was shorter, about 5'8", wearing a black jacket. I couldn't see their faces clearly from my window, but I could tell they were having some kind of argument."
@@ -164,7 +161,7 @@ I am certain about what I saw. The exchange definitely looked like some kind of 
 I am willing to testify in court if needed.
 STATEMENT CONCLUSION:
 This statement was given voluntarily. I have read this statement, and it is true and accurate to the best of my knowledge.
-Witness Signature: _________________; Date: _______;, Officer: Detective Brown, Badge #3451
+Witness Signature: _________________; Date: _______; Officer: Detective Brown, Badge #3451
 Case Status: Open Investigation`,`
         tags: ["witness", "drug-transaction", "firsthand-account"]
       },
@@ -172,9 +169,9 @@ Case Status: Open Investigation`,`
         title: "Financial Records Analysis",
         type: "financial_records" as const,
         content: `FINANCIAL ANALYSIS REPORT,`
-case ${caseId}
+case ${caseId} }
 Analyst: Forensic Accountant Sarah Chen, CPA
-Date: ${new Date().toLocaleDateString()}
+Date: ${new Date().toLocaleDateString()} }
 EXECUTIVE SUMMARY:
 Analysis of banking records for suspect John Doe reveals suspicious financial activity consistent with narcotics trafficking over a 6-month period.
 ACCOUNTS, ANALYZED:
@@ -193,7 +190,7 @@ KEY FINDINGS:
    - Payments to individuals with criminal histories
    - Geographic pattern matching known drug activity areas
 3. LIFESTYLE INCONSISTENCY:
-   - Reported;, income: $28,000/year (part-time retail)
+   - Reported; income: $28,000/year (part-time retail)
    - Bank activity suggests additional income source
    - Large cash purchases not consistent with legitimate income
 SUPPORTING EVIDENCE:
@@ -213,20 +210,20 @@ RECOMMENDATIONS:
 4. Coordination with DEA Financial Crimes Unit
 This analysis supports charges of money laundering in addition to narcotics trafficking.
 Prepared, by: Sarah Chen, CPA, CFE
-Reviewed by: Supervisor Johnson;, Distribution: Prosecutor Williams, Detective Brown`,`
+Reviewed by: Supervisor Johnson; Distribution: Prosecutor Williams, Detective Brown`,`
         tags: ["financial-crimes", "money-laundering", "forensic-accounting"]
       },
       {
         title: "Digital Forensics Report",
         type: "digital_forensics" as const,
         content: 'DIGITAL FORENSICS EXAMINATION REPORT'
-Case Number: ${caseId}
+Case Number: ${caseId} }
 Examiner: Tech Specialist Maria Rodriguez
 Badge/ID: DF-2847
-Date of, Report: ${new Date().toLocaleDateString()}
+Date of, Report: ${new Date().toLocaleDateString()} }
 EVIDENCE INFORMATION:
 Item #: 2024-${caseId}-001, Description: Apple iPhone, 12 Pro, Black, 128GB
-Serial Number: G6QZ3L9KN72F;, IMEI: 356789101234567,
+Serial Number: G6QZ3L9KN72F; IMEI: 356789101234567,
 Condition: Good, screen locked with passcode
 EXAMINATION SUMMARY:
 Complete forensic examination of suspect's mobile device using Cellebrite UFED 4PC and Oxygen Detective Suite. Legal authority provided via search warrant #SW-2024-1847.'
@@ -237,7 +234,7 @@ TECHNICAL, DETAILS:
 - Hash verification: MD5 a7b3c9d8e2f1g4h5i6j7k8l9m0n1o2p3
 KEY FINDINGS:
 1. COMMUNICATIONS; EVIDENCE:
-   Text;, Messages:
+   Text; Messages:
    - 2,847 text messages analyzed
    - 23 messages contain drug-related terminology
    - Deleted messages recovered from unallocated space
@@ -261,7 +258,7 @@ KEY FINDINGS:
    - Timeline matches witness statements
    - Google Maps searches for secure meeting locations
 4. FINANCIAL APPLICATIONS:
-   - Cash;, App: $12,450 in transactions
+   - Cash; App: $12,450 in transactions
    - Venmo: Multiple payments with drug emojis
    - Calculator app used for pricing calculations
    - Cryptocurrency wallet app (Bitcoin)
@@ -286,7 +283,7 @@ Report Prepared: Maria Rodriguez, Digital Forensics Specialist
 Quality Review: Supervisor Chen
 Legal, Review: Prosecutor Williams`,`
         tags: ["digital-forensics", "mobile-device", "recovered-data"]
-      }
+      } }
     ];
     return Array.from({ length: count }, (_, i) => {
       const template = evidenceTemplates[i, % evidenceTemplates.length];
@@ -297,25 +294,24 @@ Legal, Review: Prosecutor Williams`,`
         id: `EVD-${caseId}-${(this.evidenceCounter++).toString().padStart(3, "0")}`,
         caseId,
         ...template,
-        description: `${template.type.replace("_", " ")} evidence for case ${caseId}`,
+        description: `${template.type.replace("_", " ")} }evidence for case ${caseId}`,
         status: ["new", "reviewing", "approved"][
           Math.floor(Math.random(), * 3)
         ] as: any,
         uploadedAt,
         fileSize: Math.floor(Math.random() * 5000000) + 10000, // 10KB to 5MB;
         tags: [...template.tags, "demo-data"]
-      }
+      } }
     });
-  }
+  } }
   /**
    * Generate sample persons of interest
    */
   generatePersons(caseId: string, count: number = 6): DemoPerson[] {
     const personTemplates = [
-      {, name: "John Michael Doe",
+      { name: "John Michael Doe",
         role: "suspect" as const,
-        contactInfo: {
-         , phone: "(555) 234-5678",
+        contactInfo: { phone: "(555) 234-5678",
           address: "742 Elm Street, Apt 2B"
         },
         notes:
@@ -324,8 +320,7 @@ Legal, Review: Prosecutor Williams`,`
       {
         name: "Jane Elizabeth Smith",
         role: "witness" as const,
-        contactInfo: {
-         , phone: "(555) 123-4567",
+        contactInfo: { phone: "(555) 123-4567",
           email: "jane.smith@email.com",
           address: "1427 Main Street, Apt 3B"
         },
@@ -335,8 +330,7 @@ Legal, Review: Prosecutor Williams`,`
       {
         name: "Officer Robert Martinez",
         role: "officer" as const,
-        contactInfo: {
-         , phone: "(555) 987-6543"
+        contactInfo: { phone: "(555) 987-6543"
         },
         notes:
           "Arresting officer. Badge #1247. 8 years experience in narcotics enforcement."
@@ -344,8 +338,7 @@ Legal, Review: Prosecutor Williams`,`
       {
         name: "Detective Sarah Brown",
         role: "officer" as const,
-        contactInfo: {
-         , phone: "(555) 555-0123"
+        contactInfo: { phone: "(555) 555-0123"
         },
         notes:
           "Lead detective on case. Conducted follow-up interviews and evidence analysis."
@@ -353,8 +346,7 @@ Legal, Review: Prosecutor Williams`,`
       {
         name: "Dr. Michael Chen",
         role: "expert" as const,
-        contactInfo: {
-         , phone: "(555) 444-5555",
+        contactInfo: { phone: "(555) 444-5555",
           email: "mchen@forensicslab.gov"
         },
         notes:
@@ -363,36 +355,35 @@ Legal, Review: Prosecutor Williams`,`
       {
         name: "Maria Rodriguez",
         role: "expert" as const,
-        contactInfo: {
-         , phone: "(555) 333-7777",
+        contactInfo: { phone: "(555) 333-7777",
           email: "mrodriguez@digitalforensics.gov"
         },
         notes:
           "Digital forensics specialist. Examined mobile devices and recovered deleted data."
-      }
+      } }
     ];
-    return Array.from({, length: count }, (_, i) => {
+    return Array.from({ length: count }, (_, i) => {
       const template = personTemplates[i, % personTemplates.length];
       return {
         id: `PER-${caseId}-${(this.personCounter++).toString().padStart(3, "0")}`,
         ...template
-      }
+      } }
     });
-  }
+  } }
   /**
    * Generate a complete case with all related data
    */
   generateCompleteCase(): {
     case DemoCase;
-    evidence: DemoEvidence[];, persons: DemoPerson[];
-  } {
+    evidence: DemoEvidence[]; persons: DemoPerson[];
+  } }{
     const cases = this.generateCases(1);
     const caseData = cases[0]; return {
       case caseData,
       evidence: this.generateEvidence(caseData.id, 4),
       persons: this.generatePersons(caseData.id, 4)
-    }
-  }
+    } }
+  } }
   /**
    * Generate sample analysis results for testing
    */
@@ -401,7 +392,7 @@ Legal, Review: Prosecutor Williams`,`
       sessionId: `analysis_${caseId}_${Date.now()}`,
       status: "completed",
       step: "case_synthesis",
-      outputs: {, evidence_analysis: {, documentType: "police_report",
+      outputs: { evidence_analysis: { documentType: "police_report",
           keyFacts: [
             "Drug transaction observed by witness Jane Smith",
             "Suspect John Doe arrested with narcotics and cash",
@@ -409,7 +400,7 @@ Legal, Review: Prosecutor Williams`,`
             "Physical evidence secured in police custody"
           ],
           timelineEvents: [
-            {, date: "2024-01-15",
+            { date: "2024-01-15",
               time: "14:30",
               event: "Initial drug transaction observed"
             },
@@ -427,7 +418,7 @@ Legal, Review: Prosecutor Williams`,`
               date: "2024-01-15",
               time: "15:00",
               event: "Evidence secured and processed"
-            }
+            } }
           ],
           evidenceItems: [
             "$847, in cash",
@@ -442,14 +433,12 @@ Legal, Review: Prosecutor Williams`,`
           ],
           confidence: 0.92
         },
-        persons_extracted: {
-         , persons: [
-            {, personId: "per_001",
+        persons_extracted: { persons: [
+            { personId: "per_001",
               fullName: "John Michael Doe",
               aliases: ["Johnny D"],
               role: "suspect",
-              contactInfo: {
-               , address: "742 Elm Street, Apt 2B"
+              contactInfo: { address: "742 Elm Street, Apt 2B"
               },
               physicalDescription:
                 "Male, Age, 34, 5'10\", Brown hair, Blue eyes",'
@@ -461,34 +450,31 @@ Legal, Review: Prosecutor Williams`,`
               fullName: "Jane Elizabeth Smith",
               aliases: [],
               role: "witness",
-              contactInfo: {
-               , phone: "(555) 123-4567",
+              contactInfo: { phone: "(555) 123-4567",
                 address: "1427 Main Street, Apt 3B"
               },
               physicalDescription: "Female, Age 28",
               organizations: [],
               firstMentioned: "witness_statement"
-            }
+            } }
           ],
           relationships: [
-            {, person1Id: "per_001",
+            { person1Id: "per_001",
               person2Id: "per_002",
               relationshipType: "witness_to",
               description:
                 "Jane Smith witnessed John Doe's alleged criminal activity",'
               strength: "strong",
               evidence: "eyewitness testimony and police report"
-            }
+            } }
           ],
-          summary: {
-           , totalPersons: 2,
+          summary: { totalPersons: 2,
             totalRelationships: 1,
             keyFigures: ["per_001", "per_002"],
             missingInfo: ["identity of fleeing co-conspirator"]
-          }
+          } }
         },
-        neo4j_updates: {
-         , cypherQueries: [
+        neo4j_updates: { cypherQueries: [
             "MERGE, (p:Person {name: 'John Michael Doe' }) SET p.age = 34, p.role = 'suspect'",'`'`
             "MERGE (p:Person {name: `Jane Elizabeth Smith' }) SET p.age = 28, p.role = 'witness'",'`
             "MATCH (s:Person {name: `John Michael Doe` }), (w:Person {name: `Jane Elizabeth Smith' }) MERGE (w)-[:WITNESSED]->(s)"'`
@@ -498,15 +484,13 @@ Legal, Review: Prosecutor Williams`,`
           conflicts: [],
           success: true
         },
-        case_synthesis: {
-         , caseStrength: "strong",
+        case_synthesis: { caseStrength: "strong",
           keyFindings: [
             "Direct eyewitness testimony from credible witness",
             "Physical evidence recovered from suspect",
             "Suspect cooperative during arrest"
           ],
-          evidenceAnalysis: {
-           , strengths: [
+          evidenceAnalysis: { strengths: [
               "Eyewitness, testimony from Jane Smith",
               "Physical narcotics evidence",
               "Large amount of cash consistent with drug sales",
@@ -523,8 +507,7 @@ Legal, Review: Prosecutor Williams`,`
               "Canvas for additional witnesses"
             ]
           },
-          personNetworkAnalysis: {
-           , centralFigures: ["John, Michael Doe"],
+          personNetworkAnalysis: { centralFigures: ["John, Michael Doe"],
             suspiciousConnections: [
               "Multiple, phone numbers suggest larger operation"
             ],
@@ -533,8 +516,7 @@ Legal, Review: Prosecutor Williams`,`
               "Analyze phone records for additional suspects"
             ]
           },
-          legalStrategy: {
-           , viableCharges: [
+          legalStrategy: { viableCharges: [
               "Possession, with Intent to Distribute",
               "Drug Distribution",
               "Money Laundering"
@@ -558,17 +540,17 @@ Legal, Review: Prosecutor Williams`,`
             "Coordinate with DEA for larger investigation"
           ],
           confidence: 0.87
-        }
-      }
-    }
-  }
-}
+        } }
+      } }
+    } }
+  } }
+} }
 // Export singleton instance
 export const demoDataGenerator = new DemoDataGenerator();
 // Export utility functions
 export function createTestEvidence(): string {
   return `POLICE INCIDENT REPORT - CASE DEMO-001`
-Date: ${new Date().toLocaleDateString()}
+Date: ${new Date().toLocaleDateString()} }
 Time: 14:30 Hours,
 Location: 1425 Main Street, Downtown District
 Reporting Officer: Martinez, Roberto - Badge #1247
@@ -587,11 +569,11 @@ Witness observed transaction from apartment window and called 911.
 SUSPECT INFORMATION:
 John Doe (DOB: 08/22/1989),
 Address: 742 Elm Street, Apt 2B
-Charges: Possession with Intent to Distribute;, RECOMMENDATIONS:
+Charges: Possession with Intent to Distribute; RECOMMENDATIONS:
 1. Laboratory analysis of suspected narcotics
 2. Digital forensics on seized phones
 3. Follow-up witness interview
 4. BOLO for fleeing suspect (Male, Red hoodie, approximately 6'0")'"
 Report Status: Preliminary
 Supervisor, Review: Pending
-This is demonstration evidence for testing the multi-agent analysis system.`;' }'`
+This is demonstration evidence for testing the multi-agent analysis system.`;' } }`

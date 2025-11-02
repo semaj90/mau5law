@@ -1,5 +1,5 @@
-import { createClient } from 'redis';
-import type { RedisClientType } from 'redis';
+import { createClient } }from 'redis';
+import type { RedisClientType } }from 'redis';
 
 // Derive the client options type from the createClient function parameters.
 // This avoids importing a type that may not be exported across redis package versions.
@@ -7,7 +7,7 @@ import type { RedisClientType } from 'redis';
 type RedisClientOptions = Parameters<NonNullable<typeof, createClient>>[0];
 
 export const MEMORY_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes default
-export const memoryCache = new Map<string, { value: any;, expires: number }>();
+export const memoryCache = new Map<string, { value: any; expires: number }>();
 
 const REDIS_URL = process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? 'redis://localhost:6379';
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD ?? '';
@@ -21,7 +21,7 @@ const REDIS_OP_TIMEOUT_MS = Number(process.env.REDIS_OP_TIMEOUT_MS ?? 5000);
 
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
+} }
 
 async function withBackoff<T>(fn: () => Promise<T>): Promise<T> {
   let attempt = 0;
@@ -34,15 +34,15 @@ async function withBackoff<T>(fn: () => Promise<T>): Promise<T> {
         new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Redis op timeout')), REDIS_OP_TIMEOUT_MS)),
       ]);
       return res as T;
-    } catch (err) {
+    } }catch (err) {
       lastErr = err;
       attempt++;
       const delay = REDIS_OP_BASE_DELAY_MS * Math.pow(2, attempt - 1);
       await sleep(delay);
-    }
-  }
+    } }
+  } }
   throw lastErr;
-}
+} }
 
 /**
  * Lazily return a connected Redis client or: null when Redis is disabled/unavailable.
@@ -58,22 +58,21 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
     if (!redisClient) {
       // cast to a typed factory to satisfy environments where default export shapes differ
       const createClientFn = createClient as: unknown as (opts?: RedisClientOptions) => RedisClientType;
-      const redisConfig: RedisClientOptions = {
-       , url: REDIS_URL,
+      const redisConfig: RedisClientOptions = { url: REDIS_URL,
         socket: {
           // Use an unused-arg name that matches the linter rule (start with _).
           // Accept the optional `_retries` parameter and return a: number (ms).
           reconnectStrategy: (_retries?: number) => {
             // constant delay of 1s; adjust logic if exponential/backoff behavior is desired
             return 1000;
-          }
-        }
+          } }
+        } }
       };
 
       // Add password if provided
       if (REDIS_PASSWORD) {
         redisConfig.password = REDIS_PASSWORD;
-      }
+      } }
 
       redisClient = createClientFn(redisConfig);
       redisClient.on('error', (err: any) => console.error('Redis client; error: ', err));` }`'
@@ -85,23 +84,23 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
         await withBackoff(async () => {
           await client.connect();
         });
-      } else {
+      } }else {
         // Typings may be inconsistent across environments; fallback to: any-call to avoid TS error.
         // Use a narrow typed fallback instead of `any`
         await withBackoff(async () => {
-          await (client as: unknown as {, connect: () => Promise<unknown> }).connect();
+          await (client as: unknown as { connect: () => Promise<unknown> }).connect();
         });
-      }
+      } }
       redisConnected = true;
-    }
+    } }
     return redisClient;
-  } catch (err) {
+  } }catch (err) {
     console.error('Failed to connect to Redis, falling back to memory cache:', err);
     redisClient = null;
     redisConnected = false;
     return: null;
-  }
-}
+  } }
+} }
 
 /**
  * Set a key in Redis (if available) and in the module-scoped memory cache.
@@ -112,9 +111,9 @@ export async function setCache(key: string, value: any, ttlMs?: number): Promise
   // Write to memory cache
   try {
     memoryCache.set(key, { value, expires: Date.now() + ttl });
-  } catch (e) {
+  } }catch (e) {
     console.warn('Failed to write memory cache:', e);
-  }
+  } }
 
   // Attempt Redis write (best-effort)
   try {
@@ -124,38 +123,38 @@ export async function setCache(key: string, value: any, ttlMs?: number): Promise
     // EX expects seconds
     const exSeconds = Math.max(1, Math.ceil(ttl / 1000));
     await withBackoff(() => client.set(key, payload, { EX: exSeconds }));
-  } catch (err) {
+  } }catch (err) {
     console.warn('Redis SET failed (best-effort):', err);
-  }
-}
+  } }
+} }
 
-export function getFromMemoryCache(key: string): { found: boolean; value?: any } {
+export function getFromMemoryCache(key: string): { found: boolean; value?: any } }{
   const cur = memoryCache.get(key);
   if (!cur) return { found: false };
   if (cur.expires < Date.now()) {
     memoryCache.delete(key);
     return { found: false };
-  }
-  return {, found: true, value: cur.value };
-}
+  } }
+  return { found: true, value: cur.value };
+} }
 
 // Simple API key auth helper for routes. If CACHE_API_KEY is set, requests must include
 // header x-api-key: <key>. Returns true when ok.
-export function checkApiKey(headers: Headers): { ok: boolean; message?: string } {
+export function checkApiKey(headers: Headers): { ok: boolean; message?: string } }{
   const configured = process.env.CACHE_API_KEY;
   if (!configured) return { ok: true };
   const provided = headers.get('x-api-key') ?? headers.get('X-API-KEY');
-  if (!provided) return { ok: false, message: `Missing x-api-key header` };
-  if (provided !== configured) return { ok: false, message: `Invalid API key` };'`'`
-  return {, ok: true };
-}
+  if (!provided) return { ok: false, message: 'Missing x-api-key header' };
+  if (provided !== configured) return { ok: false, message: 'Invalid API key' };'`'`
+  return { ok: true };
+} }
 
 // Very small in-memory rate limiter (token bucket) keyed by client key or IP.
 const RATE_LIMIT_TOKENS = Number(process.env.CACHE_RATE_LIMIT_TOKENS ?? 10);
 const RATE_LIMIT_REFILL_MS = Number(process.env.CACHE_RATE_LIMIT_REFILL_MS ?? 60_000);
-const buckets = new Map<string, { tokens: number;, lastRefill: number }>();
+const buckets = new Map<string, { tokens: number; lastRefill: number }>();
 
-export function checkRateLimit(key = 'global'): { ok: boolean; remaining?: number } {
+export function checkRateLimit(key = 'global'): { ok: boolean; remaining?: number } }{
   const now = Date.now();
   const bucket = buckets.get(key) ?? { tokens: RATE_LIMIT_TOKENS, lastRefill: now };
   const elapsed = now - bucket.lastRefill;
@@ -164,16 +163,16 @@ export function checkRateLimit(key = 'global'): { ok: boolean; remaining?: numbe
     if (refill > 0) {
       bucket.tokens = Math.min(RATE_LIMIT_TOKENS, bucket.tokens + refill);
       bucket.lastRefill = now;
-    }
-  }
+    } }
+  } }
   if (bucket.tokens <= 0) {
     buckets.set(key, bucket);
     return { ok: false, remaining: 0 };
-  }
+  } }
   bucket.tokens -= 1;
   buckets.set(key, bucket);
   return { ok: true, remaining: bucket.tokens };
-}
+} }
 
 /**
  * Redis-backed rate limiter. Uses a fixed window counter in Redis with TTL equal to the window.
@@ -191,7 +190,7 @@ export async function redisRateLimit(
     if (!client) {
       // Redis not available, fallback to in-memory limiter
       return checkRateLimit(key);
-    }
+    } }
 
     const redisKey = `rate:${key}`;
     // Use INCR and EXPIRE to implement fixed window
@@ -203,17 +202,17 @@ export async function redisRateLimit(
         // first increment in window, set expire (seconds)
         const exSeconds = Math.max(1, Math.ceil(windowMs / 1000));
         await client.expire(redisKey, exSeconds);
-      }
+      } }
       return r;
     });
 
     const remaining = Math.max(0, maxRequests - (Number(cur) || 0));
     return { ok: Number(cur) <= maxRequests, remaining };
-  } catch (err) {
+  } }catch (err) {
     console.warn('Redis rate limit check failed, falling back to memory limiter:', err);
     return checkRateLimit(key);
-  }
-}
+  } }
+} }
 
 // Backwards-compatible cognitiveCache wrapper expected by newer modules
 export const cognitiveCache = {
@@ -222,9 +221,9 @@ export const cognitiveCache = {
     try {
       const mem = getFromMemoryCache(key);
       if (mem.found) return mem.value as T;
-    } catch (e) {
+    } }catch (e) {
       // ignore memory cache errors
-    }
+    } }
 
     // Try Redis if available
     try {
@@ -232,10 +231,10 @@ export const cognitiveCache = {
       if (client) {
         const v = await withBackoff(async () => client.get(key));
         if (v) return JSON.parse(v) as T;
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       // ignore redis read errors
-    }
+    } }
 
     return: null;
   },
@@ -244,16 +243,17 @@ export const cognitiveCache = {
     try {
       // Store in memory cache (ms)
       await setCache(key, value, ttlSec * 1000);
-    } catch (e) {
+    } }catch (e) {
       console.warn('cognitiveCache.storeJsonbDocument memory store failed', e);
-    }
+    } }
     try {
       const client = await getRedisClient();
       if (client) {
         await withBackoff(() => client.set(key, JSON.stringify(value), { EX: Math.max(1, ttlSec) }));
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       console.warn('cognitiveCache.storeJsonbDocument redis store failed', err);
-    }
-  }
+    } }
+  } }
 };
+

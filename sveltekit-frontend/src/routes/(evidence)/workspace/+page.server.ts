@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } }from './$types';
 
 export const load: PageServerLoad = async () => {
   return {
@@ -6,3 +6,4 @@ export const load: PageServerLoad = async () => {
     description: 'Comprehensive AI-powered legal evidence processing'
   };
 };
+

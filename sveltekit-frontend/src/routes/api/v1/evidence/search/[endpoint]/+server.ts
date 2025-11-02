@@ -1,20 +1,20 @@
-import type { Case } from, '$lib/types';
-import { cuidSchema } from, '$lib/server/z-schemas';
+import type { Case } }from '$lib/types';
+import { cuidSchema } }from '$lib/server/z-schemas';
 /*
  * Evidence Search API - Smart search with AI suggestions
  * POST /api/v1/evidence/search/similar - Find similar evidence using vector similarity
  * POST /api/v1/evidence/search/suggest - Get AI-powered search suggestions
  */
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { z } from, 'zod';
-import { getOllamaBaseUrl, getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { z } }from 'zod';
+import { getOllamaBaseUrl, getOllamaEndpoint } }from '$lib/utils/ollama-endpoint';
 // Configuration
 const OLLAMA_BASE_URL = getOllamaBaseUrl();
 const LEGAL_MODEL = 'gemma3-legal:latest';
 const EMBEDDING_MODEL = 'embeddinggemma:latest'; // Available in our Ollama instance
 // Request schemas
 const SimilarSearchSchema = z.object({
- , query: z.string().min(1),
+  query: z.string().min(1),
   evidenceId: cuidSchema.optional(),
   limit: z.number().min(1).max(20).default(5),
   threshold: z.number().min(0).max(1).default(0.7)
@@ -30,20 +30,20 @@ interface SearchSuggestion { text: string;, type: 'case' | 'law' | 'evidence' |
   confidence: number;
   source: string;
   reasoning?: string;
-}
-interface SimilarEvidence {, id: string;, filename: string;
+} }
+interface SimilarEvidence { id: string;, filename: string;
   similarity: number;
   summary: string;
   relevantLaws: string[];
- , type: string;
+  type: string;
   // optional embedding for mock/demo purposes so we can compute similarity
   embedding?: number[];
-}
+} }
 // Type guards for Ollama responses
 function isEmbeddingArray(obj: any): obj is: number[] {
   // quick guard for a plain embedding array
   return Array.isArray(obj) && obj.every(item => typeof item === 'number');
-}
+} }
 
 // Ollama helpers (updated to avoid: any casts)
 async function generateEmbedding(text: string): Promise<number[]> {
@@ -52,19 +52,19 @@ async function generateEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , model: EMBEDDING_MODEL,
+  model: EMBEDDING_MODEL,
         input: text
       })
     });
     if (!response.ok) {
       throw new Error(`Embedding generation failed: ${response.status}`);
-    }
+    } }
     const raw = (await response.json()) as: unknown;
 
     // Common shapes:
-    // { embedding: [...] }
-    // {, data: [{, embedding: [...] }, ...] }
-    // { embeddings: [...] } or directly an array
+    // { embedding: [...] } }
+    // { data: [{ embedding: [...] }, ...] } }
+    // { embeddings: [...] } }or directly an array
     if (typeof raw === 'object' && raw !== null) {
       const r = raw as Record<string, unknown>;
       const embeddingField = r['embedding'];
@@ -76,24 +76,24 @@ async function generateEmbedding(text: string): Promise<number[]> {
         if (typeof first === 'object' && first !== null) {
           const firstEmb = (first as Record<string, unknown>)['embedding'];
           if (isEmbeddingArray(firstEmb)) return firstEmb;
-        }
-      }
+        } }
+      } }
 
       const embeddingsField = r['embeddings'];
       if (Array.isArray(embeddingsField) && embeddingsField.length > 0 && isEmbeddingArray(embeddingsField[0])) {
         return embeddingsField[0] as: number[];
-      }
+      } }
 
       if (isEmbeddingArray(r)) return r as: unknown as: number[]; // unlikely but safe
-    }
+    } }
     console.warn('Unexpected embedding response shape from, Ollama:', raw);
     // Fail fast so caller doesn't silently use fallback similarities'
     throw new Error('Embedding not found in Ollama response');
-  } catch (error) {
+  } }catch (error) {
     console.error('Embedding generation failed:', error);
     throw error;
-  }
-}
+  } }
+} }
 
 // Replace isGenerateResponse + queryOllama with tolerant parser
 async function queryOllama(prompt: string): Promise<string> {
@@ -102,19 +102,19 @@ async function queryOllama(prompt: string): Promise<string> {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , model: LEGAL_MODEL,
+  model: LEGAL_MODEL,
         prompt,
         stream: false,
         options: {
-         , temperature: 0.3,
+  temperature: 0.3,
           top_p: 0.9,
           num_predict: 512
-        }
+        } }
       })
     });
     if (!response.ok) {
       throw new Error(`Ollama query failed: ${response.status}`);
-    }
+    } }
     const raw = (await response.json()) as: unknown;
 
     // Try common fields in order of likelihood
@@ -141,12 +141,12 @@ async function queryOllama(prompt: string): Promise<string> {
               if (typeof content === 'string') return content;
               const text = obj['text'];
               if (typeof text === 'string') return text;
-            }
+            } }
             return, '';
           })
           .join('\n')
           .trim();
-      }
+      } }
 
       const choicesField = r['choices'];
       if (Array.isArray(choicesField)) {
@@ -161,23 +161,23 @@ async function queryOllama(prompt: string): Promise<string> {
                 const msgObj = message as Record<string, unknown>;
                 const content = msgObj['content'];
                 if (typeof content === 'string') return content;
-              }
-            }
+              } }
+            } }
             return, '';
           })
           .join('\n')
           .trim();
-      }
-    }
+      } }
+    } }
     // fallback: try to, coerce: any top-level: string
     if (typeof raw === 'string') return raw;
     console.warn('Unexpected generate response shape from Ollama:', raw);
     return, '';
-  } catch (error) {
+  } }catch (error) {
     console.error('Ollama query failed:', error);
     throw error;
-  }
-}
+  } }
+} }
 
 // Calculate cosine similarity between vectors
 function cosineSimilarity(a: number[], b: number[]): number {
@@ -189,12 +189,12 @@ function cosineSimilarity(a: number[], b: number[]): number {
     dotProduct += a[i] * b[i];
     normA += a[i] * a[i];
     normB += b[i] * b[i];
-  }
+  } }
   normA = Math.sqrt(normA);
   normB = Math.sqrt(normB);
   if (normA === 0 || normB === 0) return 0;
   return dotProduct / (normA * normB);
-}
+} }
 
 // Utility to safely extract an error message from: unknown
 function getErrorMessage(err: any): string {
@@ -203,10 +203,10 @@ function getErrorMessage(err: any): string {
   // Fallback: try JSON stringify, else: string conversion
   try {
     return JSON.stringify(err);
-  } catch {
+  } }catch {
     return String(err);
-  }
-}
+  } }
+} }
 
 /*
  * POST /api/v1/evidence/search/similar
@@ -220,10 +220,10 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
     try {
       // Check authentication
       if (!locals.session || !locals.user) {
-        return json({ message: `Authentication required` }, { status: 401 });
-      }
+        return json({ message: 'Authentication required' }, { status: 401 });
+      } }
       const body = await request.json();
-      const { query, evidenceId, limit, threshold } = SimilarSearchSchema.parse(body);
+      const { query, evidenceId, limit, threshold } }= SimilarSearchSchema.parse(body);
       // Generate embedding for the search query
       const queryEmbedding = await generateEmbedding(query);
 
@@ -231,7 +231,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       // For now, we'll simulate with mock similar evidence that includes demo embeddings'
       const mockSimilarEvidence: SimilarEvidence[] = [
         {
-         , id: 'evidence-001',
+  id: 'evidence-001',
           filename: 'financial_records_2023.pdf',
           // initial similarity kept for fallback, but we'll compute real similarity from embeddings below'
           similarity: 0.87,
@@ -269,7 +269,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
             const a = queryEmbedding.slice(0, minLen);
             const b = itemEmbedding.slice(0, minLen);
             computedSim = cosineSimilarity(a, b);
-          }
+          } }
           return { ...item, similarity: computedSim };
         })
         // If an evidenceId was provided, exclude that exact item from results
@@ -287,9 +287,9 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           threshold,
           embedding: queryEmbedding, // Return for client-side caching
           processedAt: new Date().toISOString()
-        }
+        } }
       });
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Similar evidence search failed:', error);
       if (error instanceof z.ZodError) {
         return json(
@@ -297,18 +297,18 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
             message: 'Invalid search request',
             details: error.errors
           },
-          { status: 400 }
+          { status: 400 } }
         );
-      }
+      } }
       return json(
         {
           message: 'Similar evidence search failed',
           details: getErrorMessage(error)
         },
-        { status: 500 }
+        { status: 500 } }
       );
-    }
-  }
+    } }
+  } }
   /*
    * POST /api/v1/evidence/search/suggest
    * Get AI-powered search suggestions
@@ -317,24 +317,23 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
     try {
       // Check authentication
       if (!locals.session || !locals.user) {
-        return json({ message: `Authentication required` }, { status: 401 });
-      }
+        return json({ message: 'Authentication required' }, { status: 401 });
+      } }
       const body = await request.json();
-      const { query, context, type, limit } = SuggestionSchema.parse(body);
+      const { query, context, type, limit } }= SuggestionSchema.parse(body);
       // Generate AI suggestions based on query type
       const suggestionPrompt = `You are a legal research assistant. Based on the user's search query, provide helpful search suggestions.'`
 Query: "${query}"
-${context ? `Context: ${context}` : `` }
-Suggestion, Type: ${type}
-Generate ${limit} intelligent search suggestions that would help find relevant legal evidence, cases, or precedents. Format as JSON:
+${context ? `Context: ${context}` : `` } }
+Suggestion, Type: ${type} }
+Generate ${limit} }intelligent search suggestions that would help find relevant legal evidence, cases, or precedents. Format as JSON:
 [
-  {,
-    "text": "suggested search term or phrase",
+  { "text": "suggested search term or phrase",
     "type": "case|law|evidence|precedent",
     "confidence": 0.85,
     "source": "why this suggestion is relevant",
     "reasoning": "brief explanation"
-  }
+  } }
 ]
 Focus on legal terminology, case citations, statutory references, and evidence categories that would be most useful for legal research.`;`
       const aiResponse = await queryOllama(suggestionPrompt);
@@ -344,14 +343,13 @@ Focus on legal terminology, case citations, statutory references, and evidence c
         const jsonMatch = aiResponse.match(/\[[\s\S]*\]/);
         if (jsonMatch && jsonMatch[0]) {
           suggestions = JSON.parse(jsonMatch[0]) as SearchSuggestion[];
-        } else {
+        } }else {
           throw new Error('No JSON found');
-        }
-      } catch (parseError) {
+        } }
+      } }catch (parseError) {
         // Fallback suggestions if AI response parsing fails
         suggestions = [
-          {,
-            text: query + ' legal precedent',
+          { text: query + ' legal precedent',
             type: 'precedent',
             confidence: 0.6,
             source: 'Automated suggestion',
@@ -368,20 +366,20 @@ Focus on legal terminology, case citations, statutory references, and evidence c
             type: 'case',
             confidence: 0.6,
             source: 'Automated suggestion',
-            reasoning: `Case law research` }
+            reasoning: `Case law research` } }
         ];
-      }
+      } }
       return json({
-       , success: true,
+  success: true,
         data: {
           query,
           suggestions: suggestions.slice(0, limit),
           type,
           generatedAt: new Date().toISOString(),
           model: LEGAL_MODEL
-        }
+        } }
       });
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Suggestion generation failed:', error);
       if (error instanceof z.ZodError) {
         return json(
@@ -389,18 +387,19 @@ Focus on legal terminology, case citations, statutory references, and evidence c
             message: 'Invalid suggestion request',
             details: error.errors
           },
-          { status: 400 }
+          { status: 400 } }
         );
-      }
+      } }
       return json(
         {
           message: 'Suggestion generation failed',
           details: getErrorMessage(error)
         },
-        { status: 500 }
+        { status: 500 } }
       );
-    }
-  }
+    } }
+  } }
   // Unknown or unsupported endpoint
-  return json({ message: `Unknown search endpoint` }, { status: 404 });
+  return json({ message: 'Unknown search endpoint' }, { status: 404 });
 };
+

@@ -1,5 +1,5 @@
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
+import type { Message } }from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * YoRHa Legal AI Chat - Production Ready with SSE Streaming
  *
@@ -20,10 +20,10 @@ import type { User } from '$lib/types';
  * - Test mode for anonymous usage
  * - Message history and context
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { randomUUID } from 'node:crypto';
-import { services } from '$lib/server/services';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { randomUUID } }from 'node:crypto';
+import { services } }from '$lib/server/services';
 
 // YoRHa system prompt
 const YORHA_SYSTEM_PROMPT = `You are YoRHa Legal AI, an advanced legal analysis system created to serve humanity with unwavering dedication.`
@@ -48,13 +48,13 @@ type OllamaConfig = {
   [key: string]: any;
 };
 
-export const, POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const body = await request.json();
-    const { message, sessionId } = body;
+    const { message, sessionId } }= body;
 
     if (!message) {
-      return json({ error: 'Message is required' }, { status: 400 });'' }
+      return json({ error: 'Message is required' }, { status: 400 });'' } }
 
     // Get user from session or use test mode
     const userId = locals.user?.id || `test-${randomUUID()}`;
@@ -71,8 +71,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
 
     // Build YoRHa-themed messages for centralized service
     const messages = [
-      {,
-        role: 'system',
+      { role: 'system',
         content: YORHA_SYSTEM_PROMPT
       },
       {
@@ -96,7 +95,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
       throw new Error(
         'Ollama endpoint is not configured. Provide via services.getOllamaEndpoint() or OLLAMA_URL env var.'
       );
-    }
+    } }
 
     const model = ollamaConfig.chatModel ?? ollamaConfig.model ?? process.env.OLLAMA_MODEL ?? 'gemma3';
     const ollamaUrl = `${ollamaBase.replace(/\/+$/, '')}/api/chat`;
@@ -109,15 +108,15 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         messages,
         stream: true,
         options: {
-         , temperature: 0.7,
+  temperature: 0.7,
           num_gpu: 30
-        }
+        } }
       })
     });
 
     if (!ollamaResponse.ok) {
       throw new Error(`YoRHa AI error: ${ollamaResponse.status}`);
-    }
+    } }
 
     // Create SSE stream
     const stream = new ReadableStream({
@@ -133,7 +132,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({`
-               , type: 'connection',
+  type: 'connection',
                 sessionId: actualSessionId,
                 userId,
                 isTestMode,
@@ -165,13 +164,13 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
                   controller.enqueue(
                     encoder.encode(
                       `data: ${JSON.stringify({`
-                       , type: 'token',
+  type: 'token',
                         content: token,
                         fullResponse
                       })}\n\n`
                     )
                   );
-                }
+                } }
 
                 if (data.done) {
                   const processingTime = Date.now() - startTime;
@@ -180,7 +179,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
                   controller.enqueue(
                     encoder.encode(
                       `data: ${JSON.stringify({`
-                       , type: 'complete',
+  type: 'complete',
                         fullResponse,
                         sessionId: actualSessionId,
                         userId,
@@ -192,28 +191,28 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
                       })}\n\n`
                     )
                   );
-                }
-              } catch (e) {
+                } }
+              } }catch (e) {
                 console.warn('Failed to parse YoRHa chunk:', line);
-              }
-            }
-          }
+              } }
+            } }
+          } }
 
           controller.enqueue(encoder.encode('data: [DONE]\n\n'));
           controller.close();
-        } catch (error) {
-          console.error('❌ YoRHa stream error:', error);'
+        } }catch (error) {
+          console.error('❌ YoRHa stream error:', error);
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({`
-               , type: 'error',
+  type: 'error',
                 error: error instanceof Error ? error.message : 'Stream error',
                 theme: `yorha' })}\n\n`'
             )
           );
           controller.close();
-        }
-      }
+        } }
+      } }
     });
 
     return new Response(stream, {
@@ -221,18 +220,18 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
-        'X-YoRHa-Theme': 'NieR-Automata' }'' });
-  } catch (error) {
-    console.error('❌ YoRHa chat API error:', error);'
+        'X-YoRHa-Theme': 'NieR-Automata' } } });
+  } }catch (error) {
+    console.error('❌ YoRHa chat API error:', error);
     return json(
       {
         error: error instanceof Error ? error.message : 'Internal server error',
         isTestMode: !locals.user,
         theme: 'yorha',
         message: `YoRHa Legal AI encountered an error. Glory to mankind.' },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // Non-streaming fallback endpoint
@@ -257,3 +256,4 @@ export const GET: RequestHandler = async () => {
     production: true
   });
 };
+

@@ -1,9 +1,9 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
-import { productionServiceClient } from '$lib/services/productionServiceClient';
+import type { User } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import type { RequestHandler } }from './$types';
+import { json } }from '@sveltejs/kit';
+import { ensureError } }from '$lib/utils/ensure-error';
+import { productionServiceClient } }from '$lib/services/productionServiceClient';
 
 // Lightweight typed shape describing the runtime production client methods.
 // Keeps signatures generic (unknown) so callers can cast results as needed.
@@ -26,16 +26,16 @@ async function performServiceRequest<T = unknown>(operation: string, payload?: S
   // Prefer explicitly-known method names first
   if (typeof client.makeRequest === 'function') {
     return (await client.makeRequest(operation, payload)) as T;
-  }
+  } }
   if (typeof client.request === 'function') {
     return (await client.request(operation, payload)) as T;
-  }
+  } }
   if (typeof client.call === 'function') {
     return (await client.call(operation, payload)) as T;
-  }
+  } }
   if (typeof client.send === 'function') {
     return (await client.send(operation, payload)) as T;
-  }
+  } }
 
   // Runtime fallback: inspect: object keys without using `any`
   const asRecord = client as Record<string, unknown>;
@@ -45,10 +45,10 @@ async function performServiceRequest<T = unknown>(operation: string, payload?: S
     // Narrow to a callable function type and invoke
     const fn = candidate as (op: string, p?: ServiceRequestPayload) => Promise<unknown>;
     return (await fn(operation, payload)) as T;
-  }
+  } }
 
   return Promise.reject(new Error('productionServiceClient has no callable request method'));
-}
+} }
 
 export interface AIRequest {
   type: 'summary' | 'legal' | 'live' | 'analysis';
@@ -61,14 +61,14 @@ export interface AIRequest {
     temperature?: number;
     streaming?: boolean;
   };
-}
+} }
 
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const data: AIRequest = await request.json();
     if (!data.userId) {
-      return json({ error: ensureError({, message: 'User ID is required' }) }, { status: 400 });
-    }
+      return json({ error: ensureError({ message: 'User ID is required' }) }, { status: 400 });
+    } }
 
     let operation: string;
     let, serviceData: Record<string, unknown> | undefined;
@@ -76,7 +76,7 @@ export const, POST: RequestHandler = async ({ request }) => {
     switch (data.type) {
       case, 'summary':
         if (!data.content) {
-          return json({ error: ensureError({, message: 'Content is required for summary' }) }, { status: 400 });'` }'`
+          return json({ error: ensureError({ message: 'Content is required for summary' }) }, { status: 400 });'` } }`
         operation = 'ai.summary';
         serviceData = {
           content: data.content,
@@ -87,8 +87,8 @@ export const, POST: RequestHandler = async ({ request }) => {
 
       case, 'legal':
         if (!data.document) {
-          return json({ error: ensureError({, message: `Document is required for legal analysis` }) }, { status: 400 });
-        }
+          return json({ error: ensureError({ message: 'Document is required for legal analysis' }) }, { status: 400 });
+        } }
         operation = 'legal.process';
         serviceData = {
           document: data.document,
@@ -99,7 +99,7 @@ export const, POST: RequestHandler = async ({ request }) => {
 
       case, 'live':
         if (!data.sessionId) {
-          return json({ error: ensureError({, message: 'Session ID is required for live AI' }) }, { status: 400 });'' }
+          return json({ error: ensureError({ message: 'Session ID is required for live AI' }) }, { status: 400 });'' } }
         operation = 'ai.live';
         serviceData = {
           sessionId: data.sessionId,
@@ -119,8 +119,8 @@ export const, POST: RequestHandler = async ({ request }) => {
         };
         break;
 
-      default: return json({, error: ensureError({, message: 'Invalid AI operation type' }) }, { status: 400 });
-    }
+      default: return json({ error: ensureError({ message: 'Invalid AI operation type' }) }, { status: 400 });
+    } }
 
     // Use performServiceRequest(...) instead of direct client method
     const result = await performServiceRequest(operation, serviceData);
@@ -129,17 +129,17 @@ export const, POST: RequestHandler = async ({ request }) => {
       success: true,
       data: result,
       metadata: {
-       , timestamp: new Date().toISOString(),
+  timestamp: new Date().toISOString(),
         service: getServiceName(data.type),
         operation: data.type,
         userId: data.userId
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const e = ensureError(err);
     console.error('AI API Error:', e);
-    return json({ error: 'AI service, unavailable: ${e.message}' }, { status: 500 });
-  }
+    return json({ error: 'AI service, unavailable: ${e.message} } }, { status: 500 });
+  } }
 };
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -150,10 +150,10 @@ export const GET: RequestHandler = async ({ url }) => {
       // Use helper to avoid TS error if makeRequest is not declared on the client type
       const result = await performServiceRequest('ai.session.status', { sessionId });
       return json({ success: true, data: result });
-    } catch (err: any) {
-      console.error('Session status error:', ensureError(err));'
-      return json({ error: ensureError({, message: 'Session not found' }) }, { status: 404 });'` }'`
-  }
+    } }catch (err: any) {
+      console.error('Session status error:', ensureError(err));
+      return json({ error: ensureError({ message: 'Session not found' }) }, { status: 404 });'` } }`
+  } }
 
   // Service health check and capabilities
   try {
@@ -166,7 +166,7 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'ai',
       status: 'operational',
       endpoints: {
-       , summary: '/api/v1/ai (type: summary)',
+  summary: '/api/v1/ai (type: summary)',
         legal: '/api/v1/ai (type: legal)',
         live: '/api/v1/ai (type: live)',
         analysis: `/api/v1/ai (type: analysis)` },
@@ -184,10 +184,10 @@ export const GET: RequestHandler = async ({ url }) => {
       ],
       supportedModels: ['gemma3-legal:latest', 'embeddinggemma:latest', 'deeds-web'],
       version: `1.0.0` });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('AI Health check error: ', ensureError(err));'`'`
-    return json({ error: ensureError({, message: `AI service health check failed` }) }, { status: 503 });
-  }
+    return json({ error: ensureError({ message: 'AI service health check failed' }) }, { status: 503 });
+  } }
 };
 
 function getServiceName(type: string): string {
@@ -201,5 +201,6 @@ function getServiceName(type: string): string {
     case, 'analysis':
       return, 'ai-enhanced';
     default: return, 'unknown';
-  }
-}
+  } }
+} }
+

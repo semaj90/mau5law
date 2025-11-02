@@ -1,11 +1,11 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
 /**
  * Cache manifest endpoint for headless UI cache sync
  * GET /api/cache/manifest - Get cache manifest for synchronization
  */
 // Mock implementation - would integrate with actual Redis tensor cache
-const mockCache = new Map<string, { value: any, timestamp: number; ttl: number; version: string; source: string;, size: number
+const mockCache = new Map<string, { value: any, timestamp: number; ttl: number; version: string; source: string; size: number
 }>()
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
         size: entry.size,
         source: entry.source,
         expired: Date.now() - entry.timestamp > entry.ttl
-      }
+      } }
     })
     // Calculate statistics
     const stats = {
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
       totalSize: entries.reduce((sum, e) => sum + e.size, 0),
       oldestEntry: Math.min(...entries.map(e => e.timestamp)),
       newestEntry: Math.max(...entries.map(e => e.timestamp))
-    }
+    } }
     return json({
       success: true,
       manifest: {
@@ -54,13 +54,13 @@ export const GET: RequestHandler = async ({ url }) => {
         stats,
         timestamp: Date.now(),
         pattern
-      }
+      } }
     })
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('[Cache Manifest] Failed to generate manifest:', error)
     return json(
       { success: false, error: error.message },
-      { status: 500 }
+      { status: 500 } }
     )
-  }
+  } }
 }

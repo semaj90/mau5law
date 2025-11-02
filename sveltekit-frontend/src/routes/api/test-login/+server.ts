@@ -1,14 +1,14 @@
-import type { User } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { User } }from '$lib/types';
+import type { RequestHandler } }from './$types.js';
 // Test login endpoint to debug authentication
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import { users } from '$lib/server/db/schema-postgres';
+import { json } }from '@sveltejs/kit';
+import { db } }from '$lib/server/db/index';
+import { users } }from '$lib/server/db/schema-postgres';
 // Note: Need proper auth service imports - drizzle-orm doesn't export auth functions'
-import { eq } from 'drizzle-orm';
+import { eq } }from 'drizzle-orm';
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { email, password } = await request.json();
+    const { email, password } }= await request.json();
     console.log(`[TEST LOGIN] Attempting login for: ${email}`);
     // Find user by email
     const existingUser = await db
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: 'User not found',
         step: 'user_lookup` });'`
-    }
+    } }
     const user = existingUser[0];
     console.log(
       `[TEST LOGIN] User found: ${user.email}, has password: ${!!user.hashedPassword}, active: ${user.isActive}`
@@ -33,14 +33,14 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: 'User has no password set',
         step: 'password_check` });'`
-    }
+    } }
     if (!user.isActive) {
       console.log(`[TEST LOGIN] User is inactive: ${email}`);
       return json({
         success: false,
         error: 'Account is deactivated',
         step: 'active_check` });'`
-    }
+    } }
     // Test password verification
     console.log(`[TEST LOGIN] Testing password verification for: ${email}`);
     // TODO: Implement proper password verification - verifyPassword not available
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: 'Invalid password',
         step: 'password_verification` });'`
-    }
+    } }
     // Test session creation
     console.log(`[TEST LOGIN] Creating session for: ${email}`);
     // TODO: Implement proper session creation - createUserSession not available
@@ -62,16 +62,16 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Login successful',
       user: {
-       , id: user.id,
+  id: user.id,
         email: user.email,
         role: user.role
       },
       session: {
-       , id: sessionId,
+  id: sessionId,
         expiresAt: expiresAt.toISOString()
-      }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     // Use `unknown` and narrow to Error to avoid `any`
     console.error('[TEST LOGIN] Error:', error);
     const message = error instanceof Error ? error.message : typeof error === 'string' ? error : 'Unknown error';
@@ -80,7 +80,8 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: message,
         step: 'general_error` },'`
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

@@ -1,11 +1,11 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Integration Tests for Recommendation Routing Machine
  * Tests XState v5 state machine for recommendation workflow orchestration
  */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createActor } from 'xstate';
-import { recommendationRoutingMachine } from './recommendation-routing-machine';
+import { describe, it, expect, beforeEach, afterEach } }from 'vitest';
+import { createActor } }from 'xstate';
+import { recommendationRoutingMachine } }from './recommendation-routing-machine';
 describe('Recommendation Routing Machine', () => {
   let actor: ReturnType<typeof, createActor<typeof, recommendationRoutingMachine>>;
   beforeEach(() => {
@@ -113,7 +113,7 @@ describe('Recommendation Routing Machine', () => {
         });
         const snapshot = actor.getSnapshot();
         expect(snapshot.context.currentDocument?.type).toBe(docType);
-      }
+      } }
     });
   });
   describe('Error Handling', () => {
@@ -152,7 +152,7 @@ describe('Recommendation Routing Machine', () => {
     });
     it('should maintain recommendation structure', () => {
       const snapshot = actor.getSnapshot();
-      const { recommendations } = snapshot.context;
+      const { recommendations } }= snapshot.context;
       expect(recommendations).toHaveProperty('legal');
       expect(recommendations).toHaveProperty('documents');
       expect(recommendations).toHaveProperty('actions');
@@ -166,7 +166,7 @@ describe('Recommendation Routing Machine', () => {
   describe('RabbitMQ Routing Context', () => {
     it('should have correct RabbitMQ routing queues', () => {
       const snapshot = actor.getSnapshot();
-      const { rabbitMQRouting } = snapshot.context;
+      const { rabbitMQRouting } }= snapshot.context;
       expect(rabbitMQRouting.exchange).toBe('legal-ai-exchange');
       expect(rabbitMQRouting.queues.highPriority).toBe('legal.priority.high');
       expect(rabbitMQRouting.queues.standardPriority).toBe('legal.priority.standard');
@@ -178,7 +178,7 @@ describe('Recommendation Routing Machine', () => {
   describe('AI Models Context', () => {
     it('should have default AI models configured', () => {
       const snapshot = actor.getSnapshot();
-      const { aiModels } = snapshot.context;
+      const { aiModels } }= snapshot.context;
       expect(aiModels.primary).toBe('gemma3:legal-latest');
       expect(aiModels.fallback).toContain('ollama:latest');
       expect(aiModels.fallback).toContain('openai:gpt-4');
@@ -188,7 +188,7 @@ describe('Recommendation Routing Machine', () => {
   describe('Processing Metrics', () => {
     it('should initialize processing metrics', () => {
       const snapshot = actor.getSnapshot();
-      const { processingMetrics } = snapshot.context;
+      const { processingMetrics } }= snapshot.context;
       expect(processingMetrics.averageLatency).toBe(0);
       expect(processingMetrics.queueDepth).toBe(0);
       expect(processingMetrics.throughput).toBe(0);
@@ -198,10 +198,11 @@ describe('Recommendation Routing Machine', () => {
   describe('Cache Context', () => {
     it('should initialize cache with empty keys and, 0 hit rate', () => {
       const snapshot = actor.getSnapshot();
-      const { cache } = snapshot.context;
+      const { cache } }= snapshot.context;
       expect(cache.redisKeys).toEqual([]);
       expect(cache.hitRate).toBe(0);
       expect(cache.lastUpdate).toBeInstanceOf(Date);
     });
   });
 });
+

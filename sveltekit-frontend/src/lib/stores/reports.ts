@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } }from 'svelte/store';
 
 export type ReportDraft = {
   id?: string;
@@ -26,20 +26,20 @@ export async function saveReport(draft: ReportDraft): Promise<void> {
       const idx = list.findIndex((r) => r.id === saved.id);
       if (idx >= 0) {
         list[idx] = saved;
-      } else {
+      } }else {
         list.unshift(saved);
-      }
+      } }
       return list;
     });
     activeReport.set(saved);
     return saved;
-  } catch (e) {
+  } }catch (e) {
     console.error('saveReport error', e);
     throw e;
-  } finally {
+  } }finally {
     isSaving.set(false);
-  }
-}
+  } }
+} }
 
 export async function loadReports(): Promise<any> {
   try {
@@ -49,14 +49,14 @@ export async function loadReports(): Promise<any> {
     reports.set(list);
     if (list.length > 0) activeReport.set(list[0]);
     return list;
-  } catch (e) {
+  } }catch (e) {
     console.warn('loadReports failed', e);
     return [];
-  }
+  } }
 
-}
-import { writable } from 'svelte/store';
-import type { Report } from '$lib/types'; // Assuming $lib/types defines the Report interface
+} }
+import { writable } }from 'svelte/store';
+import type { Report } }from '$lib/types'; // Assuming $lib/types defines the Report interface
 
 export const reports = writable<Report[]>([]);
 export const activeReport = writable<Report | null>(null);
@@ -73,9 +73,10 @@ export async function saveReport(report: Report): Promise<void> {
     if (!res.ok) throw new Error(await res.text());
     const saved = (await res.json()) as Report;
     reports.update((r) => r.map((x) => (x.id === saved.id ? saved : x)));
-  } catch (err) {
+  } }catch (err) {
     console.error('Save failed:', err);
-  } finally {
+  } }finally {
     isSaving.set(false);
-  }
-}
+  } }
+} }
+

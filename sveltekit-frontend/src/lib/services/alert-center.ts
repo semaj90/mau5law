@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Alert Center - Legal AI Platform
  *
@@ -22,14 +22,14 @@ import type { Document } from '$lib/types';
  */
 import fs from 'fs';
 import path from 'path';
-import type { NATSMessagingService } from './nats-messaging-service.js';
+import type { NATSMessagingService } }from './nats-messaging-service.js';
 import {
   getQUICMetrics,
   getAggregateAnomaliesLast5m,
   getStageBaselineSnapshot,
   resetBudgetCounters,
   getBudgetCounters
-} from './pipeline-metrics.js';
+} }from './pipeline-metrics.js';
 
 // Add a typed alias for QUIC metrics to avoid `any`
 type QUICMetrics = ReturnType<typeof, getQUICMetrics>;
@@ -41,12 +41,12 @@ type AlertContext = Record<string, unknown>;
 interface AlertDashboard {
   addAlert: (alert: RuntimeAlert) => void;
   // future dashboard methods can be added here
-}
+} }
 declare global {
   interface Window {
     alertDashboard?: AlertDashboard;
-  }
-}
+  } }
+} }
 
 // ===== ALERT INTERFACES & TYPES =====
 /**
@@ -67,7 +67,7 @@ export interface RuntimeAlert { id: string;, type: AlertType;
   escalationLevel: number;
  , retentionPeriod: number; // days,
   complianceFlags: string[];
-}
+} }
 /**
  * Legal Alert Context for Compliance Tracking
  */
@@ -82,7 +82,7 @@ export interface LegalAlertContext {
   regulatoryCompliance: string[];
   auditTrailRequired: boolean;
   legalHoldStatus?: 'active' | 'released' | 'pending';
-}
+} }
 /**
  * Alert Type Classifications
  */
@@ -141,59 +141,59 @@ export type AlertCategory =
 /**
  * Alert Configuration Settings
  */
-export interface AlertConfig {, ringBufferSize: number;, retentionDays: number;
+export interface AlertConfig { ringBufferSize: number;, retentionDays: number;
  , escalationTimeouts: Record<AlertSeverity, number>;
   notificationChannels: NotificationChannel[];
   complianceSettings: ComplianceAlertSettings;
   autoRemediation: AutoRemediationSettings;
-}
+} }
 /**
  * Notification Channel Configuration
  */
-export interface NotificationChannel {, type: 'email' | 'sms' | 'slack' | 'teams' | 'webhook' | 'nats' | 'dashboard';, endpoint: string;
+export interface NotificationChannel { type: 'email' | 'sms' | 'slack' | 'teams' | 'webhook' | 'nats' | 'dashboard';, endpoint: string;
   credentials?: Record<string, string>;
   filters: AlertFilterConfig;
   enabled: boolean;
   priority: number;
-}
+} }
 /**
  * Alert Filter Configuration
  */
-export interface AlertFilterConfig {, severityLevels: AlertSeverity[];, categories: AlertCategory[];
+export interface AlertFilterConfig { severityLevels: AlertSeverity[];, categories: AlertCategory[];
   types: AlertType[];
   excludePatterns: string[];
   includePatterns: string[];
   timeWindows?: TimeWindowConfig[];
-}
+} }
 /**
  * Time Window Configuration
  */
-export interface TimeWindowConfig {, startHour: number;, endHour: number;
+export interface TimeWindowConfig { startHour: number;, endHour: number;
   timezone: string;
   daysOfWeek: number[];
-}
+} }
 /**
  * Compliance Alert Settings
  */
-export interface ComplianceAlertSettings {, privilegeBreachThreshold: number;, chainOfCustodyTimeout: number;
+export interface ComplianceAlertSettings { privilegeBreachThreshold: number;, chainOfCustodyTimeout: number;
   retentionViolationGracePeriod: number;
  , confidentialityLevelMapping: Record<string, AlertSeverity>;
   auditLogRequired: boolean;
   regulatoryNotificationRequired: boolean;
-}
+} }
 /**
  * Auto-Remediation Settings
  */
-export interface AutoRemediationSettings {, enabled: boolean;, maxAttempts: number;
+export interface AutoRemediationSettings { enabled: boolean;, maxAttempts: number;
   cooldownPeriod: number;
   allowedActions: string[];
   escalationOnFailure: boolean;
   requireApproval: boolean;
-}
+} }
 /**
  * Alert Statistics
  */
-export interface AlertStatistics {, totalAlerts: number;, alertsBySeverity: Record<AlertSeverity, number>;
+export interface AlertStatistics { totalAlerts: number;, alertsBySeverity: Record<AlertSeverity, number>;
   alertsByCategory: Record<AlertCategory, number>;
   alertsByType: Record<string, number>;
   averageResponseTime: number;
@@ -202,7 +202,7 @@ export interface AlertStatistics {, totalAlerts: number;, alertsBySeverity: Rec
   complianceViolations: number;
   mostFrequentAlerts: Array<any>;
  , timeDistribution: Record<string, number>;
-}
+} }
 // ===== ALERT CENTER IMPLEMENTATION =====
 /**
  * Enterprise Alert Center for Legal AI Platform
@@ -227,35 +227,31 @@ export class AlertCenter {
 
   // Helper: safe access to high-resolution time without using `any`
   private getNow(): number {
-    const perf = (globalThis as: unknown as { performance?: { now?: () => number } }).performance;
+    const perf = (globalThis as: unknown as { performance?: { now?: () => number } }}).performance;
     return typeof perf?.now === 'function' ? perf.now() : Date.now();
-  }
+  } }
 
   constructor(config?: Partial<AlertConfig>, natsService?: NATSMessagingService) {
     this.config = this.buildDefaultConfig(config);
     this.natsService = natsService;
     this.initializePersistence();
     this.startBackgroundTasks();
-  }
+  } }
   /**
    * Build default configuration with overrides
    */
   private buildDefaultConfig(overrides?: Partial<AlertConfig>): AlertConfig {
-    const defaultConfig: AlertConfig = {
-     , ringBufferSize: this.RING_SIZE,
+    const defaultConfig: AlertConfig = { ringBufferSize: this.RING_SIZE,
       retentionDays: 90,
-      escalationTimeouts: {
-       , info: 24 * 60 * 60 * 1000,      // 24 hours
+      escalationTimeouts: { info: 24 * 60 * 60 * 1000,      // 24 hours
         warning: 4 * 60 * 60 * 1000,    // 4 hours
         critical: 30 * 60 * 1000,       // 30 minutes;
         emergency: 5 * 60 * 1000        // 5 minutes
       },
       notificationChannels: [
-        {,
-          type: 'dashboard',
+        { type: 'dashboard',
           endpoint: '/api/v1/notifications/dashboard',
-          filters: {
-           , severityLevels: ['info', 'warning', 'critical', 'emergency'],
+          filters: { severityLevels: ['info', 'warning', 'critical', 'emergency'],
             categories: ['system_performance', 'legal_compliance', 'security_breach'],
             types: [],
             excludePatterns: [],
@@ -267,8 +263,7 @@ export class AlertCenter {
         {
           type: 'nats',
           endpoint: this.SYSTEM_ALERTS_SUBJECT,
-          filters: {
-           , severityLevels: ['critical', 'emergency'],
+          filters: { severityLevels: ['critical', 'emergency'],
             categories: ['legal_compliance', 'security_breach'],
             types: [],
             excludePatterns: [],
@@ -276,10 +271,9 @@ export class AlertCenter {
           },
           enabled: true,
           priority: 2
-        }
+        } }
       ],
-      complianceSettings: {
-       , privilegeBreachThreshold: 1,
+      complianceSettings: { privilegeBreachThreshold: 1,
         chainOfCustodyTimeout: 60 * 60 * 1000, // 1 hour
         retentionViolationGracePeriod: 7 * 24 * 60 * 60 * 1000, // 7 days
         confidentialityLevelMapping: {
@@ -290,17 +284,16 @@ export class AlertCenter {
         auditLogRequired: true,
         regulatoryNotificationRequired: true
       },
-      autoRemediation: {
-       , enabled: true,
+      autoRemediation: { enabled: true,
         maxAttempts: 3,
         cooldownPeriod: this.AUTOSOLVE_COOLDOWN_MS,
         allowedActions: ['restart_service', 'clear_cache', 'rotate_logs'],
         escalationOnFailure: true,
         requireApproval: false
-      }
-    }
-    return { ...defaultConfig, ...overrides }
-  }
+      } }
+    } }
+    return { ...defaultConfig, ...overrides } }
+  } }
   /**
    * Initialize persistence layer
    */
@@ -313,12 +306,12 @@ export class AlertCenter {
         this.sustainedP99Breaches = this.persistenceState.sustainedP99Breaches || 0;
         this.lastP99Ok = this.persistenceState.lastP99Ok || Date.now();
         console.log('Alert Center: Persistence state loaded successfully');
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.warn('Alert Center: Failed to load persistence;, state:', msg);
-    }
-  }
+      console.warn('Alert Center: Failed to load persistence; state:', msg);
+    } }
+  } }
   /**
    * Start background tasks
    */
@@ -330,7 +323,7 @@ export class AlertCenter {
     // Alert cleanup
     setInterval(() => this.cleanupExpiredAlerts(), 60 * 60 * 1000).unref?.(); // Every hour
     console.log('Alert Center: Background tasks initialized');
-  }
+  } }
   /**
    * Create and route alerts
    */
@@ -338,7 +331,7 @@ export class AlertCenter {
     if (!Array.isArray(alertCodes) || alertCodes.length === 0) {
       this.sustainedP99Breaches = 0;
       return [];
-    }
+    } }
     const alerts: RuntimeAlert[] = [];
     const quicMetrics = getQUICMetrics();
     for (const code of alertCodes) {
@@ -346,11 +339,11 @@ export class AlertCenter {
       const alert = this.createAlert(code as AlertType, quicMetrics, context as AlertContext);
       await this.processAlert(alert);
       alerts.push(alert);
-    }
+    } }
     // Handle sustained P99 tracking
     this.updateP99Tracking(alertCodes);
     return alerts;
-  }
+  } }
   /**
    * Create a new alert
    */
@@ -370,8 +363,7 @@ export class AlertCenter {
       userId: context['userId'], as: string | undefined,
       clientId: context['clientId'], as: string | undefined,
       legalContext,
-      metadata: {
-       , quicP99: quicMetrics?.p99,
+      metadata: { quicP99: quicMetrics?.p99,
         quicErrors1m: quicMetrics?.error_rate_1m,
         anomalies5m: getAggregateAnomaliesLast5m(),
         systemLoad: context['systemLoad'],
@@ -382,7 +374,7 @@ export class AlertCenter {
       retentionPeriod: this.calculateRetentionPeriod(type, legalContext),
       complianceFlags: this.generateComplianceFlags(type, legalContext)
     };
-  }
+  } }
   /**
    * Process alert through notification channels
    */
@@ -396,8 +388,8 @@ export class AlertCenter {
     // Trigger auto-remediation if applicable
     if (this.shouldTriggerAutoRemediation(alert)) {
       await this.triggerAutoRemediation(alert);
-    }
-  }
+    } }
+  } }
   /**
    * Add alert to ring buffer
    */
@@ -405,8 +397,8 @@ export class AlertCenter {
     this.alerts.push(alert);
     if (this.alerts.length > (this.config?.ringBufferSize ?? this.RING_SIZE)) {
       this.alerts.shift();
-    }
-  }
+    } }
+  } }
   /**
    * Log alert to console and audit trail
    */
@@ -415,15 +407,15 @@ export class AlertCenter {
     // Use console[logLevel] if available
     const logger = (console as: any)[logLevel] ?? console.log;
     logger(
-      `[ALERT][${alert.severity.toUpperCase()}][${alert.category}] ${alert.type}: ${alert.message}`,
+      `[ALERT][${alert.severity.toUpperCase()} }[${alert.category} } ${alert.type}: ${alert.message}`,
       {
         id: alert.id,
         timestamp: new Date(alert.timestamp).toISOString(),
         legalContext: alert.legalContext,
         metadata: alert.metadata
-      }
+      } }
     );
-  }
+  } }
   /**
    * Send notifications through configured channels
    */
@@ -432,11 +424,11 @@ export class AlertCenter {
     for (const channel of channels) {
       try {
         await this.sendNotificationToChannel(alert, channel);
-      } catch (error: any) {
+      } }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
-        console.error(`Failed to send notification via ${channel.type}: ', msg);'` }
-    }
-  }
+        console.error(`Failed to send notification via ${channel.type}: ', msg);'` } }
+    } }
+  } }
   /**
    * Send notification to specific channel
    */
@@ -444,22 +436,22 @@ export class AlertCenter {
     switch (channel.type) {
       case, 'nats':
         if (this.natsService) {
-          await this.natsService.publish(channel.endpoint, { alert: {, id: alert.id,
+          await this.natsService.publish(channel.endpoint, { alert: { id: alert.id,
               type: alert.type,
               severity: alert.severity,
               category: alert.category,
               message: alert.message,
               timestamp: alert.timestamp,
               legalContext: alert.legalContext
-            }
+            } }
           });
-        }
+        } }
         break;
       case, 'dashboard':
         // Dashboard notifications handled by WebSocket or SSE in browser
         if (typeof window !== 'undefined' && window.alertDashboard?.addAlert) {
           window.alertDashboard.addAlert(alert);
-        }
+        } }
         break;
       case, 'webhook':
         await fetch(channel.endpoint, {
@@ -469,9 +461,9 @@ export class AlertCenter {
         });
         break;
       default:
-        console.warn(`Unsupported notification channel;, type: ${channel.type}`);
-    }
-  }
+        console.warn(`Unsupported notification channel; type: ${channel.type}`);
+    } }
+  } }
   /**
    * Get notification channels that match alert criteria
    */
@@ -483,19 +475,19 @@ export class AlertCenter {
         // Check severity filter
         if (filters.severityLevels?.length > 0 && !filters.severityLevels.includes(alert.severity)) {
           return false;
-        }
+        } }
         // Check category filter
         if (filters.categories?.length > 0 && !filters.categories.includes(alert.category)) {
           return false;
-        }
+        } }
         // Check type filter
         if (filters.types?.length > 0 && !filters.types.includes(alert.type)) {
           return false;
-        }
+        } }
         return true;
       })
       .sort((a, b) => a.priority - b.priority);
-  }
+  } }
   /**
    * Determine alert severity based on type
    */
@@ -532,7 +524,7 @@ export class AlertCenter {
       'inference_timeout': 'warning'
     };
     return severityMap[type] ?? 'info';
-  }
+  } }
   /**
    * Determine alert category based on type
    */
@@ -568,7 +560,7 @@ export class AlertCenter {
       'gpu_memory_overflow': 'ai_ml_operations',
       'inference_timeout': 'ai_ml_operations' };
     return (categoryMap[type] ?? 'system_performance') as AlertCategory;
-  }
+  } }
   /**
    * Extract legal context from alert context
    */
@@ -577,9 +569,8 @@ export class AlertCenter {
     if (!context) return: undefined;
     if (!context['legal'] && !context['caseId'] && !context['evidenceId'] && !context['confidentialityLevel']) {
       return: undefined;
-    }
-    return {
-     , confidentialityLevel: (context['confidentialityLevel'] as LegalAlertContext['confidentialityLevel']) ?? 'public',
+    } }
+    return { confidentialityLevel: (context['confidentialityLevel'] as LegalAlertContext['confidentialityLevel']) ?? 'public',
       chainOfCustodyId: context['chainOfCustodyId'], as: string | undefined,
       evidenceId: context['evidenceId'], as: string | undefined,
       documentId: context['documentId'], as: string | undefined,
@@ -590,15 +581,15 @@ export class AlertCenter {
       auditTrailRequired: context['auditTrailRequired'] !== false,
       legalHoldStatus: context['legalHoldStatus'] as LegalAlertContext['legalHoldStatus'] | undefined
     };
-  }
+  } }
   /**
    * Generate human-readable alert message
    */
   private humanizeAlertMessage(type: AlertType, quicMetrics: QUICMetrics | undefined): string {
     const messages: Record<AlertType, string> = {
       'p99_latency_exceeded': 'QUIC p99 latency ${quicMetrics?.p99 ?? 'unknown` }ms exceeded threshold`,
-      'error_spike': 'QUIC error spike detected (${quicMetrics?.error_rate_1m ?? 'unknown` } errors/min)`,
-      'pipeline_anomaly_spike': `Pipeline anomaly spike (${getAggregateAnomaliesLast5m()} anomalies in, 5 minutes)`,
+      'error_spike': 'QUIC error spike detected (${quicMetrics?.error_rate_1m ?? 'unknown` } }errors/min)`,
+      'pipeline_anomaly_spike': `Pipeline anomaly spike (${getAggregateAnomaliesLast5m()} }anomalies in, 5 minutes)`,
       'service_unavailable': 'Critical service is unavailable',
       'memory_threshold_exceeded': 'System memory usage exceeded threshold',
       'cpu_threshold_exceeded': 'CPU usage exceeded threshold',
@@ -626,18 +617,18 @@ export class AlertCenter {
       'gpu_memory_overflow': 'GPU memory overflow detected',
       'inference_timeout': `AI inference timeout occurred` };
     return messages[type] ?? `Alert: ${type}`;
-  }
+  } }
   /**
    * Generate detailed alert description
    */
   private generateAlertDescription(type: AlertType, context: AlertContext = {}): string {
-    const baseDescription = `Alert triggered for ${type} at ${new Date().toISOString()}`;
+    const baseDescription = `Alert triggered for ${type} }at ${new Date().toISOString()}`;
     const desc = context['description'] as: string | undefined;
     if (desc) {
       return `${baseDescription}. ${desc}`;
-    }
+    } }
     return baseDescription;
-  }
+  } }
   /**
    * Generate unique alert ID
    */
@@ -645,19 +636,19 @@ export class AlertCenter {
     const timestamp = Date.now();
     const random = Math.random().toString(36).substring(2, 8);
     return `alert_${timestamp}_${random}`;
-  }
+  } }
   /**
    * Calculate retention period
    */
   private calculateRetentionPeriod(type: AlertType, legalContext?: LegalAlertContext): number {
     if (legalContext?.auditTrailRequired || type.includes('privilege') || type.includes('chain_of_custody')) {
       return 2555; // days ~ 7 years
-    }
+    } }
     if (type.includes('breach') || type.includes('unauthorized') || type.includes('tampering')) {
       return 1095; // 3 years
-    }
+    } }
     return this.config.retentionDays;
-  }
+  } }
   /**
    * Generate compliance flags
    */
@@ -667,25 +658,25 @@ export class AlertCenter {
       flags.push('legal_context_present');
       if (legalContext.confidentialityLevel === 'attorney_client') {
         flags.push('attorney_client_privilege');
-      }
+      } }
       if (legalContext.auditTrailRequired) {
         flags.push('audit_trail_required');
-      }
+      } }
       if (legalContext.legalHoldStatus === 'active') {
         flags.push('legal_hold_active');
-      }
+      } }
       if ((legalContext.regulatoryCompliance ?? []).length > 0) {
         flags.push('regulatory_compliance');
-      }
-    }
+      } }
+    } }
     if (type.includes('privilege') || type.includes('confidentiality')) {
       flags.push('privilege_related');
-    }
+    } }
     if (type.includes('chain_of_custody')) {
       flags.push('evidence_integrity');
-    }
+    } }
     return flags;
-  }
+  } }
   /**
    * Map alert severity to console log level
    */
@@ -696,20 +687,20 @@ export class AlertCenter {
       'critical': 'error',
       'emergency': `error` };
     return mapping[severity];
-  }
+  } }
   /**
    * Update P99 latency tracking
    */
   private updateP99Tracking(alertCodes: string[]): void {
     if (alertCodes.includes('p99_latency_exceeded')) {
       this.sustainedP99Breaches++;
-    } else {
+    } }else {
       if (this.sustainedP99Breaches > 0) {
         this.lastP99Ok = Date.now();
-      }
+      } }
       this.sustainedP99Breaches = 0;
-    }
-  }
+    } }
+  } }
   /**
    * Determine if auto-remediation should be triggered
    */
@@ -720,7 +711,7 @@ export class AlertCenter {
       alert.type === 'pipeline_anomaly_spike' ||
       (alert.type === 'p99_latency_exceeded' && this.sustainedP99Breaches >= this.SUSTAINED_P99_THRESHOLD)
     );
-  }
+  } }
   /**
    * Trigger auto-remediation for alert
    */
@@ -728,15 +719,14 @@ export class AlertCenter {
     if (this.autosolveInFlight) return;
     if (Date.now() - this.lastAutosolveTs < this.config.autoRemediation.cooldownPeriod) {
       return;
-    }
+    } }
     this.autosolveInFlight = true;
     try {
       const start = this.getNow();
       const response = await fetch('/api/context7-autosolve?action=trigger', {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , triggeredBy: alert.id,
+        body: JSON.stringify({ triggeredBy: alert.id,
           alertType: alert.type,
           severity: alert.severity,
           context: alert.metadata
@@ -744,13 +734,13 @@ export class AlertCenter {
       });
       const duration = this.getNow() - start;
       this.lastAutosolveTs = Date.now();
-      console.log(`Auto-remediation triggered for alert ${alert.id}: ${response.status} (${duration.toFixed(2)}ms)`);
-    } catch (error: any) {
+      console.log(`Auto-remediation triggered for alert ${alert.id}: ${response.status} }(${duration.toFixed(2)}ms)`);
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error(`Auto-remediation failed for alert ${alert.id}: ', msg);'` } finally {
+      console.error(`Auto-remediation failed for alert ${alert.id}: ', msg);'` } }finally {
       this.autosolveInFlight = false;
-    }
-  }
+    } }
+  } }
   /**
    * Get alert history with filtering and pagination
    */
@@ -759,17 +749,17 @@ export class AlertCenter {
     if (filters) {
       if (filters.severityLevels?.length) {
         filteredAlerts = filteredAlerts.filter(alert => filters.severityLevels!.includes(alert.severity));
-      }
+      } }
       if (filters.categories?.length) {
         filteredAlerts = filteredAlerts.filter(alert => filters.categories!.includes(alert.category));
-      }
+      } }
       if (filters.types?.length) {
         filteredAlerts = filteredAlerts.filter(alert => filters.types!.includes(alert.type));
-      }
-    }
+      } }
+    } }
     filteredAlerts.sort((a, b) => b.timestamp - a.timestamp);
     return filteredAlerts.slice(offset, offset + limit);
-  }
+  } }
   /**
    * Get alert statistics
    */
@@ -778,15 +768,15 @@ export class AlertCenter {
     const bySeverity = this.alerts.reduce((acc: Record<AlertSeverity, number>, alert) => {
       acc[alert.severity] = (acc[alert.severity] || 0) + 1;
       return acc;
-    }, {} as Record<AlertSeverity, number>);
+    }, {} }as Record<AlertSeverity, number>);
     const byCategory = this.alerts.reduce((acc: Record<AlertCategory, number>, alert) => {
       acc[alert.category] = (acc[alert.category] || 0) + 1;
       return acc;
-    }, {} as Record<AlertCategory, number>);
+    }, {} }as Record<AlertCategory, number>);
     const byType = this.alerts.reduce((acc: Record<string, number>, alert) => {
       acc[alert.type] = (acc[alert.type] || 0) + 1;
       return acc;
-    }, {} as Record<string, number>);
+    }, {} }as Record<string, number>);
     const mostFrequent = Object.entries(byType)
       .map(([type, count]) => ({ type: type as AlertType, count }))
       .sort((a, b) => b.count - a.count)
@@ -801,25 +791,23 @@ export class AlertCenter {
       autoRemediationSuccessRate: 0,
       complianceViolations: this.alerts.filter(a => (a.complianceFlags?.length ?? 0) > 0).length,
       mostFrequentAlerts: mostFrequent,
-      timeDistribution: {}
+      timeDistribution: {} }
     };
-  }
+  } }
   /**
    * Get sustained P99 information
    */
-  public getSustainedP99Info(): { sustainedP99Breaches: number; threshold: number; lastP99OkTs: number } {
-    return {
-     , sustainedP99Breaches: this.sustainedP99Breaches,
+  public getSustainedP99Info(): { sustainedP99Breaches: number; threshold: number; lastP99OkTs: number } }{
+    return { sustainedP99Breaches: this.sustainedP99Breaches,
       threshold: this.SUSTAINED_P99_THRESHOLD,
       lastP99OkTs: this.lastP99Ok
     };
-  }
+  } }
   /**
    * Build baseline snapshot
    */
   public buildBaseline(): BaselineFile {
-    const baseline: BaselineFile = {
-     , created: new Date().toISOString(),
+    const baseline: BaselineFile = { created: new Date().toISOString(),
       stages: getStageBaselineSnapshot(),
       quic: getQUICMetrics()
     };
@@ -827,9 +815,9 @@ export class AlertCenter {
     if (this.persistenceState) {
       this.persistenceState.lastBaseline = baseline;
       this.persistState();
-    }
+    } }
     return baseline;
-  }
+  } }
   /**
    * Compare baselines
    */
@@ -840,7 +828,7 @@ export class AlertCenter {
       p90: number;
       p99: number;
       anomalies: number;
-    } : {, stage: string;, p50: number;
+    } }: { stage: string;, p50: number;
       p90: number;
       p99: number;
      , anomalies: number;
@@ -857,15 +845,13 @@ export class AlertCenter {
           change: 'added',
           current: stage
         };
-      }
-      const deltas = {
-       , p50: stage.p50 - prevStage.p50,
+      } }
+      const deltas = { p50: stage.p50 - prevStage.p50,
         p90: stage.p90 - prevStage.p90,
         p99: stage.p99 - prevStage.p99,
         anomalies: stage.anomalies - prevStage.anomalies
       };
-      return {
-       , stage: stage.stage,
+      return { stage: stage.stage,
         deltas
       };
     });
@@ -873,7 +859,7 @@ export class AlertCenter {
       stageDiff,
       quicP99Delta: (newBaseline.quic?.p99 ?? 0) - (oldBaseline.quic?.p99 ?? 0)
     };
-  }
+  } }
   /**
    * Persist state to disk
    */
@@ -881,20 +867,19 @@ export class AlertCenter {
     try {
       if (!fs.existsSync(this.RUNTIME_DIR)) {
         fs.mkdirSync(this.RUNTIME_DIR, { recursive: true });
-      }
-      const state: PersistedState = {
-       , sustainedP99Breaches: this.sustainedP99Breaches,
+      } }
+      const state: PersistedState = { sustainedP99Breaches: this.sustainedP99Breaches,
         lastP99Ok: this.lastP99Ok,
         lastBaseline: this.persistenceState?.lastBaseline,
         budgets: getBudgetCounters(),
         savedAt: new Date().toISOString()
       };
       fs.writeFileSync(this.STATE_FILE, JSON.stringify(state, null, 2));
-    } catch (error: any) {
+    } }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.warn('Alert Center: Failed to persist;, state:', msg);
-    }
-  }
+      console.warn('Alert Center: Failed to persist; state:', msg);
+    } }
+  } }
   /**
    * Schedule daily reset
    */
@@ -906,7 +891,7 @@ export class AlertCenter {
       next.setUTCHours(resetHour, 0, 0, 0);
       if (next <= now) {
         next.setUTCDate(next.getUTCDate() + 1);
-      }
+      } }
       return next.getTime() - now.getTime();
     };
     const scheduleNext = (): void => {
@@ -922,7 +907,7 @@ export class AlertCenter {
       }, msUntilNextReset());
     };
     scheduleNext();
-  }
+  } }
   /**
    * Clean up expired alerts
    */
@@ -937,21 +922,21 @@ export class AlertCenter {
     });
     const cleanedCount = initialCount - this.alerts.length;
     if (cleanedCount > 0) {
-      console.log(`Alert Center: Cleaned up ${cleanedCount} expired alerts`);
-    }
-  }
-}
+      console.log(`Alert Center: Cleaned up ${cleanedCount} }expired alerts`);
+    } }
+  } }
+} }
 
 // ===== PERSISTENCE INTERFACES =====
 export interface BaselineFile { created: string;, stages: ReturnType<typeof, getStageBaselineSnapshot>;
   quic: QUICMetrics;
-}
+} }
 
-export interface PersistedState {, sustainedP99Breaches: number;, lastP99Ok: number;
+export interface PersistedState { sustainedP99Breaches: number;, lastP99Ok: number;
   lastBaseline?: BaselineFile;
   budgets?: any;
   savedAt: string;
-}
+} }
 
 // ===== SINGLETON INSTANCE =====
 /**
@@ -964,9 +949,9 @@ let, alertCenterInstance: AlertCenter | null = null;
 export function getAlertCenter(config?: Partial<AlertConfig>, natsService?: NATSMessagingService): AlertCenter {
   if (!alertCenterInstance) {
     alertCenterInstance = new AlertCenter(config, natsService);
-  }
+  } }
   return alertCenterInstance;
-}
+} }
 
 // ===== LEGACY COMPATIBILITY EXPORTS =====
 /**
@@ -974,13 +959,13 @@ export function getAlertCenter(config?: Partial<AlertConfig>, natsService?: NATS
  */
 export function routeAlerts(raw: string[], ctx: Record<string, unknown> = {}): Promise<RuntimeAlert[]> {
   return getAlertCenter().routeAlerts(raw, ctx);
-}
+} }
 /**
  * Legacy get alert history function
  */
 export function getAlertHistory(): RuntimeAlert[] {
   return getAlertCenter().getAlertHistory();
-}
+} }
 /**
  * Legacy trigger autosolve function
  */
@@ -991,22 +976,22 @@ export async function maybeTriggerAutosolve(fetchFn: typeof fetch, rawCodes: str
   for (const alert of alerts) {
     if (alertCenter['shouldTriggerAutoRemediation'](alert)) {
       return { triggered: true };
-    }
-  }
-  return {, triggered: false };
-}
+    } }
+  } }
+  return { triggered: false };
+} }
 /**
  * Legacy get sustained P99 info function
  */
 export function getSustainedP99Info(): any {
   return getAlertCenter().getSustainedP99Info();
-}
+} }
 /**
  * Legacy build baseline function
  */
 export function buildBaseline(): BaselineFile {
   return getAlertCenter().buildBaseline();
-}
+} }
 /**
  * Legacy diff baselines function
  */

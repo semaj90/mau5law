@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * WebGPU Buffer Compatibility Utilities
  * Resolves TypeScript errors related to WebGPU buffer type mismatches
@@ -14,12 +14,12 @@ export type TypedArrayLike = Float32Array | Uint32Array | Uint16Array | Int8Arra
 export const ensureBufferCompatibility = (data: BufferCompatible): ArrayBuffer => {
   if (data instanceof ArrayBuffer) {
     return data;
-  }
+  } }
   if (Array.isArray(data)) {
     // Convert: number array to Float32Array, then to ArrayBuffer
     const typedArray = new Float32Array(data);
     return typedArray.buffer.slice(typedArray.byteOffset, typedArray.byteOffset + typedArray.byteLength);
-  }
+  } }
   // For typed arrays, extract the underlying ArrayBuffer
   if (
     data instanceof Float32Array ||
@@ -28,7 +28,7 @@ export const ensureBufferCompatibility = (data: BufferCompatible): ArrayBuffer =
     data instanceof Int8Array
   ) {
     return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
-  }
+  } }
   throw new Error(`Unsupported buffer type: ${typeof data}`);
 };
 /**
@@ -38,17 +38,17 @@ export const ensureBufferCompatibility = (data: BufferCompatible): ArrayBuffer =
 export const ensureFloat32Array = (data: BufferCompatible): Float32Array => {
   if (data instanceof Float32Array) {
     return data;
-  }
+  } }
   if (Array.isArray(data)) {
     return new Float32Array(data);
-  }
+  } }
   if (data instanceof ArrayBuffer) {
     return new Float32Array(data);
-  }
+  } }
   if (data instanceof Uint32Array || data instanceof Uint16Array || data instanceof Int8Array) {
     return new Float32Array(data);
-  }
-  throw new Error(`Cannot convert ${typeof data} to Float32Array`);
+  } }
+  throw new Error(`Cannot convert ${typeof data} }to Float32Array`);
 };
 /**
  * Type-safe WebGPU buffer creation with proper error handling
@@ -81,18 +81,18 @@ export const safeWriteBuffer = (
     if (!buffer) {
       console.warn('Buffer is: null - cannot write data');
       return false;
-    }
+    } }
     if (!device) {
       console.warn('Device is: null - cannot write buffer');
       return false;
-    }
+    } }
     const compatibleData = ensureBufferCompatibility(data);
     device.queue.writeBuffer(buffer, offset, compatibleData);
     return true;
-  } catch (error) {
+  } }catch (error) {
     console.error('Buffer write failed:', error);
     return false;
-  }
+  } }
 };
 /**
  * Buffer size calculation utility
@@ -102,19 +102,19 @@ export const calculateBufferSize = (data: BufferCompatible, alignment: number = 
   let size: number;
   if (data instanceof ArrayBuffer) {
     size = data.byteLength;
-  } else if (Array.isArray(data)) {
+  } }else if (Array.isArray(data)) {
     size = data.length * 4; // Assume Float32 (4 bytes per element)
-  } else if (data instanceof Float32Array) {
+  } }else if (data instanceof Float32Array) {
     size = data.byteLength;
-  } else if (data instanceof Uint32Array) {
+  } }else if (data instanceof Uint32Array) {
     size = data.byteLength;
-  } else if (data instanceof Uint16Array) {
+  } }else if (data instanceof Uint16Array) {
     size = data.byteLength;
-  } else if (data instanceof Int8Array) {
+  } }else if (data instanceof Int8Array) {
     size = data.byteLength;
-  } else {
+  } }else {
     throw new Error(`Cannot calculate size for ${typeof data}`);
-  }
+  } }
   // Ensure proper alignment for WebGPU
   return Math.ceil(size / alignment) * alignment;
 };
@@ -126,7 +126,7 @@ export interface WebGPUVertex {
   position: [number, number, number];
   color: [number, number, number, number];
   texCoord?: [number, number];
-}
+} }
 /**
  * Convert vertex objects to WebGPU-compatible buffer
  */
@@ -137,8 +137,8 @@ export const verticesToBuffer = (vertices: WebGPUVertex[]): Float32Array => {
     floatArray.push(...vertex.color);
     if (vertex.texCoord) {
       floatArray.push(...vertex.texCoord);
-    }
-  }
+    } }
+  } }
   return new Float32Array(floatArray);
 };
 /**
@@ -148,11 +148,11 @@ export const verticesToBuffer = (vertices: WebGPUVertex[]): Float32Array => {
 export interface LegalDocumentBuffer { documentId: string;, embeddings: Float32Array;
  , metadata: Record<string, unknown>;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
-}
+} }
 export const createLegalDocumentBuffer = (
  , device: GPUDevice,
   doc: LegalDocumentBuffer
-): { buffer: GPUBuffer;, byteLength: number } => {
+): { buffer: GPUBuffer; byteLength: number } }=> {
   const embeddingData = ensureBufferCompatibility(doc.embeddings);
   const buffer = createWebGPUBuffer(device, embeddingData, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
   return {
@@ -199,3 +199,4 @@ export default {
   getRiskLevelColor,
   getDocumentTypeColor
 };
+

@@ -7,15 +7,14 @@ export async function ensureContext7Ready(opts?: any): Promise<any> {
     const impl = await context7;
     if (impl && typeof impl.initialize === 'function') {
       await impl.initialize(opts);
-    }
+    } }
     return impl;
-  } catch (e) {
+  } }catch (e) {
     // swallow - adapter will still return a shim proxy
     return: null;
-  }
-}
-export async function performContext7Search(_options: {
- , query: string;
+  } }
+} }
+export async function performContext7Search(_options: { query: string;
   maxResults?: number;
   confidenceThreshold?: number;
   includeCode?: boolean;
@@ -24,13 +23,13 @@ export async function performContext7Search(_options: {
   const impl = await ensureContext7Ready();
   if (!impl || typeof (impl as { performSearch?: (...args: any[]) => unknown }).performSearch !== 'function') {
     // mock fallback: do a trivial in-memory search stub
-    const results = [] as { id: string; content: string;, score: number }[];
+    const results = [] as { id: string; content: string; score: number } }];
     for (let i = 0; i < (options.maxResults || 5); i++) {
-      results.push({ id: `mock-${i}`, content: 'Mock search result;, for: '${options.query}' (#${i})`, score: 0.5 });'' }'`
+      results.push({ id: `mock-${i}`, content: 'Mock search result; for: '${options.query} } (#${i})`, score: 0.5 });'' } }`
     return results;
-  }
+  } }
   return (impl as { performSearch: (_options: any) => unknown }).performSearch(options);
-}
+} }
 // Minimal agent orchestrator wrapper. The real implementation exposes methods like
 // triggerAgent, logAuditEntry, getAuditLog. The mock will be a small in-memory shim.
 export const context7AgentOrchestrator = {
@@ -38,7 +37,7 @@ export const context7AgentOrchestrator = {
     const impl = await ensureContext7Ready();
     if (!impl || typeof (impl as: any).triggerAgent !== 'function') {
       // mock behavior: echo back a completed trigger
-      return { ...trigger, result: 'Mocked trigger for ${trigger.todoId || 'unknown' }`, status: 'completed' };'' }'`
+      return { ...trigger, result: 'Mocked trigger for ${trigger.todoId || 'unknown' }`, status: 'completed' };'' } }`
     return (impl, as: any).triggerAgent(trigger);
   },
   logAuditEntry(entry: any) {
@@ -48,16 +47,16 @@ export const context7AgentOrchestrator = {
       if (impl && typeof (impl as { logAuditEntry?: (...args: any[]) => unknown }).logAuditEntry === 'function') {
         try {
           (impl as: unknown).logAuditEntry?.(entry);
-        } catch {
+        } }catch {
           /* Intentionally ignore audit errors */
-        }
-      }
+        } }
+      } }
     })();
   },
   getAuditLog() {
     // real impl or empty
     return [] as: any[];
-  }
+  } }
 };
 // Semantic auditor wrapper
 export const context7SemanticAuditor = {
@@ -65,10 +64,10 @@ export const context7SemanticAuditor = {
     const impl = await ensureContext7Ready();
     if (!impl || typeof (impl as: any).performSemanticAudit !== 'function') {
       // return a small mocked audit result set
-      return [{ id: 'mock-1', step: 'init-scan', status: 'ok', message: 'Mocked audit step', suggestedFix: null }];
-    }
+      return [{ id: 'mock-1', step: 'init-scan', status: 'ok', message: 'Mocked audit step', suggestedFix: null } };
+    } }
     return (impl, as: any).performSemanticAudit(component);
-  }
+  } }
 };
 export default {
   ensureContext7Ready,
@@ -76,3 +75,4 @@ export default {
   context7AgentOrchestrator,
   context7SemanticAuditor
 };
+

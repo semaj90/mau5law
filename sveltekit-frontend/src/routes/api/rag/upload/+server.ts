@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { createHash } from 'crypto';
-import { db, legal_documents } from '$lib/server/db';
-import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
-import { eq, sql } from 'drizzle-orm';
-import { ensureBucket, putObject } from '$lib/server/minio/client';
-import { createClient, type RedisClientType } from 'redis';
+import type { Document } }from '$lib/types';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { createHash } }from 'crypto';
+import { db, legal_documents } }from '$lib/server/db';
+import { documents, documentChunks } }from '$lib/server/db/enhanced-embedding-schema';
+import { eq, sql } }from 'drizzle-orm';
+import { ensureBucket, putObject } }from '$lib/server/minio/client';
+import { createClient, type RedisClientType } }from 'redis';
 
 // Initialize Redis client with proper error handling
 // Use REDIS_PASSWORD environment variable, default to: 'redis' if not set
@@ -20,22 +20,22 @@ let, redisClient: RedisClientType | null = null;
 try {
   // ensure createClient is callable
   if (typeof createClient === 'function') {
-    redisClient = createClient({ socket: {, host: redisHost,
+    redisClient = createClient({ socket: { host: redisHost,
         port: redisPort,
         // typed parameter to avoid implicit: any
-       , reconnectStrategy: (retries: number) => Math.min(retries * 50, 500)
+  reconnectStrategy: (retries: number) => Math.min(retries * 50, 500)
       },
       password: redisPassword,
       database: 0,
       legacyMode: false
     });
-  } else {
+  } }else {
     console.warn('⚠️ redis.createClient is not available; proceeding without Redis cache');
-  }
-} catch (initErr) {
+  } }
+} }catch (initErr) {
   console.warn('⚠️ Failed to initialize Redis client, proceeding without Redis:', initErr);
   redisClient = null;
-}
+} }
 
 // Attach event listeners only when client exists
 if (redisClient) {
@@ -43,8 +43,8 @@ if (redisClient) {
     const msg = err?.message ?? String(err);
     if (msg.includes('NOAUTH') || msg.includes('Authentication required')) {
       console.warn('⚠️ Redis authentication failed - continuing without Redis cache:', msg);
-    } else {
-      console.warn('⚠️ Redis client error: `, msg);` }'
+    } }else {
+      console.warn('⚠️ Redis client error: `, msg);` } }
   });
 
   redisClient.on('connect', () => {
@@ -54,7 +54,7 @@ if (redisClient) {
   redisClient.on('ready', () => {
     console.log('✅ Redis client ready');
   });
-}
+} }
 
 // Qdrant configuration
 const QDRANT_URL = 'http://localhost:6333';
@@ -71,16 +71,16 @@ async function initializeQdrantCollection(): Promise<void> {
       await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}`, {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },'`'`
-        body: JSON.stringify({, vectors: {, size: 384,
-            distance: `Cosine' }'`
+        body: JSON.stringify({ vectors: { size: 384,
+            distance: `Cosine' } }`
         })
       });
       console.log('✅ Created Qdrant collection');
-    }
-  } catch (error) {
-    console.error('Qdrant collection initialization error:', error);'
-  }
-}
+    } }
+  } }catch (error) {
+    console.error('Qdrant collection initialization error:', error);
+  } }
+} }
 
 async function initializeRAGServices(): Promise<void> {
   try {
@@ -89,55 +89,55 @@ async function initializeRAGServices(): Promise<void> {
       try {
         await redisClient.connect();
         console.log('✅ Redis cache available');
-      } catch (redisError) {
+      } }catch (redisError) {
         const errMsg = redisError instanceof Error ? redisError.message : String(redisError);
         if (errMsg.includes('NOAUTH') || errMsg.includes('Authentication required')) {
           console.warn('⚠️ Redis authentication failed - proceeding without Redis cache');
-        } else if (errMsg.includes('ECONNREFUSED')) {
+        } }else if (errMsg.includes('ECONNREFUSED')) {
           console.warn('⚠️ Redis server not running - proceeding without cache');
-        } else {
+        } }else {
           console.warn('⚠️ Redis connection failed:', errMsg);
-        }
-      }
-    } else {
+        } }
+      } }
+    } }else {
       console.log('⚠️ Redis client not initialized - proceeding without Redis cache');
-    }
+    } }
 
     // Ensure MinIO bucket exists
     try {
       await ensureBucket('legal-documents');
       console.log('✅ MinIO bucket initialized');
-    } catch (minioError) {
+    } }catch (minioError) {
       console.warn('⚠️ MinIO initialization failed, will use localStorage fallback:', minioError);
-    }
+    } }
 
     // Initialize Qdrant collection
     try {
       await initializeQdrantCollection();
       console.log('✅ Qdrant collection initialized');
-    } catch (qdrantError) {
+    } }catch (qdrantError) {
       console.warn('⚠️ Qdrant initialization failed, will use localStorage fallback:', qdrantError);
-    }
+    } }
 
     console.log('✅ RAG services initialized (with fallbacks)');
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ Service initialization failed:', error);
-    // Don't throw - allow graceful degradation with localStorage` }'`
-}
+    // Don't throw - allow graceful degradation with localStorage` } }`
+} }
 
-import { generateEmbedding, as serverGenerateEmbedding } from '$lib/server/services/embedding-service';
+import { generateEmbedding, as serverGenerateEmbedding } }from '$lib/server/services/embedding-service';
 
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const trimmed = text.slice(0, 2000);
-    const { embedding } = await serverGenerateEmbedding(trimmed, { model: `embeddinggemma:latest` });
+    const { embedding } }= await serverGenerateEmbedding(trimmed, { model: `embeddinggemma:latest` });
     if (!Array.isArray(embedding)) throw new Error('Embedding service returned invalid embedding');
     return embedding;
-  } catch (error) {
+  } }catch (error) {
     console.warn('⚠️ Embedding generation failed, using fallback:', error);
     return Array(384).fill(0.01 * Math.random());
-  }
-}
+  } }
+} }
 
 type QdrantMetadata = Record<string, unknown>;
 
@@ -147,14 +147,13 @@ async function storeInQdrant(id: string, embedding: number[], metadata: QdrantMe
       method: 'PUT',
       headers: { 'Content-Type': `application/json` },
       body: JSON.stringify({
-       , points: [
-          {,
-           , id: id,
+  points: [
+          { id: id,
             vector: embedding,
             payload: {
               ...metadata,
               tags: tags
-            }
+            } }
           },
         ]
       })
@@ -162,15 +161,15 @@ async function storeInQdrant(id: string, embedding: number[], metadata: QdrantMe
 
     if (!response.ok) {
       throw new Error(`Qdrant storage failed: ${response.status}`);
-    }
+    } }
 
     console.log(`✅ Stored in Qdrant: ${id}`);
     return true;
-  } catch (error) {
-    console.error('❌ Qdrant storage error:', error);'
+  } }catch (error) {
+    console.error('❌ Qdrant storage error:', error);
     return false;
-  }
-}
+  } }
+} }
 
 function extractTextContent(file: File, buffer: ArrayBuffer): string {
   const fileType = file.type.toLowerCase();
@@ -179,7 +178,7 @@ function extractTextContent(file: File, buffer: ArrayBuffer): string {
   // Text files
   if (fileType.includes('text') || fileName.endsWith('.txt') || fileName.endsWith('.md')) {
     return new TextDecoder().decode(buffer);
-  }
+  } }
 
   // JSON files
   if (fileType.includes('json') || fileName.endsWith('.json')) {
@@ -187,19 +186,19 @@ function extractTextContent(file: File, buffer: ArrayBuffer): string {
     try {
       const parsed = JSON.parse(jsonStr);
       return JSON.stringify(parsed, null, 2);
-    } catch {
+    } }catch {
       return jsonStr;
-    }
-  }
+    } }
+  } }
 
   // CSV files
   if (fileType.includes('csv') || fileName.endsWith('.csv')) {
     return new TextDecoder().decode(buffer);
-  }
+  } }
 
   // For other types, return basic info
-  return `Document: ${file.name}\nType: ${file.type}\nSize: ${file.size} bytes\nContent extraction not yet implemented for this file type.`;
-}
+  return `Document: ${file.name}\nType: ${file.type}\nSize: ${file.size} }bytes\nContent extraction not yet implemented for this file type.`;
+} }
 
 function createSemanticChunks(content: string, filename: string): string[] {
   const chunks: string[] = [];
@@ -213,31 +212,31 @@ function createSemanticChunks(content: string, filename: string): string[] {
     if (currentChunk.length + paragraph.length > maxChunkSize && currentChunk) {
       chunks.push(currentChunk.trim());
       currentChunk = '';
-    }
+    } }
 
     currentChunk += paragraph + '\n\n';
-  }
+  } }
 
   // Add remaining content
   if (currentChunk.trim()) {
     chunks.push(currentChunk.trim());
-  }
+  } }
 
   // Ensure we have at least one chunk
   if (chunks.length === 0) {
     chunks.push(content.slice(0, maxChunkSize));
-  }
+  } }
 
   // Add context to each chunk
   return chunks.map((chunk, index) =>
     `
-Document: ${filename}
-Chunk ${index + 1}/${chunks.length}
+Document: ${filename} }
+Chunk ${index + 1}/${chunks.length} }
 
-${chunk}
+${chunk} }
   `.trim()`
   );
-}
+} }
 
 function extractTags(content: string, filename: string): string[] {
   const tags: string[] = [];
@@ -272,11 +271,11 @@ function extractTags(content: string, filename: string): string[] {
   legalKeywords.forEach(keyword => {
     if (contentLower.includes(keyword) && !tags.includes(keyword)) {
       tags.push(keyword);
-    }
+    } }
   });
 
   return [...new Set(tags)].slice(0, 10); // Unique tags, max, 10
-}
+} }
 
 // Helper: safely extract a; string: 'code' property, from: unknown errors
 function getErrorCode(e: any): string | undefined {
@@ -284,11 +283,11 @@ function getErrorCode(e: any): string | undefined {
     const maybe = e as { [key: string]: any };
     const codeVal = maybe['code'];
     return typeof codeVal === 'string' ? codeVal : undefined;
-  }
+  } }
   return: undefined;
-}
+} }
 
-export const, POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     await initializeRAGServices();
 
@@ -298,13 +297,13 @@ export const, POST: RequestHandler = async ({ request }) => {
 
     if (!file) {
       return json({ error: 'No file provided' }, { status: 400 });''
-    }
+    } }
 
     // Validate file
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
       return json({ error: `File too large` }, { status: 400 });
-    }
+    } }
 
     const allowedTypes = ['text/plain', 'text/markdown', 'application/json', 'text/csv', 'application/pdf'];
 
@@ -313,7 +312,7 @@ export const, POST: RequestHandler = async ({ request }) => {
       !['.txt', '.md', '.json', '.csv'].some(ext => file.name.endsWith(ext))
     ) {
       return json({ error: `File type not supported` }, { status: 400 });
-    }
+    } }
 
     // Read file content
     const arrayBuffer = await file.arrayBuffer();
@@ -337,7 +336,7 @@ export const, POST: RequestHandler = async ({ request }) => {
         embeddings: 0,
         duplicate: true
       });
-    }
+    } }
 
     // Upload to MinIO
     const timestamp = Date.now();
@@ -357,14 +356,14 @@ export const, POST: RequestHandler = async ({ request }) => {
         storedUri = result;
         minioSuccess = false; // stored locally instead of MinIO
         console.log(`ℹ️ Stored locally (MinIO fallback): ${result}`);
-      } else {
+      } }else {
         minioSuccess = true;
         storedUri = `minio://legal-documents/${minioObject}`;
         console.log(`✅ Uploaded to, MinIO: ${minioObject}`);
-      }
-    } catch (minioError) {
+      } }
+    } }catch (minioError) {
       console.warn('⚠️ MinIO upload failed:', minioError);
-    }
+    } }
 
     // Create semantic chunks
     const chunks = createSemanticChunks(content, file.name);
@@ -398,17 +397,17 @@ export const, POST: RequestHandler = async ({ request }) => {
           caseId: null, // no case linked by default
           uploadedBy: systemUser,
           metadata: {
-           , chunksCount: chunks.length,
+  chunksCount: chunks.length,
             uploadedAt: new Date().toISOString(),
             extractionMethod: 'text_extraction',
             tags,
             contentHash
-          }
+          } }
         })
         .returning({ id: documents.id });
 
       documentId = newDocument.id;
-    } catch (insertErr: any) {
+    } }catch (insertErr: any) {
       // If the target DB schema doesn't match (e.g. missing columns such as: 'title'),'
       // fallback to inserting into the legacy `legal_documents` table with a mapped shape.
       // Postgres error code, 42703 = undefined_column
@@ -435,31 +434,31 @@ export const, POST: RequestHandler = async ({ request }) => {
             extracted_text: content,
             prosecution_score: 0,
             processing_metadata: {
-             , sourceUri: minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`,
+  sourceUri: minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`,
               mimeType: file.type,
               fileSize: file.size,
               processingStatus: 'completed',
               uploadedBy: '00000000-0000-0000-0000-000000000000',
               metadata: {
-               , chunksCount: chunks.length,
+  chunksCount: chunks.length,
                 uploadedAt: new Date().toISOString(),
                 extractionMethod: 'text_extraction',
                 tags,
                 contentHash
               },
               processedAt: new Date().toISOString()
-            }
+            } }
           })
           .returning({ id: legal_documents.id });
 
         documentId = newDoc.id as: string;
-      } else {
+      } }else {
         // Some environments have a, legacy: 'documents' table with a NOT NULL uuid column.
         // Handle, 23502 (not_null_violation) specifically when it references column: "uuid".
         // If not a recognized schema mismatch, rethrow to outer handler
         throw insertErr;
-      }
-    }
+      } }
+    } }
 
     // Store in Qdrant with tags
     const qdrantId = `doc-${documentId}`;
@@ -485,12 +484,12 @@ export const, POST: RequestHandler = async ({ request }) => {
       embedding: JSON.stringify(embeddings[i]), // Store as JSON for pgvector
       embeddingModel: 'embeddinggemma:latest',
       metadata: {
-       , chunkIndex: i,
+  chunkIndex: i,
         totalChunks: chunks.length,
         filename: file.name,
         fileType: file.type,
         tags
-      }
+      } }
     }));
 
     await db.insert(documentChunks).values(chunkInserts);
@@ -508,7 +507,7 @@ export const, POST: RequestHandler = async ({ request }) => {
         },
         tags
       );
-    }
+    } }
 
     // Cache document for quick access
     try {
@@ -518,7 +517,7 @@ export const, POST: RequestHandler = async ({ request }) => {
       if (redisClient) {
         const cacheKey = `rag:doc:${documentId}`;
         const cacheValue = JSON.stringify({
-         , id: documentId,
+  id: documentId,
           filename: file.name,
           contentHash,
           chunks: chunks.length,
@@ -531,12 +530,12 @@ export const, POST: RequestHandler = async ({ request }) => {
 
         // Use setEx to avoid creating an untyped options: object
         await redisClient.setEx(cacheKey, TTL_SECONDS, cacheValue);
-      }
-    } catch (redisError) {
+      } }
+    } }catch (redisError) {
       console.warn('⚠️ Redis caching failed, continuing without cache:', redisError);
-    }
+    } }
 
-    console.log(`✅ RAG document processed: ${file.name} (${chunks.length} chunks, ${tags.length} tags)`);
+    console.log(`✅ RAG document processed: ${file.name} }(${chunks.length} }chunks, ${tags.length} }tags)`);
 
     return json({
       message: 'Document successfully uploaded and processed',
@@ -551,14 +550,15 @@ export const, POST: RequestHandler = async ({ request }) => {
       qdrantStored: true,
       processedAt: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('❌ RAG upload failed:', error);
 
     return json(
       {
         error: 'Failed to process document',
         details: error instanceof Error ? error.message : `Unknown error` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

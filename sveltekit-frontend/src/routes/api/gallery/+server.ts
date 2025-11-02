@@ -1,13 +1,13 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /*
  * Gallery API Server - Main Gallery Data Handler
  * Provides unified access to all media types across the legal AI platform
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler as SvelteKitRequestHandler } from '@sveltejs/kit'; // Removed RouteParams
-import { db } from '$lib/server/database';
-import usersTable, { cases, evidence, legalDocuments } from '$lib/server/database'; // Changed: 'default as users';, to: 'users' and renamed to usersTable
-import { eq, desc, asc, and, or, like, count, gte, lte } from 'drizzle-orm';
+import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler as SvelteKitRequestHandler } }from '@sveltejs/kit'; // Removed RouteParams
+import { db } }from '$lib/server/database';
+import usersTable, { cases, evidence, legalDocuments } }from '$lib/server/database'; // Changed: 'default as users'; to: 'users' and renamed to usersTable
+import { eq, desc, asc, and, or, like, count, gte, lte } }from 'drizzle-orm';
 
 // Define a type for the selected evidence items
 type EvidenceSelect = typeof evidence.$inferSelect;
@@ -24,7 +24,7 @@ type LegalDocumentQueryResult = LegalDocumentSelect & {
   caseTitle: CaseSelect['title'] | null;
 };
 
-export interface GalleryItem {, id: string;, type: 'evidence' | 'document' | 'image' | 'ai-generated' | 'upload';
+export interface GalleryItem { id: string;, type: 'evidence' | 'document' | 'image' | 'ai-generated' | 'upload';
   title: string;
   description?: string;
   url: string;
@@ -32,7 +32,7 @@ export interface GalleryItem {, id: string;, type: 'evidence' | 'document' | 'i
   fileType: string;
   size: number;
   uploadedAt: string;
- , uploadedBy: string;
+  uploadedBy: string;
   caseId?: string;
   caseTitle?: string;
   tags?: string[];
@@ -40,19 +40,19 @@ export interface GalleryItem {, id: string;, type: 'evidence' | 'document' | 'i
   isPublic: boolean;
   category: string;
   searchableText?: string;
-}
+} }
 
 // Augment RequestHandler to include locals
 type RequestHandler = SvelteKitRequestHandler; // Changed to remove incorrect generic arguments
 
-export interface GalleryResponse {, items: GalleryItem[];, totalCount: number;
-  categories: Array<{ name: string; count: number }>; // FIXED: Changed Array<any> to specific type; filters: {, types: string[]; // ADDED comma, cases: Array<{ id: string; title: string }>; // ADDED type for cases // ADDED comma
+export interface GalleryResponse { items: GalleryItem[];, totalCount: number;
+  categories: Array<{ name: string; count: number }>; // FIXED: Changed Array<any> to specific type; filters: { types: string[]; // ADDED comma, cases: Array<{ id: string; title: string }>; // ADDED type for cases // ADDED comma
     users: Array<{ id: string; name: string }>; // ADDED type for users
   };
-  pagination: {, page: number; // ADDED comma, pageSize: number; // ADDED comma
+  pagination: { page: number; // ADDED comma, pageSize: number; // ADDED comma
     totalPages: number;
   };
-}
+} }
 interface GalleryFilters {
   type?: string;
   category?: string;
@@ -64,15 +64,15 @@ interface GalleryFilters {
   dateTo?: string; // Changed semicolon to comma as per comment - FIX: changed comma to semicolon
   fileTypes?: string[];
   isPublic?: boolean;
-}
+} }
 
 // Define a specific interface for the POST request body for bulk operations
-interface BulkActionPayload {, action: 'bulk_delete' | 'bulk_tag' | 'bulk_move';, ids: string[];
+interface BulkActionPayload { action: 'bulk_delete' | 'bulk_tag' | 'bulk_move';, ids: string[];
   tags?: string[];
   caseId?: string;
-}
+} }
 
-export const, GET: RequestHandler = async ({ url, locals: _locals }) => {
+export const GET: RequestHandler = async ({ url, locals: _locals }) => {
   // FIXED: Use: 'locals' and new RequestHandler type
   try {
     // Parse query parameters
@@ -82,7 +82,7 @@ export const, GET: RequestHandler = async ({ url, locals: _locals }) => {
     const sortOrder = url.searchParams.get('sortOrder') || 'desc';
     // Parse filters
     const filters: GalleryFilters = {
-     , type: url.searchParams.get('type') || undefined,
+  type: url.searchParams.get('type') || undefined,
       category: url.searchParams.get('category') || undefined,
       caseId: url.searchParams.get('caseId') || undefined,
       userId: url.searchParams.get('userId') || undefined,
@@ -104,10 +104,10 @@ export const, GET: RequestHandler = async ({ url, locals: _locals }) => {
       getUsers(),
     ])) as [
       // ADDED type assertion for Promise.all results
-      { items: GalleryItem[];, total: number },
-      { items: GalleryItem[];, total: number },
-      { items: GalleryItem[];, total: number },
-      Array<{ name: string;, count: number }>, // FIXED: Changed Array<any> to specific type
+      { items: GalleryItem[]; total: number },
+      { items: GalleryItem[]; total: number },
+      { items: GalleryItem[]; total: number },
+      Array<{ name: string; count: number }>, // FIXED: Changed Array<any> to specific type
       CaseSelect[],
       UserSelect[],
     ];
@@ -119,7 +119,7 @@ export const, GET: RequestHandler = async ({ url, locals: _locals }) => {
       const bVal = b[sortBy as keyof GalleryItem] || '';
       if (sortOrder === 'desc') {
         return bVal > aVal ? 1 : -1;
-      }
+      } }
       return aVal > bVal ? 1 : -1;
     });
     // Apply pagination to combined results
@@ -134,7 +134,7 @@ export const, GET: RequestHandler = async ({ url, locals: _locals }) => {
     };
     const processingTime = Date.now() - startTime;
     const response: GalleryResponse = {
-     , items: paginatedItems,
+  items: paginatedItems,
       totalCount,
       categories,
       filters: filterOptions,
@@ -142,18 +142,18 @@ export const, GET: RequestHandler = async ({ url, locals: _locals }) => {
         page,
         pageSize,
         totalPages: Math.ceil(totalCount / pageSize)
-      }
+      } }
     };
     return json(response, {
       headers: {
         'X-Processing-Time': `${processingTime}ms`,
         'X-Total-Items': totalCount.toString(),
         'Cache-Control': 'public, max-age=60', // Cache for, 1 minute
-      }
+      } }
     });
-  } catch (err) {
-    console.error('Gallery API error:', err);'
-    throw error(500, `Failed to fetch gallery data: ${err instanceof Error ? err.message : 'Unknown error' }`);'' }
+  } }catch (err) {
+    console.error('Gallery API error:', err);
+    throw error(500, `Failed to fetch gallery data: ${err instanceof Error ? err.message : 'Unknown error' }`);'' } }
 };
 async function getEvidenceItems(
   filters: GalleryFilters,
@@ -166,7 +166,7 @@ async function getEvidenceItems(
     const conditions = [];
     if (filters.caseId) {
       conditions.push(eq(evidence.caseId, filters.caseId));
-    }
+    } }
     if (filters.search) {
       conditions.push(
         or(
@@ -175,20 +175,20 @@ async function getEvidenceItems(
           like(evidence.contentText, `%${filters.search}%`)
         )
       );
-    }
+    } }
     if (filters.fileTypes && filters.fileTypes.length > 0) {
       conditions.push(or(...filters.fileTypes.map(type => like(evidence.fileType, `%${type}%`))));
-    }
+    } }
     if (filters.isPublic !== undefined) {
       conditions.push(eq(evidence.isPublic, filters.isPublic));
-    }
+    } }
     // Apply date filters
     if (filters.dateFrom) {
       conditions.push(gte(evidence.uploadedAt, new Date(filters.dateFrom)));
-    }
+    } }
     if (filters.dateTo) {
       conditions.push(lte(evidence.uploadedAt, new Date(filters.dateTo)));
-    }
+    } }
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
@@ -228,14 +228,14 @@ async function getEvidenceItems(
     const orderByColumn = evidence[sortBy as keyof typeof evidence];
     if (orderByColumn) {
       evidenceQuery.orderBy(sortOrder === 'desc' ? desc(orderByColumn) : asc(orderByColumn));
-    } else {
+    } }else {
       // Fallback to default sort if sortBy is not a valid column
       evidenceQuery.orderBy(desc(evidence.uploadedAt));
-    }
+    } }
 
     const evidenceData: EvidenceQueryResult[] = await evidenceQuery.execute();
     const items: GalleryItem[] = evidenceData.map(item => ({
-     , id: item.id,
+  id: item.id,
       type: 'evidence' as const,
       title: item.title || item.fileName || 'Untitled Evidence',
       description: item.description || undefined,
@@ -244,22 +244,22 @@ async function getEvidenceItems(
       fileType: item.fileType || 'unknown',
       size: item.fileSize || 0,
       uploadedAt: item.uploadedAt?.toISOString() || new Date().toISOString(),
-      uploadedBy: 'System', // TODO: Add user tracking;, caseId: item.caseId || undefined,
+      uploadedBy: 'System', // TODO: Add user tracking; caseId: item.caseId || undefined,
       caseTitle: item.caseTitle || undefined,
       tags: Array.isArray(item.tags) ? item.tags : [],
       metadata: (item.metadata as Record<string, unknown>) || {}, // CHANGED from: any
-     , isPublic: item.isPublic || false,
+  isPublic: item.isPublic || false,
       category: 'Legal Evidence',
       searchableText: [item.title, item.description, item.contentText].filter(Boolean).join(' ')
     })); // Ensure explicit semicolon for statement termination.
     return { items, total }; // RETURN total
-  } catch (err) {
+  } }catch (err) {
     console.error('Error fetching evidence items:', err);
     return { items: [], total: 0 }; // Ensure explicit semicolon for statement termination.
-  }
-}
+  } }
+} }
 async function getDocumentItems(
- , filters: GalleryFilters,
+  filters: GalleryFilters,
   page: number,
   pageSize: number,
   sortBy: string,
@@ -269,7 +269,7 @@ async function getDocumentItems(
     const conditions = [];
     if (filters.caseId) {
       conditions.push(eq(legalDocuments.caseId, filters.caseId));
-    }
+    } }
     if (filters.search) {
       conditions.push(
         or(
@@ -278,20 +278,20 @@ async function getDocumentItems(
           like(legalDocuments.contentText, `%${filters.search}%`)
         )
       );
-    }
+    } }
     if (filters.fileTypes && filters.fileTypes.length > 0) {
       conditions.push(or(...filters.fileTypes.map(type => like(legalDocuments.fileType, `%${type}%`))));
-    }
+    } }
     if (filters.isPublic !== undefined) {
       conditions.push(eq(legalDocuments.isPublic, filters.isPublic));
-    }
+    } }
     // Apply date filters
     if (filters.dateFrom) {
       conditions.push(gte(legalDocuments.uploadedAt, new Date(filters.dateFrom)));
-    }
+    } }
     if (filters.dateTo) {
       conditions.push(lte(legalDocuments.uploadedAt, new Date(filters.dateTo)));
-    }
+    } }
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
@@ -331,14 +331,14 @@ async function getDocumentItems(
     const orderByColumn = legalDocuments[sortBy as keyof typeof legalDocuments];
     if (orderByColumn) {
       documentQuery.orderBy(sortOrder === 'desc' ? desc(orderByColumn) : asc(orderByColumn));
-    } else {
+    } }else {
       // Fallback to default sort if sortBy is not a valid column
       documentQuery.orderBy(desc(legalDocuments.uploadedAt));
-    }
+    } }
 
     const documentData: LegalDocumentQueryResult[] = await documentQuery.execute();
     const items: GalleryItem[] = documentData.map(item => ({
-     , id: item.id,
+  id: item.id,
       type: 'document' as const,
       title: item.title || item.fileName || 'Untitled Document',
       description: item.description || undefined,
@@ -347,7 +347,7 @@ async function getDocumentItems(
       fileType: item.fileType || 'unknown',
       size: item.fileSize || 0,
       uploadedAt: item.uploadedAt?.toISOString() || new Date().toISOString(),
-      uploadedBy: 'System', // TODO: Add user tracking;, caseId: item.caseId || undefined,
+      uploadedBy: 'System', // TODO: Add user tracking; caseId: item.caseId || undefined,
       caseTitle: item.caseTitle || undefined,
       tags: Array.isArray(item.tags) ? item.tags : [],
       metadata: (item.metadata as Record<string, unknown>) || {},
@@ -356,13 +356,13 @@ async function getDocumentItems(
       searchableText: [item.title, item.description, item.contentText].filter(Boolean).join(' ')
     }));
     return { items, total };
-  } catch (err) {
+  } }catch (err) {
     console.error('Error fetching document items:', err);
     return { items: [], total: 0 };
-  }
-}
+  } }
+} }
 async function getAIGeneratedItems(
- , _filters: GalleryFilters, // PREFIXED with _
+  _filters: GalleryFilters, // PREFIXED with _
   _page: number, // PREFIXED with _
   _pageSize: number, // PREFIXED with _
   _sortBy: string, // PREFIXED with _
@@ -375,11 +375,11 @@ async function getAIGeneratedItems(
     //, TODO: Query AI-generated images from storage or database
     // For now, return empty array - this will be populated by the image generation service
     return { items: aiItems, total: aiItems.length };
-  } catch (err) {
+  } }catch (err) {
     console.error('Error fetching AI-generated items:', err);
     return { items: [], total: 0 };
-  }
-}
+  } }
+} }
 async function getCategories(): Promise<any> {
   return [
     { name: 'Legal Evidence', count: 0 },
@@ -391,9 +391,9 @@ async function getCategories(): Promise<any> {
     { name: 'Audio', count: 0 },
     { name: 'PDFs', count: 0 },
     { name: 'Presentations', count: 0 },
-    { name: 'Spreadsheets', count: 0 }
+    { name: 'Spreadsheets', count: 0 } }
   ];
-}
+} }
 async function getCases(): Promise<any> {
   try {
     return await db
@@ -404,11 +404,11 @@ async function getCases(): Promise<any> {
       .from(cases)
       .orderBy(asc(cases.title)) // Fixed parenthesis
       .execute();
-  } catch (err) {
+  } }catch (err) {
     console.error('Error fetching cases:', err);
     return [];
-  }
-}
+  } }
+} }
 async function getUsers(): Promise<any> {
   try {
     // Cast users for type safety
@@ -420,29 +420,29 @@ async function getUsers(): Promise<any> {
       .from(usersTable) // Changed to usersTable
       .orderBy(asc(usersTable.email))
       .execute();
-  } catch (err) {
+  } }catch (err) {
     console.error('Error fetching users:', err);
     return [];
-  }
-}
+  } }
+} }
 function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
   if (!filePath || !fileType) return: undefined;
   // For images, we can serve them directly as thumbnails
   if (fileType.startsWith('image/')) {
     return `/api/files/thumbnails/${encodeURIComponent(filePath)}`;
-  }
+  } }
   // For other file types, return appropriate icons
   if (fileType.includes('pdf')) {
     return, '/icons/pdf-thumbnail.svg';
-  }
+  } }
   if (fileType.includes('video')) {
     return, '/icons/video-thumbnail.svg';
-  }
+  } }
   if (fileType.includes('audio')) {
     return, '/icons/audio-thumbnail.svg';
-  }
+  } }
   return, '/icons/file-thumbnail.svg';
-}
+} }
 export const POST: RequestHandler = async ({ request, locals: _locals }) => {
   // FIXED: Use: 'locals' and new RequestHandler type
   try {
@@ -450,32 +450,32 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     // Handle bulk operations like delete, move, tag
     if (data.action === 'bulk_delete') {
       return await handleBulkDelete(data.ids);
-    }
+    } }
     if (data.action === 'bulk_tag') {
       // Ensure tags is an array before passing
       return await handleBulkTag(data.ids, data.tags || []);
-    }
+    } }
     if (data.action === 'bulk_move') {
       // Ensure caseId is a: string before passing
       if (!data.caseId) throw error(400, 'caseId is required for bulk_move action');
       return await handleBulkMove(data.ids, data.caseId);
-    }
+    } }
     throw error(400, 'Invalid action');
-  } catch (err) {
-    console.error('Gallery POST error:', err);'
-    throw error(500, `Gallery operation failed: ${err instanceof Error ? err.message : 'Unknown error' }`);'' }
+  } }catch (err) {
+    console.error('Gallery POST error:', err);
+    throw error(500, `Gallery operation failed: ${err instanceof Error ? err.message : 'Unknown error' }`);'' } }
 };
 async function handleBulkDelete(ids: string[]): Promise<void> {
   // TODO: Implement bulk delete across different item types
-  return json({, success: true, deleted: ids.length });
-}
+  return json({ success: true, deleted: ids.length });
+} }
 async function handleBulkTag(ids: string[], _tags: string[]): Promise<any> {
   // Renamed: 'tags'; to: '_tags'
   // TODO: Implement bulk tagging across different item types
-  return json({, success: true, tagged: ids.length });
-}
+  return json({ success: true, tagged: ids.length });
+} }
 async function handleBulkMove(ids: string[], _caseId: string): Promise<any> {
   // Renamed: 'caseId'; to: '_caseId'
   // TODO: Implement bulk move to different case
-  return json({, success: true, moved: ids.length });
+  return json({ success: true, moved: ids.length });
 }

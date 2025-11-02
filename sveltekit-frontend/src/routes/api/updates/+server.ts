@@ -1,7 +1,7 @@
 /// <reference, types="vite/client" />
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 // Server-Sent Events API route for SSR-safe real-time updates
-import { createClient } from 'redis';
+import { createClient } }from 'redis';
 
 // SSE connection manager
 class SSEConnectionManager {
@@ -31,13 +31,13 @@ class SSEConnectionManager {
         await this.redisSubscriber.subscribe(channel, (message: string) => {
           this.broadcastToConnections(channel, message);
         });
-      }
+      } }
       this.isInitialized = true;
       console.log('✅ SSE Redis subscriber initialized');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ SSE Redis connection failed:', error);
-    }
-  }
+    } }
+  } }
   private broadcastToConnections(channel: string, message: string) {
     const data = {
       channel,
@@ -51,22 +51,22 @@ class SSEConnectionManager {
         const sseMessage = `data: ${JSON.stringify(data)}\n\n`;
         // Note: In a real implementation, you'd need to handle the response stream'
         console.log(`Broadcasting to SSE connection ${connectionId}:`, sseMessage);
-      } catch (error: any) {
+      } }catch (error: any) {
         console.error(`Failed to send to connection ${connectionId}: ', error);'`
         this.connections.delete(connectionId);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   addConnection(connectionId: string, response: Response) {
     this.connections.set(connectionId, response);
-  }
+  } }
   removeConnection(connectionId: string) {
     this.connections.delete(connectionId);
-  }
+  } }
   getConnectionCount(): number {
     return this.connections.size;
-  }
-}
+  } }
+} }
 // Global SSE manager instance
 const sseManager = new SSEConnectionManager();
 export const GET: RequestHandler = async ({ url, request }) => {
@@ -94,11 +94,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
       // Send heartbeat every, 30 seconds
       const heartbeatInterval = setInterval(() => {
         try {
-          controller.enqueue(`data: ${JSON.stringify({, type: 'heartbeat', timestamp: new Date().toISOString() })}\n\n`);
-        } catch (error: any) {
+          controller.enqueue(`data: ${JSON.stringify({ type: 'heartbeat', timestamp: new Date().toISOString() })}\n\n`);
+        } }catch (error: any) {
           console.error('Heartbeat failed:', error);
           clearInterval(heartbeatInterval);
-        }
+        } }
       }, 30000);
       // Handle client disconnect
       request.signal.addEventListener('abort', () => {
@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         controller.close();
         console.log(`SSE connection closed: ${connectionId}`);
       });
-    }
+    } }
   });
   return new Response(stream, {
     headers: {
@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control' }'' });
+      'Access-Control-Allow-Headers': 'Cache-Control' } } });
 };
 // Health check endpoint
 export const POST: RequestHandler = async () => {
@@ -125,6 +125,7 @@ export const POST: RequestHandler = async () => {
     timestamp: new Date().toISOString()
   };
   return new Response(JSON.stringify(status), {
-    headers: { 'Content-Type': `application/json' }'`
+    headers: { 'Content-Type': `application/json' } }`
   });
 };
+

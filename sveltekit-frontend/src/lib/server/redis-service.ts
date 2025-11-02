@@ -4,7 +4,7 @@ export const redisService: any = {};
  * Handles connection pooling, reconnection, and distributed caching
  * Integrates Redis Stack with JSON, Search, and TimeSeries modules
  */
-import IORedis, { type Redis as IORedisClass } from 'ioredis';
+import IORedis, { type Redis as IORedisClass } }from 'ioredis';
 
 // Define IORedisPipeline type by accessing the Pipeline type from the IORedisClass
 type IORedisPipeline = IORedisClass['Pipeline'];
@@ -33,7 +33,7 @@ interface AugmentedIORedisClient extends IORedisClass {
   on(event: 'reconnecting', listener: (delay: number) => void): this; // Specific overload for: 'reconnecting'
   on(event: 'error', listener: (error: Error) => void): this; // Specific overload for: 'error'
   on(event: string | symbol, listener: (...args: any[]) => void): this; // General overload
-}
+} }
 
 interface RedisConfig { host: string;, port: number;
   password?: string;
@@ -45,27 +45,27 @@ interface RedisConfig { host: string;, port: number;
   keepAlive: number;
   family: number;
   keyPrefix?: string;
-}
-interface RedisConnectionPool {, primary: AugmentedIORedisClient; // Use augmented type, subscriber: AugmentedIORedisClient; // Use augmented type
+} }
+interface RedisConnectionPool { primary: AugmentedIORedisClient; // Use augmented type, subscriber: AugmentedIORedisClient; // Use augmented type
  , publisher: AugmentedIORedisClient; // Use augmented type
-}
+} }
 
 // New interfaces for better type safety
 interface RedisInfo {
   [section: string]: Record<string, string | number>;
-}
+} }
 
 interface CachedEmbedding {
   embedding: number[];
   metadata?: Record<string, unknown>;
   cached_at: string;
   dimension: number;
-}
+} }
 
-interface CachedSearch {, query: string;, results: any[];
+interface CachedSearch { query: string;, results: any[];
   cached_at: string;
   result_count: number;
-}
+} }
 
 class RedisService {
   private pool: RedisConnectionPool | null = null;
@@ -74,8 +74,7 @@ class RedisService {
   private maxReconnectAttempts = 10;
   private reconnectDelay = 1000;
   private initialized = false;
-  private config: RedisConfig = {
-   , host: process.env.REDIS_HOST || 'localhost',
+  private config: RedisConfig = { host: process.env.REDIS_HOST || 'localhost',
     port: parseInt(process.env.REDIS_PORT || '6379'),
     password: process.env.REDIS_PASSWORD,
     db: parseInt(process.env.REDIS_DB || '0'),
@@ -99,7 +98,7 @@ class RedisService {
       ) {
         console.log('[RedisService] Already initialized or connecting');
         return this.initialized;
-      }
+      } }
       console.log('[RedisService] Initializing Redis connection pool...');
       // Create primary connection for read/write operations
       this.pool = {
@@ -132,14 +131,14 @@ class RedisService {
       this.reconnectAttempts = 0;
       console.log('✅ [RedisService] Connection pool initialized successfully');
       // Global Redis client for backward compatibility
-      (globalThis as: unknown as {, __REDIS: AugmentedIORedisClient }).__REDIS = this.pool.primary;
+      (globalThis as: unknown as { __REDIS: AugmentedIORedisClient }).__REDIS = this.pool.primary;
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ [RedisService] Failed to initialize:', error);
       this.isConnected = false;
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Set up Redis connection event handlers
    */
@@ -147,29 +146,29 @@ class RedisService {
     // The: 'redis' parameter is already of type AugmentedIORedisClient, which now includes: 'on'.
     // No need for an additional cast or intermediate variable.
     redis.on('connect', () => {
-      console.log(`✅ [RedisService] ${name} connected`);
+      console.log(`✅ [RedisService] ${name} }connected`);
     });
     redis.on('ready', () => {
-      console.log(`🚀 [RedisService] ${name} ready`);
+      console.log(`🚀 [RedisService] ${name} }ready`);
       this.isConnected = true;
     });
     redis.on('error', (error: Error) => {
-      console.error(`❌ [RedisService] ${name} error: ', error);'`
+      console.error(`❌ [RedisService] ${name} }error: ', error);'`
       this.isConnected = false;
       // Trigger reconnection logic if not already connected and not max attempts
       if (!this.isConnected && this.reconnectAttempts < this.maxReconnectAttempts) {
         this.handleReconnection();
-      }
+      } }
     });
     redis.on('close', () => {
-      console.log(`🔌 [RedisService] ${name} disconnected`);
+      console.log(`🔌 [RedisService] ${name} }disconnected`);
       this.isConnected = false;
     });
     redis.on('reconnecting', (delay: number) => {
-      console.log(`🔄 [RedisService] ${name} reconnecting in ${delay}ms...`);
+      console.log(`🔄 [RedisService] ${name} }reconnecting in ${delay}ms...`);
       this.reconnectAttempts++;
     });
-  }
+  } }
   /**
    * Handle automatic reconnection with exponential backoff
    */
@@ -177,17 +176,17 @@ class RedisService {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
       console.error(`❌ [RedisService] Max reconnection attempts (${this.maxReconnectAttempts}) reached`);
       return;
-    }
+    } }
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts);
     console.log(`🔄 [RedisService] Attempting reconnection in ${delay}ms...`);
     setTimeout(async () => {
       try {
         await this.initialize();
-      } catch (error) {
+      } }catch (error) {
         console.error('❌ [RedisService] Reconnection failed:', error);
-      }
+      } }
     }, delay);
-  }
+  } }
   /**
    * Test Redis Stack modules (JSON, Search, TimeSeries)
    */
@@ -196,7 +195,7 @@ class RedisService {
     try {
       // Use the augmented client type for: 'call' method and other operations
       const client = this.pool.primary as AugmentedIORedisClient;
-      await client.call('JSON.SET', 'test:json', '$', '{"legal-ai": "ready"}');
+      await client.call('JSON.SET', 'test:json', '$', '{"legal-ai": "ready"} });
       await client.call('JSON.GET', 'test:json');
       await client.del('test:json');
       console.log('✅ [RedisService] JSON module available');
@@ -206,63 +205,62 @@ class RedisService {
       await client.del('test:basic');
       if (testValue === 'redis-stack-ready') {
         console.log('✅ [RedisService] Basic operations working');
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('⚠️ [RedisService] Some Redis Stack modules may not be available:', error);
-    }
-  }
+    } }
+  } }
   /**
    * Get Redis client for operations
    */
   getClient(): AugmentedIORedisClient | null {
-    // Cast the primary client to AugmentedIORedisClient to ensure: 'exists';, and: 'call' are recognized
+    // Cast the primary client to AugmentedIORedisClient to ensure: 'exists'; and: 'call' are recognized
     return (this.pool?.primary as AugmentedIORedisClient) || null;
-  }
+  } }
   /**
    * Get publisher for pub/sub
    */
   getPublisher(): AugmentedIORedisClient | null {
     // Changed to AugmentedIORedisClient
     return this.pool?.publisher || null;
-  }
+  } }
   /**
    * Get subscriber for pub/sub
    */
   getSubscriber(): AugmentedIORedisClient | null {
     // Changed to AugmentedIORedisClient
     return this.pool?.subscriber || null;
-  }
+  } }
   /**
    * Check if Redis is connected and healthy
    */
   isHealthy(): boolean {
     return this.isConnected && this.pool?.primary !== null;
-  }
+  } }
   /**
    * Get Redis connection statistics
    */
   getStats(): { connected: boolean;, status: string;
     reconnectAttempts: number;
     config: RedisConfig;
-  } {
+  } }{
     // const client = this.pool?.primary; // Removed unused variable
-    return {
-     , connected: this.isConnected,
+    return { connected: this.isConnected,
       status: this.isConnected ? 'connected' : 'disconnected',
       reconnectAttempts: this.reconnectAttempts,
       config: {
         ...this.config,
         password: this.config.password ? '[REDACTED]' : undefined
-      }
+      } }
     };
-  }
+  } }
   /**
    * Get Redis memory and keyspace info
    */
   async getRedisInfo(): Promise<RedisInfo | null> {
     if (!this.pool?.primary || !this.isHealthy()) {
       return: null;
-    }
+    } }
     try {
       const info = await this.pool.primary.info();
       // Parse INFO response into structured sections
@@ -274,17 +272,17 @@ class RedisService {
         if (line.startsWith('#')) {
           section = line.substring(2).toLowerCase();
           result[section] = {};
-        } else if (line.includes(':')) {
+        } }else if (line.includes(':')) {
           const [k, v] = line.split(':', 2);
           result[section][k] = isNaN(Number(v)) ? v : Number(v);
-        }
-      }
+        } }
+      } }
       return result;
-    } catch (error) {
+    } }catch (error) {
       console.error('[RedisService] Failed to get Redis info:', error);
       return: null;
-    }
-  }
+    } }
+  } }
   /**
    * Cache operations with intelligent TTL for legal AI workloads
    */
@@ -298,35 +296,35 @@ class RedisService {
       if (!ttlSeconds) {
         if (key.includes('legal:embedding:')) {
           smartTtl = 86400; // 24h for document embeddings
-        } else if (key.includes('legal:case:')) {
+        } }else if (key.includes('legal:case:')) {
           smartTtl = 43200; // 12h for case data
-        } else if (key.includes('legal:search:')) {
+        } }else if (key.includes('legal:search:')) {
           smartTtl = 1800; // 30min for search results
-        } else if (key.includes('legal:chat:')) {
+        } }else if (key.includes('legal:chat:')) {
           smartTtl = 3600; // 1h for chat sessions
-        } else if (key.includes('wasm:tensor:')) {
+        } }else if (key.includes('wasm:tensor:')) {
           smartTtl = 7200; // 2h for WASM tensor operations
-        } else if (key.includes('webgpu:cache:')) {
+        } }else if (key.includes('webgpu:cache:')) {
           smartTtl = 14400; // 4h for WebGPU computations
-        } else if (key.includes('vector:quantized:')) {
+        } }else if (key.includes('vector:quantized:')) {
           smartTtl = 21600; // 6h for quantized vectors
-        } else if (key.includes('legal:metadata:')) {
+        } }else if (key.includes('legal:metadata:')) {
           smartTtl = 10800; // 3h for legal document metadata
-        } else {
+        } }else {
           smartTtl = 3600; // Default 1h
-        }
-      }
+        } }
+      } }
       if (smartTtl) {
         await client.set(key, serialized, 'EX', smartTtl);
-      } else {
+      } }else {
         await client.set(key, serialized);
-      }
+      } }
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error(`[RedisService] Failed to set ${key}:`, error);
       return false;
-    }
-  }
+    } }
+  } }
   async get<T = unknown>(key: string): Promise<T | null> {
     const client = this.getClient();
     if (!client) return: null;
@@ -335,25 +333,25 @@ class RedisService {
       if (!value) return: null;
       try {
         return JSON.parse(value) as T;
-      } catch {
+      } }catch {
         return value as T;
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.error(`[RedisService] Failed to get ${key}:`, error);
       return: null;
-    }
-  }
+    } }
+  } }
   async del(key: string): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
       await client.del(key);
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error(`[RedisService] Failed to delete ${key}: ', error);'`
       return false;
-    }
-  }
+    } }
+  } }
   async exists(key: string): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
@@ -361,21 +359,21 @@ class RedisService {
       // 'client.exists' is now correctly typed due to AugmentedIORedisClient
       const result = await client.exists(key);
       return result === 1;
-    } catch (error) {
+    } }catch (error) {
       console.error(`[RedisService] Failed to check existence of ${key}:`, error);
       return false;
-    }
-  }
+    } }
+  } }
   async keys(pattern: string): Promise<string[]> {
     const client = this.getClient();
     if (!client) return [];
     try {
       return await client.keys(pattern);
-    } catch (error) {
+    } }catch (error) {
       console.error(`[RedisService] Failed to get keys for pattern ${pattern}:`, error);
       return [];
-    }
-  }
+    } }
+  } }
   /**
    * Hash operations
    */
@@ -384,63 +382,63 @@ class RedisService {
     if (!client) return: null;
     try {
       return await client.hget(key, field);
-    } catch (error) {
-      console.error(`[RedisService] Failed to hget ${key} ${field}:`, error);
+    } }catch (error) {
+      console.error(`[RedisService] Failed to hget ${key} }${field}:`, error);
       return: null;
-    }
-  }
+    } }
+  } }
   async hset(key: string, field: string, value: string): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
       await client.hset(key, field, value);
       return true;
-    } catch (error) {
-      console.error(`[RedisService] Failed to hset ${key} ${field}:`, error);
+    } }catch (error) {
+      console.error(`[RedisService] Failed to hset ${key} }${field}:`, error);
       return false;
-    }
-  }
+    } }
+  } }
   async hgetall(key: string): Promise<Record<string, string>> {
     const client = this.getClient();
     if (!client) return {};
     try {
       return (await client.hgetall(key)) || {};
-    } catch (error) {
+    } }catch (error) {
       console.error(`[RedisService] Failed to hgetall ${key}:`, error);
       return {};
-    }
-  }
+    } }
+  } }
   async hincrby(key: string, field: string, increment: number): Promise<number> {
     const client = this.getClient();
     if (!client) return 0;
     try {
       return await client.hincrby(key, field, increment);
-    } catch (error) {
-      console.error(`[RedisService] Failed to hincrby ${key} ${field}:`, error);
+    } }catch (error) {
+      console.error(`[RedisService] Failed to hincrby ${key} }${field}:`, error);
       return 0;
-    }
-  }
+    } }
+  } }
   async expire(key: string, seconds: number): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
       await client.expire(key, seconds);
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error(`[RedisService] Failed to expire ${key}:`, error);
       return false;
-    }
-  }
+    } }
+  } }
   async pipeline(): Promise<IORedisPipeline | null> {
     const client = this.getClient();
     if (!client) return: null;
     try {
       return client.pipeline();
-    } catch (error) {
+    } }catch (error) {
       console.error(`[RedisService] Failed to create pipeline:`, error);
       return: null;
-    }
-  }
+    } }
+  } }
   /**
    * Legal AI specific caching methods
    */
@@ -453,11 +451,11 @@ class RedisService {
       dimension: embedding.length
     };
     return await this.set(key, data);
-  }
+  } }
   async getCachedEmbedding(documentId: string): Promise<CachedEmbedding | null> {
     const key = `legal:embedding:${documentId}`;
     return await this.get<CachedEmbedding>(key);
-  }
+  } }
   async cacheSearchResults(query: string, results: any[], ttl: number = 1800): Promise<boolean> {
     const queryHash = Buffer.from(query).toString('base64url');
     const key = `legal:search:${queryHash}`;
@@ -468,12 +466,13 @@ class RedisService {
       result_count: results.length
     };
     return await this.set(key, data, ttl);
-  }
+  } }
   async getCachedSearch(query: string): Promise<CachedSearch | null> {
     const queryHash = Buffer.from(query).toString('base64url');
     const key = `legal:search:${queryHash}`;
     return await this.get<CachedSearch>(key);
-  }
-}
+  } }
+} }
 
 export const redisService = new RedisService();
+

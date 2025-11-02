@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Production Pipeline Database Schema
  * Optimized for crawl → OCR → embed → index → cache → serve workflow
@@ -18,8 +18,8 @@ import {
   index,
   uniqueIndex,
   primaryKey
-} from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+} }from 'drizzle-orm/pg-core';
+import { sql } }from 'drizzle-orm';
 // Enable pgvector extension
 export const enableVectorExtension = sql`CREATE EXTENSION IF NOT EXISTS vector`;
 // ===== CRAWL & INGESTION TABLES =====
@@ -318,9 +318,9 @@ export const vectorSimilaritySearch = (queryEmbedding: string, limit: number = 1
     (1 - (dc.embedding <=> ${queryEmbedding}::vector)) as similarity
   FROM document_chunks dc
   JOIN documents d ON dc.document_id = d.id
-  WHERE (1 - (dc.embedding <=> ${queryEmbedding}::vector)) > ${threshold}
+  WHERE (1 - (dc.embedding <=> ${queryEmbedding}::vector)) > ${threshold} }
   ORDER BY dc.embedding <=> ${queryEmbedding}::vector
-  LIMIT ${limit}
+  LIMIT ${limit} }
 `;`
 /**
  * Hybrid search combining full-text and vector search
@@ -351,7 +351,7 @@ export const hybridSearch = (query: string, queryEmbedding: string, limit: numbe
   FROM text_search ts
   FULL OUTER JOIN vector_search vs ON ts.chunk_id = vs.chunk_id
   ORDER BY combined_score DESC
-  LIMIT ${limit}
+  LIMIT ${limit} }
 `;`
 // Export table types for TypeScript
 export type CrawlJob = typeof crawlJobs.$inferSelect;

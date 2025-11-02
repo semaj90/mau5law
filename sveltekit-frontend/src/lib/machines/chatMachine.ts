@@ -1,36 +1,36 @@
-import type { Message } from '$lib/types';
+import type { Message } }from '$lib/types';
 /**
  * Chat Machine - XState v5 Compatible
  * Handles chat conversation state with streaming support
  */
-import { createMachine, assign, fromPromise, createActor, type StateFrom } from 'xstate';
+import { createMachine, assign, fromPromise, createActor, type StateFrom } }from 'xstate';
 // Message types
 export interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
   timestamp?: string;
   id?: string;
-}
-export interface ChatSettings {, model: string;, temperature: number;
+} }
+export interface ChatSettings { model: string;, temperature: number;
   maxTokens: number;
   systemPrompt?: string;
-}
+} }
 // Machine Context
-export interface ChatContext {, messages: ChatMessage[];, error: string | null;
+export interface ChatContext { messages: ChatMessage[];, error: string | null;
   status: 'idle' | 'loading' | 'error';
   settings: ChatSettings;
   currentResponse?: string;
-}
+} }
 // Machine Events
 type ChatEvent =
-  | { type: 'SUBMIT'; message: string }
-  | { type: 'RESET' }
-  | { type: 'UPDATE_SETTINGS'; settings: Partial<ChatSettings> }
-  | { type: 'STREAM_CHUNK'; chunk: string }
-  | { type: 'STREAM_DONE' }
+  | { type: 'SUBMIT'; message: string } }
+  | { type: 'RESET' } }
+  | { type: 'UPDATE_SETTINGS'; settings: Partial<ChatSettings> } }
+  | { type: 'STREAM_CHUNK'; chunk: string } }
+  | { type: 'STREAM_DONE' } }
   | { type: 'RETRY' };
 // Stream chat service
 const streamChatService = fromPromise(
-  async ({ input }: {, input: {, messages: ChatMessage[];, settings: ChatSettings } }) => {
-    const { messages, settings } = input;
+  async ({ input }: { input: { messages: ChatMessage[]; settings: ChatSettings } }}) => {
+    const { messages, settings } }= input;
     const response = await fetch('/api/ai/chat', {
       method: 'POST',
       headers: {
@@ -46,30 +46,26 @@ const streamChatService = fromPromise(
     });
     if (!response.ok) {
       throw new Error(`Chat request failed: ${response.statusText}`);
-    }
+    } }
     return response;
-  }
+  } }
 );
 export const chatMachine = createMachine({
   id: 'chat',
-  types: {
-   , context: {} as ChatContext,
-    events: {} as ChatEvent
+  types: { context: {} }as ChatContext,
+    events: {} }as ChatEvent
   },
-  context: {
-   , messages: [],
+  context: { messages: [],
     error: null,
     status: 'idle',
-    settings: {
-     , model: 'gemma3-legal',
+    settings: { model: 'gemma3-legal',
       temperature: 0.3,
       maxTokens: 500
-    }
+    } }
   },
   initial: 'idle',
-  states: {, idle: {, on: {, SUBMIT: {, target: 'loading',
-          actions: assign({
-           , messages: ({ context, event }) => [
+  states: { idle: { on: { SUBMIT: { target: 'loading',
+          actions: assign({ messages: ({ context, event }) => [
               ...context.messages,
               { role: 'user', content: event.message, timestamp: new Date().toISOString() },
               { role: 'assistant', content: '', timestamp: new Date().toISOString() }, // Placeholder for streaming
@@ -77,82 +73,70 @@ export const chatMachine = createMachine({
             error: null,
             status: `loading` })'`'`
         },
-        RESET: {, actions: assign({, messages: [],
+        RESET: { actions: assign({ messages: [],
             error: null,
             status: `idle` })
         },
-        UPDATE_SETTINGS: {, actions: assign({, settings: ({ context, event }) => ({
+        UPDATE_SETTINGS: { actions: assign({ settings: ({ context, event }) => ({
               ...context.settings,
               ...event.settings
             })
           })
-        }
-      }
+        } }
+      } }
     },
-    loading: {, invoke: {, src: streamChatService,
+    loading: { invoke: { src: streamChatService,
         input: ({ context }) => ({
           messages: context.messages.slice(0, -1), // Exclude the empty assistant message
           settings: context.settings
         }),
-        onDone: {
-         , target: 'idle',
-          actions: assign({
-           , status: `idle` })
+        onDone: { target: 'idle',
+          actions: assign({ status: `idle` })
         },
-        onError: {
-         , target: 'error',
-          actions: assign({
-           , error: ({ event }) => `Chat error: ${event.error instanceof Error ? event.error.message : `Unknown error` }`,
+        onError: { target: 'error',
+          actions: assign({ error: ({ event }) => `Chat error: ${event.error instanceof Error ? event.error.message : `Unknown error` }`,
             status: 'error'
           })
-        }
+        } }
       },
-      on: {, STREAM_CHUNK: {, actions: assign({
-           , messages: ({ context, event }) => {
+      on: { STREAM_CHUNK: { actions: assign({ messages: ({ context, event }) => {
               const newMessages = [...context.messages];
               const lastMessage = newMessages[newMessages.length - 1];
               if (lastMessage && lastMessage.role === 'assistant') {
                 lastMessage.content += event.chunk;
-              }
+              } }
               return newMessages;
-            }
+            } }
           })
         },
-        STREAM_DONE: {
-         , target: 'idle',
-          actions: assign({
-           , status: 'idle'
+        STREAM_DONE: { target: 'idle',
+          actions: assign({ status: 'idle'
           })
-        }
-      }
+        } }
+      } }
     },
-    error: {, on: {, SUBMIT: {
-         , target: 'loading',
-          actions: assign({
-           , messages: ({ context, event }) => [
+    error: { on: { SUBMIT: { target: 'loading',
+          actions: assign({ messages: ({ context, event }) => [
               ...context.messages,
               { role: 'user', content: event.message, timestamp: new Date().toISOString() },
-              { role: 'assistant', content: '', timestamp: new Date().toISOString() }
+              { role: 'assistant', content: '', timestamp: new Date().toISOString() } }
             ],
             error: null,
             status: 'loading' })'` },'`
-        RETRY: {
-         , target: 'loading',
-          actions: assign({
-           , error: null,
+        RETRY: { target: 'loading',
+          actions: assign({ error: null,
             status: `loading` })
         },
-        RESET: {
-         , target: 'idle',
-          actions: assign({
-           , messages: [],
+        RESET: { target: 'idle',
+          actions: assign({ messages: [],
             error: null,
             status: `idle` })
-        }
-      }
-    }
-  }
+        } }
+      } }
+    } }
+  } }
 });
 // Export types for use in components
 export type ChatMachineState = StateFrom<typeof, chatMachine>;
 export type ChatMachineActor = ReturnType<typeof, createActor>;
+

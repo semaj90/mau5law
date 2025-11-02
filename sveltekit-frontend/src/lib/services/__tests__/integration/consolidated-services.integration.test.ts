@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 // src/lib/services/__tests__/integration/consolidated-services.integration.test.ts
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } }from 'vitest';
 import {
   IntegrationTestSetup,
   IntegrationAssertions,
   TEST_CONFIG,
   type TestContext
-} from '../shared/integration-test-helpers.js';
+} }from '../shared/integration-test-helpers.js';
 /**
  * Consolidated Integration Test Suite
  *
@@ -39,8 +39,7 @@ describe('Legal AI Services Integration Tests', () => {
     it('should reject invalid credentials', async () => {
       const response = await testSetup.makeAuthenticatedRequest('/auth/login', {
         method: 'POST',
-        body: JSON.stringify({
-         , email: 'invalid@email.com',
+        body: JSON.stringify({ email: 'invalid@email.com',
           password: 'wrongpassword'
         })
       });
@@ -100,7 +99,7 @@ describe('Legal AI Services Integration Tests', () => {
     it('should handle session state changes', async () => {
       const response = await testSetup.makeAuthenticatedRequest(`/sessions/${sessionId}/state`, {
         method: 'POST',
-        body: JSON.stringify({, action: `activate' })'`
+        body: JSON.stringify({ action: `activate' })'`
       });
       IntegrationAssertions.assertSuccessResponse(response);
       expect(response.data.state).toBe('active');
@@ -112,7 +111,7 @@ describe('Legal AI Services Integration Tests', () => {
       // Ensure we have a session for canvas tests
       if (!context.testSessionId) {
         await testSetup.createTestSession('Canvas Test Session');
-      }
+      } }
     });
     it('should create a new evidence canvas', async () => {
       canvasId = await testSetup.createTestCanvas();
@@ -135,10 +134,9 @@ describe('Legal AI Services Integration Tests', () => {
         type: 'document',
         title: 'Test Evidence Document',
         content: 'This is a test evidence item for integration testing',
-        position: {, x: 100, y: 100 },
-        metadata: {
-         , source: 'integration_test',
-          priority: `medium' }'`
+        position: { x: 100, y: 100 },
+        metadata: { source: 'integration_test',
+          priority: `medium' } }`
       };
       const response = await testSetup.makeAuthenticatedRequest(`/evidence/canvas/${canvasId}/items`, {
         method: 'POST',
@@ -151,8 +149,8 @@ describe('Legal AI Services Integration Tests', () => {
       const layoutUpdate = {
         layout_version: '2.0',
         items_positions: [
-          {, item_id: 'test_item_1', x: 200, y: 200 },
-          { item_id: 'test_item_2', x: 400, y: 300 }
+          { item_id: 'test_item_1', x: 200, y: 200 },
+          { item_id: 'test_item_2', x: 400, y: 300 } }
         ]
       };
       const response = await testSetup.makeAuthenticatedRequest(`/evidence/canvas/${canvasId}/layout`, {
@@ -164,7 +162,7 @@ describe('Legal AI Services Integration Tests', () => {
     it('should export canvas data', async () => {
       const response = await testSetup.makeAuthenticatedRequest(`/evidence/canvas/${canvasId}/export`, {
         method: 'POST',
-        body: JSON.stringify({, format: 'json', include_metadata: true })
+        body: JSON.stringify({ format: 'json', include_metadata: true })
       });
       IntegrationAssertions.assertSuccessResponse(response);
       expect(response.data.canvas_data).toBeDefined();
@@ -174,7 +172,7 @@ describe('Legal AI Services Integration Tests', () => {
       const collaborationUpdate = {
         action: 'cursor_move',
         user_id: 'test_user_2',
-        position: {, x: 350, y: 250 },
+        position: { x: 350, y: 250 },
         timestamp: Date.now()
       };
       const response = await testSetup.makeAuthenticatedRequest(`/evidence/canvas/${canvasId}/collaboration`, {
@@ -204,12 +202,10 @@ describe('Legal AI Services Integration Tests', () => {
       // Add evidence through the full workflow
       const evidenceResponse = await testSetup.makeAuthenticatedRequest(`/workflow/evidence`, {
         method: 'POST',
-        body: JSON.stringify({
-         , session_id: workflowTest.step1_session,
+        body: JSON.stringify({ session_id: workflowTest.step1_session,
           canvas_id: workflowTest.step2_canvas,
-          evidence_data: {
-           , type: 'workflow_test',
-            content: `End-to-end workflow test' }'`
+          evidence_data: { type: 'workflow_test',
+            content: `End-to-end workflow test' } }`
         })
       });
       // Should succeed or return expected workflow state

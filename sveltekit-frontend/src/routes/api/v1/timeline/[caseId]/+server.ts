@@ -1,6 +1,6 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { cuidSchema } from, '$lib/server/z-schemas';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
+import { cuidSchema } }from '$lib/server/z-schemas';
 /*
  * Case Timeline API Routes
  * GET /api/v1/timeline/[caseId] - Get case timeline
@@ -40,14 +40,14 @@ import { cuidSchema } from, '$lib/server/z-schemas';
  *, Note: Individual event operations (PUT/DELETE) are handled by
  * /api/v1/timeline/events/[eventId] endpoint
  */
-import { json, error, type RequestHandler } from, '@sveltejs/kit';
-import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
-import db from, '$lib/server/db/unified-client';
-import { caseTimeline, cases } from, '$lib/server/db/schemas/cases-schema';
-import { eq, desc, asc, and, sql } from, 'drizzle-orm';
-import { generateId } from, 'lucia';
-import { z } from, 'zod';
-import { getUserId } from, '$lib/server/auth/utils';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import db from '$lib/server/db/unified-client';
+import { caseTimeline, cases } }from '$lib/server/db/schemas/cases-schema';
+import { eq, desc, asc, and, sql } }from 'drizzle-orm';
+import { generateId } }from 'lucia';
+import { z } }from 'zod';
+import { getUserId } }from '$lib/server/auth/utils';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid ID format');
 // Timeline event schemas
@@ -92,35 +92,35 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-    }
+    } }
     // Validate case ID
     const caseId = UUIDSchema.parse(params.caseId);
     // Parse query parameters
     const queryParams = Object.fromEntries(url.searchParams.entries());
-    const { eventType, importance, startDate, endDate, sortOrder, includePrivate } =
+    const { eventType, importance, startDate, endDate, sortOrder, includePrivate } }=
       TimelineQuerySchema.parse(queryParams);
     // Verify case exists and user has access
     const [caseData] = await db.runtime().select().from(cases).where(eq(cases.id, caseId)).limit(1);
     if (!caseData) {
       return error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
-    }
+    } }
     // Build where conditions
     const whereConditions = [eq(caseTimeline.caseId, caseId)];
     if (eventType) {
       whereConditions.push(eq(caseTimeline.eventType, eventType));
-    }
+    } }
     if (importance) {
       whereConditions.push(eq(caseTimeline.importance, importance));
-    }
+    } }
     if (startDate) {
-      whereConditions.push(sql`${caseTimeline.eventDate} >= ${startDate}`);
-    }
+      whereConditions.push(sql`${caseTimeline.eventDate} }>= ${startDate}`);
+    } }
     if (endDate) {
-      whereConditions.push(sql`${caseTimeline.eventDate} <= ${endDate}`);
-    }
+      whereConditions.push(sql`${caseTimeline.eventDate} }<= ${endDate}`);
+    } }
     if (!includePrivate) {
       whereConditions.push(eq(caseTimeline.isPublic, true));
-    }
+    } }
     // Get timeline events
     const timelineEvents = await db
       .runtime()
@@ -135,9 +135,9 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       dateRange:
         timelineEvents.length > 0
           ? {
-             , start: timelineEvents[sortOrder === 'asc' ? 0 : timelineEvents.length - 1].eventDate,
+  start: timelineEvents[sortOrder === 'asc' ? 0 : timelineEvents.length - 1].eventDate,
               end: timelineEvents[sortOrder === 'asc' ? timelineEvents.length - 1 : 0].eventDate
-            }
+            } }
           : null,
       criticalEvents: timelineEvents.filter(item => item.importance === 'critical').length,
       publicEvents: timelineEvents.filter(item => item.isPublic).length
@@ -149,19 +149,19 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         timeline: timelineEvents,
         statistics,
         case: {
-         , id: caseData.id,
+  id: caseData.id,
           title: caseData.title,
           status: caseData.status
-        }
+        } }
       },
       meta: {
-       , userId: getUserId(locals),
+  userId: getUserId(locals),
         filters: { eventType, importance, startDate, endDate, sortOrder, includePrivate },
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  } catch (err: any) {
-    console.error('Timeline GET error:', err);'
+  } }catch (err: any) {
+    console.error('Timeline GET error:', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -171,7 +171,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     return error(
       500,
       makeHttpErrorPayload({
@@ -180,7 +180,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         details: err instanceof Error ? err.message : String(err)
       })
     );
-  }
+  } }
 };
 /*
  * POST /api/v1/timeline/[caseId]
@@ -190,7 +190,8 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'' }
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
+    } }
     // Validate case ID
     const caseId = UUIDSchema.parse(params.caseId);
     // Parse request body
@@ -199,8 +200,8 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Verify case exists and user has access
     const [caseData] = await db.runtime().select().from(cases).where(eq(cases.id, caseId)).limit(1);
     if (!caseData) {
-      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND` }));
-    }
+      return error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
+    } }
     const timelineEventId = generateId(15);
     const newEvent = {
       id: timelineEventId,
@@ -217,19 +218,20 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       {
         success: true,
         data: {
-         , event: insertedEvent,
-          message: `Timeline event added successfully` },
+          event: insertedEvent,
+          message: 'Timeline event added successfully'
+        },
         meta: {
-         , userId: getUserId(locals),
+          userId: getUserId(locals),
           caseId,
           eventId: timelineEventId,
           timestamp: new Date().toISOString(),
-          action: `timeline_event_created' }'`
-      },
-      { status: 201 }
+          action: 'timeline_event_created'
+        } }      },
+      { status: 201 } }
     );
-  } catch (err: any) {
-    console.error('Timeline POST error:', err);'
+  } }catch (err: any) {
+    console.error('Timeline POST error:', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -239,7 +241,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     return error(
       500,
       makeHttpErrorPayload({
@@ -248,5 +250,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         details: err instanceof Error ? err.message : String(err)
       })
     );
-  }
+  } }
 };
+
+

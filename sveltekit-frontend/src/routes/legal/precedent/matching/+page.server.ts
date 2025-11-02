@@ -1,5 +1,5 @@
-import type { PageServerLoad } from './$types';
-import { env } from '$env/dynamic/private'; // For server-side environment variables
+import type { PageServerLoad } }from './$types';
+import { env } }from '$env/dynamic/private'; // For server-side environment variables
 
 export const load: PageServerLoad = async () => {
   // This is where you would load initial data for the page on the server.
@@ -30,6 +30,7 @@ export const load: PageServerLoad = async () => {
       // For example, if the client needs to know which vector DB is active.
       // ollamaUrl: ollamaUrl,
       // qdrantUrl: qdrantUrl
-    }
+    } }
   };
 };
+

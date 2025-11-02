@@ -11,21 +11,21 @@ export interface ProcessMemory { rss: number;, heapTotal: number;
   heapUsed: number;
   external: number;
   arrayBuffers: number;
-}
+} }
 
-export interface CPUUsage {, user: number;, system: number;
-}
+export interface CPUUsage { user: number;, system: number;
+} }
 
-export interface ProcessInfo {, pid: number;, memory: ProcessMemory;
+export interface ProcessInfo { pid: number;, memory: ProcessMemory;
   uptime: number;
   cpuUsage: CPUUsage;
-}
+} }
 
 // ============================================================================
 // CLUSTER STATUS TYPES
 // ============================================================================
 
-export interface Worker {, id: string;, status: string;
+export interface Worker { id: string;, status: string;
   tasks: number;
   uptime: number;
   pid?: number;
@@ -33,7 +33,7 @@ export interface Worker {, id: string;, status: string;
   requestsHandled?: number;
   lastHealthCheck?: number;
   errors?: number;
-}
+} }
 
 export interface ClusterStatusResponse {
   error?: string;
@@ -41,11 +41,11 @@ export interface ClusterStatusResponse {
   process?: ProcessInfo;
   workers?: Worker[];
   queue?: number;
-}
+} }
 
 export type { ClusterStatusResponse as ClusterStatus };
 
-export interface ClusterMetadata {, clusterId: string;, totalWorkers: number;
+export interface ClusterMetadata { clusterId: string;, totalWorkers: number;
   activeWorkers: number;
   idleWorkers: number;
   failedWorkers: number;
@@ -54,13 +54,13 @@ export interface ClusterMetadata {, clusterId: string;, totalWorkers: number;
   version: string;
   startTime: string | Date; // was: string -> allow Date
   uptime: number;
-}
+} }
 
 // ============================================================================
 // BACKGROUND WORKER TYPES
 // ============================================================================
 
-export interface BackgroundWorkerStatus {, workerId: string;, workerName: string;
+export interface BackgroundWorkerStatus { workerId: string;, workerName: string;
   type: 'ocr' | 'embedding' | 'autotag' | 'custom';
   status: 'online' | 'offline' | 'degraded';
   healthy: boolean;
@@ -70,19 +70,19 @@ export interface BackgroundWorkerStatus {, workerId: string;, workerName: strin
   uptime?: number;
   errorCount?: number;
   details?: Record<string, unknown> | string;
-}
+} }
 
 export interface WorkerHealthCheckResponse { success: boolean;, status: 'online' | 'offline' | 'degraded';
   workers: BackgroundWorkerStatus[];
   timestamp: string | Date; // was: string
-  summary?: {, total: number;, online: number;
+  summary?: { total: number;, online: number;
     offline: number;
     degraded: number;
   };
   error?: string;
-}
+} }
 
-export interface WorkerMetrics {, workerId: string;, cpuUsage: number;
+export interface WorkerMetrics { workerId: string;, cpuUsage: number;
   memoryUsage: number;
   jobsProcessed: number;
   jobsFailed: number;
@@ -91,9 +91,9 @@ export interface WorkerMetrics {, workerId: string;, cpuUsage: number;
   currentConcurrentJobs: number;
   uptime: number;
   timestamp: string | Date; // was: string
-}
+} }
 
-export interface WorkerPool {, poolId: string;, poolName: string;
+export interface WorkerPool { poolId: string;, poolName: string;
   workerType: string;
   totalWorkers: number;
   activeWorkers: number;
@@ -103,13 +103,13 @@ export interface WorkerPool {, poolId: string;, poolName: string;
   totalJobsFailed: number;
   averageJobDuration: number;
   timestamp: string | Date; // was: string
-}
+} }
 
 // ============================================================================
 // JOB QUEUE TYPES
 // ============================================================================
 
-export interface BackgroundJob {, jobId: string;, jobType: string;
+export interface BackgroundJob { jobId: string;, jobType: string;
   status: 'pending' | 'processing' | 'completed' | 'failed' | 'retrying';
   queueName: string;
   priority: number;
@@ -121,7 +121,7 @@ export interface BackgroundJob {, jobId: string;, jobType: string;
   error?: string;
   result?: Record<string, unknown>;
   metadata?: Record<string, unknown>; // made optional
-}
+} }
 
 export interface JobQueueStats { queueName: string;, totalJobs: number;
   pendingJobs: number;
@@ -131,31 +131,31 @@ export interface JobQueueStats { queueName: string;, totalJobs: number;
   averageJobDuration: number;
   throughput: number;
   timestamp: string | Date; // was: string
-}
+} }
 
-export interface JobStatusResponse {, success: boolean;, job: BackgroundJob;
+export interface JobStatusResponse { success: boolean;, job: BackgroundJob;
   timestamp: string | Date; // was: string
   error?: string;
-}
+} }
 
-export interface JobBatchResponse {, success: boolean;, jobs: BackgroundJob[];
-  pagination?: {, page: number;, pageSize: number;
+export interface JobBatchResponse { success: boolean;, jobs: BackgroundJob[];
+  pagination?: { page: number;, pageSize: number;
     total: number;
     pages: number;
   };
   timestamp: string | Date; // was: string
   error?: string;
-}
+} }
 
 // ============================================================================
 // FILE UPLOAD & PROCESSING TYPES
 // ============================================================================
 
-export interface FileUploadJob extends BackgroundJob {, jobType: 'file_upload' | 'file_processing';, fileInfo: FileUploadInfo;
+export interface FileUploadJob extends BackgroundJob { jobType: 'file_upload' | 'file_processing';, fileInfo: FileUploadInfo;
   processingStages: FileProcessingStage[];
-}
+} }
 
-export interface FileUploadInfo {, fileId: string;, fileName: string;
+export interface FileUploadInfo { fileId: string;, fileName: string;
   fileSize: number;
   mimeType: string;
   uploadedBy: string;
@@ -163,140 +163,141 @@ export interface FileUploadInfo {, fileId: string;, fileName: string;
   uploadedAt: string | Date; // was: string
   checksum?: string;
   expiresAt?: string | Date; // was: string|undefined
-}
+} }
 
-export interface FileProcessingStage {, stageName: string;, status: 'pending' | 'processing' | 'completed' | 'failed';
+export interface FileProcessingStage { stageName: string;, status: 'pending' | 'processing' | 'completed' | 'failed';
   startedAt?: string;
   completedAt?: string;
   duration?: number;
   error?: string;
   result?: Record<string, unknown>;
-}
+} }
 
 export interface FileUploadResponse { success: boolean;, file: FileUploadInfo;
   uploadJob: FileUploadJob;
   processingJobs?: FileUploadJob[]; // can be absent in some responses
   timestamp: string | Date; // was: string
   error?: string;
-}
+} }
 
-export interface FileUploadBatchResponse {, success: boolean;, uploads: Array<{, file: FileUploadInfo;, uploadJob: FileUploadJob;
+export interface FileUploadBatchResponse { success: boolean;, uploads: Array<{ file: FileUploadInfo;, uploadJob: FileUploadJob;
     status: 'pending' | 'processing' | 'completed' | 'failed';
   }>;
-  summary: {, total: number;, successful: number;
+  summary: { total: number;, successful: number;
     failed: number;
     processing: number;
   };
   timestamp: string | Date; // was: string
   error?: string;
-}
+} }
 
-export interface FileProcessingProgress {, fileId: string;, fileName: string;
+export interface FileProcessingProgress { fileId: string;, fileName: string;
   overallProgress: number;
-  stages: Array<{, name: string;, progress: number;
+  stages: Array<{ name: string;, progress: number;
     status: 'pending' | 'processing' | 'completed' | 'failed';
     eta?: number;
   }>;
   estimatedTimeRemaining?: number;
   currentStage?: string;
   timestamp: string | Date; // was: string
-}
+} }
 
 // ============================================================================
 // OCR WORKER TYPES
 // ============================================================================
 
-export interface OCRWorkerStatus extends BackgroundWorkerStatus {, type: 'ocr';, processingStats: {, pagesProcessed: number;, avgConfidence: number;
+export interface OCRWorkerStatus extends BackgroundWorkerStatus { type: 'ocr';, processingStats: { pagesProcessed: number;, avgConfidence: number;
     gpuEnabled: boolean;
     workerPoolSize: number;
   };
-}
+} }
 
-export interface OCRJob extends BackgroundJob {, jobType: 'ocr';, fileId: string;
+export interface OCRJob extends BackgroundJob { jobType: 'ocr';, fileId: string;
   fileName: string;
   totalPages: number;
   processedPages: number;
   extractedText?: string;
   confidence?: number;
   languages?: string[];
-}
+} }
 
 // ============================================================================
 // EMBEDDING WORKER TYPES
 // ============================================================================
 
-export interface EmbeddingWorkerStatus extends BackgroundWorkerStatus {, type: 'embedding';, processingStats: {, documentsEmbedded: number;, dimensions: number;
+export interface EmbeddingWorkerStatus extends BackgroundWorkerStatus { type: 'embedding';, processingStats: { documentsEmbedded: number;, dimensions: number;
     model: string;
     failedEmbeddings: number;
   };
-}
+} }
 
-export interface EmbeddingJob extends BackgroundJob {, jobType: 'embedding';, documentIds: string[];
+export interface EmbeddingJob extends BackgroundJob { jobType: 'embedding';, documentIds: string[];
   documentCount: number;
   embeddedCount: number;
   model: string;
   dimensions: number;
-  embeddings?: Array<{, documentId: string;, embedding: number[];
+  embeddings?: Array<{ documentId: string;, embedding: number[];
   }>;
-}
+} }
 
 // ============================================================================
 // AUTOTAG WORKER TYPES
 // ============================================================================
 
-export interface AutotagWorkerStatus extends BackgroundWorkerStatus {, type: 'autotag';, processingStats: {, documentsTagged: number;, avgConfidence: number;
+export interface AutotagWorkerStatus extends BackgroundWorkerStatus { type: 'autotag';, processingStats: { documentsTagged: number;, avgConfidence: number;
     aiPowered: boolean;
   };
-}
+} }
 
-export interface AutotagJob extends BackgroundJob {, jobType: 'autotag';, documentIds: string[];
+export interface AutotagJob extends BackgroundJob { jobType: 'autotag';, documentIds: string[];
   documentCount: number;
   taggedCount: number;
-  tags?: Array<{, documentId: string;, tags: string[];
+  tags?: Array<{ documentId: string;, tags: string[];
     confidence: number;
   }>;
-}
+} }
 
 // ============================================================================
 // CLUSTER EVENT TYPES
 // ============================================================================
 
-export interface ClusterEvent {, eventId: string;, eventType: string;
+export interface ClusterEvent { eventId: string;, eventType: string;
   timestamp: string | Date; // was: string
   source: 'worker' | 'master' | 'queue' | 'system';
   severity: 'info' | 'warning' | 'error' | 'critical';
   message: string;
- , data: Record<string, unknown>;
+  data: Record<string, unknown>;
   acknowledged: boolean;
   handledAt?: string | Date; // was: string|undefined
-}
+} }
 
-export interface ClusterEventStreamResponse {, event: ClusterEvent;, cluster: ClusterMetadata;
+export interface ClusterEventStreamResponse { event: ClusterEvent;, cluster: ClusterMetadata;
   timestamp: string | Date; // was: string
-}
+} }
 
 // ============================================================================
 // CLUSTER COMMAND TYPES
 // ============================================================================
 
-export interface ClusterCommandResponse {, success: boolean;, command: string;
+export interface ClusterCommandResponse { success: boolean;, command: string;
   affectedWorkers: string[];
-  results: Array<{, workerId: string;, success: boolean;
+  results: Array<{ workerId: string;, success: boolean;
     error?: string;
     message?: string;
   }>;
   timestamp: string | Date; // was: string
   error?: string;
-}
+} }
 
-export interface ClusterRestartResponse extends ClusterCommandResponse {, command: 'restart';, gracefulShutdownTimeout: number;
+export interface ClusterRestartResponse extends ClusterCommandResponse { command: 'restart';, gracefulShutdownTimeout: number;
   workersRestarted: number;
   jobsPreserved: number;
-}
+} }
 
-export interface WorkerScaleResponse extends ClusterCommandResponse {, command: 'scale';, previousWorkerCount: number;
+export interface WorkerScaleResponse extends ClusterCommandResponse { command: 'scale';, previousWorkerCount: number;
   targetWorkerCount: number;
   actualWorkerCount: number;
   workersAdded: number;
- , workersRemoved: number;
-}
+  workersRemoved: number;
+} }
+

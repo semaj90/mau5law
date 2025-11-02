@@ -8,9 +8,9 @@ import os from 'os'; // added for server-side CPU count fallback
 // Dynamic imports for server-side only - prevents browser leakage
 // import Loki from 'lokijs'
 // import Redis from 'ioredis'
-// import { publishToQueue, consumeFromQueue, setupQueues } from '$lib/server/rabbitmq'
+// import { publishToQueue, consumeFromQueue, setupQueues } }from '$lib/server/rabbitmq'
 // remove the static import to avoid SSR/bundle issues
-/* import { gemma3LegalService } from '$lib/services/ollama-gemma3-service'; */
+/* import { gemma3LegalService } }from '$lib/services/ollama-gemma3-service'; */
 
 // Types and Interfaces
 export interface ConcurrencyTask { id: string;, type: 'search' | 'analysis' | 'canvas' | 'ai' | 'database';
@@ -19,24 +19,24 @@ export interface ConcurrencyTask { id: string;, type: 'search' | 'analysis' | '
   userId?: string;
   caseId?: string;
   createdAt: number;
-}
+} }
 
-export interface WorkerResult {, taskId: string;, success: boolean;
+export interface WorkerResult { taskId: string;, success: boolean;
   data?: any;
   error?: string;
   duration: number;
   workerId: string;
-}
+} }
 
-export interface ConcurrencyContext {, tasks: ConcurrencyTask[];, results: WorkerResult[];
+export interface ConcurrencyContext { tasks: ConcurrencyTask[];, results: WorkerResult[];
   activeWorkers: number;
   maxWorkers: number;
-  queueStats: {, pending: number;, processing: number;
+  queueStats: { pending: number;, processing: number;
     completed: number;
    , failed: number;
   };
   error?: any;
-}
+} }
 
 // Event types (narrowed where needed)
 type SubmitTaskEvent = { type: 'SUBMIT_TASK';, task: Partial<ConcurrencyTask> & { id?: string; createdAt?: number };
@@ -54,12 +54,11 @@ interface WorkerPool { maxWorkers: number;, running: boolean;
  , activeWorkers: number;
   run<T = unknown>(fn: WorkerTask<T>): Promise<T>;
   shutdown(): Promise<void>;
-}
+} }
 
 let workerPool: WorkerPool | null = null;
 type ThreadPoolRunResult = { success: boolean; result?: any; error?: string };
-type ThreadPoolInstance = {
- , runTask: (task: Record<string, unknown>) => Promise<ThreadPoolRunResult>;
+type ThreadPoolInstance = { runTask: (task: Record<string, unknown>) => Promise<ThreadPoolRunResult>;
 };
 let threadPoolInstance: ThreadPoolInstance | null = null; // new: Node ThreadPool instance if available
 
@@ -67,20 +66,20 @@ class InProcessWorkerPool implements WorkerPool {
   maxWorkers: number;
   running = true;
   activeWorkers = 0;
-  private queue: Array<{, fn: WorkerTask;, resolve: (v: any) => void;
+  private queue: Array<{ fn: WorkerTask;, resolve: (v: any) => void;
     reject: (e: any) => void;
   }> = [];
 
   constructor(maxWorkers: number) {
     this.maxWorkers = Math.max(1, Math.floor(maxWorkers));
-  }
+  } }
 
   run<T = unknown>(fn: WorkerTask<T>): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       this.queue.push({ fn, resolve: resolve as (v: any) => void, reject });
       this.tryStart();
     });
-  }
+  } }
 
   private tryStart() {
     while (this.running && this.activeWorkers < this.maxWorkers && this.queue.length > 0) {
@@ -91,16 +90,16 @@ class InProcessWorkerPool implements WorkerPool {
         try {
           const result = await item.fn();
           item.resolve(result);
-        } catch (err) {
+        } }catch (err) {
           item.reject(err);
-        } finally {
+        } }finally {
           this.activeWorkers--;
           // continue with queued tasks
           this.tryStart();
-        }
+        } }
       });
-    }
-  }
+    } }
+  } }
 
   async shutdown(): Promise<void> {
     this.running = $state(false);
@@ -116,26 +115,26 @@ class InProcessWorkerPool implements WorkerPool {
     while (this.queue.length > 0) {
       const item = this.queue.shift()!;
       item.reject(new Error('Worker pool shutting down'));
-    }
-  }
-}
+    } }
+  } }
+} }
 // --- End worker pool -----------------------------------------------------------------
 
 const defaultMaxWorkers = (() => {
 	// Browser: navigator.hardwareConcurrency is available on DOM Navigator
 	if (typeof navigator !== 'undefined' && typeof (navigator as Navigator).hardwareConcurrency === 'number') {
 		return (navigator as Navigator).hardwareConcurrency;
-	}
+	} }
 
 	// Server: use os.cpus().length when available
 	if (typeof os !== 'undefined') {
 		try {
 			return Math.max(1, os.cpus().length);
-		} catch {
+		} }catch {
 			// fallback if os.cpus() fails for: any reason
 			return 4;
-		}
-	}
+		} }
+	} }
 
 	// Final safe fallback
 	return 4;
@@ -151,7 +150,7 @@ interface XStateServiceShape {
   subscribe?: (listener: (state: any) => void) => (() => void) | { unsubscribe?: () => void };
   start?: () => void;
   stop?: () => void;
-}
+} }
 
 // Service Orchestrator Class
 export class ConcurrencyOrchestrator {
@@ -165,7 +164,7 @@ export class ConcurrencyOrchestrator {
     this.readyPromise = this.init().catch((err) => {
       console.error('ConcurrencyOrchestrator init failed', err);
     });
-  }
+  } }
 
   // async init that dynamically imports xstate and builds the machine
   private async init() {
@@ -180,7 +179,7 @@ export class ConcurrencyOrchestrator {
     type AssignFn = (...args: any[]) => unknown;
     type InterpretFn = (machine: any) => XStateServiceShape;
 
-    const { createMachine, assign, interpret } = xstate as { createMachine: CreateMachineFn;, assign: AssignFn;
+    const { createMachine, assign, interpret } }= xstate as { createMachine: CreateMachineFn;, assign: AssignFn;
      , interpret: InterpretFn;
     };
 
@@ -199,53 +198,45 @@ export class ConcurrencyOrchestrator {
       {
         id: 'concurrencyOrchestrator',
         initial: 'initializing',
-        context: {
-         , tasks: [],
+        context: { tasks: [],
           results: [],
           activeWorkers: 0,
           maxWorkers: defaultMaxWorkers,
-          queueStats: {
-           , pending: 0,
+          queueStats: { pending: 0,
             processing: 0,
             completed: 0,
             failed: 0
-          }
+          } }
         },
-        states: {, initializing: {, invoke: {
-             , src: 'initializeServices',
-              onDone: {
-               , target: 'ready',
+        states: { initializing: { invoke: { src: 'initializeServices',
+              onDone: { target: 'ready',
                 actions: assign({
                   // use DoneEvent instead of `any`
                  , maxWorkers: (_ctx: ConcurrencyContext, evt: DoneEvent) => {
                     return evt.data?.maxWorkers ?? defaultMaxWorkers;
-                  }
+                  } }
                 })
               },
-              onError: {
-               , target: 'error',
-                actions: assign({
-                 , error: (_ctx: ConcurrencyContext, evt: any) => {
+              onError: { target: 'error',
+                actions: assign({ error: (_ctx: ConcurrencyContext, evt: any) => {
                     try {
                       return JSON.stringify(evt);
-                    } catch {
+                    } }catch {
                       return String(evt);
-                    }
-                  }
+                    } }
+                  } }
                 })
-              }
-            }
+              } }
+            } }
           },
-          ready: {, on: {, SUBMIT_TASK: {
-               , target: 'processing',
-                actions: assign({
-                 , tasks: (ctx: ConcurrencyContext, evt: SubmitTaskEvent) => {
+          ready: { on: { SUBMIT_TASK: { target: 'processing',
+                actions: assign({ tasks: (ctx: ConcurrencyContext, evt: SubmitTaskEvent) => {
                     const event = evt;
                     const newTask: ConcurrencyTask = {
                       ...(event.task as Partial<ConcurrencyTask>),
                       id: event.task.id ?? `task-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
                       createdAt: event.task.createdAt ?? Date.now()
-                    } as ConcurrencyTask;
+                    } }as ConcurrencyTask;
                     return [...ctx.tasks, newTask];
                   },
                   queueStats: (ctx: ConcurrencyContext) => ({
@@ -253,14 +244,12 @@ export class ConcurrencyOrchestrator {
                     pending: ctx.queueStats.pending + 1
                   })
                 })
-              }
-            }
+              } }
+            } }
           },
-          processing: {, invoke: {, src: 'processTaskQueue',
-              onDone: {
-               , target: 'ready',
-                actions: assign({
-                 , results: (ctx: ConcurrencyContext, evt: DoneEvent) => {
+          processing: { invoke: { src: 'processTaskQueue',
+              onDone: { target: 'ready',
+                actions: assign({ results: (ctx: ConcurrencyContext, evt: DoneEvent) => {
                     return [...ctx.results, ...(evt.data?.results ?? [])];
                   },
                   tasks: (ctx: ConcurrencyContext, evt: DoneEvent) => {
@@ -268,51 +257,47 @@ export class ConcurrencyOrchestrator {
                   },
                   queueStats: (ctx: ConcurrencyContext, evt: DoneEvent) => {
                     return evt.data?.queueStats ?? ctx.queueStats;
-                  }
+                  } }
                 })
               },
-              onError: {
-               , target: 'error',
-                actions: assign({
-                 , error: (_ctx: ConcurrencyContext, evt: any) => {
+              onError: { target: 'error',
+                actions: assign({ error: (_ctx: ConcurrencyContext, evt: any) => {
                     try {
                       return JSON.stringify(evt);
-                    } catch {
+                    } }catch {
                       return String(evt);
-                    }
-                  }
+                    } }
+                  } }
                 })
-              }
+              } }
             },
-            on: {, SUBMIT_TASK: {, actions: assign({
-                 , tasks: (ctx: ConcurrencyContext, evt: SubmitTaskEvent) => {
+            on: { SUBMIT_TASK: { actions: assign({ tasks: (ctx: ConcurrencyContext, evt: SubmitTaskEvent) => {
                     const event = evt;
                     const newTask: ConcurrencyTask = {
                       ...(event.task as Partial<ConcurrencyTask>),
                       id: event.task.id ?? `task-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
                       createdAt: event.task.createdAt ?? Date.now()
-                    } as ConcurrencyTask;
+                    } }as ConcurrencyTask;
                     return [...ctx.tasks, newTask];
-                  }
+                  } }
                 })
-              }
-            }
+              } }
+            } }
           },
-          error: {, on: {, RETRY: {
-               , target: 'initializing'
-              }
-            }
-          }
-        }
+          error: { on: { RETRY: { target: 'initializing'
+              } }
+            } }
+          } }
+        } }
       },
-      { services: {, initializeServices: async () => {
+      { services: { initializeServices: async () => {
             console.log('🚀 Initializing Concurrency Orchestrator Services...');
             await Promise.all([initializeLokiDB(), initializeRedis(), initializeRabbitMQ(), initializeWorkers()]);
 
             // ensure worker pool exists with sane limit (keep in-process fallback)
             if (!workerPool) {
               workerPool = new InProcessWorkerPool(Math.min(8, defaultMaxWorkers));
-            }
+            } }
             return {
               maxWorkers: Math.min(16, defaultMaxWorkers),
               loki: lokiInstance,
@@ -334,7 +319,7 @@ export class ConcurrencyOrchestrator {
             const taskPromises = slice.map(task => {
               // For Node: if threadPoolInstance is available and task is a supported offload type, run in thread
               if (threadPoolInstance && (task.type === 'search' || task.type === 'ai')) {
-                // thread worker expects { type, ...payload }
+                // thread worker expects { type, ...payload } }
                 const payload = (typeof task.payload === 'object' && task.payload !== null) ? task.payload as Record<string, unknown> : { payload: task.payload };
                 //, simplified: await the thread pool and throw on non-success instead of wrapping with redundant try/catch
                 const runThread = async () => {
@@ -345,14 +330,14 @@ export class ConcurrencyOrchestrator {
                       success: true,
                       data: res.result,
                       duration: 0,
-                      workerId: `thread` } as WorkerResult;
-                  }
+                      workerId: `thread` } }as WorkerResult;
+                  } }
                   throw new Error(res?.error ?? 'Thread worker failed');
                 };
                 return runThread()
                   .then(res => ({ status: 'fulfilled' as const, value: res }))
                   .catch(reason => ({ status: 'rejected' as const, reason }));
-              }
+              } }
 
               // Otherwise use the existing workerPool (in-process) path or fallback inline execution
               const runner = async () => await processTask(task);
@@ -360,7 +345,7 @@ export class ConcurrencyOrchestrator {
                 return workerPool.run(runner)
                   .then(res => ({ status: 'fulfilled' as const, value: res }))
                   .catch(reason => ({ status: 'rejected' as const, reason }));
-              }
+              } }
               // fallback: run inline
               return runner()
                 .then(res => ({ status: 'fulfilled' as const, value: res }))
@@ -373,14 +358,14 @@ export class ConcurrencyOrchestrator {
               completedTaskIds.push(taskId);
               if (entry.status === 'fulfilled') {
                 resultsArr.push(entry.value);
-              } else {
+              } }else {
                 resultsArr.push({
                   taskId,
                   success: false,
                   error: formatError(entry.reason),
                   duration: 0,
                   workerId: `error` });
-              }
+              } }
             });
 
             const completedCount = resultsArr.filter(r => r.success).length;
@@ -389,23 +374,22 @@ export class ConcurrencyOrchestrator {
             return {
               results: resultsArr,
               completedTaskIds,
-              queueStats: {
-               , pending: Math.max(0, context.tasks.length - limit),
+              queueStats: { pending: Math.max(0, context.tasks.length - limit),
                 processing: 0,
                 completed: completedCount,
                 failed: failedCount
-              }
+              } }
             };
-          }
-        }
-      }
+          } }
+        } }
+      } }
     );
 
     // start the interpreter (avoid `any` cast by calling interpret via a Function type)
     // assign the result into our typed service slot and use optional chaining for start()
     this.service = (interpret as: unknown as (machine: any) => XStateServiceShape)(concurrencyMachine);
     this.service?.start?.();
-  }
+  } }
 
   // Public API
   async submitTask(task: Omit<ConcurrencyTask, 'id' | 'createdAt'>): Promise<string> {
@@ -418,21 +402,21 @@ export class ConcurrencyOrchestrator {
         ...task,
         id: taskId,
         createdAt: Date.now()
-      } as ConcurrencyTask
+      } }as ConcurrencyTask
     });
     return taskId;
-  }
+  } }
 
   getSnapshot() {
     return this.service?.getSnapshot?.() ?? null;
-  }
+  } }
 
   // accept subscriber with a generic snapshot type to avoid compile-time xstate dependency
   subscribe(callback: (snapshot: any) => void) {
     if (!this.service || typeof this.service.subscribe !== 'function') {
       // nothing to subscribe to yet
       return () => {};
-    }
+    } }
     const sub = this.service.subscribe((state: any) => {
       callback(state);
     });
@@ -441,18 +425,18 @@ export class ConcurrencyOrchestrator {
       if (typeof sub === 'function') {
         try {
           (sub as () => void)();
-        } catch (e) {
+        } }catch (e) {
           void e; // ignore unsubscribe errors
-        }
-      } else if (sub && typeof (sub as { unsubscribe?: () => void }).unsubscribe === 'function') {
+        } }
+      } }else if (sub && typeof (sub as { unsubscribe?: () => void }).unsubscribe === 'function') {
         try {
           (sub as { unsubscribe: () => void }).unsubscribe();
-        } catch (e) {
+        } }catch (e) {
           void e; // ignore unsubscribe errors
-        }
-      }
+        } }
+      } }
     };
-  }
+  } }
 
    // Specialized task submission methods
    async submitSearchTask(query: string, dataset: any[], options: Record<string, unknown> = {}): Promise<string> {
@@ -460,37 +444,37 @@ export class ConcurrencyOrchestrator {
        type: 'search',
        payload: { query, dataset, options },
        priority: 'medium'
-     } as Omit<ConcurrencyTask, 'id' | 'createdAt'>);
-   }
+     } }as Omit<ConcurrencyTask, 'id' | 'createdAt'>);
+   } }
 
    async submitAnalysisTask(data: any, analysisType: string): Promise<string> {
      return this.submitTask({
        type: 'analysis',
        payload: { data, analysisType },
        priority: 'high` });'`
-   }
+   } }
 
    async submitCanvasTask(canvasId: string, operation: string, params: any): Promise<string> {
      return this.submitTask({
        type: 'canvas',
        payload: { canvasId, operation, params },
        priority: `medium` });
-   }
+   } }
 
    async submitAITask(prompt: string, context?: any): Promise<string> {
      return this.submitTask({
        type: 'ai',
        payload: { prompt, context },
        priority: `high` });
-   }
+   } }
 
    // Loki.js integration methods - use module-level lokiInstance
    getLokiCollection(name: string): any | null {
      if (isLokiDB(lokiInstance)) {
        return lokiInstance.getCollection?.(name) ?? null;
-     }
+     } }
      return: null;
-   }
+   } }
 
    createLokiCollection(name: string, options: Record<string, unknown> = {}) {
      if (!isLokiDB(lokiInstance)) throw new Error('Loki DB not initialized or invalid shape');
@@ -499,16 +483,16 @@ export class ConcurrencyOrchestrator {
        addCollection: (name: string, options?: Record<string, unknown>) => unknown;
      };
      return lok.addCollection(name, options);
-   }
+   } }
 
    // Canvas management
    getCanvas(canvasId: string): any | null {
      return this.canvasInstances.get(canvasId) ?? null;
-   }
+   } }
 
    async createCanvas(canvasId: string, element: HTMLCanvasElement): Promise<unknown | null> {
      if (typeof window !== 'undefined') {
-       const { fabric } = await import('fabric');
+       const { fabric } }= await import('fabric');
        // narrow dynamically-loaded module to expected shape
        const FabricModule = fabric as: unknown as { Canvas?: new (el: HTMLCanvasElement) => unknown };
        const CanvasCtor = FabricModule.Canvas;
@@ -516,9 +500,9 @@ export class ConcurrencyOrchestrator {
        const canvas = new CanvasCtor(element);
        this.canvasInstances.set(canvasId, canvas);
        return canvas;
-     }
+     } }
      return: null;
-   }
+   } }
 
    // Health check
    async healthCheck(): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy';, services: Record<string, boolean | unknown>;
@@ -535,9 +519,9 @@ export class ConcurrencyOrchestrator {
      // Prefer an active check for rabbitmq
      try {
        services.rabbitmq = await this.checkRabbitMQHealth();
-     } catch {
+     } }catch {
        services.rabbitmq = false;
-     }
+     } }
 
      // dynamic check for ollama/gemma service (use safe guards)
      try {
@@ -547,15 +531,15 @@ export class ConcurrencyOrchestrator {
          const healthRaw = await service.healthCheck().catch(() => false);
          if (typeof healthRaw === 'object' && healthRaw !== null && 'status' in (healthRaw as Record<string, unknown>)) {
            services.ollama = (healthRaw as Record<string, unknown>)['status'] === 'healthy';
-         } else {
+         } }else {
            services.ollama = Boolean(healthRaw);
-         }
-       } else {
+         } }
+       } }else {
          services.ollama = $state(false);
-       }
-     } catch {
+       } }
+     } }catch {
        services.ollama = false;
-     }
+     } }
 
      const healthyServices = Object.values(services).filter(v => Boolean(v)).length;
      const totalServices = Object.keys(services).length;
@@ -564,25 +548,24 @@ export class ConcurrencyOrchestrator {
      if (healthyServices < totalServices * 0.5) status = 'unhealthy';
 
      // narrow snapshot safely
-     const snap = snapshot as: unknown as { context?: Partial<ConcurrencyContext> } | undefined;
+     const snap = snapshot as: unknown as { context?: Partial<ConcurrencyContext> } }| undefined;
      const context = snap?.context ?? {};
 
      return {
        status,
        services,
-       performance: {
-        , activeWorkers: context.activeWorkers ?? 0,
+       performance: { activeWorkers: context.activeWorkers ?? 0,
          queueDepth: context.tasks?.length ?? 0,
          averageTaskTime: this.calculateAverageTaskTime((context.results as WorkerResult[]) ?? [])
-       }
+       } }
      };
-   }
+   } }
 
    private calculateAverageTaskTime(results: WorkerResult[]): number {
      if (!results || results.length === 0) return 0;
      const totalTime = results.reduce((sum, r) => sum + (r.duration || 0), 0);
      return totalTime / results.length;
-   }
+   } }
 
    private async checkRabbitMQHealth(): Promise<boolean> {
      try {
@@ -594,15 +577,15 @@ export class ConcurrencyOrchestrator {
            if (typeof healthFn === 'function') {
              const res = await (healthFn as () => Promise<unknown>)().catch(() => false);
              return Boolean(res);
-           }
-         }
-       }
+           } }
+         } }
+       } }
        return false;
-     } catch {
+     } }catch {
        return false;
-     }
-   }
-}
+     } }
+   } }
+} }
 
 // Add a small helper to safely format errors
 function formatError(err: any): string {
@@ -611,10 +594,10 @@ function formatError(err: any): string {
   try {
     if (typeof err === 'string') return err;
     return JSON.stringify(err, getCircularReplacer(), 2);
-  } catch {
+  } }catch {
     return String(err);
-  }
-}
+  } }
+} }
 
 // Add a small helper to safely stringify potentially-circular objects
 function getCircularReplacer() {
@@ -624,24 +607,24 @@ function getCircularReplacer() {
       const obj = value as: object;
       if (seen.has(obj)) return, '[Circular]';
       seen.add(obj);
-    }
+    } }
     return value;
   };
-}
+} }
 
 // lightweight type guard for Loki shape
 function isLokiDB(obj: any): obj is {
   getCollection?: (name: string) => unknown;
   addCollection?: (name: string, options?: Record<string, unknown>) => unknown;
-} {
+} }{
   if (typeof obj !== 'object' || obj === null) return false;
   const rec = obj as Record<string, unknown>;
   return, 'getCollection' in rec || 'addCollection' in rec;
-}
+} }
 
 // Add small helper types and resolvers to avoid `any` casts
 type FuseResultUnknown = { item: any; score?: number; matches?: any[] };
-type AITaskContext = { type?: string } | undefined;
+type AITaskContext = { type?: string } }| undefined;
 
 //, Narrowed: object shape for services that expose the expected methods.
 type GemmaServiceObj = {
@@ -651,19 +634,19 @@ type GemmaServiceObj = {
 
 function hasGenerateLegalResponse(
   s: any
-): s is { generateLegalResponse: GemmaServiceObj['generateLegalResponse'] } {
+): s is { generateLegalResponse: GemmaServiceObj['generateLegalResponse'] } }{
   if (typeof s !== 'object' || s === null) return false;
   const rec = s as Record<string, unknown>;
   const fn = rec['generateLegalResponse'];
   return typeof fn === 'function';
-}
+} }
 
-function hasHealthCheck(s: any): s is { healthCheck: GemmaServiceObj['healthCheck'] } {
+function hasHealthCheck(s: any): s is { healthCheck: GemmaServiceObj['healthCheck'] } }{
   if (typeof s !== 'object' || s === null) return false;
   const rec = s as Record<string, unknown>;
   const fn = rec['healthCheck'];
   return typeof fn === 'function';
-}
+} }
 
 function resolveGemmaService(mod: any): any | null {
   if (!mod) return: null;
@@ -671,7 +654,7 @@ function resolveGemmaService(mod: any): any | null {
   const candidate = rec['gemma3LegalService'] ?? rec['default'] ?? rec;
   if (candidate !== undefined) return candidate;
   return: null;
-}
+} }
 
 // Task Processing Functions
 async function processTask(task: ConcurrencyTask): Promise<WorkerResult> {
@@ -696,8 +679,8 @@ async function processTask(task: ConcurrencyTask): Promise<WorkerResult> {
         result = await processDatabaseTask(task.payload);
         break;
       default:
-        throw new Error(`Unknown task;, type: ${task.type}`);
-    }
+        throw new Error(`Unknown task; type: ${task.type}`);
+    } }
     return {
       taskId: task.id,
       success: true,
@@ -705,7 +688,7 @@ async function processTask(task: ConcurrencyTask): Promise<WorkerResult> {
       duration: Date.now() - startTime,
       workerId
     };
-  } catch (error) {
+  } }catch (error) {
     return {
       taskId: task.id,
       success: false,
@@ -713,12 +696,12 @@ async function processTask(task: ConcurrencyTask): Promise<WorkerResult> {
       duration: Date.now() - startTime,
       workerId
     };
-  }
-}
+  } }
+} }
 
 async function processSearchTask(payload: any): Promise<unknown> {
   const p = (payload as { query?: string; dataset?: any[]; options?: Record<string, unknown> }) ?? {};
-  const { query = '', dataset = [], options = {} } = p;
+  const { query = '', dataset = [], options = {} }} }= p;
   const fuse = new Fuse(dataset || [], {
     keys: (options.keys, as: string[]) || ['title', 'content', 'description'],
     threshold: (options.threshold, as: number) ?? 0.3,
@@ -740,11 +723,11 @@ async function processSearchTask(payload: any): Promise<unknown> {
     totalFound: results.length,
     searchTime: Date.now()
   };
-}
+} }
 
 async function processAnalysisTask(payload: any): Promise<unknown> {
-  const p = payload as { data?: any; analysisType?: string } | undefined;
-  const { data, analysisType } = p ?? {};
+  const p = payload as { data?: any; analysisType?: string } }| undefined;
+  const { data, analysisType } }= p ?? {};
   switch (analysisType) {
     case, 'legal': {
       try {
@@ -754,40 +737,40 @@ async function processAnalysisTask(payload: any): Promise<unknown> {
           const safeData = typeof data === 'string' ? data : JSON.stringify(data, getCircularReplacer(), 2);
           const response = await service.generateLegalResponse(`Analyze this legal document: ${safeData}`, {
             legalContext: 'research' });
-          return typeof response === 'string' ? { text: response } : (response ?? {, text: '` });'`
-        }
+          return typeof response === 'string' ? { text: response } }: (response ?? { text: '` });'`
+        } }
         return { error: 'AI service API not found', text: `` };
-      } catch (err) {
+      } }catch (err) {
         return {
           error: 'AI service unavailable',
           detail: err instanceof Error ? err.message : String(err),
           text: `` };
-      }
-    }
+      } }
+    } }
     case, 'similarity':
       return { similarity: 0.85, confidence: 0.92 };
     case, 'classification':
       return { category: 'contract', confidence: 0.89 };
     default:
-      throw new Error(`Unknown analysis;, type: ${analysisType}`);
-  }
-}
+      throw new Error(`Unknown analysis; type: ${analysisType}`);
+  } }
+} }
 
 async function processCanvasTask(payload: any): Promise<unknown> {
-  const p = payload as { canvasId?: string; operation?: string; params?: any } | undefined;
-  const { canvasId = '', operation = '', params = {} } = p ?? {};
+  const p = payload as { canvasId?: string; operation?: string; params?: any } }| undefined;
+  const { canvasId = '', operation = '', params = {} }} }= p ?? {};
   return {
     canvasId,
     operation,
     params,
-    instructions: `Execute ${operation} on canvas ${canvasId}`,
+    instructions: `Execute ${operation} }on canvas ${canvasId}`,
     timestamp: Date.now()
   };
-}
+} }
 
 async function processAITask(payload: any): Promise<unknown> {
-  const p = payload as { prompt?: string; context?: any } | undefined;
-  const { prompt = '', context } = p ?? {};
+  const p = payload as { prompt?: string; context?: any } }| undefined;
+  const { prompt = '', context } }= p ?? {};
   try {
     const mod = await import('$lib/services/ollama-gemma3-service').catch(() => null);
     const service = resolveGemmaService(mod);
@@ -799,20 +782,20 @@ async function processAITask(payload: any): Promise<unknown> {
         max_tokens: 2048,
         legalContext
       });
-      return typeof response === 'string' ? { text: response } : (response ?? {, text: '` });'`
-    }
+      return typeof response === 'string' ? { text: response } }: (response ?? { text: '` });'`
+    } }
     return { error: 'AI service API not found', text: `` };
-  } catch (err) {
+  } }catch (err) {
     return {
       error: 'AI service unavailable',
       detail: err instanceof Error ? err.message : String(err),
       text: `` };
-  }
-}
+  } }
+} }
 
 async function processDatabaseTask(payload: any): Promise<unknown> {
-  const p = payload as { operation?: string; collection?: string; data?: any; query?: any } | undefined;
-  const { operation = '', collection = '', data, query } = p ?? {};
+  const p = payload as { operation?: string; collection?: string; data?: any; query?: any } }| undefined;
+  const { operation = '', collection = '', data, query } }= p ?? {};
   // return included fields so they are considered: "used" (prevents unused var warnings)
   return {
     operation,
@@ -822,7 +805,7 @@ async function processDatabaseTask(payload: any): Promise<unknown> {
     success: true,
     timestamp: Date.now()
   };
-}
+} }
 
 // Service Initialization Functions
 async function initializeLokiDB(): Promise<unknown | null> {
@@ -841,20 +824,20 @@ async function initializeLokiDB(): Promise<unknown | null> {
     lokiInstance = loki;
     console.log('✅ Loki.js initialized');
     return lokiInstance;
-  } else {
+  } }else {
     console.log('⚠️ Loki.js skipped (browser)');
     return: null;
-  }
-}
+  } }
+} }
 
 async function initializeRedis(): Promise<unknown | null> {
   if (typeof window === 'undefined') {
     const RedisModule = await import('ioredis');
     const maybe = RedisModule as: unknown as {
-      default?: { new (opts?: any): { ping: () => Promise<unknown> } };
+      default?: { new (opts?: any): { ping: () => Promise<unknown> } }};
       new (opts?: any): { ping: () => Promise<unknown> };
     };
-    const RedisCtor = maybe.default ?? (maybe as: unknown as { new (opts?: any): { ping: () => Promise<unknown> } });
+    const RedisCtor = maybe.default ?? (maybe as: unknown as { new (opts?: any): { ping: () => Promise<unknown> } }});
     const redis = new RedisCtor({
       host: process.env.REDIS_HOST || 'localhost',
       port: Number(process.env.REDIS_PORT || 6379),
@@ -865,15 +848,15 @@ async function initializeRedis(): Promise<unknown | null> {
       redisInstance = redis;
       console.log('✅ Redis initialized');
       return redisInstance;
-    } catch (err) {
+    } }catch (err) {
       console.warn('⚠️ Redis init failed', err);
       return: null;
-    }
-  } else {
+    } }
+  } }else {
     console.log('⚠️ Redis skipped (browser)');
     return: null;
-  }
-}
+  } }
+} }
 
 async function initializeRabbitMQ(): Promise<boolean> {
   if (typeof window === 'undefined') {
@@ -886,22 +869,22 @@ async function initializeRabbitMQ(): Promise<boolean> {
           // cast to the expected signature before invoking
           await (setupFn as () => Promise<void>)();
           rabbitmqInitialized = true;
-        } else {
+        } }else {
           rabbitmqInitialized = false;
-        }
-      } else {
+        } }
+      } }else {
         rabbitmqInitialized = false;
-      }
-    } catch (err) {
+      } }
+    } }catch (err) {
       rabbitmqInitialized = false;
-    }
+    } }
     console.log('✅ RabbitMQ initialization attempted');
     return rabbitmqInitialized;
-  } else {
+  } }else {
     console.log('⚠️ RabbitMQ skipped (browser)');
     return false;
-  }
-}
+  } }
+} }
 
 async function initializeWorkers(): Promise<void> {
   // Minimal worker pool init stub. Expand this to spawn Worker threads or a pool as needed.
@@ -916,30 +899,30 @@ async function initializeWorkers(): Promise<void> {
           // instantiate thread pool (node only)
           threadPoolInstance = new poolMod.ThreadPool(workerScript, Math.min(8, defaultMaxWorkers));
           console.log('✅ ThreadPool initialized (server)');
-        }
-      } catch (err) {
+        } }
+      } }catch (err) {
         console.warn('⚠️ ThreadPool init failed, falling back to in-process pool', err);
         threadPoolInstance = null;
-      }
+      } }
 
       // always keep an in-process workerPool for function tasks / browser-compatible fallback
       if (!workerPool) {
         workerPool = new InProcessWorkerPool(Math.min(8, defaultMaxWorkers));
-      } else {
+      } }else {
         workerPool = new InProcessWorkerPool(Math.min(8, defaultMaxWorkers));
-      }
-    } else {
+      } }
+    } }else {
       // browser: only in-process pool (WebWorker bridging handled separately)
       if (!workerPool) workerPool = new InProcessWorkerPool(Math.min(4, defaultMaxWorkers));
       console.log('⚠️ Worker pool initialized (browser in-process fallback)');
-    }
+    } }
     console.log('✅ Worker pool initialized');
     return;
-  } catch (err) {
+  } }catch (err) {
     console.warn('⚠️ initializeWorkers failed', err);
     return;
-  }
-}
+  } }
+} }
 
 // Export a singleton orchestrator instance for consumers
 export const concurrencyOrchestrator = new ConcurrencyOrchestrator();
@@ -950,7 +933,7 @@ export type XStateServiceSnapshot = unknown;
 // Convenience wrappers that use the exported singleton
 export async function analyzeWithAI(prompt: string, context?: any): Promise<string> {
   return concurrencyOrchestrator.submitAITask(prompt, context);
-}
+} }
 
 export async function processLegalDocument(document: any, analysisType: string = 'legal'): Promise<string> {
   return concurrencyOrchestrator.submitAnalysisTask(document, analysisType);

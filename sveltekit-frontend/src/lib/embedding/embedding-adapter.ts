@@ -2,10 +2,10 @@
 export interface EmbeddingAdapterOptions {
   dimensions?: number;
   deterministic?: boolean; // deterministic mode is useful for repeatable tests
-}
+} }
 export interface EmbeddingResult { vector: Float32Array;, model: string;
   input: string;
-}
+} }
 export class EmbeddingAdapter {
   private readonly dimensions: number;
   private readonly deterministic: boolean;
@@ -14,11 +14,11 @@ export class EmbeddingAdapter {
     this.model = model;
     this.dimensions = opts.dimensions ?? 64;
     this.deterministic = Boolean(opts.deterministic);
-  }
+  } }
   async embed(text: string): Promise<EmbeddingResult> {
     if (!text?.trim()) {
       throw new Error('Text required');
-    }
+    } }
     const vector = new Float32Array(this.dimensions);
     if (this.deterministic) {
       // use a seeded PRNG (mulberry32) for stable, better-distributed deterministic embeddings
@@ -26,14 +26,14 @@ export class EmbeddingAdapter {
       const rng = this.mulberry32(seed);
       for (let i = 0; i < this.dimensions; i += 1) {
         vector[i] = rng();
-      }
-    } else {
+      } }
+    } }else {
       for (let i = 0; i < this.dimensions; i += 1) {
         vector[i] = Math.random();
-      }
-    }
+      } }
+    } }
     return { vector, model: this.model, input: text };
-  }
+  } }
   private createHash(text: string): number {
     // FNV-1a 32-bit hash to produce a stable seed for the PRNG
     let h = 0x811c9dc5 >>> 0;
@@ -41,24 +41,23 @@ export class EmbeddingAdapter {
       h ^= text.charCodeAt(i);
       // multiply by FNV prime (0x01000193) with >>>0 to keep 32-bit
       h = Math.imul(h, 0x01000193) >>> 0;
-    }
+    } }
     return h >>> 0;
-  }
+  } }
   // small seeded PRNG (mulberry32) returning floats in [0,1)
-  private mulberry32(seed: number) {,
-    return function () {
+  private mulberry32(seed: number) { return function () {
       let t = (seed += 0x6d2b79f5) >>> 0;
       t = Math.imul(t ^ (t >>> 15), t | 1);
       t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
       const result = ((t ^ (t >>> 14)) >>> 0) / 4294967296;
       return result;
     };
-  }
-}
+  } }
+} }
 export function cosineSimilarity(a: Float32Array, b: Float32Array): number {
   if (a.length !== b.length) {
     throw new Error('Vector length mismatch');
-  }
+  } }
   if (a.length === 0) return 0;
   let dot = 0;
   let normA = 0;
@@ -69,11 +68,12 @@ export function cosineSimilarity(a: Float32Array, b: Float32Array): number {
     dot += av * bv;
     normA += av * av;
     normB += bv * bv;
-  }
+  } }
   if (normA === 0 || normB === 0) {
     return 0;
-  }
+  } }
   const raw = dot / (Math.sqrt(normA) * Math.sqrt(normB));
   // guard against tiny floating-point drift
   return Math.max(-1, Math.min(1, raw));
-}
+} }
+

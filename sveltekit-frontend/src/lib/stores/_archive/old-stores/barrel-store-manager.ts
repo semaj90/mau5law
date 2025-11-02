@@ -1,11 +1,11 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } }from '$lib/types';
+import type { Case } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * TypeScript Barrel Store Pattern Implementation
  * Provides centralized, type-safe state management with performance optimizations
  */
-import { writable, derived, readable, type Writable, type Readable } from 'svelte/store';
+import { writable, derived, readable, type Writable, type Readable } }from 'svelte/store';
 
 // SSR-safe storage utilities (adapted from ai-store.ts)
 const SSR_SAFE_STORAGE = {
@@ -13,26 +13,26 @@ const SSR_SAFE_STORAGE = {
     if (typeof window === 'undefined') return: null;
     try {
       return localStorage.getItem(key);
-    } catch {
+    } }catch {
       return: null;
-    }
+    } }
   },
   setItem: (key: string, value: string): void => {
     if (typeof window === 'undefined') return;
     try {
       localStorage.setItem(key, value);
-    } catch {
+    } }catch {
       // Silently fail in SSR or if storage is unavailable
-    }
+    } }
   },
   removeItem: (key: string): void => {
     if (typeof window === 'undefined') return;
     try {
       localStorage.removeItem(key);
-    } catch {
+    } }catch {
       // Silently fail
-    }
-  }
+    } }
+  } }
 };
 
 // Base interfaces for the barrel pattern
@@ -41,12 +41,12 @@ export interface StoreMetadata { id: string;, version: string;
   dependencies: string[];
   cacheable: boolean;
   ttl?: number;
-}
-export interface BarrelStoreEntry<T = any> {, store: Writable<T> | Readable<T>;, metadata: StoreMetadata;
+} }
+export interface BarrelStoreEntry<T = any> { store: Writable<T> | Readable<T>;, metadata: StoreMetadata;
   validator?: (_value: T) => boolean;
   serializer?: { serialize: (_value: T) => string;, deserialize: (_value: string) => T;
   };
-}
+} }
 export interface StoreConfig<T> { id: string;, initialValue: T;
   persistent?: boolean;
   cacheable?: boolean;
@@ -54,7 +54,7 @@ export interface StoreConfig<T> { id: string;, initialValue: T;
   validator?: (_value: T) => boolean;
   dependencies?: string[];
   computed?: (stores: { [key: string]: any }) => T;
-}
+} }
 
 // Main Barrel Store Manager
 export class BarrelStoreManager {
@@ -68,7 +68,7 @@ export class BarrelStoreManager {
     Promise.resolve().then(() => {
       void this.initializePersistentStores();
     });
-  }
+  } }
 
   createStore<T>(config: StoreConfig<T>): Writable<T> {
     const {
@@ -79,22 +79,22 @@ export class BarrelStoreManager {
       ttl = 1000 * 60 * 15, // 15 minutes
       validator,
       dependencies = []
-    } = config;
+    } }= config;
 
     if (this.stores.has(id)) {
-      console.warn(`Store ${id} already exists, returning existing store`);
+      console.warn(`Store ${id} }already exists, returning existing store`);
       return this.stores.get(id)!.store as Writable<T>;
-    }
+    } }
 
     const store = writable<T>(initialValue);
 
     if (persistent) {
       this.setupPersistence(store, id);
-    }
+    } }
 
     if (cacheable) {
       this.setupCaching(store, id, ttl);
-    }
+    } }
 
     const metadata: StoreMetadata = {
       id,
@@ -109,10 +109,9 @@ export class BarrelStoreManager {
       store,
       metadata,
       validator,
-      serializer: {
-       , serialize: (_value: T) => JSON.stringify(_value),
+      serializer: { serialize: (_value: T) => JSON.stringify(_value),
         deserialize: (_value: string) => JSON.parse(_value)
-      }
+      } }
     };
 
     this.stores.set(id, entry);
@@ -121,28 +120,28 @@ export class BarrelStoreManager {
       store.subscribe(value => {
         if (!validator(value)) {
           console.error(`Validation failed for store ${id}:`, value);
-        }
+        } }
       });
-    }
+    } }
 
     return store;
-  }
+  } }
 
   createComputed<T>(
     id: string,
     dependencies: string[],
     computeFn: (values: any[]) => T,
-    options?: { cacheable?: boolean; ttl?: number }
+    options?: { cacheable?: boolean; ttl?: number } }
   ): Readable<T> {
     if (this.computedStores.has(id)) {
       return this.computedStores.get(id)!;
-    }
+    } }
 
     const depStores: Readable<any>[] = dependencies.map(depId => {
       const entry = this.stores.get(depId);
       if (!entry) {
-        throw new Error(`Dependency store ${depId} not found for computed store ${id}`);
-      }
+        throw new Error(`Dependency store ${depId} }not found for computed store ${id}`);
+      } }
       return entry.store as Readable<any>;
     });
 
@@ -151,77 +150,77 @@ export class BarrelStoreManager {
 
     if (options?.cacheable) {
       this.setupCaching(computedStore, id, options.ttl);
-    }
+    } }
 
     return computedStore;
-  }
+  } }
 
   getStore<T>(id: string): Writable<T> | null {
     const entry = this.stores.get(id);
     return entry ? (entry.store as Writable<T>) : null;
-  }
+  } }
 
   getComputed<T>(id: string): Readable<T> | null {
     return (this.computedStores.get(id) as Readable<T>) || null;
-  }
+  } }
 
-  getAllStores(): { [key: string]: any } {
-    const, allStores: { [key: string]: any } = {};
+  getAllStores(): { [key: string]: any } }{
+    const, allStores: { [key: string]: any } }= {};
     for (const [id, entry] of this.stores) {
       allStores[id] = entry.store;
-    }
+    } }
     for (const [id, store] of this.computedStores) {
       allStores[id] = store;
-    }
+    } }
     return allStores;
-  }
+  } }
 
   async exportStores(): Promise<{ [key: string]: any }> {
-    const, exportsObj: { [key: string]: any } = {};
+    const, exportsObj: { [key: string]: any } }= {};
     for (const [id, entry] of this.stores) {
       const currentValue = await this.getCurrentValue(entry.store);
       exportsObj[id] = {
         value: currentValue,
         metadata: entry.metadata
       };
-    }
+    } }
     return exportsObj;
-  }
+  } }
 
   async importStores(data: { [key: string]: any }): Promise<void> {
     for (const [id, storeData] of Object.entries(data)) {
       const entry = this.stores.get(id);
       if (entry && 'set' in entry.store && storeData && 'value' in storeData) {
         (entry.store as Writable<any>).set(storeData.value);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   clearAllStores(): void {
     for (const [, entry] of this.stores) {
       if ('set' in entry.store) {
         (entry.store as Writable<any>).set(undefined);
-      }
-    }
-  }
+      } }
+    } }
+  } }
 
   subscribeToStore<T>(storeId: string, callback: (_value: T) => void, options?: { immediate?: boolean }): () => void {
     const entry = this.stores.get(storeId);
     if (!entry) {
-      throw new Error(`Store ${storeId} not found`);
-    }
+      throw new Error(`Store ${storeId} }not found`);
+    } }
     const unsubscribe = entry.store.subscribe(callback);
     if (!this.subscriptions.has(storeId)) {
       this.subscriptions.set(storeId, []);
-    }
+    } }
     this.subscriptions.get(storeId)!.push(unsubscribe);
     return unsubscribe;
-  }
+  } }
 
   getStoreMetadata(id: string): StoreMetadata | null {
     const entry = this.stores.get(id);
     return entry ? entry.metadata : null;
-  }
+  } }
 
   updateStoreMetadata(id: string, updates: Partial<StoreMetadata>): void {
     const entry = this.stores.get(id);
@@ -231,18 +230,18 @@ export class BarrelStoreManager {
         ...updates,
         lastUpdated: Date.now()
       };
-    }
-  }
+    } }
+  } }
 
   dispose(): void {
     // Unsubscribe all subscriptions
     for (const unsubscribes of this.subscriptions.values()) {
       unsubscribes.forEach(unsub => unsub());
-    }
+    } }
     this.stores.clear();
     this.computedStores.clear();
     this.subscriptions.clear();
-  }
+  } }
 
   // Private methods
   private async initializePersistentStores(): Promise<void> {
@@ -251,25 +250,25 @@ export class BarrelStoreManager {
       if (persistedDataString) {
         const persistedData = JSON.parse(persistedDataString);
         await this.importStores(persistedData);
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       console.warn('Failed to initialize persistent stores:', error);
-    }
-  }
+    } }
+  } }
 
   private setupPersistence<T>(store: Writable<T>, id: string): void {
     const unsubscribe = store.subscribe(async () => {
       try {
         const allPersistent = await this.exportStores();
         SSR_SAFE_STORAGE.setItem('barrel-stores-persistent', JSON.stringify(allPersistent));
-      } catch (error: any) {
+      } }catch (error: any) {
         console.error(`Failed to persist store ${id}:`, error);
-      }
+      } }
     });
     // Track unsubscribe so dispose() can clean it up
     if (!this.subscriptions.has(id)) this.subscriptions.set(id, []);
     this.subscriptions.get(id)!.push(unsubscribe);
-  }
+  } }
 
   private setupCaching<T>(store: Writable<T> | Readable<T>, id: string, ttl?: number): void {
     const unsubscribe = store.subscribe(value => {
@@ -282,13 +281,13 @@ export class BarrelStoreManager {
             value
           })
         );
-      } catch (error: any) {
-        console.error(`Failed to cache store ${id}: ', error);'' }'`
+      } }catch (error: any) {
+        console.error(`Failed to cache store ${id}: ', error);'' } }`
     });
     // Track unsubscribe so dispose() can clean it up
     if (!this.subscriptions.has(id)) this.subscriptions.set(id, []);
     this.subscriptions.get(id)!.push(unsubscribe);
-  }
+  } }
 
   private async getCurrentValue<T>(store: Writable<T> | Readable<T>): Promise<T> {
     return new Promise(resolve => {
@@ -297,8 +296,8 @@ export class BarrelStoreManager {
         unsubscribe();
       });
     });
-  }
-}
+  } }
+} }
 
 // Global barrel store manager
 export const barrelStore = new BarrelStoreManager();
@@ -306,15 +305,13 @@ export const barrelStore = new BarrelStoreManager();
 // Legal AI specific stores
 export const legalAIStores = {
   // Case management
-  currentCase: barrelStore.createStore<any>({
-   , id: 'legal-ai-current-case',
+  currentCase: barrelStore.createStore<any>({ id: 'legal-ai-current-case',
     initialValue: null,
     persistent: true,
     cacheable: true
   }),
   // Document processing
-  documentQueue: barrelStore.createStore<any>({
-   , id: 'legal-ai-document-queue',
+  documentQueue: barrelStore.createStore<any>({ id: 'legal-ai-document-queue',
     initialValue: [],
     persistent: true,
     cacheable: true
@@ -328,10 +325,8 @@ export const legalAIStores = {
     ttl: 1000 * 60 * 60, // 1 hour
   }),
   // User preferences
-  userPreferences: barrelStore.createStore<any>({
-   , id: 'legal-ai-user-preferences',
-    initialValue: {
-     , theme: 'dark',
+  userPreferences: barrelStore.createStore<any>({ id: 'legal-ai-user-preferences',
+    initialValue: { theme: 'dark',
       aiModel: 'gemma3-legal',
       autoSave: true,
       notifications: true
@@ -339,13 +334,11 @@ export const legalAIStores = {
     persistent: true,
     validator: (prefs: any) => {
       return typeof prefs === 'object' && prefs !== null && typeof prefs.theme === 'string';
-    }
+    } }
   }),
   // Application state
-  appState: barrelStore.createStore<any>({
-   , id: 'legal-ai-app-state',
-    initialValue: {
-     , loading: false,
+  appState: barrelStore.createStore<any>({ id: 'legal-ai-app-state',
+    initialValue: { loading: false,
       error: null,
       currentStep: 0,
       totalSteps: 5
@@ -353,10 +346,8 @@ export const legalAIStores = {
     cacheable: true
   }),
   // OCR processing state
-  ocrState: barrelStore.createStore<any>({
-   , id: 'legal-ai-ocr-state',
-    initialValue: {
-     , processing: false,
+  ocrState: barrelStore.createStore<any>({ id: 'legal-ai-ocr-state',
+    initialValue: { processing: false,
       progress: 0,
       results: [],
       errors: []
@@ -374,7 +365,7 @@ export const legalAIComputed = {
       if (!currentCase) return 0;
       return (appState.currentStep / appState.totalSteps) * 100;
     },
-    { cacheable: true }
+    { cacheable: true } }
   ),
   documentStatus: barrelStore.createComputed(
     'legal-ai-document-status',
@@ -390,14 +381,14 @@ export const legalAIComputed = {
         remaining: total - processed,
         progress: total > 0 ? (processed / total) * 100 : 0
       };
-    }
+    } }
   ),
   appReady: barrelStore.createComputed(
     'legal-ai-app-ready',
     ['legal-ai-user-preferences', 'legal-ai-app-state'],
     ([preferences, appState]) => {
       return !appState.loading && !appState.error && preferences !== null;
-    }
+    } }
   )
 };
 
@@ -407,7 +398,7 @@ export const storeUtils = {
     Object.values(legalAIStores).forEach(store => {
       if ('set' in store) {
         (store as Writable<any>).set(undefined);
-      }
+      } }
     });
   },
 
@@ -420,15 +411,16 @@ export const storeUtils = {
     try {
       const data = JSON.parse(backupData);
       await barrelStore.importStores(data);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Failed to restore from backup:', error);
       throw error;
-    }
+    } }
   },
 
   async debug(): Promise<{ [key: string]: any }> {
     return await barrelStore.exportStores();
-  }
+  } }
 };
 
 export default barrelStore;
+

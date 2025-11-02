@@ -1,11 +1,11 @@
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
+import type { Message } }from '$lib/types';
+import type { User } }from '$lib/types';
 /**
  * Contextual Chat Form Schema
  *
  * SvelteKit Superforms schema for contextual chat with validation
  */
-import { z } from 'zod';
+import { z } }from 'zod';
 /**
  * Chat message schema
  */
@@ -71,8 +71,7 @@ export const stateUpdateSchema = z.object({
   agentResponse: z.string().min(1, 'Agent response cannot be empty'),
   intent: z.string().min(1, 'Intent is required'),
   entities: z.array(
-    z.object({
-     , type: z.string(),
+    z.object({ type: z.string(),
       value: z.string(),
       confidence: z.number().min(0).max(1),
       startPos: z.number().optional(),
@@ -134,3 +133,4 @@ export const conversationClearSchema = z.object({
 });
 export type ConversationClearInput = z.input<typeof, conversationClearSchema>;
 export type ConversationClearOutput = z.output<typeof, conversationClearSchema>;
+

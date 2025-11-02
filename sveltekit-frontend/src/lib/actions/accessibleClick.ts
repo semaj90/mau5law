@@ -1,4 +1,4 @@
-import type { Action } from 'svelte/action';
+import type { Action } }from 'svelte/action';
 /**
  * Accessible Click Action
  * Makes: any element accessible by adding proper ARIA attributes and keyboard support
@@ -11,11 +11,11 @@ interface AccessibleClickParams {
  , handler: (e: Event) => void;
   label?: string;
   description?: string;
-}
+} }
 export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node, params) => {
   if (!params) return;
   // Destructure params into constants; keep a mutable handler reference for updates.
-  const { handler, role = 'button', label, description } = params;
+  const { handler, role = 'button', label, description } }= params;
   let currentHandler = handler;
   // 1. Set the ARIA role to tell screen readers what this element is.
   node.setAttribute('role', role);
@@ -24,10 +24,10 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
   // 3. Set optional ARIA attributes
   if (label) {
     node.setAttribute('aria-label', label);
-  }
+  } }
   if (description) {
     node.setAttribute('aria-describedby', description);
-  }
+  } }
   // This function will be our keyboard event listener.
   const onKeyDown = (event: KeyboardEvent) => {
     // Buttons should be activatable with Enter or Space.
@@ -36,7 +36,7 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
       // Prevent the default action (e.g., scrolling the page on Space press).
       event.preventDefault();
       currentHandler(event);
-    }
+    } }
   };
   // Click should call the same handler
   const onClick = (event: MouseEvent) => {
@@ -56,32 +56,33 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
     update(newParams) {
       // Re-evaluate with new parameters
       if (!newParams) return;
-      const { role: newRole = 'button', handler: newHandler, label: newLabel, description: newDescription } = newParams;
+      const { role: newRole = 'button', handler: newHandler, label: newLabel, description: newDescription } }= newParams;
       // Update mutable handler reference
       if (newHandler) {
         currentHandler = newHandler;
-      }
+      } }
       node.setAttribute('role', newRole);
       if (newLabel) {
         node.setAttribute('aria-label', newLabel);
-      } else {
+      } }else {
         node.removeAttribute('aria-label');
-      }
+      } }
       if (newDescription) {
         node.setAttribute('aria-describedby', newDescription);
-      } else {
+      } }else {
         node.removeAttribute('aria-describedby');
-      }
-    }
+      } }
+    } }
   };
 };
 /**
  * Specialized variant for button-like interactions
- */ export function accessibleButton(element: HTMLElement, params: {, handler: (e: Event) => void; label?: string }) {
+ */ export function accessibleButton(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {
   return accessibleClick(element, { role: 'button', ...params });
-}
+} }
 /**
  * Specialized variant for menu items
- */ export function accessibleMenuItem(element: HTMLElement, params: {, handler: (e: Event) => void; label?: string }) {
+ */ export function accessibleMenuItem(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {
   return accessibleClick(element, { role: 'menuitem', ...params });
-}
+} }
+

@@ -1,8 +1,8 @@
-import { evidence } from '$lib/server/db/schema-unified';
-import { error } from '@sveltejs/kit';
-import { eq, and } from 'drizzle-orm';
-import { db } from '$lib/server/db/index';
-import type { PageServerLoad } from './$types.js';
+import { evidence } }from '$lib/server/db/schema-unified';
+import { error } }from '@sveltejs/kit';
+import { eq, and } }from 'drizzle-orm';
+import { db } }from '$lib/server/db/index';
+import type { PageServerLoad } }from './$types.js';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
   const user = locals.user;
@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
       caseId: url.searchParams.get('caseId'),
       user: null
     };
-  }
+  } }
   try {
     // Get case ID from URL params or default to user's cases'
     const caseId = url.searchParams.get('caseId');
@@ -24,17 +24,18 @@ export const load: PageServerLoad = async ({ url, locals }) => {
         .select()
         .from(evidence)
         .where(and(eq(evidence.caseId, caseId), eq(evidence.userId, user.id)));
-    } else {
+    } }else {
       evidenceData = await db.select().from(evidence).where(eq(evidence.userId, user.id)).limit(50);
-    }
+    } }
     return {
       evidence: evidenceData,
       caseId,
       user
     };
-  } catch (err: any) {
+  } }catch (err: any) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     console.error('Failed to load evidence:', errorMessage);
     throw error(500, 'Failed to load evidence data');
-  }
+  } }
 };
+

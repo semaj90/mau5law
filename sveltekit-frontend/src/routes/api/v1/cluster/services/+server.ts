@@ -1,11 +1,11 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { json } }from '@sveltejs/kit';
 import {
   productionServiceRegistry,
   GO_SERVICES_REGISTRY,
   type ServiceDefinition
-} from '$lib/services/production-service-registry';
-import { context7OrchestrationService } from '$lib/services/context7-orchestration-integration';
+} }from '$lib/services/production-service-registry';
+import { context7OrchestrationService } }from '$lib/services/context7-orchestration-integration';
 
 /* clarified literal types matching registry API */
 type Category = 'ai_rag' | 'file_upload' | 'xstate_orchestration' | 'protocol' | 'infrastructure';
@@ -17,13 +17,13 @@ const, ALLOWED_CATEGORIES: Category[] = ['ai_rag', 'file_upload', 'xstate_orches
 const ALLOWED_TIERS: Tier[] = ['tier1', 'tier2', 'tier3', 'tier4'];
 
 /* === NEW: Safe partial orchestration API describing optional methods === */
-type OrchestrationApi = Partial<{, updateServiceHealth: () => Promise<void> | void;, getMetrics: () => Record<string, unknown> | Promise<Record<string, unknown>>;
+type OrchestrationApi = Partial<{ updateServiceHealth: () => Promise<void> | void;, getMetrics: () => Record<string, unknown> | Promise<Record<string, unknown>>;
   getOrchestrationPlan: () =>
     | {
         startupSequence?: any[];
         healthChecks?: any[];
         protocolRouting?: Record<string, unknown>;
-      }
+      } }
     | Promise<{
         startupSequence?: any[];
         healthChecks?: any[];
@@ -46,16 +46,16 @@ export const GET: RequestHandler = async ({ url }) => {
     if (categoryParam !== null) {
       if (!ALLOWED_CATEGORIES.includes(categoryParam as Category)) {
         return json({ error: 'Invalid category', allowed: ALLOWED_CATEGORIES }, { status: 400 });
-      }
+      } }
       services = productionServiceRegistry.getServicesByCategory(categoryParam as Category);
-    } else if (tierParam !== null) {
+    } }else if (tierParam !== null) {
       if (!ALLOWED_TIERS.includes(tierParam as Tier)) {
         return json({ error: 'Invalid tier', allowed: ALLOWED_TIERS }, { status: 400 });
-      }
+      } }
       services = productionServiceRegistry.getServicesByTier(tierParam as Tier);
-    } else {
+    } }else {
       services = Object.values(GO_SERVICES_REGISTRY);
-    }
+    } }
 
     // Add health status if requested (use typed array instead of `any[]`)
     let servicesWithHealth: ServiceWithHealth[] = services as ServiceWithHealth[];
@@ -67,38 +67,38 @@ export const GET: RequestHandler = async ({ url }) => {
             ...service,
             healthy,
             lastHealthCheck: new Date().toISOString()
-          } as ServiceWithHealth;
+          } }as ServiceWithHealth;
         })
       );
       servicesWithHealth = healthChecks;
-    }
+    } }
 
     // Guard orchestration integration methods — provide safe fallback if missing
     const orchestrationPlan = (typeof orchestration.getOrchestrationPlan === 'function'
       ? await Promise.resolve(orchestration.getOrchestrationPlan())
-      : { startupSequence: [], healthChecks: [], protocolRouting: {} }) ?? {
+      : { startupSequence: [], healthChecks: [], protocolRouting: {} }}) ?? {
       startupSequence: [],
       healthChecks: [],
-      protocolRouting: {}
+      protocolRouting: {} }
     };
 
     const response = {
-     , timestamp: new Date().toISOString(),
+  timestamp: new Date().toISOString(),
       services: servicesWithHealth,
       summary: {
-       , total: services.length,
+  total: services.length,
         byCategory: getCategoryBreakdown(services),
         byTier: getTierBreakdown(services),
         protocols: getProtocolBreakdown(services)
       },
       orchestration: {
-       , startupOrder: Array.isArray(orchestrationPlan.startupSequence) ? orchestrationPlan.startupSequence.length : 0,
+  startupOrder: Array.isArray(orchestrationPlan.startupSequence) ? orchestrationPlan.startupSequence.length : 0,
         healthEndpoints: Array.isArray(orchestrationPlan.healthChecks) ? orchestrationPlan.healthChecks.length : 0,
         protocolRoutes: orchestrationPlan.protocolRouting ? Object.keys(orchestrationPlan.protocolRouting).length : 0
-      }
+      } }
     };
     return json(response);
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Services query failed:', error);
     return json(
       {
@@ -106,14 +106,14 @@ export const GET: RequestHandler = async ({ url }) => {
         message: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action, services, options } = await request.json();
+    const { action, services, options } }= await request.json();
     switch (action) {
       case, 'start_services':
         return await handleStartServices(Array.isArray(services) ? services : [], options);
@@ -125,18 +125,18 @@ export const POST: RequestHandler = async ({ request }) => {
         return await handleGenerateStartupScript();
       case, 'update_orchestration':
         return await handleUpdateOrchestration(options);
-      default: return json({, error: 'Invalid action' }, { status: 400 });
-    }
-  } catch (error: any) {
+      default: return json({ error: 'Invalid action' }, { status: 400 });
+    } }
+  } }catch (error: any) {
     console.error('POST action failed:', error);
     return json(
       {
         error: 'Action failed',
         message: error instanceof Error ? error.message : String(error)
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 function getCategoryBreakdown(services: ServiceDefinition[]): Record<string, number> {
@@ -145,7 +145,7 @@ function getCategoryBreakdown(services: ServiceDefinition[]): Record<string, num
     breakdown[service.category] = (breakdown[service.category] || 0) + 1;
   });
   return breakdown;
-}
+} }
 
 function getTierBreakdown(services: ServiceDefinition[]): Record<string, number> {
   const breakdown: Record<string, number> = {};
@@ -153,7 +153,7 @@ function getTierBreakdown(services: ServiceDefinition[]): Record<string, number>
     breakdown[service.tier] = (breakdown[service.tier] || 0) + 1;
   });
   return breakdown;
-}
+} }
 
 function getProtocolBreakdown(services: ServiceDefinition[]): Record<string, number> {
   const breakdown: Record<string, number> = {};
@@ -163,66 +163,66 @@ function getProtocolBreakdown(services: ServiceDefinition[]): Record<string, num
     });
   });
   return breakdown;
-}
+} }
 
 async function handleStartServices(serviceNames: string[], _options?: any): Promise<Response> {
-  const results: Record<string, { success: boolean;, message: string }> = {};
+  const results: Record<string, { success: boolean; message: string }> = {};
   for (const serviceName of serviceNames) {
     const service = productionServiceRegistry.getServiceByName(serviceName);
     if (!service) {
       results[serviceName] = {
         success: false,
-        message: `Service not found in registry` };'`'`
+        message: 'Service not found in registry' };'`'`
       continue;
-    }
+    } }
     try {
       const healthy = await productionServiceRegistry.checkServiceHealth(serviceName);
       results[serviceName] = {
         success: healthy,
         message: healthy ? 'Service is running' : `Service failed to start` };
-    } catch (error: any) {
+    } }catch (error: any) {
       results[serviceName] = {
         success: false,
         message: error instanceof Error ? error.message : String(error)
       };
-    }
-  }
+    } }
+  } }
   return json({
     action: 'start_services',
     results,
     timestamp: new Date().toISOString()
   });
-}
+} }
 
 async function handleStopServices(serviceNames: string[]): Promise<Response> {
-  const results: Record<string, { success: boolean;, message: string }> = {};
+  const results: Record<string, { success: boolean; message: string }> = {};
   for (const serviceName of serviceNames) {
     // In production, this would actually stop the service
     results[serviceName] = {
       success: true,
-      message: `Stop command sent (simulation)` };
-  }
+      message: 'Stop command sent (simulation)' };
+  } }
   return json({
     action: 'stop_services',
     results,
     timestamp: new Date().toISOString()
   });
-}
+} }
 
 async function handleRestartTier(tier?: string): Promise<Response> {
   if (!tier || !ALLOWED_TIERS.includes(tier as Tier)) {
     return json({ error: 'Invalid tier', allowed: ALLOWED_TIERS }, { status: 400 });
-  }
+  } }
   const tierServices = productionServiceRegistry.getServicesByTier(tier as Tier);
   const results: Record<string, boolean> = {};
   for (const service of tierServices) {
     try {
       const healthy = await productionServiceRegistry.checkServiceHealth(service.name);
       results[service.name] = healthy;
-    } catch {
+    } }catch {
       results[service.name] = $state(false);
-    }
-  }
+    } }
+  } }
   return json({
     action: 'restart_tier',
     tier,
@@ -230,7 +230,7 @@ async function handleRestartTier(tier?: string): Promise<Response> {
     servicesAffected: tierServices.length,
     timestamp: new Date().toISOString()
   });
-}
+} }
 
 async function handleGenerateStartupScript(): Promise<Response> {
   // call generateStartupScript only if available; support sync or async return
@@ -244,13 +244,13 @@ async function handleGenerateStartupScript(): Promise<Response> {
     services: Object.keys(GO_SERVICES_REGISTRY).length,
     timestamp: new Date().toISOString()
   });
-}
+} }
 
 async function handleUpdateOrchestration(options?: Record<string, unknown>): Promise<Response> {
   // call updateServiceHealth only if available
   if (typeof orchestration.updateServiceHealth === 'function') {
     await Promise.resolve(orchestration.updateServiceHealth());
-  }
+  } }
   const metrics =
     typeof orchestration.getMetrics === 'function' ? await Promise.resolve(orchestration.getMetrics()) : {};
   const plan =
@@ -264,4 +264,5 @@ async function handleUpdateOrchestration(options?: Record<string, unknown>): Pro
     options,
     timestamp: new Date().toISOString()
   });
-}
+} }
+

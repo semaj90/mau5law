@@ -7,4 +7,5 @@ export function getOllamaEndpoint(): string {
   const dockerHostFallback = 'http://ollama:11434';
   const localhostFallback = 'http://localhost:11434';
   return viteEnv || nodeEnv || dockerHostFallback || localhostFallback;
-}
+} }
+

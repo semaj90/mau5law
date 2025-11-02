@@ -1,10 +1,10 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 /**
  * Redis cache service wrapper — prefers centralized createRedisInstance factory when available.
  */
-import { env } from '$env/dynamic/private';
-import type { IRedisCacheService } from '$lib/types/external-services';
-type RedisClientLike = { get: (k: string) => Promise<string | null>;, set: (k: string;, v: string, mode?: string, ttl?: number) => Promise<unknown>;
+import { env } }from '$env/dynamic/private';
+import type { IRedisCacheService } }from '$lib/types/external-services';
+type RedisClientLike = { get: (k: string) => Promise<string | null>;, set: (k: string; v: string, mode?: string, ttl?: number) => Promise<unknown>;
 };
 let client: RedisClientLike | null = null;
 
@@ -15,16 +15,16 @@ try {
   client = (redisFactory && (redisFactory.createRedisInstance || redisFactory.default))
     ? (redisFactory.createRedisInstance ? redisFactory.createRedisInstance() : redisFactory.default)
     : null;
-} catch {
+} }catch {
   // ignore — fall back to ioredis below
-}
+} }
 
 if (!client) {
   // lazy import ioredis to avoid top-level dependency issues in some environments
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const IORedis = require('ioredis');
   client = redis;
-}
+} }
 
 export const RedisCacheService: IRedisCacheService = {
   async get(key: string) {
@@ -43,5 +43,6 @@ export const RedisCacheService: IRedisCacheService = {
     if (!client) throw new Error('Redis client not initialized');
     const data = JSON.stringify(value);
     await client.set(key, data, 'EX', ttl);
-  }
+  } }
 };
+

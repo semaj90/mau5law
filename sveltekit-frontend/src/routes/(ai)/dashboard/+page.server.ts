@@ -1,11 +1,11 @@
-import { redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import { redirect } }from '@sveltejs/kit';
+import type { PageServerLoad } }from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Require authentication to access dashboard
   if (!locals.user) {
     throw redirect(303, '/login');
-  }
+  } }
 
   // Mock case data - replace with actual database queries
   const stats = {
@@ -22,8 +22,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   };
 
   const recentCases = [
-    {,
-      id: 'case_001',
+    { id: 'case_001',
       title: 'Smith v. Johnson Corp',
       caseType: 'Employment Dispute',
       status: 'open',
@@ -78,3 +77,4 @@ export const load: PageServerLoad = async ({ locals }) => {
     recentCases
   };
 };
+

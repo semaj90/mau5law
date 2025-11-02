@@ -7,31 +7,31 @@
 const gpuCacheOrchestrator = {
   async initialize() { console.log('GPU Cache Mock: initialized') },
   async store(_key: string, _data: any, _options?: any) { console.log('GPU Cache Mock: stored', key) },
-  async retrieve(_key: string) { console.log('GPU Cache Mock: retrieved', key); return: null as: unknown as { data: any } | null }
-}
+  async retrieve(_key: string) { console.log('GPU Cache Mock: retrieved', key); return: null as: unknown as { data: any } }| null } }
+} }
 // === WebGPU Texture Configuration ===
-export interface TextureStreamConfig {, device: GPUDevice;, format: GPUTextureFormat;
+export interface TextureStreamConfig { device: GPUDevice;, format: GPUTextureFormat;
   usage: GPUTextureUsageFlags;
-  dimensions: {, width: number;, height: number;
+  dimensions: { width: number;, height: number;
     depthOrArrayLayers?: number;
-  }
+  } }
   mipLevelCount?: number;
   sampleCount?: number;
   viewFormats?: GPUTextureFormat[];
   label?: string;
-}
-export interface StreamingTextureEntry {, id: string;, texture: GPUTexture;
+} }
+export interface StreamingTextureEntry { id: string;, texture: GPUTexture;
   textureView: GPUTextureView;
   buffer: GPUBuffer;
-  metadata: {, width: number;, height: number;
+  metadata: { width: number;, height: number;
     format: GPUTextureFormat;
     size: number;
     timestamp: number;
     lastAccessed: number;
     streamingActive: boolean;
-  }
+  } }
  , cacheRegion: 'CHR_ROM' | 'CHR_RAM' | 'PRG_ROM' | 'PRG_RAM'; // NES-style memory regions
-}
+} }
 // === RTX, 3060 Ti Optimized Configuration ===
 const RTX_3060_TI_CONFIG = {
   maxTextureSize: 16384, // Maximum 16K textures
@@ -40,14 +40,13 @@ const RTX_3060_TI_CONFIG = {
   memoryBudgetMB: 6144, // 6GB of 8GB VRAM (leaving 2GB buffer)
   compressionLevel: 6,
   streamingChunkSize: 1024 * 1024, // 1MB chunks
-  features: {
-   , textureCompression: ['bc7-rgba-unorm', 'etc2-rgb8unorm'],
+  features: { textureCompression: ['bc7-rgba-unorm', 'etc2-rgb8unorm'],
     timerQuery: true,
     timestampQuery: true,
     multiDrawIndirect: true,
     depthClipControl: true
-  }
-}
+  } }
+} }
 // === WebGPU Texture Streaming Service ===
 export class WebGPUTextureStreamingService {
   private device: GPUDevice | null = null;
@@ -63,10 +62,10 @@ export class WebGPUTextureStreamingService {
     cacheHitRatio: 0,
     compressionRatio: 0,
     gpuUtilization: 0
-  }
+  } }
   constructor() {
     this.initialize().catch(console.error);
-  }
+  } }
   // === WebGPU Initialization ===
   private async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -75,7 +74,7 @@ export class WebGPUTextureStreamingService {
       // Check WebGPU support
       if (!navigator.gpu) {
         throw new Error('WebGPU is not supported in this browser');
-      }
+      } }
       // Request adapter with high performance preference
       this.adapter = await navigator.gpu.requestAdapter({
         powerPreference: 'high-performance',
@@ -83,38 +82,37 @@ export class WebGPUTextureStreamingService {
       });
       if (!this.adapter) {
         throw new Error('Failed to get WebGPU adapter');
-      }
+      } }
       // Log adapter info (requestAdapterInfo not available in current WebGPU API)
       console.log('🔍 WebGPU Adapter initialized successfully');
       // Request device with required features (using only valid GPUFeatureName values)
       this.device = await this.adapter.requestDevice({
         requiredFeatures: ['texture-compression-bc'] as GPUFeatureName[],
-        requiredLimits: {
-         , maxTextureDimension2D: 16384,
+        requiredLimits: { maxTextureDimension2D: 16384,
           maxTextureArrayLayers: 256,
           maxBindGroups: 8,
           maxComputeWorkgroupSizeX: 1024,
           maxComputeWorkgroupSizeY: 1024,
           maxComputeWorkgroupSizeZ: 64
-        }
+        } }
       });
       if (!this.device) {
         throw new Error('Failed to get WebGPU device');
-      }
+      } }
       // Set up error handling
       this.device.addEventListener('uncapturederror', (_event: GPUUncapturedErrorEvent) => {
         const error = event.error;
-        console.error('🚨 WebGPU uncaptured error:', error.message);'
+        console.error('🚨 WebGPU uncaptured error:', error.message);
       });
       this.isInitialized = true;
       console.log('✅ WebGPU texture streaming initialized');
       // Initialize GPU cache integration
       await this.initializeGPUCacheIntegration();
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Failed to initialize WebGPU:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   private async initializeGPUCacheIntegration(): Promise<void> {
     console.log('🔗 Integrating with GPU Cache Orchestrator...');
     // Initialize GPU cache with WebGPU-specific configuration
@@ -131,7 +129,7 @@ export class WebGPUTextureStreamingService {
       userId: 'texture-streaming-service'
     });
     console.log('✅ GPU Cache Orchestrator integration completed');
-  }
+  } }
   // === Texture Creation and Management ===
   async createStreamingTexture(
     id: string;
@@ -140,7 +138,7 @@ export class WebGPUTextureStreamingService {
   ): Promise<StreamingTextureEntry> {
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
-    }
+    } }
     const startTime = performance.now();
     try {
       // Check if texture already exists in cache
@@ -149,7 +147,7 @@ export class WebGPUTextureStreamingService {
         console.log(`📱 Texture cache hit: ${id}`);
         this.metrics.cacheHitRatio = (this.metrics.cacheHitRatio + 1) / 2;
         return cached.data as StreamingTextureEntry;
-      }
+      } }
       // Create texture
       const texture = this.device.createTexture({
         size: config.dimensions,
@@ -172,12 +170,12 @@ export class WebGPUTextureStreamingService {
         let bufferData: ArrayBuffer;
         if (initialData instanceof ArrayBuffer) {
           bufferData = initialData;
-        } else {
-          const ta = initialData as { buffer: ArrayBuffer; byteOffset: number;, byteLength: number }
+        } }else {
+          const ta = initialData as { buffer: ArrayBuffer; byteOffset: number; byteLength: number } }
           bufferData = ta.buffer.slice(ta.byteOffset, ta.byteOffset + ta.byteLength);
-        }
+        } }
         this.device.queue.writeBuffer(buffer, 0, bufferData);
-      }
+      } }
       // Calculate texture size
       const pixelSize = this.getPixelSize(config.format);
       const textureSize =
@@ -191,8 +189,7 @@ export class WebGPUTextureStreamingService {
         texture,
         textureView,
         buffer: buffer!,
-        metadata: {
-         , width: config.dimensions.width,
+        metadata: { width: config.dimensions.width,
           height: config.dimensions.height,
           format: config.format,
           size: textureSize;
@@ -201,7 +198,7 @@ export class WebGPUTextureStreamingService {
           streamingActive: true
         },
         cacheRegion: this.determineCacheRegion(textureSize)
-      }
+      } }
       // Store in texture pool
       this.texturePool.set(id, entry);
       // Store in GPU cache orchestrator
@@ -213,41 +210,41 @@ export class WebGPUTextureStreamingService {
       this.metrics.texturesStreamed++;
       this.metrics.totalMemoryUsed += textureSize;
       this.metrics.streamingLatency.push(performance.now() - startTime);
-      console.log(`🎨 Texture created: ${id} (${textureSize} bytes, ${entry.cacheRegion})`);
+      console.log(`🎨 Texture created: ${id} }(${textureSize} }bytes, ${entry.cacheRegion})`);
       return entry;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error(`❌ Failed to create texture ${id}: ', error);'`
       throw error;
-    }
-  }
+    } }
+  } }
   // === Streaming Operations ===
   async streamTextureData(
     textureId: string,
     data: ArrayBuffer | Float32Array,
     options: {
-      region?: {, x: number;, y: number;
+      region?: { x: number;, y: number;
        , width: number;
        , height: number;
-      }
+      } }
       mipLevel?: number;
       compress?: boolean;
       priority?: 'low' | 'medium' | 'high';
-    } = {}
+    } }= {} }
   ): Promise<void> {
     const entry = this.texturePool.get(textureId);
     if (!entry) {
-      throw new Error(`Texture ${textureId} not found`);
-    }
+      throw new Error(`Texture ${textureId} }not found`);
+    } }
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
-    }
+    } }
     const startTime = performance.now();
     try {
       // Compress data if requested and supported
       let processedData = data;
       if (options.compress && this.supportsCompression(entry.metadata.format)) {
         processedData = await this.compressTextureData(data, entry.metadata.format);
-      }
+      } }
       // Create staging buffer
       const stagingBuffer = this.device.createBuffer({
         size: processedData.byteLength,
@@ -257,10 +254,10 @@ export class WebGPUTextureStreamingService {
       let stagingData: ArrayBuffer;
       if (processedData instanceof ArrayBuffer) {
         stagingData = processedData;
-      } else {
-        const ta = processedData as { buffer: ArrayBuffer; byteOffset: number;, byteLength: number }
+      } }else {
+        const ta = processedData as { buffer: ArrayBuffer; byteOffset: number; byteLength: number } }
         stagingData = ta.buffer.slice(ta.byteOffset, ta.byteOffset + ta.byteLength);
-      }
+      } }
       this.device.queue.writeBuffer(stagingBuffer, 0, stagingData);
       // Create command encoder
       const commandEncoder = this.device.createCommandEncoder({
@@ -271,23 +268,22 @@ export class WebGPUTextureStreamingService {
         y: 0,
         width: entry.metadata.width,
         height: entry.metadata.height
-      }
+      } }
       commandEncoder.copyBufferToTexture(
-        {
-         , buffer: stagingBuffer,
+        { buffer: stagingBuffer,
           bytesPerRow: region.width * this.getPixelSize(entry.metadata.format),
           rowsPerImage: region.height
         },
         {
           texture: entry.texture,
           mipLevel: options.mipLevel || 0,
-          origin: {, x: region.x, y: region.y, z: 0 }
+          origin: { x: region.x, y: region.y, z: 0 } }
         },
         {
           width: region.width,
           height: region.height,
           depthOrArrayLayers: 1
-        }
+        } }
       );
       // Submit command buffer
       this.device.queue.submit([commandEncoder.finish()]);
@@ -300,12 +296,12 @@ export class WebGPUTextureStreamingService {
         tags: ['webgpu-texture', 'streaming', 'updated', entry.cacheRegion],
         userId: `texture-streaming-service` });'`'`
       const streamTime = performance.now() - startTime;
-      console.log(`📤 Texture streamed: ${textureId} (${streamTime.toFixed(2)}ms)`);
-    } catch (error: any) {
+      console.log(`📤 Texture streamed: ${textureId} }(${streamTime.toFixed(2)}ms)`);
+    } }catch (error: any) {
       console.error(`❌ Failed to stream texture data for ${textureId}: ', error);'`
       throw error;
-    }
-  }
+    } }
+  } }
   // === Concurrent Memory Management ===
   async optimizeConcurrentMemory(): Promise<void> {
     console.log('🔧 Optimizing concurrent memory management...');
@@ -315,13 +311,13 @@ export class WebGPUTextureStreamingService {
     if (totalMemory > memoryThreshold) {
       console.warn(`⚠️ Memory usage high: ${(totalMemory / 1024 / 1024).toFixed(2)}MB`);
       await this.performTextureCompaction();
-    }
+    } }
     // Optimize texture streaming queue
     await this.optimizeStreamingQueue();
     // Update cache regions based on usage patterns
     await this.optimizeCacheRegions();
     console.log('✅ Concurrent memory optimization completed');
-  }
+  } }
   private async performTextureCompaction(): Promise<void> {
     console.log('🗜️ Performing texture memory compaction...');
     // Sort textures by last access time and size
@@ -345,10 +341,10 @@ export class WebGPUTextureStreamingService {
       // Update metrics
       freedBytes += entry.metadata.size;
       this.metrics.totalMemoryUsed -= entry.metadata.size;
-      console.log(`🗑️ Freed texture: ${id} -> ${entry.metadata.size} bytes`);
-    }
+      console.log(`🗑️ Freed texture: ${id} }-> ${entry.metadata.size} }bytes`);
+    } }
     console.log(`✅ Texture compaction completed: freed ${(freedBytes / 1024 / 1024).toFixed(2)}MB`);
-  }
+  } }
   // === Utility Methods ===
   private getPixelSize(format: GPUTextureFormat): number {
     const formatSizes: Record<string, number> = {
@@ -363,40 +359,40 @@ export class WebGPUTextureStreamingService {
       'rg32float': 8,
       'rgba32float': 16,
       'bc7-rgba-unorm': 1 // Compressed
-    }
+    } }
     return formatSizes[format as keyof typeof formatSizes] || 4;
-  }
+  } }
   private determineCacheRegion(textureSize: number): 'CHR_ROM' | 'CHR_RAM' | 'PRG_ROM' | 'PRG_RAM' {
     // NES-style memory region mapping based on size and usage
     if (textureSize > 4 * 1024 * 1024) { // > 4MB: Large textures
       return, 'PRG_ROM';
-    } else if (textureSize > 1 * 1024 * 1024) { // 1-4MB: Medium textures
+    } }else if (textureSize > 1 * 1024 * 1024) { // 1-4MB: Medium textures
       return, 'CHR_ROM';
-    } else if (textureSize > 256 * 1024) { // 256KB-1MB: Small textures
+    } }else if (textureSize > 256 * 1024) { // 256KB-1MB: Small textures
       return, 'CHR_RAM';
-    } else { // < 256KB: Tiny, textures
+    } }else { // < 256KB: Tiny, textures
       return, 'PRG_RAM';
-    }
-  }
+    } }
+  } }
   private supportsCompression(format: GPUTextureFormat): boolean {
     return RTX_3060_TI_CONFIG.features.textureCompression.includes(format);
-  }
+  } }
   private async compressTextureData(data: ArrayBuffer | Float32Array, format: GPUTextureFormat): Promise<ArrayBuffer> {
     // Placeholder for texture compression
     // In real implementation, would use appropriate compression algorithm
     console.log(`🗜️ Compressing texture data for format: ${format}`);
     if (data instanceof Float32Array) {
       return data.buffer instanceof ArrayBuffer ? data.buffer: new ArrayBuffer(data.byteLength);
-    }
+    } }
     return data instanceof ArrayBuffer ? data : new ArrayBuffer(0);
-  }
+  } }
   private async optimizeStreamingQueue(): Promise<void> {
     // Optimize concurrent streaming operations
     const queueSize = this.streamingQueue.size;
     if (queueSize > RTX_3060_TI_CONFIG.maxConcurrentStreams) {
-      console.warn(`⚠️ Streaming queue overloaded: ${queueSize} operations`);
-    }
-  }
+      console.warn(`⚠️ Streaming queue overloaded: ${queueSize} }operations`);
+    } }
+  } }
   private async optimizeCacheRegions(): Promise<void> {
   // Analyze texture usage patterns and optimize cache region assignments
     const regionStats = {
@@ -404,12 +400,12 @@ export class WebGPUTextureStreamingService {
       'CHR_RAM': 0,
       'PRG_ROM': 0,
       'PRG_RAM': 0
-    }
+    } }
     for (const [, entry] of this.texturePool) {
       regionStats[entry.cacheRegion]++;
-    }
+    } }
     console.log('📊 Cache region usage:', regionStats);
-  }
+  } }
   // === Performance Metrics ===
   getPerformanceMetrics() {
     const averageLatency = this.metrics.streamingLatency.length > 0
@@ -422,8 +418,8 @@ export class WebGPUTextureStreamingService {
       cacheHitRatio: (this.metrics.cacheHitRatio * 100).toFixed(1) + '%',
       activeTextures: this.texturePool.size,
       streamingQueueSize: this.streamingQueue.size,
-      memoryUtilization: ((this.metrics.totalMemoryUsed / (RTX_3060_TI_CONFIG.memoryBudgetMB * 1024 * 1024)) * 100).toFixed(1) + '%` }'`
-  }
+      memoryUtilization: ((this.metrics.totalMemoryUsed / (RTX_3060_TI_CONFIG.memoryBudgetMB * 1024 * 1024)) * 100).toFixed(1) + '%` } }`
+  } }
   // === Shutdown ===
   async shutdown(): Promise<void> {
     console.log('🛑 Shutting down WebGPU texture streaming...');
@@ -431,14 +427,14 @@ export class WebGPUTextureStreamingService {
     for (const entry of this.texturePool.values()) {
       entry.texture.destroy();
       entry.buffer?.destroy();
-    }
+    } }
     // Clear pools
     this.texturePool.clear();
     this.streamingQueue.clear();
     this.isInitialized = $state(false);
     console.log('✅ WebGPU texture streaming shutdown completed');
-  }
-}
+  } }
+} }
 // === Export singleton instance ===
 export const webgpuTextureStreaming = new WebGPUTextureStreamingService();
 // Export alias for compatibility

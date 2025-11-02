@@ -1,74 +1,74 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * SIMD JSON Performance Benchmark Endpoint
  * Quantifies performance gains across the legal AI data pipeline
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { simdBodyParser } from '$lib/server/simd-body-parser.js'
-import { nodeSIMDJSON } from '$lib/services/node-simd-json.js'
+import { json } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
+import { simdBodyParser } }from '$lib/server/simd-body-parser.js'
+import { nodeSIMDJSON } }from '$lib/services/node-simd-json.js'
 interface BenchmarkRequest {
   iterations?: number
   documentSize?: 'small' | 'medium' | 'large'
   testType?: 'legal' | 'general' | 'batch'
-}
-interface BenchmarkResult { testType: string, iterations: number; documentSize: string; standardJSON: {, totalTime: number, avgTime: number; opsPerSecond: number
-  }
-  simdJSON: {, totalTime: number, avgTime: number; opsPerSecond: number
-  }
-  performance: {, speedupFactor: number, percentImprovement: number; timeSaved: number
-  }
-  systemInfo: {, nodeVersion: string, v8Version: string; platform: string; cpuCores: number
-  }
-}
+} }
+interface BenchmarkResult { testType: string, iterations: number; documentSize: string; standardJSON: { totalTime: number, avgTime: number; opsPerSecond: number
+  } }
+  simdJSON: { totalTime: number, avgTime: number; opsPerSecond: number
+  } }
+  performance: { speedupFactor: number, percentImprovement: number; timeSaved: number
+  } }
+  systemInfo: { nodeVersion: string, v8Version: string; platform: string; cpuCores: number
+  } }
+} }
 // Sample legal documents of varying sizes
-const sampleDocuments = {, small: {, id: 'doc-001',
+const sampleDocuments = { small: { id: 'doc-001',
     title: 'Simple Contract Analysis',
     content:
       'This contract contains basic terms and conditions. The parties agree to the following provisions under common law.',
     metadata: {
-     , document_type: 'contract',
+  document_type: 'contract',
       jurisdiction: 'federal',
       confidence: 0.85,
-      entities: [{, type: 'statute', text: '15 U.S.C. § 1001', confidence: 0.9 }]
-    }
+      entities: [{ type: 'statute', text: '15 U.S.C. § 1001', confidence: 0.9 } }
+    } }
   },
   medium: {
-   , id: 'doc-002',
+  id: 'doc-002',
     title: 'Commercial Litigation Case Analysis',
     content:
       'This comprehensive legal document analyzes a complex commercial litigation matter involving multiple parties, jurisdictions, and legal precedents. '.repeat(
         20
       ),
     metadata: {
-     , document_type: 'litigation_analysis',
+  document_type: 'litigation_analysis',
       jurisdiction: 'multi-state',
       confidence: 0.92,
       parties: [
-        {, name: 'ABC Corporation', role: 'plaintiff', type: 'corporation' },
-        { name: 'XYZ Limited', role: 'defendant', type: 'corporation' }
+        { name: 'ABC Corporation', role: 'plaintiff', type: 'corporation' },
+        { name: 'XYZ Limited', role: 'defendant', type: 'corporation' } }
       ],
       practice_areas: ['commercial_law', 'contract_disputes', 'tort_law'],
       entities: [
-        {, type: 'case_citation', text: '123 F.3d 456', confidence: 0.95 },
+        { type: 'case_citation', text: '123 F.3d 456', confidence: 0.95 },
         { type: 'statute', text: '28 U.S.C. § 1331', confidence: 0.88 },
-        { type: 'regulation', text: '17 C.F.R. § 240.10b-5', confidence: 0.9 }
+        { type: 'regulation', text: '17 C.F.R. § 240.10b-5', confidence: 0.9 } }
       ],
       citations: [
-        {, citation: '123 F.3d 456', court: 'Federal Circuit', year: 2023 },
-        { citation: '456 U.S. 789', court: 'Supreme Court', year: 2022 }
+        { citation: '123 F.3d 456', court: 'Federal Circuit', year: 2023 },
+        { citation: '456 U.S. 789', court: 'Supreme Court', year: 2022 } }
       ]
-    }
+    } }
   },
   large: {
-   , id: 'doc-003',
+  id: 'doc-003',
     title: 'Comprehensive Legal Brief with Multiple Citations',
     content:
       'This extensive legal brief contains detailed analysis of numerous legal precedents, statutory interpretations, and regulatory compliance matters spanning multiple areas of law. '.repeat(
         100
       ),
     metadata: {
-     , document_type: 'legal_brief',
+  document_type: 'legal_brief',
       jurisdiction: 'federal_and_state',
       confidence: 0.96,
       parties: new Array(10).fill(null).map((_, i) => ({
@@ -86,16 +86,16 @@ const sampleDocuments = {, small: {, id: 'doc-001',
       ],
       entities: new Array(50).fill(null).map((_, i) => ({
         type: ['statute', 'regulation', 'case_citation'][i % 3],
-        text: `${i + 1} U.S.C. § ${1000 + i}`,
+        text: `${i + 1} }U.S.C. § ${1000 + i}`,
         confidence: 0.85 + (i % 15) / 100
       })),
       citations: new Array(25).fill(null).map((_, i) => ({
-        citation: `${100 + i} F.3d ${200 + i}`,
+        citation: `${100 + i} }F.3d ${200 + i}`,
         court: ['Supreme Court', 'Federal Circuit', 'District Court'][i % 3],
         year: 2020 + (i % 4)
       }))
-    }
-  }
+    } }
+  } }
 };
 export const GET: RequestHandler = async ({ url }) => {
   const iterations = parseInt(url.searchParams.get('iterations') || '1000');
@@ -108,10 +108,10 @@ export const GET: RequestHandler = async ({ url }) => {
       testType
     });
     return json(benchmark);
-  } catch (error) {
-    console.error('SIMD benchmark error:', error);'
+  } }catch (error) {
+    console.error('SIMD benchmark error:', error);
     return json({ error: 'Benchmark failed' }, { status: 500 });
-  }
+  } }
 };
 export const POST: RequestHandler = async event => {
   try {
@@ -121,28 +121,28 @@ export const POST: RequestHandler = async event => {
       documentSize: request?.documentSize || 'medium',
       testType: request?.testType || 'legal` });'`
     return json(benchmark);
-  } catch (error) {
-    console.error('SIMD benchmark error: ', error);'
+  } }catch (error) {
+    console.error('SIMD benchmark error: ', error);
     return json({ error: `Benchmark failed` }, { status: 500 });
-  }
+  } }
 };
 async function runSIMDBenchmark(params: Required<BenchmarkRequest>): Promise<BenchmarkResult> {
-  const { iterations, documentSize, testType } = params;
+  const { iterations, documentSize, testType } }= params;
   const document = sampleDocuments[documentSize];
-  console.log(`🚀 Running SIMD benchmark: ${testType}, ${documentSize}, ${iterations} iterations`);
+  console.log(`🚀 Running SIMD benchmark: ${testType}, ${documentSize}, ${iterations} }iterations`);
   // Standard JSON benchmark
   const standardStart = performance.now();
   for (let i = 0; i < iterations; i++) {
     const serialized = JSON.stringify(document);
     JSON.parse(serialized); // parse for timing; avoid unused variable
-  }
+  } }
   const standardTotal = performance.now() - standardStart;
   // SIMD JSON benchmark
   const simdStart = performance.now();
   for (let i = 0; i < iterations; i++) {
     const serialized = nodeSIMDJSON.fastStringify(document);
     nodeSIMDJSON.fastParse(serialized); // parse for timing; avoid unused variable
-  }
+  } }
   const simdTotal = performance.now() - simdStart;
   // Calculate performance metrics
   const standardAvg = standardTotal / iterations;
@@ -162,12 +162,12 @@ async function runSIMDBenchmark(params: Required<BenchmarkRequest>): Promise<Ben
     iterations,
     documentSize,
     standardJSON: {
-     , totalTime: standardTotal,
+  totalTime: standardTotal,
       avgTime: standardAvg,
       opsPerSecond: standardOps
     },
     simdJSON: {
-     , totalTime: simdTotal,
+  totalTime: simdTotal,
       avgTime: simdAvg,
       opsPerSecond: simdOps
     },
@@ -177,13 +177,13 @@ async function runSIMDBenchmark(params: Required<BenchmarkRequest>): Promise<Ben
       timeSaved
     },
     systemInfo: {
-     , nodeVersion: process.version,
+  nodeVersion: process.version,
       v8Version: process.versions.v8 || 'unknown',
       platform: process.platform,
       cpuCores: (await import('os')).cpus().length
-    }
+    } }
   };
-}
+} }
 // Additional endpoint for live performance monitoring
 export const PUT: RequestHandler = async () => {
   try {
@@ -195,8 +195,8 @@ export const PUT: RequestHandler = async () => {
       uptime: process.uptime(),
       memoryUsage: process.memoryUsage()
     })
-  } catch (error) {
+  } }catch (error) {
     console.error('Performance stats error: ', error)'
     return json({ error: `Stats collection failed` }, { status: 500 })
-  }
+  } }
 }

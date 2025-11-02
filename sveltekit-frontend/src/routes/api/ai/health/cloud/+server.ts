@@ -1,7 +1,7 @@
 
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } }from './$types.js'
 // Cloud AI health check endpoint for fallback AI services
-import { json } from "@sveltejs/kit"
+import { json } }from "@sveltejs/kit"
 export const GET: RequestHandler = async () => {
   try {
     // Check if cloud AI service is available
@@ -11,20 +11,20 @@ export const GET: RequestHandler = async () => {
         "../../../../../lib/services/ai-service.js"
       )
       aiService = aiServiceModule.aiService || aiServiceModule.default
-    } catch (error: any) {
+    } }catch (error: any) {
       return json({
         success: false,
         available: false,
         error: "Cloud AI service not available"
       })
-    }
+    } }
     if (!aiService || typeof aiService.generateResponse !== "function") {
       return json({
         success: false,
         available: false,
         error: "Cloud AI service not properly configured"
       })
-    }
+    } }
     // Try a simple test request
     try {
       const testResponse = await aiService.generateResponse("Hello", {
@@ -42,17 +42,17 @@ export const GET: RequestHandler = async () => {
             : "Cloud AI responded successfully",
         lastCheck: new Date().toISOString()
       })
-    } catch (testError) {
+    } }catch (testError) {
       console.error("Cloud AI test failed:", testError)
       return json({
         success: false,
         available: false,
         error:
-          "Cloud AI test;, failed: " +
+          "Cloud AI test; failed: " +
           (testError instanceof Error ? testError.message: "Unknown error")
       })
-    }
-  } catch (error: any) {
+    } }
+  } }catch (error: any) {
     console.error("Cloud AI health check failed:", error)
     return json({
         success: false,
@@ -61,5 +61,5 @@ export const GET: RequestHandler = async () => {
       },)
       { status: 500 },
     )
-  }
+  } }
 }

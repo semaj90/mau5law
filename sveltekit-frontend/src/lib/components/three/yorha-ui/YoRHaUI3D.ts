@@ -7,34 +7,30 @@ import * as THREE from 'three';
 // YoRHa Color Scheme (NieR: Automata inspired)
 export const YORHA_COLORS = {
   // Primary gothic palette
-  primary: {
-   , black: 0x0a0a0a, // Deep gothic black
+  primary: { black: 0x0a0a0a, // Deep gothic black
     white: 0xfaf6ed, // Warm off-white
     beige: 0xd4c5a9, // Desert sand
     grey: 0x8b8680, // Stone grey
   },
   // Accent colors
-  accent: {
-   , gold: 0xd4af37, // Golden highlights
+  accent: { gold: 0xd4af37, // Golden highlights
     amber: 0xffc649, // Amber glow
     bronze: 0xcd7f32, // Bronze metallic
     copper: 0xb87333, // Copper warm
   },
   // Status colors
-  status: {
-   , success: 0x90ee90, // Light green
+  status: { success: 0x90ee90, // Light green
     warning: 0xffa500, // Orange warning
     error: 0xff6b6b, // Soft red error
     info: 0x87ceeb, // Sky blue info
   },
   // UI states
-  interaction: {
-   , hover: 0xe8dcc0, // Warm hover
+  interaction: { hover: 0xe8dcc0, // Warm hover
     active: 0xffd700, // Gold active
     disabled: 0x4a4a4a, // Disabled grey;
     focus: 0xf0e68c, // Khaki focus
-  }
-} as const;
+  } }
+} }as const;
 // 3D CSS-like styling system
 export interface YoRHaStyle {
   // Box model
@@ -90,21 +86,21 @@ export interface YoRHaStyle {
     | 'alert'
     | 'confirm'
     | 'fullscreen';
-}
+} }
 export interface YoRHaPadding {
   top?: number;
   right?: number;
   bottom?: number;
   left?: number;
   all?: number;
-}
+} }
 export interface YoRHaMargin {
   top?: number;
   right?: number;
   bottom?: number;
   left?: number;
   all?: number;
-}
+} }
 export interface YoRHaShadow {
   enabled: boolean;
   color?: number;
@@ -113,30 +109,30 @@ export interface YoRHaShadow {
   offsetX?: number;
   offsetY?: number;
   offsetZ?: number;
-}
+} }
 export interface YoRHaGlow {
   enabled: boolean;
   color?: number;
   intensity?: number;
   size?: number;
   animation?: 'pulse' | 'scan' | 'static';
-}
-export interface YoRHaGradient {, type: 'linear' | 'radial' | 'vertical' | 'horizontal' | 'diagonal';, colors: number[];
+} }
+export interface YoRHaGradient { type: 'linear' | 'radial' | 'vertical' | 'horizontal' | 'diagonal';, colors: number[];
   stops?: number[];
   direction?: THREE.Vector3;
-}
+} }
 export interface YoRHaAnimation {
   type: 'pulse' | 'rotate' | 'scale' | 'hover' | 'scan' | 'glitch';
   duration?: number;
   easing?: 'linear' | 'easeIn' | 'easeOut' | 'easeInOut';
   loop?: boolean;
   delay?: number;
-}
+} }
 export interface YoRHaTransform {
   position?: THREE.Vector3;
   rotation?: THREE.Euler;
   scale?: THREE.Vector3;
-}
+} }
 // Base YoRHa 3D UI Component
 export abstract class YoRHa3DComponent extends THREE.Group {
   protected style: YoRHaStyle;
@@ -160,7 +156,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     this.applyStyle();
     this.setupInteractions();
     this.setupAnimations();
-  }
+  } }
   protected mergeDefaultStyle(style: YoRHaStyle): YoRHaStyle {
     return {
       width: 2,
@@ -173,10 +169,9 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       opacity: 1,
       metalness: 0.1,
       roughness: 0.8,
-      padding: {, all: 0.1 },
-      margin: {, all: 0 },
-      shadow: {
-       , enabled: true,
+      padding: { all: 0.1 },
+      margin: { all: 0 },
+      shadow: { enabled: true,
         color: YORHA_COLORS.primary.black,
         blur: 0.5,
         intensity: 0.3,
@@ -184,11 +179,10 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       },
       ...style
     };
-  }
+  } }
   protected abstract createGeometry(): void;
   protected createMaterial(): void {
-    const materialProps: THREE.MeshStandardMaterialParameters = {
-     , color: this.style.backgroundColor,
+    const materialProps: THREE.MeshStandardMaterialParameters = { color: this.style.backgroundColor,
       opacity: this.style.opacity,
       transparent: (this.style.opacity || 1) < 1,
       metalness: this.style.metalness,
@@ -197,10 +191,10 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     // Apply gradient if specified
     if (this.style.gradient) {
       this.material = this.createGradientMaterial(materialProps);
-    } else {
+    } }else {
       this.material = new THREE.MeshStandardMaterial(materialProps);
-    }
-  }
+    } }
+  } }
   protected createGradientMaterial(baseProps: THREE.MeshStandardMaterialParameters): THREE.Material {
     const gradient = this.style.gradient!;
     // Create gradient texture
@@ -225,7 +219,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
         break;
       default:
         gradientObj = ctx.createLinearGradient(0, 0, 256, 0);
-    }
+    } }
     // Add color stops (robust for single-color gradients)
     const stops =
       gradient.stops ??
@@ -241,23 +235,23 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       ...baseProps,
       map: texture
     });
-  }
+  } }
   protected createMesh(): void {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.add(this.mesh);
     // Create border if specified
     if (this.style.borderWidth && this.style.borderWidth > 0) {
       this.createBorder();
-    }
+    } }
     // Create shadow if enabled
     if (this.style.shadow?.enabled) {
       this.createShadow();
-    }
+    } }
     // Create glow effect if enabled
     if (this.style.glow?.enabled) {
       this.createGlow();
-    }
-  }
+    } }
+  } }
   protected createBorder(): void {
     const borderGeometry = this.createBorderGeometry();
     const borderMaterial = new THREE.MeshStandardMaterial({
@@ -270,17 +264,17 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     // Apply border style effects
     if (this.style.borderStyle === 'glow') {
       this.createBorderGlow(borderMesh);
-    } else if (this.style.borderStyle === 'scan') {
+    } }else if (this.style.borderStyle === 'scan') {
       this.createBorderScanAnimation(borderMesh);
-    }
-  }
+    } }
+  } }
   protected createBorderGeometry(): THREE.BufferGeometry {
     // Default implementation - override in subclasses
     const width = (this.style.width || 1) + (this.style.borderWidth || 0) * 2;
     const height = (this.style.height || 1) + (this.style.borderWidth || 0) * 2;
     const depth = (this.style.depth || 0.1) + (this.style.borderWidth || 0) * 2;
     return new THREE.BoxGeometry(width, height, depth);
-  }
+  } }
   protected createShadow(): void {
     if (!this.style.shadow) return;
     const shadowGeometry = this.geometry.clone();
@@ -299,7 +293,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const blur = this.style.shadow.blur || 0.5;
     shadowMesh.scale.set(1 + blur * 0.1, 1 + blur * 0.1, 1);
     this.add(shadowMesh);
-  }
+  } }
   protected createGlow(): void {
     if (!this.style.glow) return;
     const glowGeometry = this.geometry.clone();
@@ -321,9 +315,9 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       // Animate glow if specified
       if (this.style.glow.animation === 'pulse') {
         this.createPulseAnimation(glowMesh, i * 0.2);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   protected createBorderGlow(borderMesh: THREE.Mesh): void {
     const glowMaterial = new THREE.MeshStandardMaterial({
       color: this.style.borderColor,
@@ -334,21 +328,21 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const glowMesh = new THREE.Mesh(borderMesh.geometry, glowMaterial);
     glowMesh.scale.set(1.1, 1.1, 1.1);
     this.add(glowMesh);
-  }
+  } }
   protected createBorderScanAnimation(borderMesh: THREE.Mesh): void {
     // Create animated scan line effect on border
-    const scanMaterial = new THREE.ShaderMaterial({ uniforms: {, time: {, value: 0 },
-        scanSpeed: {, value: 2.0 },
-        scanWidth: {, value: 0.1 },
-        baseColor: {, value: new THREE.Color(this.style.borderColor ?? YORHA_COLORS.primary.black) },
-        scanColor: {, value: new THREE.Color(YORHA_COLORS.accent.gold) }
+    const scanMaterial = new THREE.ShaderMaterial({ uniforms: { time: { value: 0 },
+        scanSpeed: { value: 2.0 },
+        scanWidth: { value: 0.1 },
+        baseColor: { value: new THREE.Color(this.style.borderColor ?? YORHA_COLORS.primary.black) },
+        scanColor: { value: new THREE.Color(YORHA_COLORS.accent.gold) } }
       },
       vertexShader: `
 			varying vec3 vPosition;
 			void main() {
 				vPosition = position;
 				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-			}
+			} }
 		`,`
       fragmentShader: `
 			uniform float time;
@@ -362,7 +356,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
 				float scanMask = smoothstep(0.0, scanWidth, scan) * smoothstep(1.0, 1.0 - scanWidth, scan);
 				vec3 color = mix(baseColor, scanColor, scanMask);
 				gl_FragColor = vec4(color, 1.0);
-			}
+			} }
 		' });`'`
     borderMesh.material = scanMaterial;
     // Add to animation system - use typed uniform access
@@ -370,19 +364,19 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     this.addCustomAnimation('borderScan', (deltaTime: number) => {
       (uniforms.time as NumericUniform).value += deltaTime;
     });
-  }
+  } }
   protected createScanAnimation(animation: YoRHaAnimation): void {
     // Add scan line effect
-    const scanMaterial = new THREE.ShaderMaterial({ uniforms: {, time: {, value: 0 },
-        scanColor: {, value: new THREE.Color(YORHA_COLORS.accent.gold) },
-        baseColor: {, value: new THREE.Color(this.style.backgroundColor ?? YORHA_COLORS.primary.beige) }
+    const scanMaterial = new THREE.ShaderMaterial({ uniforms: { time: { value: 0 },
+        scanColor: { value: new THREE.Color(YORHA_COLORS.accent.gold) },
+        baseColor: { value: new THREE.Color(this.style.backgroundColor ?? YORHA_COLORS.primary.beige) } }
       },
       vertexShader: `
 			varying vec2 vUv;
 			void main() {
 				vUv = uv;
 				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-			}
+			} }
 		`,`
       fragmentShader: `
 			uniform float time;
@@ -393,7 +387,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
 				float scan = sin(vUv.y * 20.0 + time * 5.0) * 0.5 + 0.5;
 				vec3 color = mix(baseColor, scanColor, scan * 0.3);
 				gl_FragColor = vec4(color, 1.0);
-			}
+			} }
 		' });`'`
     this.mesh.material = scanMaterial;
     // typed uniform access
@@ -401,7 +395,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     this.addCustomAnimation('scan', (deltaTime: number) => {
       (uniforms.time as NumericUniform).value += deltaTime;
     });
-  }
+  } }
   protected createGlitchAnimation(_animation: YoRHaAnimation): void {
     let glitchTime = 0;
     const glitchAnimation = (deltaTime: number) => {
@@ -422,28 +416,28 @@ export abstract class YoRHa3DComponent extends THREE.Group {
           this.mesh.position.y = 0;
           this.mesh.scale.setScalar(1);
         }, 50);
-      }
+      } }
     };
     this.addCustomAnimation('glitch', glitchAnimation);
-  }
+  } }
   protected applyStyle(): void {
     // Apply transform
     if (this.style.transform) {
       if (this.style.transform.position) {
         this.position.copy(this.style.transform.position);
-      }
+      } }
       if (this.style.transform.rotation) {
         this.rotation.copy(this.style.transform.rotation);
-      }
+      } }
       if (this.style.transform.scale) {
         this.scale.copy(this.style.transform.scale);
-      }
-    }
+      } }
+    } }
     // Apply padding (affects internal content positioning)
     this.applyPadding();
     // Apply margin (affects external positioning)
     this.applyMargin();
-  }
+  } }
   protected applyPadding(): void {
     if (!this.style.padding) return;
     const padding = this.style.padding;
@@ -455,7 +449,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     };
     // Store padding for child components to use
     this.userData.padding = paddingValues;
-  }
+  } }
   protected applyMargin(): void {
     if (!this.style.margin) return;
     const margin = this.style.margin;
@@ -468,7 +462,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     // Apply margin to position
     this.position.x += marginValues.left - marginValues.right;
     this.position.y += marginValues.top - marginValues.bottom;
-  }
+  } }
   protected setupInteractions(): void {
     this.userData.isInteractive = true;
     this.userData.onHover = this.onHover.bind(this);
@@ -476,12 +470,12 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     this.userData.onClick = this.onClick.bind(this);
     this.userData.onMouseDown = this.onMouseDown.bind(this);
     this.userData.onMouseUp = this.onMouseUp.bind(this);
-  }
+  } }
   protected setupAnimations(): void {
     if (this.style.animation) {
       this.createAnimation(this.style.animation);
-    }
-  }
+    } }
+  } }
   protected createAnimation(animation: YoRHaAnimation): void {
     switch (animation.type) {
       case, 'pulse':
@@ -499,8 +493,8 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       case, 'glitch':
         this.createGlitchAnimation(animation);
         break;
-    }
-  }
+    } }
+  } }
   protected createPulseAnimation(target: THREE.Object3D, delay: number = 0): void {
     const pulseAnimation = () => {
       const time = Date.now() * 0.001 + delay;
@@ -508,14 +502,14 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       target.scale.setScalar(pulse);
     };
     this.addCustomAnimation('pulse', pulseAnimation);
-  }
+  } }
   protected createRotateAnimation(animation: YoRHaAnimation): void {
     const rotateAnimation = (deltaTime: number) => {
       const speed = (2 * Math.PI) / (animation.duration || 2000);
       this.mesh.rotation.y += speed * deltaTime * 1000;
     };
     this.addCustomAnimation('rotate', rotateAnimation);
-  }
+  } }
   protected createScaleAnimation(animation: YoRHaAnimation): void {
     const scaleAnimation = () => {
       const time = Date.now() * 0.001;
@@ -523,19 +517,19 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       this.mesh.scale.setScalar(scale);
     };
     this.addCustomAnimation('scale', scaleAnimation);
-  }
+  } }
   protected createScanAnimation(animation: YoRHaAnimation): void {
     // Add scan line effect
-    const scanMaterial = new THREE.ShaderMaterial({ uniforms: {, time: {, value: 0 },
-        scanColor: {, value: new THREE.Color(YORHA_COLORS.accent.gold) },
-        baseColor: {, value: new THREE.Color(this.style.backgroundColor ?? YORHA_COLORS.primary.beige) }
+    const scanMaterial = new THREE.ShaderMaterial({ uniforms: { time: { value: 0 },
+        scanColor: { value: new THREE.Color(YORHA_COLORS.accent.gold) },
+        baseColor: { value: new THREE.Color(this.style.backgroundColor ?? YORHA_COLORS.primary.beige) } }
       },
       vertexShader: `
         varying vec2 vUv;
         void main() {
           vUv = uv;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
+        } }
       `,`
       fragmentShader: `
         uniform float time;
@@ -546,7 +540,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
           float scan = sin(vUv.y * 20.0 + time * 5.0) * 0.5 + 0.5;
           vec3 color = mix(baseColor, scanColor, scan * 0.3);
           gl_FragColor = vec4(color, 1.0);
-        }
+        } }
       ' });`'`
     this.mesh.material = scanMaterial;
     // typed uniform access
@@ -554,7 +548,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     this.addCustomAnimation('scan', (deltaTime: number) => {
       (uniforms.time as NumericUniform).value += deltaTime;
     });
-  }
+  } }
   protected createGlitchAnimation(_animation: YoRHaAnimation): void {
     let glitchTime = 0;
     const glitchAnimation = (deltaTime: number) => {
@@ -575,145 +569,146 @@ export abstract class YoRHa3DComponent extends THREE.Group {
           this.mesh.position.y = 0;
           this.mesh.scale.setScalar(1);
         }, 50);
-      }
+      } }
     };
     this.addCustomAnimation('glitch', glitchAnimation);
-  }
+  } }
   public update(deltaTime: number): void {
     // Update all custom animations
     this.customAnimations.forEach(animation => animation(deltaTime));
     // Update animation mixer if it exists
     if (this.animationMixer) {
       this.animationMixer.update(deltaTime);
-    }
+    } }
     // Update bounding box
     this.boundingBox.setFromObject(this);
-  }
+  } }
   // Interaction handlers
   protected onHover(): void {
     if (this.isDisabled) return;
     this.isHovered = true;
     if (this.style.hover) {
       this.applyStateStyle(this.style.hover);
-    }
+    } }
     // Default hover effect
     if (this.mesh.material instanceof THREE.MeshStandardMaterial) {
       this.mesh.material.emissive.setHex(YORHA_COLORS.interaction.hover);
       this.mesh.material.emissiveIntensity = 0.1;
-    }
-  }
+    } }
+  } }
   protected onUnhover(): void {
     if (this.isDisabled) return;
     this.isHovered = $state(false);
     this.resetMaterialState();
-  }
+  } }
   protected onClick(): void {
     if (this.isDisabled) return;
     // Override in subclasses
     this.emitEvent('click', { target: this });
-  }
+  } }
   protected onMouseDown(): void {
     if (this.isDisabled) return;
     this.isActive = true;
     if (this.style.active) {
       this.applyStateStyle(this.style.active);
-    }
-  }
+    } }
+  } }
   protected onMouseUp(): void {
     if (this.isDisabled) return;
     this.isActive = $state(false);
     this.resetMaterialState();
-  }
+  } }
   protected applyStateStyle(stateStyle: Partial<YoRHaStyle>): void {
     // Apply temporary style changes
     if (stateStyle.backgroundColor && this.mesh.material instanceof THREE.MeshStandardMaterial) {
       this.mesh.material.color.setHex(stateStyle.backgroundColor);
-    }
+    } }
     if (stateStyle.opacity !== undefined && this.mesh.material instanceof THREE.MeshStandardMaterial) {
       this.mesh.material.opacity = stateStyle.opacity;
-    }
-  }
+    } }
+  } }
   protected resetMaterialState(): void {
     if (this.mesh.material instanceof THREE.MeshStandardMaterial) {
       this.mesh.material.color.setHex(this.style.backgroundColor || YORHA_COLORS.primary.beige);
       this.mesh.material.opacity = this.style.opacity || 1;
       this.mesh.material.emissive.setHex(0x000000);
       this.mesh.material.emissiveIntensity = 0;
-    }
-  }
+    } }
+  } }
   // Utility methods
   public setStyle(newStyle: Partial<YoRHaStyle>): void {
     this.style = { ...this.style, ...newStyle };
     this.applyStyle();
-  }
+  } }
   public setDisabled(disabled: boolean): void {
     this.isDisabled = disabled;
     if (disabled && this.style.disabled) {
       this.applyStateStyle(this.style.disabled);
-    } else if (!disabled) {
+    } }else if (!disabled) {
       this.resetMaterialState();
-    }
-  }
+    } }
+  } }
   public getBoundingBox(): THREE.Box3 {
     return this.boundingBox.clone();
-  }
+  } }
   public dispose(): void {
     // Clean up resources
     if (this.geometry) {
       this.geometry.dispose();
-    }
+    } }
     if (Array.isArray(this.material)) {
       this.material.forEach(mat => mat.dispose());
-    } else if (this.material) {
+    } }else if (this.material) {
       this.material.dispose();
-    }
+    } }
     this.customAnimations.clear();
     this.eventListeners.clear();
     if (this.animationMixer) {
       this.animationMixer.stopAllAction();
-    }
-  }
+    } }
+  } }
   // Event handling methods
   public addEventListener(eventType: string, listener: (event?: any) => void): void {
     if (!this.eventListeners.has(eventType)) {
       this.eventListeners.set(eventType, []);
-    }
+    } }
     this.eventListeners.get(eventType)!.push(listener);
-  }
+  } }
   public removeEventListener(eventType: string, listener: (event?: any) => void): void {
     const listeners = this.eventListeners.get(eventType);
     if (listeners) {
       const index = listeners.indexOf(listener);
       if (index > -1) {
         listeners.splice(index, 1);
-      }
-    }
-  }
+      } }
+    } }
+  } }
   protected emitEvent(eventType: string, event?: any): void {
     const listeners = this.eventListeners.get(eventType);
     if (listeners) {
       listeners.forEach(listener => listener(event));
-    }
-  }
+    } }
+  } }
   // Custom animation methods
   public addCustomAnimation(name: string, animationFunction: (deltaTime: number) => void): void {
     this.customAnimations.set(name, animationFunction);
-  }
+  } }
   public removeCustomAnimation(name: string): void {
     this.customAnimations.delete(name);
-  }
+  } }
   public updateCustomAnimations(deltaTime: number): void {
     this.customAnimations.forEach(animationFunction => {
       animationFunction(deltaTime);
     });
-  }
+  } }
   // Initialize method for async setup
   public async initialize(): Promise<void> {
     // Base initialization - can be overridden in subclasses
     return Promise.resolve();
-  }
-}
+  } }
+} }
 // Add strict uniform types to avoid `any`
 type NumericUniform = { value: number };
-type ColorUniform = {, value: THREE.Color };
+type ColorUniform = { value: THREE.Color };
 type UniformsMap = { [key: string]: NumericUniform | ColorUniform };
+

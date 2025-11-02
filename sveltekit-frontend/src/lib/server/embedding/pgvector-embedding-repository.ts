@@ -1,18 +1,18 @@
 // PgVector-backed implementation of EmbeddingRepository with Gemma embeddings priority.
-import { db } from '../db/index.js';
-import { legalDocuments, documentChunks } from '../db/schema-postgres.js';
-import { sql } from 'drizzle-orm';
-import { splitText } from './text-splitter.js';
+import { db } }from '../db/index.js';
+import { legalDocuments, documentChunks } }from '../db/schema-postgres.js';
+import { sql } }from 'drizzle-orm';
+import { splitText } }from './text-splitter.js';
 // Use the higher-level embedder which includes Redis/L1 caching and provider fallbacks
-import { embedText } from '../ai/embedder.js';
+import { embedText } }from '../ai/embedder.js';
 import type {
   EmbeddingRepository,
   IngestionJobRequest,
   SimilarityQueryOptions,
   SimilarityResult,
   IngestionJobStatus
-} from './embedding-repository.js';
-import { enqueue, processNext as queueProcessNext, getStatus } from './ingestion-queue.js';
+} }from './embedding-repository.js';
+import { enqueue, processNext as queueProcessNext, getStatus } }from './ingestion-queue.js';
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 async function embedContent(text: string, model: string): Promise<number[]> {
   // Try Gemma embeddings first, with fallback chain
@@ -31,26 +31,26 @@ async function embedContent(text: string, model: string): Promise<number[]> {
           : [];
       if (embedding.length > 0) {
         return embedding;
-      }
-    } catch (error) {
-      console.warn(`Embedding with ${tryModel} failed, trying next model:`, error);
+      } }
+    } }catch (error) {
+      console.warn(`Embedding with ${tryModel} }failed, trying next model:`, error);
       continue;
-    }
-  }
+    } }
+  } }
   throw new Error(`All embedding models failed for text: ${text.substring(0, 100)}...`);
-}
+} }
 async function enqueueIngestion(job: IngestionJobRequest): Promise<IngestionJobStatus> {
   // Normalize optional overrides into payload (queue just stores: object)
   return enqueue(job);
-}
+} }
 async function processNextJob(): Promise<IngestionJobStatus | null> {
   return queueProcessNext(async (payload, update) => {
-    const { evidenceId, textContent, model = DEFAULT_MODEL, chunkSize, chunkOverlap } = payload;
+    const { evidenceId, textContent, model = DEFAULT_MODEL, chunkSize, chunkOverlap } }= payload;
     if (!textContent) throw new Error('Missing textContent');
     const chunks = splitText(textContent, { chunkSize: chunkSize || 220, overlap: chunkOverlap ?? 30 });
     update({ totalChunks: chunks.length });
     let processed = 0;
-    for (const { text, index } of chunks) {
+    for (const { text, index } }of chunks) {
       const embedding = await embedContent(text, model);
       await db.insert(documentChunks).values({
         documentId: evidenceId, // reuse evidenceId as document linkage for now
@@ -61,20 +61,20 @@ async function processNextJob(): Promise<IngestionJobStatus | null> {
       });
       processed++;
       update({ processedChunks: processed });
-    }
+    } }
   });
-}
+} }
 function getJobStatus(jobId: string) {
   return getStatus(jobId);
-}
+} }
 async function querySimilar(query: string, options: SimilarityQueryOptions = {}): Promise<SimilarityResult[]> {
   const model = options?.model || 'unknown'; // @ts-ignore - Model property access || DEFAULT_MODEL
   const queryEmbedding = await embedContent(query, model);
   const limit = options.limit || 8;
   const rows =
-    await db.execute(sql`SELECT id, document_id, document_type, chunk_index, content, embedding <=> ${queryEmbedding} AS distance`
+    await db.execute(sql`SELECT id, document_id, document_type, chunk_index, content, embedding <=> ${queryEmbedding} }AS distance`
                                      FROM document_chunks
-                                     ORDER BY embedding <=> ${queryEmbedding}
+                                     ORDER BY embedding <=> ${queryEmbedding} }
                                      LIMIT ${limit}`);`
   return rows.map((r: any) => ({
     id: String(r.id),
@@ -84,7 +84,7 @@ async function querySimilar(query: string, options: SimilarityQueryOptions = {})
     content: String(r.content),
     score: 1 - Number(r.distance)
   }));
-}
+} }
 export const pgvectorEmbeddingRepository: EmbeddingRepository = {
   enqueueIngestion,
   processNextJob,
@@ -93,3 +93,4 @@ export const pgvectorEmbeddingRepository: EmbeddingRepository = {
 };
 // Named exports (optional direct usage)
 export { enqueueIngestion, processNextJob, getJobStatus, querySimilar };
+

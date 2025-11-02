@@ -1,15 +1,15 @@
-import type { Case } from '$lib/types';
+import type { Case } }from '$lib/types';
 /**
  * Advanced Evidence Analysis API Endpoint
  * Integrates with AdvancedEvidenceAnalyzer for comprehensive AI-powered analysis
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { AdvancedEvidenceAnalyzer } from '$lib/services/ai/advanced-evidence-analyzer';
-import { websocketBroadcast } from '$lib/services/websocket-manager';
-import { dbClient } from '$lib/server/db/drizzle-config';
-import { evidence, analysisResults } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { AdvancedEvidenceAnalyzer } }from '$lib/services/ai/advanced-evidence-analyzer';
+import { websocketBroadcast } }from '$lib/services/websocket-manager';
+import { dbClient } }from '$lib/server/db/drizzle-config';
+import { evidence, analysisResults } }from '$lib/server/db/schema';
+import { eq } }from 'drizzle-orm';
 const analyzer = new AdvancedEvidenceAnalyzer();
 
 // Add typed request/row shapes to avoid `any`
@@ -19,13 +19,13 @@ type GetAnalysisRequest = {
 };
 
 type AnalysisResultRow = { analysisId: string;, evidenceId: string;
- , results: string | Record<string, unknown>;
+  results: string | Record<string, unknown>;
   createdAt: Date;
   analysisTypes: string | string[];
 };
 
 type SynthesisRequest = {
- , evidenceIds: string[];
+  evidenceIds: string[];
   caseId?: string;
   synthesisType?: string;
   options?: Record<string, unknown>;
@@ -55,12 +55,12 @@ type ProgressUpdate = {
   task?: string;
 };
 
-type BatchResultItem = {, evidenceId: string;, analysisId: string;
+type BatchResultItem = { evidenceId: string;, analysisId: string;
   results: any;
   success: boolean;
 };
 
-type BatchErrorItem = {, evidenceId: string;, error: string;
+type BatchErrorItem = { evidenceId: string;, error: string;
 };
 
 // New: typed analyzer output to avoid `any` casts when reading fields
@@ -71,7 +71,7 @@ type AnalyzerOutput = {
   [key: string]: any;
 };
 
-export const, POST: RequestHandler = async ({ request, url }) => {
+export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const action = url.searchParams.get('action') || 'analyze';
     const data = await request.json();
@@ -86,30 +86,30 @@ export const, POST: RequestHandler = async ({ request, url }) => {
         return await handleSynthesis(data);
       case, 'real_time':
         return await handleRealTimeAnalysis(data);
-      default: return json({, error: 'Invalid action' }, { status: 400 });'` }'`
-  } catch (error) {
-    console.error('Advanced evidence analysis error:', error);'
+      default: return json({ error: 'Invalid action' }, { status: 400 });'` } }`
+  } }catch (error) {
+    console.error('Advanced evidence analysis error:', error);
     return json(
       {
         error: 'Analysis failed',
         details: error instanceof Error ? error.message : `Unknown error` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
-  const { evidenceId, analysisTypes, caseId, options = {} } = data as AnalyzeRequest;
+  const { evidenceId, analysisTypes, caseId, options = {} }} }= data as AnalyzeRequest;
   if (!evidenceId) {
     return json({ error: `Evidence ID required` }, { status: 400 });
-  }
+  } }
   // Get evidence from database
   const evidenceRecord = await dbClient.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
   if (evidenceRecord.length === 0) {
     return json({ error: `Evidence not found` }, { status: 404 });
-  }
+  } }
   const evidenceData = evidenceRecord[0];
   // Start analysis with progress tracking
-  const analysisId = 'analysis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';
+  const analysisId = 'analysis_${Date.now()}_${Math.random().toString(36).slice(2, 11)} };
   // Broadcast analysis start
   if (caseId) {
     websocketBroadcast(caseId, {
@@ -119,9 +119,9 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
         evidenceId,
         analysisTypes: analysisTypes || ['all'],
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  }
+  } }
   try {
     // Run analysis
     const analysisResult = await analyzer.analyzeEvidence(evidenceData, analysisTypes || ['all'], {
@@ -136,10 +136,10 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
               progress: progress.percentage,
               currentTask: progress.task,
               timestamp: new Date().toISOString()
-            }
+            } }
           });
-        }
-      }
+        } }
+      } }
     });
     // Store analysis results in database
     await storeAnalysisResult(evidenceId, analysisResult, analysisId);
@@ -152,9 +152,9 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
           evidenceId,
           results: analysisResult,
           timestamp: new Date().toISOString()
-        }
+        } }
       });
-    }
+    } }
     return json({
       success: true,
       analysisId,
@@ -162,7 +162,7 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
       evidenceId,
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     // Broadcast error
     if (caseId) {
       websocketBroadcast(caseId, {
@@ -172,18 +172,18 @@ async function handleAnalyzeEvidence(data: AnalyzeRequest): Promise<any> {
           evidenceId,
           error: error instanceof Error ? error.message : 'Analysis failed',
           timestamp: new Date().toISOString()
-        }
+        } }
       });
-    }
+    } }
     throw error;
-  }
-}
+  } }
+} }
 async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
-  const { evidenceIds, analysisTypes, caseId, options = {} } = data;
+  const { evidenceIds, analysisTypes, caseId, options = {} }} }= data;
   if (!evidenceIds || !Array.isArray(evidenceIds)) {
     return json({ error: `Evidence IDs array required` }, { status: 400 });
-  }
-  const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';'`
+  } }
+  const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)} };'`
   const results: BatchResultItem[] = [];
   const, errors: BatchErrorItem[] = [];
   // Broadcast batch start
@@ -196,9 +196,9 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
         total: evidenceIds.length,
         analysisTypes: analysisTypes || ['all'],
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  }
+  } }
   for (let i = 0; i < evidenceIds.length; i++) {
     const evidenceId = evidenceIds[i];
     try {
@@ -207,7 +207,7 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
       if (evidenceRecord.length === 0) {
         errors.push({ evidenceId, error: `Evidence not found` });
         continue;
-      }
+      } }
       const evidenceData = evidenceRecord[0];
       // Run analysis
       const analysisResult = await analyzer.analyzeEvidence(evidenceData, analysisTypes || ['all'], {
@@ -225,10 +225,10 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
                 completedItems: i,
                 totalItems: evidenceIds.length,
                 timestamp: new Date().toISOString()
-              }
+              } }
             });
-          }
-        }
+          } }
+        } }
       });
       // Store analysis results
       const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
@@ -239,11 +239,11 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
         results: analysisResult,
         success: true
       });
-    } catch (error) {
+    } }catch (error) {
       errors.push({
         evidenceId,
-        error: error instanceof Error ? error.message : 'Analysis failed' });'` }'`
-  }
+        error: error instanceof Error ? error.message : 'Analysis failed' });'` } }`
+  } }
   // Broadcast batch completion (rename count to avoid duplicate property name)
   if (caseId) {
     websocketBroadcast(caseId, {
@@ -256,34 +256,34 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
         results,
         errors,
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  }
+  } }
   return json({
     success: true,
     batchId,
     results,
     errors,
     summary: {
-     , total: evidenceIds.length,
+  total: evidenceIds.length,
       successful: results.length,
       failed: errors.length,
       successRate: ((results.length / evidenceIds.length) * 100).toFixed(1)
     },
     timestamp: new Date().toISOString()
   });
-}
+} }
 async function handleGetAnalysis(data: GetAnalysisRequest): Promise<any> {
-  const { evidenceId, analysisId } = data;
+  const { evidenceId, analysisId } }= data;
   if (!evidenceId && !analysisId) {
     return json({ error: `Evidence ID or Analysis ID required` }, { status: 400 });
-  }
+  } }
   let query = dbClient.select().from(analysisResults);
   if (analysisId) {
     query = query.where(eq(analysisResults.analysisId, analysisId));
-  } else if (evidenceId) {
+  } }else if (evidenceId) {
     query = query.where(eq(analysisResults.evidenceId, evidenceId));
-  }
+  } }
   const results = await query.limit(10);
   return json({
     success: true,
@@ -306,13 +306,13 @@ async function handleGetAnalysis(data: GetAnalysisRequest): Promise<any> {
       };
     })
   });
-}
+} }
 async function handleSynthesis(data: SynthesisRequest): Promise<any> {
-  const { evidenceIds, caseId, synthesisType = 'comprehensive', options = {} } = data;
+  const { evidenceIds, caseId, synthesisType = 'comprehensive', options = {} }} }= data;
   if (!evidenceIds || !Array.isArray(evidenceIds)) {
     return json({ error: `Evidence IDs array required` }, { status: 400 });
-  }
-  const synthesisId = `synthesis_${Date.now()}_${Math.random().toString(36).slice(2, 11)}';'`
+  } }
+  const synthesisId = `synthesis_${Date.now()}_${Math.random().toString(36).slice(2, 11)} };'`
   // Broadcast synthesis start
   if (caseId) {
     websocketBroadcast(caseId, {
@@ -322,12 +322,12 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
         evidenceIds,
         synthesisType,
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  }
+  } }
   try {
     // Get all analysis results for the evidence (safe per-id retrieval)
-    const analysisRecords: Array<{ evidenceId: string;, results: string | Record<string, unknown> }> = [];
+    const analysisRecords: Array<{ evidenceId: string; results: string | Record<string, unknown> }> = [];
     for (const id of evidenceIds) {
       // cast DB query to a typed row array instead of `any`
       const recs = (await dbClient
@@ -341,9 +341,9 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
             evidenceId: r.evidenceId,
             results: r.results
           });
-        }
-      }
-    }
+        } }
+      } }
+    } }
     const analysisData = analysisRecords.map(record => ({
       evidenceId: record.evidenceId,
       results: record.results
@@ -360,10 +360,10 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
               progress: progress.percentage,
               currentTask: progress.task,
               timestamp: new Date().toISOString()
-            }
+            } }
           });
-        }
-      }
+        } }
+      } }
     });
     // Broadcast completion
     if (caseId) {
@@ -373,9 +373,9 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
           synthesisId,
           results: synthesisResult,
           timestamp: new Date().toISOString()
-        }
+        } }
       });
-    }
+    } }
     return json({
       success: true,
       synthesisId,
@@ -383,7 +383,7 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
       evidenceIds,
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     // Broadcast error
     if (caseId) {
       websocketBroadcast(caseId, {
@@ -392,21 +392,21 @@ async function handleSynthesis(data: SynthesisRequest): Promise<any> {
           synthesisId,
           error: error instanceof Error ? error.message : 'Synthesis failed',
           timestamp: new Date().toISOString()
-        }
+        } }
       });
-    }
+    } }
     throw error;
-  }
-}
+  } }
+} }
 async function handleRealTimeAnalysis(data: RealTimeRequest): Promise<any> {
-  const { evidenceId, caseId, analysisTypes = ['quick_summary'] } = data;
+  const { evidenceId, caseId, analysisTypes = ['quick_summary'] } }= data;
   if (!evidenceId || !caseId) {
     return json({ error: 'Evidence ID and Case ID required' }, { status: 400 });
-  }
+  } }
   // Get evidence from database
   const evidenceRecord = await dbClient.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
   if (evidenceRecord.length === 0) {
-    return json({ error: 'Evidence not found' }, { status: 404 });'' }
+    return json({ error: 'Evidence not found' }, { status: 404 });'' } }
   const evidenceData = evidenceRecord[0];
   // Run quick analysis for real-time display
   const quickAnalysis = await analyzer.analyzeEvidence(evidenceData, analysisTypes, {
@@ -420,9 +420,9 @@ async function handleRealTimeAnalysis(data: RealTimeRequest): Promise<any> {
           progress: progress.percentage,
           task: progress.task,
           timestamp: new Date().toISOString()
-        }
+        } }
       });
-    }
+    } }
   });
   // Broadcast real-time results
   websocketBroadcast(caseId, {
@@ -431,7 +431,7 @@ async function handleRealTimeAnalysis(data: RealTimeRequest): Promise<any> {
       evidenceId,
       results: quickAnalysis,
       timestamp: new Date().toISOString()
-    }
+    } }
   });
   return json({
     success: true,
@@ -440,7 +440,7 @@ async function handleRealTimeAnalysis(data: RealTimeRequest): Promise<any> {
     realTime: true,
     timestamp: new Date().toISOString()
   });
-}
+} }
 async function storeAnalysisResult(evidenceId: string, results: any, analysisId: string): Promise<any> {
   try {
     // Safely treat results as AnalyzerOutput when extracting expected fields
@@ -464,10 +464,10 @@ async function storeAnalysisResult(evidenceId: string, results: any, analysisId:
       createdAt: new Date(),
       updatedAt: new Date()
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to store analysis result:', error);
-    // Don't throw - analysis succeeded even if storage failed` }'`
-}
+    // Don't throw - analysis succeeded even if storage failed` } }`
+} }
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'status';
@@ -498,25 +498,26 @@ export const GET: RequestHandler = async ({ url }) => {
         // scope lexical declaration to avoid: "Unexpected lexical declaration in case block"
         const healthCheck = await analyzer.healthCheck();
         return json(healthCheck);
-      }
-      default: return json({, error: `Invalid action` }, { status: 400 });
-    }
-  } catch (error) {
-    console.error('Advanced evidence analysis API error:', error);'
+      } }
+      default: return json({ error: `Invalid action` }, { status: 400 });
+    } }
+  } }catch (error) {
+    console.error('Advanced evidence analysis API error:', error);
     return json(
       {
         error: 'Service error',
         details: error instanceof Error ? error.message : `Unknown error` },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // Helper: small safe JSON parse to avoid throwing on invalid DB content
 function safeJsonParse<T>(input: string, fallback: T): T {
   try {
     return JSON.parse(input) as T;
-  } catch {
+  } }catch {
     return fallback;
-  }
-}
+  } }
+} }
+

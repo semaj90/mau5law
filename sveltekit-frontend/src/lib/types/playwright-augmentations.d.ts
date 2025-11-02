@@ -1,4 +1,4 @@
-import { Locator } from '@playwright/test';
+import { Locator } }from '@playwright/test';
 declare global {
   namespace PlaywrightTest {
     interface Matchers<R> {
@@ -6,9 +6,9 @@ declare global {
       toHaveCountLessThan(n: number): Promise<R>;
       toHaveCountEqual(n: number): Promise<R>;
       toHaveCountAtLeast(n: number): Promise<R>;
-    }
-  }
-}
+    } }
+  } }
+} }
 declare module, '@playwright/test' {
   // provide weaker types for expect.extend'd helpers used across tests'
   interface Matchers<R, T> {
@@ -16,5 +16,6 @@ declare module, '@playwright/test' {
     toHaveCountLessThan(n: number): Promise<R>;
     toHaveCountEqual(n: number): Promise<R>;
     toHaveCountAtLeast(n: number): Promise<R>;
-  }
-}
+  } }
+} }
+

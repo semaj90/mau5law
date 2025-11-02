@@ -1,11 +1,11 @@
-import type { Document } from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Enhanced Ingest Integration Service
  * Integrates with your existing ai-agent.ts store and production service architecture
  * Follows your established patterns and conventions
  */
-import { aiAgentStore } from '$lib/stores/ai-agent';
-import { get } from 'svelte/store';
+import { aiAgentStore } }from '$lib/stores/ai-agent';
+import { get } }from 'svelte/store';
 import type {
   DocumentIngestRequest,
   BatchIngestRequest,
@@ -15,7 +15,7 @@ import type {
   ChunkedDocument,
   LegalSection,
   SimilarDocument
-} from '$lib/types/ingest';
+} }from '$lib/types/ingest';
 
 // Define types for jobs and errors in the AI agent store
 interface AiAgentJob { id: string;, type: string;
@@ -26,27 +26,27 @@ interface AiAgentJob { id: string;, type: string;
   startTime: Date;
   endTime?: Date;
   retryCount: number;
-}
+} }
 
-interface AiAgentError {, id: string;, type: string;
+interface AiAgentError { id: string;, type: string;
   message: string;
   timestamp: Date;
   context?: any;
   resolved: boolean;
   retryable: boolean;
-}
+} }
 
 // Assuming a structure for aiAgentStore state based on usage
-interface AiAgentStoreState {, isProcessing: boolean;, currentTask: string | null;
+interface AiAgentStoreState { isProcessing: boolean;, currentTask: string | null;
   activeSessionId: string | null;
-  vectorStore: {, documentCount: number;, lastIndexUpdate: Date | null;
+  vectorStore: { documentCount: number;, lastIndexUpdate: Date | null;
     isIndexed: boolean;
   };
   completedJobs: AiAgentJob[];
   processingQueue: AiAgentJob[];
  , errors: AiAgentError[];
   searchSimilarDocuments?: (query: string, limit: number) => Promise<SimilarDocument[]>;
-}
+} }
 
 // New interfaces for API responses
 interface IngestApiResponse {
@@ -57,19 +57,19 @@ interface IngestApiResponse {
   embedding_id: string;
   process_time_ms: number;
   service_info?: any;
-}
+} }
 
 interface BatchIngestApiResponse {
   success: boolean;
   error?: string;
-  batch_summary: {, processed: number;, failed: number;
+  batch_summary: { processed: number;, failed: number;
     success_rate: string;
   };
-  results: Array<{, document_id: string;, embedding_id: string;
+  results: Array<{ document_id: string;, embedding_id: string;
     process_time_ms: number;
   }>;
   performance?: any;
-}
+} }
 
 export class EnhancedIngestService {
   private baseUrl: string;
@@ -79,7 +79,7 @@ export class EnhancedIngestService {
     this.baseUrl = typeof window !== 'undefined'
       ? window.location.origin : 'http://localhost:5173';
     this.timeout = 30000; // 30 seconds
-  }
+  } }
   /**
    * Ingest single document with AI agent integration
    * Follows your aiAgentStore patterns for error handling and progress tracking
@@ -102,10 +102,10 @@ export class EnhancedIngestService {
         );
         if (Array.isArray(similarDocs) && similarDocs.length > 0) {
           embeddingPreview = (similarDocs[0] as SimilarDocument).embedding?.slice(0, 5) || [];
-        }
-      } catch (embedError) {
+        } }
+      } }catch (embedError) {
         console.warn('Embedding preview failed:', embedError);
-      }
+      } }
       // Call SvelteKit API (which proxies to Go service)
       const aiAgent = get(aiAgentStore) as AiAgentStoreState; // Cast to AiAgentStoreState
       const apiResponse = await this.callIngestAPI('/api/v1/ingest', {
@@ -116,12 +116,12 @@ export class EnhancedIngestService {
           ai_agent_session: aiAgent.activeSessionId,
           embedding_preview: embeddingPreview,
           processing_mode: 'enhanced_ai_integration'
-        }
+        } }
       }) as IngestApiResponse; // Cast to IngestApiResponse
 
       if (!apiResponse.success) {
         throw new Error(apiResponse.error || 'Ingest failed');
-      }
+      } }
       // Update AI agent store with success (following your pattern)
       aiAgentStore.update((state: AiAgentStoreState) => ({
         ...state,
@@ -144,7 +144,7 @@ export class EnhancedIngestService {
             startTime: new Date(startTime),
             endTime: new Date(),
             retryCount: 0
-          }
+          } }
         ]
       }));
       return {
@@ -154,7 +154,7 @@ export class EnhancedIngestService {
         processingTime: apiResponse.process_time_ms,
         metadata: apiResponse.service_info
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       // Error handling following your aiAgentStore pattern
       aiAgentStore.update((state: AiAgentStoreState) => ({
         ...state,
@@ -164,17 +164,17 @@ export class EnhancedIngestService {
           {
             id: `ingest_${Date.now()}`,
             type: 'processing',
-            message: `Document ingest;, failed: ${(error instanceof Error) ? error.message : String(error)}`,
+            message: `Document ingest; failed: ${(error instanceof Error) ? error.message : String(error)}`,
             timestamp: new Date(),
             context: { request },
             resolved: false,
             retryable: true
-          }
+          } }
         ]
       }));
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Batch ingest with progress tracking
    * Integrates with your existing batch processing patterns
@@ -192,24 +192,23 @@ export class EnhancedIngestService {
           id: batchId,
           type: 'batch_ingest',
           status: 'pending',
-          input: {, documents: requests },
+          input: { documents: requests },
           startTime: new Date(),
           retryCount: 0
-        }
+        } }
       ]
     }));
     try {
       // Enhanced batch request with AI agent context
       const aiAgent = get(aiAgentStore) as AiAgentStoreState; // Cast to AiAgentStoreState
-      const batchRequest: BatchIngestRequest = {
-       , documents: requests.map((doc, index) => ({
+      const batchRequest: BatchIngestRequest = { documents: requests.map((doc, index) => ({
           ...doc,
           metadata: {
             ...doc.metadata,
             batch_id: batchId,
             batch_index: index,
             ai_agent_session: aiAgent.activeSessionId
-          }
+          } }
         }))
       };
 
@@ -218,7 +217,7 @@ export class EnhancedIngestService {
 
       if (!apiResponse.success) {
         throw new Error(apiResponse.error || 'Batch ingest failed');
-      }
+      } }
       // Update AI agent store with batch completion
       aiAgentStore.update((state: AiAgentStoreState) => ({
         ...state,
@@ -242,7 +241,7 @@ export class EnhancedIngestService {
             startTime: new Date(),
             endTime: new Date(),
             retryCount: 0
-          }
+          } }
         ]
       }));
       return {
@@ -258,7 +257,7 @@ export class EnhancedIngestService {
         })),
         performance: apiResponse.performance
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       // Fail the batch job in AI agent store
       aiAgentStore.update((state: AiAgentStoreState) => ({
         ...state,
@@ -270,17 +269,17 @@ export class EnhancedIngestService {
             id: batchId,
             type: 'batch_ingest',
             status: 'failed',
-            input: {, documents: requests },
+            input: { documents: requests },
             error: (error instanceof Error) ? error.message : String(error),
             startTime: new Date(),
             endTime: new Date(), // Added missing endTime for failed jobs
             retryCount: 0
-          }
+          } }
         ]
       }));
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Smart document chunking using your sentence-transformer service patterns
    */
@@ -290,7 +289,7 @@ export class EnhancedIngestService {
       overlap = 60,
       preserveSentences = true,
       legalAware = true
-    } = options;
+    } }= options;
     // Use your existing legal NLP patterns for smart chunking
     const chunks: ChunkedDocument[] = [];
     if (legalAware) {
@@ -301,35 +300,33 @@ export class EnhancedIngestService {
           chunks.push({
             content: section.content,
             index: chunks.length,
-            metadata: {
-             , section_type: section.type,
+            metadata: { section_type: section.type,
               legal_context: section.context,
               preserves_legal_structure: true
-            }
+            } }
           });
-        } else {
+        } }else {
           // Split large sections while preserving legal structure
           const subChunks = this.splitLegalSection(section, maxChunkSize, overlap);
           chunks.push(...subChunks.map((chunk, i) => {
             return {
               content: chunk,
               index: chunks.length + i,
-              metadata: {
-               , section_type: section.type,
+              metadata: { section_type: section.type,
                 legal_context: section.context,
                 sub_chunk: true,
                 parent_section: section.title
-              }
+              } }
             };
           }));
-        }
-      }
-    } else {
+        } }
+      } }
+    } }else {
       // Standard chunking
       chunks.push(...this.standardChunking(content, maxChunkSize, overlap, preserveSentences));
-    }
+    } }
     return chunks;
-  }
+  } }
   /**
    * Enhanced search integration with your existing vector search patterns
    */
@@ -349,18 +346,18 @@ export class EnhancedIngestService {
         if (docResponse.ok) {
           const docData = await docResponse.json();
           searchQuery = docData.content?.substring(0, 200) || '';
-        }
-      }
+        } }
+      } }
       if (!searchQuery) {
         throw new Error('No query or document content available for search');
-      }
+      } }
       // Use your existing similar document search
       return await aiAgent.searchSimilarDocuments?.(searchQuery, limit) || [];
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('Similar document search failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
   // Private helper methods following your established patterns
   private async callIngestAPI(endpoint: string, data: any): Promise<unknown> {
     const controller = new AbortController();
@@ -376,14 +373,14 @@ export class EnhancedIngestService {
       clearTimeout(timeoutId);
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`API call failed: ${response.status} - ${errorText}`);
-      }
+        throw new Error(`API call failed: ${response.status} }- ${errorText}`);
+      } }
       return await response.json();
-    } catch (error: any) {
+    } }catch (error: any) {
       clearTimeout(timeoutId);
       throw error;
-    }
-  }
+    } }
+  } }
   private extractLegalSections(content: string): LegalSection[] {
     const sections: LegalSection[] = [];
     // Common legal section patterns
@@ -395,8 +392,7 @@ export class EnhancedIngestService {
     ];
 
     let lastIndex = 0;
-    let currentSection: LegalSection = {
-     , title: 'Document Start',
+    let currentSection: LegalSection = { title: 'Document Start',
       content: '',
       type: 'intro',
       context: 'general'
@@ -420,8 +416,8 @@ export class EnhancedIngestService {
               type: currentSection.type,
               context: currentSection.context
             });
-          }
-        }
+          } }
+        } }
 
         // Add the matched section
         sections.push({
@@ -432,8 +428,8 @@ export class EnhancedIngestService {
         });
         lastIndex = pattern.lastIndex;
         currentSection = sections[sections.length - 1]; // Update current section for subsequent content
-      }
-    }
+      } }
+    } }
 
     // Add: any remaining content after the last matched section
     if (lastIndex < content.length) {
@@ -443,8 +439,8 @@ export class EnhancedIngestService {
           title: currentSection.title || 'Remaining Content',
           content: remainingContent,
           type: currentSection.type || 'general',
-          context: currentSection.context || 'legal_document' });'` }'`
-    }
+          context: currentSection.context || 'legal_document' });'` } }`
+    } }
 
     // If no sections were found, treat the whole content as one general section
     if (sections.length === 0 && content.trim().length > 0) {
@@ -453,10 +449,10 @@ export class EnhancedIngestService {
         content: content.trim(),
         type: 'general',
         context: `legal_document` });
-    }
+    } }
 
     return sections;
-  }
+  } }
 
   private inferSectionType(pattern: RegExp): string {
     if (pattern.source.includes('\\d+\\.')) return, 'numbered_section';
@@ -464,7 +460,7 @@ export class EnhancedIngestService {
     if (pattern.source.includes('WHEREAS')) return, 'whereas_clause';
     if (pattern.source.includes('NOW, THEREFORE')) return, 'now_therefore_clause';
     return, 'paragraph';
-  }
+  } }
 
   private splitLegalSection(section: LegalSection, maxSize: number, overlap: number): string[] {
     const chunks: string[] = [];
@@ -475,7 +471,7 @@ export class EnhancedIngestService {
     for (const sentence of sentences) {
       if ((currentChunk + (currentChunk ? ' ' : '') + sentence).length <= maxSize) {
         currentChunk += (currentChunk ? ' ' : '') + sentence;
-      } else {
+      } }else {
         // If adding the current sentence exceeds maxSize, push the currentChunk
         if (currentChunk.length > 0) {
           chunks.push(currentChunk);
@@ -483,23 +479,23 @@ export class EnhancedIngestService {
           // and then add the current sentence.
           const overlapContent = currentChunk.slice(-overlap);
           currentChunk = overlapContent + (overlapContent.length > 0 ? ' ' : '') + sentence;
-        } else {
+        } }else {
           // If currentChunk is empty and the sentence itself is too large,
           // push the sentence as a chunk. This simplified implementation
           // treats it as a single chunk, but a more advanced one might split it further.
           chunks.push(sentence);
           currentChunk = ''; // Reset for the next sentence
-        }
-      }
-    }
+        } }
+      } }
+    } }
 
     // After the loop, push: any remaining content in currentChunk
     if (currentChunk.length > 0) {
       chunks.push(currentChunk);
-    }
+    } }
 
     return chunks;
-  }
+  } }
 
   /**
    * Standard document chunking logic.
@@ -513,32 +509,31 @@ export class EnhancedIngestService {
     if (preserveSentences) {
       // Split by sentences, ensuring punctuation is kept with the sentence
       segments = content.split(/(?<=[.?!])\s+(?=[A-Z])/).filter(s => s.trim().length > 0);
-    } else {
+    } }else {
       // Fallback to word-based splitting if not preserving sentences
       segments = content.split(/\s+/).filter(s => s.trim().length > 0);
-    }
+    } }
 
     for (const segment of segments) {
       const potentialChunk = currentChunkContent + (currentChunkContent ? ' ' : '') + segment;
 
       if (potentialChunk.length <= maxSize) {
         currentChunkContent = potentialChunk;
-      } else {
+      } }else {
         // If adding the current segment exceeds maxSize, push the currentChunk
         if (currentChunkContent.length > 0) {
           chunks.push({
             content: currentChunkContent,
             index: chunks.length,
-            metadata: {
-             , chunk_type: 'standard',
+            metadata: { chunk_type: 'standard',
               overlap_size: overlap,
               preserved_sentences: preserveSentences
-            }
+            } }
           });
           // Start new chunk with overlap from the end of the previous chunk
           const overlapText = currentChunkContent.slice(-overlap);
           currentChunkContent = overlapText + (overlapText.length > 0 ? ' ' : '') + segment;
-        } else {
+        } }else {
           // If currentChunk is empty and the segment itself is too large,
           // split the segment directly.
           let tempSegment = segment;
@@ -546,34 +541,32 @@ export class EnhancedIngestService {
             chunks.push({
               content: tempSegment.substring(0, maxSize),
               index: chunks.length,
-              metadata: {
-               , chunk_type: 'standard_oversized_split',
+              metadata: { chunk_type: 'standard_oversized_split',
                 overlap_size: overlap,
                 preserved_sentences: preserveSentences
-              }
+              } }
             });
             tempSegment = tempSegment.substring(maxSize - overlap); // Apply overlap for subsequent parts
-          }
+          } }
           if (tempSegment.length > 0) {
             currentChunkContent = tempSegment;
-          }
-        }
-      }
-    }
+          } }
+        } }
+      } }
+    } }
 
     // After the loop, push: any remaining content in currentChunkContent
     if (currentChunkContent.length > 0) {
       chunks.push({
         content: currentChunkContent,
         index: chunks.length,
-        metadata: {
-         , chunk_type: 'standard',
+        metadata: { chunk_type: 'standard',
           overlap_size: overlap,
           preserved_sentences: preserveSentences
-        }
+        } }
       });
-    }
+    } }
 
     return chunks;
-  }
+  } }
 }

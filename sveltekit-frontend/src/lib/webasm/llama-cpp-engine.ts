@@ -4,40 +4,40 @@
  * Eliminates server round-trips for 2-5 second response times
  */
 // Remove triple-slash reference and use an import-style include for local type file
-import type {} from '../types/webgpu'; // keeps: any local ambient webgpu declarations included
+import type {} }from '../types/webgpu'; // keeps: any local ambient webgpu declarations included
 
-export interface LlamaCppConfig {, modelPath: string;, contextSize: number;
+export interface LlamaCppConfig { modelPath: string;, contextSize: number;
  , gpuLayers: number; // RTX, 3060 Ti can handle 32-40 layers,
   threadCount: number;
   batchSize: number;
   useGPU: boolean;
   quantization: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';
-}
-export interface InferenceRequest {, prompt: string;, maxTokens: number;
+} }
+export interface InferenceRequest { prompt: string;, maxTokens: number;
   temperature: number;
   topP: number;
   stopTokens?: string[];
   stream?: boolean;
-}
-export interface InferenceResult {, text: string;, tokens: number;
+} }
+export interface InferenceResult { text: string;, tokens: number;
   processingTime: number;
   tokensPerSecond: number;
   memoryUsage: number;
   gpuUtilization?: number;
-}
+} }
 
 // Add narrow types for wasm interactions
 type WasmPtr = number;
 type TokenArray = Int32Array | Uint32Array | number[];
 
-interface LlamaInitOptions {, model_ptr: WasmPtr;, model_size: number;
+interface LlamaInitOptions { model_ptr: WasmPtr;, model_size: number;
   context_size?: number;
   gpu_layers?: number;
   thread_count?: number;
   batch_size?: number;
   use_gpu?: number | boolean;
   [key: string]: any;
-}
+} }
 
 interface LlamaParams {
   temperature?: number;
@@ -46,7 +46,7 @@ interface LlamaParams {
   presence_penalty?: number;
   frequency_penalty?: number;
   [key: string]: any;
-}
+} }
 
 interface LlamaGenerateOptions {
   input_tokens: TokenArray;
@@ -55,7 +55,7 @@ interface LlamaGenerateOptions {
   top_p?: number;
   batch_size?: number;
   [key: string]: any;
-}
+} }
 
 // Add a typed interface for wasm exports we call so TS knows functions and memory exist
 interface WasmExports {
@@ -87,7 +87,7 @@ interface WasmExports {
 
   // any other exported helpers used elsewhere can be added here
   [key: string]: any;
-}
+} }
 
 export class WebASMLlamaCppEngine {
   // change wasmModule type to the new interface (or: null)
@@ -113,7 +113,7 @@ export class WebASMLlamaCppEngine {
       useGPU: config.useGPU ?? true,
       quantization: config.quantization || 'q4_0'
     };
-  }
+  } }
   /**
    * Initialize WebAssembly module and GPU acceleration
    */
@@ -128,17 +128,17 @@ export class WebASMLlamaCppEngine {
       // Initialize GPU if available
       if (this.config.useGPU) {
         await this.initializeGPU();
-      }
+      } }
       this.db = await this.openIndexedDB(); // Initialize IndexedDB
       // Load the model
       await this.loadModel();
       console.log('✅ WebASM llama.cpp engine initialized successfully');
       return true;
-    } catch (error) {
+    } }catch (error) {
       console.error('❌ WebASM engine initialization failed:', error);
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Load WebAssembly module with optimization flags
    */
@@ -162,12 +162,12 @@ export class WebASMLlamaCppEngine {
         __pthread_create: this.pthreadCreate.bind(this),
         __pthread_join: this.pthreadJoin.bind(this),
         get_time_ms: () => performance.now()
-      }
+      } }
     });
 
     // Cast exports to the typed interface so callable members and memory.buffer are known
     return instance.exports as: unknown as WasmExports;
-  }
+  } }
   /**
    * Initialize WebGPU for tensor operations
    */
@@ -175,23 +175,22 @@ export class WebASMLlamaCppEngine {
     if (!navigator.gpu) {
       console.warn('WebGPU not available, using CPU fallback');
       return;
-    }
+    } }
     const adapter = await navigator.gpu.requestAdapter({
       powerPreference: 'high-performance', // RTX, 3060 Ti
     });
     if (!adapter) {
       throw new Error('No WebGPU adapter available');
-    }
+    } }
     this.gpuDevice = await adapter.requestDevice({
       requiredFeatures: ['shader-f16'] as GPUFeatureName[],
-      requiredLimits: {
-       , maxComputeWorkgroupSizeX: 1024,
+      requiredLimits: { maxComputeWorkgroupSizeX: 1024,
         maxComputeInvocationsPerWorkgroup: 1024,
         maxBufferSize: 2 * 1024 * 1024 * 1024, // 2GB for large models
-      }
+      } }
     });
     console.log('🎮 WebGPU initialized for tensor acceleration');
-  }
+  } }
   /**
    * Load quantized model into WebASM memory
    */
@@ -204,7 +203,7 @@ export class WebASMLlamaCppEngine {
     // Guard for wasm module
     if (!this.wasmModule) {
       throw new Error('WASM module not initialized. Call initialize() before loadModel().');
-    }
+    } }
     const wasm = this.wasmModule;
 
     const modelPtr = wasm.malloc(modelSize);
@@ -225,10 +224,10 @@ export class WebASMLlamaCppEngine {
 
     if (!success) {
       throw new Error('Failed to initialize llama model in WASM.');
-    }
+    } }
     this.modelLoaded = true;
     console.log('✅ Model loaded successfully');
-  }
+  } }
   /**
    * Download and cache model file
    */
@@ -238,28 +237,28 @@ export class WebASMLlamaCppEngine {
     if (cachedModel) {
       console.log('📁 Using cached model');
       return cachedModel;
-    }
+    } }
     console.log('⬇️ Downloading model...');
     const response = await fetch(modelPath, {
       headers: {
         'Range': 'bytes=0-', // Support resume
-      }
+      } }
     });
     if (!response.ok) {
       throw new Error(`Failed to download model: ${response.status}`);
-    }
+    } }
     const modelData = await response.arrayBuffer();
     // Cache for future use
     await this.cacheModel(modelPath, modelData);
     return modelData;
-  }
+  } }
   /**
    * Run inference with WebASM + GPU acceleration
    */
   async runInference(request: InferenceRequest): Promise<InferenceResult> {
     if (!this.modelLoaded) {
       throw new Error('Model not loaded. Call initialize() first.');
-    }
+    } }
     const startTime = performance.now();
     try {
       // Tokenize input
@@ -275,12 +274,12 @@ export class WebASMLlamaCppEngine {
           // Check stop conditions
           if (outputTokens.length >= request.maxTokens) break;
           if (request.stopTokens?.some(stop => outputText.includes(stop))) break;
-        }
-      } else {
+        } }
+      } }else {
         // Batch inference
         outputTokens = await this.batchInference(inputTokens, request);
         outputText = await this.detokenize(outputTokens);
-      }
+      } }
       const processingTime = performance.now() - startTime;
       const tokensPerSecond = outputTokens.length / (processingTime / 1000);
       // Update performance metrics
@@ -293,11 +292,11 @@ export class WebASMLlamaCppEngine {
         memoryUsage: this.getMemoryUsage(),
         gpuUtilization: await this.getGPUUtilization()
       };
-    } catch (error) {
+    } }catch (error) {
       console.error('Inference failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
   /**
    * Streaming inference with real-time token generation
    */
@@ -316,8 +315,8 @@ export class WebASMLlamaCppEngine {
       if (token === wasm.llama_token_eos()) break;
       yield token;
       wasm.llama_eval([token]);
-    }
-  }
+    } }
+  } }
   /**
    * Batch inference for non-streaming requests
    */
@@ -330,7 +329,7 @@ export class WebASMLlamaCppEngine {
       top_p: request.topP,
       batch_size: this.config.batchSize
     });
-  }
+  } }
   /**
    * Tokenize text to token IDs
    */
@@ -348,7 +347,7 @@ export class WebASMLlamaCppEngine {
     const tokens = new Int32Array((wasm.memory as WebAssembly.Memory).buffer, tokensPtr, tokenCount);
     wasm.free(textPtr);
     return Array.from(tokens);
-  }
+  } }
   /**
    * Detokenize token IDs to text
    */
@@ -359,12 +358,12 @@ export class WebASMLlamaCppEngine {
     const textBytes = new Uint8Array((wasm.memory as WebAssembly.Memory).buffer, textPtr, textLength);
     const decoder = new TextDecoder();
     return decoder.decode(textBytes);
-  }
+  } }
   // GPU Memory Management for WebASM
   private gpuMalloc(size: number): number {
     if (!this.gpuDevice) {
       throw new Error('GPU device not initialized. Call initializeGPU() before using GPU APIs.');
-    }
+    } }
 
     const buffer = this.gpuDevice.createBuffer({
       size,
@@ -380,37 +379,37 @@ export class WebASMLlamaCppEngine {
     const ptr = this.nextGpuPtr++;
     this.gpuBuffers.set(ptr, buffer);
     return ptr;
-  }
+  } }
 
   private gpuFree(ptr: number): void {
     const buffer = this.gpuBuffers.get(ptr);
     if (!buffer) {
       // silent no-op if pointer not found
       return;
-    }
+    } }
     // Destroy the GPU buffer if API supports it, and remove from registry
     try {
       if (typeof (buffer as: unknown as { destroy?: any }).destroy === 'function') {
-        (buffer as: unknown as {, destroy: () => void }).destroy();
-      }
-    } catch {
+        (buffer as: unknown as { destroy: () => void }).destroy();
+      } }
+    } }catch {
       // ignore destroy errors
-    }
+    } }
     this.gpuBuffers.delete(ptr);
-  }
+  } }
 
   private gpuMemcpy(destPtr: number, srcPtr: number, size: number): void {
     // Basic buffer-to-buffer copy between registered GPU buffers.
     // This assumes the WASM runtime uses the numeric pointers produced by gpuMalloc.
     if (!this.gpuDevice) {
       throw new Error('GPU device not initialized.');
-    }
+    } }
     const dst = this.gpuBuffers.get(destPtr);
     const src = this.gpuBuffers.get(srcPtr);
     if (!dst || !src) {
       console.warn('gpuMemcpy: source or destination buffer not found', { destPtr, srcPtr });
       return;
-    }
+    } }
 
     // Create a command encoder and copy the requested range
     const encoder = this.gpuDevice.createCommandEncoder();
@@ -418,56 +417,56 @@ export class WebASMLlamaCppEngine {
     encoder.copyBufferToBuffer(src, 0, dst, 0, size);
     const commands = encoder.finish();
     this.gpuDevice.queue.submit([commands]);
-  }
+  } }
   // Threading support for WebASM
   private pthreadCreate(): number {
     // WebWorker creation for threading
     return 0;
-  }
+  } }
   private pthreadJoin(): void {
     // WebWorker cleanup
-  }
+  } }
   // Performance monitoring
   private updateMetrics(tokens: number, time: number): void {
     this.totalInferences++;
     this.totalTokens += tokens;
     this.averageLatency = (this.averageLatency + time) / 2;
-  }
+  } }
   private getMemoryUsage(): number {
     // memory.buffer is available on typed WasmExports.memory
     return this.wasmModule?.memory?.buffer?.byteLength ?? 0;
-  }
+  } }
   private async getGPUUtilization(): Promise<number> {
     // Would query GPU metrics if available
     return 0.75; // Placeholder
-  }
+  } }
   // Model caching
   private async getCachedModel(modelPath: string): Promise<ArrayBuffer | null> {
     try {
       if (!this.db) {
         console.warn('IndexedDB not initialized.');
         return: null;
-      }
+      } }
       const transaction = this.db.transaction(['models'], 'readonly');
       const store = transaction.objectStore('models');
       const result = await this.promisifyRequest(store.get(modelPath)); // Fixed missing: ')'
       return result?.data || null;
-    } catch {
+    } }catch {
       return: null;
-    }
-  }
+    } }
+  } }
   private async cacheModel(modelPath: string, data: ArrayBuffer): Promise<void> {
     try {
       if (!this.db) {
         console.warn('IndexedDB not initialized.');
         return;
-      }
+      } }
       const transaction = this.db.transaction(['models'], 'readwrite');
       const store = transaction.objectStore('models');
-      await this.promisifyRequest(store.put({ path: modelPath, data })); // Fixed missing: ')' } catch (error) {'`'`
+      await this.promisifyRequest(store.put({ path: modelPath, data })); // Fixed missing: ')' } }catch (error) {'`'`
       console.warn('Failed to cache model:', error);
-    }
-  }
+    } }
+  } }
   private openIndexedDB(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('LlamaCppModels', 1);
@@ -478,13 +477,13 @@ export class WebASMLlamaCppEngine {
         db.createObjectStore('models', { keyPath: `path' });'`
       };
     });
-  }
+  } }
   private promisifyRequest<T>(request: IDBRequest<T>): Promise<T> {
     return new Promise((resolve, reject) => {
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve(request.result);
     });
-  }
+  } }
   /**
    * Get performance statistics
    */
@@ -492,60 +491,59 @@ export class WebASMLlamaCppEngine {
     averageLatency: number;
     tokensPerSecond: number;
     memoryUsage: number;
-  } {
-    return {
-     , totalInferences: this.totalInferences,
+  } }{
+    return { totalInferences: this.totalInferences,
       totalTokens: this.totalTokens,
       averageLatency: this.averageLatency,
       tokensPerSecond: this.averageLatency > 0 ? 1000 / this.averageLatency : 0,
       memoryUsage: this.getMemoryUsage()
     };
-  }
+  } }
   /**
    * Cleanup resources
    */
   async destroy(): Promise<void> {
     if (this.wasmModule) {
       this.wasmModule.llama_cleanup?.();
-    }
+    } }
 
     // Clean up registered GPU buffers
     if (this.gpuDevice) {
       for (const [ptr, buffer] of this.gpuBuffers.entries()) {
         try {
           if (typeof (buffer as: unknown as { destroy?: any }).destroy === 'function') {
-            (buffer as: unknown as {, destroy: () => void }).destroy();
-          }
-        } catch {
+            (buffer as: unknown as { destroy: () => void }).destroy();
+          } }
+        } }catch {
           // ignore per-buffer destroy errors
-        }
+        } }
         this.gpuBuffers.delete(ptr);
-      }
+      } }
       // Some implementations may not expose destroy(); guard defensively
       const anyDevice = this.gpuDevice as: unknown as { destroy?: any };
       if (typeof anyDevice.destroy === 'function') {
         (anyDevice.destroy as () => void)();
-      }
-    }
+      } }
+    } }
     console.log('🔥 WebASM llama.cpp engine cleaned up');
-  }
+  } }
 
   // Add helpers to centralize: null checks for WASM and memory
   private getWasm(): WasmExports {
     if (!this.wasmModule) {
       throw new Error('WASM module not initialized. Call initialize() and ensure wasm loaded before using this API.');
-    }
+    } }
     return this.wasmModule;
-  }
+  } }
 
   private getWasmMemory(): Uint8Array {
     const wasm = this.getWasm();
     if (!wasm.memory || !('buffer' in wasm.memory)) {
       throw new Error('WASM memory not available');
-    }
+    } }
     return new Uint8Array((wasm.memory as WebAssembly.Memory).buffer);
-  }
-}
+  } }
+} }
 
 // Export singleton instance
 export const llamaCppEngine = new WebASMLlamaCppEngine({
@@ -556,11 +554,11 @@ export const llamaCppEngine = new WebASMLlamaCppEngine({
 // Convenience function for quick inference
 export async function runQuickInference(
   prompt: string,
-  options: Partial<InferenceRequest> = {}
+  options: Partial<InferenceRequest> = {} }
 ): Promise<InferenceResult> {
   if (!llamaCppEngine) {
     throw new Error('llama.cpp engine not initialized');
-  }
+  } }
   return llamaCppEngine.runInference({
     prompt,
     maxTokens: options.maxTokens || 256,

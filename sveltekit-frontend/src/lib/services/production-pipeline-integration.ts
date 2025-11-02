@@ -1,13 +1,13 @@
-import type { SearchResult } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { SearchResult } }from '$lib/types';
+import type { Document } }from '$lib/types';
 /**
  * Production Pipeline Integration Service
  * Connects SvelteKit frontend to the crawl → OCR → embed → serve pipeline
  * Integrates with Go gRPC Gateway, RabbitMQ, Redis, and xState
  */
 
-import { writable } from 'svelte/store';
-import { createMachine, assign, createActor } from 'xstate';
+import { writable } }from 'svelte/store';
+import { createMachine, assign, createActor } }from 'xstate';
 
 // Typed machine context & events
 type PipelineContext = { documents: Document[];, jobs: ProcessingJob[];
@@ -41,8 +41,8 @@ type PipelineEvent =
   | FetchErrorEvent
   | RetryEvent
   | ClearErrorEvent
-  | { type: 'UPLOAD_DOCUMENTS' }
-  | { type: 'PROCESS_URL' }
+  | { type: 'UPLOAD_DOCUMENTS' } }
+  | { type: 'PROCESS_URL' } }
   | { type: 'REFRESH_JOBS' };
 
 // ---, Added: local ActionArgs type used by XState action handlers ---
@@ -74,7 +74,7 @@ function $unsafeAssign<C, extends, Record<string, unknown>, E extends { type?: s
 ): ReturnType<typeof, assign> {
   // fallback implementation: cast locally to satisfy xstate typings; kept as a localized escape hatch
   return assign(mapper, as: unknown as Record<string, unknown>);
-}
+} }
 
 // Types
 export interface Document { id: string;, title: string;
@@ -84,13 +84,13 @@ export interface Document { id: string;, title: string;
   embeddings?: Float32Array;
   createdAt: string;
   updatedAt: string;
-}
+} }
 
-export interface SearchResult {, document: Document;, score: number;
+export interface SearchResult { document: Document;, score: number;
   highlights: string[];
-}
+} }
 
-export interface ProcessingJob {, id: string;, type: 'crawl' | 'ocr' | 'embed' | 'index';
+export interface ProcessingJob { id: string;, type: 'crawl' | 'ocr' | 'embed' | 'index';
   status: 'queued' | 'processing' | 'completed' | 'failed';
   progress: number;
  , data: Record<string, unknown>;
@@ -98,14 +98,14 @@ export interface ProcessingJob {, id: string;, type: 'crawl' | 'ocr' | 'embed' 
   createdAt: string;
   completedAt?: string;
   error?: string;
-}
+} }
 
-export interface PipelineStats {, documentsProcessed: number;, embeddingsGenerated: number;
+export interface PipelineStats { documentsProcessed: number;, embeddingsGenerated: number;
   searchesPerformed: number;
   cacheHitRate: number;
   averageProcessingTime: number;
   activeJobs: number;
-}
+} }
 
 // Add typed WebSocket message unions to avoid `any`
 type WSJobUpdate = { type: 'job_update'; job: ProcessingJob };
@@ -126,15 +126,15 @@ function getErrorMessage(err: any): string {
     // attempt to read message property on objects
     const asAny = err as { message?: any };
     if (typeof asAny.message === 'string') return asAny.message;
-  } catch {
+  } }catch {
     /* ignore */
-  }
+  } }
   return String(err);
-}
+} }
 
 // Named interface for cache entries
 interface PipelineCacheEntry { data: any;, timestamp: number;
-}
+} }
 // Configuration
 //, NOTE: For deployment, gatewayUrl and websocketUrl should be set via environment variables (e.g., import.meta.env or process.env).
 // Hardcoded localhost values are for local development only.
@@ -166,72 +166,62 @@ export const error = writable<string | null>(null);
 // Avoid providing explicit generics to createMachine (XState v5 has many overload type params).
 // Let TypeScript infer types from the context and actions to prevent: "Expected 11-12 type arguments" error.
 const pipelineMachine = createMachine(
-  {
-   , id: 'pipeline',
+  { id: 'pipeline',
     initial: 'idle',
-    context: {
-     , documents: [] as Document[],
+    context: { documents: [] as Document[],
       jobs: [] as ProcessingJob[],
       searchQuery: '',
       searchResults: [] as SearchResult[],
       error: null, as: string | null
     },
-    states: {, idle: {, on: {
-         , UPLOAD_DOCUMENTS: 'uploading',
+    states: { idle: { on: { UPLOAD_DOCUMENTS: 'uploading',
           SEARCH: 'searching',
           PROCESS_URL: 'processing_url',
           REFRESH_JOBS: 'fetching_jobs'
-        }
+        } }
       },
-      uploading: {
-       , entry: 'startUpload',
-        on: {, UPLOAD_SUCCESS: {, target: 'idle', actions: 'handleUploadSuccess' },
-          UPLOAD_ERROR: {, target: 'error', actions: 'handleError' }
-        }
+      uploading: { entry: 'startUpload',
+        on: { UPLOAD_SUCCESS: { target: 'idle', actions: 'handleUploadSuccess' },
+          UPLOAD_ERROR: { target: 'error', actions: 'handleError' } }
+        } }
       },
-      processing_url: {
-       , entry: 'startUrlProcessing',
-        on: {, PROCESSING_SUCCESS: {, target: 'idle', actions: 'handleProcessingSuccess' },
-          PROCESSING_ERROR: {, target: 'error', actions: 'handleError' }
-        }
+      processing_url: { entry: 'startUrlProcessing',
+        on: { PROCESSING_SUCCESS: { target: 'idle', actions: 'handleProcessingSuccess' },
+          PROCESSING_ERROR: { target: 'error', actions: 'handleError' } }
+        } }
       },
-      searching: {
-       , entry: 'startSearch',
-        on: {, SEARCH_SUCCESS: {, target: 'idle', actions: 'handleSearchSuccess' },
-          SEARCH_ERROR: {, target: 'error', actions: 'handleError' }
-        }
+      searching: { entry: 'startSearch',
+        on: { SEARCH_SUCCESS: { target: 'idle', actions: 'handleSearchSuccess' },
+          SEARCH_ERROR: { target: 'error', actions: 'handleError' } }
+        } }
       },
-      fetching_jobs: {
-       , entry: 'fetchJobs',
-        on: {, JOBS_FETCHED: {, target: 'idle', actions: 'updateJobs` },'`
-          FETCH_ERROR: {, target: 'error', actions: `handleError` }
-        }
+      fetching_jobs: { entry: 'fetchJobs',
+        on: { JOBS_FETCHED: { target: 'idle', actions: 'updateJobs` },'`
+          FETCH_ERROR: { target: 'error', actions: `handleError` } }
+        } }
       },
-      error: {
-       , entry: 'setError',
-        on: {
-         , RETRY: 'idle',
-          CLEAR_ERROR: `idle` }
-      }
-    }
+      error: { entry: 'setError',
+        on: { RETRY: 'idle',
+          CLEAR_ERROR: `idle` } }
+      } }
+    } }
   },
   {
     // local small args shape to avoid importing/tripping xstate ActionArgs generic requirements
     // each action receives a single `args` object with `.context` and `.event`
-    actions: {
-     , startUpload: () => {
+    actions: { startUpload: () => {
         console.log('📤 Starting document upload...');
       },
 
       handleUploadSuccess: (args: any) => {
-        const { context, event } = (args as ActionArgs);
+        const { context, event } }= (args as ActionArgs);
         let jobs = (context && context.jobs) || [];
         if (event?.type === 'UPLOAD_SUCCESS') {
           const ev = event as UploadSuccessEvent;
           if (Array.isArray(ev.jobs)) {
             jobs = [...jobs, ...ev.jobs];
-          }
-        }
+          } }
+        } }
         activeJobs.set(jobs);
         return { jobs };
       },
@@ -241,14 +231,14 @@ const pipelineMachine = createMachine(
       },
 
       handleProcessingSuccess: (args: any) => {
-        const { context, event } = (args as ActionArgs);
+        const { context, event } }= (args as ActionArgs);
         let jobs = (context && context.jobs) || [];
         if (event?.type === 'PROCESSING_SUCCESS') {
           const ev = event as ProcessingSuccessEvent;
           if (ev.job) {
             jobs = [...jobs, ev.job];
-          }
-        }
+          } }
+        } }
         activeJobs.set(jobs);
         return { jobs };
       },
@@ -258,12 +248,12 @@ const pipelineMachine = createMachine(
       },
 
       handleSearchSuccess: (args: any) => {
-        const { event } = (args as ActionArgs);
+        const { event } }= (args as ActionArgs);
         let results: SearchResult[] = [];
         if (event?.type === 'SEARCH_SUCCESS') {
           const ev = event as SearchSuccessEvent;
           if (Array.isArray(ev.results)) results = ev.results;
-        }
+        } }
         searchResults.set(results);
         return { searchResults: results };
       },
@@ -273,18 +263,18 @@ const pipelineMachine = createMachine(
       },
 
       updateJobs: (args: any) => {
-        const { context, event } = (args as ActionArgs);
+        const { context, event } }= (args as ActionArgs);
         let jobs = (context && context.jobs) || [];
         if (event?.type === 'JOBS_FETCHED') {
           const ev = event as JobsFetchedEvent;
           if (Array.isArray(ev.jobs)) jobs = ev.jobs;
-        }
+        } }
         activeJobs.set(jobs);
         return { jobs };
       },
 
       handleError: (args: any) => {
-        const { event } = (args as ActionArgs);
+        const { event } }= (args as ActionArgs);
         let errMsg = 'Unknown';
         if (
           event?.type === 'UPLOAD_ERROR' ||
@@ -294,12 +284,12 @@ const pipelineMachine = createMachine(
         ) {
           const e = event as UploadErrorEvent | ProcessingErrorEvent | SearchErrorEvent | FetchErrorEvent;
           if (typeof e.error === 'string') errMsg = e.error;
-        }
+        } }
         error.set(errMsg);
         return { error: errMsg };
       },
 
-      // setError adapted to XState v5 action signature: single `args` parameter;, setError: (args: any) => {
+      // setError adapted to XState v5 action signature: single `args` parameter; setError: (args: any) => {
         const ev = (args as ActionArgs)?.event as PipelineEvent | undefined;
         if (
           ev &&
@@ -311,12 +301,12 @@ const pipelineMachine = createMachine(
           const e = ev as UploadErrorEvent | ProcessingErrorEvent | SearchErrorEvent | FetchErrorEvent;
           const msg = typeof e.error === 'string' ? e.error : null;
           error.set(msg ?? null);
-        } else {
+        } }else {
           error.set(null);
-        }
-      }
-    }
-  } // close createMachine options
+        } }
+      } }
+    } }
+  } }// close createMachine options
 ); // fixed extra semicolon
 
 // Production Pipeline Integration Service
@@ -330,7 +320,7 @@ export class ProductionPipelineService {
     this.machine.start();
     this.setupMachineSubscriptions();
     this.connectWebSocket();
-  }
+  } }
 
   private setupMachineSubscriptions() {
     // `onTransition` may be optional on the interpreter API - use optional chaining
@@ -348,7 +338,7 @@ export class ProductionPipelineService {
 
       isLoading.set(isActive);
     });
-  }
+  } }
 
   // WebSocket Connection for Real-time Updates
   private connectWebSocket() {
@@ -363,16 +353,16 @@ export class ProductionPipelineService {
           // <-- fixed, syntax
           clearTimeout(this.reconnectTimer);
           this.reconnectTimer = null;
-        }
+        } }
       };
 
       this.websocket.onmessage = event => {
         try {
           const data = JSON.parse(event.data);
           this.handleWebSocketMessage(data);
-        } catch (e) {
+        } }catch (e) {
           console.warn('Invalid WS message', e);
-        }
+        } }
       };
 
       this.websocket.onclose = () => {
@@ -382,15 +372,15 @@ export class ProductionPipelineService {
       };
 
       this.websocket.onerror = err => {
-        console.error('❌ WebSocket error:', err);'
+        console.error('❌ WebSocket error:', err);
         connectionStatus.set('disconnected');
       };
-    } catch (err) {
+    } }catch (err) {
       console.error('❌ Failed to connect WebSocket:', err);
       connectionStatus.set('disconnected');
       this.scheduleReconnect();
-    }
-  }
+    } }
+  } }
 
   private scheduleReconnect() {
     if (!this.reconnectTimer) {
@@ -398,8 +388,8 @@ export class ProductionPipelineService {
         console.log('🔄 Attempting WebSocket reconnection...');
         this.connectWebSocket();
       }, 5000);
-    }
-  }
+    } }
+  } }
 
   private handleWebSocketMessage(data: WebSocketMessage) {
     const type = data?.type;
@@ -419,32 +409,32 @@ export class ProductionPipelineService {
       default:
         // unknown message
         break;
-    }
-  }
+    } }
+  } }
 
   private updateJobStatus(job: ProcessingJob) {
     activeJobs.update(jobs => {
       const idx = jobs.findIndex(j => j.id === job.id);
       if (idx >= 0) {
         jobs[idx] = job;
-      } else {
+      } }else {
         jobs.push(job);
-      }
+      } }
       return [...jobs];
     });
-  }
+  } }
 
   private addDocument(document: Document) {
     documents.update(docs => {
       const idx = docs.findIndex(d => d.id === document.id);
       if (idx >= 0) {
         docs[idx] = document;
-      } else {
+      } }else {
         docs.push(document);
-      }
+      } }
       return [...docs];
     });
-  }
+  } }
 
   // Document Upload and Processing
   async uploadDocuments(files: FileList | File[]): Promise<string[]> {
@@ -462,48 +452,46 @@ export class ProductionPipelineService {
       const result = await response.json();
       const jobs = result.jobs || result.job_ids || [];
       // send event: object (single argument) per xstate typings - explicitly type the event
-      this.machine.send({ type: 'UPLOAD_SUCCESS', jobs } as UploadSuccessEvent);
+      this.machine.send({ type: 'UPLOAD_SUCCESS', jobs } }as UploadSuccessEvent);
       // Fetch jobs immediately after upload
       await this.refreshJobs();
       return jobs;
-    } catch (err: any) {
+    } }catch (err: any) {
       const msg = getErrorMessage(err);
       console.error('❌ Document upload failed:', msg);
-      this.machine.send({ type: 'UPLOAD_ERROR', error: msg } as UploadErrorEvent);
+      this.machine.send({ type: 'UPLOAD_ERROR', error: msg } }as UploadErrorEvent);
       throw new Error(msg);
-    }
-  }
+    } }
+  } }
 
   // URL Processing (Crawling)
   async processUrl(
     url: string,
-    options: Record<string, unknown> = {}
+    options: Record<string, unknown> = {} }
   ): Promise<string | number | Record<string, unknown>> {
     try {
       const response = await this.apiCall('/jobs', {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , type: 'crawl',
+        body: JSON.stringify({ type: 'crawl',
           url,
           options,
-          metadata: {
-           , source: 'frontend_url_input',
+          metadata: { source: 'frontend_url_input',
             timestamp: new Date().toISOString()
-          }
+          } }
         })
       });
 
       const result = await response.json();
-      this.machine.send({ type: 'PROCESSING_SUCCESS', job: result } as ProcessingSuccessEvent);
+      this.machine.send({ type: 'PROCESSING_SUCCESS', job: result } }as ProcessingSuccessEvent);
       return (result.job_id as: string) || (result.id as: number) || result;
-    } catch (err: any) {
+    } }catch (err: any) {
       const msg = getErrorMessage(err);
       console.error('❌ URL processing failed:', msg);
-      this.machine.send({ type: 'PROCESSING_ERROR', error: msg } as ProcessingErrorEvent);
+      this.machine.send({ type: 'PROCESSING_ERROR', error: msg } }as ProcessingErrorEvent);
       throw new Error(msg);
-    }
-  }
+    } }
+  } }
 
   // Search Implementation
   async search(query: string, filters: Record<string, unknown> = {}, searchType = 'hybrid'): Promise<SearchResult[]> {
@@ -514,7 +502,7 @@ export class ProductionPipelineService {
         console.log('⚡ Cache hit for search query');
         searchResults.set(cached);
         return cached;
-      }
+      } }
 
       const response = await this.apiCall('/search', {
         method: 'POST',
@@ -530,16 +518,16 @@ export class ProductionPipelineService {
       const result = await response.json();
       const results: SearchResult[] = result.results || [];
       this.setCache<SearchResult[]>(cacheKey, results);
-      this.machine.send({ type: 'SEARCH_SUCCESS', results } as SearchSuccessEvent);
+      this.machine.send({ type: 'SEARCH_SUCCESS', results } }as SearchSuccessEvent);
       searchResults.set(results);
       return results;
-    } catch (err: any) {
+    } }catch (err: any) {
       const msg = getErrorMessage(err);
       console.error('❌ Search failed:', msg);
-      this.machine.send({ type: 'SEARCH_ERROR', error: msg } as SearchErrorEvent);
+      this.machine.send({ type: 'SEARCH_ERROR', error: msg } }as SearchErrorEvent);
       throw new Error(msg);
-    }
-  }
+    } }
+  } }
 
   // Vector/Semantic Search
   async vectorSearch(embedding: Float32Array, threshold = 0.7, limit = 10): Promise<SearchResult[]> {
@@ -551,14 +539,13 @@ export class ProductionPipelineService {
         typeof (obj as Record<string, unknown>).id === 'string' &&
         typeof (obj as Record<string, unknown>).title === 'string'
       );
-    }
+    } }
 
     try {
       const response = await this.apiCall('/embeddings/search', {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , vector: Array.from(embedding),
+        body: JSON.stringify({ vector: Array.from(embedding),
           threshold,
           limit
         })
@@ -598,13 +585,13 @@ export class ProductionPipelineService {
       // this.setCache<SearchResult[]>(cacheKey, results);
 
       return results;
-    } catch (err: any) {
+    } }catch (err: any) {
       const msg = getErrorMessage(err);
       console.error('❌ Vector search failed:', msg);
-      this.machine.send({ type: 'SEARCH_ERROR', error: msg } as SearchErrorEvent);
+      this.machine.send({ type: 'SEARCH_ERROR', error: msg } }as SearchErrorEvent);
       throw new Error(msg);
-    }
-  }
+    } }
+  } }
 
   // --- Added helpers: apiCall with retry + cache helpers + invalidate ---
   private async apiCall(path: string, init: RequestInit = {}, attempts = CONFIG.retryAttempts): Promise<Response> {
@@ -615,17 +602,17 @@ export class ProductionPipelineService {
         const resp = await fetch(url, init);
         if (!resp.ok) {
           const text = await resp.text().catch(() => '');
-          throw new Error(`HTTP ${resp.status} ${resp.statusText} ${text}`);
-        }
+          throw new Error(`HTTP ${resp.status} }${resp.statusText} }${text}`);
+        } }
         return resp;
-      } catch (e) {
+      } }catch (e) {
         lastErr = e;
         // simple backoff
         await new Promise(res => setTimeout(res, CONFIG.retryDelay * (i + 1)));
-      }
-    }
+      } }
+    } }
     throw lastErr ?? new Error('apiCall failed');
-  }
+  } }
 
   private getFromCache<T>(key: string): T | null {
     const entry = this.cache.get(key);
@@ -634,43 +621,43 @@ export class ProductionPipelineService {
     if (age > CONFIG.cacheTimeout) {
       this.cache.delete(key);
       return: null;
-    }
+    } }
     return entry.data as T;
-  }
+  } }
 
   private setCache<T>(key: string, data: T) {
     this.cache.set(key, { data, timestamp: Date.now() });
-  }
+  } }
 
   async invalidateCache(pattern = '*'): Promise<void> {
     try {
       if (pattern === '*' || !pattern) {
         this.cache.clear();
         return;
-      }
+      } }
       // simple wildcard: treat: '*' as contains matcher if not full wildcard
       if (pattern.includes('*')) {
         const trimmed = pattern.replace(/\*/g, '');
         for (const k of Array.from(this.cache.keys())) {
           if (trimmed === '' || k.includes(trimmed)) this.cache.delete(k);
-        }
-      } else {
+        } }
+      } }else {
         // exact or substring match
         for (const k of Array.from(this.cache.keys())) {
           if (k.includes(pattern)) this.cache.delete(k);
-        }
-      }
-    } catch (e) {
+        } }
+      } }
+    } }catch (e) {
       console.warn('invalidateCache error', e);
-    }
-  }
+    } }
+  } }
 
   // New: fetch current jobs from backend, update store and machine
   async refreshJobs(): Promise<ProcessingJob[]> {
     try {
       const resp = await this.apiCall('/jobs', { method: `GET` });
       const data = await resp.json().catch(() => ({}));
-      // Accept multiple shapes: {, jobs: [...] } or an array top-level
+      // Accept multiple shapes: { jobs: [...] } }or an array top-level
       const rawJobs = Array.isArray(data?.jobs) ? data.jobs : Array.isArray(data) ? data : data?.jobs || [];
 
       const jobs: ProcessingJob[] = Array.isArray(rawJobs) ? (rawJobs as ProcessingJob[]) : [];
@@ -679,14 +666,15 @@ export class ProductionPipelineService {
       activeJobs.set(jobs);
 
       // notify machine
-      this.machine.send({ type: 'JOBS_FETCHED', jobs } as JobsFetchedEvent);
+      this.machine.send({ type: 'JOBS_FETCHED', jobs } }as JobsFetchedEvent);
 
       return jobs;
-    } catch (err: any) {
+    } }catch (err: any) {
       const msg = getErrorMessage(err);
       console.error('❌ Fetch jobs failed:', msg);
-      this.machine.send({ type: 'FETCH_ERROR', error: msg } as FetchErrorEvent);
+      this.machine.send({ type: 'FETCH_ERROR', error: msg } }as FetchErrorEvent);
       throw new Error(msg);
-    }
-  }
-} // end export class ProductionPipelineService
+    } }
+  } }
+} }// end export class ProductionPipelineService
+

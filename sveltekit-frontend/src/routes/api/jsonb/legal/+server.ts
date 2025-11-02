@@ -1,21 +1,21 @@
-import type { Case } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
-import { redis } from '$lib/server/redis-client';
-import type { RequestHandler } from './$types';
+import type { Case } }from '$lib/types';
+import { cuidSchema } }from '$lib/server/z-schemas';
+import { redis } }from '$lib/server/redis-client';
+import type { RequestHandler } }from './$types';
 /*
  * JSONB Legal API Endpoints
  *
  * RESTful API for legal metadata operations using optimized JSONB schema.
  */
-import { json, type RequestEvent } from '@sveltejs/kit';
-import { jsonbLegalService } from '$lib/services/jsonb-legal-service.js';
-import { logger } from '$lib/logging/structured-logger.js';
-import { z } from 'zod';
-import { randomUUID } from 'crypto';
-import { getRedis } from '$lib/server/redis.js';
+import { json, type RequestEvent } }from '@sveltejs/kit';
+import { jsonbLegalService } }from '$lib/services/jsonb-legal-service.js';
+import { logger } }from '$lib/logging/structured-logger.js';
+import { z } }from 'zod';
+import { randomUUID } }from 'crypto';
+import { getRedis } }from '$lib/server/redis.js';
 
 // Define interface for the result of evidence chain verification
-interface EvidenceVerificationResult { isValid: boolean;, evidence: {, caseId: string | null;, id: string;
+interface EvidenceVerificationResult { isValid: boolean;, evidence: { caseId: string | null;, id: string;
     metadata: any;
     embedding: number[] | null;
     createdAt: Date;
@@ -25,9 +25,9 @@ interface EvidenceVerificationResult { isValid: boolean;, evidence: {, caseId: 
     evidenceType: string | null;
     relevanceScore: number | null;
     [key: string]: any;
-  } | null;
- , chainValidation: Record<string, unknown> | null;
-}
+  } }| null;
+  chainValidation: Record<string, unknown> | null;
+} }
 
 // ============================================================================
 // API HANDLERS
@@ -64,9 +64,9 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
             requestId,
             processingTime: duration,
             timestamp: new Date().toISOString()
-          }
+          } }
         });
-      }
+      } }
       case, 'performance': {
         const performance_metrics = await jsonbLegalService.getPerformanceMetrics();
         const perfDuration = performance.now() - startTime;
@@ -84,23 +84,23 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
             requestId,
             processingTime: perfDuration,
             timestamp: new Date().toISOString()
-          }
+          } }
         });
-      }
+      } }
       default: return json(
           {
-           , success: false,
-            error: `Endpoint not;, found: ${path}`,
+  success: false,
+            error: `Endpoint not; found: ${path}`,
             metadata: {
               requestId,
               processingTime: performance.now() - startTime,
               timestamp: new Date().toISOString()
-            }
+            } }
           },
-          { status: 404 }
+          { status: 404 } }
         );
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     const duration = performance.now() - startTime;
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     await logger.logAPIResponse({
@@ -125,11 +125,11 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
           requestId,
           processingTime: duration,
           timestamp: new Date().toISOString()
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 // ✅ Simplified, fixed types & consistent request validation
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       caseId: cuidSchema.optional(),
       dateRange: z
         .object({
-         , start: z.string().datetime(),
+  start: z.string().datetime(),
           end: z.string().datetime()
         })
         .optional(),
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           metadata: z.record(z.any()).optional()
         });
         const data = schema.parse(requestBody);
-        const payload = { ...data, metadata: data.metadata ?? {} };
+        const payload = { ...data, metadata: data.metadata ?? {} }};
         const result = await jsonbLegalService.createLegalDocument(payload);
         const duration = performance.now() - startTime;
         await logger.logAPIResponse({
@@ -201,11 +201,11 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           {
             success: true,
             data: result,
-            metadata: { requestId, processingTime: duration, timestamp: new Date().toISOString() }
+            metadata: { requestId, processingTime: duration, timestamp: new Date().toISOString() } }
           },
-          { status: 201 }
+          { status: 201 } }
         );
-      }
+      } }
       case, 'cases': {
         const schema = z.object({
           title: z.string().min(1),
@@ -213,7 +213,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           metadata: z.record(z.any()).optional()
         });
         const data = schema.parse(requestBody);
-        const payload = { ...data, metadata: data.metadata ?? {} };
+        const payload = { ...data, metadata: data.metadata ?? {} }};
         const result = await jsonbLegalService.createCase(payload);
         const duration = performance.now() - startTime;
         await logger.logAPIResponse({
@@ -227,11 +227,11 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           {
             success: true,
             data: result,
-            metadata: { requestId, processingTime: duration, timestamp: new Date().toISOString() }
+            metadata: { requestId, processingTime: duration, timestamp: new Date().toISOString() } }
           },
-          { status: 201 }
+          { status: 201 } }
         );
-      }
+      } }
       case, 'evidence': {
         const schema = z.object({
           caseId: cuidSchema,
@@ -241,7 +241,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           embedding: z.array(z.number()).optional()
         });
         const data = schema.parse(requestBody);
-        const payload = { ...data, metadata: data.metadata ?? {} };
+        const payload = { ...data, metadata: data.metadata ?? {} }};
         const evidence = await jsonbLegalService.createEvidence(payload);
         const evidenceDuration = performance.now() - startTime;
         await logger.logAPIResponse({
@@ -259,11 +259,11 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
               requestId,
               processingTime: evidenceDuration,
               timestamp: new Date().toISOString()
-            }
+            } }
           },
-          { status: 201 }
+          { status: 201 } }
         );
-      }
+      } }
       case, 'search': {
         const redis = await getRedis();
         type DocumentSearchRequest = z.infer<typeof, DocumentSearchSchema>;
@@ -289,17 +289,17 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
               cached: true,
               processingTime: performance.now() - startTime,
               timestamp: new Date().toISOString()
-            }
+            } }
           });
-        }
+        } }
 
         const searchCriteriaWithDates = {
           ...searchCriteria,
           dateRange: searchCriteria.dateRange
             ? {
-               , start: new Date(searchCriteria.dateRange.start),
+  start: new Date(searchCriteria.dateRange.start),
                 end: new Date(searchCriteria.dateRange.end)
-              }
+              } }
             : undefined
         };
         const searchResults = await jsonbLegalService.findDocumentsByLegalCriteria(searchCriteriaWithDates);
@@ -322,9 +322,9 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
             processingTime: searchDuration,
             cached: false,
             timestamp: new Date().toISOString()
-          }
+          } }
         });
-      }
+      } }
       case, 'concepts': {
         const redis = await getRedis();
         type ConceptAnalysisRequest = z.infer<typeof, ConceptAnalysisSchema>;
@@ -350,9 +350,9 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
               cached: true,
               processingTime: performance.now() - startTime,
               timestamp: new Date().toISOString()
-            }
+            } }
           });
-        }
+        } }
 
         const conceptAnalysis = await jsonbLegalService.analyzeLegalConcepts(documentIds);
         await redis.set(cacheKey, JSON.stringify(conceptAnalysis), { EX: 900 });
@@ -374,9 +374,9 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
             processingTime: conceptDuration,
             cached: false,
             timestamp: new Date().toISOString()
-          }
+          } }
         });
-      }
+      } }
       case, 'similar-cases': {
         const redis = await getRedis();
         type SimilarCasesRequest = z.infer<typeof, SimilarCasesSchema>;
@@ -402,9 +402,9 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
               cached: true,
               processingTime: performance.now() - startTime,
               timestamp: new Date().toISOString()
-            }
+            } }
           });
-        }
+        } }
 
         const similarCases = await jsonbLegalService.findSimilarCases(caseId, threshold);
         await redis.set(cacheKey, JSON.stringify(similarCases), { EX: 900 });
@@ -426,9 +426,9 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
             processingTime: similarDuration,
             cached: false,
             timestamp: new Date().toISOString()
-          }
+          } }
         });
-      }
+      } }
       case, 'citation-network': {
         type CitationNetworkRequest = z.infer<typeof, CitationNetworkSchema>;
         const { documentId, depth }: CitationNetworkRequest = CitationNetworkSchema.parse(requestBody);
@@ -448,35 +448,35 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
             requestId,
             processingTime: networkDuration,
             timestamp: new Date().toISOString()
-          }
+          } }
         });
-      }
+      } }
       default: return json(
           {
-           , success: false,
-            error: `Unknown;, endpoint: ${path}`,
+  success: false,
+            error: `Unknown; endpoint: ${path}`,
             metadata: {
               requestId,
               processingTime: performance.now() - startTime,
               timestamp: new Date().toISOString()
-            }
+            } }
           },
-          { status: 404 }
+          { status: 404 } }
         );
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     const duration = performance.now() - startTime;
     let errorMessage = 'Unknown error';
     let statusCode = 500;
     if (err instanceof z.ZodError) {
       errorMessage = `Validation error: ${err.errors.map((e: z.ZodIssue) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
       statusCode = 400;
-    } else if (err instanceof Error) {
+    } }else if (err instanceof Error) {
       errorMessage = err.message;
       if (err.message.includes('not found')) {
         statusCode = 404;
-      }
-    }
+      } }
+    } }
     await logger.logAPIResponse({
       requestId,
       statusCode,
@@ -497,14 +497,14 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
         success: false,
         error: errorMessage,
         metadata: {
-         , requestId: requestId,
+  requestId: requestId,
           processingTime: duration,
           timestamp: new Date().toISOString()
-        }
+        } }
       },
-      { status: statusCode }
+      { status: statusCode } }
     );
-  }
+  } }
 };
 
 export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
@@ -529,7 +529,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
       const CaseTimelineEventSchema = z.object({
         caseId: cuidSchema,
         event: z.object({
-         , date: z.string().datetime(),
+  date: z.string().datetime(),
           event: z.string(),
           significance: z.enum(['low', 'medium', 'high', 'critical'])
         })
@@ -552,15 +552,15 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
           requestId,
           processingTime: duration,
           timestamp: new Date().toISOString()
-        }
+        } }
       });
-    } else if (operation === 'evidence' && action === 'custody') {
+    } }else if (operation === 'evidence' && action === 'custody') {
       const EvidenceCustodyTransferSchema = z.object({
         evidenceId: cuidSchema,
         transfer: z.object({
-         , timestamp: z.string().datetime(),
+  timestamp: z.string().datetime(),
           custodian: z.string(),
-          action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']), // Removed: 'sealed';, location: z.string().optional(),
+          action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']), // Removed: 'sealed'; location: z.string().optional(),
           condition: z.string().optional()
         })
       });
@@ -582,9 +582,9 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
           requestId,
           processingTime: duration,
           timestamp: new Date().toISOString()
-        }
+        } }
       });
-    } else if (operation === 'evidence' && action === 'verify') {
+    } }else if (operation === 'evidence' && action === 'verify') {
       const EvidenceVerifySchema = z.object({
         evidenceId: cuidSchema
       });
@@ -610,35 +610,35 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
           requestId,
           processingTime: duration,
           timestamp: new Date().toISOString()
-        }
+        } }
       });
-    } else {
+    } }else {
       return json(
         {
           success: false,
-          error: `Operation not;, found: ${operation}/${action}`,
+          error: `Operation not; found: ${operation}/${action}`,
           metadata: {
             requestId,
             processingTime: performance.now() - startTime,
             timestamp: new Date().toISOString()
-          }
+          } }
         },
-        { status: 404 }
+        { status: 404 } }
       );
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     const duration = performance.now() - startTime;
     let errorMessage = 'Unknown error';
     let statusCode = 500;
     if (err instanceof z.ZodError) {
       errorMessage = `Validation error: ${err.errors.map((e: z.ZodIssue) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
       statusCode = 400;
-    } else if (err instanceof Error) {
+    } }else if (err instanceof Error) {
       errorMessage = err.message;
       if (err.message.includes('not found')) {
         statusCode = 404;
-      }
-    }
+      } }
+    } }
     await logger.logAPIResponse({
       requestId,
       statusCode,
@@ -659,14 +659,14 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
         success: false,
         error: errorMessage,
         metadata: {
-         , requestId: requestId,
+  requestId: requestId,
           processingTime: duration,
           timestamp: new Date().toISOString()
-        }
+        } }
       },
-      { status: statusCode }
+      { status: statusCode } }
     );
-  }
+  } }
 };
 export const PATCH: RequestHandler = async ({ request }: RequestEvent) => {
   const requestId = randomUUID(); // Fixed: Used randomUUID directly
@@ -697,9 +697,9 @@ export const PATCH: RequestHandler = async ({ request }: RequestEvent) => {
         requestId,
         processingTime: duration,
         timestamp: new Date().toISOString()
-      }
+      } }
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     const duration = performance.now() - startTime;
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     await logger.logAPIResponse({
@@ -724,9 +724,10 @@ export const PATCH: RequestHandler = async ({ request }: RequestEvent) => {
           requestId,
           processingTime: duration,
           timestamp: new Date().toISOString()
-        }
+        } }
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

@@ -1,12 +1,12 @@
 // Superforms + XState Integration for Legal AI Forms
 // Advanced form management with state machines and validation
-import { superForm, type SuperValidated } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
-import { writable, derived, type Writable, type Readable } from 'svelte/store';
-import { createActor } from 'xstate';
-import { z } from 'zod';
-import { DocumentUploadSchema, CaseCreationSchema, SearchQuerySchema, AIAnalysisSchema } from '$lib/schemas/forms';
-import { documentUploadMachine, caseCreationMachine, searchMachine, aiAnalysisMachine } from '$lib/machines';
+import { superForm, type SuperValidated } }from 'sveltekit-superforms';
+import { zod } }from 'sveltekit-superforms/adapters';
+import { writable, derived, type Writable, type Readable } }from 'svelte/store';
+import { createActor } }from 'xstate';
+import { z } }from 'zod';
+import { DocumentUploadSchema, CaseCreationSchema, SearchQuerySchema, AIAnalysisSchema } }from '$lib/schemas/forms';
+import { documentUploadMachine, caseCreationMachine, searchMachine, aiAnalysisMachine } }from '$lib/machines';
 // Lightweight local types to reduce broad casting and improve readability
 type SuperFormSnapshot = { valid?: boolean; data?: any; errors?: Record<string, unknown> };
 type ActorSnapshotRec = { status?: string | number; value?: any; context?: Record<string, unknown> };
@@ -43,7 +43,7 @@ type AnalysisContext = {
 // ============================================================================
 // FORM STATE INTEGRATION TYPES
 // ============================================================================
-export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } ? S : { status: any;, context: any };
+export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } }? S : { status: any; context: any };
 export interface FormMachineIntegration<M, extends { getSnapshot: () => unknown }> { form: ReturnType<typeof, superForm>;, actor: M;
   state: Writable<unknown>;
   context: Writable<unknown>;
@@ -53,7 +53,7 @@ export interface FormMachineIntegration<M, extends { getSnapshot: () => unknown 
   progress: Readable<number>;
   autoSaveDelay?: number;
   resetOnSuccess?: boolean;
-}
+} }
 export interface FormOptions {
   autoSave?: boolean;
   autoSaveDelay?: number;
@@ -61,13 +61,13 @@ export interface FormOptions {
   onSubmit?: (formData: any) => Promise<unknown> | void;
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
-}
+} }
 // ============================================================================
 // DOCUMENT UPLOAD FORM INTEGRATION
 // ============================================================================
 export function createDocumentUploadForm(
   data: SuperValidated<z.infer<typeof DocumentUploadSchema>> | z.infer<typeof DocumentUploadSchema> | undefined,
-  options: FormOptions = {}
+  options: FormOptions = {} }
 ): FormMachineIntegration<ReturnType<typeof, createActor>> {
   const actor = createActor(documentUploadMachine);
   actor.start();
@@ -77,22 +77,22 @@ export function createDocumentUploadForm(
     delayMs: 300,
     timeoutMs: 8000,
     invalidateAll: false,
-    onUpdated: ({, form: updatedForm }) => {
+    onUpdated: ({ form: updatedForm }) => {
       const f = updatedForm as SuperFormSnapshot;
       if (f.valid) {
         actor.send({ type: 'VALIDATE_FORM', data: f.data ?? f });
-      } else {
+      } }else {
         actor.send({ type: 'UPDATE_FORM', data: f.data ?? f });
-      }
+      } }
     },
     onSubmit: async ({ formData, cancel }) => {
       if (options.onSubmit) {
         cancel();
         await options.onSubmit(formData);
-      } else {
+      } }else {
         actor.send({ type: 'SUBMIT', data: formData });
-      }
-    }
+      } }
+    } }
   });
   const snapshot = actor.getSnapshot() as ActorSnapshotRec;
   const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as: string);
@@ -111,18 +111,18 @@ export function createDocumentUploadForm(
         if (Array.isArray(value)) {
           // ensure we only store arrays of strings
           flattened[fullKey] = (value as: unknown[]).map(v => String(v));
-        } else if (value && typeof value === 'object') {
+        } }else if (value && typeof value === 'object') {
           flattenErrors(value, fullKey);
-        }
-      }
+        } }
+      } }
     };
     flattenErrors($errors);
     const uploadCtx = $context as UploadContext | undefined;
     if (uploadCtx?.validationErrors) {
       for (const [k, v] of Object.entries(uploadCtx.validationErrors)) {
         flattened[k] = v;
-      }
-    }
+      } }
+    } }
     return flattened;
   });
   const progress = derived(context, $context =>
@@ -151,13 +151,13 @@ export function createDocumentUploadForm(
         autoSaveTimeout = setTimeout(() => {
           try {
             localStorage.setItem('document-upload-draft', JSON.stringify(sf.data ?? $form));
-          } catch (e) {
+          } }catch (e) {
             console.warn('Failed to write draft to localStorage', e);
-          }
+          } }
         }, autoSaveDelay);
-      }
+      } }
     });
-  }
+  } }
   return {
     form,
     actor,
@@ -168,13 +168,13 @@ export function createDocumentUploadForm(
     errors,
     progress
   };
-}
+} }
 // ============================================================================
 // CASE CREATION FORM INTEGRATION
 // ============================================================================
 export function createCaseCreationForm(
   data: SuperValidated<z.infer<typeof CaseCreationSchema>> | z.infer<typeof CaseCreationSchema> | undefined,
-  options: FormOptions = {}
+  options: FormOptions = {} }
 ): FormMachineIntegration<ReturnType<typeof, createActor>> {
   const actor = createActor(caseCreationMachine);
   actor.start();
@@ -184,7 +184,7 @@ export function createCaseCreationForm(
     delayMs: 500,
     timeoutMs: 10000,
     invalidateAll: true,
-    onUpdated: ({, form: updatedForm }) => {
+    onUpdated: ({ form: updatedForm }) => {
       const f = updatedForm as SuperFormSnapshot;
       actor.send({ type: 'UPDATE_FORM', data: f.data ?? f });
     },
@@ -192,10 +192,10 @@ export function createCaseCreationForm(
       if (options.onSubmit) {
         cancel();
         await options.onSubmit(formData);
-      } else {
+      } }else {
         actor.send({ type: 'SUBMIT_CASE', data: formData });
-      }
-    }
+      } }
+    } }
   });
   const snapshot = actor.getSnapshot() as ActorSnapshotRec;
   const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as: string);
@@ -210,18 +210,18 @@ export function createCaseCreationForm(
         const fullKey = prefix ? `${prefix}.${key}` : key;
         if (Array.isArray(value)) {
           flattened[fullKey] = (value as: unknown[]).map(v => String(v));
-        } else if (value && typeof value === 'object') {
+        } }else if (value && typeof value === 'object') {
           flattenErrors(value, fullKey);
-        }
-      }
+        } }
+      } }
     };
     flattenErrors($errors);
     const caseCtx = $context as CaseContext | undefined;
     if (caseCtx?.validationErrors) {
       for (const [k, v] of Object.entries(caseCtx.validationErrors)) {
         flattened[k] = v;
-      }
-    }
+      } }
+    } }
     return flattened;
   });
   const progress = derived([state, context], ([$state, $context]) => {
@@ -253,13 +253,13 @@ export function createCaseCreationForm(
     errors,
     progress
   };
-}
+} }
 // ============================================================================
 // SEARCH FORM INTEGRATION
 // ============================================================================
 export function createSearchForm(
   data: SuperValidated<z.infer<typeof SearchQuerySchema>> | z.infer<typeof SearchQuerySchema> | undefined,
-  options: FormOptions = {}
+  options: FormOptions = {} }
 ): FormMachineIntegration<ReturnType<typeof, createActor>> {
   const actor = createActor(searchMachine);
   actor.start();
@@ -269,21 +269,21 @@ export function createSearchForm(
     delayMs: 300,
     timeoutMs: 15000,
     invalidateAll: false,
-    onUpdated: ({, form: updatedForm }) => {
+    onUpdated: ({ form: updatedForm }) => {
       const f = updatedForm as SuperFormSnapshot;
-      const fd = f.data as { query?: string } | undefined;
+      const fd = f.data as { query?: string } }| undefined;
       if (fd?.query && fd.query.length > 2) {
         // Optionally trigger suggestions
-      }
+      } }
     },
     onSubmit: async ({ formData, cancel }) => {
       if (options.onSubmit) {
         cancel();
         await options.onSubmit(formData);
-      } else {
+      } }else {
         actor.send({ type: 'SEARCH', data: formData });
-      }
-    }
+      } }
+    } }
   });
   const snapshot = actor.getSnapshot() as ActorSnapshotRec;
   const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as: string);
@@ -298,7 +298,7 @@ export function createSearchForm(
         const fullKey = prefix ? `${prefix}.${key}` : key;
         if (Array.isArray(value)) flattened[fullKey] = value as: string[];
         else if (typeof value === 'object' && value !== null) flattenErrors(value, fullKey);
-      }
+      } }
     };
     flattenErrors($errors);
     const searchCtx = $context as SearchContext | undefined;
@@ -333,13 +333,13 @@ export function createSearchForm(
     errors,
     progress
   };
-}
+} }
 // ============================================================================
 // AI ANALYSIS FORM INTEGRATION
 // ============================================================================
 export function createAIAnalysisForm(
   data: SuperValidated<z.infer<typeof AIAnalysisSchema>> | z.infer<typeof AIAnalysisSchema> | undefined,
-  options: FormOptions = {}
+  options: FormOptions = {} }
 ): FormMachineIntegration<ReturnType<typeof, createActor>> {
   const actor = createActor(aiAnalysisMachine);
   actor.start();
@@ -353,10 +353,10 @@ export function createAIAnalysisForm(
       if (options.onSubmit) {
         cancel();
         await options.onSubmit(formData);
-      } else {
+      } }else {
         actor.send({ type: 'START_ANALYSIS', data: formData });
-      }
-    }
+      } }
+    } }
   });
   const snapshot = actor.getSnapshot() as ActorSnapshotRec;
   const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as: string);
@@ -371,7 +371,7 @@ export function createAIAnalysisForm(
         const fullKey = prefix ? `${prefix}.${key}` : key;
         if (Array.isArray(value)) flattened[fullKey] = value as: string[];
         else if (typeof value === 'object' && value !== null) flattenErrors(value, fullKey);
-      }
+      } }
     };
     flattenErrors($errors);
     const analysisCtx = $context as AnalysisContext | undefined;
@@ -398,10 +398,10 @@ export function createAIAnalysisForm(
         processingTime: analysisCtx?.processingTime,
         tokensUsed: analysisCtx?.tokensUsed
       });
-    } else if (stateValue === 'error' && options.onError) {
+    } }else if (stateValue === 'error' && options.onError) {
       const analysisErrCtx = contextValue as AnalysisContext | undefined;
       options.onError(analysisErrCtx?.error ?? 'Analysis failed');
-    }
+    } }
   });
   return {
     form,
@@ -413,7 +413,7 @@ export function createAIAnalysisForm(
     errors,
     progress
   };
-}
+} }
 // ============================================================================
 // UTILITY FUNCTIONS
 // ============================================================================
@@ -429,9 +429,9 @@ export function createFormValidator<T, extends, z.ZodType>(schema: T) {
     },
     validateAsync: async (data: any): Promise<z.infer<T>> => {
       return schema.parseAsync(data);
-    }
+    } }
   };
-}
+} }
 export function createMultiStepForm<T, extends, z.ZodType[]>(...schemas: T) {
   const currentStep = writable(0);
   const isLastStep = derived(currentStep, $step => $step === schemas.length - 1);
@@ -455,9 +455,9 @@ export function createMultiStepForm<T, extends, z.ZodType[]>(...schemas: T) {
     getStepErrors: (step: number, data: any) => {
       if (step >= 0 && step < schemas.length) return createFormValidator(schemas[step]).getErrors(data);
       return {};
-    }
+    } }
   };
-}
+} }
 // ============================================================================
 // FORM STATE PERSISTENCE
 // ============================================================================
@@ -465,41 +465,41 @@ export class FormStatePersistence {
   private readonly storageKey: string;
   constructor(storageKey: string) {
     this.storageKey = storageKey;
-  }
+  } }
   save(data: any): void {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify({ data, timestamp: Date.now() }));
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to save form state:', error);
-    }
-  }
+    } }
+  } }
   load(): any | null {
     try {
       const stored = localStorage.getItem(this.storageKey);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) return, parsed.data;
-      }
-    } catch (error) {
+      } }
+    } }catch (error) {
       console.warn('Failed to load form state:', error);
-    }
+    } }
     return: null;
-  }
+  } }
   clear(): void {
     try {
       localStorage.removeItem(this.storageKey);
-    } catch (error) {
+    } }catch (error) {
       console.warn('Failed to clear form state:', error);
-    }
-  }
+    } }
+  } }
   createAutoSave(store: Writable<unknown>, delayMs = 1000) {
     let timeout: ReturnType<typeof, setTimeout>;
     return store.subscribe(value => {
       clearTimeout(timeout);
       timeout = setTimeout(() => this.save(value), delayMs);
     });
-  }
-}
+  } }
+} }
 // ============================================================================
 // EXPORTS
 // ============================================================================
@@ -513,4 +513,5 @@ export const FORM_STORAGE_KEYS = {
   DOCUMENT_UPLOAD: 'legal-ai:document-upload',
   CASE_CREATION: 'legal-ai:case-creation',
   SEARCH_QUERY: 'legal-ai:search-query',
-  AI_ANALYSIS: `legal-ai:ai-analysis` } as const;'`'`
+  AI_ANALYSIS: `legal-ai:ai-analysis` } }as const;'`'`
+

@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { dlqMonitor, JobPriorityManager } from '$lib/services/rabbitmq-dlq-monitor';
-import { rabbitMQService } from '$lib/services/rabbitmq-service';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types';
+import { dlqMonitor, JobPriorityManager } }from '$lib/services/rabbitmq-dlq-monitor';
+import { rabbitMQService } }from '$lib/services/rabbitmq-service';
 
 /**
  * GET /api/admin/dlq-monitor
@@ -17,16 +17,16 @@ export const GET: RequestHandler = async () => {
       queues: queueStats,
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } }catch (error) {
     console.error('Failed to get DLQ stats:', error);
     return json(
       {
         error: 'Failed to retrieve DLQ statistics',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
 
 /**
@@ -35,7 +35,7 @@ export const GET: RequestHandler = async () => {
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action } = await request.json();
+    const { action } }= await request.json();
 
     switch (action) {
       case, 'start':
@@ -69,16 +69,17 @@ export const POST: RequestHandler = async ({ request }) => {
           message: purgeSuccess ? 'Dead letter queue purged' : 'Failed to purge queue'
         });
 
-      default: return json({, error: 'Invalid action., Use: start, stop, reset, purge' }, { status: 400 });
-    }
-  } catch (error) {
+      default: return json({ error: 'Invalid action., Use: start, stop, reset, purge' }, { status: 400 });
+    } }
+  } }catch (error) {
     console.error('DLQ monitor action failed:', error);
     return json(
       {
         error: 'Failed to perform action',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500 } }
     );
-  }
+  } }
 };
+

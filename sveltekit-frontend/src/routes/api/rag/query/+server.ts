@@ -9,14 +9,14 @@
  *
  * @route POST /api/rag/query
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
-import type { RAGQuery, RAGResponse } from '$lib/services/enhanced-rag-pipeline';
-import { rateLimiter } from '$lib/server/rate-limiter'; // Assuming rate limiting exists
-import { requireAuth } from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
+import { enhancedRAGPipeline } }from '$lib/services/enhanced-rag-pipeline';
+import type { RAGQuery, RAGResponse } }from '$lib/services/enhanced-rag-pipeline';
+import { rateLimiter } }from '$lib/server/rate-limiter'; // Assuming rate limiting exists
+import { requireAuth } }from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
 export const POST: RequestHandler = async event => {
-  const { request, getClientAddress } = event;
+  const { request, getClientAddress } }= event;
   const startTime = Date.now();
   try {
     // Rate limiting protection
@@ -32,20 +32,20 @@ export const POST: RequestHandler = async event => {
           error: 'Rate limit exceeded',
           retryAfter: rateLimitResult.retryAfter
         },
-        { status: 429 }
+        { status: 429 } }
       );
-    }
+    } }
 
     // Authentication (optional but recommended for production)
-    type AuthUser = { id?: string } | null;
+    type AuthUser = { id?: string } }| null;
     let user: AuthUser = null;
     try {
       // pass the full RequestEvent as requireAuth expects the, event: object
       user = (await requireAuth(event)) as AuthUser;
-    } catch {
+    } }catch {
       // unauthenticated; continue as anonymous
       user = null;
-    }
+    } }
     const userId = user?.id;
 
     // Parse and validate request body
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async event => {
       useReranking = true,
       includeMetadata = true,
       contextWindow = 4000
-    } = requestData;
+    } }= requestData;
 
     // Input validation
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
@@ -69,18 +69,18 @@ export const POST: RequestHandler = async event => {
           success: false,
           error: 'Query is required and must be a non-empty: string'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
     if (query.length > 1000) {
       return json(
         {
           success: false,
           error: 'Query too long. Maximum, 1000 characters allowed.'
         },
-        { status: 400 }
+        { status: 400 } }
       );
-    }
+    } }
 
     // Validate documentTypes if provided
     const validDocumentTypes = ['contract', 'evidence', 'brief', 'citation', 'statute', 'precedent', 'regulation'];
@@ -90,15 +90,15 @@ export const POST: RequestHandler = async event => {
         return json(
           {
             success: false,
-            error: 'Invalid document;, types: ${invalidTypes.join(', ')}. Valid types: ${validDocumentTypes.join(', `)}' },'`
-          { status: 400 }
+            error: 'Invalid document; types: ${invalidTypes.join(', ')}. Valid types: ${validDocumentTypes.join(', `)} } },'`
+          { status: 400 } }
         );
-      }
-    }
+      } }
+    } }
 
     // Build RAG query
     const ragQuery: RAGQuery = {
-     , query: query.trim(),
+  query: query.trim(),
       userId,
       caseId: caseId || undefined,
       documentTypes: documentTypes && Array.isArray(documentTypes) ? documentTypes : undefined,
@@ -159,13 +159,13 @@ export const POST: RequestHandler = async event => {
         });
 
     const response: APIResponse = {
-     , success: true,
+  success: true,
       data: {
-       , answer: ragResponse.answer,
+  answer: ragResponse.answer,
         sources,
         confidence: ragResponse.confidence,
         metadata: {
-         , queryId: ragResponse.metadata.queryId,
+  queryId: ragResponse.metadata.queryId,
           totalTime: ragResponse.metadata.totalTime,
           retrievalTime: ragResponse.metadata.retrievalTime,
           generationTime: ragResponse.metadata.generationTime,
@@ -175,8 +175,8 @@ export const POST: RequestHandler = async event => {
           model: (ragResponse.metadata as { model?: string })?.model ?? 'unknown',
           reranked: ragResponse.metadata.reranked,
           apiProcessingTime: Date.now() - startTime
-        }
-      }
+        } }
+      } }
     };
 
     // Add reasoning if available (safe access without `any`)
@@ -184,10 +184,10 @@ export const POST: RequestHandler = async event => {
     if (reasoning) {
       // response.data is guaranteed above to be an: object
       (response.data as Record<string, unknown>).reasoning = reasoning;
-    }
+    } }
 
     return json(response);
-  } catch (error: any) {
+  } }catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error('RAG Query API Error:', errMsg);
     // Determine error type and appropriate response
@@ -196,42 +196,42 @@ export const POST: RequestHandler = async event => {
     if (errMsg.includes('Database connection')) {
       statusCode = 503;
       errorMessage = 'Database service temporarily unavailable';
-    } else if (errMsg.includes('Ollama') || errMsg.includes('embedding')) {
+    } }else if (errMsg.includes('Ollama') || errMsg.includes('embedding')) {
       statusCode = 503;
       errorMessage = 'AI service temporarily unavailable';
-    } else if (errMsg.includes('timeout')) {
+    } }else if (errMsg.includes('timeout')) {
       statusCode = 408;
       errorMessage = 'Query processing timeout';
-    }
+    } }
     return json(
       {
         success: false,
         error: errorMessage,
         metadata: {
-         , processingTime: Date.now() - startTime,
+  processingTime: Date.now() - startTime,
           timestamp: new Date().toISOString()
-        }
+        } }
       },
-      { status: statusCode }
+      { status: statusCode } }
     );
-  }
+  } }
 };
 // Optional: Health check endpoint
-export const, GET: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
   try {
     const stats = await enhancedRAGPipeline.getSystemStats();
     return json({
       success: true,
       status: 'healthy',
       stats: {
-       , documentsIndexed: stats.documentsIndexed,
+  documentsIndexed: stats.documentsIndexed,
         chunksIndexed: stats.chunksIndexed,
         averageRetrievalTime: stats.averageRetrievalTime,
         recentQueriesCount: stats.recentQueriesCount,
         lastUpdated: new Date().toISOString()
-      }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -239,7 +239,7 @@ export const, GET: RequestHandler = async () => {
         status: 'unhealthy',
         error: errMsg
       },
-      { status: 503 }
+      { status: 503 } }
     );
-  }
+  } }
 };

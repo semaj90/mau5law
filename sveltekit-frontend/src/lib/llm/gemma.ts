@@ -6,7 +6,7 @@ export interface GemmaOptions {
   maxTokens?: number;
   temperature?: number;
   stream?: boolean;
-}
+} }
 export interface GemmaResponse {
   text?: string;
   tokens?: number;
@@ -14,24 +14,24 @@ export interface GemmaResponse {
   done?: boolean;
   // raw payload for debugging
   raw?: any; // was: any -> safer: unknown
-}
+} }
 
 // ---, NEW: typed interfaces for external services ---
 export interface UltraJSONParser {
   parse<T = unknown>(input: string): T; // was: any -> unknown
   stringify(input: any): string; // was: any -> unknown
-}
+} }
 
 export interface WASMClusteringService {
   cluster(
    , embeddings: Float32Array[] | number[][],
-    options?: { k?: number; distance?: 'cosine' | 'euclidean' }
+    options?: { k?: number; distance?: 'cosine' | 'euclidean' } }
   ): Promise<number[][]>;
-}
+} }
 
 export interface NESGPUBridge {
   computeNESOperations(buffer: Float32Array): Promise<Float32Array>;
-}
+} }
 // --- end new interfaces ---
 
 // --- NEW: typed env accessor + helpers (replace previous import.meta, as: any usages) ---
@@ -45,20 +45,20 @@ const ENV =
         REDIS_CACHE_API?: string;
         PG_PERSIST_API?: string;
       };
-    }
+    } }
   ).env ?? {};
 
 /**
  * Type guard to check if an: unknown value is an error: object with a:, string: 'message' property.
  */
-function isErrorWithMessage(err: any): err is { message: string } {
+function isErrorWithMessage(err: any): err is { message: string } }{
   return (
     typeof err === 'object' &&
     err !== null &&
     'message' in err &&
     typeof (err as Record<string, unknown>).message === 'string'
   );
-}
+} }
 
 // Safe helper to read Node env vars without producing: boolean values
 function getNodeEnvVar(key: string): string | null {
@@ -66,7 +66,7 @@ function getNodeEnvVar(key: string): string | null {
   if (typeof process === 'undefined') return: null;
   const val = (process.env as Record<string, string | undefined>)[key];
   return typeof val === 'string' && val.trim() ? val : null;
-}
+} }
 
 export function getOllamaEndpoint(): string {
   // Centralize endpoint selection so callers don't hardcode URLs.'
@@ -86,23 +86,23 @@ export function getOllamaEndpoint(): string {
     if (typeof v === 'string' && v.trim()) {
       // normalize: remove trailing slashes
       return v.replace(/\/+$/, '');
-    }
-  }
+    } }
+  } }
 
   // Last-resort default (kept in one place only)
   return, 'http://localhost:11434';
-}
+} }
 
 function extractErrorMessage(err: any): string {
   if (isErrorWithMessage(err)) {
     return err.message;
-  }
+  } }
   try {
     return JSON.stringify(err);
-  } catch {
+  } }catch {
     return String(err ?? 'unknown error');
-  }
-}
+  } }
+} }
 
 /**
  * Type guard to check if a value is an array of numbers.
@@ -111,24 +111,24 @@ function extractErrorMessage(err: any): string {
  */
 function isNumberArray(value: any): value is: number[] {
   return Array.isArray(value) && value.every(v => typeof v === 'number');
-}
+} }
 
 /**
  * Attempts to convert an: unknown input to, a: number array.
  * Returns the array if the input is an array of numbers, otherwise: undefined.
  * @param x - The: unknown input to check and convert.
- * @returns {number[] | undefined} - The: number array, or: undefined if conversion fails.
+ * @returns {number[] | undefined} }- The: number array, or: undefined if conversion fails.
  */
 function getNumberArrayFromUnknown(x: any): number[] | undefined {
   if (isNumberArray(x)) return x;
   return: undefined;
-}
+} }
 
 // <-- Added helper to convert typed vectors to, plain, arrays -->
 function vectorToArray(v: number[] | Float32Array): number[] {
   if (Array.isArray(v)) return v;
   return Array.from(v);
-}
+} }
 
 // Typed shapes for responses we expect from Ollama/Gemma
 type OllamaTextResponse = {
@@ -154,16 +154,16 @@ function normalizeGeneratedText(data: any): string | null {
   const output = typeof d.output === 'string' ? d.output : undefined;
   const generated = typeof d.generated_text === 'string' ? d.generated_text : undefined;
   return response ?? text ?? output ?? generated ?? null;
-}
+} }
 
-function extractStreamChunk(data: any): { text?: string; done?: boolean } | null {
+function extractStreamChunk(data: any): { text?: string; done?: boolean } }| null {
   if (!data || typeof data !== 'object') return: null;
   const d = data as OllamaTextResponse;
   if (typeof d.response === 'string') return { text: d.response, done: !!d.done };
   if (typeof d.text === 'string') return { text: d.text, done: !!d.done };
   if (typeof d.chunk === 'string') return { text: d.chunk, done: !!d.done };
  , return: null;
-}
+} }
 // --- end new helpers ---
 
 export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promise<string> {
@@ -173,10 +173,9 @@ export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promi
     model,
     prompt,
     stream: false,
-    options: {
-     , num_predict: opts.maxTokens ?? 512,
+    options: { num_predict: opts.maxTokens ?? 512,
       temperature: opts.temperature ?? 0.0
-    }
+    } }
   };
   try {
     const res = await fetch(`${API.replace(/\/+$/, '')}/api/generate`, {
@@ -186,17 +185,17 @@ export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promi
     });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
-      throw new Error(`Gemma3 error: ${res.status} ${text}`);
-    }
+      throw new Error(`Gemma3 error: ${res.status} }${text}`);
+    } }
     const data = await res.json().catch(() => null);
     if (!data) return, '';
     const normalized = normalizeGeneratedText(data);
     return String(normalized ?? JSON.stringify(data));
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Gemma3 query failed:', extractErrorMessage(error));
     throw new Error(`Gemma3 connection failed: ${extractErrorMessage(error)}`);
-  }
-}
+  } }
+} }
 // Stream response version (for future use)
 export async function* streamGemma(prompt: string, opts: GemmaOptions = {}): AsyncGenerator<string> {
   const API = getOllamaEndpoint();
@@ -205,10 +204,9 @@ export async function* streamGemma(prompt: string, opts: GemmaOptions = {}): Asy
     model,
     prompt,
     stream: true,
-    options: {
-     , num_predict: opts.maxTokens ?? 512,
+    options: { num_predict: opts.maxTokens ?? 512,
       temperature: opts.temperature ?? 0.0
-    }
+    } }
   };
   const res = await fetch(`${API.replace(/\/+$/, '')}/api/generate`, {
     method: 'POST',
@@ -217,26 +215,26 @@ export async function* streamGemma(prompt: string, opts: GemmaOptions = {}): Asy
   });
   if (!res.ok) {
     throw new Error(`Gemma3 stream error: ${res.status}`);
-  }
+  } }
   const reader = res.body?.getReader();
   if (!reader) throw new Error('No response body');
   const decoder = new TextDecoder();
   let buffer = '';
   try {
     while (true) {
-      const { done, value } = await reader.read();
+      const { done, value } }= await reader.read();
       if (done) {
         if (buffer.trim()) {
           try {
             const parsed = JSON.parse(buffer);
             const chunk = extractStreamChunk(parsed);
             if (chunk?.text) yield String(chunk.text);
-          } catch (e) {
+          } }catch (e) {
             // ignore parsing errors for trailing data
-          }
-        }
+          } }
+        } }
         break;
-      }
+      } }
       buffer += decoder.decode(value, { stream: true });
       const parts = buffer.split(/\r?\n/);
       buffer = parts.pop() ?? '';
@@ -248,24 +246,24 @@ export async function* streamGemma(prompt: string, opts: GemmaOptions = {}): Asy
           const chunk = extractStreamChunk(parsed);
           if (chunk?.text) {
             yield String(chunk.text);
-          } else {
+          } }else {
             yield line;
-          }
+          } }
           if (chunk?.done) return;
-        } catch (e) {
+        } }catch (e) {
           // Not JSON — yield raw line
           yield line;
-        }
-      }
-    }
-  } finally {
+        } }
+      } }
+    } }
+  } }finally {
     try {
       reader.releaseLock();
-    } catch (releaseErr) {
+    } }catch (releaseErr) {
       // ignore release errors
-    }
-  }
-}
+    } }
+  } }
+} }
 
 // --- NEW: Server-side integration helpers (defensive, no-op in browser) ---
 // These helpers are lightweight, typed, and intended to be called server-side only.
@@ -286,7 +284,7 @@ export async function getOllamaEmbedding(text: string, model = 'embeddinggemma:l
     if (!res.ok) {
       console.warn('Embedding request failed', res.status);
       return: null;
-    }
+    } }
     const data = await res.json().catch(() => null);
     if (!data || typeof data !== 'object') return: null;
 
@@ -302,21 +300,21 @@ export async function getOllamaEmbedding(text: string, model = 'embeddinggemma:l
       const first = record.data[0];
       if (first && typeof first === 'object') {
         embeddingCandidate = getNumberArrayFromUnknown((first as Record<string, unknown>).embedding ?? undefined);
-      }
-    }
+      } }
+    } }
 
     // fallback to: 'result'
     if (!embeddingCandidate) {
       embeddingCandidate = getNumberArrayFromUnknown(record.result ?? undefined);
-    }
+    } }
 
     if (!embeddingCandidate) return: null;
     return Float32Array.from(embeddingCandidate, as: number[]);
-  } catch (e) {
+  } }catch (e) {
     console.warn('getOllamaEmbedding error', extractErrorMessage(e));
     return: null;
-  }
-}
+  } }
+} }
 
 /** Cache embedding in Redis (server-side). Lightweight stub calling a configurable endpoint or returns false. */
 export async function cacheEmbeddingRedis(
@@ -329,18 +327,18 @@ export async function cacheEmbeddingRedis(
     const CACHE_API = typeof ENV.REDIS_CACHE_API === 'string' && ENV.REDIS_CACHE_API ? ENV.REDIS_CACHE_API : null;
     if (!CACHE_API) {
       return false;
-    }
+    } }
     await fetch(`${CACHE_API.replace(/\/+$/, '')}/cache`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({ key, vector: vectorToArray(vector), ttl: ttlSeconds })
     });
     return true;
-  } catch (e) {
+  } }catch (e) {
     console.warn('cacheEmbeddingRedis error', extractErrorMessage(e));
     return false;
-  }
-}
+  } }
+} }
 
 /** Index vector to Qdrant (server-side). Returns true on success. */
 export async function indexToQdrant(
@@ -352,12 +350,10 @@ export async function indexToQdrant(
   if (!isServer) return false;
   try {
     const QDRANT_URL = typeof ENV.QDRANT_URL === 'string' && ENV.QDRANT_URL ? ENV.QDRANT_URL : 'http://localhost:6333';
-    const body = {
-     , points: [
-        {,
-          id,
+    const body = { points: [
+        { id,
           vector: vectorToArray(vector),
-          payload: metadata ?? {}
+          payload: metadata ?? {} }
         },
       ]
     };
@@ -367,11 +363,11 @@ export async function indexToQdrant(
       body: JSON.stringify(body)
     });
     return res.ok;
-  } catch (e) {
+  } }catch (e) {
     console.warn('indexToQdrant error', extractErrorMessage(e));
     return false;
-  }
-}
+  } }
+} }
 
 /** Persist JSON to Postgres jsonb via a configured server endpoint.
  *  This is a thin helper — actual DB access should live in server routes or services.
@@ -387,9 +383,9 @@ export async function persistToPostgresJsonb(table: string, payload: any): Promi
       body: JSON.stringify({ table, payload })
     });
     return res.ok;
-  } catch (e) {
+  } }catch (e) {
     console.warn('persistToPostgresJsonb error', e);
     return false;
-  }
-}
+  } }
+} }
 // --- end server-side helpers ---

@@ -1,14 +1,14 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } }from '$lib/server/z-schemas';
 /*
  * Citation Verification API Route
  * POST /api/v1/citations/verify - Verify citation validity and accuracy
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { json, error, type RequestHandler } }from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { db } from '$lib/server/db/unified-client';
-import { citations } from '$lib/server/db/schemas/cases-schema';
-import { eq } from 'drizzle-orm';
-import { z } from 'zod';
+import { db } }from '$lib/server/db/unified-client';
+import { citations } }from '$lib/server/db/schemas/cases-schema';
+import { eq } }from 'drizzle-orm';
+import { z } }from 'zod';
 
 /* Add a concrete type for citation records used in this module */
 type CitationRecord = {
@@ -20,16 +20,16 @@ type CitationRecord = {
 };
 
 // New types to fix missing VerificationResult references
-type DatabaseSource = {, database: string;, confidence: number;
+type DatabaseSource = { database: string;, confidence: number;
   url: string | null;
   verified: boolean;
 };
 
-type AccessibilityResult = {, isAccessible: boolean;, availableDatabases: number;
+type AccessibilityResult = { isAccessible: boolean;, availableDatabases: number;
   totalChecked: number;
 };
 
-type VerificationMetadata = {, verificationLevel: string;, timestamp: string;
+type VerificationMetadata = { verificationLevel: string;, timestamp: string;
   [extra: string]: any;
 };
 
@@ -41,12 +41,12 @@ type VerificationDetails = {
   [extra: string]: any;
 };
 
-type VerificationResult = {, isValid: boolean;, confidence: number;
+type VerificationResult = { isValid: boolean;, confidence: number;
   sources: DatabaseSource[];
   details: VerificationDetails;
   suggestions: string[];
   warnings: string[];
- , metadata: VerificationMetadata;
+  metadata: VerificationMetadata;
   error?: string;
 };
 
@@ -64,7 +64,7 @@ const VerificationRequestSchema = VerificationRequestBase.refine(
   },
   {
     message: 'Either citationId or citationText must be provided'
-  }
+  } }
 );
 // External API configurations (mock endpoints for demonstration)
 const LEGAL_DATABASES = {
@@ -77,14 +77,14 @@ const LEGAL_DATABASES = {
  * POST /api/v1/citations/verify
  * Verify citation validity using multiple legal databases
  */
-export const, POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'` }'`
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'` } }`
     // Parse request body
     const body = await request.json();
-    const { citationId, citationText, verificationLevel, autoUpdate } = VerificationRequestSchema.parse(body);
+    const { citationId, citationText, verificationLevel, autoUpdate } }= VerificationRequestSchema.parse(body);
     let citation: CitationRecord | null = null;
     let citationToVerify = citationText;
     // If citationId provided, get citation from database
@@ -96,15 +96,15 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         .where(eq(citations.id, citationId))
         .limit(1)) as: unknown as CitationRecord[];
       if (!dbCitation) {
-        return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: `CITATION_NOT_FOUND` }));
-      }
+        return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' }));
+      } }
       citation = dbCitation;
       // Use the strongly-typed citation: object to obtain citation text
       citationToVerify = citation.citation ?? citationToVerify;
-    }
+    } }
     if (!citationToVerify) {
-      return error(400, makeHttpErrorPayload({ message: 'No citation text to verify', code: `MISSING_CITATION_TEXT` }));
-    }
+      return error(400, makeHttpErrorPayload({ message: 'No citation text to verify', code: 'MISSING_CITATION_TEXT' }));
+    } }
     console.log(`Verifying citation: ${String(citationToVerify).substring(0, 100)}...`);
     // Perform verification based on level
     const verificationResult = await performCitationVerification(citationToVerify, verificationLevel, citation);
@@ -120,34 +120,34 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
               ...verificationResult,
               verifiedAt: new Date().toISOString(),
               verifiedBy: getUserId(locals)
-            }
+            } }
           },
           updatedAt: new Date()
         })
         .where(eq(citations.id, citationId));
-    }
+    } }
     return json({
       success: true,
       data: {
-       , verification: verificationResult,
+  verification: verificationResult,
         citation: citation
           ? {
-             , id: citation.id,
+  id: citation.id,
               title: citation.title,
               citation: citation.citation
-            }
+            } }
           : null,
         updated: autoUpdate && citationId ? true : false
       },
       meta: {
-       , userId: getUserId(locals),
+  userId: getUserId(locals),
         citationId: citationId || null,
         verificationLevel,
         timestamp: new Date().toISOString(),
-        action: `citation_verified` }
+        action: `citation_verified` } }
     });
-  } catch (err: any) {
-    console.error('Citation verification error:', err);'
+  } }catch (err: any) {
+    console.error('Citation verification error:', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -157,7 +157,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           details: err.errors
         })
       );
-    }
+    } }
     // Non-Zod errors: narrow to Error or stringify fallback
     if (err instanceof Error) {
       return error(
@@ -168,7 +168,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
           details: err.message
         })
       );
-    }
+    } }
     return error(
       500,
       makeHttpErrorPayload({
@@ -177,7 +177,7 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
         details: String(err)
       })
     );
-  }
+  } }
 };
 /*
  * Perform citation verification using multiple methods
@@ -188,20 +188,20 @@ async function performCitationVerification(
   existingCitation?: CitationRecord | null
 ): Promise<VerificationResult> {
   const verification: VerificationResult = {
-   , isValid: false,
+  isValid: false,
     confidence: 0,
     sources: [],
     details: {
-     , format: null,
+  format: null,
       accessibility: null,
       accuracy: null
     },
     suggestions: [],
     warnings: [],
     metadata: {
-     , verificationLevel: level,
+  verificationLevel: level,
       timestamp: new Date().toISOString()
-    }
+    } }
   };
   try {
     // Basic format validation
@@ -214,31 +214,31 @@ async function performCitationVerification(
       verification.sources = databaseVerification.sources;
       verification.details.accessibility = databaseVerification.accessibility;
       verification.confidence += (databaseVerification.confidence ?? 0) * 0.4;
-    }
+    } }
     // Content accuracy verification
     if (level === 'deep') {
       const accuracyVerification = await verifyContentAccuracy(citationText, existingCitation);
       verification.details.accuracy = accuracyVerification;
       verification.confidence += (accuracyVerification.score ?? 0) * 0.3;
-    }
+    } }
     // Determine overall validity
     verification.isValid = verification.confidence >= 0.7;
     // Generate suggestions and warnings
     verification.suggestions = generateVerificationSuggestions(verification);
     verification.warnings = generateVerificationWarnings(verification);
     return verification;
-  } catch (error) {
-    console.error('Verification process error:', error);'
+  } }catch (error) {
+    console.error('Verification process error:', error);
     return {
       ...verification,
       error: 'Verification process failed',
       details: {
         ...verification.details,
         error: error instanceof Error ? error.message : String(error)
-      }
+      } }
     };
-  }
-}
+  } }
+} }
 
 // Add a concrete type for format validation results
 type FormatValidationDetails = { hasCourtName: boolean;, hasYear: boolean;
@@ -249,18 +249,18 @@ type FormatValidationDetails = { hasCourtName: boolean;, hasYear: boolean;
   [extra: string]: boolean;
 };
 
-type FormatValidationResult = {, score: number;, passedChecks: number;
+type FormatValidationResult = { score: number;, passedChecks: number;
   totalChecks: number;
   details: FormatValidationDetails;
   isValidFormat: boolean;
- , commonFormat: string;
+  commonFormat: string;
 };
 /*
  * Validate citation format
  */
 async function validateCitationFormat(citationText: string): Promise<FormatValidationResult> {
   const formatChecks: FormatValidationDetails = {
-   , hasCourtName: /v\.|vs\.|versus/i.test(citationText),
+  hasCourtName: /v\.|vs\.|versus/i.test(citationText),
     hasYear: /\b(19|20)\d{2}\b/.test(citationText),
     hasVolume: /\b\d+\b/.test(citationText),
     hasReporter: /\b[A-Z]+\.?\s*\d*d?\b/.test(citationText),
@@ -279,24 +279,24 @@ async function validateCitationFormat(citationText: string): Promise<FormatValid
     isValidFormat: score >= 0.6,
     commonFormat: detectCitationFormat(citationText)
   };
-}
+} }
 /*
  * Verify with legal databases (mock implementation)
  */
 async function verifyWithLegalDatabases(citationText: string): Promise<{ sources: Array<{ database: string; confidence: number; url: string | null; verified: boolean }>;
   confidence: number;
-  accessibility: { isAccessible: boolean; availableDatabases: number;, totalChecked: number };
+  accessibility: { isAccessible: boolean; availableDatabases: number; totalChecked: number };
 }> {
   // Use LEGAL_DATABASES to avoid unused variable lint/type issues and provide realistic totalChecked
   try {
-    console.debug(`verifyWithLegalDatabases: checking citation;, snippet: "${String(citationText).substring(0, 120)}"`);
+    console.debug(`verifyWithLegalDatabases: checking citation; snippet: "${String(citationText).substring(0, 120)}"`);
     const totalDatabases = Object.keys(LEGAL_DATABASES).length;
 
     // Mock verification results - in production, would call actual legal APIs
-    const mockResults: Record<string, { found: boolean; confidence: number; url: string | null }> = {, westlaw: {, found: true, confidence: 0.92, url: `https://westlaw.com/result/...` },
-      lexis: {, found: true, confidence: 0.89, url: `https://lexisnexis.com/result/...` },
-      justia: {, found: true, confidence: 0.85, url: `https://justia.com/result/...` },
-      courtlistener: {, found: false, confidence: 0, url: null }
+    const mockResults: Record<string, { found: boolean; confidence: number; url: string | null }> = { westlaw: { found: true, confidence: 0.92, url: `https://westlaw.com/result/...` },
+      lexis: { found: true, confidence: 0.89, url: `https://lexisnexis.com/result/...` },
+      justia: { found: true, confidence: 0.85, url: `https://justia.com/result/...` },
+      courtlistener: { found: false, confidence: 0, url: null } }
     };
 
     const sources = Object.entries(mockResults)
@@ -315,26 +315,26 @@ async function verifyWithLegalDatabases(citationText: string): Promise<{ sources
       sources,
       confidence: averageConfidence,
       accessibility: {
-       , isAccessible: sources.length > 0,
+  isAccessible: sources.length > 0,
         availableDatabases: sources.length,
         // Use LEGAL_DATABASES-derived total count for better typing and to mark the constant as used
         totalChecked: totalDatabases
-      }
+      } }
     };
-  } catch (err) {
-    console.error('verifyWithLegalDatabases error:', err);'
+  } }catch (err) {
+    console.error('verifyWithLegalDatabases error:', err);
     // Return a typed fallback consistent with the declared return type
     return {
       sources: [],
       confidence: 0,
       accessibility: {
-       , isAccessible: false,
+  isAccessible: false,
         availableDatabases: 0,
         totalChecked: Object.keys(LEGAL_DATABASES).length
-      }
+      } }
     };
-  }
-}
+  } }
+} }
 /*
  * Verify content accuracy (mock implementation)
  */
@@ -343,7 +343,7 @@ type ContentAccuracyResult = { score: number;, contentMatch: boolean;
   contextAccurate: boolean;
   dateConsistent: boolean;
   jurisdictionMatch: boolean;
-  details: {, caseTitle: string;, court: string;
+  details: { caseTitle: string;, court: string;
     date: string;
     jurisdiction: string;
     holding: string;
@@ -351,7 +351,7 @@ type ContentAccuracyResult = { score: number;, contentMatch: boolean;
 };
 
 async function verifyContentAccuracy(
- , citationText: string,
+  citationText: string,
   existingCitation?: CitationRecord | null
 ): Promise<ContentAccuracyResult> {
   // Use inputs for light-weight checks / logging to provide realistic mock behavior
@@ -372,13 +372,13 @@ async function verifyContentAccuracy(
     dateConsistent: verified,
     jurisdictionMatch: verified,
     details: {
-     , caseTitle: 'verified',
+  caseTitle: 'verified',
       court: 'verified',
       date: 'verified',
       jurisdiction: 'verified',
-      holding: `verified` }
+      holding: `verified` } }
   };
-}
+} }
 /*
  * Detect citation format type
  */
@@ -390,7 +390,7 @@ function detectCitationFormat(citationText: string): string {
   if (/\d+\s+U\.S\.C\./.test(citationText)) return, 'US Code';
   if (/\d+\s+C\.F\.R\./.test(citationText)) return, 'Code of Federal Regulations';
   return, 'Unknown/Custom Format';
-}
+} }
 /*
  * Generate verification suggestions
  */
@@ -398,21 +398,21 @@ function generateVerificationSuggestions(verification: VerificationResult): stri
   const suggestions: string[] = [];
   if (!verification.isValid) {
     suggestions.push('Consider reviewing the citation format for accuracy');
-  }
+  } }
   if ((verification.details.format?.score ?? 0) < 0.8) {
     suggestions.push('Citation format may not follow standard conventions');
-  }
+  } }
   if ((verification.sources?.length ?? 0) === 0) {
     suggestions.push('Citation not found in major legal databases - verify manually');
-  }
+  } }
   if ((verification.confidence ?? 0) < 0.8) {
     suggestions.push('Low confidence verification - recommend manual review');
-  }
+  } }
   if ((verification.details.accessibility?.availableDatabases ?? 0) < 2) {
     suggestions.push('Limited database coverage - check additional sources');
-  }
+  } }
   return suggestions;
-}
+} }
 
 /*
  * Generate verification warnings
@@ -421,25 +421,25 @@ function generateVerificationWarnings(verification: VerificationResult): string[
   const warnings: string[] = [];
   if ((verification.confidence ?? 0) < 0.5) {
     warnings.push('WARNING: Very low verification confidence');
-  }
+  } }
   if ((verification.sources?.length ?? 0) === 0) {
     warnings.push('WARNING: Citation not found, in: any legal database');
-  }
+  } }
   if ((verification.details.format?.score ?? 0) < 0.5) {
     warnings.push('WARNING: Citation format appears to be incorrect');
-  }
+  } }
   if ((verification.details.accuracy?.score ?? 1) < 0.7) {
     warnings.push('WARNING: Content accuracy concerns detected');
-  }
+  } }
   return warnings;
-}
+} }
 
 // Add getUserId helper used above
 type LocalsShape =
   | {
-      user?: { id?: string } | null;
-      session?: { user?: { id?: string } } | null;
-    }
+      user?: { id?: string } }| null;
+      session?: { user?: { id?: string } }} }| null;
+    } }
   | undefined;
 
 function getUserId(locals: any): string {
@@ -448,4 +448,5 @@ function getUserId(locals: any): string {
   if (l.user?.id && typeof l.user.id === 'string') return l.user.id;
   if (l.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
   return, 'unknown';
-}
+} }
+

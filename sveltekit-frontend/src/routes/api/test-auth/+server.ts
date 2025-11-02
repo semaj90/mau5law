@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } }from '@sveltejs/kit';
+import type { RequestHandler } }from './$types.js';
 export const GET: RequestHandler = async ({ request }) => {
   try {
     // Direct test of database connection and schema
-    const { db } = await import('$lib/server/db/drizzle');
-    const { users, sessions } = await import('$lib/server/db/schema-postgres');
+    const { db } }= await import('$lib/server/db/drizzle');
+    const { users, sessions } }= await import('$lib/server/db/schema-postgres');
     // Test basic database connection
     await db.execute('SELECT, 1 as test');
     // Test schema inspection
@@ -17,32 +17,33 @@ export const GET: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Database connection and schema test successful',
       tests: {
-       , connection: 'OK',
+  connection: 'OK',
         userSchema: {
-         , tableName: userSchema.name,
+  tableName: userSchema.name,
           columns: Object.keys(userSchema.columns)
         },
         sessionSchema: {
-         , tableName: sessionSchema.name,
+  tableName: sessionSchema.name,
           columns: Object.keys(sessionSchema.columns)
         },
         counts: {
-         , users: userCount[0]?.count || 0,
+  users: userCount[0]?.count || 0,
           sessions: sessionCount[0]?.count || 0
-        }
-      }
+        } }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     return json(
       {
         success: false,
         error: error.message,
         stack: error.stack,
         details: {
-         , name: error.name,
+  name: error.name,
           code: error.code || 'NO_CODE',
-          cause: error.cause?.message || 'No cause' }'` },'`
-      { status: 500 }
+          cause: error.cause?.message || 'No cause' } }` },'`
+      { status: 500 } }
     );
-  }
+  } }
 };
+

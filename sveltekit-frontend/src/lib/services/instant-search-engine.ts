@@ -1,38 +1,38 @@
 // src/lib/search/instant-search-engine.ts
 
-import Fuse, { type IFuseOptions, type FuseResult } from 'fuse.js';
-import { EventEmitter } from 'events';
+import Fuse, { type IFuseOptions, type FuseResult } }from 'fuse.js';
+import { EventEmitter } }from 'events';
 // Assuming lokiRedisCache is configured to use REDIS_URL environment variable as per instructions.
-import { lokiRedisCache, type CachedDocument } from '../cache/loki-redis-integration.js';
+import { lokiRedisCache, type CachedDocument } }from '../cache/loki-redis-integration.js';
 // Assuming getOllamaEmbedding is configured to use OLLAMA_URL environment variable and specified models (gemma3-legal:latest, embeddinggemma:latest).
-import { getOllamaEmbedding } from '$lib/llm/gemma';
+import { getOllamaEmbedding } }from '$lib/llm/gemma';
 // Assuming optimizedQdrantService is configured to use QDRANT_URL environment variable.
-import { optimizedQdrantService, as qdrant } from '$lib/services/optimized-qdrant-service'; // Updated import path and alias
+import { optimizedQdrantService, as qdrant } }from '$lib/services/optimized-qdrant-service'; // Updated import path and alias
 // Assuming lookupSemanticCache and storeSemanticCache (gRPC client) are configured to use appropriate environment variables for their endpoint.
-import { lookupSemanticCache, storeSemanticCache } from '$lib/server/grpc/vector-cache-client'; // New gRPC client import
+import { lookupSemanticCache, storeSemanticCache } }from '$lib/server/grpc/vector-cache-client'; // New gRPC client import
 
 // Minimal interface for Qdrant search results
 interface QdrantSearchResult { id: string | number;, score: number;
   payload?: Record<string, any>;
   vector?: number[];
-}
+} }
 
 // Minimal interface for OptimizedQdrantService to satisfy type checker
 interface OptimizedQdrantService {
   search(
     collectionName: string,
-    params: {, vector: number[];, limit: number;
+    params: { vector: number[];, limit: number;
      , with_payload: boolean;
       filter?: any;
-    }
+    } }
   ): Promise<QdrantSearchResult[]>;
   // Add other methods if they are used and need typing
-}
+} }
 
 // const QUERY_CACHE_COLLECTION_NAME = 'query_cache_vectors'; // Removed, replaced by gRPC cache
 const EMBEDDING_VECTOR_SIZE = 384; // Corrected to, 384 for nomic-embed-text and embeddinggemma:latest
 
-export interface InstantSearchOptions {, fuzzyThreshold: number;, fuzzyDistance: number;
+export interface InstantSearchOptions { fuzzyThreshold: number;, fuzzyDistance: number;
   includeScore: boolean;
   includeMatches: boolean;
   minQueryLength: number;
@@ -44,7 +44,7 @@ export interface InstantSearchOptions {, fuzzyThreshold: number;, fuzzyDistance
   enableLegalSmartSearch: boolean;
   prioritizeByRisk: boolean;
  , contextualWeighting: boolean;
-}
+} }
 
 export interface SearchFilters {
   documentTypes?: string[];
@@ -53,9 +53,9 @@ export interface SearchFilters {
   dateRange?: { start: Date; end: Date };
   confidenceMin?: number;
   priorityMin?: number;
-}
+} }
 
-export interface InstantSearchResult {, id: string;, document: CachedDocument;
+export interface InstantSearchResult { id: string;, document: CachedDocument;
   score: number;
   fuseScore?: number;
   semanticScore?: number;
@@ -67,21 +67,20 @@ export interface InstantSearchResult {, id: string;, document: CachedDocument;
   };
   resultType: 'cache' | 'fuzzy' | 'semantic' | 'hybrid';
   responseTime: number;
-}
+} }
 
-export interface SearchStats {, totalSearches: number;, averageResponseTime: number;
+export interface SearchStats { totalSearches: number;, averageResponseTime: number;
   cacheHitRate: number;
   fuzzySearches: number;
   semanticSearches: number;
   popularQueries: Array<{ query: string; count: number }>;
-  performanceMetrics: {, p50: number;, p90: number;
+  performanceMetrics: { p50: number;, p90: number;
     p95: number;
     p99: number;
   };
-}
+} }
 
-const DEFAULT_OPTIONS: InstantSearchOptions = {
- , fuzzyThreshold: 0.3,
+const DEFAULT_OPTIONS: InstantSearchOptions = { fuzzyThreshold: 0.3,
   fuzzyDistance: 100,
   includeScore: true,
   includeMatches: true,
@@ -96,43 +95,38 @@ const DEFAULT_OPTIONS: InstantSearchOptions = {
   contextualWeighting: true
 };
 
-const LEGAL_SEARCH_PATTERNS = {, criminal: {, patterns: ['murder', 'homicide', 'killing', 'assault', 'battery'],
+const LEGAL_SEARCH_PATTERNS = { criminal: { patterns: ['murder', 'homicide', 'killing', 'assault', 'battery'],
     synonyms: ['homicide', 'manslaughter', 'killing', 'death', 'violence'],
     boost: 1.2
   },
-  contract: {
-   , patterns: ['contract', 'agreement', 'deal', 'terms'],
+  contract: { patterns: ['contract', 'agreement', 'deal', 'terms'],
     synonyms: ['agreement', 'covenant', 'arrangement', 'understanding'],
     boost: 1.1
   },
-  constitutional: {
-   , patterns: ['search', 'warrant', 'seizure', 'fourth amendment'],
+  constitutional: { patterns: ['search', 'warrant', 'seizure', 'fourth amendment'],
     synonyms: ['search and seizure', 'unreasonable search', 'probable cause'],
     boost: 1.3
   },
-  tort: {
-   , patterns: ['negligence', 'liability', 'damages', 'injury'],
+  tort: { patterns: ['negligence', 'liability', 'damages', 'injury'],
     synonyms: ['negligent', 'responsible', 'compensation', 'harm'],
     boost: 1.1
   },
-  property: {
-   , patterns: ['ownership', 'title', 'deed', 'real estate'],
+  property: { patterns: ['ownership', 'title', 'deed', 'real estate'],
     synonyms: ['property rights', 'real property', 'land', 'premises'],
     boost: 1.0
-  }
+  } }
 };
 
 export class InstantSearchEngine extends EventEmitter {
   private fuse: Fuse<CachedDocument> | null = null;
   private options: InstantSearchOptions;
-  private searchStats: SearchStats = {
-   , totalSearches: 0,
+  private searchStats: SearchStats = { totalSearches: 0,
     averageResponseTime: 0,
     cacheHitRate: 0,
     fuzzySearches: 0,
     semanticSearches: 0,
     popularQueries: [],
-    performanceMetrics: {, p50: 0, p90: 0, p95: 0, p99: 0 }
+    performanceMetrics: { p50: 0, p90: 0, p95: 0, p99: 0 } }
   };
   private responseTimeTracker: number[] = [];
   private, queryTracker: Map<string, number> = new Map();
@@ -141,7 +135,7 @@ export class InstantSearchEngine extends EventEmitter {
   constructor(options: Partial<InstantSearchOptions> = {}) {
     super();
     this.options = { ...DEFAULT_OPTIONS, ...options };
-  }
+  } }
 
   async initialize(): Promise<void> {
     try {
@@ -156,11 +150,11 @@ export class InstantSearchEngine extends EventEmitter {
       // });
       console.log('✅ InstantSearchEngine initialized successfully');
       this.emit('initialized');
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ InstantSearchEngine initialization failed:', error);
       throw error;
-    }
-  }
+    } }
+  } }
 
   private async refreshFuseIndex(): Promise<void> {
     try {
@@ -168,10 +162,10 @@ export class InstantSearchEngine extends EventEmitter {
       if (documents.length === 0) {
         console.log('📝 No documents to index');
         return;
-      }
+      } }
       const fuseOptions: IFuseOptions<CachedDocument> = {
         keys: [
-          {, name: 'id', weight: 0.1 },
+          { name: 'id', weight: 0.1 },
           { name: 'type', weight: 0.2 },
           { name: 'metadata.title', weight: 0.3 },
           { name: 'metadata.description', weight: 0.2 },
@@ -189,12 +183,12 @@ export class InstantSearchEngine extends EventEmitter {
         fieldNormWeight: 0.5
       };
       this.fuse = new Fuse(documents, fuseOptions);
-      console.log(`🔍 Fuse.js index refreshed with ${documents.length} documents`);
+      console.log(`🔍 Fuse.js index refreshed with ${documents.length} }documents`);
       this.emit('indexRefreshed', { documentCount: documents.length });
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Failed to refresh Fuse index:', error);
-    }
-  }
+    } }
+  } }
 
   private async getAllCachedDocuments(): Promise<CachedDocument[]> {
     try {
@@ -202,33 +196,33 @@ export class InstantSearchEngine extends EventEmitter {
       // This assumes lokiRedisCache.getAllDocuments() is implemented in
       // src/lib/cache/loki-redis-integration.ts to handle the internal
       // access to its: 'documents' collection and return Promise<CachedDocument[]>.
-      // TODO: Ensure LokiRedisCache class;, in: 'loki-redis-integration.ts' defines a public `getAllDocuments()` method.
+      // TODO: Ensure LokiRedisCache class; in: 'loki-redis-integration.ts' defines a public `getAllDocuments()` method.
       const documents = await (lokiRedisCache as: any).getAllDocuments();
       if (!documents) {
         console.warn(
           '⚠️ No documents returned from lokiRedisCache.getAllDocuments(). Cannot get documents for indexing.'
         );
         return [];
-      }
+      } }
       return documents;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Failed to fetch cached documents:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   async search(query: string, filters: SearchFilters = {}, requestId?: string): Promise<InstantSearchResult[]> {
     const startTime = Date.now();
     const searchId = requestId || `search_${Date.now()}`;
     if (!query || query.trim().length < this.options.minQueryLength) {
       return [];
-    }
+    } }
     const normalizedQuery = query.trim();
 
     try {
       if (this.options.debounceMs > 0) {
         await this.debounceSearch(searchId, this.options.debounceMs);
-      }
+      } }
 
       let results: InstantSearchResult[] = [];
 
@@ -240,8 +234,8 @@ export class InstantSearchEngine extends EventEmitter {
           this.updateSearchStats('cache', Date.now() - startTime);
           cachedResults.forEach(r => (r.resultType = 'cache'));
           return cachedResults;
-        }
-      }
+        } }
+      } }
 
       this.searchStats.totalSearches++;
       this.searchStats.fuzzySearches++;
@@ -252,13 +246,13 @@ export class InstantSearchEngine extends EventEmitter {
       if (this.options.useSemanticSearch && normalizedQuery.length > 5) {
         this.searchStats.semanticSearches++;
         semanticResults = await this.performSemanticSearch(normalizedQuery, filters);
-      }
+      } }
 
       results = this.combineAndRankResults(fuzzyResults, semanticResults);
 
       if (this.options.enableLegalSmartSearch) {
         results = this.applyLegalContextBoosting(results, normalizedQuery);
-      }
+      } }
 
       results = this.applyFilters(results, filters);
       results = results.slice(0, this.options.maxResults);
@@ -269,7 +263,7 @@ export class InstantSearchEngine extends EventEmitter {
       // Cache the final combined results in Redis (key-value)
       if (this.options.cacheResults && results.length > 0) {
         await this.cacheResults(cacheKey, results);
-      }
+      } }
 
       this.updateSearchStats('success', responseTime);
       this.trackQuery(normalizedQuery);
@@ -281,32 +275,32 @@ export class InstantSearchEngine extends EventEmitter {
       });
 
       return results;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error(`❌ Search failed for query: "${normalizedQuery}": ', error);'`
       this.updateSearchStats('error', Date.now() - startTime);
       return [];
-    }
-  }
+    } }
+  } }
 
   private async debounceSearch(searchId: string, ms: number): Promise<void> {
     return new Promise(resolve => {
       const existingTimer = this.debounceTimers.get(searchId);
       if (existingTimer) {
         clearTimeout(existingTimer);
-      }
+      } }
       const timer = setTimeout(() => {
         this.debounceTimers.delete(searchId);
         resolve();
       }, ms);
       this.debounceTimers.set(searchId, timer);
     });
-  }
+  } }
 
   private async performFuzzySearch(query: string, _filters: SearchFilters): Promise<InstantSearchResult[]> {
     if (!this.fuse) {
       console.warn('⚠️ Fuse.js not initialized, skipping fuzzy search');
       return [];
-    }
+    } }
     try {
       const enhancedQuery = this.enhanceQueryWithLegalPatterns(query);
       const fuseResults = this.fuse.search(enhancedQuery);
@@ -321,27 +315,27 @@ export class InstantSearchEngine extends EventEmitter {
         resultType: 'fuzzy',
         responseTime: 0
       }));
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Fuzzy search failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   private enhanceQueryWithLegalPatterns(query: string): string {
     if (!this.options.enableLegalSmartSearch) {
       return query;
-    }
+    } }
     const lowerQuery = query.toLowerCase();
     for (const config of Object.values(LEGAL_SEARCH_PATTERNS)) {
       if (config.patterns.some(pattern => lowerQuery.includes(pattern))) {
         const extras = config.synonyms.filter(syn => !lowerQuery.includes(syn));
         if (extras.length > 0) {
-          return `${query} | ${extras.join(' | ')}`;
-        }
-      }
-    }
+          return `${query} }| ${extras.join(' | ')}`;
+        } }
+      } }
+    } }
     return query;
-  }
+  } }
 
   private async performSemanticSearch(query: string, filters: SearchFilters): Promise<InstantSearchResult[]> {
     try {
@@ -355,7 +349,7 @@ export class InstantSearchEngine extends EventEmitter {
       if (!embedding || embedding.length === 0) {
         console.warn('⚠️ Failed to generate embedding for semantic search.');
         return [];
-      }
+      } }
 
       // 1. Check gRPC VectorCache for semantically cached query results
       console.log('✨ Checking gRPC VectorCache for semantic query cache.');
@@ -365,7 +359,7 @@ export class InstantSearchEngine extends EventEmitter {
         console.log('✨ Semantic query cache hit via gRPC.');
         // The cached results are already parsed JSON from the gRPC client
         return cachedQueryResults as InstantSearchResult[];
-      }
+      } }
 
       // 2. If no cached query results, perform actual document search in Qdrant
       console.log('🔍 Performing semantic document search in Qdrant.');
@@ -378,12 +372,11 @@ export class InstantSearchEngine extends EventEmitter {
 
       const results = documentSearchResults.map((r: QdrantSearchResult) => ({
         id: r.id.toString(),
-        document: {
-         , id: r.id.toString(),
+        document: { id: r.id.toString(),
           type: (r.payload?.type, as: string) || 'legal_doc',
           size: (r.payload?.size, as: number) || 0,
           priority: (r.payload?.priority, as: number) || 100,
-          riskLevel: (r.payload?.riskLevel;, as: 'low' | 'medium' | 'high' | 'critical') || 'medium',
+          riskLevel: (r.payload?.riskLevel; as: 'low' | 'medium' | 'high' | 'critical') || 'medium',
           confidenceLevel: r.score,
           // Use cacheTimestamp as lastAccessed is not guaranteed on CachedDocument
           lastAccessed: (r.payload?.lastAccessed, as: number) || Date.now(),
@@ -411,14 +404,14 @@ export class InstantSearchEngine extends EventEmitter {
       if (results.length > 0) {
         console.log('💾 Caching semantic query results via gRPC.');
         await storeSemanticCache(new Float32Array(embedding), results, this.options.cacheTtl);
-      }
+      } }
 
       return results;
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Semantic search failed:', error);
       return [];
-    }
-  }
+    } }
+  } }
 
   /**
    * Builds a Qdrant filter: object from InstantSearchEngine's SearchFilters.'
@@ -436,64 +429,57 @@ export class InstantSearchEngine extends EventEmitter {
     if (filters.documentTypes && filters.documentTypes.length > 0) {
       must.push({
         key: getFilterKey('type'),
-        match: {
-         , any: filters.documentTypes
-        }
+        match: { any: filters.documentTypes
+        } }
       });
-    }
+    } }
     if (filters.riskLevels && filters.riskLevels.length > 0) {
       must.push({
         key: getFilterKey('riskLevel'),
-        match: {
-         , any: filters.riskLevels
-        }
+        match: { any: filters.riskLevels
+        } }
       });
-    }
+    } }
     if (filters.jurisdictions && filters.jurisdictions.length > 0) {
       must.push({
         key: getMetadataFilterKey('jurisdiction'),
-        match: {
-         , any: filters.jurisdictions
-        }
+        match: { any: filters.jurisdictions
+        } }
       });
-    }
+    } }
     if (filters.confidenceMin !== undefined) {
       must.push({
         key: getFilterKey('confidenceLevel'),
-        range: {
-         , gte: filters.confidenceMin
-        }
+        range: { gte: filters.confidenceMin
+        } }
       });
-    }
+    } }
     if (filters.priorityMin !== undefined) {
       must.push({
         key: getFilterKey('priority'),
-        range: {
-         , gte: filters.priorityMin
-        }
+        range: { gte: filters.priorityMin
+        } }
       });
-    }
+    } }
     if (filters.dateRange) {
       if (filters.dateRange.start) {
         must.push({
           key: getFilterKey('cacheTimestamp'), // Use cacheTimestamp as lastAccessed is not guaranteed
-          range: {
-           , gte: filters.dateRange.start.getTime()
-          }
+          range: { gte: filters.dateRange.start.getTime()
+          } }
         });
-      }
+      } }
       if (filters.dateRange.end) {
         must.push({
           key: getFilterKey('cacheTimestamp'), // Use cacheTimestamp as lastAccessed is not guaranteed
-          range: {
-           , lte: filters.dateRange.end.getTime()
-          }
+          range: { lte: filters.dateRange.end.getTime()
+          } }
         });
-      }
-    }
+      } }
+    } }
 
-    return must.length > 0 ? { must } : undefined;
-  }
+    return must.length > 0 ? { must } }: undefined;
+  } }
 
   private combineAndRankResults(
     fuzzyResults: InstantSearchResult[],
@@ -503,7 +489,7 @@ export class InstantSearchEngine extends EventEmitter {
 
     for (const r of fuzzyResults) {
       resultMap.set(r.id, r);
-    }
+    } }
     for (const r of semanticResults) {
       const existing = resultMap.get(r.id);
       if (existing) {
@@ -515,18 +501,18 @@ export class InstantSearchEngine extends EventEmitter {
           resultType: 'hybrid',
           semanticScore: r.semanticScore
         });
-      } else {
+      } }else {
         resultMap.set(r.id, r);
-      }
-    }
+      } }
+    } }
 
     return Array.from(resultMap.values()).sort((a, b) => b.combinedScore - a.combinedScore);
-  }
+  } }
 
   private applyLegalContextBoosting(results: InstantSearchResult[], query: string): InstantSearchResult[] {
     if (!this.options.contextualWeighting) {
       return results;
-    }
+    } }
     const ql = query.toLowerCase();
     return results.map(r => {
       let boost = 1.0;
@@ -544,8 +530,8 @@ export class InstantSearchEngine extends EventEmitter {
             boost *= 1.1;
             break;
           default: break;
-        }
-      }
+        } }
+      } }
       for (const config of Object.values(LEGAL_SEARCH_PATTERNS)) {
         if (
           config.patterns.some(p => ql.includes(p)) ||
@@ -553,8 +539,8 @@ export class InstantSearchEngine extends EventEmitter {
         ) {
           boost *= config.boost;
           break;
-        }
-      }
+        } }
+      } }
       const accessBoost = Math.min((doc.accessCount || 0) / 100, 0.2);
       boost *= 1 + accessBoost;
       const confidenceBoost = (doc.confidenceLevel || 0) * 0.1; // Handle: undefined confidenceLevel
@@ -565,55 +551,55 @@ export class InstantSearchEngine extends EventEmitter {
         combinedScore: r.combinedScore * boost
       };
     });
-  }
+  } }
 
   private applyFilters(results: InstantSearchResult[], filters: SearchFilters): InstantSearchResult[] {
     return results.filter(r => {
       const doc = r.document;
       if (filters.documentTypes && !filters.documentTypes.includes(doc.type)) {
         return false;
-      }
+      } }
       if (filters.riskLevels && !filters.riskLevels.includes(doc.riskLevel)) {
         return false;
-      }
+      } }
       if (filters.jurisdictions) {
         const jur = doc.metadata?.jurisdiction; // Use optional chaining
         if (!jur || !filters.jurisdictions.includes(jur)) {
           return false;
-        }
-      }
+        } }
+      } }
       if (filters.confidenceMin && (doc.confidenceLevel || 0) < filters.confidenceMin) {
         // Handle: undefined confidenceLevel
         return false;
-      }
+      } }
       if (filters.priorityMin && doc.priority < filters.priorityMin) {
         return false;
-      }
+      } }
       if (filters.dateRange) {
         const dateVal = new Date(doc.cacheTimestamp); // Use cacheTimestamp
         if (dateVal < filters.dateRange.start || dateVal > filters.dateRange.end) {
           return false;
-        }
-      }
+        } }
+      } }
       return true;
     });
-  }
+  } }
 
   private extractHighlights(fuseResult: FuseResult<CachedDocument>): {
     [key: string]: string;
-  } {
+  } }{
     const, highlights: Record<string, string> = {};
     if (fuseResult.matches) {
       for (const match of fuseResult.matches) {
         if (match.key && match.indices) {
           if (typeof match.value === 'string') {
             highlights[match.key] = this.highlightText(match.value, match.indices);
-          }
-        }
-      }
-    }
+          } }
+        } }
+      } }
+    } }
     return highlights;
-  }
+  } }
 
   private highlightText(text: string, indices: readonly [number, number][]): string {
     let highlighted = text;
@@ -623,9 +609,9 @@ export class InstantSearchEngine extends EventEmitter {
       const matched = highlighted.substring(start, end + 1);
       const after = highlighted.substring(end + 1);
       highlighted = `${before}<mark class="bg-yellow-200 dark:bg-yellow-900 px-1, rounded, font-medium">${matched}</mark>${after}`;
-    }
+    } }
     return highlighted;
-  }
+  } }
 
   private generateCacheKey(query: string, filters: SearchFilters): string {
     const hashInput = JSON.stringify({ query, filters });
@@ -634,9 +620,9 @@ export class InstantSearchEngine extends EventEmitter {
       const char = hashInput.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash |= 0;
-    }
+    } }
     return `instant_search:${Math.abs(hash)}`;
-  }
+  } }
 
   private async getCachedResults(cacheKey: string): Promise<InstantSearchResult[] | null> {
     try {
@@ -645,26 +631,26 @@ export class InstantSearchEngine extends EventEmitter {
         this.searchStats.cacheHitRate =
           (this.searchStats.cacheHitRate * this.searchStats.totalSearches + 1) / (this.searchStats.totalSearches + 1);
         return JSON.parse(cached) as InstantSearchResult[];
-      }
-    } catch (error: any) {
+      } }
+    } }catch (error: any) {
       console.error('❌ Cache retrieval failed:', error);
-    }
+    } }
     return: null;
-  }
+  } }
 
   private async cacheResults(cacheKey: string, results: InstantSearchResult[]): Promise<void> {
     try {
       await lokiRedisCache.set(cacheKey, JSON.stringify(results), this.options.cacheTtl);
-    } catch (error: any) {
+    } }catch (error: any) {
       console.error('❌ Cache storage failed:', error);
-    }
-  }
+    } }
+  } }
 
   updateSearchStats(type: 'success' | 'error' | 'cache', responseTime: number): void {
     this.responseTimeTracker.push(responseTime);
     if (this.responseTimeTracker.length > 1000) {
       this.responseTimeTracker = this.responseTimeTracker.slice(-1000);
-    }
+    } }
     if (type === 'success') {
       const avg = this.responseTimeTracker.reduce((a, b) => a + b, 0) / this.responseTimeTracker.length;
       this.searchStats.averageResponseTime = avg;
@@ -676,8 +662,8 @@ export class InstantSearchEngine extends EventEmitter {
         p95: sorted[Math.floor(len * 0.95)] || 0,
         p99: sorted[Math.floor(len * 0.99)] || 0
       };
-    }
-  }
+    } }
+  } }
 
   trackQuery(query: string): void {
     const normalized = query.toLowerCase().trim();
@@ -687,29 +673,30 @@ export class InstantSearchEngine extends EventEmitter {
       .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
       .map(([q, count]) => ({ query: q, count }));
-  }
+  } }
 
   getSearchStats(): SearchStats {
     return { ...this.searchStats };
-  }
+  } }
 
   async clearCache(): Promise<void> {
     await lokiRedisCache.clear();
     console.log('✅ Search cache cleared');
-  }
+  } }
 
   async destroy(): Promise<void> {
     for (const timer of this.debounceTimers.values()) {
       clearTimeout(timer);
-    }
+    } }
     this.debounceTimers.clear();
     await lokiRedisCache.destroy();
     this.fuse = null;
     this.responseTimeTracker = [];
     this.queryTracker.clear();
     console.log('✅ InstantSearchEngine destroyed');
-  }
-}
+  } }
+} }
 
 // export singleton
 export const instantSearchEngine = new InstantSearchEngine();
+

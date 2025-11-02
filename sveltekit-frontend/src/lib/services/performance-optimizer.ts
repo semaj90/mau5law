@@ -1,7 +1,7 @@
 interface PerformanceAnalytics { totalQueries: number;, averageResponseTime: number;
   cacheHitRate: number;
   // Add other relevant metrics as needed
-}
+} }
 
 export const performanceOptimizer = {
   recordQuery: (query: string, responseTime: number, cacheHit: boolean) => {
@@ -18,5 +18,6 @@ export const performanceOptimizer = {
       averageResponseTime: 120,
       cacheHitRate: 0.65
     };
-  }
+  } }
 };
+

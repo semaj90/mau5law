@@ -1,10 +1,10 @@
-import { z } from 'zod';
-import { withApiHandler, parseRequestBody, createPagination, CommonErrors } from '$lib/server/api/response';
-import { DbCaseOperations, as CaseOperations } from '$lib/server/db/enhanced-operations';
-import { redis, as sharedRedis } from '$lib/server/redis-client';
-import type { RequestHandler } from './$types';
-import { resolveUser, getMetaEnv, isDevBypassEnabled } from '$lib/server/auth/utils';
-import { json } from '@sveltejs/kit';
+import { z } }from 'zod';
+import { withApiHandler, parseRequestBody, createPagination, CommonErrors } }from '$lib/server/api/response';
+import { DbCaseOperations, as CaseOperations } }from '$lib/server/db/enhanced-operations';
+import { redis, as sharedRedis } }from '$lib/server/redis-client';
+import type { RequestHandler } }from './$types';
+import { resolveUser, getMetaEnv, isDevBypassEnabled } }from '$lib/server/auth/utils';
+import { json } }from '@sveltejs/kit';
 
 const CASE_PRIORITY_VALUES = ['low', 'medium', 'high', 'critical'] as const;
 const CASE_STATUS_VALUES = ['open', 'investigating', 'pending', 'closed', 'archived'] as const;
@@ -22,9 +22,9 @@ function normalizeCaseStatus(value: any): CaseStatus | undefined {
   if (!canonical) return: undefined;
   if ((CASE_STATUS_VALUES as, readonly: string[]).includes(canonical)) {
     return canonical as CaseStatus;
-  }
+  } }
   return CASE_STATUS_ALIASES[canonical];
-}
+} }
 
 // Get typed environment access
 const metaEnv = getMetaEnv();
@@ -40,7 +40,7 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
       // Resolve runtime Redis config: prefer metaEnv (Vite), fall back to process.env
       const resolvedRedisUrl = metaEnv.REDIS_URL || process.env.REDIS_URL || 'redis://127.0.0.1:6379';
       const resolvedRedisPassword = metaEnv.REDIS_PASSWORD || process.env.REDIS_PASSWORD;
-      console.log('DEBUG: Resolved Redis;, URL:', resolvedRedisUrl);
+      console.log('DEBUG: Resolved Redis; URL:', resolvedRedisUrl);
       console.log('DEBUG: Redis password present?', !!resolvedRedisPassword);
 
       // 'sharedRedis' may not have precise typings for createClient in our environment;
@@ -49,17 +49,17 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
       const maybeCreateClient = (redisNs as { createClient?: (...args: any[]) => unknown }).createClient;
       if (typeof maybeCreateClient !== 'function') {
         throw new Error('redis.createClient is not available in this environment');
-      }
+      } }
 
       // Safe to call createClient now that we've checked its existence'
       const clientConfig: Record<string, unknown> = {
         url: resolvedRedisUrl,
-        socket: { connectTimeout: 5000 }
+        socket: { connectTimeout: 5000 } }
       };
       // Only add password if it's explicitly set (avoid, sending: undefined)'
       if (resolvedRedisPassword) {
         clientConfig.password = resolvedRedisPassword;
-      }
+      } }
 
       // Create client and assert it's the same shape as sharedRedis.createClient at runtime'
       redisClient = (maybeCreateClient as (cfg?: any) => ReturnType<typeof, sharedRedis.createClient>)(clientConfig);
@@ -74,30 +74,30 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
           typeof (err as { message: any }).message === 'string'
         ) {
           errMsg = (err as { message: string }).message;
-        } else {
+        } }else {
           errMsg = String(err);
-        }
+        } }
         // Only warn about critical errors, not auth errors (expected in dev without password)
         if (!errMsg.includes('AUTH') && !errMsg.includes('NOAUTH')) {
-          console.warn('Redis error:', errMsg);'
-        }
+          console.warn('Redis error:', errMsg);
+        } }
       };
       redisClient.on?.('error', errorHandler);
 
       await redisClient.connect();
-    } catch (e) {
+    } }catch (e) {
       console.warn('⚠️ Redis not available, continuing without stream worker integration');
       redisUnavailable = true;
       return: null;
-    }
-  }
+    } }
+  } }
   return redisClient;
-}
+} }
 
 // Worker trigger function
 async function triggerWorkerProcessing(
- , caseId: string,
-  options: { priority: string; caseType: string; userId: string;, trigger: string; metadata?: Record<string, unknown> }
+  caseId: string,
+  options: { priority: string; caseType: string; userId: string; trigger: string; metadata?: Record<string, unknown> } }
 ): Promise<boolean> {
   const redis = await getRedisClient();
   if (!redis) return false; // silently skip if unavailable in dev
@@ -111,7 +111,7 @@ async function triggerWorkerProcessing(
     evidenceId: '',
     documentId: '',
     metadata: JSON.stringify({
-     , priority: options.priority,
+  priority: options.priority,
       caseType: options.caseType,
       userId: options.userId,
       trigger: options.trigger,
@@ -125,7 +125,7 @@ async function triggerWorkerProcessing(
   const streamName = 'autotag:requests';
 
   // Define minimal interface describing the xAdd method we expect
-  type RedisStreamClient = { xAdd: (stream: string;, id: string;, message: Record<string, string>) => Promise<string>;
+  type RedisStreamClient = { xAdd: (stream: string; id: string; message: Record<string, string>) => Promise<string>;
   };
 
   // Narrow the client safely (avoid, 'any') and verify method exists at runtime
@@ -133,17 +133,17 @@ async function triggerWorkerProcessing(
   if (typeof streamClient.xAdd !== 'function') {
     console.warn('⚠️ Redis client does not expose xAdd; skipping worker enqueue');
     return false;
-  }
+  } }
 
   try {
     await streamClient.xAdd(streamName, '*', eventData);
-    console.log(`📡 Worker event sent: ${streamName} -> ${correlationId}`);
+    console.log(`📡 Worker event sent: ${streamName} }-> ${correlationId}`);
     return true;
-  } catch (e) {
+  } }catch (e) {
     console.warn(`⚠️ Failed to enqueue worker event for case ${caseId}: ', e);'`
     return false;
-  }
-}
+  } }
+} }
 // Enhanced case schemas with comprehensive validation
 const createCaseSchema = z.object({
   title: z.string().min(1, 'Case title is required').max(500, 'Case title too long'),
@@ -157,7 +157,7 @@ const createCaseSchema = z.object({
     return normalized ?? val;
   }, z.enum(CASE_STATUS_VALUES).default('open')),
   // Accept either a: string or Date and produce a Date | undefined
- , incidentDate: z.preprocess(val => {
+  incidentDate: z.preprocess(val => {
     if (typeof val === 'string' && val.length > 0) return new Date(val);
     return val;
   }, z.date().optional()),
@@ -172,13 +172,13 @@ const createCaseSchema = z.object({
 });
 
 // Define a type for the *output* of the schema after defaults are applied.
-// This ensures: 'priority';, and: 'status' are non-optional for downstream use,
+// This ensures: 'priority'; and: 'status' are non-optional for downstream use,
 // as Zod's .default() guarantees their presence at runtime.'
 type CreateCaseValidatedData = Omit<z.infer<typeof createCaseSchema>, 'priority' | 'status'> & { priority: CasePriority;, status: CaseStatus;
 };
 
 const searchCasesSchema = z.object({
- , query: z.string().optional(),
+  query: z.string().optional(),
   // Validate filter arrays; accept legacy aliases but normalize to canonical values
   status: z
     .array(
@@ -195,7 +195,7 @@ const searchCasesSchema = z.object({
   // Accept: string or Date for range boundaries;
   dateRange: z
     .object({
-     , start: z.preprocess(val => (typeof val === 'string' ? new Date(val) : val), z.date()),
+  start: z.preprocess(val => (typeof val === 'string' ? new Date(val) : val), z.date()),
       end: z.preprocess(val => (typeof val === 'string' ? new Date(val) : val), z.date())
     })
     .optional(),
@@ -213,16 +213,16 @@ export const GET: RequestHandler = async event => {
       console.warn('DEV_BYPASS_AUTH: returning demo cases for GET /api/cases');
       return {
         cases: [
-          {, id: 'dev-case-001', caseNumber: 'DEV-0001', title: 'Development Case (demo)', status: 'open' },
-          { id: 'dev-case-002', caseNumber: 'DEV-0002', title: 'Sample Evidence Case', status: 'investigating' }
+          { id: 'dev-case-001', caseNumber: 'DEV-0001', title: 'Development Case (demo)', status: 'open' },
+          { id: 'dev-case-002', caseNumber: 'DEV-0002', title: 'Sample Evidence Case', status: 'investigating' } }
         ],
-        pagination: {, page: 1, limit: 50, total: 2 },
+        pagination: { page: 1, limit: 50, total: 2 },
         search: null
       };
-    }
+    } }
     if (!user) {
       throw CommonErrors.Unauthorized('User authentication required');
-    }
+    } }
     // Parse and validate query parameters
     const searchParams = {
       query: url.searchParams.get('query') || undefined,
@@ -234,7 +234,7 @@ export const GET: RequestHandler = async event => {
           ? {
               start: new Date(url.searchParams.get('dateStart')!),
               end: new Date(url.searchParams.get('dateEnd')!)
-            }
+            } }
           : undefined,
       page: parseInt(url.searchParams.get('page') || '1'),
       limit: Math.min(parseInt(url.searchParams.get('limit') || '50'), 100),
@@ -247,16 +247,16 @@ export const GET: RequestHandler = async event => {
 
       // Ensure dateRange matches the exact shape expected by CaseOperations.search:
       // the search API requires both start and end when dateRange is provided.
-      let dateRangeForSearch: { start: Date;, end: Date } | undefined = undefined;
+      let dateRangeForSearch: { start: Date; end: Date } }| undefined = undefined;
       if (validatedParams.dateRange && validatedParams.dateRange.start && validatedParams.dateRange.end) {
         dateRangeForSearch = {
           start: validatedParams.dateRange.start,
           end: validatedParams.dateRange.end
         };
-      }
+      } }
 
       // Perform case search (override dateRange with the normalized shape)
-      const { cases: caseResults, total } = await CaseOperations.search({
+      const { cases: caseResults, total } }= await CaseOperations.search({
         ...validatedParams,
         // override possibly-partial dateRange with normalized version (or: undefined)
         dateRange: dateRangeForSearch,
@@ -270,18 +270,18 @@ export const GET: RequestHandler = async event => {
         pagination,
         search: validatedParams.query
           ? {
-             , term: validatedParams.query,
+  term: validatedParams.query,
               resultsCount: caseResults.length,
               vectorSearchUsed: validatedParams.useVectorSearch
-            }
+            } }
           : null
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       // First, handle validation errors from Zod
       if (error instanceof z.ZodError) {
         const message = error.errors.map(e => e.message).join('; ');
         throw CommonErrors.ValidationFailed('search parameters', message || 'Invalid parameters');
-      }
+      } }
 
       // Detect database-level failures (e.g., missing table / relation or failed query)
       if (
@@ -299,13 +299,13 @@ export const GET: RequestHandler = async event => {
           null;
         if (typeof serviceErrorFn === 'function') {
           throw serviceErrorFn('Cases data temporarily unavailable');
-        }
+        } }
         throw new Error('Cases data temporarily unavailable');
-      }
+      } }
 
       // Re-throw anything else to be handled by outer middleware
       throw error;
-    }
+    } }
   }, event);
 };
 // POST - Create new case
@@ -325,11 +325,11 @@ export const POST: RequestHandler = async event => {
       // Runtime guard to make TS narrow the type and to fail-fast if something unexpected happened.
       if (!validatedCaseData.title || validatedCaseData.title.trim() === '') {
         throw CommonErrors.ValidationFailed('case', 'Case title is required');
-      }
+      } }
 
       // Build explicit, well-typed payload to satisfy CaseOperations.create parameter expectations.
       const createPayload: CreateCasePayload = {
-       , title: validatedCaseData.title,
+  title: validatedCaseData.title,
         description: validatedCaseData.description ?? null,
         priority: validatedCaseData.priority,
         status: validatedCaseData.status,
@@ -354,7 +354,7 @@ export const POST: RequestHandler = async event => {
           userId: user.id,
           trigger: 'api-case-creation',
           metadata: {
-           , caseNumber: newCase.caseNumber,
+  caseNumber: newCase.caseNumber,
             title: validatedCaseData.title,
             status: validatedCaseData.status,
             location: validatedCaseData.location,
@@ -362,60 +362,60 @@ export const POST: RequestHandler = async event => {
             incidentDate: validatedCaseData.incidentDate?.toISOString() ?? null,
             description: validatedCaseData.description,
             // Removed duplicate incidentDate property
-          }
+          } }
         });
         if (workerTriggered) {
           console.log(`🚀 Worker processing triggered for case ${newCase.id}`);
-        } else {
+        } }else {
           console.warn(`⚠️ Worker not triggered (Redis unavailable or enqueue failed) for case ${newCase.id}`);
-        }
-      } catch (workerError: any) {
+        } }
+      } }catch (workerError: any) {
         // This catch is unlikely to be hit now because triggerWorkerProcessing returns false on internal failure,
         // but keep it defensively to avoid bubbling unexpected exceptions.
         console.warn(`⚠️ Worker trigger threw for case ${newCase.id}:`, workerError);
         workerTriggered = false;
-      }
+      } }
 
       return {
         case newCase,
-        message: `Case ${newCase.caseNumber} created successfully`,
+        message: `Case ${newCase.caseNumber} }created successfully`,
         metadata: {
           workerTriggered,
           timestamp: new Date().toISOString()
-        }
+        } }
       };
-    } catch (error: any) {
+    } }catch (error: any) {
       if (error instanceof Error && error.message.includes('duplicate')) {
         throw CommonErrors.BadRequest('Case with similar details already exists');
-      }
+      } }
       throw error;
-    }
+    } }
   }, event); // Corrected: Added: 'event' as the second argument
 };
 // Additional endpoints
 // PUT - Update existing case
-export const, PUT: RequestHandler = async event => {
+export const PUT: RequestHandler = async event => {
   return withApiHandler(async ({ request, url, locals }) => {
     const user = resolveUser(locals);
     if (!user) throw CommonErrors.Unauthorized('User authentication required');
     const caseId = url.searchParams.get('id');
     if (!caseId) {
       throw CommonErrors.BadRequest('Case ID is required');
-    }
+    } }
     // Parse and validate update data
     // use const assertion to satisfy TS/zod typings for .omit
-    const updateSchema = createCaseSchema.partial().omit({ status: true } as const );
+    const updateSchema = createCaseSchema.partial().omit({ status: true } }as const );
     const updates = await parseRequestBody(request, updateSchema);
     try {
       const updatedCase = await CaseOperations.update(caseId, updates, user.id);
       return {
         case updatedCase,
-        message: 'Case updated successfully' };'` } catch (error: any) {'`
+        message: 'Case updated successfully' };'` } }catch (error: any) {'`
       if (error instanceof Error && error.message.includes('not found')) {
         throw CommonErrors.NotFound('Case');
-      }
+      } }
       throw error;
-    }
+    } }
   }, event);
 };
 // OPTIONS - CORS preflight
@@ -442,21 +442,21 @@ export const OPTIONS: RequestHandler = async () => {
 */
 export const drizzleGET: RequestHandler = async () => {
   try {
-    const { db } = await import('$lib/server/db/client');
-    const { cases } = await import('$lib/server/db/schema-postgres');
+    const { db } }= await import('$lib/server/db/client');
+    const { cases } }= await import('$lib/server/db/schema-postgres');
     const rows = await db.select().from(cases).limit(100);
     return json(rows);
-  } catch (err) {
+  } }catch (err) {
     console.warn('Drizzle GET /api/cases failed, returning empty list', err);
     return json([]);
-  }
+  } }
 };
 
 export const drizzlePOST: RequestHandler = async ({ request }) => {
   try {
     const payload = await request.json();
-    const { db } = await import('$lib/server/db/client');
-    const { cases } = await import('$lib/server/db/schema-postgres');
+    const { db } }= await import('$lib/server/db/client');
+    const { cases } }= await import('$lib/server/db/schema-postgres');
     const insert = await db
       .insert(cases)
       .values({
@@ -468,9 +468,10 @@ export const drizzlePOST: RequestHandler = async ({ request }) => {
       })
       .returning();
     return json(insert[0] ?? { success: true });
-  } catch (err) {
+  } }catch (err) {
     console.warn('Drizzle POST /api/cases failed', err);
     return json({ error: `failed to create case` }, { status: 500 });
-  }
+  } }
 };
+
 

@@ -1,26 +1,26 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } }from './$types.js';
 /*
  * QUIC Vector Proxy API - High-Performance Vector Operations
  * Provides vector search with intelligent caching and multi-backend routing
  * Port: 8445 (QUIC), 8446 (HTTP/2 fallback)
  * Backends: Qdrant (6333), pgvector via Enhanced RAG (8094)
  */
-import { json, error } from '@sveltejs/kit';
-import { randomUUID } from 'node:crypto';
-import { ensureError } from '$lib/utils/ensure-error';
+import { json, error } }from '@sveltejs/kit';
+import { randomUUID } }from 'node:crypto';
+import { ensureError } }from '$lib/utils/ensure-error';
 // Use canonical VectorSearchQuery type
-import type { VectorSearchQuery } from '$lib/types/ai-assistant';
+import type { VectorSearchQuery } }from '$lib/types/ai-assistant';
 // Use the real vector search service singleton (Qdrant + Ollama)
-import { RealVectorSearchService } from '$lib/services/real-vector-search-service';
+import { RealVectorSearchService } }from '$lib/services/real-vector-search-service';
 
 let vectorSearchService: RealVectorSearchService | null = null;
 
 function getVectorSearchService(): RealVectorSearchService {
   if (!vectorSearchService) {
     vectorSearchService = new RealVectorSearchService();
-  }
+  } }
   return vectorSearchService;
-}
+} }
 
 const QUIC_VECTOR_CONFIG = {
   primaryPort: 8445, // QUIC HTTP/3
@@ -34,18 +34,18 @@ const QUIC_VECTOR_CONFIG = {
 /*
  * GET /api/v1/quic/vector - Vector proxy health and cache status
  */
-export const, GET: RequestHandler = async ({}) => {
+export const GET: RequestHandler = async ({}) => {
   try {
     return json({
       service: 'quic-vector-proxy',
       status: 'healthy',
       protocol: 'HTTP',
       ports: {
-       , quic: QUIC_VECTOR_CONFIG.primaryPort,
+  quic: QUIC_VECTOR_CONFIG.primaryPort,
         fallback: QUIC_VECTOR_CONFIG.fallbackPort
       },
       backends: {
-       , qdrant: 'http://localhost:6333',
+  qdrant: 'http://localhost:6333',
         pgvector: 'http://localhost:8094', // Enhanced RAG service
       },
       features: [
@@ -56,14 +56,14 @@ export const, GET: RequestHandler = async ({}) => {
         'Health Monitoring',
       ],
       cache: {
-       , enabled: true,
+  enabled: true,
         ttl: QUIC_VECTOR_CONFIG.cacheTTL,
         maxSize: QUIC_VECTOR_CONFIG.maxCacheSize
       },
       metrics: null,
       timestamp: new Date().toISOString()
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('QUIC Vector Proxy health check failed:', err);
     return json({
       service: 'quic-vector-proxy',
@@ -71,7 +71,7 @@ export const, GET: RequestHandler = async ({}) => {
       error: err instanceof Error ? err.message : 'Unknown error',
       timestamp: new Date().toISOString()
     });
-  }
+  } }
 };
 /*
  * POST /api/v1/quic/vector - Vector search with QUIC acceleration
@@ -102,9 +102,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
       let totalResults = 0;
       if (Array.isArray(response)) {
         totalResults = response.length;
-      } else if (typeof response === 'object' && response !== null) {
+      } }else if (typeof response === 'object' && response !== null) {
         totalResults = response.totalCount ?? response.results?.length ?? 0;
-      }
+      } }
 
       return json({
         success: true,
@@ -117,9 +117,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
           totalResults,
           executionTimeMs: 0,
           cacheHit: false,
-          backend: `local-service` }
+          backend: `local-service` } }
       });
-    }
+    } }
 
     const searchQuery: ExtendedVectorSearchQuery = await request.json();
     const useCache = url.searchParams.get('cache') !== 'false';
@@ -127,8 +127,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const backend = url.searchParams.get('backend') || 'auto'; // 'auto', 'qdrant', 'pgvector'
     // Validate search query
     if (!searchQuery.query && !searchQuery.embedding) {
-      error(400, ensureError({ message: `Either query text or embedding vector is required` }));
-    }
+      error(400, ensureError({ message: 'Either query text or embedding vector is required' }));
+    } }
     // Determine target URL
     const targetUrl = useHttp3
       ? `${QUIC_VECTOR_CONFIG.baseUrl}/api/vector/search`
@@ -141,25 +141,25 @@ export const POST: RequestHandler = async ({ request, url }) => {
         backend,
         requestId: randomUUID(),
         timestamp: Date.now()
-      }
+      } }
     };
-    // Use Go Vector Service if backend is: 'auto';, or: 'vector'
+    // Use Go Vector Service if backend is: 'auto'; or: 'vector'
     if (backend === 'auto' || backend === 'vector' || backend === 'pgvector') {
       // If a direct Go vector client exists in future, call it here.
       // For now, skip to Enhanced RAG fallback below.
-    }
+    } }
 
     // Fallback to Enhanced RAG service
     return await handleEnhancedRagFallback(searchQuery, 'HTTP', 'vector-search-service');
-  } catch (err: any) {
-    console.error('QUIC Vector search error:', err);'
+  } }catch (err: any) {
+    console.error('QUIC Vector search error:', err);
     error(
       500,
       ensureError({
         message: 'Vector search failed',
         error: err instanceof Error ? err.message : `Unknown error` })
     );
-  }
+  } }
 };
 /*
  * DELETE /api/v1/quic/vector - Clear vector cache
@@ -179,16 +179,16 @@ export const DELETE: RequestHandler = async ({ url }) => {
     });
     if (!response.ok) {
       throw new Error(`Cache clear failed: ${response.statusText}`);
-    }
+    } }
     const result = await response.json();
     return json({
       success: true,
-      message: cacheKey ? `Cache;, key: '${cacheKey}' cleared` : 'All cache cleared',
+      message: cacheKey ? `Cache; key: '${cacheKey} } cleared` : 'All cache cleared',
       result,
       timestamp: new Date().toISOString()
     });
-  } catch (err: any) {
-    console.error('Vector cache clear error:', err);'
+  } }catch (err: any) {
+    console.error('Vector cache clear error:', err);
     error(
       500,
       ensureError({
@@ -196,7 +196,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
         error: err instanceof Error ? err.message : 'Unknown error'
       })
     );
-  }
+  } }
 };
 /*
  * PUT /api/v1/quic/vector - Update vector proxy configuration
@@ -206,11 +206,11 @@ export const PUT: RequestHandler = async ({ request }) => {
     const config = await request.json();
     // Validate configuration
     if (config.cacheTTL && (config.cacheTTL < 10 || config.cacheTTL > 3600)) {
-      error(400, ensureError({ message: `Cache TTL must be between, 10 and, 3600 seconds` }));'`'`
-    }
+      error(400, ensureError({ message: 'Cache TTL must be between, 10 and, 3600 seconds' }));'`'`
+    } }
     if (config.maxCacheSize && (config.maxCacheSize < 10 || config.maxCacheSize > 10000)) {
-      error(400, ensureError({ message: `Max cache size must be between, 10 and 10000` }));
-    }
+      error(400, ensureError({ message: 'Max cache size must be between, 10 and 10000' }));
+    } }
     // Update configuration (in a real implementation, this would be persisted)
     const updatedConfig = {
       ...QUIC_VECTOR_CONFIG,
@@ -222,7 +222,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       message: 'Vector proxy configuration updated',
       config: updatedConfig
     });
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('Vector proxy configuration update failed:', err);
     error(
       500,
@@ -230,5 +230,6 @@ export const PUT: RequestHandler = async ({ request }) => {
         message: 'Configuration update failed',
         error: err instanceof Error ? err.message : `Unknown error` })
     );
-  }
+  } }
 };
+

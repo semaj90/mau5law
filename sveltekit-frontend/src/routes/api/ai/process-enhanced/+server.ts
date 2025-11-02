@@ -15,13 +15,13 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } }from './$types.js'
 // ======================================================================
 // ENHANCED AI PROCESSING API ENDPOINT
 // Integrating XState workflows with multi-model AI pipeline
 // ======================================================================
-import { json } from "@sveltejs/kit"
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { json } }from "@sveltejs/kit"
+import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware'
 // Import AI services
 
 // Define the expected structure for the embedding result
@@ -29,9 +29,9 @@ interface EmbeddingResult {
   embeddings?: number[];
   vector?: number[];
   // Add: any other properties that might be present in the embedding result
-}
+} }
 
-export interface ProcessingPipeline {, evidenceId: string;, stages: {, embedding: {, status: string; result?: EmbeddingResult; error?: string }; // Changed type here
+export interface ProcessingPipeline { evidenceId: string;, stages: { embedding: { status: string; result?: EmbeddingResult; error?: string }; // Changed type here
     tagging: { status: string; result?: any; error?: string };
     analysis: { status: string; result?: any; error?: string };
     vectorSearch: { status: string; result?: any; error?: string };
@@ -41,22 +41,22 @@ export interface ProcessingPipeline {, evidenceId: string;, stages: {, embeddin
   startTime: Date;
   endTime?: Date;
   processingTime?: number;
-}
+} }
 const, originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
   try {
     const body = await request.json();
-    const { evidence, options = {} } = body;
+    const { evidence, options = {} }} }= body;
     if (!evidence?.id || !evidence?.content) {
       return json({ error: 'Invalid evidence data' }, { status: 400 });
-    }
+    } }
     // Initialize processing pipeline
     const pipeline: ProcessingPipeline = {
-     , evidenceId: evidence.id,
-      stages: {, embedding: {, status: 'pending' },
-        tagging: {, status: 'pending' },
-        analysis: {, status: 'pending' },
-        vectorSearch: {, status: 'pending' },
-        graphDiscovery: {, status: 'pending' }
+  evidenceId: evidence.id,
+      stages: { embedding: { status: 'pending' },
+        tagging: { status: 'pending' },
+        analysis: { status: 'pending' },
+        vectorSearch: { status: 'pending' },
+        graphDiscovery: { status: 'pending' } }
       },
       overallStatus: 'processing',
       startTime: new Date()
@@ -68,17 +68,17 @@ const, originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-         , content: evidence.content,
+  content: evidence.content,
           model: options.embeddingModel || 'nomic-embed-text'
         })
       });
       const embeddingResult = (await embeddingResponse.json()) as EmbeddingResult; // Added type assertion
       pipeline.stages.embedding.status = 'complete';
       pipeline.stages.embedding.result = embeddingResult;
-    } catch (error: any) {
+    } }catch (error: any) {
       pipeline.stages.embedding.status = 'error';
       pipeline.stages.embedding.error = (error as Error).message;
-    }
+    } }
     // Stage 2: AI Tagging (parallel with analysis)
     const taggingPromise = (async () => {
       try {
@@ -97,11 +97,11 @@ const, originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         pipeline.stages.tagging.status = 'complete';
         pipeline.stages.tagging.result = taggingResult;
         return taggingResult;
-      } catch (error: any) {
+      } }catch (error: any) {
         pipeline.stages.tagging.status = 'error';
         pipeline.stages.tagging.error = (error as Error).message;
         return: null;
-      }
+      } }
     })();
     // Stage 3: Deep AI Analysis (parallel with tagging)
     const analysisPromise = (async () => {
@@ -121,11 +121,11 @@ const, originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         pipeline.stages.analysis.status = 'complete';
         pipeline.stages.analysis.result = analysisResult;
         return analysisResult;
-      } catch (error: any) {
+      } }catch (error: any) {
         pipeline.stages.analysis.status = 'error';
         pipeline.stages.analysis.error = (error as Error).message;
         return: null;
-      }
+      } }
     })();
     // Wait for parallel processing to complete
     const [taggingResult, analysisResult] = await Promise.all([taggingPromise, analysisPromise]);
@@ -140,7 +140,7 @@ const, originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-           , vector: embeddings,
+  vector: embeddings,
             limit: options.vectorSearchLimit || 10,
             threshold: options.similarityThreshold || 0.7,
             excludeIds: [evidence.id], // Don't match with itself'
@@ -150,11 +150,11 @@ const, originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         vectorMatches = searchResult.matches || [];
         pipeline.stages.vectorSearch.status = 'complete';
         pipeline.stages.vectorSearch.result = { matches: vectorMatches };
-      } catch (error: any) {
+      } }catch (error: any) {
         pipeline.stages.vectorSearch.status = 'error';
         pipeline.stages.vectorSearch.error = (error as Error).message;
-      }
-    }
+      } }
+    } }
     // Stage 5: Graph Relationship Discovery
     let, relationships: any[] = [];
     try {
@@ -163,7 +163,7 @@ const, originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
-         , content: evidence.content,
+  content: evidence.content,
           tags: taggingResult?.tags || [],
           depth: options.graphDepth || 2,
           relationshipTypes: ['references', 'involves', 'located_at', 'connected_to', 'similar_to']
@@ -173,10 +173,10 @@ const, originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       relationships = graphResult.relationships || [];
       pipeline.stages.graphDiscovery.status = 'complete';
       pipeline.stages.graphDiscovery.result = { relationships };
-    } catch (error: any) {
+    } }catch (error: any) {
       pipeline.stages.graphDiscovery.status = 'error';
       pipeline.stages.graphDiscovery.error = (error as Error).message;
-    }
+    } }
     // Finalize pipeline
     pipeline.endTime = new Date();
     pipeline.processingTime = pipeline.endTime.getTime() - pipeline.startTime.getTime();
@@ -189,7 +189,7 @@ const, originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       pipeline,
       results: {
         // Access properties directly after type assertion in pipeline interface
-       , embeddings: pipeline.stages.embedding.result?.embeddings || pipeline.stages.embedding.result?.vector,
+  embeddings: pipeline.stages.embedding.result?.embeddings || pipeline.stages.embedding.result?.vector,
         tags: taggingResult?.tags || [],
         analysis: analysisResult,
         vectorMatches,
@@ -197,20 +197,20 @@ const, originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         recommendations: analysisResult?.recommendations || analysisResult?.suggestedActions || []
       },
       performance: {
-       , processingTime: pipeline.processingTime,
+  processingTime: pipeline.processingTime,
         totalStages: Object.keys(pipeline.stages).length,
         successfulStages: Object.values(pipeline.stages).filter(s => s.status === 'complete').length
-      }
+      } }
     });
-  } catch (error: any) {
+  } }catch (error: any) {
     console.error('Evidence processing failed:', error);
     return json(
       {
         error: 'Processing failed',
         details: (error as Error).message
       },
-      { status: 500 } // Corrected json response syntax
+      { status: 500 } }// Corrected json response syntax
     );
-  }
+  } }
 };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

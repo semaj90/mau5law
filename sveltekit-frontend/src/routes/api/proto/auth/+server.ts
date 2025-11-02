@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import type { User } }from '$lib/types';
+import { json, error } }from '@sveltejs/kit'
+import type { RequestHandler } }from './$types.js'
 // Protobuf types are dynamically imported to avoid TypeScript checking JS
 // Protobuf authentication endpoint
 export const POST: RequestHandler = async ({ request }) => {
@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Protobuf handling
       const buffer = await request.arrayBuffer()
       // @ts-ignore: dynamic import of generated JS without type defs
-      const { legal } = await import('../../../../proto/legal_api_pb.js')
+      const { legal } }= await import('../../../../proto/legal_api_pb.js')
       const authRequest = legal.api.AuthRequest.decode(new Uint8Array(buffer))
       // Mock authentication logic
       const isValid = authRequest.email && authRequest.password
@@ -23,23 +23,23 @@ export const POST: RequestHandler = async ({ request }) => {
         const encoded = legal.api.AuthResponse.encode(errorResponse).finish()
         return new Response(Buffer.from(encoded), {
           status: 401,
-          headers: { 'Content-Type': 'application/x-protobuf' }
+          headers: { 'Content-Type': 'application/x-protobuf' } }
         })
-      }
+      } }
       // Success response
       const user = legal.api.User.create({
         id: 'user_123',
         email: authRequest.email,
         name: 'Test User',
         roles: ['user'],
-        createdAt: {, seconds: Math.floor(Date.now() / 1000), nanos: 0 },
-        updatedAt: {, seconds: Math.floor(Date.now() / 1000), nanos: 0 },
+        createdAt: { seconds: Math.floor(Date.now() / 1000), nanos: 0 },
+        updatedAt: { seconds: Math.floor(Date.now() / 1000), nanos: 0 },
         preferences: {
-         , theme: 'nier',
+  theme: 'nier',
           language: 'en',
           notificationsEnabled: true,
           analyticsOptIn: false
-        }
+        } }
       })
       const authResponse = legal.api.AuthResponse.create({
         success: true,
@@ -54,39 +54,39 @@ export const POST: RequestHandler = async ({ request }) => {
           'Content-Type': 'application/x-protobuf',
           'X-Protocol-Version': '1.0',
           'X-Performance-Mode': 'protobuf'
-        }
+        } }
       })
-    } else {
+    } }else {
       // JSON fallback for compatibility
-      const { email, password, remember_me } = await request.json()
+      const { email, password, remember_me } }= await request.json()
       if (!email || !password) {
         return error(401, 'Invalid credentials')
-      }
+      } }
       return json({
         success: true,
         token: 'jwt_token_here',
         user: {
-         , id: 'user_123',
+  id: 'user_123',
           email,
           name: 'Test User',
           roles: ['user'],
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           preferences: {
-           , theme: 'nier',
+  theme: 'nier',
             language: 'en',
             notifications_enabled: true,
             analytics_opt_in: false
-          }
+          } }
         },
         expires_at: Date.now() + (24 * 60 * 60 * 1000)
       })
-    }
-  } catch (err) {
+    } }
+  } }catch (err) {
     console.error('Auth endpoint error:', err)'
     return error(500, 'Authentication failed')
-  }
-}
+  } }
+} }
 // Health check for protobuf support
 export const GET: RequestHandler = async () => {
   return json({
@@ -96,4 +96,5 @@ export const GET: RequestHandler = async () => {
     version: '1.0.0',
     timestamp: new Date().toISOString()
   })
-}
+} }
+

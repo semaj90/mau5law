@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { db, uploads } from '$lib/server/db';
-import { eq } from 'drizzle-orm';
-import { caseManagementService } from '$lib/services/case-management-service';
+import type { Case } }from '$lib/types';
+import type { RequestHandler } }from '@sveltejs/kit';
+import { json } }from '@sveltejs/kit';
+import { db, uploads } }from '$lib/server/db';
+import { eq } }from 'drizzle-orm';
+import { caseManagementService } }from '$lib/services/case-management-service';
 
 const DEV_BYPASS_AUTH = process.env.DEV_BYPASS_AUTH === 'true' || false;
 
@@ -18,33 +18,33 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       mimeType = null,
       fileSize = null,
       storagePath = null,
-      metadata = {}
-    } = body;
+      metadata = {} }
+    } }= body;
 
     if (!originalFilename || !storedFilename) {
       return json({ success: false, error: 'originalFilename and storedFilename are required' }, { status: 400 });
-    }
+    } }
 
     // Require authentication unless dev bypass is enabled
     const user = locals?.user ?? null;
     if (!user && !DEV_BYPASS_AUTH) {
       return json({ success: false, error: 'Authentication required' }, { status: 401 });
-    }
+    } }
 
     // If a caseId is provided, validate the case exists and user has permission
     if (caseId) {
       const caseDetails = await caseManagementService.getCaseById(caseId as: string);
       if (!caseDetails) {
         return json({ success: false, error: 'Case not found' }, { status: 404 });
-      }
+      } }
       // Basic ownership check: either assignedTo matches user id or user is admin
       const assignedTo = (caseDetails as { assignedTo?: string }).assignedTo;
       const isOwner = user && assignedTo && user.id === assignedTo;
       const isAdmin = user && user.role === 'admin';
       if (!isOwner && !isAdmin && !DEV_BYPASS_AUTH) {
         return json({ success: false, error: 'Forbidden: insufficient permissions for this case' }, { status: 403 });
-      }
-    }
+      } }
+    } }
 
     const result = await db
       .insert(uploads)
@@ -63,8 +63,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const inserted = Array.isArray(result) && result.length ? result[0] : null;
 
     return json({ success: true, upload: inserted });
-  } catch (err) {
+  } }catch (err) {
     console.error('Error saving upload metadata', err);
     return json({ success: false, error: String(err) }, { status: 500 });
-  }
+  } }
 };
+

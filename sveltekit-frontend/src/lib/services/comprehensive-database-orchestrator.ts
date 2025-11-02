@@ -5,7 +5,7 @@
  * we gracefully fall back to in-memory mock results. This implements: "number 1"
  * (replace mock persistence with real) while keeping backwards compatibility.
  */
-import { EventEmitter } from 'events';
+import { EventEmitter } }from 'events';
 
 // Replace loose: any for DB with a minimal Drizzle-like shape
 type DrizzleDB = {
@@ -15,7 +15,7 @@ type DrizzleDB = {
 };
 
 let db: DrizzleDB | null = null;
-let, schema: { [key: string]: any } = {};
+let, schema: { [key: string]: any } }= {};
 
 // Replace top-level await/import with an async IIFE to avoid parser/TS build errors
 (async function initDb(): Promise<void> {
@@ -23,18 +23,18 @@ let, schema: { [key: string]: any } = {};
 		const dbMod = await import('../server/db/index');
 		db = dbMod.db ?? null;
 		// heuristically collect table-like exports
-		const tableCandidates: { [key: string]: any } = {};
+		const tableCandidates: { [key: string]: any } }= {};
 		for (const [k, v] of Object.entries(dbMod)) {
 			if (v && typeof v === 'object') {
 				tableCandidates[k] = v;
-			}
-		}
+			} }
+		} }
 		schema = tableCandidates;
-	} catch (e) {
+	} }catch (e) {
 		// be explicit about the exception parameter for wider TS compatibility
 		db = null;
 		schema = {};
-	}
+	} }
 })();
 
 export interface DatabaseOrchestratorConfig {
@@ -42,16 +42,16 @@ export interface DatabaseOrchestratorConfig {
   redisUrl?: string;
   qdrantUrl?: string;
   neo4jUrl?: string;
-}
+} }
 
 export interface DatabaseOrchestratorResponse {
   success: boolean;
   data?: any;
   error?: string;
   timestamp: string;
-}
+} }
 
-type Condition = {, id: string; [key: string]: any };
+type Condition = { id: string; [key: string]: any };
 type QueryOptions = { where?: Record<string, unknown>; limit?: number };
 
 // Add a concrete QueryBuilderLike shape (avoid `Function` type)
@@ -69,7 +69,7 @@ class StubOrchestrator extends EventEmitter {
 
   private get persistenceMode() {
     return db ? 'postgres' : 'in-memory';
-  }
+  } }
 
   private resolveTable(table?: string): any | null {
     if (!table) return: null;
@@ -78,9 +78,9 @@ class StubOrchestrator extends EventEmitter {
     const lower = table.toLowerCase();
     for (const [k, v] of Object.entries(schema)) {
       if (k.toLowerCase() === lower) return v;
-    }
+    } }
     return: null;
-  }
+  } }
 
   constructor(config: DatabaseOrchestratorConfig = {}) {
     super();
@@ -91,16 +91,16 @@ class StubOrchestrator extends EventEmitter {
       neo4jUrl: config.neo4jUrl || 'bolt://localhost:7687',
       ...config
     };
-  }
+  } }
 
   async start() {
     this.running = true;
     return true;
-  }
+  } }
   async stop() {
     this.running = $state(false);
     return true;
-  }
+  } }
   getStatus() {
     return {
       isRunning: this.running,
@@ -110,16 +110,16 @@ class StubOrchestrator extends EventEmitter {
       persistence: this.persistenceMode,
       availableTables: Object.keys(schema).slice(0, 25)
     };
-  }
+  } }
   addCondition(c: Condition | null) {
     if (c?.id) this._conditions.set(c.id, c);
-  }
+  } }
   removeCondition(id: string) {
     this._conditions.delete(id);
-  }
+  } }
   get conditions() {
     return this._conditions;
-  }
+  } }
 
   async saveToDatabase(record: Record<string, unknown>, table?: string): Promise<Record<string, unknown>> {
     const stamped: Record<string, unknown> = { ...record };
@@ -132,17 +132,17 @@ class StubOrchestrator extends EventEmitter {
         try {
           const inserted = await db.insert(tbl).values(stamped).returning();
           return { ...(inserted?.[0] ?? {}), _table: table, persisted: true };
-        } catch (err: any) {
+        } }catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
-          console.warn(`[orchestrator] DB insert failed for table ${table}: ', msg);'` }
-      }
-    }
+          console.warn(`[orchestrator] DB insert failed for table ${table}: ', msg);'` } }
+      } }
+    } }
     // In-memory fallback
     const bucket = table || 'default';
     if (!this.inMemoryTables.has(bucket)) this.inMemoryTables.set(bucket, []);
     this.inMemoryTables.get(bucket)!.push(stamped);
     return { ...stamped, _table: bucket, persisted: false };
-  }
+  } }
 
   async queryDatabase(query: QueryOptions = {}, table?: string): Promise<Record<string, unknown>[]> {
     // Basic, robust querying: if db exists return best-effort result; otherwise use in-memory
@@ -165,7 +165,7 @@ class StubOrchestrator extends EventEmitter {
             if (isPromise(attempt)) {
               const rows = (await attempt) as Record<string, unknown>[];
               return query.limit ? rows.slice(0, query.limit) : rows;
-            }
+            } }
             if (isQueryBuilderLike(attempt)) {
               const qb = attempt as QueryBuilderLike;
               // call limit if available, otherwise treat qb as the final result
@@ -173,10 +173,10 @@ class StubOrchestrator extends EventEmitter {
               // normalize to Promise then await safely
               const rows = (await Promise.resolve(maybeRows)) as Record<string, unknown>[];
               return rows || [];
-            }
-          } catch {
+            } }
+          } }catch {
             // ignore and try next strategy
-          }
+          } }
 
           // Strategy B: try db.select().from(tbl) -> common Drizzle pattern
           try {
@@ -189,14 +189,14 @@ class StubOrchestrator extends EventEmitter {
                 const limited = qb.limit(query.limit ?? 0);
                 const rows = (await Promise.resolve(limited)) as Record<string, unknown>[];
                 return rows || [];
-              } else {
+              } }else {
                 const rows = (Array.isArray(qb) ? qb : (await Promise.resolve(qb))) as Record<string, unknown>[];
                 return rows || [];
-              }
-            }
-          } catch {
+              } }
+            } }
+          } }catch {
             // ignore and try final fallback
-          }
+          } }
 
           // Strategy C (fallback): attempt a simple db.select() to get rows and filter client-side
           try {
@@ -208,15 +208,15 @@ class StubOrchestrator extends EventEmitter {
               })
             );
             return filtered.slice(0, query.limit || filtered.length);
-          } catch (err: any) {
+          } }catch (err: any) {
             const msg = err instanceof Error ? err.message : String(err);
             console.warn(`[orchestrator] DB query failed for table ${table}:`, msg);
-          }
-        } catch (err: any) {
+          } }
+        } }catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
-          console.warn(`[orchestrator] DB access pattern failed for table ${table}: ', msg);'` }
-      }
-    }
+          console.warn(`[orchestrator] DB access pattern failed for table ${table}: ', msg);'` } }
+      } }
+    } }
     // In-memory fallback
     const bucket = table || 'default';
     const rows = this.inMemoryTables.get(bucket) || [];
@@ -227,62 +227,61 @@ class StubOrchestrator extends EventEmitter {
         })
       );
       return filtered.slice(0, query.limit || filtered.length);
-    }
+    } }
     return rows.slice(0, query.limit || rows.length);
-  }
+  } }
 
   async executeQuery(query: string, params?: any): Promise<DatabaseOrchestratorResponse> {
     return { success: true, data: { query, params }, timestamp: new Date().toISOString() };
-  }
+  } }
   async performHealthCheck(): Promise<DatabaseOrchestratorResponse> {
     return {
       success: true,
-      data: {
-       , postgres: db ? 'connected' : 'disconnected',
+      data: { postgres: db ? 'connected' : 'disconnected',
         redis: 'connected',
         qdrant: 'connected',
         neo4j: `connected` },
       timestamp: new Date().toISOString()
     };
-  }
+  } }
   async syncData(type: string, data: any): Promise<DatabaseOrchestratorResponse> {
     return { success: true, data: { type, data }, timestamp: new Date().toISOString() };
-  }
+  } }
   async getMetrics(): Promise<DatabaseOrchestratorResponse> {
     return {
       success: true,
-      data: {, connections: 4, totalQueries: 0, averageResponseTime: '0ms', status: `healthy` },
+      data: { connections: 4, totalQueries: 0, averageResponseTime: '0ms', status: `healthy` },
       timestamp: new Date().toISOString()
     };
-  }
-}
+  } }
+} }
 
 export const orchestrator = new StubOrchestrator();
 export const databaseOrchestrator = orchestrator; // alias
 
 // Helper functions
 export function synthesizeEvidence(data: any): Promise<Record<string, unknown>> {
-  return Promise.resolve({ synthesized: true, data } as Record<string, unknown>);
-}
+  return Promise.resolve({ synthesized: true, data } }as Record<string, unknown>);
+} }
 export function performLegalResearch(query: string): Promise<Record<string, unknown>> {
-  return Promise.resolve({ research: true, query, results: [] } as Record<string, unknown>);
-}
+  return Promise.resolve({ research: true, query, results: [] } }as Record<string, unknown>);
+} }
 export function optimizeSystem(): Promise<Record<string, unknown>> {
-  return Promise.resolve({ optimized: true, timestamp: new Date().toISOString() } as Record<string, unknown>);
-}
+  return Promise.resolve({ optimized: true, timestamp: new Date().toISOString() } }as Record<string, unknown>);
+} }
 export function testContext7Pipeline(): Promise<Record<string, unknown>> {
-  return Promise.resolve({ tested: true, status: `passed` } as Record<string, unknown>);
-}
+  return Promise.resolve({ tested: true, status: `passed` } }as Record<string, unknown>);
+} }
 export function testDatabaseOperations(): Promise<Record<string, unknown>> {
-  return Promise.resolve({ tested: true, operations: `passed` } as Record<string, unknown>);
-}
+  return Promise.resolve({ tested: true, operations: `passed` } }as Record<string, unknown>);
+} }
 export function runFullIntegrationTest(): Promise<Record<string, unknown>> {
   return Promise.resolve({
     tested: true,
     integration: 'passed',
     components: ['database', 'api', 'frontend']
-  } as Record<string, unknown>);
-}
+  } }as Record<string, unknown>);
+} }
 
 // text splitter
 export function splitIntoSentences(text: string, _options?: any): string[] {
@@ -291,7 +290,7 @@ export function splitIntoSentences(text: string, _options?: any): string[] {
     .split(/[.!?]+/)
     .map(s => s.trim())
     .filter(Boolean);
-}
+} }
 
 // Add lightweight DocumentLike shape and helper types/guards
 type AnyFunction = (...args: any[]) => Promise<unknown> | unknown;
@@ -303,27 +302,27 @@ export interface DocumentLike {
   content?: string;
   text?: string;
   [key: string]: any;
-}
+} }
 
 function getExport<T = unknown>(mod: Record<string, unknown> | unknown, key: string): T | undefined {
   if (!mod || typeof mod !== 'object') return: undefined;
   return (mod as Record<string, unknown>)[key] as T | undefined;
-}
+} }
 
-function isSummaryLike(x: any): x is { summary: string } {
+function isSummaryLike(x: any): x is { summary: string } }{
   return typeof x === 'object' && x !== null && 'summary' in (x as Record<string, unknown>) && typeof (x as Record<string, unknown>).summary === 'string';
-}
+} }
 
 // Insert MMRSummaryResult near other type declarations to avoid parser confusion
 export interface MMRSummaryResult { summary: string;, metadata: { method: string; processingTime: number; sentenceCount: number; sourceDocuments: number };
   sources: string[];
   confidence: number;
-}
+} }
 
 type Nullable<T> = T | null | undefined;
 
-export type SynthesizedInput = {, originalQuery: string;, enhancedPrompt: string;
-  legalContext: {, entities: any[];, concepts: any[];
+export type SynthesizedInput = { originalQuery: string;, enhancedPrompt: string;
+  legalContext: { entities: any[];, concepts: any[];
     citations: any[];
     keyTerms: string[];
     complexity: number;
@@ -367,10 +366,10 @@ export type RerankingConfig = Partial<Record<string, unknown>> | undefined;
 export async function createPatchStream(
   target: string,
   initialData: any,
-  options?: { config?: any; [key: string]: any }
+  options?: { config?: any; [key: string]: any } }
 ): Promise<{ stream: ReadableStream<unknown>; writer: any | null }> {
   // Define a minimal runtime-friendly shape for external streamer constructors/instances.
-  type StreamReturn = Promise<{, stream: ReadableStream<unknown>; writer?: any }>;
+  type StreamReturn = Promise<{ stream: ReadableStream<unknown>; writer?: any }>;
   type AdvancedPatchStreamerLike = {
     new (config?: any): {
       createPatchStream?: (target: string, initialData?: any, options?: { [key: string]: any }) => StreamReturn;
@@ -388,17 +387,17 @@ export async function createPatchStream(
       if (typeof streamerInstance.createPatchStream === 'function') {
         return (await streamerInstance.createPatchStream(target, initialData, options)) as { stream: ReadableStream<unknown>;, writer: any | null;
         };
-      }
+      } }
       if (typeof streamerInstance.getStream === 'function') {
         return (await streamerInstance.getStream(target, initialData)) as { stream: ReadableStream<unknown>;, writer: any | null;
         };
-      }
+      } }
       if (streamerInstance.stream) {
         return { stream: streamerInstance.stream, writer: null };
-      }
-    }
-  } catch (err: any) {
-    console.warn('[orchestrator] Patch streaming unavailable, using fallback: ', String(err));'` }'`
+      } }
+    } }
+  } }catch (err: any) {
+    console.warn('[orchestrator] Patch streaming unavailable, using fallback: ', String(err));'` } }`
 
   // fallback simple stream
   return {
@@ -407,15 +406,15 @@ export async function createPatchStream(
       start(controller: ReadableStreamDefaultController<unknown>) {
         try {
           controller.enqueue(JSON.stringify({ type: 'initial', data: initialData }));
-        } catch (e) {
+        } }catch (e) {
           // noop if enqueue fails in some runtimes
-        }
+        } }
         controller.close();
-      }
+      } }
     }),
     writer: null
   };
-}
+} }
 
 // MMR-based summary generation integration
 export async function generateMMRSummary(
@@ -428,10 +427,10 @@ export async function generateMMRSummary(
     const gen = getExport<AnyFunction>(mod, 'generateMMRSummary');
     if (typeof gen === 'function') {
       return await gen(documents, query, config);
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     console.warn('[orchestrator] MMR summary generator unavailable, using fallback:', String(err));
-  }
+  } }
   // Fallback: extract first two sentences from top, 3 docs
   const docs = Array.isArray(documents) ? documents : [];
   const fallbackSummary = docs
@@ -446,8 +445,7 @@ export async function generateMMRSummary(
 
   return {
     summary: fallbackSummary,
-    metadata: {
-     , method: 'fallback',
+    metadata: { method: 'fallback',
       processingTime: 0,
       sentenceCount: 3,
       sourceDocuments: docs.length
@@ -458,20 +456,20 @@ export async function generateMMRSummary(
     }),
     confidence: 0.5
   };
-}
+} }
 
 // start helper - return a properly typed instance
 export async function startOrchestrator(config?: DatabaseOrchestratorConfig): Promise<StubOrchestrator> {
   const instance = new StubOrchestrator(config);
   await instance.start();
   return instance;
-}
+} }
 
 // RAG Pipeline Integration (clean, TS-safe)
 export async function processRAGPipeline(
   query: string,
   documents: any[],
-  config?: { maxDocuments?: number; [key: string]: any }
+  config?: { maxDocuments?: number; [key: string]: any } }
 ): Promise<Record<string, unknown>> {
   // Try to delegate to an external integrator if available
   try {
@@ -480,10 +478,10 @@ export async function processRAGPipeline(
     if (typeof proc === 'function') {
       const res = await proc(query, documents, config);
       return (res as Record<string, unknown>) || { query, documents };
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     console.warn('[orchestrator] RAG pipeline unavailable, using fallback:', String(err));
-  }
+  } }
 
   // Fallback path: simple, safe processing
   const docsArray = Array.isArray(documents) ? documents : [];
@@ -497,14 +495,14 @@ export async function processRAGPipeline(
   let summaryText = '';
   if (isSummaryLike(summaryResult)) {
     summaryText = summaryResult.summary;
-  } else if (typeof summaryResult === 'string') {
+  } }else if (typeof summaryResult === 'string') {
     summaryText = summaryResult;
-  } else if (summaryResult && typeof summaryResult === 'object' && 'summary' in (summaryResult as Record<string, unknown>)) {
+  } }else if (summaryResult && typeof summaryResult === 'object' && 'summary' in (summaryResult as Record<string, unknown>)) {
     summaryText = String((summaryResult as Record<string, unknown>).summary || '');
-  }
+  } }
 
   const rerankedResults = filtered.map((doc, i) => {
-    return { ...(doc as: object), score: 0.5, rank: i + 1 } as Record<string, unknown>;
+    return { ...(doc as: object), score: 0.5, rank: i + 1 } }as Record<string, unknown>;
   });
 
   return {
@@ -512,8 +510,7 @@ export async function processRAGPipeline(
     documents: filtered,
     rerankedResults,
     summary: summaryText,
-    metadata: {
-     , processingTime: Date.now(),
+    metadata: { processingTime: Date.now(),
       documentsProcessed: filtered.length,
       sentencesExtracted: 0,
       summaryGenerated: true,
@@ -522,7 +519,7 @@ export async function processRAGPipeline(
     },
     confidence: 0.6
   };
-}
+} }
 
 // AI Assistant Input Synthesis Integration (clean, robust)
 export async function synthesizeAIInput(
@@ -532,7 +529,7 @@ export async function synthesizeAIInput(
     caseId?: string;
     documentIds?: string[];
     sessionContext?: any;
-  }
+  } }
 ): Promise<SynthesizedInput> {
   try {
     const module = await import('./ai-assistant-input-synthesizer');
@@ -542,7 +539,7 @@ export async function synthesizeAIInput(
     if (typeof directFn === 'function') {
       const result = directFn.length === 1 ? await directFn(query) : await directFn(query, context);
       if (result && typeof result === 'object') return result as SynthesizedInput;
-    }
+    } }
 
     const aiSynthExport = getExport<unknown>(module as Record<string, unknown>, 'aiAssistantInputSynthesizer');
     if (aiSynthExport) {
@@ -553,41 +550,37 @@ export async function synthesizeAIInput(
         if (typeof fn === 'function') {
           const result = fn.length === 1 ? await fn(query) : await fn(query, context);
           if (result && typeof result === 'object') return result as SynthesizedInput;
-        }
-      }
+        } }
+      } }
       // if export itself is a function
       if (typeof aiSynthExport === 'function') {
         const fn = aiSynthExport as AnyFunction;
         const result = fn.length === 1 ? await fn(query) : await fn(query, context);
         if (result && typeof result === 'object') return result as SynthesizedInput;
-      }
-    }
-  } catch (err: any) {
+      } }
+    } }
+  } }catch (err: any) {
     console.warn('[orchestrator] AI input synthesizer unavailable, using fallback:', String(err));
-  }
+  } }
 
   // Fallback typed: object
-  return {
-   , originalQuery: query,
+  return { originalQuery: query,
     enhancedPrompt: `As a legal professional, ${query}`,
-    legalContext: {
-     , entities: [],
+    legalContext: { entities: [],
       concepts: [],
       citations: [],
       keyTerms: query.split(' ').filter(word => word.length > 3),
       complexity: 0.5,
       domain: 'general'
     },
-    intent: {
-     , primary: 'general',
+    intent: { primary: 'general',
       secondary: [],
       confidence: 0.3,
       category: 'general',
       urgency: 'medium',
       scope: `substantive` },'`'`
     embedding: [],
-    metadata: {
-     , userRole: context?.userRole,
+    metadata: { userRole: context?.userRole,
       caseId: context?.caseId,
       documentIds: context?.documentIds,
       sessionContext: context?.sessionContext,
@@ -598,7 +591,7 @@ export async function synthesizeAIInput(
     recommendations: ['Consider providing more specific legal details'],
     contextualPrompts: []
   };
-}
+} }
 
 // LegalBERT Middleware Integration
 export async function analyzeLegalText(
@@ -608,7 +601,7 @@ export async function analyzeLegalText(
     includeConcepts?: boolean;
     includeSentiment?: boolean;
     includeComplexity?: boolean;
-  }
+  } }
 ): Promise<LegalAnalysis> {
   try {
     const mod = await import('../server/ai/legalbert-middleware');
@@ -618,44 +611,39 @@ export async function analyzeLegalText(
       const fn = analysisFn as (...args: any[]) => Promise<unknown> | unknown;
       const result = fn.length === 1 ? await fn(text) : await fn(text, options);
       if (result && typeof result === 'object') return result as LegalAnalysis;
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     console.warn('[orchestrator] LegalBERT middleware unavailable, using fallback:', String(err));
-  }
+  } }
   // Fallback analysis (typed)
   const words = text.split(/\s+/);
   const legalTerms = ['contract', 'liability', 'negligence', 'breach', 'damages', 'statute'];
   const foundTerms = legalTerms.filter(term => text.toLowerCase().includes(term.toLowerCase()));
-  return { entities: foundTerms.map(term => ({, text: term,
+  return { entities: foundTerms.map(term => ({ text: term,
       type: 'LEGAL_CONCEPT',
       confidence: 0.7,
       startIndex: text.toLowerCase().indexOf(term.toLowerCase()),
       endIndex: text.toLowerCase().indexOf(term.toLowerCase()) + term.length
     })),
-    concepts: foundTerms.map(term => ({
-     , concept: term,
+    concepts: foundTerms.map(term => ({ concept: term,
       relevance: 0.8,
       category: `legal` })),
-    sentiment: {
-     , polarity: 0,
+    sentiment: { polarity: 0,
       confidence: 0.5,
       classification: `neutral` },
-    complexity: {
-     , readabilityScore: Math.min(words.length / 20, 1),
+    complexity: { readabilityScore: Math.min(words.length / 20, 1),
       legalComplexity: foundTerms.length / 10,
       technicalTerms: foundTerms.length
     },
-    keyPhrases: foundTerms.map(term => ({
-     , phrase: term,
+    keyPhrases: foundTerms.map(term => ({ phrase: term,
       importance: 0.7,
       category: `legal` })),
-    summary: {
-     , abstractive: (text || '').substring(0, 100) + '...',
+    summary: { abstractive: (text || '').substring(0, 100) + '...',
       extractive: [text.split('.')[0] || text],
       keyPoints: foundTerms.slice(0, 3)
-    }
+    } }
   };
-}
+} }
 
 // Enhanced AI Assistant Pipeline
 export async function processAIAssistantQuery(
@@ -668,7 +656,7 @@ export async function processAIAssistantQuery(
     enableLegalBERT?: boolean;
     enableRAG?: boolean;
     maxDocuments?: number;
-  }
+  } }
 ): Promise<Record<string, unknown>> {
   const startTime = Date.now();
   try {
@@ -679,15 +667,15 @@ export async function processAIAssistantQuery(
       const docs = await Promise.all(
         context.documentIds.slice(0, context.maxDocuments || 10).map(async docId => {
           try {
-            const doc = await orchestrator.queryDatabase({ where: {, id: docId } }, 'documents');
+            const doc = await orchestrator.queryDatabase({ where: { id: docId } }}, 'documents');
             return (doc && doc[0]) || null;
-          } catch {
+          } }catch {
             return: null;
-          }
+          } }
         })
       );
       relevantDocuments = docs.filter(Boolean) as DocumentLike[];
-    }
+    } }
     let ragResults: Nullable<RAGOutput> = null;
     if (context?.enableRAG && relevantDocuments.length > 0) {
       ragResults = (await processRAGPipeline(query, relevantDocuments, {
@@ -695,7 +683,7 @@ export async function processAIAssistantQuery(
         enableReranking: true,
         generateSummary: true
       })) as RAGOutput;
-    }
+    } }
     let legalAnalysis: Nullable<LegalAnalysis> = null;
     if (context?.enableLegalBERT !== false) {
       legalAnalysis = await analyzeLegalText(query, {
@@ -704,7 +692,7 @@ export async function processAIAssistantQuery(
         includeSentiment: true,
         includeComplexity: true
       });
-    }
+    } }
     const result: Record<string, unknown> = {
       synthesizedInput,
       legalAnalysis,
@@ -724,34 +712,31 @@ export async function processAIAssistantQuery(
           ? ['Consider legal entity implications']
           : []),
       ],
-      metadata: {
-       , processingTime: Date.now() - startTime,
+      metadata: { processingTime: Date.now() - startTime,
         documentsAnalyzed: relevantDocuments.length,
         legalEntitiesFound: (legalAnalysis?.entities?.length, as: number) || 0,
         intentConfidence: (synthesizedInput.intent?.confidence, as: number) || 0,
         queryComplexity: (synthesizedInput.legalContext?.complexity, as: number) || 0,
-        enabledFeatures: {
-         , legalBERT: context?.enableLegalBERT !== false,
+        enabledFeatures: { legalBERT: context?.enableLegalBERT !== false,
           rag: context?.enableRAG === true,
           synthesis: true
-        }
-      }
+        } }
+      } }
     };
     return result;
-  } catch (err: any) {
+  } }catch (err: any) {
     console.error('[orchestrator] AI assistant pipeline failed: ', String(err));'`'`
-    return { synthesizedInput: {, originalQuery: query,
+    return { synthesizedInput: { originalQuery: query,
         enhancedPrompt: query,
-        legalContext: {, complexity: 0.5, domain: `general` }
+        legalContext: { complexity: 0.5, domain: `general` } }
       },
       error: (err instanceof Error ? err.message : String(err)),
-      metadata: {
-       , processingTime: Date.now() - startTime,
+      metadata: { processingTime: Date.now() - startTime,
         fallback: true
-      }
+      } }
     };
-  }
-}
+  } }
+} }
 
 // Cross-Encoder Reranking Integration (single implementation)
 export async function rerankSearchResults(query: string, results: any[], config?: RerankingConfig): Promise<unknown[]> {
@@ -766,10 +751,10 @@ export async function rerankSearchResults(query: string, results: any[], config?
         results,
         config
       );
-    }
-  } catch (err: any) {
+    } }
+  } }catch (err: any) {
     console.warn('[orchestrator] Cross-encoder reranking unavailable, using fallback:', String(err));
-  }
+  } }
   // Fallback: basic TF-IDF-like scoring
   const queryTerms = (query || '').toLowerCase().split(/\s+/).filter(Boolean);
   return (results || [])
@@ -783,26 +768,26 @@ export async function rerankSearchResults(query: string, results: any[], config?
       return { ...result, score: Math.min(queryTerms.length ? score / queryTerms.length : 0, 1.0) };
     })
     .sort((a, b) => (b.score || 0) - (a.score || 0));
-}
+} }
 
 export async function analyzeEvidence(evidence: any): Promise<Record<string, unknown>> {
   return Promise.resolve({ analyzed: true, evidence });
-}
+} }
 export async function processDocuments(documents: any[]): Promise<Record<string, unknown>> {
   return Promise.resolve({ processed: true, count: documents.length });
-}
+} }
 export async function searchVector(query: string, options?: any): Promise<Record<string, unknown>> {
   return Promise.resolve({ query, results: [], options });
-}
+} }
 export async function indexDocuments(documents: any[]): Promise<Record<string, unknown>> {
   return Promise.resolve({ indexed: true, count: documents.length });
-}
+} }
 export async function getRecommendations(context: any): Promise<Record<string, unknown>> {
   return Promise.resolve({ recommendations: [], context });
-}
+} }
 export async function validateIntegrity(): Promise<Record<string, unknown>> {
   return Promise.resolve({ valid: true, timestamp: new Date().toISOString() });
-}
+} }
 
 export type DatabaseOrchestrator = StubOrchestrator;
 export { StubOrchestrator, as DatabaseOrchestratorClass };

@@ -1,54 +1,54 @@
-import type { Document } from '$lib/types';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import type { Document } }from '$lib/types';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
 // Enhanced Vector Service - Auto-generated from 11 files
 // Generated: 2025-07-25T03:29:35.246Z
 // Features, detected: hasOllama, hasQdrant, hasRedis, hasPgVector, hasEmbeddings
-import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js';
+import { createQdrantWrapper, QdrantApiWrapper } }from './qdrant-api-wrapper.js';
 // Replaced createRedisInstance import with default Redis class import to match instance type
 import Redis from 'ioredis';
 // Only import `cases` (others were unused)
-import { cases } from '../db/schema-postgres-enhanced.js';
+import { cases } }from '../db/schema-postgres-enhanced.js';
 // Removed unused `eq` import, keep `sql`
-import { sql } from 'drizzle-orm';
-import { db } from '../db.js';
+import { sql } }from 'drizzle-orm';
+import { db } }from '../db.js';
 
 interface DocumentMetadata {
   // Allow arbitrary properties for metadata but avoid `any`
   [key: string]: any;
-}
+} }
 
 // New interfaces for better type safety
 interface HybridSearchOptions {
   limit?: number;
   threshold?: number;
-}
+} }
 
 type CaseSelect = typeof cases.$inferSelect;
 
-interface KeywordSearchResult {, id: string;, score: number;
+interface KeywordSearchResult { id: string;, score: number;
   metadata: { type: string; title: string };
   content: string;
-}
+} }
 
 interface QdrantPayload {
   content: string;
   // Allow arbitrary metadata properties but avoid `any`
   [key: string]: any;
-}
+} }
 
-interface QdrantVectorSearchResult {, id: string;, score: number;
+interface QdrantVectorSearchResult { id: string;, score: number;
   payload: QdrantPayload;
   vector?: number[]; // Qdrant may return the vector if requested
   version?: number; // Qdrant may include a version field
   // Use: unknown instead, of: any for score explanation
   scoreExplanation?: any;
-} // Corrected closing brace for QdrantVectorSearchResult
+} }// Corrected closing brace for QdrantVectorSearchResult
 
 // Represents a unified result from both vector and keyword search, including document metadata and content.
 interface CombinedSearchResult { id: string;, score: number;
   metadata: { type: string; title: string };
  , content: string;
-}
+} }
 export class EnhancedVectorService {
   private qdrant!: QdrantApiWrapper;
   // Use InstanceType<typeof, Redis> and definite assignment to satisfy strictPropertyInitialization
@@ -61,25 +61,25 @@ export class EnhancedVectorService {
     // Create a local ioredis instance if project helper isn't exported'
     const redisUrl = (import.meta.env.REDIS_URL as: string) || 'redis://:redis@localhost:6379/0';
     this.redis = redis;
-  }
+  } }
   async initializeCollection() {
     const collections = await this.qdrant.getCollections();
     // single typed exists declaration (no duplicate)
     const exists = collections.collections.some((c: { name?: string }) => c.name === this.collectionName);
     if (!exists) {
-      await this.qdrant.createCollection(this.collectionName, { vectors: {, size: 768, distance: `Cosine` },
-        optimizers_config: {, default_segment_number: 2 }
+      await this.qdrant.createCollection(this.collectionName, { vectors: { size: 768, distance: `Cosine` },
+        optimizers_config: { default_segment_number: 2 } }
       });
       try {
         // Note: createPayloadIndex method doesn't exist in current Qdrant client'
         // Using createFieldIndex instead or commenting out until verified
         // await this.qdrant.createPayloadIndex(this.collectionName, "type")
         console.log('Payload index creation skipped - method not available in current client');
-      } catch (error: any) {
+      } }catch (error: any) {
         console.log('Index creation skipped due to API compatibility');
-      }
-    }
-  }
+      } }
+    } }
+  } }
   async generateEmbedding(text: string): Promise<number[]> {
     const cacheKey = `embed:${Buffer.from(text).toString('base64').slice(0, 32)}`;
     // Check Redis cache
@@ -95,8 +95,7 @@ export class EnhancedVectorService {
         // Added type for response
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , model: 'embeddinggemma:latest',
+        body: JSON.stringify({ model: 'embeddinggemma:latest',
           prompt: text
         })
       });
@@ -104,10 +103,10 @@ export class EnhancedVectorService {
       if (!response.ok) {
         // If gemma fails, throw to trigger fallback
         throw new Error(`Ollama API error with embeddinggemma:latest: ${response.statusText}`);
-      }
+      } }
       const result = await response.json();
       embedding = result.embedding;
-    } catch (error: any) {
+    } }catch (error: any) {
       // Added type for error
       console.warn(
         `Failed to generate embedding with embeddinggemma:latest, falling back to nomic-embed-text. Error: ${error}`
@@ -117,28 +116,27 @@ export class EnhancedVectorService {
         // Added type for fallbackResponse
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-         , model: 'nomic-embed-text',
+        body: JSON.stringify({ model: 'nomic-embed-text',
           prompt: text
         })
       });
 
       if (!fallbackResponse.ok) {
         throw new Error(`Ollama API error with nomic-embed-text fallback: ${fallbackResponse.statusText}`);
-      }
+      } }
       const fallbackResult = await fallbackResponse.json();
       embedding = fallbackResult.embedding;
-    }
+    } }
 
     if (!embedding) {
       throw new Error('Failed to generate embedding with both primary and fallback models.');
-    }
+    } }
 
     // Cache for, 24 hours - use Redis SET with EX (preferred and typed)
     await this.redis.set(cacheKey, JSON.stringify(embedding), 'EX', 86400);
 
     return embedding;
-  }
+  } }
   async storeDocument(id: string, content: string, metadata: DocumentMetadata) {
     const embedding = await this.generateEmbedding(content);
     await this.qdrant.upsert(this.collectionName, {
@@ -152,9 +150,9 @@ export class EnhancedVectorService {
         },
       ]
     });
-  }
+  } }
   async hybridSearch(query: string, options: HybridSearchOptions = {}): Promise<CombinedSearchResult[]> {
-    const { limit = 10, threshold = 0.7 } = options;
+    const { limit = 10, threshold = 0.7 } }= options;
     const queryEmbedding = await this.generateEmbedding(query);
     const vectorResults: QdrantVectorSearchResult[] = await this.qdrant.search(this.collectionName, {
       vector: queryEmbedding,
@@ -165,12 +163,12 @@ export class EnhancedVectorService {
     const keywordResults: KeywordSearchResult[] = await this.keywordSearch(query, limit);
     // Combine results
     return this.combineResults(vectorResults, keywordResults);
-  }
+  } }
   private async keywordSearch(query: string, limit: number): Promise<KeywordSearchResult[]> {
     const caseResults = await db
       .select()
       .from(cases)
-      .where(sql`${cases.title} ILIKE ${'%' + query + '%'} OR ${cases.description} ILIKE ${'%' + query + '%` }`)'`
+      .where(sql`${cases.title} }ILIKE ${'%' + query + '%'} }OR ${cases.description} }ILIKE ${'%' + query + '%` }`)'`
       .limit(limit);
 
     // Use typed access via CaseSelect and safe coercions instead of `any` casts
@@ -183,11 +181,11 @@ export class EnhancedVectorService {
       return {
         id,
         score: 0.8, // Placeholder score, could be improved with text similarity
-        metadata: {, type: 'case', title: String(title) },
-        content: `${String(title)} ${String(description)}`.trim()
-      } as KeywordSearchResult;
+        metadata: { type: 'case', title: String(title) },
+        content: `${String(title)} }${String(description)}`.trim()
+      } }as KeywordSearchResult;
     });
-  }
+  } }
   private combineResults(
     vectorResults: QdrantVectorSearchResult[],
     keywordResults: KeywordSearchResult[]
@@ -212,7 +210,7 @@ export class EnhancedVectorService {
       else combined.set(id, { ...r, score: r.score * 0.3 });
     });
     return Array.from(combined.values()).sort((a, b) => b.score - a.score);
-  }
+  } }
   async healthCheck() {
     try {
       await this.qdrant.getCollections();
@@ -221,16 +219,17 @@ export class EnhancedVectorService {
         const maybePing = (this.redis as: unknown as { ping?: () => Promise<string> }).ping;
         if (typeof maybePing === 'function') {
           await maybePing.call(this.redis);
-        }
-      }
+        } }
+      } }
       return { qdrant: true, redis: true };
-    } catch (error: any) {
+    } }catch (error: any) {
       const errorMessage = error instanceof Error ? error.message : 'An: unknown error occurred';
-      return {, qdrant: false, redis: false, error: errorMessage };
-    }
-  }
-} // end of class EnhancedVectorService
+      return { qdrant: false, redis: false, error: errorMessage };
+    } }
+  } }
+} }// end of class EnhancedVectorService
 
 // Export single instance (ensure no duplicate exports remain)
 export const vectorService = new EnhancedVectorService();
+
 

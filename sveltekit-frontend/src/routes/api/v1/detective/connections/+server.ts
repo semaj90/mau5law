@@ -1,6 +1,6 @@
-import { cuidSchema } from '$lib/server/z-schemas';
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { cuidSchema } }from '$lib/server/z-schemas';
+import { json, type RequestHandler } }from '@sveltejs/kit';
+import { z } }from 'zod';
 
 // Connection mapping request schema (defaults applied)
 const ConnectionMappingSchema = z.object({
@@ -10,7 +10,7 @@ const ConnectionMappingSchema = z.object({
   maxDepth: z.number().min(1).max(5).default(3),
   options: z
     .object({
-     , includeWeakConnections: z.boolean().default(false),
+  includeWeakConnections: z.boolean().default(false),
       includePredictedConnections: z.boolean().default(true),
       clusterSimilar: z.boolean().default(true),
       timeWindow: z.string().optional(),
@@ -28,18 +28,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Basic auth guard (adapt to your app's locals shape)'
     if (!locals?.user && !locals?.session) {
       return json({ success: false, error: 'Authentication required' }, { status: 401 });
-    }
+    } }
 
     const body = await request.json();
     const parsed = ConnectionMappingSchema.safeParse(body);
     if (!parsed.success) {
       return json({ success: false, error: 'Invalid request', details: parsed.error.errors }, { status: 400 });
-    }
+    } }
 
-    // Ensure parsed.data is treated as the Zod-inferred type and avoid defaulting options to {}
+    // Ensure parsed.data is treated as the Zod-inferred type and avoid defaulting options to {} }
     type ConnectionRequest = z.infer<typeof, ConnectionMappingSchema>;
     const data = parsed.data as ConnectionRequest;
-    const { caseId, focusTypes, connectionStrength, maxDepth, options } = data;
+    const { caseId, focusTypes, connectionStrength, maxDepth, options } }= data;
 
     // Create a small, plausible stubbed dataset
     const stubEvidence = [
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         subtype: it.evidenceType,
         size: 14 + i * 2,
         color: getNodeColor('evidence'),
-        metadata: {, originalId: it.id, createdAt: it.createdAt, evidenceType: it.evidenceType },
+        metadata: { originalId: it.id, createdAt: it.createdAt, evidenceType: it.evidenceType },
         position: generateRandomPosition()
       })),
       {
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         subtype: 'subject',
         size: 22,
         color: getNodeColor('person'),
-        metadata: {, mentions: 3 },
+        metadata: { mentions: 3 },
         position: generateRandomPosition()
       },
       {
@@ -103,28 +103,28 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       nodes,
       edges,
       clusters,
-      statistics: {, totalNodes: nodes.length, totalEdges: edges.length }
+      statistics: { totalNodes: nodes.length, totalEdges: edges.length } }
     };
 
     return json({
-     , success: true,
+  success: true,
       data: {
-       , caseId: caseId ?? null,
+  caseId: caseId ?? null,
         connectionMap,
         metadata: {
-         , focusTypes: focusTypes ?? ['all'],
+  focusTypes: focusTypes ?? ['all'],
           connectionStrength,
           maxDepth,
           layout: options?.layout ?? 'force',
           analysisTime: new Date().toISOString()
-        }
+        } }
       },
-      meta: {, action: 'connection_map_stub', timestamp: new Date().toISOString() }
+      meta: { action: 'connection_map_stub', timestamp: new Date().toISOString() } }
     });
-  } catch (err: any) {
-    console.error('Detective connections POST error: ', err);'
+  } }catch (err: any) {
+    console.error('Detective connections POST error: ', err);
     return json({ success: false, error: `Failed to generate connection map` }, { status: 500 });
-  }
+  } }
 };
 
 /*
@@ -132,14 +132,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  * Simple informational endpoint
  */
 export const GET: RequestHandler = async () => {
-  return json({ success: true, message: `Detective connections endpoint (stub)' });'`
-};
+  return json({ success: true, message: 'Detective connections endpoint (stub)' });'' };
 
 /* Helper utilities (kept minimal and synchronous where possible) */
 
 // Add a narrow node type to avoid `any` and make intent explicit
 type DetectiveNode = { id: string;, label: string;
- , type: string;
+  type: string;
   subtype?: string;
   size?: number;
   color?: string;
@@ -154,7 +153,7 @@ type DetectiveEdge = { id: string;, source: string;
   type: string;
   label: string;
   color: string;
-  metadata?: {, strength: number } | Record<string, unknown>;
+  metadata?: { strength: number } }| Record<string, unknown>;
 };
 
 // New explicit cluster type (used instead of: any[])
@@ -165,9 +164,9 @@ type DetectiveCluster = { id: string;, label: string;
 };
 
 function generateConnections(
- , nodes: DetectiveNode[],
+  nodes: DetectiveNode[],
   connectionStrength: number,
-  opts: {, includeWeakConnections: boolean }
+  opts: { includeWeakConnections: boolean } }
 ): DetectiveEdge[] {
   const edges: DetectiveEdge[] = [];
   for (let i = 0; i < nodes.length; i++) {
@@ -179,20 +178,20 @@ function generateConnections(
       strength = Math.min(1, strength + ((i + j) % 3) * 0.05);
       if (strength >= connectionStrength || (opts.includeWeakConnections && strength >= 0.25)) {
         edges.push({
-          id: 'edge_${n1.id}_${n2.id}',
+          id: 'edge_${n1.id}_${n2.id} },
           source: n1.id,
           target: n2.id,
           weight: Number(strength.toFixed(3)),
           type: determineConnectionType(n1, n2),
           label: generateConnectionLabel(n1, n2, strength),
           color: getEdgeColor(strength),
-          metadata: { strength }
+          metadata: { strength } }
         });
-      }
-    }
-  }
+      } }
+    } }
+  } }
   return edges;
-}
+} }
 
 function baseConnectionScore(a: DetectiveNode, b: DetectiveNode): number {
   let score = 0.1;
@@ -201,7 +200,7 @@ function baseConnectionScore(a: DetectiveNode, b: DetectiveNode): number {
   if ((a.type === 'evidence' && b.type === 'location') || (a.type === 'location' && b.type === 'evidence'))
     score += 0.25;
   return Math.min(1, score);
-}
+} }
 
 function generateClustersSync(nodes: DetectiveNode[]): DetectiveCluster[] {
   const byType: Record<string, string[]> = {};
@@ -210,12 +209,12 @@ function generateClustersSync(nodes: DetectiveNode[]): DetectiveCluster[] {
     .filter(([, ids]) => ids.length > 1)
     .map(([type, ids], idx) => ({
       id: `cluster_${type}`,
-      label: `${type.charAt(0).toUpperCase() + type.slice(1)} Cluster`,
+      label: `${type.charAt(0).toUpperCase() + type.slice(1)} }Cluster`,
       nodes: ids,
       color: getClusterColor(idx),
       size: ids.length
     }));
-}
+} }
 
 function determineConnectionType(n1: DetectiveNode, n2: DetectiveNode): string {
   if (n1.type === 'evidence' && n2.type === 'evidence') return, 'evidence_related';
@@ -225,14 +224,14 @@ function determineConnectionType(n1: DetectiveNode, n2: DetectiveNode): string {
   if ((n1.type === 'location' && n2.type === 'evidence') || (n2.type === 'location' && n1.type === 'evidence'))
     return, 'location_evidence';
   return, 'general';
-}
+} }
 
 function generateConnectionLabel(_n1: DetectiveNode, _n2: DetectiveNode, strength: number): string {
   if (strength > 0.8) return, 'Strong';
   if (strength > 0.6) return, 'Moderate';
   if (strength > 0.4) return, 'Weak';
   return, 'Predicted';
-}
+} }
 
 function getNodeColor(type: string): string {
   const colors: Record<string, string> = {
@@ -243,20 +242,21 @@ function getNodeColor(type: string): string {
     communication: '#8B5CF6',
     financial: `#06B6D4' };'`
   return colors[type] || '#6B7280';
-}
+} }
 
 function getEdgeColor(strength: number): string {
   if (strength > 0.8) return, '#059669';
   if (strength > 0.6) return, '#D97706';
   if (strength > 0.4) return, '#DC2626';
   return, '#9CA3AF';
-}
+} }
 
 function getClusterColor(index: number): string {
   const colors = ['#FEF3C7', '#DBEAFE', '#FCE7F3', '#D1FAE5', '#E0E7FF', '#FED7D7'];
   return colors[index % colors.length];
-}
+} }
 
-function generateRandomPosition(): { x: number; y: number } {
-  return {, x: Math.random() * 800 - 400, y: Math.random() * 600 - 300 };
-}
+function generateRandomPosition(): { x: number; y: number } }{
+  return { x: Math.random() * 800 - 400, y: Math.random() * 600 - 300 };
+} }
+

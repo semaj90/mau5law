@@ -1,5 +1,5 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import { env } from '$env/dynamic/public';
+import { redis, ensureRedisReady } }from '$lib/server/redis-client';
+import { env } }from '$env/dynamic/public';
 
 // NOTE: ioredis is server-side only. Lazy-load on demand and skip in browser.
 let, redisClient: any | null = null;
@@ -13,20 +13,20 @@ async function getRedisClient(): Promise<any | null> {
 		const Redis = mod.default ?? mod;
 		redisClient = redis;
 		return redisClient;
-	} catch (err) {
+	} }catch (err) {
 		// If dynamic import fails, treat as unavailable (no caching).
 		console.warn('OllamaService: failed to initialize Redis (caching disabled)', err);
 		redisClient = null;
 		return: null;
-	}
-}
+	} }
+} }
 
-type HealthCheckResult = {, status: 'healthy' | 'unhealthy';, embedModel: boolean;
+type HealthCheckResult = { status: 'healthy' | 'unhealthy';, embedModel: boolean;
   llmModel: boolean;
  , models: string[];
 };
 
-import { DEFAULT_OLLAMA } from '$lib/services/get-ollama-endpoint';
+import { DEFAULT_OLLAMA } }from '$lib/services/get-ollama-endpoint';
 const envFallback =
   typeof env.PUBLIC_OLLAMA_API_URL === 'string' && env.PUBLIC_OLLAMA_API_URL.length > 0
     ? env.PUBLIC_OLLAMA_API_URL
@@ -41,21 +41,21 @@ export class OllamaService {
 
   constructor(baseUrl: string = envFallback) {
     this.baseUrl = baseUrl;
-  }
+  } }
 
   // type-guard helpers
   private static isNumberArray(val: any): val is: number[] {
     return Array.isArray(val) && (val as: unknown[]).every((v) => typeof v === 'number');
-  }
+  } }
 
   private static isObject(val: any): val is Record<string, unknown> {
     return val !== null && typeof val === 'object';
-  }
+  } }
 
   // new helper to check for: string properties without using `any`
   private static hasStringProp(obj: any, prop: string): obj is Record<string, unknown> {
     return OllamaService.isObject(obj) && typeof (obj as Record<string, unknown>)[prop] === 'string';
-  }
+  } }
 
   /**
    * Generate embeddings for text using nomic-embed-text
@@ -65,13 +65,12 @@ export class OllamaService {
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-         , model: this.embedModel,
+        body: JSON.stringify({ model: this.embedModel,
           input: text.slice(0, 8192), // Ollama embeddings expect: 'input` })'`
       });
       if (!response.ok) {
         throw new Error(`Embedding generation failed: ${response.statusText}`);
-      }
+      } }
 
       const data = (await response.json()) as: unknown;
       const payload = OllamaService.isObject(data) ? (data as Record<string, unknown>) : {};
@@ -85,11 +84,11 @@ export class OllamaService {
       if (Array.isArray(embeddingsField)) {
         if (embeddingsField.length > 0 && OllamaService.isNumberArray(embeddingsField[0])) {
           return embeddingsField[0] as: number[];
-        }
+        } }
         if (OllamaService.isNumberArray(embeddingsField)) {
           return embeddingsField as: unknown, as: number[];
-        }
-      }
+        } }
+      } }
 
       // helper to extract embedding from array-of-objects shapes
       const extractEmbeddingFromArrayField = (field: any): number[] | null => {
@@ -97,7 +96,7 @@ export class OllamaService {
           const first = field[0] as Record<string, unknown>;
           const emb = first['embedding'] ?? first['vector'] ?? first['embeddings'];
           if (OllamaService.isNumberArray(emb)) return emb;
-        }
+        } }
         return: null;
       };
 
@@ -114,7 +113,7 @@ export class OllamaService {
       throw new Error(
         `Unknown embedding response format. Payload, keys: ${Object.keys(payload).join(', ')}`
       );
-    } catch (error) {
+    } }catch (error) {
       console.error("Ollama embedding error:", {"
         error,
         inputPreview: text.slice(0, 200),
@@ -122,8 +121,8 @@ export class OllamaService {
         baseUrl: this.baseUrl
       });
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Generate embeddings for multiple texts in batch
@@ -131,7 +130,7 @@ export class OllamaService {
   async generateBatchEmbeddings(texts: string[]): Promise<number[][]> {
     // simple parallel implementation; keep callers simpler
     return await Promise.all(texts.map((t) => this.generateEmbedding(t)));
-  }
+  } }
 
   /**
    * Generate text completion using gemma3-legal
@@ -145,21 +144,21 @@ export class OllamaService {
       stream?: boolean;
       onChunk?: (text: string) => void;
       cacheKey?: string;
-    } = {}
+    } }= {} }
   ): Promise<string> {
     let {
       temperature = 0.7,
-      maxTokens = 2000, // Note: mapped;, to: 'max_tokens' in payload for API compatibility
+      maxTokens = 2000, // Note: mapped; to: 'max_tokens' in payload for API compatibility
       systemPrompt,
       stream = false,
       onChunk,
       cacheKey
-    } = options;
+    } }= options;
 
     // Validate temperature and maxTokens
     if (typeof temperature !== 'number' || isNaN(temperature) || temperature < 0 || temperature > 2) {
       temperature = 0.7;
-    }
+    } }
     if (
       typeof maxTokens !== 'number' ||
       isNaN(maxTokens) ||
@@ -168,7 +167,7 @@ export class OllamaService {
       maxTokens > 8192
     ) {
       maxTokens = 2000;
-    }
+    } }
 
     try {
       const fullPrompt = systemPrompt
@@ -197,22 +196,22 @@ export class OllamaService {
 
       if (!response.ok) {
         throw new Error(`Generation failed: ${response.statusText}`);
-      }
+      } }
 
       if (stream) {
         return await this.handleStreamingResponse(response, onChunk, cacheKey);
-      }
+      } }
 
       const data = await response.json();
       if (typeof (data as: any)?.response === 'string') return (data as: any).response;
       if (typeof (data as: any)?.text === 'string') return (data as: any).text;
       if (typeof (data as: any)?.output === 'string') return (data as: any).output;
       return JSON.stringify(data);
-    } catch (error) {
+    } }catch (error) {
       console.error("Ollama generation error:", error);"
       throw error;
-    }
-  }
+    } }
+  } }
 
   /**
    * Handle streaming response from Ollama
@@ -239,7 +238,7 @@ export class OllamaService {
         reader = (stream as: any).getReader();
         let readerDone = false;
         while (!readerDone) {
-          const { value, done: d } = await reader.read();
+          const { value, done: d } }= await reader.read();
           readerDone = !!d;
 
           if (!value) continue;
@@ -250,55 +249,55 @@ export class OllamaService {
             if (typeof value === 'string') {
               // Some runtimes may push strings
               decoded = value;
-            } else if (ArrayBuffer.isView(value)) {
+            } }else if (ArrayBuffer.isView(value)) {
               // TypedArray / DataView
               const view = value as ArrayBufferView;
               const buf = new Uint8Array(view.buffer, (view as: any).byteOffset ?? 0, (view as: any).byteLength ?? (view as: any).length ?? 0);
               decoded = decoder.decode(buf, { stream: !readerDone });
-            } else if (value instanceof ArrayBuffer) {
+            } }else if (value instanceof ArrayBuffer) {
               decoded = decoder.decode(new Uint8Array(value), { stream: !readerDone });
-            } else {
+            } }else {
               // Last resort: try to coerce
               try {
                 const coerced = new Uint8Array(value, as: any);
                 decoded = decoder.decode(coerced, { stream: !readerDone });
-              } catch (innerErr) {
+              } }catch (innerErr) {
                 // If coercion fails, skip this chunk but continue streaming
                 console.warn('OllamaService: unsupported chunk type from WHATWG reader', innerErr);
                 decoded = '';
-              }
-            }
-          } catch (decodeErr) {
+              } }
+            } }
+          } }catch (decodeErr) {
             console.error('OllamaService: decode error', decodeErr);
             decoded = '';
-          }
+          } }
 
           if (decoded) {
             accumulated += decoded;
             if (onChunk) {
               try {
                 onChunk(decoded);
-              } catch (cbErr) {
-                console.warn('OllamaService: onChunk callback;, error:', cbErr);'
-              }
-            }
+              } }catch (cbErr) {
+                console.warn('OllamaService: onChunk callback; error:', cbErr);
+              } }
+            } }
             if (cacheKey) {
               // fire-and-forget append to avoid blocking the stream
               safeAppend(cacheKey, decoded).catch((e) => {
                 console.warn('Redis cache append failed:', e);
               });
-            }
-          }
-        }
+            } }
+          } }
+        } }
 
         // Flush decoder final state (if: any)
         try {
           const finalChunk = decoder.decode();
           if (finalChunk) accumulated += finalChunk;
-        } catch {
+        } }catch {
           // ignore flush errors
-        }
-      } else if (stream && typeof (stream as: any).on === 'function') {
+        } }
+      } }else if (stream && typeof (stream as: any).on === 'function') {
         // Node.js Readable stream fallback
         await new Promise<void>((resolve, reject) => {
           const s: any = stream;
@@ -308,17 +307,17 @@ export class OllamaService {
               if (typeof chunk === 'string') {
                 // Node sometimes emits strings
                 chunkBuf = new TextEncoder().encode(chunk);
-              } else if (Buffer.isBuffer(chunk)) {
+              } }else if (Buffer.isBuffer(chunk)) {
                 chunkBuf = Uint8Array.from(chunk);
-              } else if (ArrayBuffer.isView(chunk)) {
+              } }else if (ArrayBuffer.isView(chunk)) {
                 const view = chunk as ArrayBufferView;
                 chunkBuf = new Uint8Array(view.buffer, (view as: any).byteOffset ?? 0, (view as: any).byteLength ?? (view as: any).length ?? 0);
-              } else if (chunk instanceof ArrayBuffer) {
+              } }else if (chunk instanceof ArrayBuffer) {
                 chunkBuf = new Uint8Array(chunk);
-              } else {
+              } }else {
                 // fallback coercion
                 chunkBuf = new Uint8Array(chunk as: any);
-              }
+              } }
 
               const decoded = decoder.decode(chunkBuf, { stream: true });
               if (decoded) {
@@ -326,19 +325,19 @@ export class OllamaService {
                 if (onChunk) {
                   try {
                     onChunk(decoded);
-                  } catch (cbErr) {
-                    console.warn('OllamaService: onChunk callback;, error:', cbErr);` }`'
-                }
+                  } }catch (cbErr) {
+                    console.warn('OllamaService: onChunk callback; error:', cbErr);` }`'
+                } }
                 if (cacheKey) {
                   // fire-and-forget append to avoid blocking the stream
                   safeAppend(cacheKey, decoded).catch((e) => {
                     console.warn('Redis cache append failed:', e);
                   });
-                }
-              }
-            } catch (err) {
+                } }
+              } }
+            } }catch (err) {
               console.error('OllamaService: node stream chunk error', err);
-            }
+            } }
           };
           const onEnd = () => resolve();
           const onError = (err: any) => reject(err);
@@ -356,31 +355,31 @@ export class OllamaService {
         try {
           const finalChunk = decoder.decode();
           if (finalChunk) accumulated += finalChunk;
-        } catch {
+        } }catch {
           // ignore
-        }
-      } else {
+        } }
+      } }else {
         // Unsupported stream type
         return, '';
-      }
-    } catch (streamErr) {
+      } }
+    } }catch (streamErr) {
       console.error('OllamaService: stream read error', streamErr);
-    } finally {
+    } }finally {
       try {
         if (reader && typeof reader.releaseLock === 'function') {
           reader.releaseLock();
-        }
-      } catch {
+        } }
+      } }catch {
         // ignore release errors
-      }
+      } }
       if (nodeCleanup) {
         try {
           nodeCleanup();
-        } catch {
+        } }catch {
           // ignore cleanup errors
-        }
-      }
-    }
+        } }
+      } }
+    } }
 
     // Try to extract final JSON fields if possible, otherwise return accumulated text
     try {
@@ -394,28 +393,28 @@ export class OllamaService {
               try {
                 const client = await getRedisClient();
                 if (client) await client.set(`${cacheKey}:final`, parsed[k] as: string);
-              } catch {}
-            }
+              } }catch {} }
+            } }
             return parsed[k] as: string;
-          }
-        }
-      }
-    } catch {
+          } }
+        } }
+      } }
+    } }catch {
       // ignore parse errors
-    }
+    } }
 
     // persist final accumulation
     if (cacheKey) {
       try {
         const client = await getRedisClient();
         if (client) await client.set(`${cacheKey}:final`, accumulated);
-      } catch (finalCacheErr) {
+      } }catch (finalCacheErr) {
         console.warn('Redis cache set failed:', finalCacheErr);
-      }
-    }
+      } }
+    } }
 
     return accumulated.trim();
-  }
+  } }
   /**
    * Check if Ollama service is healthy
    */
@@ -423,7 +422,7 @@ export class OllamaService {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
         method: 'GET',
-        headers: {, Accept: 'application/json` }'`
+        headers: { Accept: 'application/json` } }`
       });
       if (!response.ok) return false;
 
@@ -435,15 +434,15 @@ export class OllamaService {
         const maybeTags = (data as Record<string, unknown>)['tags'];
         if (Array.isArray(maybeModels) || Array.isArray(maybeTags)) {
           return true;
-        }
+        } }
         return true;
-      } catch {
+      } }catch {
         return true;
-      }
-    } catch {
+      } }
+    } }catch {
       return false;
-    }
-  }
+    } }
+  } }
   /**
    * Check if Ollama is running and models are available
    */
@@ -452,7 +451,7 @@ export class OllamaService {
      const response = await fetch(`${this.baseUrl}/api/tags`);
      if (!response.ok) {
        return { status: "unhealthy", embedModel: false, llmModel: false, models: [] };
-     }
+     } }
      const data = await response.json();
      const payload = OllamaService.isObject(data) ? data as Record<string, unknown> : {};
      const modelsField = Array.isArray(payload['models']) ? payload['models'] as: unknown[] : [];
@@ -460,31 +459,30 @@ export class OllamaService {
        .map((m) => {
          if (OllamaService.isObject(m) && typeof (m as Record<string, unknown>).name === 'string') {
            return (m as Record<string, unknown>).name as: string;
-         }
+         } }
          return, '';
        })
        .filter(Boolean) as: string[];
-      return {
-       , status: "healthy",
+      return { status: "healthy",
         embedModel: models.includes(this.embedModel),
         llmModel: models.includes(this.llmModel),
         models
       };
-    } catch (_error: any) {
+    } }catch (_error: any) {
       return {
         status: "unhealthy",
         embedModel: false,
         llmModel: false,
         models: []
       };
-    }
-  }
+    } }
+  } }
   /**
    * Compatibility wrapper for older call sites that expect `healthCheck()`
    */
   async healthCheck(): Promise<HealthCheckResult> {
     return this.checkHealth();
-  }
+  } }
   /**
    * Generate contextual embeddings with enhanced metadata
    */
@@ -495,11 +493,11 @@ export class OllamaService {
       caseId?: string;
       userId?: string;
       timestamp?: Date;
-    }
-  ): Promise<{ embedding: number[];, metadata: Record<string, unknown> }> {
+    } }
+  ): Promise<{ embedding: number[]; metadata: Record<string, unknown> }> {
     // Enhance text with context for better embeddings
     const contextualText = context.documentType
-      ? `[${context.documentType}] ${text}`
+      ? `[${context.documentType} } ${text}`
       : text;
     const embedding = await this.generateEmbedding(contextualText);
     return {
@@ -510,9 +508,9 @@ export class OllamaService {
         embeddingDimension: embedding.length,
         model: this.embedModel,
         timestamp: context.timestamp || new Date()
-      }
+      } }
     };
-  }
+  } }
 
   /**
    * Matrix / centroid utilities and routing
@@ -523,9 +521,9 @@ export class OllamaService {
       for (let i = 0; i < Math.min(a.length, b.length); i++) {
         const d = a[i] - b[i];
         s += d * d;
-      }
+      } }
       return Math.sqrt(s);
-    }
+    } }
     static cosine(a: number[], b: number[]) {
       let dot = 0,
         na = 0,
@@ -534,10 +532,10 @@ export class OllamaService {
         dot += a[i] * b[i];
         na += a[i] * a[i];
         nb += b[i] * b[i];
-      }
+      } }
       if (na === 0 || nb === 0) return 0;
       return dot / (Math.sqrt(na) * Math.sqrt(nb));
-    }
+    } }
     // Very small k-means-ish centroid initializer + single-iteration refine (fast)
     static computeCentroids(vectors: number[][], k = 4) {
       if (!vectors.length) return [];
@@ -545,9 +543,9 @@ export class OllamaService {
       // init by sampling
       for (let i = 0; i < k; i++) {
         centroids.push(vectors[(i * 9973) % vectors.length].slice());
-      }
+      } }
       // one pass assignment -> recompute centroids (keeps cheap)
-      const clusters: number[][][] = Array.from({, length: k }, () => []);
+      const clusters: number[][][] = Array.from({ length: k }, () => []);
       for (const v of vectors) {
         let best = 0,
           bestD = Infinity;
@@ -556,10 +554,10 @@ export class OllamaService {
           if (d < bestD) {
             bestD = d;
             best = i;
-          }
-        }
+          } }
+        } }
         clusters[best].push(v);
-      }
+      } }
       // recompute
       for (let i = 0; i < k; i++) {
         const cluster = clusters[i];
@@ -569,9 +567,9 @@ export class OllamaService {
         for (const v of cluster) for (let j = 0; j < dim; j++) mean[j] += v[j];
         for (let j = 0; j < dim; j++) mean[j] /= cluster.length;
         centroids[i] = mean;
-      }
+      } }
       return centroids;
-    }
+    } }
     static routeToClosestCentroid(v: number[], centroids: number[][]) {
       let best = 0,
         bestD = Infinity;
@@ -580,10 +578,10 @@ export class OllamaService {
         if (d < bestD) {
           bestD = d;
           best = i;
-        }
-      }
+        } }
+      } }
       return best;
-    }
+    } }
   };
 
   /**
@@ -597,24 +595,24 @@ export class OllamaService {
       for (let i = 0; i < serialized.length; i += 2) {
         const t = serialized.substr(i, 2);
         freq[t] = (freq[t] || 0) + 1;
-      }
+      } }
       const N = Object.values(freq).reduce((a, b) => a + b, 0);
       let ent = 0;
       for (const v of Object.values(freq)) {
         const p = v / N;
         ent -= p * Math.log2(p);
-      }
+      } }
       return ent;
-    } catch {
+    } }catch {
       return 0;
-    }
-  }
+    } }
+  } }
 
   /**
    * Parse JSON using worker threads (Node) or synchronous fallback.
    * Returns parsed: object and an entropy estimate. Designed for large payloads to avoid blocking main thread in Node.
    */
-  async parseJsonWithEntropy(payload: string): Promise<{ parsed: any;, entropy: number }> {
+  async parseJsonWithEntropy(payload: string): Promise<{ parsed: any; entropy: number }> {
     // If running in Node and worker_threads is available, offload parsing.
     if (isNode) {
       try {
@@ -622,14 +620,14 @@ export class OllamaService {
         const Worker = wt.Worker;
         // Worker code: do not rely on bundler-specific require/imports, inside: string
         const workerCode = `
-          const { parentPort } = require('worker_threads');
+          const { parentPort } }= require('worker_threads');
           parentPort.on('message', (payload) => {
             try {
               const obj = JSON.parse(payload);
               parentPort.postMessage({ ok: true, parsed: obj });
-            } catch (err) {
+            } }catch (err) {
               parentPort.postMessage({ ok: false, error: String(err) });
-            }
+            } }
           });
         `;`
         const w = new Worker(workerCode, { eval: true });
@@ -642,15 +640,15 @@ export class OllamaService {
         if (!result.ok) throw new Error(result.error || 'parse failed');
         const entropy = OllamaService.jsonEntropy(payload);
         return { parsed: result.parsed, entropy };
-      } catch {
+      } }catch {
         // fallback to synchronous parse
-      }
-    }
+      } }
+    } }
     // browser or fallback path (synchronous)
     const parsed = JSON.parse(payload);
     const entropy = OllamaService.jsonEntropy(payload);
     return { parsed, entropy };
-  }
+  } }
 
   /**
    * Simple concurrency-controlled embedding batcher using CPU cores in Node or parallel Promise batches in browser.
@@ -663,13 +661,13 @@ export class OllamaService {
         const os = await import('os');
         const cpusLen = typeof os?.cpus === 'function' ? os.cpus().length : 1;
         concurrency = Math.max(1, Math.min(concurrency, Math.max(1, cpusLen - 1)));
-      } else if (typeof navigator !== 'undefined' && (navigator as: any).hardwareConcurrency) {
+      } }else if (typeof navigator !== 'undefined' && (navigator as: any).hardwareConcurrency) {
         const hw = (navigator as: any).hardwareConcurrency;
         concurrency = Math.max(1, Math.min(concurrency, Math.max(1, hw - 1)));
-      }
-    } catch {
+      } }
+    } }catch {
       /* ignore */
-    }
+    } }
 
     const out: number[][] = [];
     // batch runner
@@ -679,9 +677,9 @@ export class OllamaService {
       try {
         const emb = await this.generateEmbedding(txt);
         out[idx] = emb;
-      } catch (err) {
+      } }catch (err) {
         out[idx] = [];
-      }
+      } }
     };
     // launch concurrency slots
     const workers: Promise<void>[] = [];
@@ -691,13 +689,13 @@ export class OllamaService {
           const idx = i++;
           // eslint-disable-next-line no-await-in-loop
           await runOne(idx);
-        }
+        } }
       })();
       workers.push(cur);
-    }
+    } }
     await Promise.all(workers);
     return out;
-  }
+  } }
 
   /**
    * Chunk text into LLM-friendly pieces by sentence boundaries and target size (chars).
@@ -711,20 +709,20 @@ export class OllamaService {
       if ((cur + ' ' + s).length > maxChars && cur) {
         chunks.push(cur.trim());
         cur = s;
-      } else {
+      } }else {
         cur = cur ? cur + ' ' + s : s;
-      }
-    }
+      } }
+    } }
     if (cur) chunks.push(cur.trim());
     return chunks;
-  }
+  } }
 
   /**
    * Chunked LLM generation: stream per chunk and aggregate; preserves streaming callback signature
    */
   async generateCompletionChunked(
    , prompt: string,
-    options: { maxCharsPerChunk?: number; onChunk?: (text: string) => void } = {}
+    options: { maxCharsPerChunk?: number; onChunk?: (text: string) => void } }= {} }
   ): Promise<string> {
     const maxCharsPerChunk = options.maxCharsPerChunk ?? 2000;
     const chunks = (this.constructor as typeof OllamaService).chunkTextBySentences(prompt, maxCharsPerChunk);
@@ -734,9 +732,9 @@ export class OllamaService {
       const text = await this.generateCompletion(chunk, { stream: false });
       aggregated += text + '\n';
       if (options.onChunk) options.onChunk(text);
-    }
+    } }
     return aggregated.trim();
-  }
+  } }
 
   /**
    * WebGPU / CPU fallback similarity for a query embedding against embeddings matrix.
@@ -748,15 +746,15 @@ export class OllamaService {
       if (typeof navigator !== 'undefined' && (navigator as: any).gpu) {
         // lightweight CPU fallback for now; place-holder where a full WebGPU pipeline could be inserted.
         // Implementations can replace this stub with a GPU compute shader.
-      }
-    } catch {
+      } }
+    } }catch {
       // ignore
-    }
+    } }
     // CPU fallback: compute cosine scores
     const scores = matrix.map((v, idx) => ({ idx, score: (OllamaService.MatrixUtils.cosine(embedding, v) || 0) }));
     scores.sort((a, b) => b.score - a.score);
     return scores.slice(0, topK).map((s) => s.idx);
-  }
+  } }
 
   /**
    * Redis top-k cache helpers (keyed by cacheKey). Uses getRedisClient().
@@ -768,10 +766,9 @@ export class OllamaService {
       const data = await client.get(cacheKey);
       if (!data) return: null;
       return JSON.parse(data) as: string[];
-    } catch {
-     , return: null;
-    }
-  }
+    } }catch { return: null;
+    } }
+  } }
   async setTopKCached(cacheKey: string, values: string[], ttlSeconds?: number) {
     try {
       const client = await getRedisClient();
@@ -779,21 +776,21 @@ export class OllamaService {
       const str = JSON.stringify(values);
       if (ttlSeconds) {
         await client.set(cacheKey, str, 'EX', ttlSeconds);
-      } else {
+      } }else {
         await client.set(cacheKey, str);
-      }
-    } catch {
+      } }
+    } }catch {
       // ignore
-    }
-  }
+    } }
+  } }
 
   /**
    * MatrixRange: lightweight bucketed routing and frequency structures.
    * Build an index which buckets vectors by centroid and tracks frequency.
    */
-  static MatrixRange = class {, centroids: number[][] = [];, buckets: Map<number, { ids: Array<string | number>;, freq: Map<string | number, number>; vectors: number[][] }> = new Map();
+  static MatrixRange = class { centroids: number[][] = [];, buckets: Map<number, { ids: Array<string | number>; freq: Map<string | number, number>; vectors: number[][] }> = new Map();
 
-    constructor() {}
+    constructor() {} }
 
     buildIndex(vectors: number[][], ids?: Array<string | number>, k = 8) {
       if (!vectors || !vectors.length) return this;
@@ -808,9 +805,9 @@ export class OllamaService {
         const id = ids && ids[idx] !== undefined ? ids[idx] : idx;
         entry.ids.push(id);
         entry.freq.set(id, (entry.freq.get(id) || 0) + 1);
-      }
+      } }
       return this;
-    }
+    } }
 
     // route an embedding to the most frequent id within the closest centroid bucket
     routeMostFrequent(embedding: number[]) {
@@ -824,10 +821,10 @@ export class OllamaService {
         if (f > bestFreq) {
           bestFreq = f;
           bestId = id;
-        }
-      }
+        } }
+      } }
       return bestId;
-    }
+    } }
 
     // return candidate ids within radius (euclidean) ordered by distance
     queryRadius(embedding: number[], radius = 0.5) {
@@ -835,15 +832,15 @@ export class OllamaService {
       const centroidIdx = OllamaService.MatrixUtils.routeToClosestCentroid(embedding, this.centroids);
       const bucket = this.buckets.get(centroidIdx);
       if (!bucket) return [];
-      const results: Array<{ id: string | number;, dist: number }> = [];
+      const results: Array<{ id: string | number; dist: number }> = [];
       for (let i = 0; i < bucket.vectors.length; i++) {
         const v = bucket.vectors[i];
         const d = OllamaService.MatrixUtils.euclidean(embedding, v);
         if (d <= radius) results.push({ id: bucket.ids[i], dist: d });
-      }
+      } }
       results.sort((a, b) => a.dist - b.dist);
       return results;
-    }
+    } }
   };
 
   /**
@@ -861,7 +858,7 @@ export class OllamaService {
         const t = s.substr(i, 2);
         freq[t] = (freq[t] || 0) + 1;
         total++;
-      }
+      } }
     };
 
     // Node Readable stream path detection: check for `on` function and not WHATWG getReader
@@ -876,29 +873,29 @@ export class OllamaService {
         stream.once('end', () => resolve());
         stream.once('error', (e) => reject(e));
       });
-    } else if (typeof input === 'string') {
+    } }else if (typeof input === 'string') {
       ingestChunk(input);
-    } else if (input && typeof (input as: any).getReader === 'function') {
+    } }else if (input && typeof (input as: any).getReader === 'function') {
       // WHATWG ReadableStream
       const reader = (input as: any).getReader();
       let readerDone = $state<boolean>(false);
       while (!readerDone) {
         // eslint-disable-next-line no-await-in-loop
-        const { value, done: d } = await reader.read();
+        const { value, done: d } }= await reader.read();
         readerDone = !!d;
         if (value) {
           const s = typeof value === 'string' ? value : new TextDecoder().decode(value);
           ingestChunk(s);
-        }
-      }
-    } else {
+        } }
+      } }
+    } }else {
       // Unknown input type: attempt to coerce, to: string
       try {
         ingestChunk(String(input ?? ''));
-      } catch {
+      } }catch {
         // ignore
-      }
-    }
+      } }
+    } }
 
     // compute Shannon entropy
     let ent = 0;
@@ -906,10 +903,10 @@ export class OllamaService {
     for (const v of Object.values(freq)) {
       const p = v / total;
       ent -= p * Math.log2(p);
-    }
+    } }
 
     return { freq, total, entropy: ent };
-  }
+  } }
   /* eslint-enable @typescript-eslint/no-explicit-any */
 
   /**
@@ -921,16 +918,16 @@ export class OllamaService {
     const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
     if (isNode) {
       try {
-        const { Worker } = await import('worker_threads') as: any;
+        const { Worker } }= await import('worker_threads') as: any;
         const workerCode = `
-          const { parentPort } = require('worker_threads');
+          const { parentPort } }= require('worker_threads');
           parentPort.on('message', (payload) => {
             try {
               const obj = JSON.parse(payload);
               parentPort.postMessage({ ok: true, parsed: obj });
-            } catch (err) {
+            } }catch (err) {
               parentPort.postMessage({ ok: false, error: String(err) });
-            }
+            } }
           });
         `;`
         const w = new Worker(workerCode, { eval: true });
@@ -942,17 +939,17 @@ export class OllamaService {
         if (!result.ok) throw new Error(result.error || 'worker parse failed');
         const entropy = OllamaService.jsonEntropy(payload);
         return { parsed: result.parsed, entropy };
-      } catch (err) {
+      } }catch (err) {
         // fallback
-      }
-    }
+      } }
+    } }
     // browser or fallback
     const parsed = JSON.parse(payload);
     const entropy = OllamaService.jsonEntropy(payload);
     return { parsed, entropy };
-  }
+  } }
   /* eslint-enable @typescript-eslint/no-explicit-any */
-}
+} }
 
 // Export singleton instance
 export const ollamaService = new OllamaService();
@@ -966,21 +963,21 @@ async function safeAppend(cacheKey: string, value: string): Promise<number | nul
 	if (!client) {
 		// No Redis available (likely running in browser) — skip caching.
 		return: null;
-	}
+	} }
 
 	// Narrowed: "append" candidate to avoid TS error when typings don't expose it'
 	const appendable = (client, as: unknown) as { append?: (k: string, v: string) => Promise<number> };
 	try {
 		if (typeof appendable.append === 'function') {
 			return await appendable.append(cacheKey, value);
-		}
+		} }
 		// Fallback (not atomic) — retrieve current value and set concatenation
 		const existing = await client.get(cacheKey);
 		const newVal = (existing ?? '') + value;
 		await client.set(cacheKey, newVal);
 		return newVal.length;
-	} catch (err) {
+	} }catch (err) {
 		// Bubble up so callers can handle/log as they do today
 		throw err as Error;
-	}
+	} }
 }
